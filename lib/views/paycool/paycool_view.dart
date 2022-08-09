@@ -65,21 +65,25 @@ class PayCoolView extends StatelessWidget {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Image.asset(
-                              "assets/images/paycool/paycool-logo.png",
-                              width: 85,
-                              height: 85,
+                            Padding(
+                              // color: white,
+                              padding: EdgeInsets.only(right: 10),
+                              child: Image.asset(
+                                "assets/images/launcher/paycool-logo-ios.jpeg",
+                                width: 155,
+                                height: 85,
+                              ),
                             ),
                             const SizedBox(
                               height: 5,
                             ),
-                            Text(
-                              FlutterI18n.translate(context, "payCool"),
-                              style: const TextStyle(
-                                  fontSize: 28,
-                                  fontWeight: FontWeight.bold,
-                                  color: white),
-                            )
+                            // Text(
+                            //   FlutterI18n.translate(context, "payCool"),
+                            //   style: const TextStyle(
+                            //       fontSize: 28,
+                            //       fontWeight: FontWeight.bold,
+                            //       color: white),
+                            // )
                           ],
                         )),
                   ),
