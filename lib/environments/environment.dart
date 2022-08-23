@@ -91,7 +91,8 @@ Map devConfig = {
       "GVT": '0x3e610d9fb322063e50d185e2cc1b45f007e7180c',
       "DRGN": '0xbbdd7a557a0d8a9bf166dcc2730ae3ccec7df05c',
       "PaycoolSmartContractAddress":
-          '0x294b2befc6f725d941917aee5b4022e8165eb540'
+          '0x294b2befc6f725d941917aee5b4022e8165eb540',
+      "PaycoolReferralAddress": "0xa62d5facbdce11fef7d41c71e7661d7131c8c7f0"
     },
     'exchangilyOfficial': [
       {'name': 'EXG', 'address': '0xed76be271bb47a6df055bbc2039733c26fdecc82'},
@@ -234,7 +235,8 @@ Map productionConfig = {
       "NVZN": "0x99963ee76c886fc43d5063428ff8f926e8a50985",
       "BST": "0x4fe1819daf783a3f3151ea0937090063b85d6122",
       "PaycoolSmartContractAddress":
-          '0x99013cf2e650ab80c0852288445cdf4d18f5f2d4'
+          '0x99013cf2e650ab80c0852288445cdf4d18f5f2d4',
+      "PaycoolReferralAddress": "0x1a6640a4a0d83d1c8c38cee54a28f4d2edf634c3"
     },
     'exchangilyOfficial': [
       {'name': 'EXG', 'address': '0xa7c8257b0571dc3d3c96b24b668c6569391b3ac9'},

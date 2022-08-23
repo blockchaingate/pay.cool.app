@@ -13,15 +13,18 @@ const String baseKanbanUrl = isProduction
     ? 'https://kanbanprod.fabcoinapi.com/'
     : 'https://kanbantest.fabcoinapi.com/';
 
+const String fabInfoBaseUrl =
+    isProduction ? ' https://fabprod.info/' : ' https://fabtest.info/';
+
 const String tronBaseApiUrl = 'https://api.trongrid.io/';
 const String kanbanApiRoute = 'kanban/';
 const String exchangilyUrl = 'https://www.exchangily.com/';
 
 // General
-const String CoinPoolAddressRoute = 'exchangily/getCoinPoolAddress';
+const String coinPoolAddressRoute = 'exchangily/getCoinPoolAddress';
 
 /*----------------------------------------------------------------------
-                        Seven Star Club
+                        Paycool Club
 ----------------------------------------------------------------------*/
 const String paycoolRef = '7star-ref';
 const String campaignListUrl = baseBlockchainGateV2Url + 'campaigns';
@@ -38,8 +41,21 @@ const String isValidPaidReferralCodeUrl =
     baseBlockchainGateV2Url + paycoolRef + '/' + 'isValid/';
 
 /*----------------------------------------------------------------------
-                        Seven Star Pay
+                        Paycool Pay
 ----------------------------------------------------------------------*/
+
+// Referral
+
+// https://fabtest.info/api/userreferral/user/myVKCpWKSpMDvpZZRS69re3KmSta29ZFnK
+const String isValidPaycoolReferralRoute = "api/userreferral/user/";
+
+// Get downline (count / pagenumber)
+// https://fabtest.info/api/userreferral/user/myVKCpWKSpMDvpZZRS69re3KmSta29ZFnK/10/0
+
+// Get total referral count
+// https://fabtest.info/api/userreferral/user/myVKCpWKSpMDvpZZRS69re3KmSta29ZFnK/totalCount
+const String totalCountRoute = "/totalCount";
+
 // ** https://api.blockchaingate.com/v2/stores/feeChargerSmartContractAddress/0x1e89b7d555fe1b68c048b68eb28724950e1051f2
 const String storeInfoPayCoolUrl =
     baseBlockchainGateV2Url + 'stores/feeChargerSmartContractAddress/';
