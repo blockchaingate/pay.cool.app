@@ -1,115 +1,162 @@
-import 'package:flutter/material.dart';
+import 'dart:io';
 
-void main() {
-  runApp(const MyApp());
+import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
+import 'package:logger/logger.dart';
+import 'package:overlay_support/overlay_support.dart';
+import 'package:package_info/package_info.dart';
+import 'package:paycool/routes.dart';
+import 'package:paycool/service_locator.dart';
+import 'package:paycool/services/navigation_service.dart';
+import 'constants/colors.dart';
+import 'managers/dialog_manager.dart';
+import 'services/local_dialog_service.dart';
+
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
+
+Future<void> main() async {
+  final String defaultLocale = Platform.localeName;
+  debugPrint("defaultLocale: " + defaultLocale);
+  final String shortLocale = defaultLocale.substring(0, 2);
+  debugPrint("shortLocale: " + shortLocale);
+
+  //init i18n setting
+  FlutterI18nDelegate flutterI18nDelegate = FlutterI18nDelegate(
+    translationLoader: FileTranslationLoader(
+        useCountryCode: false,
+        fallbackFile: 'en',
+        basePath: 'assets/i18n',
+        forcedLocale: [
+          'en',
+          'zh',
+        ].contains(defaultLocale)
+            ? Locale(shortLocale)
+            : const Locale("en")),
+  );
+  WidgetsFlutterBinding.ensureInitialized();
+  debugPaintSizeEnabled = false;
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
+    // statusBarColor: Colors.blue, //or set color with: Color(0xFF0000FF)
+    statusBarIconBrightness: Brightness.dark,
+    statusBarBrightness: Brightness.dark,
+  ));
+  try {
+    await serviceLocator();
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+
+    Logger.level = Level.nothing;
+
+    SystemChannels.textInput
+        .invokeMethod('TextInput.hide'); // Hides keyboard initially
+    runApp(MyApp(flutterI18nDelegate, packageInfo));
+  } catch (err) {
+    debugPrint('main.dart (Catch) Locator setup has failed $err');
+  }
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
+  // ignore: use_key_in_widget_constructors
+  final FlutterI18nDelegate flutterI18nDelegate;
+  final PackageInfo packageInfo;
+  const MyApp(this.flutterI18nDelegate, this.packageInfo);
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
+    return OverlaySupport(
+      child: MaterialApp(
+        darkTheme: ThemeData.dark(),
+        debugShowCheckedModeBanner: false,
+        navigatorKey: locator<NavigationService>().navigatorKey,
+        builder: (context, widget) => Stack(
+          children: [
+            Navigator(
+                key: locator<LocalDialogService>().navigatorKey,
+                onGenerateRoute: (settings) => MaterialPageRoute(
+                    builder: (context) => DialogManager(
+                          child: MediaQuery(
+                              data: MediaQuery.of(context)
+                                  .copyWith(textScaleFactor: 1.0),
+                              child: widget),
+                        ))),
+            Positioned(
+                bottom: 120,
+                right: 0,
+                child: Material(
+                  color: Colors.transparent,
+                  child: RotatedBox(
+                    quarterTurns: 1,
+                    child: Text(
+                      // 'v ',
+                      'v ${packageInfo.version}.${packageInfo.buildNumber}',
+                      style: const TextStyle(
+                          fontSize: 10, color: Color(0x44ffffff)),
+                    ),
+                  ),
+                ))
           ],
         ),
+        title: 'PayCool',
+        localizationsDelegates: [
+          // AppLocalizationsDelegate(),
+          flutterI18nDelegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate
+        ],
+        onGenerateTitle: (BuildContext context) =>
+            FlutterI18n.translate(context, "title"),
+        onGenerateRoute: RouteGenerator.generateRoute,
+        initialRoute: '/',
+        theme: ThemeData(
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+          // added unselectedWidgetColor to update inactive radio button's color
+          appBarTheme: const AppBarTheme(
+              actionsIconTheme: IconThemeData(color: Colors.white),
+              iconTheme: IconThemeData(color: Colors.white),
+              systemOverlayStyle: SystemUiOverlayStyle.light),
+          unselectedWidgetColor: Colors.white,
+          disabledColor: grey.withAlpha(100),
+          primaryColor: primaryColor,
+          backgroundColor: secondaryColor,
+          cardColor: walletCardColor,
+          canvasColor: secondaryColor,
+          //  brightness: Brightness.dark,
+          buttonTheme: const ButtonThemeData(
+              minWidth: double.infinity,
+              buttonColor: primaryColor,
+              padding: EdgeInsets.all(15),
+              shape: StadiumBorder(),
+              textTheme: ButtonTextTheme.primary),
+          fontFamily: 'WorkSans',
+          textTheme: const TextTheme(
+              button: TextStyle(fontSize: 14, color: white),
+              headline1: TextStyle(
+                  fontSize: 22,
+                  color: white,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1.25),
+              headline2: TextStyle(
+                  fontSize: 18, color: white, fontWeight: FontWeight.w300),
+              headline3: TextStyle(fontSize: 16, color: white),
+              headline4: TextStyle(
+                  fontSize: 15, color: white, fontWeight: FontWeight.w300),
+              subtitle1: TextStyle(
+                  fontSize: 14, color: white, fontWeight: FontWeight.w300),
+              headline5: TextStyle(
+                  fontSize: 12.5, color: white, fontWeight: FontWeight.w400),
+              subtitle2: TextStyle(
+                  fontSize: 10.3, color: grey, fontWeight: FontWeight.w400),
+              bodyText1: TextStyle(
+                  fontSize: 13, color: white, fontWeight: FontWeight.w400),
+              bodyText2: TextStyle(fontSize: 13, color: red),
+              headline6: TextStyle(
+                  fontSize: 10.5, color: white, fontWeight: FontWeight.w500)),
+          colorScheme:
+              ColorScheme.fromSwatch().copyWith(secondary: secondaryColor),
+        ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }

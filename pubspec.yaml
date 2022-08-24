@@ -1,90 +1,97 @@
 name: paycool
-description: A new Flutter project.
+description: Crypto payment application
+version: 2.1.52+92
 
-
-
-publish_to: 'none' 
-
-
-
-
-
-
-
-
-
-
-
-
-version: 1.0.0+1
+# The following line prevents the package from being accidentally published to
+# pub.dev using `pub publish`. This is preferred for private packages.
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 environment:
-  sdk: ">=2.16.2 <3.0.0"
+  sdk: ">=2.7.0 <3.0.0"
 
-
-
-
-
-
+dependency_overrides:
+  intl: any
 
 dependencies:
+  auto_size_text: ^2.1.0
+  barcode_scan: null
+  bitbox: ^0.0.1
+  bitcoin_flutter: ^2.0.1
+  bs58check: ^1.0.1
+  #connectivity: ^0.4.3+1
+  cupertino_icons: ^0.1.3
+  decimal: ^0.3.5
+  device_info: ^2.0.2
+  encrypt: ^3.3.0
   flutter:
     sdk: flutter
-
-
-  
-  
-  cupertino_icons: ^1.0.2
+  flutter_i18n: null
+  flutter_localizations:
+    sdk: flutter
+  flutter_swiper: ^1.1.6
+  flutter_treeview: ^0.7.1+1
+  font_awesome_flutter: null
+  image_picker: null
+  intl_translation: ^0.17.0
+  keccak: ^1.0.3
+  launch_review: ^3.0.1
+  local_auth: ^1.1.8
+  logger: ^0.6.0
+  material_design_icons_flutter: ^4.0.5345
+  observable_ish: null
+  overlay_support: ^1.2.0
+  package_info: 2.0.0
+  path_provider: null
+  protobuf: ^1.1.4
+  pull_to_refresh: ^2.0.0
+  qr_code_tools: ^0.0.7
+  qr_flutter: ^3.1.0
+  rflutter_alert: ^1.0.3
+  screenshot: ^0.2.0
+  share: ^0.6.5+3
+  shared_preferences: 0.5.12+4
+  shimmer: ^1.0.1
+  sqflite: ^1.3.1+2
+  stacked: ^2.1.6
+  tree_view: ^0.0.5
+  url_launcher: null
+  version: ^2.0.0
+  web3dart: null
 
 dev_dependencies:
+  flutter_launcher_icons: ^0.7.0
+  flutter_lints: ^1.0.4
   flutter_test:
     sdk: flutter
+  intl: ^0.17.0
 
-  
-  
-  
-  
-  
-  flutter_lints: ^1.0.0
-
-
-
-
-
+# For information on the generic Dart part of this file, see the
+# following page: https://dart.dev/tools/pub/pubspec
+# The following section is specific to Flutter.
 flutter:
-
-  
-  
-  
+  # The following line ensures that the Material Icons font is
+  # included with your application, so that you can use the icons in
+  # the material Icons class.
   uses-material-design: true
 
-  
-  
-  
-  
+  assets:
+    - assets/images/start-page/
+    - assets/images/img/
+    - assets/images/wallet-page/
+    - assets/images/paycool/
+    - assets/pages/index.html
+    - assets/images/shared/
+    - assets/images/launcher/
+    - assets/i18n/
 
-  
-  
+flutter_icons:
+  image_path: "assets/images/launcher/pay-cool-cube.jpg"
+  android: true
+  ios: true
 
-  
-  
-
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  fonts:
+    - family: WorkSans
+      fonts:
+        - asset: assets/fonts/Work_Sans/WorkSans-SemiBold.ttf
+        - asset: assets/fonts/Work_Sans/WorkSans-Bold.ttf
+        - asset: assets/fonts/Work_Sans/WorkSans-Thin.ttf
