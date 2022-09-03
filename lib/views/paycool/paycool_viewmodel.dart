@@ -1,84 +1,50 @@
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:exchangily_core/exchangily_core.dart';
+import 'package:exchangily_ui/exchangily_ui.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_i18n/flutter_i18n.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:overlay_support/overlay_support.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:qr_code_tools/qr_code_tools.dart';
-import 'package:qr_flutter/qr_flutter.dart';
-import 'package:paycool/constants/api_routes.dart';
-import 'package:paycool/constants/colors.dart';
-import 'package:paycool/constants/constants.dart';
-import 'package:paycool/constants/custom_styles.dart';
-import 'package:paycool/constants/route_names.dart';
-import 'package:paycool/environments/coins.dart';
-import 'package:paycool/logger.dart';
-import 'package:paycool/models/shared/pair_decimal_config_model.dart';
-import 'package:paycool/models/wallet/exchange_balance_model.dart';
-import 'package:paycool/models/wallet/transaction_history.dart';
-import 'package:paycool/models/wallet/wallet_balance.dart';
-
+import 'package:paycool/constants/paycool_api_routes.dart';
 import 'package:paycool/service_locator.dart';
-import 'package:paycool/services/api_service.dart';
-import 'package:paycool/services/coin_service.dart';
-import 'package:paycool/services/db/token_list_database_service.dart';
-import 'package:paycool/services/db/transaction_history_database_service.dart';
-import 'package:paycool/services/db/user_settings_database_service.dart';
-import 'package:paycool/services/db/wallet_database_service.dart';
 import 'package:paycool/services/local_storage_service.dart';
-import 'package:paycool/services/navigation_service.dart';
-import 'package:paycool/services/shared_service.dart';
-import 'package:paycool/services/wallet_service.dart';
-import 'package:paycool/shared/ui_helpers.dart';
-import 'package:paycool/utils/abi_util.dart';
 import 'package:paycool/utils/barcode_util.dart';
-import 'package:paycool/utils/coin_util.dart';
-import 'package:paycool/utils/fab_util.dart';
-import 'package:paycool/utils/kanban.util.dart';
-import 'package:paycool/utils/keypair_util.dart';
-import 'package:paycool/utils/number_util.dart';
-import 'package:paycool/utils/string_util.dart';
 import 'package:paycool/views/paycool_club/paycool_club_service.dart';
 import 'package:paycool/views/paycool/models/paycool_store_model.dart';
 import 'package:paycool/views/paycool/models/paycool_model.dart';
 import 'package:paycool/views/paycool/models/store_and_merchant_model.dart';
 import 'package:paycool/views/paycool/paycool_service.dart';
-import 'package:share/share.dart';
-import 'package:stacked/stacked.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:hex/hex.dart';
 import 'package:barcode_scan/barcode_scan.dart';
-import '../../environments/environment.dart';
-import '../../services/config_service.dart';
 import 'package:image_picker/image_picker.dart';
-import '../../services/local_dialog_service.dart';
+import 'package:qr_code_tools/qr_code_tools.dart';
+
+import '../../constants/paycool_constants.dart';
 
 class PayCoolViewmodel extends FutureViewModel {
   final log = getLogger('PayCoolViewmodel');
 
   final addressController = TextEditingController();
-  ApiService apiService = locator<ApiService>();
-  NavigationService navigationService = locator<NavigationService>();
-  TokenListDatabaseService tokenListDatabaseService =
-      locator<TokenListDatabaseService>();
-  SharedService sharedService = locator<SharedService>();
-  LocalStorageService storageService = locator<LocalStorageService>();
+  ApiService apiService = localLocator<ApiService>();
+  NavigationService navigationService = localLocator<NavigationService>();
+  TokenDatabaseService tokenListDatabaseService =
+      localLocator<TokenDatabaseService>();
+  SharedService sharedService = localLocator<SharedService>();
+  LocalStorageService storageService = localLocator<LocalStorageService>();
   TransactionHistoryDatabaseService transactionHistoryDatabaseService =
-      locator<TransactionHistoryDatabaseService>();
+      localLocator<TransactionHistoryDatabaseService>();
   WalletDatabaseService walletDataBaseService =
-      locator<WalletDatabaseService>();
-  final dialogService = locator<LocalDialogService>();
-  WalletService walletService = locator<WalletService>();
-  final payCoolService = locator<PayCoolService>();
-  ConfigService configService = locator<ConfigService>();
-  final payCoolClubService = locator<PayCoolClubService>();
-  final userSettingsDatabaseService = locator<UserSettingsDatabaseService>();
+      localLocator<WalletDatabaseService>();
+  final dialogService = localLocator<DialogService>();
+  WalletService walletService = localLocator<WalletService>();
+  final payCoolService = localLocator<PayCoolService>();
+  final payCoolClubService = localLocator<PayCoolClubService>();
+  final userSettingsDatabaseService =
+      localLocator<UserSettingsDatabaseService>();
+  final environmentService = locator<EnvironmentService>();
   String tickerName = '';
   BuildContext context;
-  double quantity = 0.0;
+  Decimal quantity = Constants.decimalZero;
   GlobalKey globalKey = GlobalKey();
   ScrollController scrollController;
   String loadingStatus = '';
@@ -100,8 +66,6 @@ class PayCoolViewmodel extends FutureViewModel {
 
   String fabAddress = '';
   var apiRes;
-  List<PairDecimalConfig> pairDecimalConfigList = [];
-  final coinService = locator<CoinService>();
   // ScanToPayModel scanToPayModel = ScanToPayModel();
   var pasteRes;
 
@@ -124,7 +88,8 @@ class PayCoolViewmodel extends FutureViewModel {
                     Default Future to Run
 ----------------------------------------------------------------------*/
   @override
-  Future futureToRun() async => await apiService.getAssetsBalance('');
+  Future futureToRun() async =>
+      await apiService.getAssetsBalance(environmentService.kanbanBaseUrl(), '');
 
 /*----------------------------------------------------------------------
                           INIT
@@ -173,7 +138,7 @@ class PayCoolViewmodel extends FutureViewModel {
 //element.ticker =tradeService.setTickerNameByType(element.coinType);
         debugPrint('exchanageBalanceModel tickerName ${wallet.ticker}');
       }
-      if (wallet.unlockedAmount > 0.0) {
+      if (wallet.unlockedAmount > Constants.decimalZero) {
         exchangeBalances.add(wallet);
       }
     });
@@ -284,12 +249,13 @@ class PayCoolViewmodel extends FutureViewModel {
         var seed;
         String mnemonic = res.returnedText;
 
-        seed = walletService.generateSeed(mnemonic);
+        seed = MnemonicUtils.generateSeed(mnemonic);
         var bodySig;
         var parentIdString = "parentId=${referralController.text}";
         try {
           Uint8List bodySigUint;
-          await signKanbanMessage(Uint8List.fromList(seed), parentIdString)
+          await CoinUtils.signKanbanMessage(
+                  Uint8List.fromList(seed), parentIdString)
               .then((res) => bodySigUint = res);
           bodySig = uint8ListToHex(bodySigUint);
           await payCoolService
@@ -343,7 +309,8 @@ class PayCoolViewmodel extends FutureViewModel {
     }
     String exgAddress =
         await sharedService.getExgAddressFromCoreWalletDatabase();
-    var gasAmount = await walletService.gasBalance(exgAddress);
+    var gasAmount = await walletService.gasBalance(
+        environmentService.kanbanBaseUrl(), exgAddress);
     if (gasAmount == 0.0) {
       sharedService.sharedSimpleNotification(
           FlutterI18n.translate(context, "insufficientGasAmount"));
@@ -354,7 +321,8 @@ class PayCoolViewmodel extends FutureViewModel {
         await coinService.getCoinWalletAddress(tickerName, tokenType: 'ETH');
     List<WalletBalance> walletBalanceRes;
     await apiService
-        .getSingleWalletBalance(fabAddress, tickerName, selectedCoinAddress)
+        .getSingleWalletBalanceV2(environmentService.kanbanBaseUrl(),
+            fabAddress, tickerName, selectedCoinAddress)
         .then((walletBalance) {
       if (walletBalance != null) {
         walletBalanceRes = walletBalance;
@@ -389,7 +357,8 @@ class PayCoolViewmodel extends FutureViewModel {
   signTxV2(String contractAddress) async {
     String exgAddress =
         await sharedService.getExgAddressFromCoreWalletDatabase();
-    var nonce = await getNonce(exgAddress);
+    var nonce = await KanbanUtils.getNonce(
+        environmentService.kanbanBaseUrl(), exgAddress);
 
     //   Web
     String finalAbiHex =
@@ -407,8 +376,8 @@ class PayCoolViewmodel extends FutureViewModel {
         setBusy(true);
         String mnemonic = passRes.returnedText;
 
-        seed = walletService.generateSeed(mnemonic);
-        var keyPairKanban = getExgKeyPair(Uint8List.fromList(seed));
+        seed = MnemonicUtils.generateSeed(mnemonic);
+        var keyPairKanban = FabUtils.getExgKeyPair(Uint8List.fromList(seed));
         debugPrint('keyPairKanban $keyPairKanban');
         int kanbanGasPrice = environment["chains"]["KANBAN"]["gasPrice"];
         int kanbanGasLimit = environment["chains"]["KANBAN"]["gasLimit"];
@@ -476,7 +445,7 @@ class PayCoolViewmodel extends FutureViewModel {
     )
         .then((res) {
       if (res.confirmed) {
-        navigationService.navigateTo(PayCoolRewardsViewRoute);
+        navigationService.navigateTo(PaycoolConstants.payCoolRewardsViewRoute);
       }
     });
   }
@@ -485,7 +454,7 @@ class PayCoolViewmodel extends FutureViewModel {
   signTx(String contractAddress) async {
     String exgAddress =
         await sharedService.getExgAddressFromCoreWalletDatabase();
-    var nonce = await getNonce(exgAddress);
+    var nonce = await FabUtils.getNonce(exgAddress);
     var scanToPayModel;
     abiHex = scanToPayModel.datAbiHex;
     log.w('abi hex $abiHex');
@@ -495,7 +464,7 @@ class PayCoolViewmodel extends FutureViewModel {
     await payCoolService.getParentAddress(fabAddress).then((res) {
       if (res.isNotEmpty) {
         for (var address in res) {
-          parentAddresses.add(fabUtils.fabToExgAddress(address));
+          parentAddresses.add(FabUtils.fabToExgAddress(address));
         }
       }
     });
@@ -505,7 +474,7 @@ class PayCoolViewmodel extends FutureViewModel {
     await payCoolService.getRegionalAgent(fabAddress).then((res) {
       if (res.isNotEmpty) {
         for (var address in res) {
-          agentAddresses.add(fabUtils.fabToExgAddress(address));
+          agentAddresses.add(FabUtils.fabToExgAddress(address));
         }
       }
     });
@@ -536,8 +505,8 @@ class PayCoolViewmodel extends FutureViewModel {
         setBusy(true);
         String mnemonic = passRes.returnedText;
 
-        seed = walletService.generateSeed(mnemonic);
-        var keyPairKanban = getExgKeyPair(Uint8List.fromList(seed));
+        seed = MnemonicUtils.generateSeed(mnemonic);
+        var keyPairKanban = FabUtils.getExgKeyPair(Uint8List.fromList(seed));
         debugPrint('keyPairKanban $keyPairKanban');
         int kanbanGasPrice = environment["chains"]["KANBAN"]["gasPrice"];
         int kanbanGasLimit = environment["chains"]["KANBAN"]["gasLimit"];
@@ -576,15 +545,6 @@ class PayCoolViewmodel extends FutureViewModel {
               isError: true);
         }
         var errMsg = res['errMsg'];
-        // if (txHash != null && txHash != '') {
-        //   setBusy(true);
-        //   apiRes = txHash;
-        //   setBusy(false);
-        //   showSimpleNotification(
-        //       Text(
-        //           FlutterI18n.translate(context, "placeOrderTransactionSuccessful")),
-        //       position: NotificationPosition.bottom);
-        // }
       } else if (passRes.returnedText == 'Closed' && !passRes.confirmed) {
         log.e('Dialog Closed By User');
 
@@ -620,7 +580,7 @@ class PayCoolViewmodel extends FutureViewModel {
 
   // launch url
   openExplorer(String txId) async {
-    String exchangilyExplorerUrl = ExchangilyExplorerUrl + txId;
+    String exchangilyExplorerUrl = exchangilyExplorerUrl + txId;
     log.i(
         'LightningRemit open explorer - explorer url - $exchangilyExplorerUrl');
     if (await canLaunch(exchangilyExplorerUrl)) {
@@ -1061,7 +1021,7 @@ class PayCoolViewmodel extends FutureViewModel {
   }
 
   void scanBarcodeV2({
-    String addressType = Constants.MerchantAddressText,
+    String addressType = PaycoolConstants.merchantAddressText,
   }) async {
     try {
       setBusy(true);
@@ -1071,12 +1031,12 @@ class PayCoolViewmodel extends FutureViewModel {
       scanResult = await BarcodeUtils().scanBarcode(context);
       barcodeScanData = scanResult.rawContent;
 
-      if (addressType == Constants.ReferralAddressText) {
+      if (addressType == PaycoolConstants.referralAddressText) {
         debugPrint('in 1st if-- barcode res-- ${scanResult.rawContent}');
 
         referralController.text = scanResult.rawContent;
       }
-      if (addressType == Constants.MerchantAddressText) {
+      if (addressType == PaycoolConstants.merchantAddressText) {
         if (scanResult != null) {
           orderDetails(barcodeScanData: barcodeScanData);
         } else if (scanResult.rawContent == '-1') {
@@ -1157,7 +1117,8 @@ class PayCoolViewmodel extends FutureViewModel {
       return;
     }
     try {
-      await coinService.getSingleTokenData(scanToPayModelV2.currency).then((t) {
+      await TokenService.getSingleTokenData(scanToPayModelV2.currency)
+          .then((t) {
         decimalLimit = t.decimal;
         log.i('decimalLimit $decimalLimit');
       });
@@ -1190,7 +1151,8 @@ class PayCoolViewmodel extends FutureViewModel {
     setBusy(false);
   }
 
-  void scanBarcode({String addressType = Constants.MerchantAddressText}) async {
+  void scanBarcode(
+      {String addressType = PaycoolConstants.merchantAddressText}) async {
     try {
       setBusy(true);
       var barcodeRes = [];
@@ -1204,12 +1166,12 @@ class PayCoolViewmodel extends FutureViewModel {
       scanResult = await BarcodeScanner.scan(options: options);
       // await BarcodeUtils().scanQR(context);
       log.i('barcode res ${scanResult.toString()}');
-      if (addressType == Constants.ReferralAddressText) {
+      if (addressType == PaycoolConstants.referralAddressText) {
         debugPrint('in 1st if-- barcode res-- ${scanResult.rawContent}');
 
         referralController.text = scanResult.rawContent;
       }
-      if (addressType == Constants.MerchantAddressText) {
+      if (addressType == PaycoolConstants.merchantAddressText) {
         if (scanResult != null) {
           var scanToPayModel;
           //    ScanToPayModel.fromJson(jsonDecode(scanResult.rawContent));
@@ -1224,10 +1186,9 @@ class PayCoolViewmodel extends FutureViewModel {
           log.w('barcode scan decodeScannedAbiHex res $res');
 
           int ct = int.parse(res[1]);
-          coinPayable = newCoinTypeMap[ct];
+          coinPayable = Constants.coinTypeWithTicker[ct];
           try {
-            await coinService
-                .getSingleTokenData(tickerName, coinType: ct)
+            await TokenService.getSingleTokenData(tickerName, coinType: ct)
                 .then((t) {
               decimalLimit = t.decimal;
               log.i('decimalLimit $decimalLimit');
@@ -1327,7 +1288,11 @@ class PayCoolViewmodel extends FutureViewModel {
 ----------------------------------------------------------------------*/
   refreshBalance() async {
     setBusyForObject(exchangeBalances, true);
-    await apiService.getSingleCoinExchangeBalance(tickerName).then((res) {
+    var exgAddress = await sharedService.getExgAddressFromCoreWalletDatabase();
+    await apiService
+        .getSingleCoinExchangeBalance(
+            environmentService.kanbanBaseUrl(), tickerName, exgAddress)
+        .then((res) {
       exchangeBalances.firstWhere((element) {
         if (element.ticker == tickerName) {
           element.unlockedAmount = res.unlockedAmount;
@@ -1608,11 +1573,11 @@ class PayCoolViewmodel extends FutureViewModel {
     setBusy(true);
     await Clipboard.getData('text/plain').then((res) {
       pasteRes = res;
-      if (addressType == Constants.ReferralAddressText) {
+      if (addressType == PaycoolConstants.referralAddressText) {
         referralController.text = '';
         referralController.text = res.text;
       }
-      if (addressType == Constants.MerchantAddressText) {
+      if (addressType == PaycoolConstants.merchantAddressText) {
         addressController.text = res.text;
       }
     });

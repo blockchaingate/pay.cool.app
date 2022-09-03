@@ -1,5 +1,5 @@
 import 'package:decimal/decimal.dart';
-import 'package:paycool/utils/number_util.dart';
+import 'package:exchangily_core/exchangily_core.dart';
 
 class StoreInfoModel {
   Name name;
@@ -35,8 +35,8 @@ class StoreInfoModel {
     sId = json['_id'];
     coin = json['coin'];
     giveAwayRate =
-        NumberUtil.convertStringToDecimal(json['giveAwayRate'].toString());
-    taxRate = NumberUtil.convertStringToDecimal(json['taxRate'].toString());
+        NumberUtil.stringDecimalParse(json['giveAwayRate'].toString());
+    taxRate = NumberUtil.stringDecimalParse(json['taxRate'].toString());
     refAddress = json['refAddress'];
     image = json['image'];
     feeChargerSmartContractAddress = json['feeChargerSmartContractAddress'];

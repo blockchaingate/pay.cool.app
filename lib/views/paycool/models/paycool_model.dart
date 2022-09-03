@@ -1,9 +1,11 @@
+import 'package:exchangily_core/exchangily_core.dart';
+
 class ScanToPayModelV2 {
   String currency;
-  double totalAmount;
-  double totalTax;
-  double totalRewardInPaidCoin;
-  double myreward;
+  Decimal totalAmount;
+  Decimal totalTax;
+  Decimal totalRewardInPaidCoin;
+  Decimal myreward;
   List<String> regionalAgents;
   List<String> rewardBeneficiary;
   String rewardInfo;
@@ -25,14 +27,15 @@ class ScanToPayModelV2 {
   ScanToPayModelV2.fromJson(Map<String, dynamic> json) {
     var jsonMyRewards;
     if (json['myreward'] != null) {
-      jsonMyRewards = json['myreward'].toDouble();
+      jsonMyRewards =
+          NumberUtil.stringDecimalParse(json['myreward'].toString());
     }
     currency = json['currency'];
-    totalAmount = //json['totalAmount'] is int
-        json['totalAmount'].toDouble();
-    // : json['totalAmount'];
-    totalTax = json['totalTax'].toDouble();
-    totalRewardInPaidCoin = json['totalRewardInPaidCoin'].toDouble();
+    totalAmount = NumberUtil.stringDecimalParse(json['totalAmount'].toString());
+
+    totalTax = NumberUtil.stringDecimalParse(json['totalTax'].toString());
+    totalRewardInPaidCoin =
+        NumberUtil.stringDecimalParse(json['totalRewardInPaidCoin'].toString());
     myreward = jsonMyRewards;
     regionalAgents = json['regionalAgents'].cast<String>();
     rewardBeneficiary = json['rewardBeneficiary'].cast<String>();

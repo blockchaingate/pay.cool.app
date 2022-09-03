@@ -1,18 +1,9 @@
 import 'dart:convert';
 
+import 'package:exchangily_core/exchangily_core.dart';
+import 'package:exchangily_ui/exchangily_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_i18n/flutter_i18n.dart';
-import 'package:overlay_support/overlay_support.dart';
-import 'package:qr_flutter/qr_flutter.dart';
-import 'package:paycool/constants/colors.dart';
-import 'package:paycool/constants/custom_styles.dart';
-import 'package:paycool/environments/environment.dart';
-import 'package:paycool/logger.dart';
-import 'package:paycool/service_locator.dart';
-import 'package:paycool/services/shared_service.dart';
-import 'package:paycool/shared/ui_helpers.dart';
-import 'package:paycool/utils/abi_util.dart';
 import 'package:paycool/utils/barcode_util.dart';
 import 'package:paycool/views/paycool_club/paycool_club_service.dart';
 

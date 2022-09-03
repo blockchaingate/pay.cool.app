@@ -1,15 +1,15 @@
 import 'dart:developer';
 
+import 'package:exchangily_ui/exchangily_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
-import 'package:paycool/constants/colors.dart';
 import 'package:paycool/services/local_storage_service.dart';
 import 'package:stacked/stacked.dart';
 
 import '../service_locator.dart';
 
 class BottomNavViewmodel extends BaseViewModel {
-  final storageService = locator<LocalStorageService>();
+  final storageService = localLocator<LocalStorageService>();
 
   final double iconSize = 40;
   BuildContext context;

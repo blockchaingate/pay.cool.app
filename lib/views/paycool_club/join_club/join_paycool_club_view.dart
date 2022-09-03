@@ -1,12 +1,7 @@
+import 'package:exchangily_core/exchangily_core.dart';
+import 'package:exchangily_ui/exchangily_ui.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_i18n/flutter_i18n.dart';
-import 'package:paycool/constants/colors.dart';
-import 'package:paycool/constants/custom_styles.dart';
-import 'package:paycool/shared/ui_helpers.dart';
-import 'package:paycool/utils/number_util.dart';
-import 'package:paycool/utils/string_util.dart';
 import 'package:paycool/views/paycool/paycool_model.dart';
-import 'package:stacked/stacked.dart';
 import 'package:paycool/views/paycool_club/join_club/join_paycool_club_viewmodel.dart';
 
 class JoinPayCoolClubView
@@ -172,15 +167,13 @@ class JoinPayCoolClubView
                               flex: 3,
                               child: Text(
                                 model.groupValue == 'DUSD'
-                                    ? NumberUtil()
-                                        .truncateDoubleWithoutRouding(
+                                    ? NumberUtil.decimalLimiter(
                                             model.dusdExchangeBalance,
-                                            precision: 2)
+                                            decimalPrecision: 2)
                                         .toString()
-                                    : NumberUtil()
-                                        .truncateDoubleWithoutRouding(
+                                    : NumberUtil.decimalLimiter(
                                             model.usdtExchangeBalance,
-                                            precision: 2)
+                                            decimalPrecision: 2)
                                         .toString(),
                                 style: Theme.of(context)
                                     .textTheme
@@ -237,8 +230,9 @@ class JoinPayCoolClubView
                                 flex: 3,
                                 child: Padding(
                                   padding: const EdgeInsets.only(left: 2.0),
-                                  child:
-                                      Text(model.paycoolSmartContractAddress),
+                                  child: Text(model.environmentService
+                                      .smartContractAddress(
+                                          "PaycoolSmartContractAddress")),
                                 )),
                           ],
                         ),

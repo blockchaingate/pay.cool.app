@@ -1,31 +1,28 @@
 import 'dart:convert';
+import 'package:exchangily_core/exchangily_core.dart';
 
-import 'package:paycool/constants/api_routes.dart';
-import 'package:paycool/logger.dart';
-
-import 'package:paycool/service_locator.dart';
-import 'package:paycool/services/config_service.dart';
-import 'package:paycool/utils/custom_http_util.dart';
 import 'package:paycool/views/paycool_club/paycool_club_model/paycool_club_model.dart';
 
 import 'package:paycool/views/paycool_club/paycool_club_model/paycool_create_order_model.dart';
-import 'package:paycool/views/paycool_club/referral/paycool_referral_model.dart';
 import 'package:paycool/views/paycool_club/paycool_dashboard_model.dart';
+import 'package:referral/referral.dart';
+
+import '../../constants/paycool_api_routes.dart';
 
 class PayCoolClubService {
   final log = getLogger('PayCoolClubService');
 
-  final client = CustomHttpUtil.createLetsEncryptUpdatedCertClient();
-  final configService = locator<ConfigService>();
+  final client = CustomHttpUtils.createLetsEncryptUpdatedCertClient();
   final String campaignId = '1';
 
+  final environmentService = locator<EnvironmentService>();
 /*----------------------------------------------------------------------
                       Tx Receipt
 ----------------------------------------------------------------------*/
 
 // status 1 means success, 0 means failure
   Future<bool> txReceipt(String txId) async {
-    String url = configService.getKanbanBaseUrl() +
+    String url = environmentService.kanbanBaseUrl() +
         'kanban/getTransactionReceipt/' +
         txId;
     log.i('txReceipt url $url');
@@ -60,8 +57,8 @@ class PayCoolClubService {
   Future<bool> isValidReferralCode(String fabAddress,
       {bool isValidStarPayMemeberCheck = false}) async {
     String url = (isValidStarPayMemeberCheck
-            ? isValidReferralStarPayMemberUrl
-            : isValidPaidReferralCodeUrl) +
+            ? PaycoolApiRoutes.isValidReferralStarPayMemberUrl
+            : PaycoolApiRoutes.isValidPaidReferralCodeUrl) +
         fabAddress;
     log.i('isValidReferralCode url $url');
     bool res = false;
@@ -92,7 +89,7 @@ class PayCoolClubService {
 ----------------------------------------------------------------------*/
 //memberType: 0-should be unknown; 1-keyNode, 2-Consumer, 3-Merchant
   Future<bool> isMember(String fabAddress) async {
-    String url = payCoolClubrRefUrl + fabAddress;
+    String url = PaycoolApiRoutes.payCoolClubrRefUrl + fabAddress;
     log.i('isMember url $url');
     bool res = false;
     try {
@@ -126,7 +123,7 @@ class PayCoolClubService {
 ----------------------------------------------------------------------*/
 
   Future<List<PayCoolClubModel>> getPayCoolClubDetails() async {
-    String url = campaignListUrl;
+    String url = PaycoolApiRoutes.campaignListUrl;
     log.w('getPayCoolClubDetails url $url');
 
     try {
@@ -160,9 +157,11 @@ class PayCoolClubService {
       "currency": paycoolCreateOrder.currency,
       "referral": paycoolCreateOrder.referral
     };
-    log.i('createOrder club $payCoolClubCreateOrderUrl -- body $body');
+    log.i(
+        'createOrder club ${PaycoolApiRoutes.payCoolClubCreateOrderUrl} -- body $body');
     try {
-      var response = await client.post(payCoolClubCreateOrderUrl, body: body);
+      var response = await client
+          .post(PaycoolApiRoutes.payCoolClubCreateOrderUrl, body: body);
       var json = jsonDecode(response.body)['_body'];
       log.w('createOrder try response $json');
       return json;
@@ -177,9 +176,11 @@ class PayCoolClubService {
 
   Future saveOrder(String walletAddress, String txId) async {
     Map<String, dynamic> body = {"txid": txId, "address": walletAddress};
-    log.i('createOrder club $payCoolClubSaveOrderUrl -- body $body');
+    log.i(
+        'createOrder club ${PaycoolApiRoutes.payCoolClubSaveOrderUrl} -- body $body');
     try {
-      var response = await client.post(payCoolClubSaveOrderUrl, body: body);
+      var response = await client.post(PaycoolApiRoutes.payCoolClubSaveOrderUrl,
+          body: body);
       var json = jsonDecode(response.body);
       log.w('save Order try response $json');
       return json;
@@ -194,7 +195,8 @@ class PayCoolClubService {
 
   Future<PaycoolReferral> getReferralParentByAddress(String address) async {
     try {
-      var response = await client.get(payCoolClubrRefUrl + address);
+      var response =
+          await client.get(PaycoolApiRoutes.payCoolClubrRefUrl + address);
       if (response.statusCode == 200 || response.statusCode == 201) {
         var json = jsonDecode(response.body);
 
@@ -214,7 +216,8 @@ class PayCoolClubService {
   Future<int> getReferralCount(
     String address,
   ) async {
-    String url = payCoolClubrRefUrl + 'children/' + address + '/count';
+    String url =
+        PaycoolApiRoutes.payCoolClubrRefUrl + 'children/' + address + '/count';
     int referralCount = 0;
     log.i('getReferralCount url $url');
     try {
@@ -242,7 +245,7 @@ class PayCoolClubService {
 
   Future<List<PaycoolReferral>> getChildrenByAddress(String address,
       {int pageSize = 10, int pageNumber = 0}) async {
-    String url = payCoolClubrRefUrl + 'children/' + address;
+    String url = PaycoolApiRoutes.payCoolClubrRefUrl + 'children/' + address;
     if (pageNumber != 0) {
       pageNumber = pageNumber - 1;
     }
@@ -279,7 +282,7 @@ class PayCoolClubService {
 -------------------------------------------------------------------------------------*/
 
   Future<PaycoolDashboard> getDashboardDataByAddress(String address) async {
-    String url = payCoolClubrRefUrl + 'dashboard/' + address;
+    String url = PaycoolApiRoutes.payCoolClubrRefUrl + 'dashboard/' + address;
     log.i('getDashboardDetailsByAddress url $url');
     try {
       var response = await client.get(url);

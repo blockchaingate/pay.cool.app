@@ -12,106 +12,40 @@
 */
 
 import 'package:get_it/get_it.dart';
-import 'services/api_service.dart';
-import 'services/coin_service.dart';
-import 'services/config_service.dart';
-import 'services/db/core_wallet_database_service.dart';
-import 'services/db/decimal_config_database_service.dart';
-import 'services/db/token_list_database_service.dart';
-import 'services/db/transaction_history_database_service.dart';
-import 'services/db/user_settings_database_service.dart';
-import 'services/db/wallet_database_service.dart';
-import 'services/local_auth_service.dart';
-import 'services/local_dialog_service.dart';
+import 'package:lightning_remit/lightning_remit.dart';
+import 'package:referral/referral.dart';
 import 'services/local_storage_service.dart';
-import 'services/navigation_service.dart';
-import 'services/shared_service.dart';
-import 'services/vault_service.dart';
-import 'services/version_service.dart';
-import 'services/wallet_service.dart';
-import 'views/lightning-remit/lightening_remit_viewmodel.dart';
 import 'views/settings/settings_viewmodel.dart';
 import 'views/paycool_club/join_club/join_paycool_club_viewmodel.dart';
-import 'views/paycool_club/referral/paycool_referral_viewmodel.dart';
 import 'views/paycool_club/paycool_club_dashboard_viewmodel.dart';
 import 'views/paycool_club/paycool_club_service.dart';
 import 'views/paycool/rewards/paycool_rewards_viewmodel.dart';
 import 'views/paycool/paycool_service.dart';
 import 'views/paycool/paycool_viewmodel.dart';
 import 'views/paycool/transaction_history/paycool_transaction_history_viewmodel.dart';
-import 'views/wallet/wallet_dashboard_viewmodel.dart';
-import 'views/wallet/wallet_features/move_to_exchange/move_to_exchange_viewmodel.dart';
-import 'views/wallet/wallet_features/move_to_wallet/move_to_wallet_viewmodel.dart';
-import 'views/wallet/wallet_features/redeposit/redeposit_viewmodel.dart';
-import 'views/wallet/wallet_features/send/send_viewmodel.dart';
-import 'views/wallet/wallet_features/transaction_history/transaction_history_viewmodel.dart';
-import 'views/wallet/wallet_features/wallet_features_viewmodel.dart';
-import 'views/wallet/wallet_setup/backup_mnemonic_view.dart/backup_mnemonic_viewmodel.dart';
-import 'views/wallet/wallet_setup/confirm_mnemonic/confirm_mnemonic_viewmodel.dart';
-import 'views/wallet/wallet_setup/create_password/create_password_viewmodel.dart';
-import 'views/wallet/wallet_setup/select_language/choose_wallet_language_viewmodel.dart';
-import 'views/wallet/wallet_setup/wallet_setup_viewmodel.dart';
 import 'widgets/bottom_navmodel.dart';
 
-GetIt locator = GetIt.instance;
+GetIt localLocator = GetIt.instance;
 
 Future serviceLocator() async {
   // Singleton returns the old instance
 
-  // Wallet
-  locator.registerLazySingleton(() => WalletService());
-  locator.registerLazySingleton(() => WalletDatabaseService());
-  locator.registerLazySingleton(() => VaultService());
-  locator.registerLazySingleton(() => TokenListDatabaseService());
-  locator.registerLazySingleton(() => UserSettingsDatabaseService());
-  locator.registerLazySingleton(() => LocalAuthService());
-  locator.registerLazySingleton(() => CoreWalletDatabaseService());
-  // Shared
-  locator.registerLazySingleton(() => ApiService());
-  locator.registerLazySingleton(() => SharedService());
-  locator.registerLazySingleton(() => NavigationService());
-  locator.registerLazySingleton(() => CoinService());
-
-  locator.registerLazySingleton(() => LocalDialogService());
-
-  locator.registerLazySingleton(() => ConfigService());
-  locator.registerLazySingleton(() => DecimalConfigDatabaseService());
-  locator.registerLazySingleton(() => TransactionHistoryDatabaseService());
-
   // Seven Star
-  locator.registerLazySingleton(() => PayCoolClubService());
-  locator.registerLazySingleton(() => PayCoolService());
-
-  //Version Service
-  locator.registerLazySingleton(() => VersionService());
+  localLocator.registerLazySingleton(() => PayCoolClubService());
+  localLocator.registerLazySingleton(() => PayCoolService());
 
   // LocalStorageService Singelton
   var instance = await LocalStorageService.getInstance();
-  locator.registerSingleton<LocalStorageService>(instance);
+  localLocator.registerSingleton<LocalStorageService>(instance);
 
   // Factory returns the new instance
 
-  // Wallet
-  //locator.registerFactory(() => AnnouncementListScreenState());
-  locator.registerFactory(() => ConfirmMnemonicViewModel());
-  locator.registerFactory(() => CreatePasswordViewModel());
-  locator.registerFactory(() => WalletDashboardViewModel());
-  locator.registerFactory(() => WalletFeaturesViewModel());
-  locator.registerFactory(() => SendViewModel());
-  locator.registerFactory(() => SettingsViewmodel());
-  //locator.registerFactory(() => LanguageScreenState());
-  locator.registerFactory(() => WalletSetupViewmodel());
-  locator.registerFactory(() => BackupMnemonicViewModel());
-  locator.registerFactory(() => ChooseWalletLanguageViewModel());
-  locator.registerFactory(() => MoveToExchangeViewModel());
-  locator.registerFactory(() => MoveToWalletViewmodel());
-  locator.registerFactory(() => TransactionHistoryViewmodel());
-  locator.registerFactory(() => RedepositViewModel());
+  localLocator.registerFactory(() => SettingsViewmodel());
 
   // Paycool Club
-  locator.registerFactory(() => PayCoolClubDashboardViewModel());
-  locator.registerFactory(() => JoinPayCoolClubViewModel());
-  locator.registerFactory(() => PaycoolReferralViewmodel());
+  localLocator.registerFactory(() => PayCoolClubDashboardViewModel());
+  localLocator.registerFactory(() => JoinPayCoolClubViewModel());
+  localLocator.registerFactory(() => PaycoolReferralViewmodel());
 
   // Campaign
   // locator.registerFactory(() => CampaignInstructionsScreenState());
@@ -124,13 +58,13 @@ Future serviceLocator() async {
   // locator.registerFactory(() => CarouselWidgetState());
 
   // Seven Star Pay
-  locator.registerFactory(() => PayCoolViewmodel());
-  locator.registerFactory(() => PayCoolRewardsViewModel());
-  locator.registerFactory(() => PayCoolTransactionHistoryViewModel());
+  localLocator.registerFactory(() => PayCoolViewmodel());
+  localLocator.registerFactory(() => PayCoolRewardsViewModel());
+  localLocator.registerFactory(() => PayCoolTransactionHistoryViewModel());
 
   // BindPay
-  locator.registerFactory(() => LightningRemitViewmodel());
+  localLocator.registerFactory(() => LightningRemitViewmodel());
 
   //nav
-  locator.registerFactory(() => BottomNavViewmodel());
+  localLocator.registerFactory(() => BottomNavViewmodel());
 }

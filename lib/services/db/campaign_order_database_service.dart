@@ -12,11 +12,9 @@
 */
 
 import 'dart:async';
+import 'package:exchangily_core/exchangily_core.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
-
-import '../../logger.dart';
-import '../../models/wallet/transaction_history.dart';
 
 class CampaignOrderDatabaseService {
   final log = getLogger('TransactionHistoryDatabaseService');

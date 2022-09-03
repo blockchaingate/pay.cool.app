@@ -11,20 +11,19 @@
 *----------------------------------------------------------------------
 */
 
+import 'package:exchangily_core/exchangily_core.dart';
+import 'package:exchangily_ui/exchangily_ui.dart';
 import 'package:flutter/material.dart';
-import 'package:paycool/constants/colors.dart';
-import 'package:paycool/constants/route_names.dart';
-import 'package:paycool/service_locator.dart';
-import 'package:paycool/services/navigation_service.dart';
-import 'package:paycool/services/shared_service.dart';
-import 'package:paycool/services/local_storage_service.dart';
+import 'package:paycool/constants/paycool_api_routes.dart';
 import 'package:paycool/widgets/bottom_navmodel.dart';
-import 'package:stacked/stacked.dart';
+
+import '../constants/paycool_constants.dart';
+import '../services/local_storage_service.dart';
 
 class BottomNavBar extends StatelessWidget {
   final int count;
   BottomNavBar({Key key, this.count}) : super(key: key);
-  final storageService = locator<LocalStorageService>();
+  final localStorageService = locator<LocalStorageService>();
   final NavigationService navigationService = locator<NavigationService>();
   final SharedService sharedService = locator<SharedService>();
   @override
@@ -58,8 +57,8 @@ class BottomNavBar extends StatelessWidget {
                       onTap: (int idx) {
                         String currentRouteName =
                             sharedService.getCurrentRouteName(context);
-                        if (storageService.showPaycool &&
-                            storageService.showPaycoolClub) {
+                        if (localStorageService.showPaycool &&
+                            localStorageService.showPaycoolClub) {
                           debugPrint("nav has Paycool and club, id: " +
                               idx.toString());
                           switch (idx) {
@@ -68,7 +67,8 @@ class BottomNavBar extends StatelessWidget {
                                   'PayCoolClubDashboardView') {
                                 navigationService
                                     .navigateUsingpopAndPushedNamed(
-                                        PayCoolClubDashboardViewRoute);
+                                        PaycoolConstants
+                                            .payCoolClubDashboardViewRoute);
                               }
                               break;
 
@@ -76,7 +76,7 @@ class BottomNavBar extends StatelessWidget {
                               if (currentRouteName != 'WalletDashboardVieww') {
                                 navigationService
                                     .navigateUsingpopAndPushedNamed(
-                                        DashboardViewRoute);
+                                        dashboardViewRoute);
                               }
                               break;
 
@@ -84,7 +84,7 @@ class BottomNavBar extends StatelessWidget {
                               if (currentRouteName != 'PayCoolView') {
                                 navigationService
                                     .navigateUsingpopAndPushedNamed(
-                                        PayCoolViewRoute);
+                                        PaycoolConstants.payCoolViewRoute);
                               }
                               break;
                             case 3:
@@ -99,15 +99,15 @@ class BottomNavBar extends StatelessWidget {
                               if (currentRouteName != 'SettingsView') {
                                 navigationService
                                     .navigateUsingpopAndPushedNamed(
-                                        SettingViewRoute);
+                                        settingViewRoute);
                               } else if (ModalRoute.of(context).settings.name ==
                                   'SettingsView') {
                                 return null;
                               }
                               break;
                           }
-                        } else if (storageService.showPaycool &&
-                            !storageService.showPaycoolClub) {
+                        } else if (localStorageService.showPaycool &&
+                            !localStorageService.showPaycoolClub) {
                           debugPrint(
                               "nav has Paycool and no Paycool club, id: " +
                                   idx.toString());
@@ -116,7 +116,7 @@ class BottomNavBar extends StatelessWidget {
                               if (currentRouteName != 'WalletDashboardVieww') {
                                 navigationService
                                     .navigateUsingpopAndPushedNamed(
-                                        DashboardViewRoute);
+                                        dashboardViewRoute);
                               }
                               break;
 
@@ -124,7 +124,7 @@ class BottomNavBar extends StatelessWidget {
                               if (currentRouteName != 'PayCoolView') {
                                 navigationService
                                     .navigateUsingpopAndPushedNamed(
-                                        PayCoolViewRoute);
+                                        PaycoolConstants.payCoolViewRoute);
                               }
                               break;
 
@@ -140,15 +140,15 @@ class BottomNavBar extends StatelessWidget {
                               if (currentRouteName != 'SettingsView') {
                                 navigationService
                                     .navigateUsingpopAndPushedNamed(
-                                        SettingViewRoute);
+                                        settingViewRoute);
                               } else if (ModalRoute.of(context).settings.name ==
                                   'SettingsView') {
                                 return null;
                               }
                               break;
                           }
-                        } else if (!storageService.showPaycool &&
-                            storageService.showPaycoolClub) {
+                        } else if (!localStorageService.showPaycool &&
+                            localStorageService.showPaycoolClub) {
                           debugPrint(
                               "nav no Paycool and has Paycool club, id: " +
                                   idx.toString());
@@ -158,14 +158,15 @@ class BottomNavBar extends StatelessWidget {
                                   'PayCoolClubDashboardView') {
                                 navigationService
                                     .navigateUsingpopAndPushedNamed(
-                                        PayCoolClubDashboardViewRoute);
+                                        PaycoolConstants
+                                            .payCoolClubDashboardViewRoute);
                               }
                               break;
                             case 1:
                               if (currentRouteName != 'WalletDashboardVieww') {
                                 navigationService
                                     .navigateUsingpopAndPushedNamed(
-                                        DashboardViewRoute);
+                                        dashboardViewRoute);
                               }
                               break;
 
@@ -181,7 +182,7 @@ class BottomNavBar extends StatelessWidget {
                               if (currentRouteName != 'SettingsView') {
                                 navigationService
                                     .navigateUsingpopAndPushedNamed(
-                                        SettingViewRoute);
+                                        settingViewRoute);
                               } else if (ModalRoute.of(context).settings.name ==
                                   'SettingsView') {
                                 return null;
@@ -197,7 +198,7 @@ class BottomNavBar extends StatelessWidget {
                               if (currentRouteName != 'WalletDashboardVieww') {
                                 navigationService
                                     .navigateUsingpopAndPushedNamed(
-                                        DashboardViewRoute);
+                                        dashboardViewRoute);
                               }
                               break;
                             case 1:
@@ -212,7 +213,7 @@ class BottomNavBar extends StatelessWidget {
                               if (currentRouteName != 'SettingsView') {
                                 navigationService
                                     .navigateUsingpopAndPushedNamed(
-                                        SettingViewRoute);
+                                        settingViewRoute);
                               } else if (ModalRoute.of(context).settings.name ==
                                   'SettingsView') {
                                 return null;

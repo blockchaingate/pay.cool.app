@@ -1,12 +1,7 @@
+import 'package:exchangily_core/exchangily_core.dart';
+import 'package:exchangily_ui/exchangily_ui.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_i18n/flutter_i18n.dart';
-import 'package:paycool/constants/colors.dart';
-import 'package:paycool/constants/custom_styles.dart';
-import 'package:paycool/shared/ui_helpers.dart';
-import 'package:paycool/utils/number_util.dart';
-import 'package:paycool/utils/string_util.dart';
 import 'package:paycool/views/paycool/transaction_history/paycool_transaction_history_viewmodel.dart';
-import 'package:stacked/stacked.dart';
 
 class PayCoolTransactionHistoryView extends StatelessWidget {
   @override
@@ -105,13 +100,14 @@ class PayCoolTransactionHistoryView extends StatelessWidget {
                                               ),
                                               Expanded(
                                                 flex: 2,
-                                                child: Text(NumberUtil()
-                                                    .truncateDoubleWithoutRouding(
-                                                        model
-                                                            .transactions[index]
-                                                            .totalTransactionAmount,
-                                                        precision: 6)
-                                                    .toString()),
+                                                child: Text(
+                                                    NumberUtil.decimalLimiter(
+                                                            model
+                                                                .transactions[
+                                                                    index]
+                                                                .totalTransactionAmount,
+                                                            decimalPrecision: 6)
+                                                        .toString()),
                                               ),
                                               Expanded(
                                                 flex: 2,

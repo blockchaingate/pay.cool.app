@@ -1,24 +1,21 @@
 import 'dart:convert';
-
+import 'package:exchangily_core/exchangily_core.dart';
 import 'package:observable_ish/observable_ish.dart';
-import 'package:paycool/constants/api_routes.dart';
-import 'package:paycool/logger.dart';
 import 'package:paycool/service_locator.dart';
-import 'package:paycool/services/db/core_wallet_database_service.dart';
-import 'package:paycool/utils/custom_http_util.dart';
 import 'package:paycool/views/paycool/models/paycool_store_model.dart';
 import 'package:paycool/views/paycool/models/store_and_merchant_model.dart';
 import 'package:paycool/views/paycool/rewards/paycool_rewards_model.dart';
 import 'package:paycool/views/paycool/models/paycool_model.dart';
 import 'package:paycool/views/paycool/transaction_history/paycool_transaction_history_model.dart';
-import 'package:stacked/stacked.dart';
+
+import '../../constants/paycool_api_routes.dart';
 
 //@LazySingleton()
 class PayCoolService with ReactiveServiceMixin {
   final log = getLogger('PayCoolService');
 
-  final client = CustomHttpUtil.createLetsEncryptUpdatedCertClient();
-  final coreWalletDatabaseService = locator<CoreWalletDatabaseService>();
+  final client = CustomHttpUtils.createLetsEncryptUpdatedCertClient();
+  final coreWalletDatabaseService = localLocator<CoreWalletDatabaseService>();
 
   final RxValue<int> _pageNumber = RxValue<int>(1);
   int get pageNumber => _pageNumber.value;
@@ -44,11 +41,34 @@ class PayCoolService with ReactiveServiceMixin {
         'hasUpdatedPageNumberFunc : _hasUpdatedPageNumber ${_hasUpdatedPageNumber.value}');
   }
 
+  Future<Map<String, dynamic>> sendPayCoolRawTransaction(
+      String rawKanbanTransaction) async {
+    var url = baseBlockchainGateV2Url + kanbanApiRoute + sendRawTxApiRoute;
+    log.i('URL sendPayCoolRawTransaction $url');
+    var data = {'signedTransactionData': rawKanbanTransaction};
+
+    try {
+      var response = await client.post(url, body: data);
+      log.w('response from sendPayCoolRawTransaction=');
+      log.w(response.body.toString());
+      if (response.body
+          .contains('TS crosschain withdraw verification failed')) {
+        return {'success': false, 'data': response.body};
+      }
+      Map<String, dynamic> res = jsonDecode(response.body);
+      return res;
+    } catch (e) {
+      log.e('Catch sendPayCoolRawTransaction $e');
+      //return e;
+      return {'success': false, 'data': 'error $e'};
+    }
+  }
+
   Future<String> createTemplateById(String id) async {
     String orderIdResult = '';
     String url = baseBlockchainGateV2Url +
-        ordersTextApiRoute +
-        paycoolTextApiRoute +
+        PaycoolApiRoutes.ordersTextApiRoute +
+        PaycoolApiRoutes.paycoolTextApiRoute +
         '/createFromTemplate';
     var body = {"id": id};
     log.i('createTemplateById url $url -- body ${jsonEncode(body)}');
@@ -78,7 +98,7 @@ class PayCoolService with ReactiveServiceMixin {
   Future<String> createStoreMerchantOrder(Map<String, dynamic> body) async {
     String url = baseBlockchainGateV2Url +
         ordersTextApiRoute +
-        paycoolTextApiRoute +
+        PaycoolApiRoutes.paycoolTextApiRoute +
         '/' +
         'create';
 
@@ -145,7 +165,7 @@ class PayCoolService with ReactiveServiceMixin {
         ordersTextApiRoute +
         id +
         '/' +
-        paycoolTextApiRoute;
+        PaycoolApiRoutes.paycoolTextApiRoute;
     var body = {"address": fabAddress};
     log.i('scanToPayV2Info url $url -- body ${jsonEncode(body)}');
     ScanToPayModelV2 scanToPayModelV2;
@@ -179,7 +199,7 @@ class PayCoolService with ReactiveServiceMixin {
   }
 
   Future<StoreInfoModel> getStoreInfo(String smartContractAddress) async {
-    String url = storeInfoPayCoolUrl + smartContractAddress;
+    String url = PaycoolApiRoutes.storeInfoPayCoolUrl + smartContractAddress;
     StoreInfoModel payCoolStoreModel = StoreInfoModel();
     log.i('getStoreInfo url $url');
     try {
@@ -200,7 +220,8 @@ class PayCoolService with ReactiveServiceMixin {
   }
 
   Future<List<String>> getRegionalAgent(String smartContractAddress) async {
-    String url = regionalAgentStarPayUrl + smartContractAddress;
+    String url =
+        PaycoolApiRoutes.regionalAgentStarPayUrl + smartContractAddress;
     log.i('getRegionalAgent url $url');
     try {
       var response = await client.get(url);
@@ -231,7 +252,7 @@ class PayCoolService with ReactiveServiceMixin {
 ----------------------------------------------------------------------*/
 
   Future<List<String>> getParentAddress(String address) async {
-    String url = paycoolParentAddressUrl + address;
+    String url = PaycoolApiRoutes.paycoolParentAddressUrl + address;
     log.i('getParentAddress url $url');
     try {
       var response = await client.get(url);
@@ -259,7 +280,7 @@ class PayCoolService with ReactiveServiceMixin {
 
   Future<List<PayCoolTransactionHistoryModel>> getPayTransactionDetails(
       String address) async {
-    String url = payCoolTransactionHistoryUrl + address;
+    String url = PaycoolApiRoutes.payCoolTransactionHistoryUrl + address;
     log.i('getPayTransactionDetails url $url');
     try {
       var response = await client.get(url);
@@ -298,7 +319,7 @@ class PayCoolService with ReactiveServiceMixin {
       List<String> agentAddresses,
       List<String> parentAddresses,
       String rewardInfo) async {
-    String url = payCoolEncodeAbiUrl;
+    String url = PaycoolApiRoutes.payCoolEncodeAbiUrl;
     var body = {
       "types": [
         "bytes32",
@@ -344,7 +365,7 @@ class PayCoolService with ReactiveServiceMixin {
 ----------------------------------------------------------------------*/
 
   Future<List<String>> decodeScannedAbiHex(String abiHex) async {
-    String url = payCoolDecodeAbiUrl;
+    String url = PaycoolApiRoutes.payCoolDecodeAbiUrl;
     var body = {
       "types": [
         "bytes32",
@@ -389,7 +410,7 @@ class PayCoolService with ReactiveServiceMixin {
                             Get Rewards
 ----------------------------------------------------------------------*/
   Future<int> getRewardListCount(String fabAddress) async {
-    String url = payCoolRewardUrl + fabAddress + '/count';
+    String url = PaycoolApiRoutes.payCoolRewardUrl + fabAddress + '/count';
     int referralCount = 0;
     log.i('getRewardListCount url $url');
     try {
@@ -417,7 +438,7 @@ class PayCoolService with ReactiveServiceMixin {
 
   Future<List<PayCoolRewardsModel>> getPayCoolRewards(String address,
       {int pageSize = 10, int pageNumber = 0}) async {
-    String url = payCoolRewardUrl + address;
+    String url = PaycoolApiRoutes.payCoolRewardUrl + address;
     // page number - 1 because page number start from 0 in the api but in front end its from 1
     if (pageNumber != 0) {
       pageNumber = pageNumber - 1;
@@ -455,7 +476,7 @@ class PayCoolService with ReactiveServiceMixin {
 
   Future<dynamic> createStarPayReferral(
       String signature, String referralAddress) async {
-    String url = payCoolCreateReferralUrl;
+    String url = PaycoolApiRoutes.payCoolCreateReferralUrl;
     var body = {'parentId': referralAddress, 'sig': '0x' + signature};
     log.w('createStarPayReferral url $url --  body $body');
     try {

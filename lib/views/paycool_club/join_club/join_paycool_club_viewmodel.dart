@@ -1,55 +1,38 @@
+import 'package:exchangily_core/exchangily_core.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_i18n/flutter_i18n.dart';
-
-import 'package:paycool/constants/route_names.dart';
-import 'package:paycool/environments/environment.dart';
-import 'package:paycool/logger.dart';
-import 'package:paycool/models/wallet/wallet_balance.dart';
+import 'package:paycool/constants/paycool_constants.dart';
 import 'package:paycool/service_locator.dart';
-import 'package:paycool/services/api_service.dart';
-import 'package:paycool/services/db/core_wallet_database_service.dart';
 import 'package:paycool/services/local_storage_service.dart';
-import 'package:paycool/services/navigation_service.dart';
-import 'package:paycool/services/shared_service.dart';
-import 'package:paycool/services/wallet_service.dart';
-import 'package:paycool/utils/abi_util.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:paycool/utils/barcode_util.dart';
-import 'package:paycool/utils/kanban.util.dart';
-import 'package:paycool/utils/number_util.dart';
-import 'package:paycool/utils/wallet/wallet_util.dart';
 import 'package:paycool/views/paycool_club/paycool_club_service.dart';
 import 'package:paycool/views/paycool/paycool_model.dart';
-import 'package:stacked/stacked.dart';
-import 'package:paycool/services/local_dialog_service.dart';
+
+import '../../../utils/paycool_util.dart';
 
 class JoinPayCoolClubViewModel extends BaseViewModel {
   final log = getLogger('JoinPayCoolClubViewModel');
-  final apiService = locator<ApiService>();
-  SharedService sharedService = locator<SharedService>();
-  final walletService = locator<WalletService>();
-  final dialogService = locator<LocalDialogService>();
-  final payCoolClubService = locator<PayCoolClubService>();
-  final coreWalletDatabaseService = locator<CoreWalletDatabaseService>();
-  final navigationService = locator<NavigationService>();
-  final storageService = locator<LocalStorageService>();
+  final apiService = localLocator<ApiService>();
+  SharedService sharedService = localLocator<SharedService>();
+  final walletService = localLocator<WalletService>();
+  final payCoolClubService = localLocator<PayCoolClubService>();
+  final coreWalletDatabaseService = localLocator<CoreWalletDatabaseService>();
+  final navigationService = localLocator<NavigationService>();
+  final storageService = localLocator<LocalStorageService>();
+  final environmentService = locator<EnvironmentService>();
+  final dialogService = locator<DialogService>();
 
   BuildContext context;
   bool isDUSD = false;
-  int gasPrice = environment["chains"]["FAB"]["gasPrice"];
-  int gasLimit = environment["chains"]["FAB"]["gasLimit"];
-  int satoshisPerBytes = environment["chains"]["FAB"]["satoshisPerBytes"];
-  double gasAmount = 0.0;
+  Decimal gasAmount = Constants.decimalZero;
 
   String exgWalletAddress = '';
-  var paycoolSmartContractAddress =
-      environment['addresses']['smartContract']['PaycoolSmartContractAddress'];
 
   String dusdWalletAddress = '';
-  double dusdExchangeBalance = 0.0;
+  Decimal dusdExchangeBalance = Constants.decimalZero;
   String usdtWalletAddress = '';
-  double usdtExchangeBalance = 0.0;
+  Decimal usdtExchangeBalance = Constants.decimalZero;
 
   String txHash = '';
   String errorMessage = '';
@@ -57,7 +40,7 @@ class JoinPayCoolClubViewModel extends BaseViewModel {
 
   final referralCode = TextEditingController();
   bool isEnoughDusdWalletBalance = true;
-  double fixedAmountToPay = 2000.0;
+  Decimal fixedAmountToPay = Decimal.parse("10000.0");
   ScanToPayModel scanToPayModel = ScanToPayModel();
   bool isValidReferralAddress = false;
   String _groupValue;
@@ -78,8 +61,8 @@ class JoinPayCoolClubViewModel extends BaseViewModel {
     if (scanToPayModel != null && scanToPayModel.datAbiHex != null) {
       log.i('in scan to pay if ${scanToPayModel.toJson()}');
       var extractedReferralAddress =
-          extractReferralAddressFromPayCoolClubScannedAbiHex(
-              scanToPayModel.datAbiHex);
+          PaycoolUtil.extractReferralAddressFromAbiHex(scanToPayModel.datAbiHex,
+              EnvConfig(isProd: environmentService.kReleaseMode));
       setBusy(true);
       referralCode.text = extractedReferralAddress['referralAddress'];
       setBusy(false);
@@ -107,23 +90,6 @@ class JoinPayCoolClubViewModel extends BaseViewModel {
     //     isValidReferralAddress = value;
     //   }
     // });
-  }
-/*--------------------------------------------------------
-                    Extract data from abihex
---------------------------------------------------------*/
-
-  extractDataFromAbiHex() {
-    String abiHex = scanToPayModel.datAbiHex;
-    String abi = abiHex.substring(0, 10);
-    debugPrint(abi.toString());
-    // String orderIdHex = abiHex.substring(10, 74);
-    // debugPrint('orderIdHex $orderIdHex');
-    String coinTypeHex = abiHex.substring(74, 138);
-    int coinType = NumberUtil.hexToInt(coinTypeHex);
-    debugPrint('coin type $coinType');
-    var amountHex = abiHex.substring(138, abiHex.length);
-    fixedAmountToPay = NumberUtil.hexToDouble(amountHex);
-    // StringUtils.hexToAscii(orderIdHex);
   }
 
 /*--------------------------------------------------------
@@ -209,8 +175,7 @@ class JoinPayCoolClubViewModel extends BaseViewModel {
     var walletUtil = WalletUtil();
     for (var i = 0; i < paymentCoins.length; i++) {
       await walletUtil
-          .getWalletInfoObjFromWalletBalance(
-              WalletBalance(coin: paymentCoins[i]))
+          .assignWalletAddress(AppWallet(tickerName: paymentCoins[i]))
           .then((wallet) {
         if (paymentCoins[i] == 'DUSD') {
           dusdWalletAddress = wallet.address;
@@ -225,11 +190,14 @@ class JoinPayCoolClubViewModel extends BaseViewModel {
     // Get single wallet balance
     for (var i = 0; i < paymentCoins.length; i++) {
       await apiService
-          .getSingleWalletBalance(fabAddress, paymentCoins[i],
+          .getSingleWalletBalanceV2(
+              environmentService.kanbanBaseUrl(),
+              fabAddress,
+              paymentCoins[i],
               paymentCoins[i] == 'USDT' ? usdtWalletAddress : dusdWalletAddress)
           .then((walletBalance) async {
         if (walletBalance != null &&
-            !walletBalance[0].unlockedExchangeBalance.isNegative) {
+            !walletBalance[0].unlockedExchangeBalance.toDouble().isNegative) {
           log.w(walletBalance[0].unlockedExchangeBalance);
           paymentCoins[i] == 'USDT'
               ? usdtExchangeBalance = walletBalance[0].unlockedExchangeBalance
@@ -260,7 +228,9 @@ class JoinPayCoolClubViewModel extends BaseViewModel {
 
   getGas() async {
     String address = await sharedService.getExgAddressFromCoreWalletDatabase();
-    await walletService.gasBalance(address).then((data) {
+    await walletService
+        .gasBalance(environmentService.kanbanBaseUrl(), address)
+        .then((data) {
       gasAmount = data;
     }).catchError((onError) => log.e(onError));
     log.w('gas amount $gasAmount');
@@ -282,32 +252,12 @@ class JoinPayCoolClubViewModel extends BaseViewModel {
         sharedService.alertDialog(
             FlutterI18n.translate(context, "orderCreatedSuccessfully"),
             FlutterI18n.translate(context, "goToDashboard"),
-            path: PayCoolClubDashboardViewRoute);
-        // PaycoolCreateOrderModel paycoolCreateOrder =
-        //     new PaycoolCreateOrderModel(
-        //         walletAddress: fabAddress,
-        //         referralAddress: referralCode.text,
-        //         currency: 'DUSD',
-        //         campaignId: 2,
-        //         amount: fixedAmountToPay,
-        //         transactionId: txHash);
-        // await payCoolClubService
-        //     .createOrder(paycoolCreateOrder)
-        //     .then((res) {
-        //   // if (res != null) {
-        //   log.w('create order res $res');
-        //   // }
-        //   // else {
-        //   //   setBusy(false);
-        //   //   navigationService.navigateUsingPushReplacementNamed(
-        //   //       PayCoolClubDashboardViewRoute);
-        //   // }
-        // });
-
+            path: PaycoolConstants.payCoolClubDashboardViewRoute);
       } else {
         sharedService.alertDialog(
-            FlutterI18n.translate(context, "transanctionFailed"),
-            FlutterI18n.translate(context, "pleaseTryAgainLater"));
+          FlutterI18n.translate(context, "transanctionFailed"),
+          FlutterI18n.translate(context, "pleaseTryAgainLater"),
+        );
       }
       setBusy(false);
     }).timeout(const Duration(seconds: 25), onTimeout: () {
@@ -329,8 +279,30 @@ class JoinPayCoolClubViewModel extends BaseViewModel {
 
 // generate raw tx and send
   generateRawTxAndSend(seed, abiHex, toAddress) async {
-    var rawTxHex = await walletService.generateRawTx(seed, abiHex, toAddress);
-    var resKanban = await sendKanbanRawTransaction(rawTxHex);
+    var kanbanEnvConfig = environmentService.chainEnvConfig('Kanban');
+
+    var fabEnvConfig = environmentService.chainEnvConfig('FAB');
+
+    var transactionData =
+        await walletService.assignTransactionData(seed, fabEnvConfig);
+
+    var appData =
+        await sharedService.sharedAppData(Constants.exchangilyAppName);
+    var txModel = TransactionModel(
+        seed: seed,
+        abiHex: abiHex,
+        nonce: transactionData.nonce,
+        appData: appData,
+        privateKey: transactionData.privateKey,
+        toAddress: transactionData.toAddress,
+        kanbanAddress: transactionData.kanbanAddress);
+
+    var rawTxHex =
+        await walletService.txHexforSendCoin(txModel, kanbanEnvConfig);
+
+    var resKanban = await KanbanUtils.sendRawKanbanTransaction(
+        kanbanEnvConfig.kanbanBaseUrl, rawTxHex, txModel.appData);
+
     var res;
     if (resKanban != null && resKanban["transactionHash"] != null) {
       res = resKanban["transactionHash"];
@@ -368,7 +340,7 @@ class JoinPayCoolClubViewModel extends BaseViewModel {
     }
 
     await getGas();
-    if (gasAmount == 0.0) {
+    if (gasAmount == Constants.decimalZero) {
       sharedService.sharedSimpleNotification(
           FlutterI18n.translate(context, "notice"),
           subtitle: FlutterI18n.translate(context, "insufficientGasAmount"));
@@ -411,7 +383,7 @@ class JoinPayCoolClubViewModel extends BaseViewModel {
     if (dialogResponse.confirmed) {
       errorMessage = '';
       String mnemonic = dialogResponse.returnedText;
-      var seed = walletService.generateSeed(mnemonic);
+      var seed = MnemonicUtils.generateSeed(mnemonic);
       int dusdCoinType = 131074;
       int usdtCoinType = 196609;
       if (scanToPayModel != null) {
@@ -426,32 +398,35 @@ class JoinPayCoolClubViewModel extends BaseViewModel {
             seed, scanToPayModel.datAbiHex, scanToPayModel.toAddress);
         if (txId != null) {
           debugPrint('final if res txid $txId');
-          String walletAddress =
-              extractWalletAddressFromPayCoolClubScannedAbiHex(
-                  scanToPayModel.datAbiHex);
+          String walletAddress = PaycoolUtil.extractWalletAddressFromAbiHex(
+              scanToPayModel.datAbiHex,
+              EnvConfig(isProd: environmentService.kReleaseMode));
           await payCoolClubService.saveOrder(walletAddress, txId).then((res) {
             sharedService.alertDialog(
                 FlutterI18n.translate(context, "orderCreatedSuccessfully"),
                 FlutterI18n.translate(context, "paymentProcess"),
-                path: DashboardViewRoute);
+                path: dashboardViewRoute);
           });
           setBusy(false);
         }
         // }
       } else {
-        var abiHex = getPayCoolClubFuncABI(
+        var abiHex = PaycoolUtil.getPayCoolClubFuncABI(
             groupValue == "DUSD" ? dusdCoinType : usdtCoinType,
             fabAddress,
             referralCode.text);
         var txId = await generateRawTxAndSend(
-            seed, abiHex, paycoolSmartContractAddress);
+            seed,
+            abiHex,
+            environmentService
+                .smartContractAddress('PaycoolSmartContractAddress'));
         if (txId != null) {
           debugPrint('final else res txid $txId');
           await payCoolClubService.saveOrder(fabAddress, txId).then((res) {
             sharedService.alertDialog(
                 FlutterI18n.translate(context, "orderCreatedSuccessfully"),
                 FlutterI18n.translate(context, "paymentProcess"),
-                path: PayCoolClubDashboardViewRoute);
+                path: PaycoolConstants.payCoolClubDashboardViewRoute);
           });
           storageService.payCoolClubPaymentReceipt = txId;
           setBusy(false);

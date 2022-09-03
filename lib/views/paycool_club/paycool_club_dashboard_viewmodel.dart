@@ -1,64 +1,49 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:exchangily_core/exchangily_core.dart';
+import 'package:exchangily_ui/exchangily_ui.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_i18n/flutter_i18n.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:qr_flutter/qr_flutter.dart';
-import 'package:paycool/constants/colors.dart';
-import 'package:paycool/constants/custom_styles.dart';
-import 'package:paycool/constants/route_names.dart';
-import 'package:paycool/environments/environment.dart';
-import 'package:paycool/logger.dart';
+import 'package:paycool/constants/paycool_constants.dart';
 import 'package:paycool/service_locator.dart';
-import 'package:paycool/services/api_service.dart';
 import 'package:paycool/services/local_storage_service.dart';
-import 'package:paycool/services/navigation_service.dart';
-import 'package:paycool/services/shared_service.dart';
-import 'package:paycool/shared/ui_helpers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:paycool/utils/barcode_util.dart';
-import 'package:paycool/views/paycool_club/referral/paycool_referral_model.dart';
 import 'package:paycool/views/paycool_club/paycool_club_service.dart';
 import 'package:paycool/views/paycool/paycool_model.dart';
-import 'package:share/share.dart';
-import 'package:stacked/stacked.dart';
-import 'package:paycool/services/db/wallet_database_service.dart';
-import 'package:paycool/services/local_dialog_service.dart';
 import 'package:paycool/views/paycool_club/paycool_club_model/paycool_club_model.dart';
 import 'package:paycool/views/paycool_club/paycool_dashboard_model.dart';
-import '../../models/wallet/wallet.dart';
-import '../../services/wallet_service.dart';
+import 'package:referral/referral.dart';
 
 class PayCoolClubDashboardViewModel extends BaseViewModel {
   final log = getLogger('PayCoolClubDashboardViewModel');
-  final apiService = locator<ApiService>();
+  final apiService = localLocator<ApiService>();
   final sharedService = locator<SharedService>();
-  final walletService = locator<WalletService>();
-  final dialogService = locator<LocalDialogService>();
-  final payCoolClubService = locator<PayCoolClubService>();
-  final walletDatabaseService = locator<WalletDatabaseService>();
-  final navigationService = locator<NavigationService>();
-  final storageService = locator<LocalStorageService>();
+  final walletService = localLocator<WalletService>();
+  final dialogService = localLocator<DialogService>();
+  final payCoolClubService = localLocator<PayCoolClubService>();
+  final walletDatabaseService = localLocator<WalletDatabaseService>();
+  final navigationService = localLocator<NavigationService>();
+  final storageService = localLocator<LocalStorageService>();
+  final environmentService = locator<EnvironmentService>();
   List<PayCoolClubModel> payCoolClubDetails = [];
   bool isDialogUp = false;
   BuildContext context;
   bool isDUSD = false;
-  int gasPrice = environment["chains"]["FAB"]["gasPrice"];
-  int gasLimit = environment["chains"]["FAB"]["gasLimitToken"];
-  double fee = 0.0;
+  int gasPrice;
+  int gasLimit;
+  Decimal fee = Constants.decimalZero;
 
   String usdtOfficialAddress = '';
 
   String usdtWalletAddress = '';
-  double usdtWalletBalance = 0.0;
+  Decimal usdtWalletBalance = Constants.decimalZero;
 
   String dusdWalletAddress = '';
   double dusdWalletBalance = 0.0;
 
-  WalletInfo walletInfo;
+  AppWallet appWallet;
   String txHash = '';
   String errorMessage = '';
   String fabAddress = '';
@@ -75,7 +60,7 @@ class PayCoolClubDashboardViewModel extends BaseViewModel {
   bool isFreeFabAvailable = false;
   final freeFabAnswerTextController = TextEditingController();
   String postFreeFabResult = '';
-  double gasAmount = 0.0;
+  Decimal gasAmount = Constants.decimalZero;
 
   int memberTypeCode = 0;
 
@@ -86,6 +71,9 @@ class PayCoolClubDashboardViewModel extends BaseViewModel {
   void init() async {
     setBusy(true);
     sharedService.context = context;
+    var fabConfig = environmentService.chainEnvConfig('FAB');
+    gasLimit = fabConfig.gasLimit;
+    gasLimit = fabConfig.gasLimitToken;
     fabAddress = await sharedService.getFabAddressFromCoreWalletDatabase();
 
     await getPayCoolClubDetails();
@@ -101,20 +89,22 @@ class PayCoolClubDashboardViewModel extends BaseViewModel {
       }
     }
     await checkGas();
-    if (gasAmount == 0.0) await checkFreeFabForNewWallet();
+    if (gasAmount == Constants.decimalZero) await checkFreeFabForNewWallet();
     setBusy(false);
   }
 
   checkGas() async {
     String address = await sharedService.getExgAddressFromCoreWalletDatabase();
-    await walletService.gasBalance(address).then((data) {
+    await walletService
+        .gasBalance(environmentService.kanbanBaseUrl(), address)
+        .then((data) {
       gasAmount = data;
     }).catchError((onError) => log.e(onError));
     log.w('gas amount $gasAmount');
   }
 
   checkFreeFabForNewWallet() async {
-    var res = await apiService.getFreeFab(fabAddress);
+    var res = await apiService.getFreeFab(getFreeFabUrl, fabAddress);
     if (res != null) {
       setBusy(true);
       isFreeFabAvailable = res['ok'];
@@ -128,7 +118,7 @@ class PayCoolClubDashboardViewModel extends BaseViewModel {
 
   getFreeFab() async {
     String address = await sharedService.getExgAddressFromCoreWalletDatabase();
-    await apiService.getFreeFab(address).then((res) {
+    await apiService.getFreeFab(getFreeFabUrl, address).then((res) {
       if (res != null) {
         if (res['ok']) {
           isFreeFabAvailable = res['ok'];
@@ -267,8 +257,8 @@ class PayCoolClubDashboardViewModel extends BaseViewModel {
                                                       .text
                                             };
                                             log.e('free fab post data $data');
-                                            await apiService
-                                                .postFreeFab(data)
+                                            await FabUtils.postFreeFab(
+                                                    postFreeGasUrl, data)
                                                 .then(
                                               (res) {
                                                 if (res != null) {
@@ -280,43 +270,41 @@ class PayCoolClubDashboardViewModel extends BaseViewModel {
                                                     setState(() =>
                                                         isFreeFabAvailable =
                                                             false);
-                                                    walletService.showInfoFlushbar(
-                                                        FlutterI18n.translate(
-                                                            context,
-                                                            "freeFabUpdate"),
-                                                        FlutterI18n.translate(
-                                                            context,
-                                                            "freeFabSuccess"),
-                                                        Icons.account_balance,
-                                                        green,
-                                                        context);
+                                                    sharedService
+                                                        .sharedSimpleNotification(
+                                                            FlutterI18n.translate(
+                                                                context,
+                                                                "freeFabUpdate"),
+                                                            subtitle: FlutterI18n
+                                                                .translate(
+                                                                    context,
+                                                                    "freeFabSuccess"),
+                                                            isError: false);
                                                   } else {
-                                                    walletService.showInfoFlushbar(
-                                                        FlutterI18n.translate(
-                                                            context,
-                                                            "freeFabUpdate"),
-                                                        FlutterI18n.translate(
-                                                            context,
-                                                            "incorrectAnswer"),
-                                                        Icons.cancel,
-                                                        red,
-                                                        context);
+                                                    sharedService
+                                                        .sharedSimpleNotification(
+                                                            FlutterI18n.translate(
+                                                                context,
+                                                                "freeFabUpdate"),
+                                                            subtitle: FlutterI18n
+                                                                .translate(
+                                                                    context,
+                                                                    "incorrectAnswer"));
                                                   }
                                                 } else {
-                                                  walletService
-                                                      .showInfoFlushbar(
-                                                          FlutterI18n.translate(
-                                                              context, "ice"),
+                                                  sharedService
+                                                      .sharedSimpleNotification(
                                                           FlutterI18n.translate(
                                                               context,
-                                                              "genericError"),
-                                                          Icons.cancel,
-                                                          red,
-                                                          context);
+                                                              "notice"),
+                                                          subtitle: FlutterI18n
+                                                              .translate(
+                                                                  context,
+                                                                  "genericError"));
                                                 }
                                               },
                                             );
-                                            //  navigationService.goBack();
+
                                             freeFabAnswerTextController.text =
                                                 '';
                                             postFreeFabResult = '';
@@ -338,12 +326,9 @@ class PayCoolClubDashboardViewModel extends BaseViewModel {
           isFreeFabAvailable = res['ok'];
           debugPrint(isFreeFabAvailable.toString());
 
-          walletService.showInfoFlushbar(
+          sharedService.sharedSimpleNotification(
               FlutterI18n.translate(context, "notice"),
-              FlutterI18n.translate(context, "freeFabUsedAlready"),
-              Icons.notification_important,
-              yellow,
-              context);
+              subtitle: FlutterI18n.translate(context, "freeFabUsedAlready)"));
         }
       }
     });
@@ -625,7 +610,7 @@ class PayCoolClubDashboardViewModel extends BaseViewModel {
       if (barcode != "" || barcode != null) {
         scanToPayModel = ScanToPayModel.fromJson(jsonDecode(barcode));
         debugPrint('payCoolModel ${scanToPayModel.toJson()}');
-        navigationService.navigateTo(JoinPayCoolClubViewRoute,
+        navigationService.navigateTo(PaycoolConstants.joinPayCoolClubViewRoute,
             arguments: scanToPayModel);
       }
 
@@ -657,7 +642,7 @@ class PayCoolClubDashboardViewModel extends BaseViewModel {
   }
 
   onBackButtonPressed() async {
-    await sharedService.onBackButtonPressed(DashboardViewRoute);
+    await sharedService.onBackButtonPressed(dashboardViewRoute);
   }
 
   hasJoinedClub() async {
@@ -928,7 +913,7 @@ class PayCoolClubDashboardViewModel extends BaseViewModel {
 
       log.i("Barcode Res: $result ");
       scanToPayModel = ScanToPayModel.fromJson(jsonDecode(result));
-      navigationService.navigateTo(JoinPayCoolClubViewRoute,
+      navigationService.navigateTo(PaycoolConstants.joinPayCoolClubViewRoute,
           arguments: scanToPayModel);
       setBusy(false);
     } on PlatformException catch (e) {

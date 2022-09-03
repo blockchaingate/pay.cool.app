@@ -1,20 +1,20 @@
 import 'dart:io';
+import 'package:exchangily_core/exchangily_core.dart';
+import 'package:exchangily_ui/exchangily_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:paycool/constants/colors.dart';
-import 'package:paycool/constants/constants.dart';
-import 'package:paycool/constants/custom_styles.dart';
-import 'package:paycool/constants/route_names.dart';
-import 'package:paycool/constants/ui_var.dart';
-import 'package:paycool/shared/ui_helpers.dart';
-import 'package:paycool/utils/number_util.dart';
 import 'package:paycool/views/paycool/paycool_viewmodel.dart';
 import 'package:paycool/widgets/bottom_nav.dart';
 import 'package:paycool/widgets/server_error_widget.dart';
 import 'package:stacked/stacked.dart';
 
+import '../../constants/paycool_api_routes.dart';
+import '../../constants/paycool_constants.dart';
+
 class PayCoolView extends StatelessWidget {
+  const PayCoolView({Key key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<PayCoolViewmodel>.reactive(
@@ -54,7 +54,7 @@ class PayCoolView extends StatelessWidget {
                     child: Container(
                         // padding: EdgeInsets.symmetric(vertical: 60),
                         // height: 120,
-                        height: isPhone() ? 280 : 350,
+                        height: UIHelper.isPhone() ? 280 : 350,
                         width: MediaQuery.of(context).size.width,
                         decoration: const BoxDecoration(
                             image: DecorationImage(
@@ -88,7 +88,7 @@ class PayCoolView extends StatelessWidget {
                         )),
                   ),
                   SizedBox(
-                    height: isPhone() ? 10 : 30,
+                    height: UIHelper.isPhone() ? 10 : 30,
                   ),
                   model.isServerDown
                       ? const ServerErrorWidget()
@@ -116,9 +116,8 @@ class PayCoolView extends StatelessWidget {
                                             keyboardType: TextInputType.text,
                                             decoration: InputDecoration(
                                                 prefixIcon: IconButton(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            left: 10),
+                                                    padding: const EdgeInsets.only(
+                                                        left: 10),
                                                     alignment:
                                                         Alignment.centerLeft,
                                                     tooltip: FlutterI18n.translate(
@@ -130,8 +129,9 @@ class PayCoolView extends StatelessWidget {
                                                     ),
                                                     onPressed: () {
                                                       model.scanBarcodeV2(
-                                                          addressType: Constants
-                                                              .ReferralAddressText);
+                                                          addressType:
+                                                              PaycoolConstants
+                                                                  .referralAddressText);
                                                       FocusScope.of(context)
                                                           .requestFocus(
                                                               FocusNode());
@@ -143,10 +143,10 @@ class PayCoolView extends StatelessWidget {
                                                       color: green,
                                                       size: 18,
                                                     ),
-                                                    onPressed: () =>
-                                                        model.contentPaste(
-                                                            addressType: Constants
-                                                                .ReferralAddressText)),
+                                                    onPressed: () => model.contentPaste(
+                                                        addressType:
+                                                            PaycoolConstants
+                                                                .referralAddressText)),
                                                 enabledBorder:
                                                     const OutlineInputBorder(
                                                         borderSide: BorderSide(
@@ -387,10 +387,9 @@ class PayCoolView extends StatelessWidget {
                                                                 const TextStyle(
                                                       color: Colors.white,
                                                     ))),
-                                                onPressed: () =>
-                                                    model.scanBarcodeV2(
-                                                        addressType: Constants
-                                                            .MerchantAddressText),
+                                                onPressed: () => model.scanBarcodeV2(
+                                                    addressType: PaycoolConstants
+                                                        .merchantAddressText),
                                                 child: Row(
                                                   mainAxisAlignment:
                                                       MainAxisAlignment.center,
@@ -419,8 +418,9 @@ class PayCoolView extends StatelessWidget {
                                                         ),
                                                         onPressed: () {
                                                           model.scanBarcodeV2(
-                                                              addressType: Constants
-                                                                  .MerchantAddressText);
+                                                              addressType:
+                                                                  PaycoolConstants
+                                                                      .merchantAddressText);
                                                           FocusScope.of(context)
                                                               .requestFocus(
                                                                   FocusNode());
@@ -802,7 +802,7 @@ class PayCoolView extends StatelessWidget {
                                       ),
                                       //  UIHelper.horizontalSpaceSmall,
                                       SizedBox(
-                                        height: isPhone() ? 50 : 80,
+                                        height: UIHelper.isPhone() ? 50 : 80,
                                       ),
 
                                       //transaction History
@@ -877,12 +877,13 @@ class PayCoolView extends StatelessWidget {
                                           ),
                                           onPressed: () {
                                             model.navigationService.navigateTo(
-                                                PayCoolTransactionHistoryViewRoute);
+                                                PaycoolConstants
+                                                    .payCoolTransactionHistoryViewRoute);
                                           },
                                         ),
                                       ),
                                       SizedBox(
-                                        height: isPhone() ? 7 : 12,
+                                        height: UIHelper.isPhone() ? 7 : 12,
                                       ),
                                       SizedBox(
                                         width: 400,
@@ -955,7 +956,8 @@ class PayCoolView extends StatelessWidget {
                                           ),
                                           onPressed: () {
                                             model.navigationService.navigateTo(
-                                                PayCoolRewardsViewRoute);
+                                                PaycoolConstants
+                                                    .payCoolRewardsViewRoute);
                                           },
                                         ),
                                       ),

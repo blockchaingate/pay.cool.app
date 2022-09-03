@@ -1,16 +1,13 @@
-import 'package:flutter_i18n/flutter_i18n.dart';
-import 'package:paycool/constants/colors.dart';
-import 'package:paycool/constants/custom_styles.dart';
-import 'package:paycool/constants/route_names.dart';
-import 'package:paycool/constants/ui_var.dart';
+import 'package:exchangily_core/exchangily_core.dart';
+import 'package:exchangily_ui/exchangily_ui.dart';
 import 'package:paycool/views/paycool_club/paycool_club_dashboard_viewmodel.dart';
-import 'package:paycool/shared/ui_helpers.dart';
+
 import 'package:paycool/widgets/bottom_nav.dart';
 import 'package:flutter/material.dart';
 import 'package:paycool/widgets/server_error_widget.dart';
-import 'package:stacked/stacked.dart';
 
-import '../../constants/colors.dart';
+import '../../constants/paycool_api_routes.dart';
+import '../../constants/paycool_constants.dart';
 
 class PayCoolClubDashboardView extends StatelessWidget {
   const PayCoolClubDashboardView({Key key}) : super(key: key);
@@ -22,9 +19,9 @@ class PayCoolClubDashboardView extends StatelessWidget {
         //join button conatiner
         Container(
           width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.width < largeSize
+          height: MediaQuery.of(context).size.width < UIHelper.largeSize
               ? MediaQuery.of(context).size.width
-              : largeSize * 0.8,
+              : UIHelper.largeSize * 0.8,
           decoration: const BoxDecoration(
               image: DecorationImage(
                   image: AssetImage(
@@ -39,9 +36,10 @@ class PayCoolClubDashboardView extends StatelessWidget {
                   child: Center(
                     child: Container(
                       width: MediaQuery.of(context).size.width * 0.65,
-                      height: MediaQuery.of(context).size.width < largeSize
-                          ? MediaQuery.of(context).size.width * 0.45
-                          : MediaQuery.of(context).size.width * 0.3,
+                      height:
+                          MediaQuery.of(context).size.width < UIHelper.largeSize
+                              ? MediaQuery.of(context).size.width * 0.45
+                              : MediaQuery.of(context).size.width * 0.3,
                       decoration: BoxDecoration(
                         color: const Color(0xfff5f5f5),
                         borderRadius: BorderRadius.circular(15),
@@ -203,7 +201,8 @@ class PayCoolClubDashboardView extends StatelessWidget {
                   color: secondaryColor, fontWeight: FontWeight.w500),
             ),
             onPressed: () {
-              model.navigationService.navigateTo(GenerateCustomQrViewRoute);
+              model.navigationService
+                  .navigateTo(PaycoolConstants.generateCustomQrViewRoute);
               //  model.joinClub();
             },
           ),
@@ -396,8 +395,8 @@ class PayCoolClubDashboardView extends StatelessWidget {
                                             ),
                                             onPressed: () {
                                               model.navigationService
-                                                  .navigateTo(
-                                                      JoinPayCoolClubViewRoute);
+                                                  .navigateTo(PaycoolConstants
+                                                      .joinPayCoolClubViewRoute);
                                               //  model.joinClub();
                                             },
                                           ),
@@ -439,7 +438,8 @@ class PayCoolClubDashboardView extends StatelessWidget {
                                           ElevatedButton(
                                             onPressed: () => model
                                                 .navigationService
-                                                .navigateTo(PayCoolViewRoute),
+                                                .navigateTo(PaycoolConstants
+                                                    .payCoolViewRoute),
                                             child: Text(
                                               FlutterI18n.translate(
                                                   context, "joinPayCoolButton"),
@@ -657,8 +657,8 @@ class PayCoolClubDashboardView extends StatelessWidget {
                                               InkWell(
                                                 onTap: () => model
                                                     .navigationService
-                                                    .navigateTo(
-                                                        PayCoolClubReferralViewRoute),
+                                                    .navigateTo(PaycoolConstants
+                                                        .payCoolClubReferralViewRoute),
                                                 child: ListTile(
                                                     horizontalTitleGap: 0,
                                                     leading: const Icon(

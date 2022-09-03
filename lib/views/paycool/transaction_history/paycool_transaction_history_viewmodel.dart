@@ -1,26 +1,20 @@
+import 'package:exchangily_core/exchangily_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_i18n/flutter_i18n.dart';
-import 'package:paycool/environments/environment.dart';
-import 'package:paycool/logger.dart';
 import 'package:paycool/service_locator.dart';
-import 'package:paycool/services/local_dialog_service.dart';
-import 'package:paycool/services/shared_service.dart';
-import 'package:paycool/services/wallet_service.dart';
-import 'package:paycool/utils/abi_util.dart';
-import 'package:paycool/utils/kanban.util.dart';
-import 'package:paycool/utils/keypair_util.dart';
 import 'package:paycool/views/paycool/paycool_service.dart';
 import 'package:paycool/views/paycool/transaction_history/paycool_transaction_history_model.dart';
-import 'package:stacked/stacked.dart';
-import 'package:hex/hex.dart';
+
 import 'dart:typed_data';
+
+import '../../../utils/paycool_util.dart';
 
 class PayCoolTransactionHistoryViewModel extends FutureViewModel {
   final log = getLogger('PayCoolTransactionHistoryViewmodel');
-  final payCoolService = locator<PayCoolService>();
+  final payCoolService = localLocator<PayCoolService>();
   final sharedService = locator<SharedService>();
-  final dialogService = locator<LocalDialogService>();
-  WalletService walletService = locator<WalletService>();
+  final dialogService = localLocator<DialogService>();
+  WalletService walletService = localLocator<WalletService>();
+  final environmentService = locator<EnvironmentService>();
   BuildContext context;
   String fabAddress = '';
   List<PayCoolTransactionHistoryModel> transactions = [];
@@ -63,8 +57,8 @@ class PayCoolTransactionHistoryViewModel extends FutureViewModel {
     log.i(
         'requestRefund orderId $orderId -- smart contract Address $smartContractAddress');
     String abiHex = isCancel
-        ? constructPaycoolCancelAbiHex(orderId)
-        : constructPaycoolRefundAbiHex(orderId);
+        ? PaycoolUtil.constructPaycoolCancelAbiHex(orderId)
+        : PaycoolUtil.constructPaycoolRefundAbiHex(orderId);
     log.i('abi hex $abiHex');
     await dialogService
         .showDialog(
@@ -76,23 +70,26 @@ class PayCoolTransactionHistoryViewModel extends FutureViewModel {
       if (passRes.confirmed) {
         String mnemonic = passRes.returnedText;
 
-        var seed = walletService.generateSeed(mnemonic);
-        var keyPairKanban = getExgKeyPair(Uint8List.fromList(seed));
+        var seed = MnemonicUtils.generateSeed(mnemonic);
+        EnvConfig envConfigExgKeyPair = EnvConfig(
+            coinType: environmentService.chainCoinType('FAB'),
+            network: environmentService.chainNetwork('BTC'));
+        var keyPairKanban = FabUtils.getExgKeyPair(
+            Uint8List.fromList(seed), envConfigExgKeyPair);
         debugPrint('keyPairKanban $keyPairKanban');
-        int kanbanGasPrice = environment["chains"]["KANBAN"]["gasPrice"];
-        int kanbanGasLimit = environment["chains"]["KANBAN"]["gasLimit"];
+
         var txKanbanHex;
         String exgAddress =
             await sharedService.getExgAddressFromCoreWalletDatabase();
-        var nonce = await getNonce(exgAddress);
+        var nonce = await KanbanUtils.getNonce(
+            environmentService.kanbanBaseUrl(), exgAddress);
         try {
-          txKanbanHex = await signAbiHexWithPrivateKey(
+          txKanbanHex = await AbiUtils.signAbiHexWithPrivateKey(
               abiHex,
               HEX.encode(keyPairKanban["privateKey"]),
               smartContractAddress,
               nonce,
-              kanbanGasPrice,
-              kanbanGasLimit);
+              environmentService.chainEnvConfig('KANBAN'));
 
           log.i('txKanbanHex $txKanbanHex');
         } catch (err) {
@@ -100,7 +97,8 @@ class PayCoolTransactionHistoryViewModel extends FutureViewModel {
           log.e('err $err');
         }
 
-        var resBody = await sendPayCoolRawTransaction(txKanbanHex);
+        var resBody =
+            await payCoolService.sendPayCoolRawTransaction(txKanbanHex);
         var res = resBody['_body'];
         var txHash = res['transactionHash'];
         //{"ok":true,"_body":{"transactionHash":"0x855f2d8ec57418670dd4cb27ecb71c6794ada5686e771fe06c48e30ceafe0548","status":"0x1"}}

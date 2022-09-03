@@ -1,14 +1,6 @@
+import 'package:exchangily_core/exchangily_core.dart';
+import 'package:exchangily_ui/exchangily_ui.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_i18n/flutter_i18n.dart';
-import 'package:paycool/constants/colors.dart';
-import 'package:paycool/constants/custom_styles.dart';
-import 'package:paycool/environments/coins.dart';
-import 'package:paycool/shared/ui_helpers.dart';
-import 'package:paycool/utils/number_util.dart';
-import 'package:paycool/utils/string_util.dart';
-import 'package:paycool/widgets/pagination/pagination_widget.dart';
-import 'package:stacked/stacked.dart';
-
 import 'package:paycool/views/paycool/rewards/paycool_rewards_viewmodel.dart';
 
 class PayCoolRewardsView extends StatelessWidget {
@@ -125,7 +117,8 @@ class PayCoolRewardsView extends StatelessWidget {
                                                                     .all(3.0),
                                                             // reward amount currency coin
                                                             child: Text(
-                                                              newCoinTypeMap[model
+                                                              Constants
+                                                                  .coinTypeWithTicker[model
                                                                       .rewards[
                                                                           index]
                                                                       .coinType[i]]
@@ -141,13 +134,12 @@ class PayCoolRewardsView extends StatelessWidget {
                                                           ),
                                                           // rewards amount
                                                           Text(
-                                                            NumberUtil()
-                                                                .truncateDoubleWithoutRouding(
-                                                                    bigNumToDouble(BigInt.parse(model
+                                                            NumberUtil.rawStringToDecimal(
+                                                                    model
                                                                         .rewards[
                                                                             index]
-                                                                        .amount[i])),
-                                                                    precision: 6)
+                                                                        .amount[i],
+                                                                    decimalPrecision: 6)
                                                                 .toString(),
                                                             style: const TextStyle(
                                                                 fontSize: 14,

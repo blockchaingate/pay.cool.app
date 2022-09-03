@@ -1,17 +1,16 @@
+import 'package:exchangily_core/exchangily_core.dart';
 import 'package:flutter/material.dart';
-import 'package:paycool/logger.dart';
+
 import 'package:paycool/service_locator.dart';
-import 'package:paycool/services/shared_service.dart';
 import 'package:paycool/views/paycool/rewards/paycool_rewards_model.dart';
 import 'package:paycool/views/paycool/paycool_service.dart';
 import 'package:paycool/widgets/pagination/pagination_model.dart';
-import 'package:stacked/stacked.dart';
 
 class PayCoolRewardsViewModel extends FutureViewModel
     implements ReactiveViewModel {
   final log = getLogger('PayCoolRewardsViewModel');
-  final payCoolService = locator<PayCoolService>();
-  final sharedService = locator<SharedService>();
+  final payCoolService = localLocator<PayCoolService>();
+  final sharedService = localLocator<SharedService>();
   String fabAddress = '';
   BuildContext context;
   List<PayCoolRewardsModel> rewards = [];

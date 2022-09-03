@@ -13,33 +13,13 @@
 
 import 'dart:io';
 
+import 'package:exchangily_core/exchangily_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_i18n/flutter_i18n.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:paycool/constants/route_names.dart';
-import 'package:paycool/models/wallet/user_settings_model.dart';
-import 'package:paycool/services/config_service.dart';
-import 'package:paycool/services/db/core_wallet_database_service.dart';
-import 'package:paycool/services/db/token_list_database_service.dart';
-import 'package:paycool/services/db/transaction_history_database_service.dart';
-import 'package:paycool/services/db/user_settings_database_service.dart';
-import 'package:paycool/services/db/wallet_database_service.dart';
-import 'package:paycool/services/local_auth_service.dart';
+import 'package:paycool/constants/paycool_constants.dart';
+
 import 'package:paycool/services/local_storage_service.dart';
-import 'package:paycool/services/navigation_service.dart';
-import 'package:paycool/services/shared_service.dart';
-import 'package:paycool/services/stoppable_service.dart';
-import 'package:paycool/services/vault_service.dart';
-import 'package:paycool/services/wallet_service.dart';
 import 'package:paycool/views/settings/settings_view.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-//import 'package:showcaseview/showcaseview.dart';
-
-import 'package:stacked/stacked.dart';
-
-import '../../logger.dart';
-import '../../models/dialog/dialog_response.dart';
-import '../../service_locator.dart';
+import '../../constants/paycool_api_routes.dart';
 import '../../services/local_dialog_service.dart';
 
 class SettingsViewmodel extends BaseViewModel with StoppableService {
@@ -50,8 +30,7 @@ class SettingsViewmodel extends BaseViewModel with StoppableService {
   WalletService walletService = locator<WalletService>();
   TransactionHistoryDatabaseService transactionHistoryDatabaseService =
       locator<TransactionHistoryDatabaseService>();
-  TokenListDatabaseService tokenListDatabaseService =
-      locator<TokenListDatabaseService>();
+  TokenDatabaseService tokenDatabaseService = locator<TokenDatabaseService>();
   final vaultService = locator<VaultService>();
   WalletDatabaseService walletDatabaseService =
       locator<WalletDatabaseService>();
@@ -60,9 +39,9 @@ class SettingsViewmodel extends BaseViewModel with StoppableService {
   final NavigationService navigationService = locator<NavigationService>();
   UserSettingsDatabaseService userSettingsDatabaseService =
       locator<UserSettingsDatabaseService>();
-  final authService = locator<LocalAuthService>();
-  final localAuthService = locator<LocalAuthService>();
+  final authService = locator<AuthService>();
   final coreWalletDatabaseService = locator<CoreWalletDatabaseService>();
+  final environmentService = locator<EnvironmentService>();
 
   final Map<String, String> languages = {'en': 'English', 'zh': '简体中文'};
   String selectedLanguage;
@@ -85,7 +64,6 @@ class SettingsViewmodel extends BaseViewModel with StoppableService {
   bool isShowPaycoolClub;
   bool isAutoStartPaycoolScan;
   String baseServerUrl;
-  ConfigService configService = locator<ConfigService>();
   bool isHKServer;
   Map<String, String> versionInfo;
   UserSettings userSettings = UserSettings();
@@ -102,13 +80,13 @@ class SettingsViewmodel extends BaseViewModel with StoppableService {
   void start() async {
     super.start();
     log.w(
-        ' starting service -- hasAppGoneInTheBackgroundKey = ${storageService.hasAppGoneInTheBackgroundKey} -- auth in progress ${localAuthService.authInProgress}');
+        ' starting service -- hasAppGoneInTheBackgroundKey = ${storageService.hasAppGoneInTheBackgroundKey} -- auth in progress ${authService.authInProgress}');
 
     if (storageService.hasInAppBiometricAuthEnabled) {
       if (!storageService.isCameraOpen) {
-        if (!localAuthService.authInProgress &&
+        if (!authService.authInProgress &&
             storageService.hasAppGoneInTheBackgroundKey) {
-          await localAuthService.authenticateApp();
+          await authService.authenticateApp();
         }
       }
     }
@@ -147,7 +125,7 @@ class SettingsViewmodel extends BaseViewModel with StoppableService {
         : isAutoStartPaycoolScan = storageService.autoStartPaycoolScan;
 
     getAppVersion();
-    baseServerUrl = configService.getKanbanBaseUrl();
+    baseServerUrl = environmentService.kanbanBaseUrl();
     await setLanguageFromDb();
     await selectDefaultWalletLanguage();
     setBusy(false);
@@ -264,7 +242,7 @@ class SettingsViewmodel extends BaseViewModel with StoppableService {
     storageService.isUSServer = storageService.isHKServer ? false : true;
     // Phoenix.rebirth(context);
     //  log.i('2');
-    baseServerUrl = configService.getKanbanBaseUrl();
+    baseServerUrl = environmentService.kanbanBaseUrl();
     isHKServer = storageService.isHKServer;
     log.e('GLobal kanban url $baseServerUrl');
     setBusy(false);
@@ -380,7 +358,7 @@ class SettingsViewmodel extends BaseViewModel with StoppableService {
             .deleteEncryptedData()
             .whenComplete(() => log.e('encrypted data deleted!!'));
 
-        await tokenListDatabaseService
+        await tokenDatabaseService
             .deleteDb()
             .whenComplete(() => log.e('Token list database deleted!!'));
 
@@ -566,7 +544,7 @@ class SettingsViewmodel extends BaseViewModel with StoppableService {
                     onBackButtonPressed
 ----------------------------------------------------------------------*/
   onBackButtonPressed() async {
-    await sharedService.onBackButtonPressed(PayCoolViewRoute);
+    await sharedService.onBackButtonPressed(PaycoolConstants.payCoolViewRoute);
   }
 }
 

@@ -1,4 +1,4 @@
-import 'package:paycool/utils/string_util.dart';
+import 'package:exchangily_core/exchangily_core.dart';
 
 class PayCoolRewardsModel {
   List<int> coinType;

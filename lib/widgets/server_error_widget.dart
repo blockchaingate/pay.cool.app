@@ -1,9 +1,7 @@
+import 'package:exchangily_ui/exchangily_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
-import 'package:paycool/constants/colors.dart';
-import 'package:paycool/constants/custom_styles.dart';
-import 'package:paycool/shared/ui_helpers.dart';
 
 class ServerErrorWidget extends StatelessWidget {
   const ServerErrorWidget({Key key}) : super(key: key);

@@ -1,5 +1,4 @@
-import 'package:paycool/utils/string_util.dart';
-import '../../../environments/coins.dart' as coinList;
+import 'package:exchangily_core/exchangily_core.dart';
 
 class PayCoolTransactionHistoryModel {
   // 0: refunded   1: valid   2: request refund
@@ -15,12 +14,12 @@ class PayCoolTransactionHistoryModel {
 
   int coinType;
   int rate;
-  double merchantGet;
-  double feePayment;
-  double rewardAmount;
-  double tax;
+  Decimal merchantGet;
+  Decimal feePayment;
+  Decimal rewardAmount;
+  Decimal tax;
   String dateCreated;
-  double totalTransactionAmount;
+  Decimal totalTransactionAmount;
   String tickerName;
 
   PayCoolTransactionHistoryModel(
@@ -42,15 +41,20 @@ class PayCoolTransactionHistoryModel {
 
   factory PayCoolTransactionHistoryModel.fromJson(Map<String, dynamic> json) {
     //double merchantAmount = BigInt.from(json['merchantGet']).toDouble() / 1e8;
-    double merchantAmount =
-        bigNum2Double(json['merchantGet'] ?? 0.0, decimalLength: 16);
-    double exchangilyAmount =
-        bigNum2Double(json['feePayment'] ?? 0.0, decimalLength: 16);
-    double rewardAmountDouble =
-        bigNum2Double(json['rewardAmount'] ?? 0.0, decimalLength: 16);
-    double taxAmountDouble = bigNum2Double(json['tax'] ?? 0, decimalLength: 16);
+    Decimal merchantAmount = NumberUtil.rawStringToDecimal(
+        json['merchantGet'].toString(),
+        decimalPrecision: 16);
+    Decimal exchangilyAmount = NumberUtil.rawStringToDecimal(
+        json['feePayment'].toString(),
+        decimalPrecision: 16);
+    Decimal rewardAmountDouble = NumberUtil.rawStringToDecimal(
+        json['rewardAmount'].toString(),
+        decimalPrecision: 16);
+    Decimal taxAmountDouble = NumberUtil.rawStringToDecimal(
+        json['tax'].toString(),
+        decimalPrecision: 16);
 
-    double total = 0.0;
+    Decimal total = Constants.decimalZero;
     if (merchantAmount != null &&
         exchangilyAmount != null &&
         taxAmountDouble != null) {
@@ -60,7 +64,7 @@ class PayCoolTransactionHistoryModel {
           rewardAmountDouble;
     }
 
-    String t = coinList.newCoinTypeMap[json['coinType']];
+    String t = Constants.coinTypeWithTicker[json['coinType']];
 
     return PayCoolTransactionHistoryModel(
         status: json['status'],

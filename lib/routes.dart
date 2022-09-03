@@ -11,35 +11,21 @@
 *----------------------------------------------------------------------
 */
 
+import 'package:exchangily_core/exchangily_core.dart';
+import 'package:exchangily_wallet_features/exchangily_wallet_features.dart';
+import 'package:exchangily_wallet_setup/exchangily_wallet_setup.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_i18n/flutter_i18n.dart';
-import 'package:paycool/logger.dart';
-import 'constants/route_names.dart';
-import 'views/lightning-remit/lightning-remit_view.dart';
+import 'package:lightning_remit/lightning_remit.dart';
+import 'package:referral/referral.dart';
+import 'package:wallet_dashboard/wallet_dashboard.dart';
+import 'constants/paycool_constants.dart';
 import 'views/settings/settings_view.dart';
 import 'views/paycool_club/generate_custom_qrcode/generate_custom_qrcode_view.dart';
 import 'views/paycool_club/join_club/join_paycool_club_view.dart';
-import 'views/paycool_club/referral/paycool_referral_view.dart';
 import 'views/paycool_club/paycool_club_dashboard_view.dart';
 import 'views/paycool/rewards/paycool_rewards_view.dart';
 import 'views/paycool/paycool_view.dart';
 import 'views/paycool/transaction_history/paycool_transaction_history_view.dart';
-import 'views/wallet/wallet_dashboard_view.dart';
-import 'views/wallet/wallet_features/add_gas/add_gas.dart';
-import 'views/wallet/wallet_features/move_to_exchange/move_to_exchange.dart';
-import 'views/wallet/wallet_features/move_to_wallet/move_to_wallet.dart';
-import 'views/wallet/wallet_features/receive.dart';
-import 'views/wallet/wallet_features/redeposit/redeposit.dart';
-import 'views/wallet/wallet_features/send/send_view.dart';
-import 'views/wallet/wallet_features/smart_contract.dart';
-import 'views/wallet/wallet_features/transaction_history/transaction_history_view.dart';
-import 'views/wallet/wallet_features/wallet_features_view.dart';
-import 'views/wallet/wallet_setup/backup_mnemonic_view.dart/backup_mnemonic.dart';
-import 'views/wallet/wallet_setup/confirm_mnemonic/confirm_mnemonic_view.dart';
-import 'views/wallet/wallet_setup/create_password/create_password_view.dart';
-import 'views/wallet/wallet_setup/mnemonic_input/import_wallet_view.dart';
-import 'views/wallet/wallet_setup/select_language/choose_wallet_language.dart';
-import 'views/wallet/wallet_setup/wallet_setup_view.dart';
 
 final log = getLogger('Routes');
 
@@ -57,23 +43,25 @@ class RouteGenerator {
                           Wallet Setup
 ----------------------------------------------------------------------*/
 
-      case ChooseWalletLanguageViewRoute:
-        return MaterialPageRoute(builder: (_) => ChooseWalletLanguageView());
-      case WalletSetupViewRoute:
+      case chooseWalletLanguageViewRoute:
+        return MaterialPageRoute(
+            builder: (_) => const ChooseWalletLanguageView());
+      case walletSetupViewRoute:
         return MaterialPageRoute(builder: (_) => const WalletSetupView());
 
-      case ImportWalletViewRoute:
-        return MaterialPageRoute(builder: (_) => ImportWalletView());
+      case importWalletViewRoute:
+        return MaterialPageRoute(builder: (_) => const ImportWalletView());
 
-      case BackupMnemonicViewRoute:
-        return MaterialPageRoute(builder: (_) => BackupMnemonicWalletView());
+      case backupMnemonicViewRoute:
+        return MaterialPageRoute(
+            builder: (_) => const BackupMnemonicWalletView());
 
-      case ConfirmMnemonicViewRoute:
+      case confirmMnemonicViewRoute:
         return MaterialPageRoute(
             builder: (_) =>
                 ConfirmMnemonicView(randomMnemonicListFromRoute: args));
 
-      case CreatePasswordViewRoute:
+      case createPasswordViewRoute:
         return MaterialPageRoute(
             builder: (_) => CreatePasswordView(args: args));
 
@@ -81,131 +69,82 @@ class RouteGenerator {
                           Wallet Routes
 ----------------------------------------------------------------------*/
 
-      case DashboardViewRoute:
+      case dashboardViewRoute:
         return MaterialPageRoute(
             settings: const RouteSettings(name: 'WalletDashboardVieww'),
             builder: (_) => const WalletDashboardView());
 
-      case AddGasViewRoute:
-        return MaterialPageRoute(builder: (_) => AddGasView());
+      case addGasViewRoute:
+        return MaterialPageRoute(builder: (_) => const AddGasView());
 
-      case SmartContractViewRoute:
-        return MaterialPageRoute(builder: (_) => const SmartContractView());
+      case smartContractViewRoute:
+        return MaterialPageRoute(builder: (_) => const SmartContract());
 
-      case DepositViewRoute:
+      case depositViewRoute:
+        return MaterialPageRoute(builder: (_) => DepositView(appWallet: args));
+
+      case redepositViewRoute:
+        return MaterialPageRoute(builder: (_) => Redeposit(appWallet: args));
+
+      case withdrawViewRoute:
+        return MaterialPageRoute(builder: (_) => WithdrawView(appWallet: args));
+
+      case walletFeaturesViewRoute:
         return MaterialPageRoute(
-            builder: (_) => MoveToExchangeView(walletInfo: args));
+            builder: (_) => WalletFeaturesView(appWallet: args));
 
-      case RedepositViewRoute:
+      case receiveViewRoute:
         return MaterialPageRoute(
-            builder: (_) => RedepositView(walletInfo: args));
-
-      case WithdrawViewRoute:
-        return MaterialPageRoute(
-            builder: (_) => MoveToWalletView(walletInfo: args));
-
-      case WalletFeaturesViewRoute:
-        return MaterialPageRoute(
-            builder: (_) => WalletFeaturesView(walletInfo: args));
-
-      case ReceiveViewRoute:
-        return MaterialPageRoute(
-            builder: (_) => ReceiveWalletScreen(
-                  walletInfo: args,
+            builder: (_) => ReceiveWalletView(
+                  appWallet: args,
                 ));
 
-      case SendViewRoute:
+      case sendViewRoute:
         return MaterialPageRoute(
             builder: (_) => SendWalletView(
-                  walletInfo: args,
+                  appWallet: args,
                 ));
 
-      case TransactionHistoryViewRoute:
+      case transactionHistoryViewRoute:
         return MaterialPageRoute(
             builder: (_) => TransactionHistoryView(
-                  tickerName: args,
+                  appWallet: args,
                 ));
 
 /*----------------------------------------------------------------------
                           Paycool Club Routes
 ----------------------------------------------------------------------*/
-      case PayCoolClubDashboardViewRoute:
+      case PaycoolConstants.payCoolClubDashboardViewRoute:
         return MaterialPageRoute(
             settings: const RouteSettings(name: 'PayCoolClubDashboardView'),
             builder: (_) => const PayCoolClubDashboardView());
 
-      case PayCoolClubReferralViewRoute:
+      case PaycoolConstants.payCoolClubReferralViewRoute:
         return MaterialPageRoute(
             builder: (_) => PaycoolReferralView(
                   address: args,
                 ));
-      case JoinPayCoolClubViewRoute:
+      case PaycoolConstants.joinPayCoolClubViewRoute:
         return MaterialPageRoute(
             builder: (_) => JoinPayCoolClubView(
                   scanToPayModel: args,
                 ));
 
-      case GenerateCustomQrViewRoute:
+      case PaycoolConstants.generateCustomQrViewRoute:
         return MaterialPageRoute(
             builder: (_) => const GenerateCustomQrCodeView());
 
-      // case '/campaignPayment':
-      //   return MaterialPageRoute(builder: (_) => CampaignPaymentScreen());
-
-      // case '/campaignDashboard':
-      //   return MaterialPageRoute(builder: (_) => CampaignDashboardScreen());
-
-      // case '/campaignTokenDetails':
-      //   return MaterialPageRoute(
-      //       builder: (_) =>
-      //           CampaignTokenDetailsScreen(campaignRewardList: args));
-
-      // case '/MyRewardDetails':
-      //   return MaterialPageRoute(
-      //       builder: (_) => MyRewardDetailsScreen(campaignRewardList: args));
-
-      // case '/campaignOrderDetails':
-      //   return MaterialPageRoute(
-      //       builder: (_) => CampaignOrderDetailsScreen(orderInfoList: args));
-
-      // case '/teamRewardDetails':
-      //   return MaterialPageRoute(
-      //       builder: (_) => TeamRewardDetailsView(team: args));
-
-      // case '/teamReferralView':
-      //   return MaterialPageRoute(
-      //       builder: (_) => CampaignTeamReferralView(rewardDetails: args));
-
-      // case '/myReferralView':
-      //   return MaterialPageRoute(
-      //       builder: (_) => MyReferralView(referralDetails: args));
-
-      // case '/campaignLogin':
-      //   return MaterialPageRoute(
-      //       builder: (_) => CampaignLoginScreen(
-      //             errorMessage: args,
-      //           ));
-
-      // case '/campaignRegisterAccount':
-      //   return MaterialPageRoute(
-      //       builder: (_) => CampaignRegisterAccountScreen());
-
-      // case '/switchLanguage':
-      //   return MaterialPageRoute(builder: (_) => LanguageScreen());
-/*----------------------------------------------------------------------
-                      Seven Star Pay Routes
-----------------------------------------------------------------------*/
-      case PayCoolViewRoute:
+      case PaycoolConstants.payCoolViewRoute:
         return MaterialPageRoute(
             settings: const RouteSettings(name: 'PayCoolView'),
-            builder: (_) => PayCoolView());
+            builder: (_) => const PayCoolView());
 
-      case PayCoolRewardsViewRoute:
+      case PaycoolConstants.payCoolRewardsViewRoute:
         return MaterialPageRoute(
             settings: const RouteSettings(),
             builder: (_) => const PayCoolRewardsView());
 
-      case PayCoolTransactionHistoryViewRoute:
+      case PaycoolConstants.payCoolTransactionHistoryViewRoute:
         return MaterialPageRoute(
             settings: const RouteSettings(),
             builder: (_) => PayCoolTransactionHistoryView());
@@ -221,7 +160,7 @@ class RouteGenerator {
 /*----------------------------------------------------------------------
                       Navigation Routes
 ----------------------------------------------------------------------*/
-      case SettingViewRoute:
+      case settingViewRoute:
         return MaterialPageRoute(
             settings: const RouteSettings(name: 'SettingsView'),
             builder: (_) => const SettingsView());
