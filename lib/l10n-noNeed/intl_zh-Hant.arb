@@ -1659,13 +1659,13 @@
         "type": "text",
         "placeholders": {}
     },
-    "payCool": "派多客",
+    "payCool": "贝库",
    "@payCool": {
      "description": "paycool",
      "type": "text",
      "placeholders": {}
    },
-   "payCoolClub": "派多客俱乐部",
+   "payCoolClub": "贝库俱乐部",
    "@payCoolClub": {
      "description": "paycool_club",
      "type": "text",
@@ -1677,7 +1677,7 @@
      "type": "text",
      "placeholders": {}
    },
-   "notJoinedPaycoolClub": "您还没有加入派多客俱乐部",
+   "notJoinedPaycoolClub": "您还没有加入贝库俱乐部",
    "@notJoinedPaycoolClub": {
      "description": "not_joined_paycool_club",
      "type": "text",
@@ -1779,7 +1779,7 @@
      "type": "text",
      "placeholders": {}
    },
-   "joinPaycoolClub": "加入派多客俱乐部",
+   "joinPaycoolClub": "加入贝库俱乐部",
     "@joinPaycoolClub": {
       "description": "joinPaycoolClub",
       "type": "text",
@@ -1863,7 +1863,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "showPaycool": "顯示派多客",
+  "showPaycool": "顯示贝库",
   "@showPaycool": {
     "description": "showPaycool",
     "type": "text",
@@ -1893,7 +1893,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "paycoolsConsumerchantSystem": "派多客消费商系统",
+  "paycoolsConsumerchantSystem": "贝库消费商系统",
   "@paycoolsConsumerchantSystem": {
     "description": "paycoolsConsumerchantSystem",
     "type": "text",
@@ -1905,19 +1905,19 @@
     "type": "text",
     "placeholders": {}
   },
-  "showPaycoolClub": "显示派多客俱乐部",
+  "showPaycoolClub": "显示贝库俱乐部",
   "@showPaycoolClub": {
     "description": "showPaycoolClub",
     "type": "text",
     "placeholders": {}
   },
-  "joinPaycoolNote": "扫描或粘贴任何派多客会员的推荐代码即可免费加入成为派多客用户。",
+  "joinPaycoolNote": "扫描或粘贴任何贝库会员的推荐代码即可免费加入成为贝库用户。",
   "@joinPaycoolNote": {
     "description": "join_paycool_note",
     "type": "text",
     "placeholders": {}
   },
-  "join7ClubPayNote": "支付 2000 美元入会费加入派多客俱乐部并成为VIP会员",
+  "join7ClubPayNote": "支付 2000 美元入会费加入贝库俱乐部并成为VIP会员",
   "@join7ClubPayNote": {
     "description": "join_paycool_club_note",
     "type": "text",
@@ -1971,25 +1971,25 @@
     "type": "text",
     "placeholders": {}
   },
-  "payCoolVipClub": "派多客VIP俱乐部",
+  "payCoolVipClub": "贝库VIP俱乐部",
   "@payCoolVipClub": {
     "description": "paycool_vip_club",
     "type": "text",
     "placeholders": {}
   },
-  "joinPayCoolVipClubPNote": "加入派多客并付2000美元会员费可成为VIP会员",
+  "joinPayCoolVipClubPNote": "加入贝库并付2000美元会员费可成为VIP会员",
   "@joinPayCoolVipClubPNote": {
     "description": "join_Paycool_vip_club_note",
     "type": "text",
     "placeholders": {}
   },
-  "joinPayCoolButton": "加入派多客",
+  "joinPayCoolButton": "加入贝库",
   "@joinPayCoolButton": {
     "description": "join_Paycool_button",
     "type": "text",
     "placeholders": {}
   },
-  "joinPayCoolNote": "免费加入使用派多客可获得奖励",
+  "joinPayCoolNote": "免费加入使用贝库可获得奖励",
   "@joinPayCoolNote": {
     "description": "join_Paycool_note",
     "type": "text",
@@ -2019,7 +2019,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "autoStartpaycoolScan": "自动启动派多客二维码扫描",
+  "autoStartpaycoolScan": "自动启动贝库二维码扫描",
     "@autoStartpaycoolScan": {
     "description": "auto_start_paycool_scan",
     "type": "text",

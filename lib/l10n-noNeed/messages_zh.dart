@@ -174,16 +174,16 @@ class MessageLookup extends MessageLookupByLibrary {
         "invalidReferralCode": MessageLookupByLibrary.simpleMessage("无效的推荐码"),
         "isOnItsWay": MessageLookupByLibrary.simpleMessage("在区块链处理途中"),
         "join7ClubPayNote": MessageLookupByLibrary.simpleMessage(
-            "支付 2000 美元入会费加入派多客俱乐部并成为VIP会员"),
-        "joinPaycoolClub": MessageLookupByLibrary.simpleMessage("加入派多客俱乐部"),
+            "支付 2000 美元入会费加入贝库俱乐部并成为VIP会员"),
+        "joinPaycoolClub": MessageLookupByLibrary.simpleMessage("加入贝库俱乐部"),
         "joinPaycoolNote": MessageLookupByLibrary.simpleMessage(
-            "扫描或粘贴任何派多客会员的推荐代码即可免费加入成为派多客用户。"),
+            "扫描或粘贴任何贝库会员的推荐代码即可免费加入成为贝库用户。"),
         "joinNow": MessageLookupByLibrary.simpleMessage("现在加入"),
-        "joinPayCoolButton": MessageLookupByLibrary.simpleMessage("加入派多客"),
+        "joinPayCoolButton": MessageLookupByLibrary.simpleMessage("加入贝库"),
         "joinPayCoolNote":
-            MessageLookupByLibrary.simpleMessage("免费加入使用派多客可获得奖励"),
+            MessageLookupByLibrary.simpleMessage("免费加入使用贝库可获得奖励"),
         "joinPayCoolVipClubPNote":
-            MessageLookupByLibrary.simpleMessage("加入派多客并付2000美元会员费可成为VIP会员"),
+            MessageLookupByLibrary.simpleMessage("加入贝库并付2000美元会员费可成为VIP会员"),
         "joinedDate": MessageLookupByLibrary.simpleMessage("加入时间"),
         "kanban": MessageLookupByLibrary.simpleMessage("看板"),
         "kanbanGasFee": MessageLookupByLibrary.simpleMessage("看板矿工费"),
@@ -234,7 +234,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("目前不接受新成员"),
         "noReferralsYet": MessageLookupByLibrary.simpleMessage("还没有推荐人"),
         "notJoinedPaycoolClub":
-            MessageLookupByLibrary.simpleMessage("您还没有加入派多客俱乐部"),
+            MessageLookupByLibrary.simpleMessage("您还没有加入贝库俱乐部"),
         "note": MessageLookupByLibrary.simpleMessage("备注"),
         "notice": MessageLookupByLibrary.simpleMessage("备注"),
         "officialAddress": MessageLookupByLibrary.simpleMessage("官方地址"),
@@ -375,16 +375,16 @@ class MessageLookup extends MessageLookupByLibrary {
         "settings": MessageLookupByLibrary.simpleMessage("设置"),
         "settingsShowcaseInstructions":
             MessageLookupByLibrary.simpleMessage("显示如何使用App功能的操作指南"),
-        "payCoolClub": MessageLookupByLibrary.simpleMessage("派多客俱乐部"),
+        "payCoolClub": MessageLookupByLibrary.simpleMessage("贝库俱乐部"),
         "paycoolNote": MessageLookupByLibrary.simpleMessage(
             "请注意：欲支付加盟费，您的闪付账户中必须有足够余额及矿工费，钱包中的余额不能直接支付"),
-        "payCool": MessageLookupByLibrary.simpleMessage("派多客"),
-        "payCoolVipClub": MessageLookupByLibrary.simpleMessage("派多客VIP俱乐部"),
+        "payCool": MessageLookupByLibrary.simpleMessage("贝库"),
+        "payCoolVipClub": MessageLookupByLibrary.simpleMessage("贝库VIP俱乐部"),
         "paycoolsConsumerchantSystem":
-            MessageLookupByLibrary.simpleMessage("派多客消费商系统"),
+            MessageLookupByLibrary.simpleMessage("贝库消费商系统"),
         "share": MessageLookupByLibrary.simpleMessage("分享"),
-        "showPaycoolClub": MessageLookupByLibrary.simpleMessage("显示派多客俱乐部"),
-        "showPaycool": MessageLookupByLibrary.simpleMessage("显示派多客"),
+        "showPaycoolClub": MessageLookupByLibrary.simpleMessage("显示贝库俱乐部"),
+        "showPaycool": MessageLookupByLibrary.simpleMessage("显示贝库"),
         "showAllPairOrders": MessageLookupByLibrary.simpleMessage("显示全部匹配订单"),
         "showDialogWarnings": MessageLookupByLibrary.simpleMessage("显示警告信息"),
         "showOnlyCurrentPairOrders":
