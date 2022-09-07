@@ -1,10 +1,10 @@
 import 'package:exchangily_core/exchangily_core.dart';
 import 'package:flutter/material.dart';
+import 'package:pagination_widget/pagination_widget.dart';
 
 import 'package:paycool/service_locator.dart';
 import 'package:paycool/views/paycool/rewards/paycool_rewards_model.dart';
 import 'package:paycool/views/paycool/paycool_service.dart';
-import 'package:paycool/widgets/pagination/pagination_model.dart';
 
 class PayCoolRewardsViewModel extends FutureViewModel
     implements ReactiveViewModel {

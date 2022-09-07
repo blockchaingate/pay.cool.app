@@ -71,7 +71,7 @@ class RouteGenerator {
 
       case dashboardViewRoute:
         return MaterialPageRoute(
-            settings: const RouteSettings(name: 'WalletDashboardVieww'),
+            settings: const RouteSettings(name: 'WalletDashboardView'),
             builder: (_) => const WalletDashboardView());
 
       case addGasViewRoute:

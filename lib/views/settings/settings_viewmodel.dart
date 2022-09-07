@@ -19,14 +19,12 @@ import 'package:paycool/constants/paycool_constants.dart';
 
 import 'package:paycool/services/local_storage_service.dart';
 import 'package:paycool/views/settings/settings_view.dart';
-import '../../constants/paycool_api_routes.dart';
-import '../../services/local_dialog_service.dart';
 
 class SettingsViewmodel extends BaseViewModel with StoppableService {
   bool isVisible = false;
   String mnemonic = '';
   final log = getLogger('SettingsViewmodel');
-  final dialogService = locator<LocalDialogService>();
+  final dialogService = locator<DialogService>();
   WalletService walletService = locator<WalletService>();
   TransactionHistoryDatabaseService transactionHistoryDatabaseService =
       locator<TransactionHistoryDatabaseService>();
@@ -35,7 +33,8 @@ class SettingsViewmodel extends BaseViewModel with StoppableService {
   WalletDatabaseService walletDatabaseService =
       locator<WalletDatabaseService>();
   SharedService sharedService = locator<SharedService>();
-  final storageService = locator<LocalStorageService>();
+  final localStorageService = locator<LocalStorageService>();
+  final storageService = locator<StorageService>();
   final NavigationService navigationService = locator<NavigationService>();
   UserSettingsDatabaseService userSettingsDatabaseService =
       locator<UserSettingsDatabaseService>();
@@ -112,17 +111,17 @@ class SettingsViewmodel extends BaseViewModel with StoppableService {
         ? isShowCaseOnce = false
         : isShowCaseOnce = storageService.isShowCaseView;
 
-    storageService.showPaycool == null
+    localStorageService.showPaycool == null
         ? isShowPaycool = false
-        : isShowPaycool = storageService.showPaycool;
+        : isShowPaycool = localStorageService.showPaycool;
 
-    storageService.showPaycoolClub == null
+    localStorageService.showPaycoolClub == null
         ? isShowPaycoolClub = false
-        : isShowPaycoolClub = storageService.showPaycoolClub;
+        : isShowPaycoolClub = localStorageService.showPaycoolClub;
 
-    storageService.autoStartPaycoolScan == null
+    localStorageService.autoStartPaycoolScan == null
         ? isAutoStartPaycoolScan = false
-        : isAutoStartPaycoolScan = storageService.autoStartPaycoolScan;
+        : isAutoStartPaycoolScan = localStorageService.autoStartPaycoolScan;
 
     getAppVersion();
     baseServerUrl = environmentService.kanbanBaseUrl();
@@ -145,7 +144,7 @@ class SettingsViewmodel extends BaseViewModel with StoppableService {
   setLockAppNowValue() {
     setBusyForObject(lockAppNow, true);
     _lockAppNow = !_lockAppNow;
-    navigationService.navigateUsingPushReplacementNamed(WalletSetupViewRoute);
+    navigationService.navigateUsingPushReplacementNamed(walletSetupViewRoute);
     setBusyForObject(lockAppNow, false);
   }
 
@@ -275,35 +274,37 @@ class SettingsViewmodel extends BaseViewModel with StoppableService {
   setShowPaycool(bool v) {
     // set setShowPaycool
     log.i('setShowPaycool $v value');
-    storageService.showPaycool = !storageService.showPaycool;
+    localStorageService.showPaycool = !localStorageService.showPaycool;
     setBusy(true);
-    isShowPaycool = storageService.showPaycool;
+    isShowPaycool = localStorageService.showPaycool;
     setBusy(false);
-    log.w('setShowPaycool: ' + storageService.showPaycool.toString());
-    navigationService.navigateUsingpopAndPushedNamed(SettingViewRoute);
+    log.w('setShowPaycool: ' + localStorageService.showPaycool.toString());
+    navigationService.navigateUsingpopAndPushedNamed(settingViewRoute);
   }
 
   setAutoScanPaycool(bool v) {
     // set setShowPaycool
     log.i('setAutoScanPaycool $v value');
-    storageService.autoStartPaycoolScan = !storageService.autoStartPaycoolScan;
+    localStorageService.autoStartPaycoolScan =
+        !localStorageService.autoStartPaycoolScan;
     setBusy(true);
-    isAutoStartPaycoolScan = storageService.autoStartPaycoolScan;
+    isAutoStartPaycoolScan = localStorageService.autoStartPaycoolScan;
     setBusy(false);
     log.w('setautoStartPaycoolScan: ' +
-        storageService.autoStartPaycoolScan.toString());
-    navigationService.navigateUsingpopAndPushedNamed(SettingViewRoute);
+        localStorageService.autoStartPaycoolScan.toString());
+    navigationService.navigateUsingpopAndPushedNamed(settingViewRoute);
   }
 
   setShowPaycoolClub(bool v) {
     // set setShowPaycool Wallet
     log.i('setShowPaycoolClub $v value');
-    storageService.showPaycoolClub = !storageService.showPaycoolClub;
+    localStorageService.showPaycoolClub = !localStorageService.showPaycoolClub;
     setBusy(true);
-    isShowPaycoolClub = storageService.showPaycoolClub;
+    isShowPaycoolClub = localStorageService.showPaycoolClub;
     setBusy(false);
-    log.w('setShowPaycoolWallet: ' + storageService.showPaycoolClub.toString());
-    navigationService.navigateUsingPushReplacementNamed(SettingViewRoute);
+    log.w('setShowPaycoolWallet: ' +
+        localStorageService.showPaycoolClub.toString());
+    navigationService.navigateUsingPushReplacementNamed(settingViewRoute);
     // storageService.showPaycoolClub?
     // navigationService.navigateUsingpopAndPushedNamed(PayCoolClubDashboardViewRoute):
     // navigationService.navigateUsingpopAndPushedNamed(DashboardViewRoute);
@@ -373,12 +374,12 @@ class SettingsViewmodel extends BaseViewModel with StoppableService {
         log.e('before wallet removal, local storage has ${prefs.getKeys()}');
         prefs.clear();
 
-        storageService.clearStorage();
+        localStorageService.clearStorage();
         log.e('before local storage service clear ${prefs.getKeys()}');
 
         log.e('all keys after clearing ${prefs.getKeys()}');
-        storageService.showPaycoolClub = false;
-        storageService.showPaycool = true;
+        localStorageService.showPaycoolClub = false;
+        localStorageService.showPaycool = true;
         try {
           await _deleteCacheDir();
           await _deleteAppDir();

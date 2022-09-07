@@ -1,6 +1,6 @@
 name: paycool
 description: Crypto payment application
-version: 2.1.52+92
+version: 2.2.52+92
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `pub publish`. This is preferred for private packages.
@@ -12,6 +12,38 @@ environment:
 dependency_overrides:
   intl: any
 
+  # development purposes only
+
+  exchangily_core:
+    path: ../exchangily-packages/exchangily_core
+
+  # exchangily_ui:
+  #   path: ../exchangily-packages/exchangily_ui
+       
+
+  referral:
+    path: ../exchangily-packages/referral
+       
+
+  lightning_remit:
+    path: ../exchangily-packages/lightning_remit
+       
+
+  pagination_widget:
+    path: ../exchangily-packages/pagination_widget
+       
+
+  exchangily_wallet_setup:
+    path: ../exchangily-packages/exchangily_wallet_setup
+         
+
+  wallet_dashboard:
+    path: ../exchangily-packages/wallet_dashboard
+        
+
+  exchangily_wallet_features:
+    path: ../exchangily-packages/exchangily_wallet_features
+
 dependencies:
 
   flutter:
@@ -20,49 +52,14 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  # auto_size_text: ^2.1.0
-  # barcode_scan: null
-  # bitbox: ^0.0.1
-  # bitcoin_flutter: ^2.0.1
-  # bs58check: ^1.0.1
-  # #connectivity: ^0.4.3+1
-  # cupertino_icons: ^0.1.3
-  # decimal: ^0.3.5
-  # device_info: ^2.0.2
-  # encrypt: ^3.3.0
-
-
   flutter_swiper: ^1.1.6
-  # flutter_treeview: ^0.7.1+1
-  # font_awesome_flutter: null
-  # image_picker: ^0.8.5+3
   image_picker: 
-  # intl_translation: ^0.17.0
-  # keccak: ^1.0.3
-  # launch_review: ^3.0.1
-  # local_auth: ^1.1.8
-  # logger: ^0.6.0
-  # material_design_icons_flutter: ^4.0.5345
-  # observable_ish: null
-  # overlay_support: ^1.2.0
-  # package_info: 2.0.0
-  # path_provider: null
-  # protobuf: ^1.1.4
-  # pull_to_refresh: ^2.0.0
   qr_code_tools: ^0.0.7
   qr_flutter: ^3.1.0
-  # screenshot: ^0.2.0
-  # share: ^0.6.5+3
-  # stacked: ^2.1.6
-  # tree_view: ^0.0.5
-  # url_launcher: null
-  # version: ^2.0.0
-  # web3dart: null
-
-  # exchangily_ui:
-  #   path: ../exchangily-packages/exchangily_ui
 
   observable_ish: null
+
+
   exchangily_core:
     git:
       url: ssh://git@github.com/blockchaingate/exchangily-packages.git
@@ -110,6 +107,10 @@ dependencies:
       url: ssh://git@github.com/blockchaingate/exchangily-packages.git
       path: exchangily_wallet_features
       ref: main    
+
+
+       
+
 
 
 dev_dependencies:

@@ -651,7 +651,7 @@ class PayCoolView extends StatelessWidget {
                                                   Expanded(
                                                       flex: 2,
                                                       child: Text(
-                                                          '${NumberUtil().truncateDoubleWithoutRouding(model.amountPayable, precision: model.decimalLimit).toString()} ${model.coinPayable}',
+                                                          '${NumberUtil.decimalLimiter(model.amountPayable, decimalPrecision: model.decimalLimit).toString()} ${model.coinPayable}',
                                                           textAlign:
                                                               TextAlign.right,
                                                           style: headText5
@@ -681,7 +681,7 @@ class PayCoolView extends StatelessWidget {
                                                   Expanded(
                                                     flex: 2,
                                                     child: Text(
-                                                        '${NumberUtil().truncateDoubleWithoutRouding(model.taxAmount, precision: model.decimalLimit).toString()} ${model.coinPayable}',
+                                                        '${NumberUtil.decimalLimiter(model.taxAmount, decimalPrecision: model.decimalLimit).toString()} ${model.coinPayable}',
                                                         textAlign:
                                                             TextAlign.right,
                                                         style:
@@ -711,7 +711,7 @@ class PayCoolView extends StatelessWidget {
                                                   Expanded(
                                                     flex: 2,
                                                     child: Text(
-                                                        '${(NumberUtil().truncateDoubleWithoutRouding(model.amountPayable + model.taxAmount, precision: model.decimalLimit)).toString()} ${model.coinPayable}',
+                                                        '${(NumberUtil.decimalLimiter(model.amountPayable + model.taxAmount, decimalPrecision: model.decimalLimit)).toString()} ${model.coinPayable}',
                                                         textAlign:
                                                             TextAlign.right,
                                                         style:

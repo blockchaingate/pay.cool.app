@@ -7,9 +7,9 @@ class LocalStorageService {
   static SharedPreferences _preferences;
 
   static const String payCoolClubPaymentTxIdkey = 'payCoolClubPaymentTxId';
-  static const String isShowPaycool = 'IsShowPaycool';
-  static const String isShowPaycoolWallet = 'IsShowPaycoolWallet';
-  static const String AutoStartPaycoolScan = 'AutoStartPaycoolScan';
+  static const String isShowPaycoolKey = 'IsShowPaycool';
+  static const String isShowPaycoolWalletkey = 'IsShowPaycoolWallet';
+  static const String autoStartPaycoolScanKey = 'AutoStartPaycoolScan';
 
 /*----------------------------------------------------------------------
                         Instance
@@ -73,19 +73,20 @@ class LocalStorageService {
 /*----------------------------------------------------------------------
                 Paycool pay getter/setter
 ----------------------------------------------------------------------*/
-  bool get showPaycool => _getFromDisk(isShowPaycool) ?? false;
-  set showPaycool(bool value) => _saveToDisk(isShowPaycool, value);
+  bool get showPaycool => _getFromDisk(isShowPaycoolKey) ?? false;
+  set showPaycool(bool value) => _saveToDisk(isShowPaycoolKey, value);
 
 /*----------------------------------------------------------------------
                 Paycool wallet getter/setter
 ----------------------------------------------------------------------*/
-  bool get showPaycoolClub => _getFromDisk(isShowPaycoolWallet) ?? false;
-  set showPaycoolClub(bool value) => _saveToDisk(isShowPaycoolWallet, value);
+  bool get showPaycoolClub => _getFromDisk(isShowPaycoolWalletkey) ?? false;
+  set showPaycoolClub(bool value) => _saveToDisk(isShowPaycoolWalletkey, value);
 
 /*----------------------------------------------------------------------
                 auto Start Paycool Scan getter/setter
 ----------------------------------------------------------------------*/
-  bool get autoStartPaycoolScan => _getFromDisk(AutoStartPaycoolScan) ?? false;
+  bool get autoStartPaycoolScan =>
+      _getFromDisk(autoStartPaycoolScanKey) ?? false;
   set autoStartPaycoolScan(bool value) =>
-      _saveToDisk(AutoStartPaycoolScan, value);
+      _saveToDisk(autoStartPaycoolScanKey, value);
 }

@@ -1,6 +1,7 @@
 import 'package:exchangily_core/exchangily_core.dart';
 import 'package:exchangily_ui/exchangily_ui.dart';
 import 'package:flutter/material.dart';
+import 'package:pagination_widget/pagination_widget.dart';
 import 'package:paycool/views/paycool/rewards/paycool_rewards_viewmodel.dart';
 
 class PayCoolRewardsView extends StatelessWidget {

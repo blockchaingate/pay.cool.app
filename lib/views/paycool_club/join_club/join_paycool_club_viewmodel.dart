@@ -175,7 +175,7 @@ class JoinPayCoolClubViewModel extends BaseViewModel {
     var walletUtil = WalletUtil();
     for (var i = 0; i < paymentCoins.length; i++) {
       await walletUtil
-          .assignWalletAddress(AppWallet(tickerName: paymentCoins[i]))
+          .setAppWallet(AppWallet(tickerName: paymentCoins[i]))
           .then((wallet) {
         if (paymentCoins[i] == 'DUSD') {
           dusdWalletAddress = wallet.address;
@@ -240,8 +240,23 @@ class JoinPayCoolClubViewModel extends BaseViewModel {
 
   sendCoinFunc(
       seed, dusdCoinType, officialBindpayAddress, fixedAmountToPay) async {
-    await walletService
-        .sendCoin(seed, dusdCoinType, officialBindpayAddress, fixedAmountToPay)
+    var txModel = TransactionModel(
+        seed: seed,
+        amount: fixedAmountToPay,
+        toAddress: officialBindpayAddress);
+    var kanbanEnvConfig = environmentService.chainEnvConfig('Kanban');
+
+    var envConfig = EnvConfig(
+        coinType: dusdCoinType,
+        kanbanBaseUrl: kanbanEnvConfig.kanbanBaseUrl,
+        gasLimit: kanbanEnvConfig.gasLimit,
+        gasPrice: kanbanEnvConfig.gasPrice);
+
+    var txHex = await walletService.txHexforSendCoin(txModel, envConfig);
+    var appData =
+        await sharedService.sharedAppData(Constants.exchangilyAppName);
+    await KanbanUtils.sendRawKanbanTransaction(
+            envConfig.kanbanBaseUrl, txHex, appData)
         .then((res) async {
       log.w('Result $res');
       txHash = res['transactionHash'];
@@ -277,14 +292,11 @@ class JoinPayCoolClubViewModel extends BaseViewModel {
     });
   }
 
-// generate raw tx and send
   generateRawTxAndSend(seed, abiHex, toAddress) async {
     var kanbanEnvConfig = environmentService.chainEnvConfig('Kanban');
 
-    var fabEnvConfig = environmentService.chainEnvConfig('FAB');
-
-    var transactionData =
-        await walletService.assignTransactionData(seed, fabEnvConfig);
+    var transactionData = await walletService.assignTransactionData(
+        seed, environmentService.envConfigExgKeyPair());
 
     var appData =
         await sharedService.sharedAppData(Constants.exchangilyAppName);

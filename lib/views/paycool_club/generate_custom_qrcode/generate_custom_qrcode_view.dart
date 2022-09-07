@@ -7,6 +7,8 @@ import 'package:flutter/services.dart';
 import 'package:paycool/utils/barcode_util.dart';
 import 'package:paycool/views/paycool_club/paycool_club_service.dart';
 
+import '../../../utils/paycool_util.dart';
+
 class GenerateCustomQrCodeView extends StatefulWidget {
   const GenerateCustomQrCodeView({Key key}) : super(key: key);
 
@@ -150,6 +152,7 @@ class _GenerateCustomQrCodeViewState extends State<GenerateCustomQrCodeView> {
   }
 
   generateCustomQrCode(String refAddress) async {
+    final environmentService = locator<EnvironmentService>();
     FocusScope.of(context).requestFocus(FocusNode());
     setState(() {
       isBusy = true;
@@ -158,9 +161,9 @@ class _GenerateCustomQrCodeViewState extends State<GenerateCustomQrCodeView> {
     int dusdCoinType = 131074;
     String fabAddress =
         await sharedService.getFabAddressFromCoreWalletDatabase();
-    var paycoolSmartContractAddress = environment['addresses']['smartContract']
-        ['PaycoolSmartContractAddress'];
-    var abiHex = getPayCoolClubFuncABI(
+    var paycoolSmartContractAddress =
+        environmentService.smartContractAddress('PaycoolSmartContractAddress');
+    var abiHex = PaycoolUtil.getPayCoolClubFuncABI(
         dusdCoinType, fabAddress, referralController.text);
     var holder = {
       'name': 'Paycool Defi Management',

@@ -42,6 +42,8 @@ class PayCoolViewmodel extends FutureViewModel {
   final userSettingsDatabaseService =
       localLocator<UserSettingsDatabaseService>();
   final environmentService = locator<EnvironmentService>();
+  final tokenService = locator<TokenService>();
+
   String tickerName = '';
   BuildContext context;
   Decimal quantity = Constants.decimalZero;
@@ -59,8 +61,8 @@ class PayCoolViewmodel extends FutureViewModel {
   var seed = [];
   bool isMember = false;
   bool isAutoStartPaycoolScan;
-  double amountPayable = 0.0;
-  double taxAmount = 0.0;
+  Decimal amountPayable = Constants.decimalZero;
+  Decimal taxAmount = Constants.decimalZero;
   String coinPayable = '';
   final referralController = TextEditingController();
 
@@ -311,15 +313,16 @@ class PayCoolViewmodel extends FutureViewModel {
         await sharedService.getExgAddressFromCoreWalletDatabase();
     var gasAmount = await walletService.gasBalance(
         environmentService.kanbanBaseUrl(), exgAddress);
-    if (gasAmount == 0.0) {
+    if (gasAmount == Constants.decimalZero) {
       sharedService.sharedSimpleNotification(
           FlutterI18n.translate(context, "insufficientGasAmount"));
       setBusy(false);
       return;
     }
+    var walletUtil = WalletUtil();
     String selectedCoinAddress =
-        await coinService.getCoinWalletAddress(tickerName, tokenType: 'ETH');
-    List<WalletBalance> walletBalanceRes;
+        await walletUtil.setWalletAddress(tickerName, tokenType: 'ETH');
+    List<WalletBalanceV2> walletBalanceRes;
     await apiService
         .getSingleWalletBalanceV2(environmentService.kanbanBaseUrl(),
             fabAddress, tickerName, selectedCoinAddress)
@@ -357,7 +360,7 @@ class PayCoolViewmodel extends FutureViewModel {
   signTxV2(String contractAddress) async {
     String exgAddress =
         await sharedService.getExgAddressFromCoreWalletDatabase();
-    var nonce = await KanbanUtils.getNonce(
+    var nonce = await KanbanUtils.getKanbanNonce(
         environmentService.kanbanBaseUrl(), exgAddress);
 
     //   Web
@@ -375,30 +378,36 @@ class PayCoolViewmodel extends FutureViewModel {
       if (passRes.confirmed) {
         setBusy(true);
         String mnemonic = passRes.returnedText;
-
         seed = MnemonicUtils.generateSeed(mnemonic);
-        var keyPairKanban = FabUtils.getExgKeyPair(Uint8List.fromList(seed));
-        debugPrint('keyPairKanban $keyPairKanban');
-        int kanbanGasPrice = environment["chains"]["KANBAN"]["gasPrice"];
-        int kanbanGasLimit = environment["chains"]["KANBAN"]["gasLimit"];
+
+        var transactionData = await walletService.assignTransactionData(
+            seed, environmentService.envConfigExgKeyPair());
+
+        var txModel = TransactionModel(
+            seed: seed,
+            abiHex: finalAbiHex,
+            nonce: transactionData.nonce,
+            privateKey: transactionData.privateKey,
+            toAddress: contractAddress,
+            kanbanAddress: transactionData.kanbanAddress);
+
+        EnvConfig envConfigKanban = environmentService.kanbanEnvConfig();
         var txKanbanHex;
 
         try {
-          txKanbanHex = await signAbiHexWithPrivateKey(
-              finalAbiHex,
-              HEX.encode(keyPairKanban["privateKey"]),
-              contractAddress,
-              nonce,
-              kanbanGasPrice,
-              kanbanGasLimit);
+          txKanbanHex =
+              await AbiUtils.signAbiHexWithPrivateKey(txModel, envConfigKanban);
 
           log.i('txKanbanHex $txKanbanHex');
         } catch (err) {
           setBusy(false);
           log.e('err $err');
         }
+        var appData =
+            await sharedService.sharedAppData(Constants.exchangilyAppName);
 
-        var resBody = await sendPayCoolRawTransaction(txKanbanHex);
+        var resBody = await KanbanUtils.sendRawKanbanTransaction(
+            baseBlockchainGateV2Url, txKanbanHex, appData);
         var res = resBody['_body'];
         var txHash = res['transactionHash'];
         //{"ok":true,"_body":{"transactionHash":"0x855f2d8ec57418670dd4cb27ecb71c6794ada5686e771fe06c48e30ceafe0548","status":"0x1"}}
@@ -448,144 +457,6 @@ class PayCoolViewmodel extends FutureViewModel {
         navigationService.navigateTo(PaycoolConstants.payCoolRewardsViewRoute);
       }
     });
-  }
-
-// sign tx v1
-  signTx(String contractAddress) async {
-    String exgAddress =
-        await sharedService.getExgAddressFromCoreWalletDatabase();
-    var nonce = await FabUtils.getNonce(exgAddress);
-    var scanToPayModel;
-    abiHex = scanToPayModel.datAbiHex;
-    log.w('abi hex $abiHex');
-    var abi = scanToPayModel.datAbiHex.substring(0, 10);
-// get ref parent address
-    List<String> parentAddresses = [];
-    await payCoolService.getParentAddress(fabAddress).then((res) {
-      if (res.isNotEmpty) {
-        for (var address in res) {
-          parentAddresses.add(FabUtils.fabToExgAddress(address));
-        }
-      }
-    });
-    log.w('parentAddresses $parentAddresses');
-
-    List<String> agentAddresses = [];
-    await payCoolService.getRegionalAgent(fabAddress).then((res) {
-      if (res.isNotEmpty) {
-        for (var address in res) {
-          agentAddresses.add(FabUtils.fabToExgAddress(address));
-        }
-      }
-    });
-    log.w('agentAddresses $agentAddresses');
-
-    // decode data abihex
-    // await payCoolService
-    //     .decodeScannedAbiHex(abiHex)
-    //     .then((value) => decodedData = value);
-    // debugPrint('decodedData $decodedData');
-
-    // encode (decoded data and parent addresses
-    var decodedData;
-    await payCoolService
-        .encodeAbiHex(decodedData[0], int.parse(decodedData[1]), decodedData[2],
-            decodedData[3], agentAddresses, parentAddresses, '')
-        .then((value) => abiHex = value);
-    String finalAbiHex = abi + abiHex;
-    log.i('finalAbiHex $finalAbiHex');
-    await dialogService
-        .showDialog(
-            title: FlutterI18n.translate(context, "enterPassword"),
-            description: FlutterI18n.translate(
-                context, "dialogManagerTypeSamePasswordNote"),
-            buttonTitle: FlutterI18n.translate(context, "confirm"))
-        .then((passRes) async {
-      if (passRes.confirmed) {
-        setBusy(true);
-        String mnemonic = passRes.returnedText;
-
-        seed = MnemonicUtils.generateSeed(mnemonic);
-        var keyPairKanban = FabUtils.getExgKeyPair(Uint8List.fromList(seed));
-        debugPrint('keyPairKanban $keyPairKanban');
-        int kanbanGasPrice = environment["chains"]["KANBAN"]["gasPrice"];
-        int kanbanGasLimit = environment["chains"]["KANBAN"]["gasLimit"];
-        var txKanbanHex;
-
-        try {
-          txKanbanHex = await signAbiHexWithPrivateKey(
-              finalAbiHex,
-              HEX.encode(keyPairKanban["privateKey"]),
-              contractAddress,
-              nonce,
-              kanbanGasPrice,
-              kanbanGasLimit);
-
-          log.i('txKanbanHex $txKanbanHex');
-        } catch (err) {
-          setBusy(false);
-          log.e('err $err');
-        }
-
-        var resBody = await sendPayCoolRawTransaction(txKanbanHex);
-        var res = resBody['_body'];
-        var txHash = res['transactionHash'];
-        //{"ok":true,"_body":{"transactionHash":"0x855f2d8ec57418670dd4cb27ecb71c6794ada5686e771fe06c48e30ceafe0548","status":"0x1"}}
-
-        debugPrint('res $res');
-        if (res['status'] == '0x1') {
-          sharedService.sharedSimpleNotification(
-              FlutterI18n.translate(context, "success"),
-
-              // subtitle: txHash.toString(),
-              isError: false);
-        } else if (res['status'] == '0x0') {
-          sharedService.sharedSimpleNotification(
-              FlutterI18n.translate(context, "failed"),
-              isError: true);
-        }
-        var errMsg = res['errMsg'];
-      } else if (passRes.returnedText == 'Closed' && !passRes.confirmed) {
-        log.e('Dialog Closed By User');
-
-        setBusy(false);
-      } else {
-        log.e('Wrong pass');
-        setBusy(false);
-
-        sharedService.sharedSimpleNotification(
-            FlutterI18n.translate(context, "pleaseProvideTheCorrectPassword"),
-            isError: true);
-      }
-    });
-    setBusy(false);
-  }
-/*----------------------------------------------------------------------
-                          Tx history
-----------------------------------------------------------------------*/
-
-  getPayCoolTransactionHistory() async {
-    setBusy(true);
-    transactionHistory = [];
-    await apiService.getBindpayHistoryEvents().then((res) {
-      res.forEach((tx) {
-        transactionHistory.add(tx);
-      });
-      log.w('LightningRemit txs ${transactionHistory.length}');
-      transactionHistory.sort(
-          (a, b) => DateTime.parse(b.date).compareTo(DateTime.parse(a.date)));
-    });
-    setBusy(false);
-  }
-
-  // launch url
-  openExplorer(String txId) async {
-    String exchangilyExplorerUrl = exchangilyExplorerUrl + txId;
-    log.i(
-        'LightningRemit open explorer - explorer url - $exchangilyExplorerUrl');
-    if (await canLaunch(exchangilyExplorerUrl)) {
-      await launch(exchangilyExplorerUrl);
-    }
   }
 
 /*----------------------------------------------------------------------
@@ -1117,7 +988,8 @@ class PayCoolViewmodel extends FutureViewModel {
       return;
     }
     try {
-      await TokenService.getSingleTokenData(scanToPayModelV2.currency)
+      await tokenService
+          .getSingleTokenData(scanToPayModelV2.currency)
           .then((t) {
         decimalLimit = t.decimal;
         log.i('decimalLimit $decimalLimit');
@@ -1126,12 +998,10 @@ class PayCoolViewmodel extends FutureViewModel {
       if (decimalLimit == null || decimalLimit == 0) decimalLimit = 8;
       log.e('Decimal limit CATCH in barcode scan: $err');
     }
-    amountPayable = NumberUtil().truncateDoubleWithoutRouding(
-        scanToPayModelV2.totalAmount,
-        precision: decimalLimit);
-    taxAmount = NumberUtil().truncateDoubleWithoutRouding(
-        scanToPayModelV2.totalTax,
-        precision: decimalLimit);
+    amountPayable = NumberUtil.decimalLimiter(scanToPayModelV2.totalAmount,
+        decimalPrecision: decimalLimit);
+    taxAmount = NumberUtil.decimalLimiter(scanToPayModelV2.totalTax,
+        decimalPrecision: decimalLimit);
 
     if (Platform.isIOS) {
       updateSelectedTickernameIOS(
@@ -1188,7 +1058,8 @@ class PayCoolViewmodel extends FutureViewModel {
           int ct = int.parse(res[1]);
           coinPayable = Constants.coinTypeWithTicker[ct];
           try {
-            await TokenService.getSingleTokenData(tickerName, coinType: ct)
+            await tokenService
+                .getSingleTokenData(tickerName, coinType: ct)
                 .then((t) {
               decimalLimit = t.decimal;
               log.i('decimalLimit $decimalLimit');
@@ -1264,7 +1135,7 @@ class PayCoolViewmodel extends FutureViewModel {
     notifyListeners();
   }
 
-  updateSelectedTickernameIOS(int index, double updatedQuantity,
+  updateSelectedTickernameIOS(int index, Decimal updatedQuantity,
       {bool isShowBottomSheet = false}) {
     setBusy(true);
     debugPrint(

@@ -71,25 +71,25 @@ class PayCoolTransactionHistoryViewModel extends FutureViewModel {
         String mnemonic = passRes.returnedText;
 
         var seed = MnemonicUtils.generateSeed(mnemonic);
-        EnvConfig envConfigExgKeyPair = EnvConfig(
-            coinType: environmentService.chainCoinType('FAB'),
-            network: environmentService.chainNetwork('BTC'));
-        var keyPairKanban = FabUtils.getExgKeyPair(
-            Uint8List.fromList(seed), envConfigExgKeyPair);
-        debugPrint('keyPairKanban $keyPairKanban');
+
+        var transactionData = await walletService.assignTransactionData(
+            seed, environmentService.envConfigExgKeyPair());
+
+        var txModel = TransactionModel(
+            seed: seed,
+            abiHex: abiHex,
+            nonce: transactionData.nonce,
+            privateKey: transactionData.privateKey,
+            toAddress: smartContractAddress,
+            kanbanAddress: transactionData.kanbanAddress);
+
+        EnvConfig envConfigKanban = environmentService.kanbanEnvConfig();
 
         var txKanbanHex;
-        String exgAddress =
-            await sharedService.getExgAddressFromCoreWalletDatabase();
-        var nonce = await KanbanUtils.getNonce(
-            environmentService.kanbanBaseUrl(), exgAddress);
+
         try {
-          txKanbanHex = await AbiUtils.signAbiHexWithPrivateKey(
-              abiHex,
-              HEX.encode(keyPairKanban["privateKey"]),
-              smartContractAddress,
-              nonce,
-              environmentService.chainEnvConfig('KANBAN'));
+          txKanbanHex =
+              await AbiUtils.signAbiHexWithPrivateKey(txModel, envConfigKanban);
 
           log.i('txKanbanHex $txKanbanHex');
         } catch (err) {

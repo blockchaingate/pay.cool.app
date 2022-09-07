@@ -242,38 +242,32 @@ packages:
   exchangily_core:
     dependency: "direct main"
     description:
-      path: exchangily_core
-      ref: main
-      resolved-ref: "49d835f41587d8ea597e5b55153a421a86923bf5"
-      url: "ssh://git@github.com/blockchaingate/exchangily-packages.git"
-    source: git
+      path: "../exchangily-packages/exchangily_core"
+      relative: true
+    source: path
     version: "0.0.1"
   exchangily_ui:
     dependency: "direct main"
     description:
       path: exchangily_ui
       ref: main
-      resolved-ref: "49d835f41587d8ea597e5b55153a421a86923bf5"
+      resolved-ref: "66e75489b9ffc64f6c1053092f92b5fe19ab95f3"
       url: "ssh://git@github.com/blockchaingate/exchangily-packages.git"
     source: git
     version: "0.0.1"
   exchangily_wallet_features:
     dependency: "direct main"
     description:
-      path: exchangily_wallet_features
-      ref: main
-      resolved-ref: "49d835f41587d8ea597e5b55153a421a86923bf5"
-      url: "ssh://git@github.com/blockchaingate/exchangily-packages.git"
-    source: git
+      path: "../exchangily-packages/exchangily_wallet_features"
+      relative: true
+    source: path
     version: "0.0.1"
   exchangily_wallet_setup:
     dependency: "direct main"
     description:
-      path: exchangily_wallet_setup
-      ref: main
-      resolved-ref: "49d835f41587d8ea597e5b55153a421a86923bf5"
-      url: "ssh://git@github.com/blockchaingate/exchangily-packages.git"
-    source: git
+      path: "../exchangily-packages/exchangily_wallet_setup"
+      relative: true
+    source: path
     version: "0.0.1"
   fake_async:
     dependency: transitive
@@ -550,11 +544,9 @@ packages:
   lightning_remit:
     dependency: "direct main"
     description:
-      path: lightning_remit
-      ref: main
-      resolved-ref: "49d835f41587d8ea597e5b55153a421a86923bf5"
-      url: "ssh://git@github.com/blockchaingate/exchangily-packages.git"
-    source: git
+      path: "../exchangily-packages/lightning_remit"
+      relative: true
+    source: path
     version: "0.0.1"
   lints:
     dependency: transitive
@@ -692,11 +684,9 @@ packages:
   pagination_widget:
     dependency: "direct main"
     description:
-      path: pagination_widget
-      ref: main
-      resolved-ref: "49d835f41587d8ea597e5b55153a421a86923bf5"
-      url: "ssh://git@github.com/blockchaingate/exchangily-packages.git"
-    source: git
+      path: "../exchangily-packages/pagination_widget"
+      relative: true
+    source: path
     version: "0.0.1"
   path:
     dependency: transitive
@@ -767,7 +757,7 @@ packages:
       name: path_provider_windows
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.2"
+    version: "2.1.3"
   pedantic:
     dependency: transitive
     description:
@@ -883,11 +873,9 @@ packages:
   referral:
     dependency: "direct main"
     description:
-      path: referral
-      ref: main
-      resolved-ref: "49d835f41587d8ea597e5b55153a421a86923bf5"
-      url: "ssh://git@github.com/blockchaingate/exchangily-packages.git"
-    source: git
+      path: "../exchangily-packages/referral"
+      relative: true
+    source: path
     version: "0.0.1"
   rflutter_alert:
     dependency: transitive
@@ -1047,7 +1035,7 @@ packages:
       name: synchronized
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.0+2"
+    version: "3.0.0+3"
   term_glyph:
     dependency: transitive
     description:
@@ -1205,11 +1193,9 @@ packages:
   wallet_dashboard:
     dependency: "direct main"
     description:
-      path: wallet_dashboard
-      ref: main
-      resolved-ref: "49d835f41587d8ea597e5b55153a421a86923bf5"
-      url: "ssh://git@github.com/blockchaingate/exchangily-packages.git"
-    source: git
+      path: "../exchangily-packages/wallet_dashboard"
+      relative: true
+    source: path
     version: "0.0.1"
   watcher:
     dependency: transitive
@@ -1238,7 +1224,7 @@ packages:
       name: win32
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.7.0"
+    version: "3.0.0"
   xdg_directories:
     dependency: transitive
     description:
