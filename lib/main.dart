@@ -60,6 +60,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final environmentService = locator<EnvironmentService>();
+    environmentService.setAppName(Constants.paycoolAppName);
     return OverlaySupport(
       child: MaterialApp(
         darkTheme: ThemeData.dark(),

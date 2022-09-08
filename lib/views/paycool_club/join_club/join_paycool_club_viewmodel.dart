@@ -197,22 +197,12 @@ class JoinPayCoolClubViewModel extends BaseViewModel {
               paymentCoins[i] == 'USDT' ? usdtWalletAddress : dusdWalletAddress)
           .then((walletBalance) async {
         if (walletBalance != null &&
-            !walletBalance[0].unlockedExchangeBalance.toDouble().isNegative) {
-          log.w(walletBalance[0].unlockedExchangeBalance);
+            !walletBalance.unlockedExchangeBalance.toDouble().isNegative) {
+          log.w(walletBalance.unlockedExchangeBalance);
           paymentCoins[i] == 'USDT'
-              ? usdtExchangeBalance = walletBalance[0].unlockedExchangeBalance
-              : dusdExchangeBalance = walletBalance[0].unlockedExchangeBalance;
+              ? usdtExchangeBalance = walletBalance.unlockedExchangeBalance
+              : dusdExchangeBalance = walletBalance.unlockedExchangeBalance;
         }
-        //  else {
-        //   String address = await walletService.getExgAddressFromWalletDatabase();
-        //   await walletService
-        //       .getAllExchangeBalances(address)
-        //       .then((exchangeBalanceList) {
-        //     if (exchangeBalanceList != null) {
-        //       exchangeBalanceList.forEach(() {});
-        //     }
-        //   });
-        // }
       }).catchError((err) {
         log.e(err);
         setBusy(false);

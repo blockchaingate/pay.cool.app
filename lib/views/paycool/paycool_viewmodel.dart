@@ -322,7 +322,7 @@ class PayCoolViewmodel extends FutureViewModel {
     var walletUtil = WalletUtil();
     String selectedCoinAddress =
         await walletUtil.setWalletAddress(tickerName, tokenType: 'ETH');
-    List<WalletBalanceV2> walletBalanceRes;
+    WalletBalanceV2 walletBalanceRes;
     await apiService
         .getSingleWalletBalanceV2(environmentService.kanbanBaseUrl(),
             fabAddress, tickerName, selectedCoinAddress)
@@ -338,8 +338,7 @@ class PayCoolViewmodel extends FutureViewModel {
       setBusy(false);
       return;
     }
-    if (walletBalanceRes[0].unlockedExchangeBalance <
-        amountPayable + taxAmount) {
+    if (walletBalanceRes.unlockedExchangeBalance < amountPayable + taxAmount) {
       sharedService.sharedSimpleNotification(
           FlutterI18n.translate(context, "insufficientBalance"),
           isError: true);

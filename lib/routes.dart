@@ -46,6 +46,7 @@ class RouteGenerator {
       case chooseWalletLanguageViewRoute:
         return MaterialPageRoute(
             builder: (_) => const ChooseWalletLanguageView());
+
       case walletSetupViewRoute:
         return MaterialPageRoute(builder: (_) => const WalletSetupView());
 
