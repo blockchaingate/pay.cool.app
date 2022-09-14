@@ -5,8 +5,6 @@ import 'package:paycool/views/paycool_club/paycool_club_dashboard_viewmodel.dart
 import 'package:paycool/widgets/bottom_nav.dart';
 import 'package:flutter/material.dart';
 import 'package:paycool/widgets/server_error_widget.dart';
-
-import '../../constants/paycool_api_routes.dart';
 import '../../constants/paycool_constants.dart';
 
 class PayCoolClubDashboardView extends StatelessWidget {
@@ -100,25 +98,6 @@ class PayCoolClubDashboardView extends StatelessWidget {
                                     headText3.copyWith(color: secondaryColor),
                               ),
                             ),
-                            // Container(
-                            //   width: MediaQuery.of(context).size.width * 0.52,
-                            //   child: ElevatedButton(
-                            //     style: ButtonStyle(
-                            //         backgroundColor:
-                            //             MaterialStateProperty.all(
-                            //                 primaryColor)),
-                            //     child: Text(
-                            //       FlutterI18n.translate(context, "joinNow"),
-                            //       style: headText3.copyWith(
-                            //           fontWeight: FontWeight.bold),
-                            //     ),
-                            //     onPressed: () {
-                            //       model.navigationService
-                            //           .navigateTo(JoinPayCoolClubViewRoute);
-                            //       //  model.joinClub();
-                            //     },
-                            //   ),
-                            // )
                           ),
                         ],
                       ),
@@ -150,33 +129,6 @@ class PayCoolClubDashboardView extends StatelessWidget {
             ),
           ),
         ),
-
-        // !model.isClubMember ? generateQR(context, model) : Container()
-        // UIHelper.divider,
-        // UIHelper.verticalSpaceMedium,
-        // Text(
-        //     AppLocalizations.of(context)
-        //         .notJoinedPaycoolClub,
-        //     style: headText3),
-        // UIHelper.verticalSpaceSmall,
-        // ElevatedButton(
-        //   style: ButtonStyle(
-        //       backgroundColor:
-        //           MaterialStateProperty
-        //               .all(
-        //                   primaryColor)),
-        //   child: Text(
-        //     AppLocalizations.of(context)
-        //         .clickToJoin,
-        //     style: headText3,
-        //   ),
-        //   onPressed: () {
-        //     model.navigationService
-        //         .navigateTo(
-        //             JoinPayCoolClubViewRoute);
-        //     //  model.joinClub();
-        //   },
-        // ),
       ],
     );
   }
@@ -279,15 +231,6 @@ class PayCoolClubDashboardView extends StatelessWidget {
                     FlutterI18n.translate(context, "lightningRemit"),
                     style: headText3,
                   ),
-                  // Text(
-                  //   FlutterI18n.translate(context, "LightningRemit") +
-                  //       ' ' +
-                  //       AppLocalizations.of(context)
-                  //           .receiveAddress,
-                  //   style: headText3,
-                  // ),
-                  // UIHelper.horizontalSpaceSmall,
-                  // Icon(Icons.qr_code)
                 ],
               ),
               onPressed: () {
@@ -639,21 +582,7 @@ class PayCoolClubDashboardView extends StatelessWidget {
                                                               .toStringAsFixed(
                                                                   2),
                                                       style: headText5)),
-                                              // ListTile(
-                                              //   horizontalTitleGap: 0,
-                                              //   leading: Icon(
-                                              //     Icons.place_outlined,
-                                              //     color: white,
-                                              //     size: 18,
-                                              //   ),
-                                              //   title: Text(
-                                              //     'Region',
-                                              //     style: Theme.of(context)
-                                              //         .textTheme
-                                              //         .headText4,
-                                              //   ),
-                                              //   trailing: Text('USA'),
-                                              // ),
+
                                               InkWell(
                                                 onTap: () => model
                                                     .navigationService
@@ -689,54 +618,11 @@ class PayCoolClubDashboardView extends StatelessWidget {
 
                               UIHelper.verticalSpaceMedium,
 
-                              // Container(
-                              //     margin: EdgeInsets.symmetric(
-                              //         vertical: 8.0, horizontal: 20),
-                              //     decoration: BoxDecoration(
-                              //         color: primaryColor,
-                              //         border: Border.all(
-                              //             color: secondaryColor, width: 1),
-                              //         borderRadius: BorderRadius.only(
-                              //             topLeft: Radius.circular(50),
-                              //             bottomRight: Radius.circular(50))),
-                              //     child: ElevatedButton(
-                              //       style: ButtonStyle(
-                              //         shape: MaterialStateProperty.all(
-                              //             RoundedRectangleBorder(
-                              //                 borderRadius: BorderRadius.only(
-                              //                     topLeft: Radius.circular(45),
-                              //                     bottomRight:
-                              //                         Radius.circular(45)))),
-                              //         backgroundColor:
-                              //             MaterialStateProperty.all(
-                              //                 secondaryColor),
-                              //       ),
-                              //       child: Row(
-                              //         mainAxisAlignment:
-                              //             MainAxisAlignment.center,
-                              //         children: [
-                              //           Icon(
-                              //             Icons.add,
-                              //             size: 14,
-                              //             color: white,
-                              //           ),
-                              //           Text(
-                              //             FlutterI18n.translate(
-                              //                     context, "getFree") +
-                              //                 ' FAB',
-                              //             style: headText5.copyWith(
-                              //                 fontWeight: FontWeight.w400),
-                              //           )
-                              //         ],
-                              //       ),
-                              //       onPressed: model.getFreeFab,
-                              //     )),
                               UIHelper.verticalSpaceMedium,
                             ],
                           ),
                         ),
                       ),
-            bottomNavigationBar: BottomNavBar(count: 0),
           );
         });
   }

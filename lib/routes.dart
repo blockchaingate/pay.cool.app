@@ -16,6 +16,7 @@ import 'package:exchangily_wallet_features/exchangily_wallet_features.dart';
 import 'package:exchangily_wallet_setup/exchangily_wallet_setup.dart';
 import 'package:flutter/material.dart';
 import 'package:lightning_remit/lightning_remit.dart';
+import 'package:paycool/views/home/home_view.dart';
 import 'package:referral/referral.dart';
 import 'package:wallet_dashboard/wallet_dashboard.dart';
 import 'constants/paycool_constants.dart';
@@ -37,7 +38,10 @@ class RouteGenerator {
 
     switch (settings.name) {
       case '/':
-        return MaterialPageRoute(builder: (_) => const WalletSetupView());
+        return MaterialPageRoute(builder: (_) => const HomeView());
+
+      case homeViewRoute:
+        return MaterialPageRoute(builder: (_) => HomeView(customIndex: args));
 
 /*----------------------------------------------------------------------
                           Wallet Setup

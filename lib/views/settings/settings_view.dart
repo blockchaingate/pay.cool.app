@@ -67,7 +67,6 @@ class SettingsView extends StatelessWidget {
               //         ),
               //       )
               : SettingsContainer(model: model),
-          bottomNavigationBar: BottomNavBar(count: 4),
         ),
       ),
     );

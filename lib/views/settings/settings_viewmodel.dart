@@ -18,6 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:paycool/constants/paycool_constants.dart';
 
 import 'package:paycool/services/local_storage_service.dart';
+import 'package:paycool/views/home/home_view.dart';
 import 'package:paycool/views/settings/settings_view.dart';
 
 class SettingsViewmodel extends BaseViewModel with StoppableService {
@@ -304,7 +305,8 @@ class SettingsViewmodel extends BaseViewModel with StoppableService {
     setBusy(false);
     log.w('setShowPaycoolWallet: ' +
         localStorageService.showPaycoolClub.toString());
-    navigationService.navigateUsingPushReplacementNamed(settingViewRoute);
+    navigationService.navigateUsingPushReplacementNamed(homeViewRoute,
+        arguments: isShowPaycoolClub ? 4 : 3);
     // storageService.showPaycoolClub?
     // navigationService.navigateUsingpopAndPushedNamed(PayCoolClubDashboardViewRoute):
     // navigationService.navigateUsingpopAndPushedNamed(DashboardViewRoute);
@@ -512,12 +514,13 @@ class SettingsViewmodel extends BaseViewModel with StoppableService {
       UserSettings us = UserSettings(id: 1, language: 'en', theme: '');
       await walletService.updateUserSettingsDb(us, isUserSettingsEmpty);
     }
-    // navigationService.navigateUsingpopAndPushedNamed(SettingViewRoute);
+    navigationService.navigateUsingPushReplacementNamed(homeViewRoute,
+        arguments: localStorageService.showPaycoolClub ? 4 : 3);
 
-    Navigator.push(
-      context,
-      FadeRoute(widget: const SettingsView()),
-    );
+    // Navigator.push(
+    //   context,
+    //   FadeRoute(widget: const HomeView(customIndex: 4)),
+    // );
     setBusy(false);
   }
 

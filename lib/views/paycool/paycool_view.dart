@@ -67,11 +67,12 @@ class PayCoolView extends StatelessWidget {
                           children: [
                             Padding(
                               // color: white,
-                              padding: EdgeInsets.only(right: 10),
+                              padding: const EdgeInsets.only(right: 10),
                               child: Image.asset(
-                                "assets/images/launcher/paycool-logo-ios.jpeg",
+                                "assets/images/start-page/paycool/logo.png",
                                 width: 155,
                                 height: 85,
+                                package: 'exchangily_core',
                               ),
                             ),
                             const SizedBox(
@@ -968,21 +969,6 @@ class PayCoolView extends StatelessWidget {
               ),
             ),
           ),
-
-          bottomNavigationBar: BottomNavBar(count: 2),
-          // floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-          // floatingActionButton: Container(
-          //   color: primaryColor,
-          //   child: IconButton(
-          //     onPressed: () {
-          //       model.scanImageFile();
-          //     },
-          //     icon: const Icon(
-          //       FontAwesomeIcons.fileImage,
-          //       color: white,
-          //     ),
-          //  ),
-          // ),
         ),
       ),
     );
