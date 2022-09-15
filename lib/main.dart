@@ -118,9 +118,11 @@ class MyApp extends StatelessWidget {
           unselectedWidgetColor: white,
           disabledColor: grey.withAlpha(100),
           primaryColor: PaycoolColors.primaryColor,
+          secondaryHeaderColor: PaycoolColors.secondaryColor,
           backgroundColor: PaycoolColors.secondaryColor,
           cardColor: PaycoolColors.walletCardColor,
           canvasColor: PaycoolColors.secondaryColor,
+          //iconTheme: IconThemeData(color: PaycoolColors.ic),
           //  brightness: Brightness.dark,
           buttonTheme: const ButtonThemeData(
               minWidth: double.infinity,

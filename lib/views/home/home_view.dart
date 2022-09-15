@@ -1,3 +1,4 @@
+import 'package:animations/animations.dart';
 import 'package:exchangily_core/exchangily_core.dart';
 import 'package:exchangily_ui/exchangily_ui.dart';
 import 'package:exchangily_wallet_setup/exchangily_wallet_setup.dart';
@@ -23,9 +24,25 @@ class HomeView extends StatelessWidget {
         model.setIndex(customIndex ?? idx);
       },
       builder: (context, HomeViewModel model, child) => Scaffold(
-        body: model.storageService.showPaycoolClub
-            ? getViewForIndex(model.currentIndex)
-            : getViewForIndexWithoutClub(model.currentIndex),
+        body:
+            // PageTransitionSwitcher(
+            //     duration: const Duration(milliseconds: 300),
+            //     reverse: model.reverse,
+            //     transitionBuilder: (
+            //       Widget child,
+            //       Animation<double> animation,
+            //       Animation<double> secondaryAnimation,
+            //     ) {
+            //       return SharedAxisTransition(
+            //           animation: animation,
+            //           secondaryAnimation: secondaryAnimation,
+            //           transitionType: SharedAxisTransitionType.horizontal);
+            //     },
+            //   child:
+            model.storageService.showPaycoolClub
+                ? getViewForIndex(model.currentIndex)
+                : getViewForIndexWithoutClub(model.currentIndex),
+        //),
         bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
           backgroundColor: PaycoolColors.walletCardColor,
