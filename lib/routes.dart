@@ -12,10 +12,12 @@
 */
 
 import 'package:exchangily_core/exchangily_core.dart';
+import 'package:exchangily_ui/exchangily_ui.dart';
 import 'package:exchangily_wallet_features/exchangily_wallet_features.dart';
 import 'package:exchangily_wallet_setup/exchangily_wallet_setup.dart';
 import 'package:flutter/material.dart';
 import 'package:lightning_remit/lightning_remit.dart';
+import 'package:paycool/constants/paycool_styles.dart';
 import 'package:paycool/views/home/home_view.dart';
 import 'package:referral/referral.dart';
 import 'package:wallet_dashboard/wallet_dashboard.dart';
@@ -181,13 +183,13 @@ class RouteGenerator {
       return Scaffold(
         appBar: AppBar(
           title: Text(FlutterI18n.translate(context, "error"),
-              style: const TextStyle(color: Colors.white)),
+              style: const TextStyle(color: white)),
         ),
         body: Center(
           child: Text(
               FlutterI18n.translate(context, "noRouteDefined") +
                   ' ${settings.name}',
-              style: const TextStyle(color: Colors.white)),
+              style: const TextStyle(color: white)),
         ),
       );
     });

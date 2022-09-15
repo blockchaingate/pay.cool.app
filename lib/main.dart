@@ -7,6 +7,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:logger/logger.dart';
 import 'package:package_info/package_info.dart';
+import 'package:paycool/constants/paycool_styles.dart';
 import 'package:paycool/routes.dart';
 import 'package:paycool/service_locator.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -111,19 +112,19 @@ class MyApp extends StatelessWidget {
           visualDensity: VisualDensity.adaptivePlatformDensity,
           // added unselectedWidgetColor to update inactive radio button's color
           appBarTheme: const AppBarTheme(
-              actionsIconTheme: IconThemeData(color: Colors.white),
-              iconTheme: IconThemeData(color: Colors.white),
+              actionsIconTheme: IconThemeData(color: white),
+              iconTheme: IconThemeData(color: white),
               systemOverlayStyle: SystemUiOverlayStyle.light),
-          unselectedWidgetColor: Colors.white,
+          unselectedWidgetColor: white,
           disabledColor: grey.withAlpha(100),
-          primaryColor: primaryColor,
-          backgroundColor: secondaryColor,
-          cardColor: walletCardColor,
-          canvasColor: secondaryColor,
+          primaryColor: PaycoolColors.primaryColor,
+          backgroundColor: PaycoolColors.secondaryColor,
+          cardColor: PaycoolColors.walletCardColor,
+          canvasColor: PaycoolColors.secondaryColor,
           //  brightness: Brightness.dark,
           buttonTheme: const ButtonThemeData(
               minWidth: double.infinity,
-              buttonColor: primaryColor,
+              buttonColor: PaycoolColors.primaryColor,
               padding: EdgeInsets.all(15),
               shape: StadiumBorder(),
               textTheme: ButtonTextTheme.primary),
@@ -151,8 +152,8 @@ class MyApp extends StatelessWidget {
               bodyText2: TextStyle(fontSize: 13, color: red),
               headline6: TextStyle(
                   fontSize: 10.5, color: white, fontWeight: FontWeight.w500)),
-          colorScheme:
-              ColorScheme.fromSwatch().copyWith(secondary: secondaryColor),
+          colorScheme: ColorScheme.fromSwatch()
+              .copyWith(secondary: PaycoolColors.secondaryColor),
         ),
       ),
     );

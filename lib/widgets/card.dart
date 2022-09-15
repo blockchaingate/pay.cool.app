@@ -34,7 +34,7 @@ class ExgCard extends StatelessWidget {
         //           maxLines: 2,
         //           overflow: TextOverflow.ellipsis,
         //           style: TextStyle(
-        //               color: Colors.white,
+        //               color: Colors.PaycoolColors.white,
         //               fontSize: 25,
         //               fontWeight: FontWeight.bold),
         //         ),
@@ -42,7 +42,7 @@ class ExgCard extends StatelessWidget {
         //       // Text(
         //       //   "Plan",
         //       //   style: TextStyle(
-        //       //       color: Colors.white,
+        //       //       color: Colors.PaycoolColors.white,
         //       //       fontSize: 25,
         //       //       fontWeight: FontWeight.bold),
         //       // ),

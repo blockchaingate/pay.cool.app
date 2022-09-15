@@ -1,8 +1,8 @@
 import 'package:exchangily_core/exchangily_core.dart';
 import 'package:exchangily_ui/exchangily_ui.dart';
+import 'package:paycool/constants/paycool_styles.dart';
 import 'package:paycool/views/paycool_club/paycool_club_dashboard_viewmodel.dart';
 
-import 'package:paycool/widgets/bottom_nav.dart';
 import 'package:flutter/material.dart';
 import 'package:paycool/widgets/server_error_widget.dart';
 import '../../constants/paycool_constants.dart';
@@ -71,7 +71,7 @@ class PayCoolClubDashboardView extends StatelessWidget {
                                       FlutterI18n.translate(
                                           context, "vipMember"),
                                       style: headText3.copyWith(
-                                          color: secondaryColor)),
+                                          color: PaycoolColors.secondaryColor)),
                                 ),
                                 Container(
                                   color: yellow,
@@ -82,7 +82,7 @@ class PayCoolClubDashboardView extends StatelessWidget {
                                   child: Text(
                                     FlutterI18n.translate(context, "dashboard"),
                                     style: headText3.copyWith(
-                                        color: secondaryColor,
+                                        color: PaycoolColors.secondaryColor,
                                         fontWeight: FontWeight.w500),
                                   ),
                                 ),
@@ -94,8 +94,8 @@ class PayCoolClubDashboardView extends StatelessWidget {
                             child: Container(
                               child: Text(
                                 FlutterI18n.translate(context, "basicMember"),
-                                style:
-                                    headText3.copyWith(color: secondaryColor),
+                                style: headText3.copyWith(
+                                    color: PaycoolColors.secondaryColor),
                               ),
                             ),
                           ),
@@ -150,7 +150,8 @@ class PayCoolClubDashboardView extends StatelessWidget {
             child: Text(
               FlutterI18n.translate(context, "generateQrCode"),
               style: headText3.copyWith(
-                  color: secondaryColor, fontWeight: FontWeight.w500),
+                  color: PaycoolColors.secondaryColor,
+                  fontWeight: FontWeight.w500),
             ),
             onPressed: () {
               model.navigationService
@@ -223,7 +224,8 @@ class PayCoolClubDashboardView extends StatelessWidget {
             width: MediaQuery.of(context).size.width * 0.52,
             child: ElevatedButton(
               style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(primaryColor)),
+                  backgroundColor:
+                      MaterialStateProperty.all(PaycoolColors.primaryColor)),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -264,7 +266,7 @@ class PayCoolClubDashboardView extends StatelessWidget {
                           return Future(() => false);
                         },
                         child: Container(
-                          color: secondaryColor,
+                          color: PaycoolColors.secondaryColor,
                           alignment: Alignment.center,
                           child: ListView(
                             children: [
@@ -326,7 +328,8 @@ class PayCoolClubDashboardView extends StatelessWidget {
                                             style: ButtonStyle(
                                                 backgroundColor:
                                                     MaterialStateProperty.all(
-                                                        primaryColor)),
+                                                        PaycoolColors
+                                                            .primaryColor)),
                                             child: Center(
                                               child: Text(
                                                 FlutterI18n.translate(
@@ -368,7 +371,7 @@ class PayCoolClubDashboardView extends StatelessWidget {
                                       ],
                                     )
                                   : Container(),
-                              const Divider(color: primaryColor),
+                              const Divider(color: PaycoolColors.primaryColor),
                               // if no star pay member
                               !model.isPayMember && !model.isBusy
                                   ? Container(
@@ -414,7 +417,8 @@ class PayCoolClubDashboardView extends StatelessWidget {
                                             style: ButtonStyle(
                                                 backgroundColor:
                                                     MaterialStateProperty.all(
-                                                        primaryColor)),
+                                                        PaycoolColors
+                                                            .primaryColor)),
                                             child: Center(
                                               child: Row(
                                                 mainAxisAlignment:
@@ -529,7 +533,8 @@ class PayCoolClubDashboardView extends StatelessWidget {
                                                   horizontalTitleGap: 0,
                                                   leading: const Icon(
                                                     Icons.card_membership,
-                                                    color: primaryColor,
+                                                    color: PaycoolColors
+                                                        .primaryColor,
                                                     size: 18,
                                                   ),
                                                   title: Text(

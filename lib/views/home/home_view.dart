@@ -1,4 +1,5 @@
 import 'package:exchangily_core/exchangily_core.dart';
+import 'package:exchangily_ui/exchangily_ui.dart';
 import 'package:exchangily_wallet_setup/exchangily_wallet_setup.dart';
 import 'package:flutter/material.dart';
 import 'package:lightning_remit/lightning_remit.dart';
@@ -27,12 +28,12 @@ class HomeView extends StatelessWidget {
             : getViewForIndexWithoutClub(model.currentIndex),
         bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
-          backgroundColor: walletCardColor,
+          backgroundColor: PaycoolColors.walletCardColor,
           selectedFontSize: 12,
           unselectedFontSize: 12,
           elevation: 10,
           unselectedItemColor: grey,
-          selectedItemColor: primaryColor,
+          selectedItemColor: PaycoolColors.primaryColor,
           showUnselectedLabels: true,
           currentIndex: model.currentIndex,
           onTap: model.setIndex,

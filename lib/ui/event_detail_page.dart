@@ -75,7 +75,7 @@
 //       ),
 //       iconTheme: IconThemeData(
 //         size: 18,
-//         color: Colors.grey.shade800,
+//         color: Colors.PaycoolColors.grey.shade800,
 //       ),
 //       colorScheme: Theme.of(context).colorScheme,
 //     );
@@ -276,7 +276,7 @@
 //     double _borderWidth = 0;
 //     BoxShape _shapeBorder = BoxShape.rectangle;
 //     Color _backColor = Colors.transparent;
-//     Color _backAltColor = Colors.grey.shade700;
+//     Color _backAltColor = Colors.PaycoolColors.grey.shade700;
 //     switch (modifier) {
 //       case ExpanderModifier.none:
 //         break;

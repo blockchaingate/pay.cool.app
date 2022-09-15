@@ -1,6 +1,7 @@
 import 'package:exchangily_core/exchangily_core.dart';
 import 'package:exchangily_ui/exchangily_ui.dart';
 import 'package:flutter/material.dart';
+import 'package:paycool/constants/paycool_styles.dart';
 import 'package:paycool/views/paycool/paycool_model.dart';
 import 'package:paycool/views/paycool_club/join_club/join_paycool_club_viewmodel.dart';
 
@@ -95,7 +96,7 @@ class JoinPayCoolClubView
                       // Payment type container row
                       Container(
                         padding: const EdgeInsets.only(left: 10),
-                        color: primaryColor.withAlpha(75),
+                        color: PaycoolColors.primaryColor.withAlpha(75),
                         child: Row(
                           children: <Widget>[
                             Expanded(
@@ -120,7 +121,8 @@ class JoinPayCoolClubView
                                       Radio(
                                           materialTapTargetSize:
                                               MaterialTapTargetSize.shrinkWrap,
-                                          activeColor: primaryColor,
+                                          activeColor:
+                                              PaycoolColors.primaryColor,
                                           value: 'DUSD',
                                           groupValue: model.groupValue,
                                           onChanged: (t) =>
@@ -133,7 +135,8 @@ class JoinPayCoolClubView
                                       Radio(
                                           materialTapTargetSize:
                                               MaterialTapTargetSize.shrinkWrap,
-                                          activeColor: primaryColor,
+                                          activeColor:
+                                              PaycoolColors.primaryColor,
                                           value: 'USDT',
                                           groupValue: model.groupValue,
                                           onChanged: (t) =>
@@ -273,12 +276,13 @@ class JoinPayCoolClubView
                                     padding: EdgeInsets.zero,
                                     icon: const Icon(
                                       Icons.camera_alt_outlined,
-                                      color: primaryColor,
+                                      color: PaycoolColors.primaryColor,
                                     ),
                                     onPressed: () => model.scanBarCode()),
                                 focusedBorder: const OutlineInputBorder(
                                   borderSide: BorderSide(
-                                      color: primaryColor, width: 1.0),
+                                      color: PaycoolColors.primaryColor,
+                                      width: 1.0),
                                 ),
                                 enabledBorder: const OutlineInputBorder(
                                   borderSide:
@@ -322,8 +326,8 @@ class JoinPayCoolClubView
                           UIHelper.horizontalSpaceSmall,
                           ElevatedButton(
                             style: ButtonStyle(
-                                backgroundColor:
-                                    MaterialStateProperty.all(primaryColor)),
+                                backgroundColor: MaterialStateProperty.all(
+                                    PaycoolColors.primaryColor)),
                             onPressed: () {
                               model.isBusy
                                   ? debugPrint('busy')

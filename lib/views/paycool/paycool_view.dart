@@ -2,14 +2,9 @@ import 'dart:io';
 import 'package:exchangily_core/exchangily_core.dart';
 import 'package:exchangily_ui/exchangily_ui.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_i18n/flutter_i18n.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:paycool/constants/paycool_styles.dart';
 import 'package:paycool/views/paycool/paycool_viewmodel.dart';
-import 'package:paycool/widgets/bottom_nav.dart';
 import 'package:paycool/widgets/server_error_widget.dart';
-import 'package:stacked/stacked.dart';
-
-import '../../constants/paycool_api_routes.dart';
 import '../../constants/paycool_constants.dart';
 
 class PayCoolView extends StatelessWidget {
@@ -29,7 +24,7 @@ class PayCoolView extends StatelessWidget {
           return Future(() => false);
         },
         child: Scaffold(
-          backgroundColor: secondaryColor,
+          backgroundColor: PaycoolColors.secondaryColor,
           body: GestureDetector(
             onTap: () {
               FocusScope.of(context).requestFocus(FocusNode());
@@ -49,7 +44,7 @@ class PayCoolView extends StatelessWidget {
                 children: [
                   Container(
                     // height: 300,
-                    color: secondaryColor,
+                    color: PaycoolColors.secondaryColor,
                     // margin: EdgeInsets.only(top: 40),
                     child: Container(
                         // padding: EdgeInsets.symmetric(vertical: 60),
@@ -66,7 +61,7 @@ class PayCoolView extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Padding(
-                              // color: white,
+                              // color: PaycoolColors.white,
                               padding: const EdgeInsets.only(right: 10),
                               child: Image.asset(
                                 "assets/images/start-page/paycool/logo.png",
@@ -83,7 +78,7 @@ class PayCoolView extends StatelessWidget {
                             //   style: const TextStyle(
                             //       fontSize: 28,
                             //       fontWeight: FontWeight.bold,
-                            //       color: white),
+                            //       color: PaycoolColors.white),
                             // )
                           ],
                         )),
@@ -187,7 +182,7 @@ class PayCoolView extends StatelessWidget {
                                                 textStyle:
                                                     MaterialStateProperty.all(
                                                         const TextStyle(
-                                              color: Colors.white,
+                                              color: white,
                                             ))),
                                             onPressed: () {
                                               model.isBusy
@@ -234,7 +229,8 @@ class PayCoolView extends StatelessWidget {
                                                       horizontal: 10),
                                               height: 45,
                                               decoration: BoxDecoration(
-                                                color: primaryColor,
+                                                color:
+                                                    PaycoolColors.primaryColor,
                                                 borderRadius:
                                                     BorderRadius.circular(
                                                         100.0),
@@ -243,7 +239,8 @@ class PayCoolView extends StatelessWidget {
                                                             .exchangeBalances
                                                             .isEmpty
                                                         ? Colors.transparent
-                                                        : primaryColor,
+                                                        : PaycoolColors
+                                                            .primaryColor,
                                                     style: BorderStyle.solid,
                                                     width: 0.50),
                                               ),
@@ -258,15 +255,18 @@ class PayCoolView extends StatelessWidget {
                                                         right: 8.0),
                                                     child: Icon(
                                                       Icons.arrow_drop_down,
-                                                      color: secondaryColor,
+                                                      color: PaycoolColors
+                                                          .secondaryColor,
                                                     ),
                                                   ),
                                                   iconEnabledColor:
-                                                      primaryColor,
+                                                      PaycoolColors
+                                                          .primaryColor,
                                                   iconDisabledColor: model
                                                           .exchangeBalances
                                                           .isEmpty
-                                                      ? secondaryColor
+                                                      ? PaycoolColors
+                                                          .secondaryColor
                                                       : white,
                                                   iconSize: 30,
                                                   hint: Padding(
@@ -324,7 +324,8 @@ class PayCoolView extends StatelessWidget {
                                                       return DropdownMenuItem(
                                                         child: Container(
                                                           height: 40,
-                                                          color: primaryColor,
+                                                          color: PaycoolColors
+                                                              .primaryColor,
                                                           child: Padding(
                                                             padding:
                                                                 const EdgeInsets
@@ -342,8 +343,8 @@ class PayCoolView extends StatelessWidget {
                                                                         fontWeight:
                                                                             FontWeight
                                                                                 .bold,
-                                                                        color:
-                                                                            secondaryColor)),
+                                                                        color: PaycoolColors
+                                                                            .secondaryColor)),
                                                                 UIHelper
                                                                     .horizontalSpaceSmall,
                                                                 Text(
@@ -353,8 +354,8 @@ class PayCoolView extends StatelessWidget {
                                                                       TextAlign
                                                                           .center,
                                                                   style: headText5.copyWith(
-                                                                      color:
-                                                                          secondaryColor,
+                                                                      color: PaycoolColors
+                                                                          .secondaryColor,
                                                                       fontWeight:
                                                                           FontWeight
                                                                               .bold),
@@ -386,7 +387,7 @@ class PayCoolView extends StatelessWidget {
                                                         MaterialStateProperty
                                                             .all(
                                                                 const TextStyle(
-                                                      color: Colors.white,
+                                                      color: white,
                                                     ))),
                                                 onPressed: () => model.scanBarcodeV2(
                                                     addressType: PaycoolConstants
@@ -436,8 +437,8 @@ class PayCoolView extends StatelessWidget {
                                                 style: ButtonStyle(
                                                     backgroundColor:
                                                         MaterialStateProperty
-                                                            .all(
-                                                                secondaryColor),
+                                                            .all(PaycoolColors
+                                                                .secondaryColor),
                                                     padding:
                                                         MaterialStateProperty
                                                             .all(
@@ -772,11 +773,12 @@ class PayCoolView extends StatelessWidget {
                                               shape: shapeRoundBorder,
                                               backgroundColor:
                                                   MaterialStateProperty.all(
-                                                      primaryColor),
+                                                      PaycoolColors
+                                                          .primaryColor),
                                               textStyle:
                                                   MaterialStateProperty.all(
                                                       const TextStyle(
-                                                color: Colors.white,
+                                                color: white,
                                               ))),
                                           onPressed: () {
                                             if (model.isBusy ||
@@ -835,7 +837,7 @@ class PayCoolView extends StatelessWidget {
                                               textStyle:
                                                   MaterialStateProperty.all(
                                                       const TextStyle(
-                                                color: Colors.white,
+                                                color: white,
                                               ))),
                                           child: Row(
                                             mainAxisAlignment:
@@ -844,7 +846,7 @@ class PayCoolView extends StatelessWidget {
                                             children: [
                                               // Icon(
                                               //   Icons.history_rounded,
-                                              //   // color: secondaryColor,
+                                              //   // color: PaycoolColors.secondaryColor,
                                               //   size: 16,
                                               // ),
                                               Image.asset(
@@ -923,7 +925,7 @@ class PayCoolView extends StatelessWidget {
                                             children: [
                                               // Icon(
                                               //   Icons.wallet_giftcard_sharp,
-                                              //   // color: primaryColor,
+                                              //   // color: PaycoolColors.primaryColor,
                                               //   size: 16,
                                               // ),
                                               Image.asset(
@@ -986,16 +988,16 @@ class CoinListBottomSheetFloatingActionButton extends StatelessWidget {
       // padding: EdgeInsets.all(10.0),
       width: double.infinity,
       child: FloatingActionButton(
-          backgroundColor: secondaryColor,
+          backgroundColor: PaycoolColors.secondaryColor,
           child: Container(
             decoration: BoxDecoration(
-              color: primaryColor,
+              color: PaycoolColors.primaryColor,
               border: Border.all(width: 1),
               borderRadius: const BorderRadius.all(Radius.circular(50)),
             ),
             width: 400,
             height: 220,
-            //  color: secondaryColor,
+            //  color: PaycoolColors.secondaryColor,
             child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               Padding(
                 padding: const EdgeInsets.only(right: 5.0),

@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:paycool/constants/paycool_api_routes.dart';
+import 'package:paycool/constants/paycool_styles.dart';
 import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/local_storage_service.dart';
 import 'package:paycool/utils/barcode_util.dart';
@@ -475,7 +476,7 @@ class PayCoolViewmodel extends FutureViewModel {
                   const BorderRadius.vertical(top: Radius.circular(10)),
               // boxShadow: [
               //   BoxShadow(
-              //       blurRadius: 3, color: Colors.grey[600], spreadRadius: 2)
+              //       blurRadius: 3, color: Colors.PaycoolColors.grey[600], spreadRadius: 2)
               // ]
             ),
             child: ListView.separated(
@@ -488,17 +489,17 @@ class PayCoolViewmodel extends FutureViewModel {
 
                   return Container(
                     decoration: BoxDecoration(
-                      // color: grey.withAlpha(300),
+                      // color: PaycoolColors.grey.withAlpha(300),
                       borderRadius: index == 0
                           ? const BorderRadius.vertical(
                               top: Radius.circular(10))
                           : const BorderRadius.all(Radius.zero),
                       // boxShadow: [
                       //   BoxShadow(
-                      //       blurRadius: 3, color: Colors.grey[600], spreadRadius: 2)
+                      //       blurRadius: 3, color: Colors.PaycoolColors.grey[600], spreadRadius: 2)
                       // ]
                       color: tickerName == exchangeBalances[index].ticker
-                          ? primaryColor
+                          ? PaycoolColors.primaryColor
                           : Colors.transparent,
                     ),
                     child: InkWell(
@@ -524,7 +525,7 @@ class PayCoolViewmodel extends FutureViewModel {
                                     .toString(),
                                 style: headText5),
                             const Divider(
-                              color: Colors.white,
+                              color: white,
                               height: 1,
                             )
                           ],
@@ -562,10 +563,10 @@ class PayCoolViewmodel extends FutureViewModel {
             titlePadding: const EdgeInsets.all(0),
             actionsPadding: const EdgeInsets.all(0),
             elevation: 5,
-            backgroundColor: walletCardColor.withOpacity(0.95),
+            backgroundColor: PaycoolColors.walletCardColor.withOpacity(0.95),
             title: Container(
               alignment: Alignment.center,
-              color: primaryColor.withOpacity(0.1),
+              color: PaycoolColors.primaryColor.withOpacity(0.1),
               padding: const EdgeInsets.all(10),
               child: Text(
                 FlutterI18n.translate(context, "createStoreOrder"),
@@ -600,12 +601,12 @@ class PayCoolViewmodel extends FutureViewModel {
                       padding: const EdgeInsets.symmetric(horizontal: 10),
                       height: 45,
                       decoration: BoxDecoration(
-                        color: primaryColor,
+                        color: PaycoolColors.primaryColor,
                         borderRadius: BorderRadius.circular(100.0),
                         border: Border.all(
                             color: exchangeBalances.isEmpty
                                 ? Colors.transparent
-                                : primaryColor,
+                                : PaycoolColors.primaryColor,
                             style: BorderStyle.solid,
                             width: 0.50),
                       ),
@@ -617,12 +618,13 @@ class PayCoolViewmodel extends FutureViewModel {
                             padding: EdgeInsets.only(right: 8.0),
                             child: Icon(
                               Icons.arrow_drop_down,
-                              color: Colors.white,
+                              color: white,
                             ),
                           ),
-                          iconEnabledColor: primaryColor,
-                          iconDisabledColor:
-                              exchangeBalances.isEmpty ? secondaryColor : grey,
+                          iconEnabledColor: PaycoolColors.primaryColor,
+                          iconDisabledColor: exchangeBalances.isEmpty
+                              ? PaycoolColors.secondaryColor
+                              : grey,
                           iconSize: 24,
                           hint: Padding(
                             padding: exchangeBalances.isEmpty
@@ -663,7 +665,7 @@ class PayCoolViewmodel extends FutureViewModel {
                               return DropdownMenuItem(
                                 child: Container(
                                   height: 40,
-                                  color: primaryColor,
+                                  color: PaycoolColors.primaryColor,
                                   padding: const EdgeInsets.only(left: 10.0),
                                   child: Row(
                                     children: [
@@ -674,7 +676,7 @@ class PayCoolViewmodel extends FutureViewModel {
                                       Text(
                                         coin.unlockedAmount.toString(),
                                         style: headText6.copyWith(
-                                            // color: grey,
+                                            // color: PaycoolColors.grey,
                                             fontWeight: FontWeight.bold),
                                       )
                                     ],
@@ -696,7 +698,8 @@ class PayCoolViewmodel extends FutureViewModel {
                             enabledBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(50),
                                 borderSide: const BorderSide(
-                                    color: primaryColor, width: 1)),
+                                    color: PaycoolColors.primaryColor,
+                                    width: 1)),
                             hintText:
                                 FlutterI18n.translate(context, "enterAmount"),
                             hintStyle: headText5),
@@ -714,7 +717,8 @@ class PayCoolViewmodel extends FutureViewModel {
                             enabledBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(50),
                                 borderSide: const BorderSide(
-                                    color: primaryColor, width: 1)),
+                                    color: PaycoolColors.primaryColor,
+                                    width: 1)),
                             hintText:
                                 FlutterI18n.translate(context, "enterMemo"),
                             hintStyle: headText5),
@@ -755,8 +759,8 @@ class PayCoolViewmodel extends FutureViewModel {
                             ),
                             child: Text(
                               FlutterI18n.translate(context, "close"),
-                              style: const TextStyle(
-                                  color: Colors.white, fontSize: 12),
+                              style:
+                                  const TextStyle(color: white, fontSize: 12),
                             ),
                             onPressed: () {
                               if (!isCreatingOrder) {
@@ -776,7 +780,7 @@ class PayCoolViewmodel extends FutureViewModel {
                                   style: ButtonStyle(
                                     backgroundColor:
                                         MaterialStateProperty.all<Color>(
-                                            primaryColor),
+                                            PaycoolColors.primaryColor),
                                     padding: MaterialStateProperty.all<
                                             EdgeInsetsGeometry>(
                                         const EdgeInsets.all(0)),
@@ -787,8 +791,7 @@ class PayCoolViewmodel extends FutureViewModel {
                                           FlutterI18n.translate(
                                               context, "Submit"),
                                           style: const TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 12),
+                                              color: white, fontSize: 12),
                                         ),
                                   onPressed: () async {
                                     if (!isCreatingOrder) {
@@ -1209,7 +1212,7 @@ class PayCoolViewmodel extends FutureViewModel {
                               child: const Icon(
                                 FontAwesomeIcons.copy,
                                 //  CupertinoIcons.,
-                                color: primaryColor,
+                                color: PaycoolColors.primaryColor,
                                 size: 16,
                               ),
                               onPressed: () {
@@ -1260,7 +1263,8 @@ class PayCoolViewmodel extends FutureViewModel {
                               child: Center(
                                   child: Text(
                                 FlutterI18n.translate(context, "share"),
-                                style: headText5.copyWith(color: primaryColor),
+                                style: headText5.copyWith(
+                                    color: PaycoolColors.primaryColor),
                               )),
                               onPressed: () {
                                 String receiveFileName =
@@ -1308,10 +1312,11 @@ class PayCoolViewmodel extends FutureViewModel {
                   insetPadding:
                       const EdgeInsets.symmetric(vertical: 40, horizontal: 20),
                   elevation: 5,
-                  backgroundColor: walletCardColor.withOpacity(0.85),
+                  backgroundColor:
+                      PaycoolColors.walletCardColor.withOpacity(0.85),
                   title: Container(
                     padding: const EdgeInsets.all(10.0),
-                    color: secondaryColor.withOpacity(0.5),
+                    color: PaycoolColors.secondaryColor.withOpacity(0.5),
                     child: Center(
                         child: Text(
                             FlutterI18n.translate(context, "receiveAddress"))),
@@ -1336,7 +1341,7 @@ class PayCoolViewmodel extends FutureViewModel {
                           IconButton(
                               icon: const Icon(
                                 Icons.content_copy,
-                                color: primaryColor,
+                                color: PaycoolColors.primaryColor,
                                 size: 16,
                               ),
                               onPressed: () {
@@ -1405,12 +1410,12 @@ class PayCoolViewmodel extends FutureViewModel {
                     ),
                     OutlinedButton(
                       style: ButtonStyle(
-                          side: MaterialStateProperty.all(
-                              const BorderSide(color: primaryColor)),
-                          backgroundColor:
-                              MaterialStateProperty.all(primaryColor),
+                          side: MaterialStateProperty.all(const BorderSide(
+                              color: PaycoolColors.primaryColor)),
+                          backgroundColor: MaterialStateProperty.all(
+                              PaycoolColors.primaryColor),
                           textStyle: MaterialStateProperty.all(
-                              const TextStyle(color: Colors.white))),
+                              const TextStyle(color: white))),
                       child: Text(
                         FlutterI18n.translate(context, "close"),
                         style: headText6,
@@ -1461,7 +1466,7 @@ class PayCoolViewmodel extends FutureViewModel {
             child: Text(FlutterI18n.translate(context, "copiedSuccessfully"),
                 style: headText5)),
         position: NotificationPosition.bottom,
-        background: primaryColor);
+        background: PaycoolColors.primaryColor);
   }
 
   showJSBottomSheet() {}

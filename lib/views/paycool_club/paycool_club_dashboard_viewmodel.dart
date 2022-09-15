@@ -5,6 +5,7 @@ import 'package:exchangily_core/exchangily_core.dart';
 import 'package:exchangily_ui/exchangily_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:paycool/constants/paycool_constants.dart';
+import 'package:paycool/constants/paycool_styles.dart';
 import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/local_storage_service.dart';
 import 'package:flutter/cupertino.dart';
@@ -141,9 +142,10 @@ class PayCoolClubDashboardViewModel extends BaseViewModel {
                           contentTextStyle: const TextStyle(color: grey),
                           contentPadding:
                               const EdgeInsets.symmetric(horizontal: 10),
-                          backgroundColor: walletCardColor.withOpacity(0.95),
+                          backgroundColor:
+                              PaycoolColors.walletCardColor.withOpacity(0.95),
                           title: Container(
-                            color: secondaryColor,
+                            color: PaycoolColors.secondaryColor,
                             child: Text(
                               FlutterI18n.translate(context, "question"),
                               textAlign: TextAlign.center,
@@ -174,7 +176,8 @@ class PayCoolClubDashboardViewModel extends BaseViewModel {
                                   isDense: true,
                                   focusedBorder: OutlineInputBorder(
                                     borderSide: BorderSide(
-                                        color: primaryColor, width: 1.0),
+                                        color: PaycoolColors.primaryColor,
+                                        width: 1.0),
                                   ),
                                   enabledBorder: OutlineInputBorder(
                                     borderSide:
@@ -182,7 +185,7 @@ class PayCoolClubDashboardViewModel extends BaseViewModel {
                                   ),
                                   icon: Icon(
                                     Icons.question_answer,
-                                    color: primaryColor,
+                                    color: PaycoolColors.primaryColor,
                                   ),
                                 ),
                               ),
@@ -369,7 +372,7 @@ class PayCoolClubDashboardViewModel extends BaseViewModel {
                               child: const Icon(
                                 FontAwesomeIcons.copy,
                                 //  CupertinoIcons.,
-                                color: primaryColor,
+                                color: PaycoolColors.primaryColor,
                                 size: 16,
                               ),
                               onPressed: () {
@@ -420,7 +423,8 @@ class PayCoolClubDashboardViewModel extends BaseViewModel {
                               child: Center(
                                   child: Text(
                                 FlutterI18n.translate(context, "share"),
-                                style: headText5.copyWith(color: primaryColor),
+                                style: headText5.copyWith(
+                                    color: PaycoolColors.primaryColor),
                               )),
                               onPressed: () {
                                 String receiveFileName =
@@ -468,10 +472,11 @@ class PayCoolClubDashboardViewModel extends BaseViewModel {
                   insetPadding:
                       const EdgeInsets.symmetric(vertical: 40, horizontal: 20),
                   elevation: 5,
-                  backgroundColor: walletCardColor.withOpacity(0.85),
+                  backgroundColor:
+                      PaycoolColors.walletCardColor.withOpacity(0.85),
                   title: Container(
                     padding: const EdgeInsets.all(10.0),
-                    color: secondaryColor.withOpacity(0.5),
+                    color: PaycoolColors.secondaryColor.withOpacity(0.5),
                     child: Center(
                         child: Text(
                             FlutterI18n.translate(context, "receiveAddress"))),
@@ -498,7 +503,7 @@ class PayCoolClubDashboardViewModel extends BaseViewModel {
                           IconButton(
                               icon: const Icon(
                                 Icons.content_copy,
-                                color: primaryColor,
+                                color: PaycoolColors.primaryColor,
                                 size: 16,
                               ),
                               onPressed: () {
@@ -567,18 +572,19 @@ class PayCoolClubDashboardViewModel extends BaseViewModel {
                     ),
                     OutlinedButton(
                       style: ButtonStyle(
-                        side: MaterialStateProperty.all(
-                            const BorderSide(color: primaryColor)),
-                        // backgroundColor: MaterialStateProperty.all(primaryColor),
+                        side: MaterialStateProperty.all(const BorderSide(
+                            color: PaycoolColors.primaryColor)),
+                        // backgroundColor: MaterialStateProperty.all(PaycoolColors.primaryColor),
                         elevation: MaterialStateProperty.all(5),
                         shape: MaterialStateProperty.all(const StadiumBorder(
-                            side: BorderSide(color: primaryColor, width: 2))),
+                            side: BorderSide(
+                                color: PaycoolColors.primaryColor, width: 2))),
                       ),
 
                       // style: ButtonStyle(
-                      // side: BorderSide(color: primaryColor),
-                      // color: primaryColor,
-                      // textColor: Colors.white,),
+                      // side: BorderSide(color: PaycoolColors.primaryColor),
+                      // color: PaycoolColors.primaryColor,
+                      // textColor: Colors.PaycoolColors.white,),
                       child: Text(
                         FlutterI18n.translate(context, "close"),
                         style: headText6,
@@ -770,7 +776,8 @@ class PayCoolClubDashboardViewModel extends BaseViewModel {
                               child: Center(
                                   child: Text(
                                 FlutterI18n.translate(context, "share"),
-                                style: headText5.copyWith(color: primaryColor),
+                                style: headText5.copyWith(
+                                    color: PaycoolColors.primaryColor),
                               )),
                               onPressed: () {
                                 String receiveFileName =
@@ -818,7 +825,8 @@ class PayCoolClubDashboardViewModel extends BaseViewModel {
                   insetPadding:
                       const EdgeInsets.symmetric(vertical: 40, horizontal: 20),
                   elevation: 5,
-                  backgroundColor: walletCardColor.withOpacity(0.85),
+                  backgroundColor:
+                      PaycoolColors.walletCardColor.withOpacity(0.85),
                   contentTextStyle: const TextStyle(color: grey),
                   content: SizedBox(
                       width: 250,
@@ -856,7 +864,7 @@ class PayCoolClubDashboardViewModel extends BaseViewModel {
                               const BorderSide(color: grey)),
                           backgroundColor: MaterialStateProperty.all(grey),
                           textStyle: MaterialStateProperty.all(
-                              const TextStyle(color: Colors.white))),
+                              const TextStyle(color: white))),
                       child: Text(
                         FlutterI18n.translate(context, "close"),
                         style: headText6,
@@ -869,10 +877,10 @@ class PayCoolClubDashboardViewModel extends BaseViewModel {
                       padding: const EdgeInsets.all(10.0),
                       child: ElevatedButton(
                           style: ButtonStyle(
-                              backgroundColor:
-                                  MaterialStateProperty.all(primaryColor),
+                              backgroundColor: MaterialStateProperty.all(
+                                  PaycoolColors.primaryColor),
                               textStyle: MaterialStateProperty.all(
-                                  const TextStyle(color: Colors.white))),
+                                  const TextStyle(color: white))),
                           child: Text(FlutterI18n.translate(context, "share"),
                               style: headText6),
                           onPressed: () {

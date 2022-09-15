@@ -1,6 +1,7 @@
 import 'package:exchangily_ui/exchangily_ui.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:flutter/material.dart';
+import 'package:paycool/constants/paycool_styles.dart';
 import 'package:paycool/views/settings/settings_viewmodel.dart';
 import 'package:stacked/stacked.dart';
 
@@ -64,7 +65,7 @@ class SettingsPortableContainer extends StatelessWidget {
                       child: Switch(
                           inactiveThumbColor: grey,
                           activeTrackColor: white,
-                          activeColor: primaryColor,
+                          activeColor: PaycoolColors.primaryColor,
                           inactiveTrackColor: white,
                           value: model.isDialogDisplay,
                           onChanged: (value) {
@@ -100,7 +101,7 @@ class SettingsPortableContainer extends StatelessWidget {
                       child: Switch(
                           inactiveThumbColor: grey,
                           activeTrackColor: white,
-                          activeColor: primaryColor,
+                          activeColor: PaycoolColors.primaryColor,
                           inactiveTrackColor: white,
                           value: !model.isShowCaseOnce,
                           onChanged: (value) {

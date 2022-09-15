@@ -1,6 +1,7 @@
 import 'package:exchangily_core/exchangily_core.dart';
 import 'package:exchangily_ui/exchangily_ui.dart';
 import 'package:flutter/material.dart';
+import 'package:paycool/constants/paycool_styles.dart';
 import 'package:paycool/views/paycool/transaction_history/paycool_transaction_history_viewmodel.dart';
 
 class PayCoolTransactionHistoryView extends StatelessWidget {
@@ -78,7 +79,7 @@ class PayCoolTransactionHistoryView extends StatelessWidget {
                                     onTap: () => model.showRefundButton(
                                         model.transactions[index].id),
                                     child: Card(
-                                      color: walletCardColor,
+                                      color: PaycoolColors.walletCardColor,
                                       child: Column(
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
@@ -216,8 +217,8 @@ class PayCoolTransactionHistoryView extends StatelessWidget {
                                                                 ? 'Processing'
                                                                 : 'Request Refund',
                                                             style: const TextStyle(
-                                                                color:
-                                                                    secondaryColor),
+                                                                color: PaycoolColors
+                                                                    .secondaryColor),
                                                           )),
                                                   ],
                                                 )

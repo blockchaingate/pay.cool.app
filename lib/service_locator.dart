@@ -23,7 +23,6 @@ import 'views/paycool/rewards/paycool_rewards_viewmodel.dart';
 import 'views/paycool/paycool_service.dart';
 import 'views/paycool/paycool_viewmodel.dart';
 import 'views/paycool/transaction_history/paycool_transaction_history_viewmodel.dart';
-import 'widgets/bottom_navmodel.dart';
 
 GetIt localLocator = GetIt.instance;
 
@@ -47,24 +46,11 @@ Future serviceLocator() async {
   localLocator.registerFactory(() => JoinPayCoolClubViewModel());
   localLocator.registerFactory(() => PaycoolReferralViewmodel());
 
-  // Campaign
-  // locator.registerFactory(() => CampaignInstructionsScreenState());
-  // locator.registerFactory(() => CampaignPaymentScreenState());
-  // locator.registerFactory(() => CampaignDashboardScreenState());
-  // locator.registerFactory(() => CampaignLoginScreenState());
-  // locator.registerFactory(() => CampaignRegisterAccountScreenState());
-  // locator.registerFactory(() => TeamRewardDetailsScreenState());
-  // locator.registerFactory(() => CampaignSingleScreenState());
-  // locator.registerFactory(() => CarouselWidgetState());
-
-  // Seven Star Pay
+  // Paycool
   localLocator.registerFactory(() => PayCoolViewmodel());
   localLocator.registerFactory(() => PayCoolRewardsViewModel());
   localLocator.registerFactory(() => PayCoolTransactionHistoryViewModel());
 
   // BindPay
   localLocator.registerFactory(() => LightningRemitViewmodel());
-
-  //nav
-  localLocator.registerFactory(() => BottomNavViewmodel());
 }

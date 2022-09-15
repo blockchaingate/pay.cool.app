@@ -13,8 +13,8 @@
 
 import 'package:exchangily_ui/exchangily_ui.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:paycool/constants/paycool_styles.dart';
 import 'package:paycool/views/settings/settings_viewmodel.dart';
-import 'package:paycool/widgets/bottom_nav.dart';
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 
@@ -41,7 +41,7 @@ class SettingsView extends StatelessWidget {
             centerTitle: true,
             title: Text(FlutterI18n.translate(context, "settings"),
                 style: headText3),
-            backgroundColor: secondaryColor,
+            backgroundColor: PaycoolColors.secondaryColor,
             leading: Container(),
           ),
           body: model.isBusy
@@ -119,12 +119,12 @@ class SettingsContainer extends StatelessWidget {
             // ),
 
             InkWell(
-              splashColor: primaryColor,
+              splashColor: PaycoolColors.primaryColor,
               child: Card(
                 elevation: 4,
                 child: Container(
                   alignment: Alignment.centerLeft,
-                  color: walletCardColor,
+                  color: PaycoolColors.walletCardColor,
                   padding: const EdgeInsets.all(20),
                   // height: 100,
                   child:
@@ -143,7 +143,7 @@ class SettingsContainer extends StatelessWidget {
               },
             ),
             InkWell(
-              splashColor: primaryColor,
+              splashColor: PaycoolColors.primaryColor,
               child: Card(
                 elevation: 5,
                 child: showMnemonicContainer(context),
@@ -153,7 +153,7 @@ class SettingsContainer extends StatelessWidget {
               },
             ),
             //  InkWell(
-            //   splashColor: primaryColor,
+            //   splashColor: PaycoolColors.primaryColor,
             //   child: Card(
             //     elevation: 5,
             //     child:
@@ -177,11 +177,11 @@ class SettingsContainer extends StatelessWidget {
 
             Card(
               elevation: 5,
-              color: walletCardColor,
+              color: PaycoolColors.walletCardColor,
               child: Center(
                 child: DropdownButtonHideUnderline(
                   child: DropdownButton(
-                      iconEnabledColor: primaryColor,
+                      iconEnabledColor: PaycoolColors.primaryColor,
                       iconSize: 26,
                       hint: Text(
                         FlutterI18n.translate(context, "changeWalletLanguage"),
@@ -238,7 +238,7 @@ class SettingsContainer extends StatelessWidget {
             // Showcase club dashboard
             Card(
                 elevation: 5,
-                color: walletCardColor,
+                color: PaycoolColors.walletCardColor,
                 child: Container(
                   padding: const EdgeInsets.all(10),
                   child: Row(
@@ -261,7 +261,7 @@ class SettingsContainer extends StatelessWidget {
                         child: Switch(
                             inactiveThumbColor: grey,
                             activeTrackColor: white,
-                            activeColor: primaryColor,
+                            activeColor: PaycoolColors.primaryColor,
                             inactiveTrackColor: white,
                             value: model.isShowPaycoolClub,
                             onChanged: (value) {
@@ -276,7 +276,7 @@ class SettingsContainer extends StatelessWidget {
             // Showcase ON/OFF
             Card(
                 elevation: 5,
-                color: walletCardColor,
+                color: PaycoolColors.walletCardColor,
                 child: Container(
                   padding: const EdgeInsets.all(10),
                   child: Row(
@@ -300,7 +300,7 @@ class SettingsContainer extends StatelessWidget {
                         child: Switch(
                             inactiveThumbColor: grey,
                             activeTrackColor: white,
-                            activeColor: primaryColor,
+                            activeColor: PaycoolColors.primaryColor,
                             inactiveTrackColor: white,
                             value: model.isAutoStartPaycoolScan,
                             onChanged: (value) {
@@ -313,7 +313,7 @@ class SettingsContainer extends StatelessWidget {
                 )),
             Card(
                 elevation: 5,
-                color: walletCardColor,
+                color: PaycoolColors.walletCardColor,
                 child: Container(
                   padding: const EdgeInsets.all(10),
                   child: Row(
@@ -337,7 +337,7 @@ class SettingsContainer extends StatelessWidget {
                         child: Switch(
                             inactiveThumbColor: grey,
                             activeTrackColor: white,
-                            activeColor: primaryColor,
+                            activeColor: PaycoolColors.primaryColor,
                             inactiveTrackColor: white,
                             value: model.isShowCaseOnce,
                             onChanged: (value) {
@@ -352,7 +352,7 @@ class SettingsContainer extends StatelessWidget {
             // Biometric authentication toggle
             // Card(
             //     elevation: 5,
-            //     color: walletCardColor,
+            //     color: PaycoolColors.walletCardColor,
             //     child: Container(
             //       padding: EdgeInsets.all(10),
             //       child: Row(
@@ -362,7 +362,7 @@ class SettingsContainer extends StatelessWidget {
             //           Padding(
             //             padding: const EdgeInsets.only(left: 5.0, right: 8.0),
             //             child:
-            //                 Icon(Icons.security_sharp, color: white, size: 18),
+            //                 Icon(Icons.security_sharp, color: PaycoolColors.white, size: 18),
             //           ),
             //           Expanded(
             //             child: Text(
@@ -374,10 +374,10 @@ class SettingsContainer extends StatelessWidget {
             //           SizedBox(
             //             height: 20,
             //             child: Switch(
-            //                 inactiveThumbColor: grey,
-            //                 activeTrackColor: white,
-            //                 activeColor: primaryColor,
-            //                 inactiveTrackColor: white,
+            //                 inactiveThumbColor: PaycoolColors.grey,
+            //                 activeTrackColor: PaycoolColors.white,
+            //                 activeColor: PaycoolColors.primaryColor,
+            //                 inactiveTrackColor: PaycoolColors.white,
             //                 value: model
             //                     .storageService.hasInAppBiometricAuthEnabled,
             //                 onChanged: (value) {
@@ -396,7 +396,7 @@ class SettingsContainer extends StatelessWidget {
             //         model.storageService.hasPhoneProtectionEnabled
             //     ? Card(
             //         elevation: 5,
-            //         color: walletCardColor,
+            //         color: PaycoolColors.walletCardColor,
             //         child: Container(
             //           padding: EdgeInsets.all(10),
             //           child: Row(
@@ -407,7 +407,7 @@ class SettingsContainer extends StatelessWidget {
             //                 padding:
             //                     const EdgeInsets.only(left: 5.0, right: 8.0),
             //                 child: Icon(Icons.lock_outline_rounded,
-            //                     color: white, size: 18),
+            //                     color: PaycoolColors.white, size: 18),
             //               ),
             //               Expanded(
             //                 child: Text(
@@ -418,10 +418,10 @@ class SettingsContainer extends StatelessWidget {
             //               SizedBox(
             //                 height: 20,
             //                 child: Switch(
-            //                     inactiveThumbColor: grey,
-            //                     activeTrackColor: white,
-            //                     activeColor: primaryColor,
-            //                     inactiveTrackColor: white,
+            //                     inactiveThumbColor: PaycoolColors.grey,
+            //                     activeTrackColor: PaycoolColors.white,
+            //                     activeColor: PaycoolColors.primaryColor,
+            //                     inactiveTrackColor: PaycoolColors.white,
             //                     value: model.lockAppNow,
             //                     onChanged: (value) {
             //                       model.setLockAppNowValue();
@@ -440,7 +440,7 @@ class SettingsContainer extends StatelessWidget {
             // ),
             Card(
                 elevation: 5,
-                color: walletCardColor,
+                color: PaycoolColors.walletCardColor,
                 child: Container(
                   padding: const EdgeInsets.all(10),
                   child: Row(
@@ -463,7 +463,7 @@ class SettingsContainer extends StatelessWidget {
                         child: Switch(
                             inactiveThumbColor: grey,
                             activeTrackColor: white,
-                            activeColor: primaryColor,
+                            activeColor: PaycoolColors.primaryColor,
                             inactiveTrackColor: white,
                             value: model.storageService.isHKServer,
                             onChanged: (value) {
@@ -480,7 +480,7 @@ class SettingsContainer extends StatelessWidget {
             Card(
               elevation: 5,
               child: Container(
-                color: primaryColor,
+                color: PaycoolColors.primaryColor,
                 width: 200,
                 height: 40,
                 child: Center(
@@ -492,8 +492,7 @@ class SettingsContainer extends StatelessWidget {
                       style: headText6,
                     ),
                     if (!model.environmentService.kReleaseMode)
-                      const Text(' Debug',
-                          style: TextStyle(color: Colors.white))
+                      const Text(' Debug', style: TextStyle(color: white))
                   ],
                 )),
               ),
@@ -514,14 +513,14 @@ class SettingsContainer extends StatelessWidget {
 
   Container showMnemonicContainer(BuildContext context) {
     return Container(
-      color: walletCardColor,
+      color: PaycoolColors.walletCardColor,
       padding: const EdgeInsets.all(20),
       child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
         Padding(
           padding: const EdgeInsets.only(right: 3.0),
           child: Icon(
             !model.isVisible ? Icons.enhanced_encryption : Icons.remove_red_eye,
-            color: primaryColor,
+            color: PaycoolColors.primaryColor,
             size: 18,
           ),
         ),

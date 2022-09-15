@@ -2,6 +2,7 @@ import 'package:exchangily_core/exchangily_core.dart';
 import 'package:exchangily_ui/exchangily_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:pagination_widget/pagination_widget.dart';
+import 'package:paycool/constants/paycool_styles.dart';
 import 'package:paycool/views/paycool/rewards/paycool_rewards_viewmodel.dart';
 
 class PayCoolRewardsView extends StatelessWidget {
@@ -49,7 +50,7 @@ class PayCoolRewardsView extends StatelessWidget {
                                         ),
                                 itemBuilder: (BuildContext context, int index) {
                                   return Container(
-                                    color: secondaryColor,
+                                    color: PaycoolColors.secondaryColor,
                                     child: Column(
                                       children: [
                                         Container(
@@ -61,8 +62,8 @@ class PayCoolRewardsView extends StatelessWidget {
                                           padding: const EdgeInsets.symmetric(
                                               horizontal: 10, vertical: 10),
                                           decoration: BoxDecoration(
-                                            color:
-                                                primaryColor.withOpacity(0.3),
+                                            color: PaycoolColors.primaryColor
+                                                .withOpacity(0.3),
                                             // borderRadius:
                                             //     BorderRadius.only(
                                             //         topLeft: Radius
@@ -76,7 +77,7 @@ class PayCoolRewardsView extends StatelessWidget {
                                                 .releaseDateTimeString(),
                                             style: const TextStyle(
                                                 fontSize: 14,
-                                                color: Colors.white,
+                                                color: white,
                                                 fontWeight: FontWeight.bold),
                                           ),
                                         ),
@@ -86,7 +87,7 @@ class PayCoolRewardsView extends StatelessWidget {
                                                   .width -
                                               10,
                                           // margin: EdgeInsets.only(top: 20),
-                                          color: walletCardColor,
+                                          color: PaycoolColors.walletCardColor,
                                           child: Column(
                                             mainAxisSize: MainAxisSize.max,
                                             mainAxisAlignment:
@@ -126,8 +127,7 @@ class PayCoolRewardsView extends StatelessWidget {
                                                                   .toString(),
                                                               style: const TextStyle(
                                                                   fontSize: 14,
-                                                                  color: Colors
-                                                                      .white,
+                                                                  color: white,
                                                                   fontWeight:
                                                                       FontWeight
                                                                           .bold),
@@ -144,8 +144,8 @@ class PayCoolRewardsView extends StatelessWidget {
                                                                 .toString(),
                                                             style: const TextStyle(
                                                                 fontSize: 14,
-                                                                color:
-                                                                    primaryColor,
+                                                                color: PaycoolColors
+                                                                    .primaryColor,
                                                                 fontWeight:
                                                                     FontWeight
                                                                         .bold),
@@ -161,7 +161,7 @@ class PayCoolRewardsView extends StatelessWidget {
                                                     context, "TransactionId"),
                                                 style: const TextStyle(
                                                     fontSize: 14,
-                                                    color: Colors.white,
+                                                    color: white,
                                                     fontWeight:
                                                         FontWeight.bold),
                                               ),
@@ -172,7 +172,7 @@ class PayCoolRewardsView extends StatelessWidget {
                                                   model.rewards[index].txids[0],
                                                   style: const TextStyle(
                                                     fontSize: 12,
-                                                    color: Colors.white,
+                                                    color: white,
                                                   ),
                                                 ),
                                               ),
@@ -241,8 +241,8 @@ class PayCoolRewardsView extends StatelessWidget {
                                                               Icons
                                                                   .arrow_forward_outlined,
                                                               size: 14,
-                                                              color:
-                                                                  primaryColor),
+                                                              color: PaycoolColors
+                                                                  .primaryColor),
                                                           Expanded(
                                                             child: Text(
                                                               model

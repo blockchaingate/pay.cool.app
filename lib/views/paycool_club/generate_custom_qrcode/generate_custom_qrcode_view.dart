@@ -4,6 +4,7 @@ import 'package:exchangily_core/exchangily_core.dart';
 import 'package:exchangily_ui/exchangily_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:paycool/constants/paycool_styles.dart';
 import 'package:paycool/utils/barcode_util.dart';
 import 'package:paycool/views/paycool_club/paycool_club_service.dart';
 
@@ -78,11 +79,12 @@ class _GenerateCustomQrCodeViewState extends State<GenerateCustomQrCodeView> {
                       padding: EdgeInsets.zero,
                       icon: const Icon(
                         Icons.camera_alt_outlined,
-                        color: primaryColor,
+                        color: PaycoolColors.primaryColor,
                       ),
                       onPressed: () => scanBarCode()),
                   focusedBorder: const OutlineInputBorder(
-                    borderSide: BorderSide(color: primaryColor, width: 1.0),
+                    borderSide: BorderSide(
+                        color: PaycoolColors.primaryColor, width: 1.0),
                   ),
                   enabledBorder: const OutlineInputBorder(
                     borderSide: BorderSide(color: white, width: 1.0),
@@ -116,7 +118,8 @@ class _GenerateCustomQrCodeViewState extends State<GenerateCustomQrCodeView> {
                               height: 250,
                               decoration: BoxDecoration(
                                   border: Border.all(
-                                      width: 1.0, color: primaryColor)),
+                                      width: 1.0,
+                                      color: PaycoolColors.primaryColor)),
                               child: Center(
                                 child: Container(
                                   child: RepaintBoundary(
@@ -186,7 +189,7 @@ class _GenerateCustomQrCodeViewState extends State<GenerateCustomQrCodeView> {
     //         child: RepaintBoundary(
     //           key: _globalKey,
     //           child: QrImage(
-    //               backgroundColor: white,
+    //               backgroundColor: PaycoolColors.white,
     //               data: jsonEncode(data),
     //               version: QrVersions.auto,
     //               size: 300,

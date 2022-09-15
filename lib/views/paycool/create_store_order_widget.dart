@@ -20,15 +20,15 @@
 //       titlePadding: const EdgeInsets.all(0),
 //       actionsPadding: const EdgeInsets.all(0),
 //       elevation: 5,
-//       backgroundColor: walletCardColor.withOpacity(0.95),
+//       backgroundColor: PaycoolColors.walletCardColor.withOpacity(0.95),
 //       title: Container(
 //         alignment: Alignment.center,
-//         color: primaryColor.withOpacity(0.1),
+//         color: PaycoolColors.primaryColor.withOpacity(0.1),
 //         padding: const EdgeInsets.all(10),
 //         child: const Text('Create the order'),
 //       ),
 //       titleTextStyle: headText5,
-//       contentTextStyle: const TextStyle(color: grey),
+//       contentTextStyle: const TextStyle(color: PaycoolColors.grey),
 //       contentPadding: const EdgeInsets.symmetric(horizontal: 10),
 //       content: StatefulBuilder(
 //           builder: (BuildContext context, StateSetter setState) {
@@ -68,7 +68,7 @@
 //                 ),
 //                 child: Text(
 //                   FlutterI18n.translate(context, "close"),
-//                   style: const TextStyle(color: Colors.white, fontSize: 12),
+//                   style: const TextStyle(color: Colors.PaycoolColors.white, fontSize: 12),
 //                 ),
 //                 onPressed: () {
 //                   Navigator.of(context).pop(false);
