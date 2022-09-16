@@ -131,7 +131,9 @@ class ConfirmMnemonicView extends StatelessWidget {
                                       size: 20,
                                     ),
                                   ),
-                                  Text('Reset Selection',
+                                  Text(
+                                      FlutterI18n.translate(
+                                          context, "resetSelection"),
                                       style: headText3.copyWith(color: yellow)),
                                 ],
                               )),

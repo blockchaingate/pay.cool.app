@@ -233,7 +233,7 @@ class TransactionHistoryViewmodel extends FutureViewModel {
                           UIHelper.verticalSpaceSmall,
                           transactionHistory.tag != send
                               ? Text(
-                                  '${FlutterI18n.translate(context, "kanban")} Txid',
+                                  '${FlutterI18n.translate(context, "kanban")} ${FlutterI18n.translate(context, "transactionId")}',
                                   style: Theme.of(context).textTheme.bodyText1,
                                 )
                               : Container(),
@@ -290,7 +290,7 @@ class TransactionHistoryViewmodel extends FutureViewModel {
                           UIHelper.verticalSpaceMedium,
                           Text(
                             //FlutterI18n.translate(context, "quantity"),FlutterI18n.translate(context, "quantity")
-                            '${transactionHistory.chainName} ${FlutterI18n.translate(context, "hain")} Txid',
+                            '${transactionHistory.chainName} ${FlutterI18n.translate(context, "chain")} ${FlutterI18n.translate(context, "transactionId")}',
                             style: Theme.of(context).textTheme.bodyText1,
                           ),
                           Row(
@@ -388,7 +388,7 @@ class TransactionHistoryViewmodel extends FutureViewModel {
                       transactionHistory.tag != send
                           ? Text(
                               //FlutterI18n.translate(context, "t")).,
-                              '${FlutterI18n.translate(context, "kanban")} Txid',
+                              '${FlutterI18n.translate(context, "kanban")} ${FlutterI18n.translate(context, "transactionId")}',
                               style: Theme.of(context).textTheme.bodyText1,
                             )
                           : Container(),
@@ -441,7 +441,7 @@ class TransactionHistoryViewmodel extends FutureViewModel {
                       UIHelper.verticalSpaceMedium,
                       Text(
                         //FlutterI18n.translate(context, "quantity"),FlutterI18n.translate(context, "quantity")
-                        '${transactionHistory.chainName} ${FlutterI18n.translate(context, "hain")} Txid',
+                        '${transactionHistory.chainName} ${FlutterI18n.translate(context, "chain")} ${FlutterI18n.translate(context, "transactionId")}',
                         style: Theme.of(context).textTheme.bodyText1,
                       ),
                       Row(

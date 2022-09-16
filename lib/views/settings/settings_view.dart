@@ -202,7 +202,7 @@ class SettingsContainer extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Image.asset(
-                                "assets/images/img/flagEn.png",
+                                "assets/images/flags/en.png",
                                 width: 20,
                                 height: 20,
                               ),
@@ -221,7 +221,7 @@ class SettingsContainer extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Image.asset(
-                                "assets/images/img/flagChina.png",
+                                "assets/images/flags/zh.png",
                                 width: 20,
                                 height: 20,
                               ),
@@ -232,6 +232,25 @@ class SettingsContainer extends StatelessWidget {
                             ],
                           ),
                           value: model.languages['zh'],
+                        ),
+                        DropdownMenuItem(
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Image.asset(
+                                "assets/images/flags/es.webp",
+                                width: 20,
+                                height: 20,
+                              ),
+                              const SizedBox(width: 15),
+                              Text("Español",
+                                  textAlign: TextAlign.center,
+                                  style: headText6),
+                            ],
+                          ),
+                          value: model.languages['es'],
                         ),
                       ]),
                 ),

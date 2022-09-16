@@ -445,5 +445,10 @@
     "currentVersion": "Current version",
     "latestVersion": "Latest version",
     "downloadLatestApkFromServer": "Download latest apk from server",
-    "unavailable": "Unavailable"
+    "unavailable": "Unavailable",
+    "refunded":"Refunded",
+    "requestRefund":"Request Refund",
+    "valid":"Valid",
+    "processing":"Processing",
+    "cancelRefundRequest":"Cancel refund request"
 }

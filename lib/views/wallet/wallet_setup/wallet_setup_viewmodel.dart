@@ -58,7 +58,11 @@ class WalletSetupViewmodel extends BaseViewModel {
   String selectedLanguage;
   UserSettings userSettings = UserSettings();
   bool isUserSettingsEmpty = false;
-  final Map<String, String> languages = {'en': 'English', 'zh': '简体中文'};
+  final Map<String, String> languages = {
+    'en': 'English',
+    'zh': '简体中文',
+    'es': 'Español'
+  };
   final walletUtil = WalletUtil();
   get hasAuthenticated => authService.hasAuthorized;
 
@@ -72,13 +76,18 @@ class WalletSetupViewmodel extends BaseViewModel {
 
   init() async {
     setBusy(true);
-    //await setLanguageFromDb();
+    // await setLanguageFromDb();
     // await selectDefaultWalletLanguage();
+    // if (storageService.language.isNotEmpty) {
+    //   selectedLanguage = storageService.language;
+    // } else {
+    //   selectedLanguage = FlutterI18n.currentLocale(context).languageCode;
+    // }
 
     sharedService.context = context;
     //  walletDatabaseService.initDb();
     // await checkVersion();
-    await walletService.checkLanguage(context);
+    // await walletService.checkLanguage(context);
     await checkExistingWallet();
 
     setBusy(false);
@@ -296,6 +305,7 @@ class WalletSetupViewmodel extends BaseViewModel {
 
   setLanguageFromDb() async {
     setBusy(true);
+
     await userSettingsDatabaseService.getById(1).then((res) {
       if (res != null) {
         userSettings.language = res.language;
@@ -312,6 +322,7 @@ class WalletSetupViewmodel extends BaseViewModel {
 
   Future<String> selectDefaultWalletLanguage() async {
     setBusy(true);
+    // selectedLanguage = await userSettingsDatabaseService.getLanguage();
     if (selectedLanguage == '' || selectedLanguage == null) {
       String key = userSettings.language ?? 'en';
       // await getSetLocalStorageDataByKey('lang');
@@ -376,6 +387,15 @@ class WalletSetupViewmodel extends BaseViewModel {
       await FlutterI18n.refresh(context, const Locale('en'));
       storageService.language = 'en';
       UserSettings us = UserSettings(id: 1, language: 'en', theme: '');
+      await walletService.updateUserSettingsDb(us, isUserSettingsEmpty);
+    } else if (updatedLanguageValue == 'Spanish' ||
+        updatedLanguageValue == 'es' ||
+        key == 'es') {
+      log.e('in es');
+      // AppLocalizations.load(Locale('en', 'EN'));
+      await FlutterI18n.refresh(context, const Locale('es'));
+      storageService.language = 'es';
+      UserSettings us = UserSettings(id: 1, language: 'es', theme: '');
       await walletService.updateUserSettingsDb(us, isUserSettingsEmpty);
     }
     (context as Element).markNeedsBuild();

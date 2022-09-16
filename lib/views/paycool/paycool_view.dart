@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -392,20 +393,43 @@ class PayCoolView extends StatelessWidget {
                                                         addressType: Constants
                                                             .MerchantAddressText),
                                                 child: Row(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
                                                   mainAxisAlignment:
                                                       MainAxisAlignment.center,
                                                   children: [
-                                                    Text(
-                                                        FlutterI18n.translate(
-                                                            context,
-                                                            "scanBarCode"),
-                                                        textAlign:
-                                                            TextAlign.center,
-                                                        style:
-                                                            headText5.copyWith(
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold)),
+                                                    // AutoSizeText.rich(
+                                                    //   TextSpan(
+                                                    //       text: FlutterI18n
+                                                    //           .translate(
+                                                    //               context,
+                                                    //               "scanBarCode")),
+                                                    //   maxFontSize: 14,
+                                                    //   minFontSize: 8,
+                                                    //   maxLines: 2,
+                                                    //   overflow:
+                                                    //       TextOverflow.fade,
+                                                    // ),
+                                                    SizedBox(
+                                                      width: FlutterI18n.currentLocale(
+                                                                      context)
+                                                                  .countryCode ==
+                                                              'es'
+                                                          ? 60
+                                                          : 80,
+                                                      child: Text(
+                                                          FlutterI18n.translate(
+                                                              context,
+                                                              "scanBarCode"),
+                                                          maxLines: 2,
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                          style: headText5
+                                                              .copyWith(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold)),
+                                                    ),
                                                     IconButton(
                                                         alignment:
                                                             Alignment.center,
@@ -447,16 +471,24 @@ class PayCoolView extends StatelessWidget {
                                                   mainAxisAlignment:
                                                       MainAxisAlignment.center,
                                                   children: [
-                                                    Text(
-                                                      model.isScanningImage
-                                                          ? FlutterI18n
-                                                              .translate(
-                                                                  context,
-                                                                  "loading")
-                                                          : FlutterI18n
-                                                              .translate(
-                                                                  context,
-                                                                  "scanImage"),
+                                                    SizedBox(
+                                                      width: FlutterI18n.currentLocale(
+                                                                      context)
+                                                                  .countryCode ==
+                                                              'es'
+                                                          ? 60
+                                                          : 80,
+                                                      child: Text(
+                                                        model.isScanningImage
+                                                            ? FlutterI18n
+                                                                .translate(
+                                                                    context,
+                                                                    "loading")
+                                                            : FlutterI18n
+                                                                .translate(
+                                                                    context,
+                                                                    "scanImage"),
+                                                      ),
                                                     ),
                                                     const Padding(
                                                       padding:

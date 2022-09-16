@@ -64,7 +64,11 @@ class SettingsViewmodel extends BaseViewModel with StoppableService {
   final localAuthService = locator<LocalAuthService>();
   final coreWalletDatabaseService = locator<CoreWalletDatabaseService>();
 
-  final Map<String, String> languages = {'en': 'English', 'zh': '简体中文'};
+  final Map<String, String> languages = {
+    'en': 'English',
+    'zh': '简体中文',
+    'es': 'Español'
+  }; //,'fr':'français','ja':'日本語'};
   String selectedLanguage;
   // bool result = false;
   String errorMessage = '';
@@ -531,6 +535,16 @@ class SettingsViewmodel extends BaseViewModel with StoppableService {
       await FlutterI18n.refresh(context, currentLang);
       storageService.language = 'en';
       UserSettings us = UserSettings(id: 1, language: 'en', theme: '');
+      await walletService.updateUserSettingsDb(us, isUserSettingsEmpty);
+    } else if (updatedLanguageValue == 'Spanish' ||
+        updatedLanguageValue == 'es' ||
+        key == 'es') {
+      log.e('in es');
+      // AppLocalizations.load(Locale('en', 'EN'));
+      currentLang = const Locale('es');
+      await FlutterI18n.refresh(context, currentLang);
+      storageService.language = 'es';
+      UserSettings us = UserSettings(id: 1, language: 'es', theme: '');
       await walletService.updateUserSettingsDb(us, isUserSettingsEmpty);
     }
     // navigationService.navigateUsingpopAndPushedNamed(SettingViewRoute);
