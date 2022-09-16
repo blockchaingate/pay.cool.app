@@ -233,6 +233,12 @@ class SettingsViewmodel extends BaseViewModel with StoppableService {
     setBusy(true);
     if (selectedLanguage == '' || selectedLanguage == null) {
       String key = userSettings.language ?? 'en';
+      if (key.isEmpty) {
+        key = storageService.language;
+      }
+      if (key.isEmpty) {
+        key = 'en';
+      }
       // await getSetLocalStorageDataByKey('lang');
       // log.w('key in init $key');
 
