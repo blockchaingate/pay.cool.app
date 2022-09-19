@@ -12,6 +12,7 @@ class PayCoolView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var shape = shapeRoundBorder(color: Theme.of(context).primaryColor);
     return ViewModelBuilder<PayCoolViewmodel>.reactive(
       viewModelBuilder: () => PayCoolViewmodel(),
       onModelReady: (model) {
@@ -382,7 +383,7 @@ class PayCoolView extends StatelessWidget {
                                             Expanded(
                                               child: ElevatedButton(
                                                 style: ButtonStyle(
-                                                    shape: shapeRoundBorder,
+                                                    shape: shape,
                                                     textStyle:
                                                         MaterialStateProperty
                                                             .all(
@@ -444,7 +445,7 @@ class PayCoolView extends StatelessWidget {
                                                             .all(
                                                                 const EdgeInsets
                                                                     .all(6.0)),
-                                                    shape: shapeRoundBorder),
+                                                    shape: shape),
                                                 child: Row(
                                                   mainAxisAlignment:
                                                       MainAxisAlignment.center,
@@ -770,7 +771,7 @@ class PayCoolView extends StatelessWidget {
                                         height: 45,
                                         child: TextButton(
                                           style: ButtonStyle(
-                                              shape: shapeRoundBorder,
+                                              shape: shape,
                                               backgroundColor:
                                                   MaterialStateProperty.all(
                                                       PaycoolColors

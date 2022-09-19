@@ -9,7 +9,6 @@ import 'package:paycool/views/paycool/paycool_view.dart';
 import 'package:paycool/views/paycool_club/paycool_club_dashboard_view.dart';
 import 'package:wallet_dashboard/wallet_dashboard.dart';
 
-import '../settings/settings_view.dart';
 import 'home_viewmodel.dart';
 
 class HomeView extends StatelessWidget {
@@ -74,7 +73,7 @@ class HomeView extends StatelessWidget {
       case 3:
         return const LightningRemitView();
       case 4:
-        return const SettingsView();
+        return  SettingsView();
       default:
         return const WalletSetupView();
     }
@@ -89,7 +88,7 @@ class HomeView extends StatelessWidget {
       case 2:
         return const LightningRemitView();
       case 3:
-        return const SettingsView();
+        return  SettingsView();
       default:
         return const WalletSetupView();
     }

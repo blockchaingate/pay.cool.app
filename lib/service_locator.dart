@@ -15,7 +15,6 @@ import 'package:get_it/get_it.dart';
 import 'package:lightning_remit/lightning_remit.dart';
 import 'package:referral/referral.dart';
 import 'services/local_storage_service.dart';
-import 'views/settings/settings_viewmodel.dart';
 import 'views/paycool_club/join_club/join_paycool_club_viewmodel.dart';
 import 'views/paycool_club/paycool_club_dashboard_viewmodel.dart';
 import 'views/paycool_club/paycool_club_service.dart';
@@ -39,7 +38,7 @@ Future serviceLocator() async {
 
   // Factory returns the new instance
 
-  localLocator.registerFactory(() => SettingsViewmodel());
+  localLocator.registerFactory(() => SettingsViewModel());
 
   // Paycool Club
   localLocator.registerFactory(() => PayCoolClubDashboardViewModel());

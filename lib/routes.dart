@@ -22,7 +22,6 @@ import 'package:paycool/views/home/home_view.dart';
 import 'package:referral/referral.dart';
 import 'package:wallet_dashboard/wallet_dashboard.dart';
 import 'constants/paycool_constants.dart';
-import 'views/settings/settings_view.dart';
 import 'views/paycool_club/generate_custom_qrcode/generate_custom_qrcode_view.dart';
 import 'views/paycool_club/join_club/join_paycool_club_view.dart';
 import 'views/paycool_club/paycool_club_dashboard_view.dart';
@@ -170,7 +169,7 @@ class RouteGenerator {
       case settingViewRoute:
         return MaterialPageRoute(
             settings: const RouteSettings(name: 'SettingsView'),
-            builder: (_) => const SettingsView());
+            builder: (_) =>  SettingsView());
 
       default:
         return _errorRoute(settings);
