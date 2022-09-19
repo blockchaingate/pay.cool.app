@@ -77,12 +77,7 @@ class WalletSetupViewmodel extends BaseViewModel {
   init() async {
     setBusy(true);
     // await setLanguageFromDb();
-    // await selectDefaultWalletLanguage();
-    // if (storageService.language.isNotEmpty) {
-    //   selectedLanguage = storageService.language;
-    // } else {
-    //   selectedLanguage = FlutterI18n.currentLocale(context).languageCode;
-    // }
+    await selectDefaultWalletLanguage();
 
     sharedService.context = context;
     //  walletDatabaseService.initDb();
@@ -322,11 +317,12 @@ class WalletSetupViewmodel extends BaseViewModel {
 
   Future<String> selectDefaultWalletLanguage() async {
     setBusy(true);
-    // selectedLanguage = await userSettingsDatabaseService.getLanguage();
     if (selectedLanguage == '' || selectedLanguage == null) {
-      String key = userSettings.language ?? 'en';
-      // await getSetLocalStorageDataByKey('lang');
-      // log.w('key in init $key');
+      String key = storageService.language;
+
+      if (key.isEmpty) {
+        key = 'en';
+      }
 
       // /// Created Map of languages because in dropdown if i want to show
       // /// first default value as whichever language is currently the app
@@ -335,13 +331,10 @@ class WalletSetupViewmodel extends BaseViewModel {
 
       if (languages.containsKey(key)) {
         selectedLanguage = languages[key];
-      }
-      // else if (languages.containsValue(key)) {
-      //   String keyIsValue = key;
 
-      //   selectedLanguage =
-      //       languages.keys.firstWhere((k) => languages[k] == keyIsValue);
-      // }
+        await FlutterI18n.refresh(context, Locale(key));
+      }
+
       log.i('selectedLanguage $selectedLanguage');
     }
     setBusy(false);
