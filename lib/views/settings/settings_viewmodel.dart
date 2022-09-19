@@ -232,12 +232,16 @@ class SettingsViewmodel extends BaseViewModel with StoppableService {
   Future<String> selectDefaultWalletLanguage() async {
     setBusy(true);
     if (selectedLanguage == '' || selectedLanguage == null) {
-      String key = storageService.language;
-
+      String key = '';
+      if (storageService.language == null || storageService.language.isEmpty) {
+        storageService.language = 'en';
+      } else {
+        key = storageService.language;
+      }
       if (key.isEmpty) {
         key = 'en';
+        storageService.language = 'en';
       }
-
       // /// Created Map of languages because in dropdown if i want to show
       // /// first default value as whichever language is currently the app
       // /// is in then default value that i want to show should match with one
