@@ -1,4 +1,5 @@
 import 'package:animations/animations.dart';
+import 'package:settings/settings.dart';
 import 'package:exchangily_core/exchangily_core.dart';
 import 'package:exchangily_ui/exchangily_ui.dart';
 import 'package:exchangily_wallet_setup/exchangily_wallet_setup.dart';
@@ -19,8 +20,11 @@ class HomeView extends StatelessWidget {
   Widget build(BuildContext context) {
     return ViewModelBuilder<HomeViewModel>.reactive(
       onModelReady: (model) {
-        int idx = model.storageService.showPaycoolClub ? 2 : 1;
-        model.setIndex(customIndex ?? idx);
+        int defaultIdx = model.storageService.showPaycoolClub ? 2 : 1;
+        int idx = model.storageService.showPaycoolClub
+            ? customIndex + 1
+            : customIndex;
+        model.setIndex(idx ?? defaultIdx);
       },
       builder: (context, HomeViewModel model, child) => Scaffold(
         body:
@@ -73,7 +77,7 @@ class HomeView extends StatelessWidget {
       case 3:
         return const LightningRemitView();
       case 4:
-        return  SettingsView();
+        return const SettingsView();
       default:
         return const WalletSetupView();
     }
@@ -88,7 +92,7 @@ class HomeView extends StatelessWidget {
       case 2:
         return const LightningRemitView();
       case 3:
-        return  SettingsView();
+        return const SettingsView();
       default:
         return const WalletSetupView();
     }

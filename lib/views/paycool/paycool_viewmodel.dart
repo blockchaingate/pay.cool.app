@@ -86,13 +86,17 @@ class PayCoolViewmodel extends FutureViewModel {
   String orderIdFromCreateStoreOrder = '';
   bool isScanningImage = false;
   bool isServerDown = false;
+  String exgAddress = '';
 
 /*----------------------------------------------------------------------
                     Default Future to Run
 ----------------------------------------------------------------------*/
   @override
-  Future futureToRun() async =>
-      await apiService.getAssetsBalance(environmentService.kanbanBaseUrl(), '');
+  Future futureToRun() async {
+    exgAddress = await sharedService.getExgAddressFromCoreWalletDatabase();
+    return await apiService.getAssetsBalance(
+        environmentService.kanbanBaseUrl(), exgAddress);
+  }
 
 /*----------------------------------------------------------------------
                           INIT
@@ -104,12 +108,8 @@ class PayCoolViewmodel extends FutureViewModel {
     storageService.autoStartPaycoolScan == null
         ? isAutoStartPaycoolScan = false
         : isAutoStartPaycoolScan = storageService.autoStartPaycoolScan;
-    await userSettingsDatabaseService.getById(1).then((res) {
-      if (res != null) {
-        lang = res.language ?? "en";
-        log.i('user settings db not null');
-      }
-    });
+    lang = await sharedService.setAppLanguage(Constants.appLanguages);
+
     if (lang == null || lang.isEmpty) {
       lang = "en";
     }
