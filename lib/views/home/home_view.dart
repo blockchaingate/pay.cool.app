@@ -20,11 +20,8 @@ class HomeView extends StatelessWidget {
   Widget build(BuildContext context) {
     return ViewModelBuilder<HomeViewModel>.reactive(
       onModelReady: (model) {
-        int defaultIdx = model.storageService.showPaycoolClub ? 2 : 1;
-        int idx = model.storageService.showPaycoolClub
-            ? customIndex + 1
-            : customIndex;
-        model.setIndex(idx ?? defaultIdx);
+        model.customIndex = customIndex;
+        model.init();
       },
       builder: (context, HomeViewModel model, child) => Scaffold(
         body:
@@ -113,26 +110,34 @@ class HomeView extends StatelessWidget {
 
   List<BottomNavigationBarItem> mainNavs(
       BuildContext context, HomeViewModel model) {
-    int baseIndex = model.storageService.showPaycoolClub ? 1 : 0;
+    //int baseIndex = model.storageService.showPaycoolClub ? 1 : 0;
 
     List<BottomNavigationBarItem> res = [
       BottomNavigationBarItem(
           icon: Image.asset('assets/images/paycool/wallet.png',
-              width: 40, height: 30, color: model.setIconColor(baseIndex + 0)),
+              width: 40,
+              height: 30,
+              color: model.setIconColor(model.baseIndex + 0)),
           label: FlutterI18n.translate(context, "wallet")),
       BottomNavigationBarItem(
         icon: Image.asset('assets/images/paycool/pay.png',
-            width: 40, height: 30, color: model.setIconColor(baseIndex + 1)),
+            width: 40,
+            height: 30,
+            color: model.setIconColor(model.baseIndex + 1)),
         label: FlutterI18n.translate(context, "payCool"),
       ),
       BottomNavigationBarItem(
         icon: Image.asset('assets/images/paycool/remit.png',
-            width: 40, height: 30, color: model.setIconColor(baseIndex + 2)),
+            width: 40,
+            height: 30,
+            color: model.setIconColor(model.baseIndex + 2)),
         label: FlutterI18n.translate(context, "remit"),
       ),
       BottomNavigationBarItem(
           icon: Image.asset('assets/images/paycool/settings-icon.png',
-              width: 40, height: 30, color: model.setIconColor(baseIndex + 3)),
+              width: 40,
+              height: 30,
+              color: model.setIconColor(model.baseIndex + 3)),
           label: FlutterI18n.translate(context, "settings"))
     ];
     return res;
