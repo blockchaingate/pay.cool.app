@@ -40,7 +40,7 @@ class RouteGenerator {
 
     switch (settings.name) {
       case '/':
-        return MaterialPageRoute(builder: (_) => const HomeView());
+        return MaterialPageRoute(builder: (_) => HomeView(customIndex: args));
 
       case homeViewRoute:
         return MaterialPageRoute(builder: (_) => HomeView(customIndex: args));

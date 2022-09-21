@@ -13,6 +13,7 @@
 
 import 'package:get_it/get_it.dart';
 import 'package:lightning_remit/lightning_remit.dart';
+import 'package:exchangily_wallet_setup/exchangily_wallet_setup.dart';
 import 'package:referral/referral.dart';
 import 'package:settings/settings.dart';
 import 'services/local_storage_service.dart';
@@ -29,7 +30,6 @@ GetIt localLocator = GetIt.instance;
 Future serviceLocator() async {
   // Singleton returns the old instance
 
-  // Seven Star
   localLocator.registerLazySingleton(() => PayCoolClubService());
   localLocator.registerLazySingleton(() => PayCoolService());
 
@@ -38,8 +38,9 @@ Future serviceLocator() async {
   localLocator.registerSingleton<LocalStorageService>(instance);
 
   // Factory returns the new instance
-
-  localLocator.registerFactory(() => SettingsViewModel());
+// wallet
+  localLocator.registerFactory(() => WalletSetupViewModel());
+  localLocator.registerFactory(() => ConfirmMnemonicViewModel());
 
   // Paycool Club
   localLocator.registerFactory(() => PayCoolClubDashboardViewModel());
@@ -51,6 +52,7 @@ Future serviceLocator() async {
   localLocator.registerFactory(() => PayCoolRewardsViewModel());
   localLocator.registerFactory(() => PayCoolTransactionHistoryViewModel());
 
-  // BindPay
   localLocator.registerFactory(() => LightningRemitViewmodel());
+
+  localLocator.registerFactory(() => SettingsViewModel());
 }

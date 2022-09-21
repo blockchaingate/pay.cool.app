@@ -31,7 +31,8 @@ class PayCoolViewmodel extends FutureViewModel {
   TokenDatabaseService tokenListDatabaseService =
       localLocator<TokenDatabaseService>();
   SharedService sharedService = localLocator<SharedService>();
-  LocalStorageService storageService = localLocator<LocalStorageService>();
+  LocalStorageService localStorageService = localLocator<LocalStorageService>();
+  final storageService = localLocator<StorageService>();
   TransactionHistoryDatabaseService transactionHistoryDatabaseService =
       localLocator<TransactionHistoryDatabaseService>();
   WalletDatabaseService walletDataBaseService =
@@ -93,6 +94,10 @@ class PayCoolViewmodel extends FutureViewModel {
 ----------------------------------------------------------------------*/
   @override
   Future futureToRun() async {
+    if (storageService.walletBalancesBody == null ||
+        storageService.walletBalancesBody.isEmpty) {
+      navigationService.navigateUsingpopAndPushedNamed(walletSetupViewRoute);
+    }
     exgAddress = await sharedService.getExgAddressFromCoreWalletDatabase();
     return await apiService.getAssetsBalance(
         environmentService.kanbanBaseUrl(), exgAddress);
@@ -105,9 +110,9 @@ class PayCoolViewmodel extends FutureViewModel {
   init() async {
     sharedService.context = context;
 
-    storageService.autoStartPaycoolScan == null
+    localStorageService.autoStartPaycoolScan == null
         ? isAutoStartPaycoolScan = false
-        : isAutoStartPaycoolScan = storageService.autoStartPaycoolScan;
+        : isAutoStartPaycoolScan = localStorageService.autoStartPaycoolScan;
     lang = await sharedService.setAppLanguage(Constants.appLanguages);
 
     if (lang == null || lang.isEmpty) {

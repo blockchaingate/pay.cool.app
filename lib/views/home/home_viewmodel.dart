@@ -6,6 +6,7 @@ import 'package:paycool/constants/paycool_styles.dart';
 import '../../services/local_storage_service.dart';
 
 class HomeViewModel extends IndexTrackingViewModel {
+  final log = getLogger('HomeViewModel');
   final storageService = locator<LocalStorageService>();
   int customIndex = 0;
   int baseIndex = 0;
@@ -20,11 +21,12 @@ class HomeViewModel extends IndexTrackingViewModel {
     int payCoolTabIndex = isShowClub() ? 2 : 1;
     if (customIndex != null) {
       int idx = baseIndex + customIndex;
-
+      log.w('custom index not null $customIndex -- idx value: $idx');
       setIndex(idx);
     } else {
       setIndex(payCoolTabIndex);
     }
+    log.w('paycool tab index $payCoolTabIndex ');
   }
 
   bool isShowClub() {
