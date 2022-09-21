@@ -94,10 +94,6 @@ class PayCoolViewmodel extends FutureViewModel {
 ----------------------------------------------------------------------*/
   @override
   Future futureToRun() async {
-    if (storageService.walletBalancesBody == null ||
-        storageService.walletBalancesBody.isEmpty) {
-      navigationService.navigateUsingpopAndPushedNamed(walletSetupViewRoute);
-    }
     exgAddress = await sharedService.getExgAddressFromCoreWalletDatabase();
     return await apiService.getAssetsBalance(
         environmentService.kanbanBaseUrl(), exgAddress);
