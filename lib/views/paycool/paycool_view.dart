@@ -748,7 +748,7 @@ class PayCoolView extends StatelessWidget {
                                                   Expanded(
                                                     flex: 2,
                                                     child: Text(
-                                                        '${NumberUtil().truncateDoubleWithoutRouding(model.scanToPayModelV2.myreward ?? 0.0, precision: model.decimalLimit).toString()} FAB',
+                                                        '${NumberUtil.decimalLimiter(model.scanToPayModelV2.myreward, decimalPrecision: model.decimalLimit).toString()} FAB',
                                                         textAlign:
                                                             TextAlign.right,
                                                         style:

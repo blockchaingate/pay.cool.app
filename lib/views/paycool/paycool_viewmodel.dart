@@ -359,11 +359,6 @@ class PayCoolViewmodel extends FutureViewModel {
   }
 
   signTxV2(String contractAddress) async {
-    String exgAddress =
-        await sharedService.getExgAddressFromCoreWalletDatabase();
-    var nonce = await KanbanUtils.getKanbanNonce(
-        environmentService.kanbanBaseUrl(), exgAddress);
-
     //   Web
     String finalAbiHex =
         //  Constants.payCoolSignOrderAbi +
