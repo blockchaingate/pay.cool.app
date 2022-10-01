@@ -19,7 +19,7 @@ class TransactionHistoryView extends StatelessWidget {
             TransactionHistoryViewmodel(tickerName: tickerName),
         onModelReady: (model) async {
           model.context = context;
-          model.getWalletFromDb();
+          // model.getWalletFromDb();
         },
         builder: (context, model, child) => WillPopScope(
               onWillPop: () async {

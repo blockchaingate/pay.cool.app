@@ -109,10 +109,13 @@ class TransactionHistoryViewmodel extends FutureViewModel {
     transactionHistoryToShowInView.sort(
         (a, b) => DateTime.parse(b.date).compareTo(DateTime.parse(a.date)));
 
-    await userSettingsDatabaseService.getLanguage().then((value) {
-      if (value == 'zh') isChinese = true;
-    });
-
+    try {
+      await userSettingsDatabaseService.getLanguage().then((value) {
+        if (value == 'zh') isChinese = true;
+      });
+    } catch (err) {
+      log.e('CATCH failed to get lang from user settings db');
+    }
     decimalLimit = await coinService
         .getSingleTokenData(tickerName)
         .then((res) => res.decimal);
