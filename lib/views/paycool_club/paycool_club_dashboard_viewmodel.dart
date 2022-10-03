@@ -789,7 +789,7 @@ class PayCoolClubDashboardViewModel extends BaseViewModel {
                               )),
                               onPressed: () {
                                 String receiveFileName =
-                                    'Paycool Referral Code.png';
+                                    'Pay.cool Referral Code.png';
                                 getApplicationDocumentsDirectory().then((dir) {
                                   String filePath =
                                       "${dir.path}/$receiveFileName";

@@ -172,7 +172,7 @@ class _GenerateCustomQrCodeViewState extends State<GenerateCustomQrCodeView> {
     var abiHex = getPayCoolClubFuncABI(
         dusdCoinType, fabAddress, referralController.text);
     var holder = {
-      'name': 'Paycool Defi Management',
+      'name': 'Pay.cool Defi Management',
       'to': paycoolSmartContractAddress,
       'data': abiHex
     };

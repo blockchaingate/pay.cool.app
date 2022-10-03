@@ -60,7 +60,7 @@ class BottomNavBar extends StatelessWidget {
                             sharedService.getCurrentRouteName(context);
                         if (storageService.showPaycool &&
                             storageService.showPaycoolClub) {
-                          debugPrint("nav has Paycool and club, id: " +
+                          debugPrint("nav has Pay.cool and club, id: " +
                               idx.toString());
                           switch (idx) {
                             case 0:
@@ -109,7 +109,7 @@ class BottomNavBar extends StatelessWidget {
                         } else if (storageService.showPaycool &&
                             !storageService.showPaycoolClub) {
                           debugPrint(
-                              "nav has Paycool and no Paycool club, id: " +
+                              "nav has Pay.cool and no Pay.cool club, id: " +
                                   idx.toString());
                           switch (idx) {
                             case 0:
@@ -150,7 +150,7 @@ class BottomNavBar extends StatelessWidget {
                         } else if (!storageService.showPaycool &&
                             storageService.showPaycoolClub) {
                           debugPrint(
-                              "nav no Paycool and has Paycool club, id: " +
+                              "nav no Pay.cool and has Pay.cool club, id: " +
                                   idx.toString());
                           switch (idx) {
                             case 0:
@@ -190,7 +190,7 @@ class BottomNavBar extends StatelessWidget {
                           }
                         } else {
                           debugPrint(
-                              "nav no Paycool and no Paycool club, id: " +
+                              "nav no Pay.cool and no Pay.cool club, id: " +
                                   idx.toString());
                           switch (idx) {
                             case 0:

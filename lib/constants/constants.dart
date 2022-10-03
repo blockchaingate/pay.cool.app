@@ -10,7 +10,7 @@ class Constants {
   static const String androidStoreId = "club.paycool.paycool";
   static const String appleStoreId = "id1571496540";
 /*----------------------------------------------------------------------
-                        Paycool
+                        Pay.cool
 ----------------------------------------------------------------------*/
   static const String ReferralAddressText = 'referralAddress';
   static const String MerchantAddressText = 'merchantAddress';

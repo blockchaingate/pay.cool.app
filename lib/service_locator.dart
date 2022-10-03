@@ -108,7 +108,7 @@ Future serviceLocator() async {
   locator.registerFactory(() => TransactionHistoryViewmodel());
   locator.registerFactory(() => RedepositViewModel());
 
-  // Paycool Club
+  // Pay.cool Club
   locator.registerFactory(() => PayCoolClubDashboardViewModel());
   locator.registerFactory(() => JoinPayCoolClubViewModel());
   locator.registerFactory(() => PaycoolReferralViewmodel());

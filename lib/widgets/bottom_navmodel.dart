@@ -38,7 +38,7 @@ class BottomNavViewmodel extends BaseViewModel {
     setBusy(true);
     log("init BottomNavmodel");
     storageService.showPaycool = true;
-    // log("Display Paycool: "+ storageService.showPaycool.toString());
+    // log("Display Pay.cool: "+ storageService.showPaycool.toString());
     await countItemNum(count).then((value) async {
       selectedIndex = value;
       log("BottomNav model selected Index: $selectedIndex");
