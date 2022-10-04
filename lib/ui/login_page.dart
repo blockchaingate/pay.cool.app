@@ -82,7 +82,7 @@
 //                 Padding(
 //                     padding: EdgeInsets.only(top: 20.0),
 //                     child: Container(
-//                       child: Text("亿币派多客系统",
+//                       child: Text("亿币贝库系统",
 //                           style: TextStyle(
 //                               fontSize: 28,
 //                               color: Colors.white,

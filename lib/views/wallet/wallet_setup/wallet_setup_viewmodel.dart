@@ -58,7 +58,11 @@ class WalletSetupViewmodel extends BaseViewModel {
   String selectedLanguage;
   UserSettings userSettings = UserSettings();
   bool isUserSettingsEmpty = false;
-  final Map<String, String> languages = {'en': 'English', 'zh': '简体中文'};
+  final Map<String, String> languages = {
+    'en': 'English',
+    'zh': '简体中文',
+    'es': 'Español'
+  };
   final walletUtil = WalletUtil();
   get hasAuthenticated => authService.hasAuthorized;
 
@@ -72,13 +76,13 @@ class WalletSetupViewmodel extends BaseViewModel {
 
   init() async {
     setBusy(true);
-    //await setLanguageFromDb();
-    // await selectDefaultWalletLanguage();
+    // await setLanguageFromDb();
+    await selectDefaultWalletLanguage();
 
     sharedService.context = context;
     //  walletDatabaseService.initDb();
     // await checkVersion();
-    await walletService.checkLanguage(context);
+    // await walletService.checkLanguage(context);
     await checkExistingWallet();
 
     setBusy(false);
@@ -296,6 +300,7 @@ class WalletSetupViewmodel extends BaseViewModel {
 
   setLanguageFromDb() async {
     setBusy(true);
+
     await userSettingsDatabaseService.getById(1).then((res) {
       if (res != null) {
         userSettings.language = res.language;
@@ -313,9 +318,16 @@ class WalletSetupViewmodel extends BaseViewModel {
   Future<String> selectDefaultWalletLanguage() async {
     setBusy(true);
     if (selectedLanguage == '' || selectedLanguage == null) {
-      String key = userSettings.language ?? 'en';
-      // await getSetLocalStorageDataByKey('lang');
-      // log.w('key in init $key');
+      String key = '';
+      if (storageService.language == null || storageService.language.isEmpty) {
+        storageService.language = 'en';
+      } else {
+        key = storageService.language;
+      }
+      if (key.isEmpty) {
+        key = 'en';
+        storageService.language = 'en';
+      }
 
       // /// Created Map of languages because in dropdown if i want to show
       // /// first default value as whichever language is currently the app
@@ -324,13 +336,10 @@ class WalletSetupViewmodel extends BaseViewModel {
 
       if (languages.containsKey(key)) {
         selectedLanguage = languages[key];
-      }
-      // else if (languages.containsValue(key)) {
-      //   String keyIsValue = key;
 
-      //   selectedLanguage =
-      //       languages.keys.firstWhere((k) => languages[k] == keyIsValue);
-      // }
+        await FlutterI18n.refresh(context, Locale(key));
+      }
+
       log.i('selectedLanguage $selectedLanguage');
     }
     setBusy(false);
@@ -376,6 +385,15 @@ class WalletSetupViewmodel extends BaseViewModel {
       await FlutterI18n.refresh(context, const Locale('en'));
       storageService.language = 'en';
       UserSettings us = UserSettings(id: 1, language: 'en', theme: '');
+      await walletService.updateUserSettingsDb(us, isUserSettingsEmpty);
+    } else if (updatedLanguageValue == 'Spanish' ||
+        updatedLanguageValue == 'es' ||
+        key == 'es') {
+      log.e('in es');
+      // AppLocalizations.load(Locale('en', 'EN'));
+      await FlutterI18n.refresh(context, const Locale('es'));
+      storageService.language = 'es';
+      UserSettings us = UserSettings(id: 1, language: 'es', theme: '');
       await walletService.updateUserSettingsDb(us, isUserSettingsEmpty);
     }
     (context as Element).markNeedsBuild();

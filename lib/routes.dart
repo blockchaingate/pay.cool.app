@@ -127,7 +127,7 @@ class RouteGenerator {
                 ));
 
 /*----------------------------------------------------------------------
-                          Paycool Club Routes
+                          Pay.cool Club Routes
 ----------------------------------------------------------------------*/
       case PayCoolClubDashboardViewRoute:
         return MaterialPageRoute(

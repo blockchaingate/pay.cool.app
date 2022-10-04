@@ -57,7 +57,7 @@ class JoinPayCoolClubViewModel extends BaseViewModel {
 
   final referralCode = TextEditingController();
   bool isEnoughDusdWalletBalance = true;
-  double fixedAmountToPay = 2000.0;
+  double fixedAmountToPay = 10000.0;
   ScanToPayModel scanToPayModel = ScanToPayModel();
   bool isValidReferralAddress = false;
   String _groupValue;

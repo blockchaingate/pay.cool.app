@@ -122,7 +122,7 @@ class PayCoolClubService {
   }
 
 /*----------------------------------------------------------------------
-                            Paycool Club Details
+                            Pay.cool Club Details
 ----------------------------------------------------------------------*/
 
   Future<List<PayCoolClubModel>> getPayCoolClubDetails() async {

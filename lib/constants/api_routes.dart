@@ -24,7 +24,7 @@ const String exchangilyUrl = 'https://www.exchangily.com/';
 const String coinPoolAddressRoute = 'exchangily/getCoinPoolAddress';
 
 /*----------------------------------------------------------------------
-                        Paycool Club
+                        Pay.cool Club
 ----------------------------------------------------------------------*/
 const String paycoolRef = '7star-ref';
 const String campaignListUrl = baseBlockchainGateV2Url + 'campaigns';
@@ -41,7 +41,7 @@ const String isValidPaidReferralCodeUrl =
     baseBlockchainGateV2Url + paycoolRef + '/' + 'isValid/';
 
 /*----------------------------------------------------------------------
-                        Paycool Pay
+                        Pay.cool Pay
 ----------------------------------------------------------------------*/
 
 // Referral

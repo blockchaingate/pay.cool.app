@@ -64,7 +64,11 @@ class SettingsViewmodel extends BaseViewModel with StoppableService {
   final localAuthService = locator<LocalAuthService>();
   final coreWalletDatabaseService = locator<CoreWalletDatabaseService>();
 
-  final Map<String, String> languages = {'en': 'English', 'zh': '简体中文'};
+  final Map<String, String> languages = {
+    'en': 'English',
+    'zh': '简体中文',
+    'es': 'Español'
+  }; //,'fr':'français','ja':'日本語'};
   String selectedLanguage;
   // bool result = false;
   String errorMessage = '';
@@ -148,8 +152,12 @@ class SettingsViewmodel extends BaseViewModel with StoppableService {
 
     getAppVersion();
     baseServerUrl = configService.getKanbanBaseUrl();
-    await setLanguageFromDb();
-    await selectDefaultWalletLanguage();
+
+    try {
+      await selectDefaultWalletLanguage();
+    } catch (err) {
+      log.e('CATCH selectDefaultWalletLanguage failed');
+    }
     setBusy(false);
   }
 
@@ -221,17 +229,19 @@ class SettingsViewmodel extends BaseViewModel with StoppableService {
     setBusy(false);
   }
 
-/*-------------------------------------------------------------------------------------
-                      selectDefaultWalletLanguage
--------------------------------------------------------------------------------------*/
-
   Future<String> selectDefaultWalletLanguage() async {
     setBusy(true);
     if (selectedLanguage == '' || selectedLanguage == null) {
-      String key = userSettings.language ?? 'en';
-      // await getSetLocalStorageDataByKey('lang');
-      // log.w('key in init $key');
-
+      String key = '';
+      if (storageService.language == null || storageService.language.isEmpty) {
+        storageService.language = 'en';
+      } else {
+        key = storageService.language;
+      }
+      if (key.isEmpty) {
+        key = 'en';
+        storageService.language = 'en';
+      }
       // /// Created Map of languages because in dropdown if i want to show
       // /// first default value as whichever language is currently the app
       // /// is in then default value that i want to show should match with one
@@ -239,6 +249,8 @@ class SettingsViewmodel extends BaseViewModel with StoppableService {
 
       if (languages.containsKey(key)) {
         selectedLanguage = languages[key];
+        currentLang = Locale(key);
+        await FlutterI18n.refresh(context, currentLang);
       }
       // else if (languages.containsValue(key)) {
       //   String keyIsValue = key;
@@ -488,9 +500,6 @@ class SettingsViewmodel extends BaseViewModel with StoppableService {
     setBusy(false);
   }
 
-/*-------------------------------------------------------------------------------------
-                      Change wallet language
--------------------------------------------------------------------------------------*/
   changeWalletLanguage(String updatedLanguageValue) async {
     setBusy(true);
 
@@ -516,29 +525,29 @@ class SettingsViewmodel extends BaseViewModel with StoppableService {
         updatedLanguageValue == 'zh' ||
         key == 'zh') {
       log.e('in zh');
-      // AppLocalizations.load(Locale('zh', 'ZH'));
+
       currentLang = const Locale('zh');
       await FlutterI18n.refresh(context, currentLang);
       storageService.language = 'zh';
-      UserSettings us = UserSettings(id: 1, language: 'zh', theme: '');
-      await walletService.updateUserSettingsDb(us, isUserSettingsEmpty);
     } else if (updatedLanguageValue == 'English' ||
         updatedLanguageValue == 'en' ||
         key == 'en') {
       log.e('in en');
-      // AppLocalizations.load(Locale('en', 'EN'));
+
       currentLang = const Locale('en');
       await FlutterI18n.refresh(context, currentLang);
       storageService.language = 'en';
-      UserSettings us = UserSettings(id: 1, language: 'en', theme: '');
-      await walletService.updateUserSettingsDb(us, isUserSettingsEmpty);
-    }
-    // navigationService.navigateUsingpopAndPushedNamed(SettingViewRoute);
+    } else if (updatedLanguageValue == 'Spanish' ||
+        updatedLanguageValue == 'es' ||
+        key == 'es') {
+      log.e('in es');
 
-    Navigator.push(
-      context,
-      FadeRoute(widget: const SettingsView()),
-    );
+      currentLang = const Locale('es');
+      await FlutterI18n.refresh(context, currentLang);
+      storageService.language = 'es';
+    }
+    navigationService.navigateUsingpopAndPushedNamed(SettingViewRoute);
+
     setBusy(false);
   }
 

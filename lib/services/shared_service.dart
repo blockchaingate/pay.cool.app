@@ -528,7 +528,7 @@ class SharedService {
   }
 
   // Language
-  Future checkLanguage() async {
+  checkLanguage() {
     String lang = '';
 
     lang = storageService.language;

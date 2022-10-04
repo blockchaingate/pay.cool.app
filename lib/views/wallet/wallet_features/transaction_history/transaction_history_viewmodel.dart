@@ -109,10 +109,13 @@ class TransactionHistoryViewmodel extends FutureViewModel {
     transactionHistoryToShowInView.sort(
         (a, b) => DateTime.parse(b.date).compareTo(DateTime.parse(a.date)));
 
-    await userSettingsDatabaseService.getLanguage().then((value) {
-      if (value == 'zh') isChinese = true;
-    });
-
+    try {
+      await userSettingsDatabaseService.getLanguage().then((value) {
+        if (value == 'zh') isChinese = true;
+      });
+    } catch (err) {
+      log.e('CATCH failed to get lang from user settings db');
+    }
     decimalLimit = await coinService
         .getSingleTokenData(tickerName)
         .then((res) => res.decimal);
@@ -233,7 +236,7 @@ class TransactionHistoryViewmodel extends FutureViewModel {
                           UIHelper.verticalSpaceSmall,
                           transactionHistory.tag != send
                               ? Text(
-                                  '${FlutterI18n.translate(context, "kanban")} Txid',
+                                  '${FlutterI18n.translate(context, "kanban")} ${FlutterI18n.translate(context, "transactionId")}',
                                   style: Theme.of(context).textTheme.bodyText1,
                                 )
                               : Container(),
@@ -290,7 +293,7 @@ class TransactionHistoryViewmodel extends FutureViewModel {
                           UIHelper.verticalSpaceMedium,
                           Text(
                             //FlutterI18n.translate(context, "quantity"),FlutterI18n.translate(context, "quantity")
-                            '${transactionHistory.chainName} ${FlutterI18n.translate(context, "hain")} Txid',
+                            '${transactionHistory.chainName} ${FlutterI18n.translate(context, "chain")} ${FlutterI18n.translate(context, "transactionId")}',
                             style: Theme.of(context).textTheme.bodyText1,
                           ),
                           Row(
@@ -388,7 +391,7 @@ class TransactionHistoryViewmodel extends FutureViewModel {
                       transactionHistory.tag != send
                           ? Text(
                               //FlutterI18n.translate(context, "t")).,
-                              '${FlutterI18n.translate(context, "kanban")} Txid',
+                              '${FlutterI18n.translate(context, "kanban")} ${FlutterI18n.translate(context, "transactionId")}',
                               style: Theme.of(context).textTheme.bodyText1,
                             )
                           : Container(),
@@ -441,7 +444,7 @@ class TransactionHistoryViewmodel extends FutureViewModel {
                       UIHelper.verticalSpaceMedium,
                       Text(
                         //FlutterI18n.translate(context, "quantity"),FlutterI18n.translate(context, "quantity")
-                        '${transactionHistory.chainName} ${FlutterI18n.translate(context, "hain")} Txid',
+                        '${transactionHistory.chainName} ${FlutterI18n.translate(context, "chain")} ${FlutterI18n.translate(context, "transactionId")}',
                         style: Theme.of(context).textTheme.bodyText1,
                       ),
                       Row(

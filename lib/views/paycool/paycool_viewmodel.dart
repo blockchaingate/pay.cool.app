@@ -136,12 +136,12 @@ class PayCoolViewmodel extends FutureViewModel {
     storageService.autoStartPaycoolScan == null
         ? isAutoStartPaycoolScan = false
         : isAutoStartPaycoolScan = storageService.autoStartPaycoolScan;
-    await userSettingsDatabaseService.getById(1).then((res) {
-      if (res != null) {
-        lang = res.language ?? "en";
-        log.i('user settings db not null');
-      }
-    });
+    // await userSettingsDatabaseService.getById(1).then((res) {
+    //   if (res != null) {
+    //     lang = res.language ?? "en";
+    //     log.i('user settings db not null');
+    //   }
+    // });
     if (lang == null || lang.isEmpty) {
       lang = "en";
     }

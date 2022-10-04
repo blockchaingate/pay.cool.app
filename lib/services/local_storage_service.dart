@@ -173,19 +173,19 @@ class LocalStorageService {
   set isDarkMode(bool value) => _saveToDisk(DarkModeKey, value);
 
 /*----------------------------------------------------------------------
-                Paycool pay getter/setter
+                Pay.cool pay getter/setter
 ----------------------------------------------------------------------*/
   bool get showPaycool => _getFromDisk(IsShowPaycool) ?? false;
   set showPaycool(bool value) => _saveToDisk(IsShowPaycool, value);
 
 /*----------------------------------------------------------------------
-                Paycool wallet getter/setter
+                Pay.cool wallet getter/setter
 ----------------------------------------------------------------------*/
   bool get showPaycoolClub => _getFromDisk(IsShowPaycoolWallet) ?? false;
   set showPaycoolClub(bool value) => _saveToDisk(IsShowPaycoolWallet, value);
 
 /*----------------------------------------------------------------------
-                auto Start Paycool Scan getter/setter
+                auto Start Pay.cool Scan getter/setter
 ----------------------------------------------------------------------*/
   bool get autoStartPaycoolScan => _getFromDisk(AutoStartPaycoolScan) ?? false;
   set autoStartPaycoolScan(bool value) =>

@@ -119,12 +119,16 @@ class PayCoolTransactionHistoryView extends StatelessWidget {
                                                             .transactions[index]
                                                             .status ==
                                                         0
-                                                    ? 'Refunded'
+                                                    ? FlutterI18n.translate(
+                                                        context, "refunded")
                                                     : model.transactions[index]
                                                                 .status ==
                                                             1
-                                                        ? 'Valid'
-                                                        : 'Requested Refund'),
+                                                        ? FlutterI18n.translate(
+                                                            context, "valid")
+                                                        : FlutterI18n.translate(
+                                                            context,
+                                                            "requestRefund")),
                                               )
                                             ],
                                           ),
@@ -146,9 +150,8 @@ class PayCoolTransactionHistoryView extends StatelessWidget {
                                                       ElevatedButton(
                                                           style: ButtonStyle(
                                                               backgroundColor:
-                                                                  MaterialStateProperty
-                                                                      .all(
-                                                                          sellPrice)),
+                                                                  MaterialStateProperty.all(
+                                                                      sellPrice)),
                                                           onPressed: () {
                                                             if (!model
                                                                 .isProcessingAction) {
@@ -177,8 +180,13 @@ class PayCoolTransactionHistoryView extends StatelessWidget {
                                                                           .id &&
                                                                   model
                                                                       .isProcessingAction
-                                                              ? 'Processing'
-                                                              : 'Cancel refund request')),
+                                                              ? FlutterI18n
+                                                                  .translate(
+                                                                      context,
+                                                                      "processing")
+                                                              : FlutterI18n.translate(
+                                                                  context,
+                                                                  "cancelRefundRequest"))),
                                                     UIHelper
                                                         .horizontalSpaceSmall,
                                                     if (model
@@ -217,8 +225,14 @@ class PayCoolTransactionHistoryView extends StatelessWidget {
                                                                             .id &&
                                                                     model
                                                                         .isProcessingAction
-                                                                ? 'Processing'
-                                                                : 'Request Refund',
+                                                                ? FlutterI18n
+                                                                    .translate(
+                                                                        context,
+                                                                        "processing")
+                                                                : FlutterI18n
+                                                                    .translate(
+                                                                        context,
+                                                                        "requestRefund"),
                                                             style: const TextStyle(
                                                                 color:
                                                                     secondaryColor),

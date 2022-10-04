@@ -58,7 +58,7 @@
 //                                 width: MediaQuery.of(context).size.width * 0.24,
 //                               ),
 //                               SizedBox(height: 10),
-//                               Text("亿币派多客系统",
+//                               Text("亿币贝库系统",
 //                                   style: TextStyle(
 //                                       color: Color(0xff333333),
 //                                       fontWeight: FontWeight.bold,
