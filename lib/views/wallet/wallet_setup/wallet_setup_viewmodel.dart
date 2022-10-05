@@ -11,8 +11,12 @@
 *----------------------------------------------------------------------
 */
 
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:paycool/constants/colors.dart';
+import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/constants/route_names.dart';
 import 'package:paycool/logger.dart';
 import 'package:paycool/models/wallet/user_settings_model.dart';
@@ -28,9 +32,13 @@ import 'package:paycool/services/navigation_service.dart';
 import 'package:paycool/services/shared_service.dart';
 import 'package:paycool/services/version_service.dart';
 import 'package:paycool/services/wallet_service.dart';
+import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/utils/wallet/wallet_util.dart';
+import 'package:paycool/widgets/web_view_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stacked/stacked.dart';
+import 'package:webview_flutter/webview_flutter.dart';
+import '../../../constants/api_routes.dart';
 import '../../../service_locator.dart';
 import 'dart:io' show Platform;
 
@@ -73,6 +81,7 @@ class WalletSetupViewmodel extends BaseViewModel {
 
   bool isVerifying = false;
   bool hasVerificationStarted = false;
+  int webViewProgress = 0;
 
   init() async {
     setBusy(true);
@@ -83,9 +92,88 @@ class WalletSetupViewmodel extends BaseViewModel {
     //  walletDatabaseService.initDb();
     // await checkVersion();
     // await walletService.checkLanguage(context);
-    await checkExistingWallet();
+
+    if (storageService.hasPrivacyConsent) {
+      await checkExistingWallet();
+    } else {
+      showPrivacyConsentWidget();
+      return;
+    }
 
     setBusy(false);
+  }
+
+  onBackButtonPressed() async {
+    sharedService.closeApp();
+  }
+
+  int onProgress(int progress) {
+    log.e('progress pass in wallet setup $progress');
+    setBusyForObject(webViewProgress, true);
+    webViewProgress = progress;
+    setBusyForObject(webViewProgress, false);
+    return progress;
+  }
+
+  showPrivacyConsentWidget() {
+    showModalBottomSheet(
+        isScrollControlled: true,
+        constraints: BoxConstraints(
+            maxHeight: MediaQuery.of(context).size.height / 1.25),
+        isDismissible: false,
+        enableDrag: false,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        backgroundColor: secondaryColor,
+        context: context,
+        builder: (BuildContext context) {
+          return SafeArea(
+            child: ListView(
+              children: <Widget>[
+                ConstrainedBox(
+                  constraints: BoxConstraints(
+                      maxHeight: MediaQuery.of(context).size.height / 1.4),
+                  child: WebViewWidget(
+                      paycoolPrivacyUrl,
+                      FlutterI18n.translate(context, "askPrivacyConsent"),
+                      onProgress),
+                ),
+                Container(
+                  margin: const EdgeInsets.all(10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              primary: walletCardColor),
+                          onPressed: (() => navigationService.goBack()),
+                          child: Text(
+                            FlutterI18n.translate(context, "decline"),
+                            style: headText5,
+                          )),
+                      UIHelper.horizontalSpaceSmall,
+                      ElevatedButton(
+                          style:
+                              ElevatedButton.styleFrom(primary: primaryColor),
+                          onPressed: (() => setPrivacyConsent()),
+                          child: Text(
+                            FlutterI18n.translate(context, "accept"),
+                            style: headText5,
+                          )),
+                    ],
+                  ),
+                )
+              ],
+            ),
+          );
+        });
+  }
+
+  setPrivacyConsent() {
+    storageService.hasPrivacyConsent = true;
+    navigationService.goBack();
+    checkExistingWallet();
   }
 
 // import or create wallet button navigation

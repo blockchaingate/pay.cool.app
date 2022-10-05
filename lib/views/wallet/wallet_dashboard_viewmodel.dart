@@ -162,63 +162,8 @@ class WalletDashboardViewModel extends BaseViewModel {
   }
 
   assignDefaultWalletForIos() async {
-    rightWalletInfo = await getWalletInfoObjFromWalletBalance(wallets[3]);
-  }
-
-  // get wallet info object with address using single wallet balance
-  Future<WalletInfo> getWalletInfoObjFromWalletBalance(
-      WalletBalance wallet) async {
-    //FocusScope.of(context).requestFocus(FocusNode());
-
-    // take the tickername and then get the coin type
-    // either from token or token updates api/local storage
-
-    String tickerName = wallet.coin.toUpperCase();
-    String walletAddress = '';
-    var alltokens = await tokenListDatabaseService.getAll();
-    debugPrint(alltokens.length.toString());
-    int coinType = await walletUtil.getCoinTypeIdByName(tickerName);
-
-    // use coin type to get the token type
-    String tokenType = walletUtil.getTokenType(coinType);
-
-    // get wallet address
-    if (tickerName == 'ETH' || tokenType == 'ETH') {
-      walletAddress =
-          await coreWalletDatabaseService.getWalletAddressByTickerName('ETH');
-    } else if (tickerName == 'FAB' || tokenType == 'FAB') {
-      walletAddress =
-          await coreWalletDatabaseService.getWalletAddressByTickerName('FAB');
-    } else if (tickerName == 'TRX' ||
-        tickerName == 'TRON' ||
-        tokenType == 'TRON' ||
-        tokenType == 'TRX') {
-      walletAddress =
-          await coreWalletDatabaseService.getWalletAddressByTickerName('TRX');
-    } else {
-      walletAddress = await coreWalletDatabaseService
-          .getWalletAddressByTickerName(tickerName);
-    }
-    String coinName = '';
-    for (var i = 0; i < walletUtil.coinTickerAndNameList.length; i++) {
-      if (walletUtil.coinTickerAndNameList.containsKey(wallet.coin)) {
-        coinName = walletUtil.coinTickerAndNameList[wallet.coin];
-      }
-      break;
-    }
-
-    // assign address from local DB to walletinfo object
-    var walletInfo = WalletInfo(
-        tickerName: wallet.coin,
-        availableBalance: wallet.balance,
-        tokenType: tokenType,
-        usdValue: wallet.balance * wallet.usdValue.usd,
-        inExchange: wallet.unlockedExchangeBalance,
-        address: walletAddress,
-        name: coinName);
-
-    log.w('routeWithWalletInfoArgs walletInfo ${walletInfo.toJson()}');
-    return walletInfo;
+    rightWalletInfo =
+        await walletUtil.getWalletInfoObjFromWalletBalance(wallets[3]);
   }
 
   // moveDown() {
@@ -242,14 +187,16 @@ class WalletDashboardViewModel extends BaseViewModel {
     context ??= sharedService.context;
     if (MediaQuery.of(context).size.width < largeSize) {
       FocusScope.of(context).requestFocus(FocusNode());
-      var walletInfo = await getWalletInfoObjFromWalletBalance(wallet);
+      var walletInfo =
+          await walletUtil.getWalletInfoObjFromWalletBalance(wallet);
 
       log.w('routeWithWalletInfoArgs walletInfo ${walletInfo.toJson()}');
       searchCoinTextController.clear();
       // navigate accordingly
       navigationService.navigateTo(routeName, arguments: walletInfo);
     } else {
-      rightWalletInfo = await getWalletInfoObjFromWalletBalance(wallet);
+      rightWalletInfo =
+          await walletUtil.getWalletInfoObjFromWalletBalance(wallet);
       (context as Element).markNeedsBuild();
     }
   }
@@ -610,7 +557,8 @@ class WalletDashboardViewModel extends BaseViewModel {
           arguments: wallets[index]);
       searchCoinTextController.clear();
     } else {
-      rightWalletInfo = await getWalletInfoObjFromWalletBalance(wallets[index]);
+      rightWalletInfo =
+          await walletUtil.getWalletInfoObjFromWalletBalance(wallets[index]);
       (context as Element).markNeedsBuild();
     }
   }

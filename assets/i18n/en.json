@@ -450,5 +450,10 @@
     "requestRefund":"Request Refund",
     "valid":"Valid",
     "processing":"Processing",
-    "cancelRefundRequest":"Cancel refund request"
+    "cancelRefundRequest":"Cancel refund request",
+    "privacyPolicy":"Privacy Policy",
+    "askPrivacyConsent":"Please read our privacy policy and accept to use the app",
+    "userDataUsage":"We do not store or share user data",
+    "accept":"Accept",
+    "decline":"Decline"
 }

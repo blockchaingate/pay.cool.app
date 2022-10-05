@@ -22,6 +22,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:package_info/package_info.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../constants/colors.dart';
 import '../constants/custom_styles.dart';
@@ -291,6 +292,15 @@ class SharedService {
     navigationService.navigateUsingpopAndPushedNamed(route);
   }
 
+  Future<void> launchInBrowser(Uri url) async {
+    if (!await launchUrl(
+      url,
+      mode: LaunchMode.externalApplication,
+    )) {
+      throw 'Could not launch $url';
+    }
+  }
+
   Future<bool> closeApp() async {
     return showDialog(
             context: context,
@@ -299,30 +309,41 @@ class SharedService {
                 elevation: 10,
                 backgroundColor: walletCardColor.withOpacity(0.85),
                 titleTextStyle: headText5.copyWith(fontWeight: FontWeight.bold),
-                contentTextStyle: const TextStyle(color: grey),
+                contentTextStyle: const TextStyle(color: white),
                 content: Text(
                   // add here cupertino widget to check in these small widgets first then the entire app
                   '${FlutterI18n.translate(context, "closeTheApp")}?',
                   style: const TextStyle(fontSize: 14),
+                  textAlign: TextAlign.center,
                 ),
                 actions: <Widget>[
-                  FlatButton(
-                    child: Text(
-                      FlutterI18n.translate(context, "no"),
-                      style: const TextStyle(color: white, fontSize: 12),
-                    ),
-                    onPressed: () {
-                      Navigator.of(context).pop(false);
-                    },
+                  UIHelper.verticalSpaceSmall,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ElevatedButton(
+                        style:
+                            ElevatedButton.styleFrom(primary: secondaryColor),
+                        child: Text(
+                          FlutterI18n.translate(context, "no"),
+                          style: const TextStyle(color: white, fontSize: 12),
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).pop(false);
+                        },
+                      ),
+                      UIHelper.horizontalSpaceMedium,
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(primary: primaryColor),
+                        child: Text(FlutterI18n.translate(context, "yes"),
+                            style: const TextStyle(color: white, fontSize: 12)),
+                        onPressed: () {
+                          SystemChannels.platform
+                              .invokeMethod('SystemNavigator.pop');
+                        },
+                      )
+                    ],
                   ),
-                  FlatButton(
-                    child: Text(FlutterI18n.translate(context, "yes"),
-                        style: const TextStyle(color: white, fontSize: 12)),
-                    onPressed: () {
-                      SystemChannels.platform
-                          .invokeMethod('SystemNavigator.pop');
-                    },
-                  )
                 ],
               );
             }) ??

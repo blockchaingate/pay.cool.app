@@ -33,7 +33,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:paycool/constants/api_routes.dart';
 
 class LightningRemitViewmodel extends FutureViewModel {
-  final log = getLogger('BindpayViewmodel');
+  final log = getLogger('LightningRemitViewmodel');
 
   final amountController = TextEditingController();
   final addressController = TextEditingController();

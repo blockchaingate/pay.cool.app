@@ -446,5 +446,11 @@
     "currentVersion": "当前版本",
     "latestVersion": "最新版本",
     "downloadLatestApkFromServer": "从服务器下载最新的apk",
-    "unavailable": "不能利用的"
+    "unavailable": "不能利用的",
+    "privacyPolicy":"隐私政策",
+    "askPrivacyConsent":"請閱讀我們的隱私政策並接受使用該應用程式",
+    "unConfirmedBalance": "未确认余额",
+    "userDataUsage":"我们不存储或共享用户数据",
+    "accept":"接受",
+    "decline":"拒不"
 }

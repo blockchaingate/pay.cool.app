@@ -32,9 +32,9 @@ class WalletSetupView extends StatelessWidget {
         model.context = context;
         model.init();
       },
-      builder: (context, model, child) => WillPopScope(
-        onWillPop: () {
-          // model.sharedService.closeApp();
+      builder: (context, WalletSetupViewmodel model, child) => WillPopScope(
+        onWillPop: () async {
+          model.onBackButtonPressed();
           return Future(() => false);
         },
         child: Scaffold(
@@ -181,81 +181,145 @@ class WalletSetupView extends StatelessWidget {
                                                 .hasInAppBiometricAuthEnabled ||
                                             !model.storageService
                                                 .hasPhoneProtectionEnabled
-                                        ? Row(children: <Widget>[
-                                            Expanded(
-                                              child: Container(
-                                                margin: const EdgeInsets.only(
-                                                    right: 5),
-                                                child: ElevatedButton(
-                                                  style: ButtonStyle(
-                                                    elevation:
-                                                        MaterialStateProperty
-                                                            .all(5),
-                                                    backgroundColor:
-                                                        MaterialStateProperty
-                                                            .all(white),
-                                                    shape: MaterialStateProperty
-                                                        .all(
-                                                      const StadiumBorder(
-                                                          side: BorderSide(
-                                                              color:
-                                                                  primaryColor,
-                                                              width: 2)),
+                                        ? model.storageService.hasPrivacyConsent
+                                            ? Row(
+                                                children: <Widget>[
+                                                  Expanded(
+                                                    child: Container(
+                                                      margin:
+                                                          const EdgeInsets.only(
+                                                              right: 5),
+                                                      child: ElevatedButton(
+                                                        style: ButtonStyle(
+                                                          elevation:
+                                                              MaterialStateProperty
+                                                                  .all(5),
+                                                          backgroundColor:
+                                                              MaterialStateProperty
+                                                                  .all(white),
+                                                          shape:
+                                                              MaterialStateProperty
+                                                                  .all(
+                                                            const StadiumBorder(
+                                                                side: BorderSide(
+                                                                    color:
+                                                                        primaryColor,
+                                                                    width: 2)),
+                                                          ),
+                                                        ),
+                                                        child: Text(
+                                                            FlutterI18n.translate(
+                                                                context,
+                                                                "createWallet"),
+                                                            style: headText5
+                                                                .copyWith(
+                                                                    color:
+                                                                        primaryColor)),
+                                                        onPressed: () {
+                                                          if (!model.isBusy) {
+                                                            model
+                                                                .importCreateNav(
+                                                                    'create');
+                                                          }
+                                                        },
+                                                      ),
                                                     ),
                                                   ),
-                                                  child: Text(
+                                                  Expanded(
+                                                    child: ElevatedButton(
+                                                      style: ButtonStyle(
+                                                          elevation:
+                                                              MaterialStateProperty
+                                                                  .all(5),
+                                                          shape:
+                                                              MaterialStateProperty
+                                                                  .all(
+                                                            const StadiumBorder(
+                                                                side: BorderSide(
+                                                                    color:
+                                                                        primaryColor,
+                                                                    width: 2)),
+                                                          ),
+                                                          backgroundColor:
+                                                              MaterialStateProperty
+                                                                  .all(
+                                                                      primaryColor)),
+                                                      child: Text(
+                                                        FlutterI18n.translate(
+                                                            context,
+                                                            "importWallet"),
+                                                        style:
+                                                            headText5.copyWith(
+                                                                color: white),
+                                                      ),
+                                                      onPressed: () {
+                                                        if (!model.isBusy) {
+                                                          model.importCreateNav(
+                                                              'import');
+                                                        }
+                                                      },
+                                                    ),
+                                                  ),
+                                                  // TextButton(
+                                                  //   child: Text('click'),
+                                                  //   onPressed: () => model
+                                                  //       .coreWalletDatabaseService
+                                                  //       .insert(CoreWalletModel()),
+                                                  // )
+                                                ],
+                                              )
+                                            : Container(
+                                                child: Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  Text(
+                                                    FlutterI18n.translate(
+                                                        context,
+                                                        "askPrivacyConsent"),
+                                                    style: headText5.copyWith(
+                                                        color: white),
+                                                  ),
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(5),
+                                                    child: Text(
                                                       FlutterI18n.translate(
                                                           context,
-                                                          "createWallet"),
-                                                      style: headText5.copyWith(
-                                                          color: primaryColor)),
-                                                  onPressed: () {
-                                                    if (!model.isBusy) {
-                                                      model.importCreateNav(
-                                                          'create');
-                                                    }
-                                                  },
-                                                ),
-                                              ),
-                                            ),
-                                            Expanded(
-                                              child: ElevatedButton(
-                                                style: ButtonStyle(
-                                                    elevation:
-                                                        MaterialStateProperty
-                                                            .all(5),
-                                                    shape: MaterialStateProperty
-                                                        .all(
-                                                      const StadiumBorder(
-                                                          side: BorderSide(
-                                                              color:
-                                                                  primaryColor,
-                                                              width: 2)),
+                                                          "userDataUsage"),
+                                                      style: headText5,
                                                     ),
-                                                    backgroundColor:
-                                                        MaterialStateProperty
-                                                            .all(primaryColor)),
-                                                child: Text(
-                                                  FlutterI18n.translate(
-                                                      context, "importWallet"),
-                                                  style: headText5.copyWith(
-                                                      color: white),
-                                                ),
-                                                onPressed: () {
-                                                  if (!model.isBusy) {
-                                                    model.importCreateNav(
-                                                        'import');
-                                                  }
-                                                },
-                                              ),
-                                            ),
-                                            // TextButton(
-                                            //   child: Text('click'),
-                                            //   onPressed: () => model
-                                            //       .coreWalletDatabaseService
-                                            //       .insert(CoreWalletModel()),
-                                            // )
-                                          ])
+                                                  ),
+                                                  UIHelper.verticalSpaceSmall,
+                                                  ElevatedButton(
+                                                      style: ButtonStyle(
+                                                          elevation:
+                                                              MaterialStateProperty
+                                                                  .all(5),
+                                                          shape:
+                                                              MaterialStateProperty
+                                                                  .all(
+                                                            const StadiumBorder(
+                                                                side: BorderSide(
+                                                                    color:
+                                                                        primaryColor,
+                                                                    width: 2)),
+                                                          ),
+                                                          backgroundColor:
+                                                              MaterialStateProperty
+                                                                  .all(
+                                                                      primaryColor)),
+                                                      child: Text(
+                                                        FlutterI18n.translate(
+                                                            context,
+                                                            "privacyPolicy"),
+                                                        style:
+                                                            headText5.copyWith(
+                                                                color: white),
+                                                      ),
+                                                      onPressed: () => model
+                                                          .showPrivacyConsentWidget()),
+                                                ],
+                                              ))
                                         : Container(),
                                   ],
                                 ),
@@ -267,7 +331,7 @@ class WalletSetupView extends StatelessWidget {
               Align(
                 alignment: Alignment.topCenter,
                 child: Container(
-                  margin: EdgeInsets.only(top: 30),
+                  margin: const EdgeInsets.only(top: 30),
                   padding: const EdgeInsets.only(top: 30),
                   child: DropdownButtonHideUnderline(
                     child: DropdownButton(

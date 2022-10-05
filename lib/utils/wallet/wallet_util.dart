@@ -57,7 +57,9 @@ class WalletUtil {
     'WINGS': 'Wings',
     'MTL': 'Metal',
     'KNC': 'Kyber Network',
-    'GVT': 'Genesis Vision'
+    'GVT': 'Genesis Vision',
+    'USDTX': 'TRON USDT',
+    'FABB': 'FAB Binance'
   };
 
   // get wallet info object with address using single wallet balance
@@ -78,7 +80,12 @@ class WalletUtil {
     String tokenType = getTokenType(coinType);
 
     // get wallet address
-    if (tickerName == 'ETH' || tokenType == 'ETH') {
+    if (tickerName == 'ETH' ||
+        tokenType == 'ETH' ||
+        tickerName == 'MATICM' ||
+        tokenType == 'POLYGON' ||
+        tickerName == "BNB" ||
+        tokenType == "BNB") {
       walletAddress =
           await coreWalletDatabaseService.getWalletAddressByTickerName('ETH');
     } else if (tickerName == 'FAB' || tokenType == 'FAB') {
@@ -124,30 +131,45 @@ class WalletUtil {
     String logoTicker = '';
     if (tickerName.toUpperCase() == 'ETH_BST' ||
         tickerName.toUpperCase() == 'BSTE') {
-      tickerName = 'BST(ERC20)';
+      tickerName = 'BST(ETH)';
       logoTicker = 'BSTE';
     } else if (tickerName.toUpperCase() == 'ETH_DSC' ||
         tickerName.toUpperCase() == 'DSCE') {
-      tickerName = 'DSC(ERC20)';
+      tickerName = 'DSC(ETH)';
       logoTicker = 'DSCE';
     } else if (tickerName.toUpperCase() == 'ETH_EXG' ||
         tickerName.toUpperCase() == 'EXGE') {
-      tickerName = 'EXG(ERC20)';
+      tickerName = 'EXG(ETH)';
       logoTicker = 'EXGE';
     } else if (tickerName.toUpperCase() == 'ETH_FAB' ||
         tickerName.toUpperCase() == 'FABE') {
-      tickerName = 'FAB(ERC20)';
+      tickerName = 'FAB(ETH)';
       logoTicker = 'FABE';
     } else if (tickerName.toUpperCase() == 'TRON_USDT' ||
         tickerName.toUpperCase() == 'USDTX') {
-      tickerName = 'USDT(TRC20)';
+      tickerName = 'USDT(TRX)';
       logoTicker = 'USDTX';
     } else if (tickerName.toUpperCase() == 'USDT') {
-      tickerName = 'USDT(ERC20)';
+      tickerName = 'USDT(ETH)';
       logoTicker = 'USDT';
     } else if (tickerName.toUpperCase() == 'USDCX') {
-      tickerName = 'USDC(trc20)';
-      logoTicker = 'USDC';
+      tickerName = 'USDC(TRX)';
+      logoTicker = 'USDCX';
+    } else if (tickerName.toUpperCase() == 'MATICM') {
+      tickerName = 'MATIC(POLYGON)';
+      logoTicker = 'MATICM';
+    } else if (tickerName.toUpperCase() == 'USDTM') {
+      tickerName = 'USDT(MATIC)';
+      logoTicker = 'USDTM';
+    } else if (tickerName.toUpperCase() == 'FABB') {
+      tickerName = 'FAB(BNB)';
+      logoTicker = 'FABB';
+    } else if (tickerName.toUpperCase() == 'MATIC') {
+      tickerName = 'MATIC(ETH)';
+      logoTicker = 'MATIC';
+    } else if (tickerName.toUpperCase() == 'USDTB') {
+      tickerName = 'USDT(BNB)';
+      logoTicker = 'USDT';
     } else {
       logoTicker = tickerName;
     }
@@ -269,6 +291,10 @@ class WalletUtil {
       tokenType = 'DOGE';
     } else if (firstHalf == '0007' && secondHalf != '0000') {
       tokenType = 'TRX';
+    } else if (firstHalf == '0009' && secondHalf != '0000') {
+      tokenType = 'POLYGON';
+    } else if (firstHalf == '0008' && secondHalf != '0000') {
+      tokenType = 'BNB';
     }
     log.i('hexCoinType $hexCoinType - tokenType $tokenType');
     return tokenType;

@@ -230,6 +230,37 @@ class CoinDetailsCardWidget
                               }),
                         ],
                       ),
+                      wallets[index].coin == 'FAB' &&
+                              wallets[index].unconfirmedBalance != 0
+                          ? Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 5.0, vertical: 5.0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: <Widget>[
+                                      Text(
+                                          //  '${model.specialTicker} '.toUpperCase() +
+                                          FlutterI18n.translate(
+                                              context, "unConfirmedBalance"),
+                                          style:
+                                              subText2.copyWith(color: yellow)),
+                                      Text(
+                                          '${NumberUtil().truncateDoubleWithoutRouding(wallets[index].unconfirmedBalance, precision: 8)}  FAB',
+                                          textAlign: TextAlign.start,
+                                          style:
+                                              subText2.copyWith(color: yellow)),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            )
+                          : Container(),
                     ],
                   ),
                 ),

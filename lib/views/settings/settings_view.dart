@@ -11,10 +11,13 @@
 *----------------------------------------------------------------------
 */
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:paycool/constants/api_routes.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/environments/environment_type.dart';
+import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/views/settings/settings_viewmodel.dart';
 import 'package:paycool/widgets/bottom_nav.dart';
 import 'package:flutter/material.dart';
@@ -528,6 +531,23 @@ class SettingsContainer extends StatelessWidget {
                         .textTheme
                         .bodyText2
                         .copyWith(color: Colors.red)),
+              ),
+            ),
+            UIHelper.verticalSpaceLarge,
+            Center(
+              child: RichText(
+                text: TextSpan(
+                  recognizer: TapGestureRecognizer()
+                    ..onTap = () {
+                      model.sharedService
+                          .launchInBrowser(Uri.parse(paycoolPrivacyUrl));
+                    },
+                  text: FlutterI18n.translate(context, "privacyPolicy"),
+                  style: Theme.of(context).textTheme.bodyText1.copyWith(
+                        color: Colors.blue,
+                        decoration: TextDecoration.underline,
+                      ),
+                ),
               ),
             ),
           ]),

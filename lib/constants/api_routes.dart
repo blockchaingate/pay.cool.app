@@ -23,6 +23,7 @@ const String exchangilyUrl = 'https://www.exchangily.com/';
 // General
 const String coinPoolAddressRoute = 'exchangily/getCoinPoolAddress';
 
+const String paycoolPrivacyUrl = "https://www.pay.cool/privacy";
 /*----------------------------------------------------------------------
                         Pay.cool Club
 ----------------------------------------------------------------------*/

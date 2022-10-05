@@ -449,5 +449,10 @@
     "requestRefund":"Solicitar reembolso",
     "valid":"válido",
     "processing":"Tratamiento",
-    "cancelRefundRequest":"Cancelar solicitud de reembolso"
+    "cancelRefundRequest":"Cancelar solicitud de reembolso",
+    "privacyPolicy":"Política de Privacidad",
+    "askPrivacyConsent":"Por favor, lea nuestra política de privacidad y acepte el uso de la aplicación",
+    "userDataUsage":"No almacenamos ni compartimos datos de usuario",
+    "accept":"Aceptar",
+    "decline":"Rechazar"
 }
