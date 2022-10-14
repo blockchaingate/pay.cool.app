@@ -112,20 +112,21 @@ class WalletSetupViewmodel extends BaseViewModel {
     setBusyForObject(webViewProgress, true);
     webViewProgress = progress;
     setBusyForObject(webViewProgress, false);
+    log.w('webViewProgress  $webViewProgress');
     return progress;
   }
 
   showPrivacyConsentWidget() {
     showModalBottomSheet(
         isScrollControlled: true,
-        constraints: BoxConstraints(
-            maxHeight: MediaQuery.of(context).size.height / 1.25),
+        constraints:
+            BoxConstraints(maxHeight: MediaQuery.of(context).size.height / 1.2),
         isDismissible: false,
         enableDrag: false,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.0),
-        ),
-        backgroundColor: secondaryColor,
+        // shape: RoundedRectangleBorder(
+        //   borderRadius: BorderRadius.circular(25.0),
+        //   ),
+        backgroundColor: const Color(0xffedeff0),
         context: context,
         builder: (BuildContext context) {
           return SafeArea(
@@ -133,14 +134,16 @@ class WalletSetupViewmodel extends BaseViewModel {
               children: <Widget>[
                 ConstrainedBox(
                   constraints: BoxConstraints(
-                      maxHeight: MediaQuery.of(context).size.height / 1.4),
+                      maxHeight: MediaQuery.of(context).size.height / 1.33),
                   child: WebViewWidget(
                       paycoolPrivacyUrl,
                       FlutterI18n.translate(context, "askPrivacyConsent"),
                       onProgress),
                 ),
+                UIHelper.verticalSpaceSmall,
                 Container(
-                  margin: const EdgeInsets.all(10),
+                  // margin: const EdgeInsets.all(5),
+                  color: const Color(0xffedeff0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -152,14 +155,15 @@ class WalletSetupViewmodel extends BaseViewModel {
                             FlutterI18n.translate(context, "decline"),
                             style: headText5,
                           )),
-                      UIHelper.horizontalSpaceSmall,
+                      UIHelper.horizontalSpaceMedium,
                       ElevatedButton(
                           style:
                               ElevatedButton.styleFrom(primary: primaryColor),
                           onPressed: (() => setPrivacyConsent()),
                           child: Text(
                             FlutterI18n.translate(context, "accept"),
-                            style: headText5,
+                            style: headText5.copyWith(
+                                color: black, fontWeight: FontWeight.w400),
                           )),
                     ],
                   ),

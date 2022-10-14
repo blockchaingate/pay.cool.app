@@ -199,10 +199,31 @@ class CoinDetailsCardWidget
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
-                          DepositWidget(
-                              model: model,
-                              index: index,
-                              tickerName: finalTickerName),
+                          InkWell(
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 8.0),
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      FlutterI18n.translate(context, "deposit"),
+                                      style: subText2.copyWith(fontSize: 8),
+                                    ),
+                                    const Icon(
+                                      Icons.arrow_downward,
+                                      color: green,
+                                      size: 16,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              onTap: () {
+                                model.routeWithWalletInfoArgs(
+                                    wallets[index], DepositViewRoute);
+                              }),
+                          // DepositWidget(
+                          //     model: model,
+                          //     index: index,
+                          //     tickerName: finalTickerName),
                           const Divider(
                             endIndent: 5,
                           ),
