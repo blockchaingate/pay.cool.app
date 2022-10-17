@@ -44,7 +44,7 @@ class PaycoolDashboard {
       mt = 'Merchant';
     }
     return PaycoolDashboard(
-        totalPaycoolAssets: double.parse(json['totalPaycoolAssets'].toString()),
+        totalPaycoolAssets: double.parse(json['total7StarAssets'].toString()),
         memberType: mt,
         dateCreated: date,
         memberTypeCode: json['memberType']);

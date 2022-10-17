@@ -46,7 +46,7 @@ Future<void> main() async {
     await serviceLocator();
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
 
-    Logger.level = Level.nothing;
+    Logger.level = Level.info;
 
     SystemChannels.textInput
         .invokeMethod('TextInput.hide'); // Hides keyboard initially

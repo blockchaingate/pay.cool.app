@@ -226,7 +226,7 @@ class PayCoolViewmodel extends FutureViewModel {
     }
     try {
       await payCoolClubService
-          .isValidReferralCode(fabAddress, isValidStarPayMemeberCheck: true)
+          .isValidReferralCode(fabAddress, isValidPaycoolMember: true)
           .then((value) {
         isMember = value;
 
@@ -258,7 +258,7 @@ class PayCoolViewmodel extends FutureViewModel {
     }
     await payCoolClubService
         .isValidReferralCode(referralController.text,
-            isValidStarPayMemeberCheck: true)
+            isValidPaycoolMember: true)
         .then((value) {
       if (value != null) {
         log.w('isValid paymember: $value');

@@ -9,7 +9,7 @@ import 'package:paycool/utils/custom_http_util.dart';
 import 'package:paycool/views/paycool_club/paycool_club_model/paycool_club_model.dart';
 
 import 'package:paycool/views/paycool_club/paycool_club_model/paycool_create_order_model.dart';
-import 'package:paycool/views/paycool_club/referral/paycool_referral_model.dart';
+import 'package:paycool/views/paycool_club/referral/referral_model.dart';
 import 'package:paycool/views/paycool_club/paycool_dashboard_model.dart';
 
 class PayCoolClubService {
@@ -55,12 +55,12 @@ class PayCoolClubService {
   }
 
 /*----------------------------------------------------------------------
-                            Check if referral is valid
+                     Check if referral is valid
 ----------------------------------------------------------------------*/
   Future<bool> isValidReferralCode(String fabAddress,
-      {bool isValidStarPayMemeberCheck = false}) async {
-    String url = (isValidStarPayMemeberCheck
-            ? isValidReferralStarPayMemberUrl
+      {bool isValidPaycoolMember = false}) async {
+    String url = (isValidPaycoolMember
+            ? isValidPaycoolMemberUrl
             : isValidPaidReferralCodeUrl) +
         fabAddress;
     log.i('isValidReferralCode url $url');
@@ -73,7 +73,7 @@ class PayCoolClubService {
 
         var isValid = json['isValid'];
         if (isValid != null) {
-          log.e('isvalid $isValid');
+          log.i('isvalid $isValid');
           res = isValid;
         }
         return res;
@@ -88,7 +88,7 @@ class PayCoolClubService {
   }
 
 /*----------------------------------------------------------------------
-                            Check if paycool club member
+                     Check if paycool club member
 ----------------------------------------------------------------------*/
 //memberType: 0-should be unknown; 1-keyNode, 2-Consumer, 3-Merchant
   Future<bool> isMember(String fabAddress) async {
@@ -211,6 +211,7 @@ class PayCoolClubService {
     }
   }
 
+// old
   Future<int> getReferralCount(
     String address,
   ) async {
@@ -240,9 +241,72 @@ class PayCoolClubService {
     }
   }
 
+// new
+  Future<int> getUserReferralCount(
+    String address,
+  ) async {
+    String url = fabInfoUrl + 'user/' + address + '/totalCount';
+    int referralCount = 0;
+    log.i('getReferralCount url $url');
+    try {
+      var response = await client.get(url);
+
+      var json = jsonDecode(response.body);
+
+      // log.w('getChildrenByAddress json $json');
+      if (json.isNotEmpty) {
+        referralCount = json['totalCount'];
+        log.i('referral count $referralCount');
+        return referralCount;
+      } else {
+        log.e("getReferralCount error: " + response.body);
+        return 0;
+      }
+    } catch (err) {
+      log.e('In getReferralCount catch $err');
+      return 0;
+    }
+  }
+
+  // Old
   Future<List<PaycoolReferral>> getChildrenByAddress(String address,
       {int pageSize = 10, int pageNumber = 0}) async {
     String url = payCoolClubrRefUrl + 'children/' + address;
+    if (pageNumber != 0) {
+      pageNumber = pageNumber - 1;
+    }
+    // page number - 1 because page number start from 0 in the api but in front end its from 1
+    url = url + '/$pageSize/$pageNumber';
+    log.i('getChildrenByAddress url $url');
+    try {
+      var response = await client.get(url);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        var json = jsonDecode(response.body) as List;
+
+        // log.w('getChildrenByAddress json $json');
+        if (json.isNotEmpty) {
+          PaycoolReferralList paycoolReferralList =
+              PaycoolReferralList.fromJson(json);
+          log.i(
+              'first childeren obj ${paycoolReferralList.paycoolReferralList[0].toJson()}');
+          return paycoolReferralList.paycoolReferralList;
+        } else {
+          return [];
+        }
+      } else {
+        log.e("getChildrenByAddress error: " + response.body);
+        return [];
+      }
+    } catch (err) {
+      log.e('In getChildrenByAddress catch $err');
+      return [];
+    }
+  }
+
+  // new
+  Future<List<PaycoolReferral>> getDownlineByAddress(String address,
+      {int pageSize = 10, int pageNumber = 0}) async {
+    String url = fabInfoUrl + 'user/' + address;
     if (pageNumber != 0) {
       pageNumber = pageNumber - 1;
     }

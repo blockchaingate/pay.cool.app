@@ -15,7 +15,7 @@ class PaginationWidget extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
-          color: grey.withAlpha(240),
+          color: grey.withAlpha(120),
           borderRadius: const BorderRadius.all(Radius.circular(25))),
       width: 200,
       height: 45,
@@ -58,7 +58,7 @@ class PaginationWidget extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                   color: secondaryColor,
                   letterSpacing: 0.5,
-                  fontSize: 14),
+                  fontSize: 13),
             ),
           ),
           Visibility(

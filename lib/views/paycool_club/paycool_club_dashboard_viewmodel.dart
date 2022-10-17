@@ -20,7 +20,7 @@ import 'package:paycool/shared/ui_helpers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:paycool/utils/barcode_util.dart';
-import 'package:paycool/views/paycool_club/referral/paycool_referral_model.dart';
+import 'package:paycool/views/paycool_club/referral/referral_model.dart';
 import 'package:paycool/views/paycool_club/paycool_club_service.dart';
 import 'package:paycool/views/paycool/paycool_model.dart';
 import 'package:share/share.dart';
@@ -668,7 +668,7 @@ class PayCoolClubDashboardViewModel extends BaseViewModel {
           .then((res) => isClubMember = res);
 
       await payCoolClubService
-          .isValidReferralCode(fabAddress, isValidStarPayMemeberCheck: true)
+          .isValidReferralCode(fabAddress, isValidPaycoolMember: true)
           .then((res) => isPayMember = res);
     } catch (err) {
       log.e('Has joined club CATCH $err');
@@ -695,11 +695,12 @@ class PayCoolClubDashboardViewModel extends BaseViewModel {
   getReferralCount() async {
     setBusy(true);
     await payCoolClubService
-        .getReferralCount(
+        .getUserReferralCount(
       fabAddress,
     )
         .then((refCount) {
       referralCount = refCount;
+      log.w('getReferralCount $referralCount');
     }).timeout(const Duration(seconds: 5), onTimeout: () async {
       log.e('time out');
 

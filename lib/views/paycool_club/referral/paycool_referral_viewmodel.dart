@@ -4,7 +4,7 @@ import 'package:paycool/logger.dart';
 import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/navigation_service.dart';
 import 'package:paycool/services/shared_service.dart';
-import 'package:paycool/views/paycool_club/referral/paycool_referral_model.dart';
+import 'package:paycool/views/paycool_club/referral/referral_model.dart';
 import 'package:paycool/views/paycool_club/paycool_club_service.dart';
 import 'package:paycool/widgets/pagination/pagination_model.dart';
 
@@ -28,6 +28,7 @@ class PaycoolReferralViewmodel extends FutureViewModel {
 
   int _totalReferrals = 0;
   get totalReferrals => _totalReferrals;
+  var downlineReferralCount;
 
 /*----------------------------------------------------------------------
                     Default Future to Run
@@ -35,7 +36,7 @@ class PaycoolReferralViewmodel extends FutureViewModel {
   @override
   Future futureToRun() async {
     fabAddress = await sharedService.getFabAddressFromCoreWalletDatabase();
-    return await payCoolClubService.getChildrenByAddress(
+    return await payCoolClubService.getDownlineByAddress(
         address != null && address.isNotEmpty ? address : fabAddress,
         pageSize: paginationModel.pageSize,
         pageNumber: paginationModel.pageNumber);
@@ -48,7 +49,7 @@ class PaycoolReferralViewmodel extends FutureViewModel {
   void onData(data) async {
     setBusy(true);
     children = data;
-    _totalReferrals = await payCoolClubService.getReferralCount(fabAddress);
+    _totalReferrals = await payCoolClubService.getUserReferralCount(fabAddress);
     paginationModel.totalPages =
         (_totalReferrals / paginationModel.pageSize).ceil();
     paginationModel.pages = [];
@@ -80,7 +81,7 @@ class PaycoolReferralViewmodel extends FutureViewModel {
           .then((downlineReferralList) {
         setBusy(true);
         // debugPrint(downlineReferralList);
-        children[index].downlineReferralCount = downlineReferralList.length;
+        downlineReferralCount = downlineReferralList.length;
       });
       setBusy(false);
     }

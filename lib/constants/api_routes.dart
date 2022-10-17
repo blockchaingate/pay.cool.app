@@ -27,6 +27,7 @@ const String paycoolPrivacyUrl = "https://www.pay.cool/privacy";
 /*----------------------------------------------------------------------
                         Pay.cool Club
 ----------------------------------------------------------------------*/
+
 const String paycoolRef = '7star-ref';
 const String campaignListUrl = baseBlockchainGateV2Url + 'campaigns';
 const String campaignEntryStatusUrl =
@@ -44,9 +45,11 @@ const String isValidPaidReferralCodeUrl =
 /*----------------------------------------------------------------------
                         Pay.cool Pay
 ----------------------------------------------------------------------*/
-
-// Referral
-
+String fabInfoUrl = isProduction
+    ? 'https://fabprod.info/api/userreferral/'
+    : 'https://fabtest.info/api/userreferral/';
+// valid Referralcode
+String isValidPaycoolMemberUrl = fabInfoUrl + 'isValid/';
 // https://fabtest.info/api/userreferral/user/myVKCpWKSpMDvpZZRS69re3KmSta29ZFnK
 const String isValidPaycoolReferralRoute = "api/userreferral/user/";
 
@@ -66,8 +69,9 @@ const String storeInfoPayCoolUrl =
 const String regionalAgentStarPayUrl =
     baseBlockchainGateV2Url + '7star-agent/smartContractAdd/';
 
-const String isValidReferralStarPayMemberUrl =
-    baseBlockchainGateV2Url + paycoolRef + '/' + 'isValidMember/';
+// old
+// const String isValidPaycoolMemberUrl =
+//     baseBlockchainGateV2Url + paycoolRef + '/' + 'isValidMember/';
 
 const String paycoolTextApiRoute = "7starpay";
 const String chargeTextApiRoute = "charge";

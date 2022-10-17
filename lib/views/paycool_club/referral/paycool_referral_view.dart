@@ -27,9 +27,25 @@ class PaycoolReferralView extends StatelessWidget {
       },
       builder: (context, model, _) => Scaffold(
           appBar: AppBar(
+            leading: Container(
+              margin: const EdgeInsets.only(
+                  right: 12, left: 9, top: 12, bottom: 10),
+              decoration: BoxDecoration(
+                color: white,
+                borderRadius: BorderRadius.circular(25),
+              ),
+              child: IconButton(
+                  onPressed: (() => model.navigationService.goBack()),
+                  icon: const Icon(
+                    Icons.arrow_back,
+                    color: black,
+                    size: 20,
+                  )),
+            ),
+            backgroundColor: Colors.transparent,
             centerTitle: true,
             title: Text(FlutterI18n.translate(context, "referrals"),
-                style: headText4),
+                style: headText4.copyWith(fontWeight: FontWeight.bold)),
           ),
           body: model.isBusy
               ? SizedBox(
@@ -43,180 +59,201 @@ class PaycoolReferralView extends StatelessWidget {
                             FlutterI18n.translate(context, "noReferralsYet")),
                       ),
                     )
-                  : Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Expanded(
-                          child: ListView.builder(
-                            shrinkWrap: true,
-                            itemCount: model.children.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              int i = index + 1;
-                              return InkWell(
-                                onTap: () {
-                                  if (model.children[index]
-                                          .downlineReferralCount >
-                                      0) {
-                                    model.navigationService.navigateTo(
-                                        PayCoolClubReferralViewRoute,
-                                        arguments: model.children[index].id);
-                                  }
-                                },
-                                child: Card(
-                                  elevation: 2,
-                                  color: walletCardColor,
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 10.0),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: <Widget>[
-                                        UIHelper.horizontalSpaceSmall,
-                                        // Padding(
-                                        //   padding: const EdgeInsets.all(8.0),
-                                        //   child: Text(
-                                        //     i.toString() + ') ',
-                                        //     style: headText5,
-                                        //   ),
-                                        // ),
-                                        Expanded(
-                                          flex: 3,
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                  : Container(
+                      decoration: const BoxDecoration(
+                        color: white,
+                        borderRadius: BorderRadius.only(
+                            topLeft: const Radius.circular(20),
+                            topRight: Radius.circular(20)),
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Expanded(
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: model.children.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                int i = index + 1;
+                                return Container(
+                                  decoration: BoxDecoration(
+                                      border: Border(
+                                    bottom:
+                                        BorderSide(color: grey.withAlpha(40)),
+                                  )),
+                                  child: ListTile(
+                                    onTap: () {
+                                      if (model.downlineReferralCount > 0) {
+                                        model.navigationService.navigateTo(
+                                            PayCoolClubReferralViewRoute,
+                                            arguments:
+                                                model.children[index].id);
+                                      }
+                                    },
+                                    leading: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        i.toString() + ' ',
+                                        style: headText5.copyWith(color: black),
+                                      ),
+                                    ),
+                                    title: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 10.0),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          model
+                                                  .children[index]
+                                                  .smartContractAddress
+                                                  .isNotEmpty
+                                              ? Container(
+                                                  color: Color.fromARGB(
+                                                      255, 218, 146, 52),
+                                                  padding:
+                                                      const EdgeInsets.all(3.0),
+                                                  child: Column(
+                                                    children: [
+                                                      if (model.children[index]
+                                                              .status ==
+                                                          0) ...[
+                                                        Text(
+                                                            ' ${FlutterI18n.translate(context, "primaryPartner")}',
+                                                            style: headText6
+                                                                .copyWith(
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                    color:
+                                                                        black)),
+                                                      ] else if (model
+                                                              .children[index]
+                                                              .status ==
+                                                          1) ...[
+                                                        Text(
+                                                            ' ${FlutterI18n.translate(context, "juniorPartner")}',
+                                                            style: headText6
+                                                                .copyWith(
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                    color:
+                                                                        black)),
+                                                      ] else if (model
+                                                              .children[index]
+                                                              .status ==
+                                                          2) ...[
+                                                        Text(
+                                                            ' ${FlutterI18n.translate(context, "intermediatePartner")}',
+                                                            style: headText6
+                                                                .copyWith(
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                    color:
+                                                                        black)),
+                                                      ] else if (model
+                                                              .children[index]
+                                                              .status ==
+                                                          3) ...[
+                                                        Text(
+                                                            ' ${FlutterI18n.translate(context, "seniorPartner")}',
+                                                            style: headText6
+                                                                .copyWith(
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                    color:
+                                                                        black)),
+                                                      ]
+                                                    ],
+                                                  ),
+                                                )
+                                              : Container(),
+                                          // id
+                                          Row(
                                             children: [
-                                              model
-                                                      .children[index]
-                                                      .smartContractAdd
-                                                      .isNotEmpty
-                                                  ? Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              bottom: 8.0),
-                                                      child: Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .center,
-                                                        children: [
-                                                          const Icon(Icons.star,
-                                                              color: yellow,
-                                                              size: 18),
-                                                          Text(
-                                                              ' ${FlutterI18n.translate(context, "vipMember")}',
-                                                              style: headText4),
-                                                        ],
-                                                      ),
-                                                    )
-                                                  : Container(),
-                                              // id
-                                              Row(
-                                                children: [
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            right: 2.0),
-                                                    child: Text(
-                                                        FlutterI18n.translate(
-                                                                context, "id") +
-                                                            ':',
-                                                        style:
-                                                            headText5.copyWith(
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold)),
-                                                  ),
-                                                  Flexible(
-                                                    child: Text(
-                                                      model.children[index].id,
-                                                      style: headText5.copyWith(
-                                                          color: primaryColor),
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      maxLines: 2,
-                                                    ),
-                                                  ),
-                                                  CupertinoButton(
-                                                      child: const Icon(
-                                                        FontAwesomeIcons.copy,
-                                                        //  CupertinoIcons.,
-                                                        color: primaryColor,
-                                                        size: 14,
-                                                      ),
-                                                      onPressed: () {
-                                                        model.sharedService
-                                                            .copyAddress(
-                                                                context,
-                                                                model
-                                                                    .children[
-                                                                        index]
-                                                                    .id)();
-                                                      }),
-                                                  CupertinoButton(
-                                                      child: const Icon(
-                                                        FontAwesomeIcons.qrcode,
-                                                        //  CupertinoIcons.,
-                                                        color: primaryColor,
-                                                        size: 14,
-                                                      ),
-                                                      onPressed: () {
-                                                        Navigator.push(
-                                                            context,
-                                                            MaterialPageRoute(
-                                                                builder: (context) =>
-                                                                    DisplayQrCode(model
-                                                                        .children[
-                                                                            index]
-                                                                        .id)));
-                                                      }),
-                                                ],
-                                              ),
-                                              // UIHelper.verticalSpaceSmall,
-                                              // Row(
-                                              //   mainAxisSize:
-                                              //       MainAxisSize.min,
-                                              //   children: [
-                                              //     Text(
-                                              //         AppLocalizations.of(
-                                              //                 context)
-                                              //             .memberType,
-                                              //         style: headText5),
-                                              //   ],
+                                              // Padding(
+                                              //   padding: const EdgeInsets.only(
+                                              //       right: 2.0),
+                                              //   child: Text(
+                                              //       FlutterI18n.translate(
+                                              //               context, "id") +
+                                              //           ':',
+                                              //       style: headText5.copyWith(
+                                              //           fontWeight:
+                                              //               FontWeight.bold,
+                                              //           color: black)),
                                               // ),
-
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                      FlutterI18n.translate(
-                                                          context,
-                                                          "referralCount"),
-                                                      style: headText5),
-                                                  UIHelper.horizontalSpaceSmall,
-                                                  Text(
-                                                      model.children[index]
-                                                          .downlineReferralCount
-                                                          .toString(),
-                                                      style: headText5)
-                                                ],
+                                              Flexible(
+                                                child: Text(
+                                                  model.children[index]
+                                                      .userAddress,
+                                                  style: headText5.copyWith(
+                                                      color: grey),
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  maxLines: 2,
+                                                ),
                                               ),
                                             ],
                                           ),
-                                        ),
-                                        UIHelper.horizontalSpaceSmall,
-                                      ],
+
+                                          Text(
+                                              FlutterI18n.translate(context,
+                                                      "referralCount") +
+                                                  ' ' +
+                                                  model.downlineReferralCount
+                                                      .toString(),
+                                              style: headText5.copyWith(
+                                                  color: black)),
+                                        ],
+                                      ),
                                     ),
+                                    trailing: Container(
+                                        child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        CupertinoButton(
+                                            child: const Icon(
+                                              FontAwesomeIcons.copy,
+                                              //  CupertinoIcons.,
+                                              color: primaryColor,
+                                              size: 14,
+                                            ),
+                                            onPressed: () {
+                                              model.sharedService.copyAddress(
+                                                  context,
+                                                  model.children[index].id)();
+                                            }),
+                                        CupertinoButton(
+                                            child: const Icon(
+                                              FontAwesomeIcons.qrcode,
+                                              //  CupertinoIcons.,
+                                              color: primaryColor,
+                                              size: 14,
+                                            ),
+                                            onPressed: () {
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          DisplayQrCode(model
+                                                              .children[index]
+                                                              .id)));
+                                            }),
+                                      ],
+                                    )),
                                   ),
-                                ),
-                              );
-                            },
+                                );
+                              },
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
           floatingActionButtonLocation:
               FloatingActionButtonLocation.centerDocked,
