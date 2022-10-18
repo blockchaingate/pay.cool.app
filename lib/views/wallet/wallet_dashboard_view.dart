@@ -462,8 +462,8 @@ class WalletDashboardView extends StatelessWidget {
                         onTap: (int tabIndex) {
                           model.updateTabSelection(tabIndex);
                         },
-                        labelColor: white,
-                        unselectedLabelColor: primaryColor,
+                        labelColor: primaryColor,
+                        unselectedLabelColor: grey,
                         indicatorColor: primaryColor,
                         indicatorSize: TabBarIndicatorSize.tab,
                         tabs: const [

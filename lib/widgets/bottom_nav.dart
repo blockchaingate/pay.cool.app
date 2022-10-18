@@ -45,11 +45,12 @@ class BottomNavBar extends StatelessWidget {
                   : BottomNavigationBar(
                       currentIndex: model.selectedIndex,
                       type: BottomNavigationBarType.fixed,
+
                       selectedFontSize: 12,
                       unselectedFontSize: 12,
                       elevation: 10,
                       unselectedItemColor: grey,
-                      backgroundColor: walletCardColor,
+                      backgroundColor: secondaryColor,
                       selectedItemColor: primaryColor,
                       showUnselectedLabels: true,
                       // selectedIconTheme: IconThemeData(color: primaryColor),

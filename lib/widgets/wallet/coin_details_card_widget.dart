@@ -40,7 +40,7 @@ class CoinDetailsCardWidget
       return Container();
     } else {
       return Card(
-        color: walletCardColor,
+        color: secondaryColor,
         elevation: 4,
         child: InkWell(
           splashColor: Colors.blue.withAlpha(30),
@@ -59,16 +59,16 @@ class CoinDetailsCardWidget
                 // Card logo container
                 Container(
                     padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                        color: walletCardColor,
-                        borderRadius: BorderRadius.circular(50),
-                        boxShadow: const [
-                          BoxShadow(
-                              color: fabLogoColor,
-                              offset: Offset(1.0, 5.0),
-                              blurRadius: 10.0,
-                              spreadRadius: 1.0),
-                        ]),
+                    // decoration: BoxDecoration(
+                    //     color: walletCardColor,
+                    //     borderRadius: BorderRadius.circular(50),
+                    //     boxShadow: const [
+                    //       BoxShadow(
+                    //           color: fabLogoColor,
+                    //           offset: Offset(1.0, 5.0),
+                    //           blurRadius: 10.0,
+                    //           spreadRadius: 1.0),
+                    //     ]),
                     child: Image.network(
                         '$WalletCoinsLogoUrl${logoTicker.toLowerCase()}.png'),
                     //asset('assets/images/wallet-page/$tickerName.png'),

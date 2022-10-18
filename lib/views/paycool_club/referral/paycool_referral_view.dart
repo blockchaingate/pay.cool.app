@@ -111,7 +111,7 @@ class PaycoolReferralView extends StatelessWidget {
                                                   .smartContractAddress
                                                   .isNotEmpty
                                               ? Container(
-                                                  color: Color.fromARGB(
+                                                  color: const Color.fromARGB(
                                                       255, 218, 146, 52),
                                                   padding:
                                                       const EdgeInsets.all(3.0),

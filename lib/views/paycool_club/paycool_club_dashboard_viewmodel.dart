@@ -776,13 +776,13 @@ class PayCoolClubDashboardViewModel extends BaseViewModel {
                   actions: <Widget>[
                     // QR image share button
                     Container(
-                      margin: const EdgeInsets.all(15),
+                      margin: const EdgeInsets.all(35),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           CupertinoButton(
                               borderRadius:
-                                  const BorderRadius.all(Radius.circular(4)),
+                                  const BorderRadius.all(Radius.circular(15)),
                               child: Center(
                                   child: Text(
                                 FlutterI18n.translate(context, "share"),
@@ -790,7 +790,7 @@ class PayCoolClubDashboardViewModel extends BaseViewModel {
                               )),
                               onPressed: () {
                                 String receiveFileName =
-                                    'Pay.cool Referral Code.png';
+                                    'Pay.cool-referral-code.png';
                                 getApplicationDocumentsDirectory().then((dir) {
                                   String filePath =
                                       "${dir.path}/$receiveFileName";
@@ -830,25 +830,35 @@ class PayCoolClubDashboardViewModel extends BaseViewModel {
               // Android Alert Dialog
               : AlertDialog(
                   titlePadding: EdgeInsets.zero,
+                  title: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      UIHelper.verticalSpaceMedium,
+                      Text(
+                        FlutterI18n.translate(context, 'referralCode'),
+                        style: headText4.copyWith(
+                            color: black, fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
                   contentPadding: EdgeInsets.zero,
                   insetPadding:
                       const EdgeInsets.symmetric(vertical: 40, horizontal: 20),
                   elevation: 5,
-                  backgroundColor: walletCardColor.withOpacity(0.85),
+                  backgroundColor: secondaryColor.withOpacity(0.85),
                   contentTextStyle: const TextStyle(color: grey),
                   content: SizedBox(
                       width: 250,
                       height: 250,
                       child: Center(
                         child: Container(
-                          padding: const EdgeInsets.all(5),
+                          margin: EdgeInsets.all(30),
                           child: RepaintBoundary(
                             key: globalKey,
                             child: QrImage(
                                 backgroundColor: white,
                                 data: fabAddress,
                                 version: QrVersions.auto,
-                                size: 300,
                                 gapless: true,
                                 errorStateBuilder: (context, err) {
                                   return Container(
@@ -866,51 +876,66 @@ class PayCoolClubDashboardViewModel extends BaseViewModel {
                   actions: <Widget>[
                     // QR image share button
 
-                    OutlinedButton(
-                      style: ButtonStyle(
-                          side: MaterialStateProperty.all(
-                              const BorderSide(color: grey)),
-                          backgroundColor: MaterialStateProperty.all(grey),
-                          textStyle: MaterialStateProperty.all(
-                              const TextStyle(color: Colors.white))),
-                      child: Text(
-                        FlutterI18n.translate(context, "close"),
-                        style: headText6,
-                      ),
-                      onPressed: () {
-                        Navigator.of(context).pop(false);
-                      },
-                    ),
-                    Container(
-                      padding: const EdgeInsets.all(10.0),
-                      child: ElevatedButton(
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        OutlinedButton(
                           style: ButtonStyle(
-                              backgroundColor:
-                                  MaterialStateProperty.all(primaryColor),
+                              minimumSize:
+                                  MaterialStateProperty.all(Size(80.0, 30)),
+                              shape: shapeRoundBorder,
                               textStyle: MaterialStateProperty.all(
                                   const TextStyle(color: Colors.white))),
-                          child: Text(FlutterI18n.translate(context, "share"),
-                              style: headText6),
+                          child: Text(
+                            FlutterI18n.translate(context, "close"),
+                            style: headText6,
+                          ),
                           onPressed: () {
-                            String receiveFileName =
-                                'paycool-payment-address.png';
-                            getApplicationDocumentsDirectory().then((dir) {
-                              String filePath = "${dir.path}/$receiveFileName";
-                              File file = File(filePath);
+                            Navigator.of(context).pop(false);
+                          },
+                        ),
+                        Container(
+                          padding: const EdgeInsets.all(10.0),
+                          child: ElevatedButton(
+                              style: ButtonStyle(
+                                  minimumSize:
+                                      MaterialStateProperty.all(Size(80.0, 30)),
+                                  padding: MaterialStateProperty.all(
+                                      EdgeInsets.symmetric(horizontal: 5)),
+                                  shape: shapeRoundBorder,
+                                  backgroundColor:
+                                      MaterialStateProperty.all(primaryColor),
+                                  textStyle: MaterialStateProperty.all(
+                                      const TextStyle(color: Colors.white))),
+                              child: Text(
+                                  FlutterI18n.translate(context, "share"),
+                                  style: headText6.copyWith(
+                                      color: secondaryColor)),
+                              onPressed: () {
+                                String receiveFileName =
+                                    'pay.cool-referral-code.png';
+                                getApplicationDocumentsDirectory().then((dir) {
+                                  String filePath =
+                                      "${dir.path}/$receiveFileName";
+                                  File file = File(filePath);
 
-                              Future.delayed(const Duration(milliseconds: 30),
-                                  () {
-                                sharedService
-                                    .capturePng(globalKey: globalKey)
-                                    .then((byteData) {
-                                  file.writeAsBytes(byteData).then((onFile) {
-                                    Share.shareFiles([onFile.path],
-                                        text: fabAddress);
+                                  Future.delayed(
+                                      const Duration(milliseconds: 30), () {
+                                    sharedService
+                                        .capturePng(globalKey: globalKey)
+                                        .then((byteData) {
+                                      file
+                                          .writeAsBytes(byteData)
+                                          .then((onFile) {
+                                        Share.shareFiles([onFile.path],
+                                            text: fabAddress);
+                                      });
+                                    });
                                   });
                                 });
-                              });
-                            });
-                          }),
+                              }),
+                        ),
+                      ],
                     ),
                   ],
                 );
