@@ -38,8 +38,8 @@ class UIHelper {
   static const Widget horizontalSpaceLarge =
       SizedBox(width: _HorizontalSpaceLarge);
 
-  static const Widget divider = Divider(
-    color: Colors.grey,
+  static Widget divider = Divider(
+    color: Colors.grey.withAlpha(120),
     height: 0.5,
   );
 

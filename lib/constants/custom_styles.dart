@@ -24,6 +24,14 @@ TextStyle bodyText2 = const TextStyle(fontSize: 13, color: red);
 TextStyle headText6 =
     const TextStyle(fontSize: 10.5, color: black, fontWeight: FontWeight.w500);
 
+buttonRoundShape(Color color) {
+  var shapeRoundBorder = MaterialStateProperty.all<RoundedRectangleBorder>(
+      RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(25.0),
+          side: BorderSide(color: color)));
+  return shapeRoundBorder;
+}
+
 var shapeRoundBorder = MaterialStateProperty.all<RoundedRectangleBorder>(
     RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(25.0),
