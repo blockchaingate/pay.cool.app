@@ -201,18 +201,18 @@ class ConfirmMnemonicViewModel extends BaseViewModel {
         } else {
           showSimpleNotification(
               Text(FlutterI18n.translate(context, "invalidMnemonic"),
-                  style: headText4.copyWith(
-                      color: red, fontWeight: FontWeight.bold)),
+                  style: headText4.copyWith(fontWeight: FontWeight.bold)),
               position: NotificationPosition.bottom,
+              background: primaryColor,
               subtitle: Text(FlutterI18n.translate(
                   context, "pleaseFillAllTheTextFieldsCorrectly")));
         }
       } else {
         showSimpleNotification(
             Text(FlutterI18n.translate(context, "invalidMnemonic"),
-                style: headText4.copyWith(
-                    color: red, fontWeight: FontWeight.bold)),
+                style: headText4.copyWith(fontWeight: FontWeight.bold)),
             position: NotificationPosition.bottom,
+            background: primaryColor,
             subtitle: Text(FlutterI18n.translate(
                 context, "pleaseFillAllTheTextFieldsCorrectly")));
       }
@@ -241,15 +241,17 @@ class ConfirmMnemonicViewModel extends BaseViewModel {
       } else {
         showSimpleNotification(
             Text(FlutterI18n.translate(context, "invalidMnemonic"),
-                style: headText4.copyWith(color: red)),
+                style: headText4.copyWith(fontWeight: FontWeight.bold)),
             position: NotificationPosition.bottom,
+            background: primaryColor,
             subtitle: Text(FlutterI18n.translate(
                 context, "pleaseFillAllTheTextFieldsCorrectly")));
       }
     } else {
       showSimpleNotification(
           Text(FlutterI18n.translate(context, "invalidMnemonic"),
-              style: headText4.copyWith(color: red)),
+              style: headText4.copyWith(fontWeight: FontWeight.bold)),
+          background: primaryColor,
           position: NotificationPosition.bottom,
           subtitle: Text(FlutterI18n.translate(
               context, "pleaseFillAllTheTextFieldsCorrectly")));

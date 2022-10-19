@@ -127,8 +127,8 @@ class _DialogManagerState extends State<DialogManager> {
         style: AlertStyle(
             animationType: AnimationType.grow,
             isOverlayTapDismiss: false,
-            backgroundColor: walletCardColor,
-            descStyle: Theme.of(context).textTheme.bodyText1,
+            backgroundColor: secondaryColor,
+            descStyle: headText6,
             titleStyle: headText3.copyWith(fontWeight: FontWeight.bold)),
         context: context,
         title: request.title,
@@ -148,7 +148,7 @@ class _DialogManagerState extends State<DialogManager> {
             },
             child: Text(
               request.buttonTitle,
-              style: headText4,
+              style: buttonText,
             ),
           )
         ]).show();

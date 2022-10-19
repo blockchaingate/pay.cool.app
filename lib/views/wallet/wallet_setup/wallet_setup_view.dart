@@ -191,6 +191,13 @@ class WalletSetupView extends StatelessWidget {
                                                               right: 5),
                                                       child: ElevatedButton(
                                                         style: ButtonStyle(
+                                                          padding: MaterialStateProperty
+                                                              .all(const EdgeInsets
+                                                                      .symmetric(
+                                                                  horizontal:
+                                                                      15,
+                                                                  vertical:
+                                                                      15)),
                                                           elevation:
                                                               MaterialStateProperty
                                                                   .all(5),
@@ -204,7 +211,7 @@ class WalletSetupView extends StatelessWidget {
                                                                 side: BorderSide(
                                                                     color:
                                                                         primaryColor,
-                                                                    width: 2)),
+                                                                    width: 1)),
                                                           ),
                                                         ),
                                                         child: Text(
@@ -228,6 +235,13 @@ class WalletSetupView extends StatelessWidget {
                                                   Expanded(
                                                     child: ElevatedButton(
                                                       style: ButtonStyle(
+                                                          padding: MaterialStateProperty.all(
+                                                              const EdgeInsets
+                                                                      .symmetric(
+                                                                  horizontal:
+                                                                      15,
+                                                                  vertical:
+                                                                      15)),
                                                           elevation:
                                                               MaterialStateProperty
                                                                   .all(5),
@@ -277,7 +291,7 @@ class WalletSetupView extends StatelessWidget {
                                                         context,
                                                         "askPrivacyConsent"),
                                                     style: headText5.copyWith(
-                                                        color: white),
+                                                        color: black),
                                                   ),
                                                   Padding(
                                                     padding:
@@ -292,9 +306,16 @@ class WalletSetupView extends StatelessWidget {
                                                   UIHelper.verticalSpaceSmall,
                                                   ElevatedButton(
                                                       style: ButtonStyle(
+                                                          padding: MaterialStateProperty
+                                                              .all(const EdgeInsets
+                                                                      .symmetric(
+                                                                  horizontal:
+                                                                      25,
+                                                                  vertical:
+                                                                      15)),
                                                           elevation:
                                                               MaterialStateProperty
-                                                                  .all(5),
+                                                                  .all(10),
                                                           shape:
                                                               MaterialStateProperty
                                                                   .all(

@@ -130,8 +130,9 @@ class CreatePasswordViewModel extends BaseViewModel {
       checkConfirmPasswordConditions = false;
       showSimpleNotification(
           Text(FlutterI18n.translate(context, "emptyPassword"),
-              style: headText4.copyWith(color: red)),
+              style: headText4.copyWith(fontWeight: FontWeight.bold)),
           position: NotificationPosition.bottom,
+          background: primaryColor,
           subtitle: Text(
               FlutterI18n.translate(context, "pleaseFillBothPasswordFields")));
 
@@ -141,8 +142,9 @@ class CreatePasswordViewModel extends BaseViewModel {
       if (!regex.hasMatch(pass)) {
         showSimpleNotification(
             Text(FlutterI18n.translate(context, "passwordConditionsMismatch"),
-                style: headText4.copyWith(color: red)),
+                style: headText4.copyWith(fontWeight: FontWeight.bold)),
             position: NotificationPosition.bottom,
+            background: primaryColor,
             subtitle:
                 Text(FlutterI18n.translate(context, "passwordConditions")));
 
@@ -151,8 +153,9 @@ class CreatePasswordViewModel extends BaseViewModel {
       } else if (pass != confirmPass) {
         showSimpleNotification(
             Text(FlutterI18n.translate(context, "passwordConditionsMismatch"),
-                style: headText4.copyWith(color: red)),
+                style: headText4.copyWith(fontWeight: FontWeight.bold)),
             position: NotificationPosition.bottom,
+            background: primaryColor,
             subtitle: Text(FlutterI18n.translate(context, "passwordRetype")));
 
         setBusy(false);

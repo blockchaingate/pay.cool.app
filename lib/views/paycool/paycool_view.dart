@@ -243,8 +243,8 @@ class PayCoolView extends StatelessWidget {
                                                   child: DropdownButton(
                                                       alignment:
                                                           Alignment.center,
-                                                      // underline: const SizedBox
-                                                      //     .shrink(),
+                                                      underline: const SizedBox
+                                                          .shrink(),
                                                       elevation: 20,
                                                       isExpanded: true,
                                                       icon: const Padding(
@@ -418,7 +418,7 @@ class PayCoolView extends StatelessWidget {
                                                           color: Colors.white,
                                                         ))),
                                                     onPressed: () =>
-                                                        model.scanBarcodeV2(
+                                                        model.scanBarcodeV3(
                                                             addressType: Constants
                                                                 .MerchantAddressText),
                                                     child: Row(

@@ -116,7 +116,7 @@ class MyApp extends StatelessWidget {
               actionsIconTheme: IconThemeData(color: Colors.white),
               iconTheme: IconThemeData(color: Colors.white),
               systemOverlayStyle: SystemUiOverlayStyle.light),
-          unselectedWidgetColor: Colors.white,
+          unselectedWidgetColor: Colors.black,
           disabledColor: grey.withAlpha(100),
           primaryColor: primaryColor,
           backgroundColor: secondaryColor,

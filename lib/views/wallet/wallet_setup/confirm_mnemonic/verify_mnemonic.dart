@@ -31,6 +31,8 @@ class VerifyMnemonicWalletView extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(10),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Container(
               padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 5),
@@ -50,6 +52,7 @@ class VerifyMnemonicWalletView extends StatelessWidget {
   List<Container> _buildTextGrid(int count, controller) =>
       List.generate(count, (i) {
         var hintMnemonicWordNumber = i + 1;
+        // FocusNode focusNode = FocusNode();
         controller.add(TextEditingController());
         return Container(
             child: TextField(
@@ -60,18 +63,23 @@ class VerifyMnemonicWalletView extends StatelessWidget {
           // textCapitalization: TextCapitalization.none,
 
           style: const TextStyle(
-              color: white, fontSize: 14, fontWeight: FontWeight.bold),
-          controller: controller[i],
+              color: grey, fontSize: 14, fontWeight: FontWeight.bold),
+          controller: controller[i], cursorColor: black, //focusNode: focusNode,
           autocorrect: true,
           decoration: InputDecoration(
-            fillColor: tertiaryColor,
+            fillColor: secondaryColor,
             filled: true,
-            hintText: '$hintMnemonicWordNumber',
-            hintStyle: const TextStyle(color: white),
+            hintText:
+                // focusNode.hasFocus && focusNode.hasFocus != null
+                //     ? ' '
+                //     :
+                '$hintMnemonicWordNumber',
+            hintStyle: const TextStyle(color: primaryColor),
             focusedBorder: OutlineInputBorder(
-                borderSide: const BorderSide(color: white, width: 2),
+                borderSide: const BorderSide(color: primaryColor, width: 1.5),
                 borderRadius: BorderRadius.circular(30.0)),
             border: OutlineInputBorder(
+              borderSide: const BorderSide(color: primaryColor, width: 0.5),
               borderRadius: BorderRadius.circular(30.0),
             ),
           ),

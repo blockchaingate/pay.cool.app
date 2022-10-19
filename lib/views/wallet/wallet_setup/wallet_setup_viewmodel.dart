@@ -148,8 +148,14 @@ class WalletSetupViewmodel extends BaseViewModel {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                              primary: walletCardColor),
+                          style: ButtonStyle(
+                              padding: MaterialStateProperty.all(
+                                  const EdgeInsets.symmetric(
+                                      horizontal: 25, vertical: 15)),
+                              elevation: MaterialStateProperty.all(10.0),
+                              backgroundColor:
+                                  MaterialStateProperty.all(secondaryColor),
+                              shape: buttonRoundShape(secondaryColor)),
                           onPressed: (() => navigationService.goBack()),
                           child: Text(
                             FlutterI18n.translate(context, "decline"),
@@ -157,13 +163,20 @@ class WalletSetupViewmodel extends BaseViewModel {
                           )),
                       UIHelper.horizontalSpaceMedium,
                       ElevatedButton(
-                          style:
-                              ElevatedButton.styleFrom(primary: primaryColor),
+                          style: ButtonStyle(
+                              padding: MaterialStateProperty.all(
+                                  const EdgeInsets.symmetric(
+                                      horizontal: 25, vertical: 15)),
+                              elevation: MaterialStateProperty.all(10.0),
+                              backgroundColor:
+                                  MaterialStateProperty.all(primaryColor),
+                              shape: buttonRoundShape(primaryColor)),
                           onPressed: (() => setPrivacyConsent()),
                           child: Text(
                             FlutterI18n.translate(context, "accept"),
                             style: headText5.copyWith(
-                                color: black, fontWeight: FontWeight.w400),
+                                color: secondaryColor,
+                                fontWeight: FontWeight.w400),
                           )),
                     ],
                   ),

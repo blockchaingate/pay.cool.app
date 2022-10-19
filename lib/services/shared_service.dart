@@ -306,15 +306,18 @@ class SharedService {
             context: context,
             builder: (context) {
               return AlertDialog(
-                elevation: 10,
+                elevation: 20,
                 backgroundColor: walletCardColor.withOpacity(0.85),
                 titleTextStyle: headText5.copyWith(fontWeight: FontWeight.bold),
                 contentTextStyle: const TextStyle(color: white),
-                content: Text(
-                  // add here cupertino widget to check in these small widgets first then the entire app
-                  '${FlutterI18n.translate(context, "closeTheApp")}?',
-                  style: const TextStyle(fontSize: 14),
-                  textAlign: TextAlign.center,
+                content: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    // add here cupertino widget to check in these small widgets first then the entire app
+                    '${FlutterI18n.translate(context, "closeTheApp")}?',
+                    style: const TextStyle(fontSize: 14),
+                    textAlign: TextAlign.center,
+                  ),
                 ),
                 actions: <Widget>[
                   UIHelper.verticalSpaceSmall,
@@ -322,11 +325,14 @@ class SharedService {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       ElevatedButton(
-                        style:
-                            ElevatedButton.styleFrom(primary: secondaryColor),
+                        style: ButtonStyle(
+                            elevation: MaterialStateProperty.all(5.0),
+                            backgroundColor:
+                                MaterialStateProperty.all(secondaryColor),
+                            shape: buttonRoundShape(secondaryColor)),
                         child: Text(
                           FlutterI18n.translate(context, "no"),
-                          style: const TextStyle(color: white, fontSize: 12),
+                          style: headText5,
                         ),
                         onPressed: () {
                           Navigator.of(context).pop(false);
@@ -334,14 +340,19 @@ class SharedService {
                       ),
                       UIHelper.horizontalSpaceMedium,
                       ElevatedButton(
-                        style: ElevatedButton.styleFrom(primary: primaryColor),
+                        style: ButtonStyle(
+                            elevation: MaterialStateProperty.all(5.0),
+                            backgroundColor:
+                                MaterialStateProperty.all(primaryColor),
+                            shape: buttonRoundShape(primaryColor)),
                         child: Text(FlutterI18n.translate(context, "yes"),
                             style: const TextStyle(color: white, fontSize: 12)),
                         onPressed: () {
                           SystemChannels.platform
                               .invokeMethod('SystemNavigator.pop');
                         },
-                      )
+                      ),
+                      UIHelper.verticalSpaceSmall,
                     ],
                   ),
                 ],

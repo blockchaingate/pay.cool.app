@@ -14,6 +14,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:paycool/constants/colors.dart';
+import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/views/wallet/wallet_setup/confirm_mnemonic/confirm_mnemonic_viewmodel.dart';
 import 'package:stacked/stacked.dart';
@@ -30,13 +31,12 @@ class ImportWalletView extends StatelessWidget {
       },
       builder: (context, model, child) => Scaffold(
         appBar: AppBar(
-            iconTheme: const IconThemeData(color: Colors.white),
             centerTitle: true,
             title: Text(
               FlutterI18n.translate(context, "importWallet"),
-              style: const TextStyle(color: Colors.white, fontSize: 16),
+              style: headText3.copyWith(color: secondaryColor),
             ),
-            backgroundColor: secondaryColor),
+            backgroundColor: primaryColor),
         body: Container(
           alignment: Alignment.center,
           padding: const EdgeInsets.all(10),
@@ -53,16 +53,17 @@ class ImportWalletView extends StatelessWidget {
                 padding: const EdgeInsets.all(15),
                 child: ElevatedButton(
                   style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(primaryColor),
-                    elevation: MaterialStateProperty.all(5),
-                    shape: MaterialStateProperty.all(const StadiumBorder(
-                        side: BorderSide(color: primaryColor, width: 2))),
-                  ),
+                      padding: MaterialStateProperty.all(
+                          const EdgeInsets.symmetric(
+                              horizontal: 15, vertical: 5)),
+                      backgroundColor: MaterialStateProperty.all(primaryColor),
+                      elevation: MaterialStateProperty.all(10),
+                      shape: shapeRoundBorder),
                   child: Padding(
                     padding: const EdgeInsets.all(15.0),
                     child: Text(
                       FlutterI18n.translate(context, "confirm"),
-                      style: Theme.of(context).textTheme.button,
+                      style: headText3.copyWith(color: white),
                     ),
                   ),
                   onPressed: () {

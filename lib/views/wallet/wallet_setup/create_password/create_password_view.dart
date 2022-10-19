@@ -36,6 +36,7 @@ class CreatePasswordView extends StatelessWidget {
       },
       builder: (context, CreatePasswordViewModel model, child) => Scaffold(
         appBar: AppBar(
+          iconTheme: const IconThemeData(color: Colors.black),
           centerTitle: true,
           title: Text(FlutterI18n.translate(context, "secureYourWallet"),
               style: headText4),
@@ -51,10 +52,10 @@ class CreatePasswordView extends StatelessWidget {
                   children: <Widget>[
                     Text(
                       FlutterI18n.translate(context, "setPasswordConditions"),
-                      style: Theme.of(context).textTheme.bodyText1,
+                      style: headText6,
                       textAlign: TextAlign.left,
                     ),
-                    UIHelper.verticalSpaceSmall,
+                    UIHelper.verticalSpaceLarge,
                     TextField(
                         onChanged: (String pass) {
                           model.checkPassword(pass);
@@ -84,21 +85,32 @@ class CreatePasswordView extends StatelessWidget {
                                 //           : grey,
                                 //     ),
                                 //     onPressed: () => model.toggelPassword()),
-                                model.checkPasswordConditions &&
-                                        model.password.isNotEmpty
-                                    ? const Padding(
-                                        padding: EdgeInsets.only(right: 0),
-                                        child: Icon(Icons.check,
-                                            color: primaryColor))
-                                    : const Padding(
-                                        padding: EdgeInsets.only(right: 0),
-                                        child: Icon(Icons.clear, color: grey)),
+                                Visibility(
+                                  child: const Padding(
+                                      padding: EdgeInsets.only(right: 10),
+                                      child: Icon(Icons.check, color: green)),
+                                  visible: model.checkPasswordConditions &&
+                                      model.password.isNotEmpty,
+                                )
+                                // model.checkPasswordConditions &&
+                                //         model.password.isNotEmpty
+                                //     ? const Padding(
+                                //         padding: EdgeInsets.only(right: 0),
+                                //         child: Icon(Icons.check,
+                                //             color: primaryColor))
+                                //     : const Padding(
+                                //         padding: EdgeInsets.only(right: 0),
+                                //         child: Icon(Icons.clear, color: grey)),
                               ],
                             ),
                             labelText:
                                 FlutterI18n.translate(context, "enterPassword"),
-                            prefixIcon: const Icon(Icons.lock_outline,
-                                color: Colors.white),
+                            focusedBorder: const OutlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: primaryColor, width: 1.5),
+                            ),
+                            prefixIcon:
+                                const Icon(Icons.lock_outline, color: grey),
                             labelStyle: headText5,
                             helperStyle: headText5)),
                     //_buildPasswordTextField(model),
@@ -130,21 +142,23 @@ class CreatePasswordView extends StatelessWidget {
                                 //           : grey,
                                 //     ),
                                 //     onPressed: () => model.toggelPassword()),
-                                model.checkConfirmPasswordConditions &&
-                                        model.confirmPassword.isNotEmpty
-                                    ? const Padding(
-                                        padding: EdgeInsets.only(right: 0),
-                                        child: Icon(Icons.check,
-                                            color: primaryColor))
-                                    : const Padding(
-                                        padding: EdgeInsets.only(right: 0),
-                                        child: Icon(Icons.clear, color: grey)),
+
+                                Visibility(
+                                    child: const Padding(
+                                        padding: EdgeInsets.only(right: 10),
+                                        child: Icon(Icons.check, color: green)),
+                                    visible:
+                                        model.checkConfirmPasswordConditions &&
+                                            model.confirmPassword.isNotEmpty)
                               ],
+                            ),
+                            focusedBorder: const OutlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: primaryColor, width: 1.5),
                             ),
                             labelText: FlutterI18n.translate(
                                 context, "confirmPassword"),
-                            prefixIcon:
-                                const Icon(Icons.lock, color: Colors.white),
+                            prefixIcon: const Icon(Icons.lock, color: grey),
                             labelStyle: headText5,
                             helperStyle: headText5)),
                     model.password != ''
@@ -153,7 +167,7 @@ class CreatePasswordView extends StatelessWidget {
                                 child: Text(
                                 FlutterI18n.translate(
                                     context, "passwordMatched"),
-                                style: const TextStyle(color: white),
+                                style: const TextStyle(color: grey),
                               ))
                             : model.password.isEmpty ||
                                     model.confirmPassword.isEmpty
@@ -193,6 +207,7 @@ class CreatePasswordView extends StatelessWidget {
                                     borderRadius: BorderRadius.circular(30)),
                                 minWidth: double.infinity,
                                 child: MaterialButton(
+                                  elevation: 20,
                                   padding: const EdgeInsets.all(15),
                                   color: primaryColor,
                                   textColor: Colors.white,
@@ -209,10 +224,11 @@ class CreatePasswordView extends StatelessWidget {
                                             context, "importWallet")
                                         : FlutterI18n.translate(
                                             context, "createWallet"),
-                                    style: headText4,
+                                    style: headText4.copyWith(color: white),
                                   ),
                                 ),
                               )),
+                    UIHelper.verticalSpaceSmall,
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(

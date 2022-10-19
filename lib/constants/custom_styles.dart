@@ -8,10 +8,12 @@ TextStyle headText1 = const TextStyle(
     fontWeight: FontWeight.bold,
     letterSpacing: 1.25);
 TextStyle headText2 =
-    const TextStyle(fontSize: 18, color: white, fontWeight: FontWeight.w300);
-TextStyle headText3 = const TextStyle(fontSize: 16, color: white);
+    const TextStyle(fontSize: 18, color: black, fontWeight: FontWeight.w300);
+TextStyle headText3 = const TextStyle(fontSize: 16, color: black);
 TextStyle headText4 =
     const TextStyle(fontSize: 15, color: black, fontWeight: FontWeight.w300);
+TextStyle buttonText =
+    const TextStyle(fontSize: 15, color: white, fontWeight: FontWeight.bold);
 TextStyle subText1 =
     const TextStyle(fontSize: 14, color: black, fontWeight: FontWeight.w300);
 TextStyle headText5 =

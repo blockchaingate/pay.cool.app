@@ -39,7 +39,7 @@ class BackupMnemonicWalletView extends StatelessWidget {
             },
             child: Scaffold(
               appBar: AppBar(
-                iconTheme: const IconThemeData(color: Colors.white),
+                iconTheme: const IconThemeData(color: Colors.black),
                 leading: IconButton(
                     icon: const Icon(Icons.arrow_back),
                     onPressed: () => model.onBackButtonPressed()),
@@ -54,6 +54,7 @@ class BackupMnemonicWalletView extends StatelessWidget {
                       icon: const Icon(
                         Icons.help,
                         size: 18,
+                        color: primaryColor,
                       ),
                       onPressed: () {
                         showModalBottomSheet<void>(
@@ -64,20 +65,22 @@ class BackupMnemonicWalletView extends StatelessWidget {
                                     vertical: 32.0, horizontal: 20),
                                 children: [
                                   Container(
+                                      padding: EdgeInsets.all(5.0),
                                       child: Text(
-                                    FlutterI18n.translate(
-                                        context, "backupMnemonicNoticeTitle"),
-                                    // textAlign: TextAlign.center,
-                                    style: headText3,
-                                  )),
+                                        FlutterI18n.translate(context,
+                                            "backupMnemonicNoticeTitle"),
+                                        // textAlign: TextAlign.center,
+                                        style: headText3,
+                                      )),
                                   const SizedBox(height: 20),
                                   Container(
+                                      padding: EdgeInsets.all(5.0),
                                       // padding: EdgeInsets.symmetric(horizontal: 20),
                                       child: Text(
-                                    FlutterI18n.translate(
-                                        context, "backupMnemonicNoticeContent"),
-                                    style: headText5,
-                                  ))
+                                        FlutterI18n.translate(context,
+                                            "backupMnemonicNoticeContent"),
+                                        style: headText5,
+                                      ))
                                 ],
                               );
                             });
@@ -92,10 +95,11 @@ class BackupMnemonicWalletView extends StatelessWidget {
                   children: <Widget>[
                     UIHelper.verticalSpaceMedium,
                     Container(
+                      margin: EdgeInsets.all(5),
                       padding: const EdgeInsets.symmetric(
-                          vertical: 3, horizontal: 10),
+                          vertical: 10, horizontal: 10),
                       decoration: BoxDecoration(
-                          color: tertiaryColor,
+                          color: sellPrice,
                           borderRadius: BorderRadius.circular(30)
                           // shape: BoxShape.circle
                           ),
@@ -127,16 +131,17 @@ class BackupMnemonicWalletView extends StatelessWidget {
                       children: <Widget>[
                         Expanded(
                             child: Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 15.0, vertical: 5),
                           child: Text(
                             FlutterI18n.translate(
                                 context, "warningBackupMnemonic"),
-                            style: headText5,
+                            style: headText4,
                           ),
                         )),
                       ],
                     ),
-                    UIHelper.verticalSpaceSmall,
+
                     Container(
                       margin: const EdgeInsets.symmetric(
                         vertical: 10,
@@ -163,15 +168,15 @@ class BackupMnemonicWalletView extends StatelessWidget {
                             autocorrect: false,
                             decoration: InputDecoration(
                               // alignLabelWithHint: true,
-                              fillColor: tertiaryColor,
+                              fillColor: secondaryColor,
                               filled: true,
                               hintText: sw,
                               hintMaxLines: 1,
                               hintStyle: const TextStyle(
-                                  color: white, fontWeight: FontWeight.w400),
+                                  color: black, fontWeight: FontWeight.w400),
                               focusedBorder: OutlineInputBorder(
-                                  borderSide:
-                                      const BorderSide(color: white, width: 2),
+                                  // borderSide: const BorderSide(
+                                  //     color: primaryColor, width: 2),
                                   borderRadius: BorderRadius.circular(30.0)),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(30.0),
@@ -182,21 +187,26 @@ class BackupMnemonicWalletView extends StatelessWidget {
                       ),
                     ),
                     // UIHelper.verticalSpaceSmall,
-                    Center(
-                      child: Container(
-                        padding: const EdgeInsets.all(15),
-                        child: MaterialButton(
-                          color: primaryColor,
-                          child: Text(
-                            FlutterI18n.translate(context, "confirm"),
-                            style: Theme.of(context).textTheme.button,
-                          ),
-                          onPressed: () {
-                            model.navigationService.navigateTo(
-                                ConfirmMnemonicViewRoute,
-                                arguments: model.randomMnemonicList);
-                          },
+                    Container(
+                      padding: const EdgeInsets.all(15),
+                      child: ElevatedButton(
+                        style: ButtonStyle(
+                            padding: MaterialStateProperty.all(
+                                const EdgeInsets.symmetric(
+                                    horizontal: 25, vertical: 18)),
+                            elevation: MaterialStateProperty.all(10.0),
+                            backgroundColor:
+                                MaterialStateProperty.all(primaryColor),
+                            shape: buttonRoundShape(primaryColor)),
+                        child: Text(
+                          FlutterI18n.translate(context, "confirm"),
+                          style: Theme.of(context).textTheme.button,
                         ),
+                        onPressed: () {
+                          model.navigationService.navigateTo(
+                              ConfirmMnemonicViewRoute,
+                              arguments: model.randomMnemonicList);
+                        },
                       ),
                     )
                   ],

@@ -41,6 +41,7 @@ class ConfirmMnemonicView extends StatelessWidget {
         },
         child: Scaffold(
           appBar: AppBar(
+              iconTheme: const IconThemeData(color: Colors.black),
               centerTitle: true,
               title: Text(
                 FlutterI18n.translate(context, "confirm") +
@@ -60,15 +61,17 @@ class ConfirmMnemonicView extends StatelessWidget {
                   children: [
                     OutlinedButton(
                       style: ButtonStyle(
-                        side: MaterialStateProperty.all(
-                            BorderSide(color: model.isTap ? green : grey)),
-                        // backgroundColor: MaterialStateProperty.all(primaryColor),
-                        elevation: MaterialStateProperty.all(5),
+                        side: MaterialStateProperty.all(BorderSide(
+                            color: model.isTap ? primaryColor : grey)),
+                        backgroundColor:
+                            MaterialStateProperty.all(secondaryColor),
+                        elevation: MaterialStateProperty.all(10),
                         padding: MaterialStateProperty.all(
                             const EdgeInsets.symmetric(
-                                vertical: 2.0, horizontal: 10.0)),
-                        shape: MaterialStateProperty.all(const StadiumBorder(
-                            side: BorderSide(color: primaryColor, width: 2))),
+                                vertical: 12.0, horizontal: 15.0)),
+                        // shape: MaterialStateProperty.all(const StadiumBorder(
+                        //     side: BorderSide(color: primaryColor, width: 2))
+                        //     ),
                       ),
                       child: Text(
                           FlutterI18n.translate(context, "verifyMnemonicByTap"),
@@ -86,13 +89,12 @@ class ConfirmMnemonicView extends StatelessWidget {
                       style: ButtonStyle(
                         padding: MaterialStateProperty.all(
                             const EdgeInsets.symmetric(
-                                vertical: 2.0, horizontal: 10.0)),
-                        side: MaterialStateProperty.all(
-                            BorderSide(color: model.isTap ? grey : green)),
-                        // backgroundColor: MaterialStateProperty.all(primaryColor),
+                                vertical: 12.0, horizontal: 15.0)),
+                        side: MaterialStateProperty.all(BorderSide(
+                            color: !model.isTap ? primaryColor : grey)),
+                        backgroundColor:
+                            MaterialStateProperty.all(secondaryColor),
                         elevation: MaterialStateProperty.all(5),
-                        shape: MaterialStateProperty.all(const StadiumBorder(
-                            side: BorderSide(color: secondaryColor, width: 2))),
                       ),
                       child: Text(
                           FlutterI18n.translate(
@@ -116,32 +118,43 @@ class ConfirmMnemonicView extends StatelessWidget {
                     : Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          TextButton(
-                              onPressed: () {
-                                model.clearTappedList();
-                              },
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  const Padding(
-                                    padding: EdgeInsets.only(right: 2.0),
-                                    child: Icon(
-                                      Icons.restore_sharp,
-                                      color: yellow,
-                                      size: 20,
-                                    ),
+                          Container(
+                            margin: const EdgeInsets.symmetric(
+                                vertical: 0, horizontal: 10),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: TextButton(
+                                  style: ButtonStyle(
+                                    side: MaterialStateProperty.all(
+                                        BorderSide(color: primaryColor)),
                                   ),
-                                  Text(
-                                      FlutterI18n.translate(
-                                          context, "resetSelection"),
-                                      style: headText3.copyWith(color: yellow)),
-                                ],
-                              )),
+                                  onPressed: () {
+                                    model.clearTappedList();
+                                  },
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const Padding(
+                                        padding: EdgeInsets.only(right: 2.0),
+                                        child: Icon(
+                                          Icons.restore_sharp,
+                                          color: grey,
+                                          size: 20,
+                                        ),
+                                      ),
+                                      Text(
+                                          FlutterI18n.translate(
+                                              context, "resetSelection"),
+                                          style:
+                                              headText3.copyWith(color: black)),
+                                    ],
+                                  )),
+                            ),
+                          ),
                           UIHelper.verticalSpaceSmall,
                           Container(
                             margin: const EdgeInsets.symmetric(
-                              vertical: 0,
-                            ),
+                                vertical: 0, horizontal: 10),
                             padding: const EdgeInsets.symmetric(
                                 vertical: 0, horizontal: 5),
                             child: GridView.extent(
@@ -153,13 +166,8 @@ class ConfirmMnemonicView extends StatelessWidget {
                                 childAspectRatio: 2,
                                 physics: const NeverScrollableScrollPhysics(),
                                 children: List.generate(model.count, (i) {
-                                  // if (model.shuffledList.isEmpty)
-                                  //   model.shuffledList = model.randomMnemonicList;
-
                                   var singleWord =
                                       randomMnemonicListFromRoute[i];
-
-                                  //model.shuffledList[i];
 
                                   return TextField(
                                     onTap: () {
@@ -174,27 +182,23 @@ class ConfirmMnemonicView extends StatelessWidget {
                                     // enabled: false, // if false use cant see the selection border around
                                     readOnly: true,
                                     autocorrect: false,
+                                    style: TextStyle(color: black),
                                     decoration: InputDecoration(
                                       // alignLabelWithHint: true,
-                                      fillColor:
-
-                                          //  model.tappedMnemonicList
-                                          //         .contains(singleWord)
-                                          //         &&
-                                          //     !model.isSameIndex
-                                          model.tapTextControllerList[i].text
-                                                  .contains(')')
-                                              ? green
-                                              : primaryColor,
+                                      fillColor: model
+                                              .tapTextControllerList[i].text
+                                              .contains(')')
+                                          ? grey.withAlpha(200)
+                                          : secondaryColor,
                                       filled: true,
                                       hintText: singleWord,
+                                      // label:  Text(singleWord),
+                                      // labelStyle: headText5,
                                       hintMaxLines: 1,
-                                      hintStyle: const TextStyle(
-                                          color: white,
-                                          fontWeight: FontWeight.w400),
+                                      hintStyle: headText4,
                                       focusedBorder: OutlineInputBorder(
                                           borderSide: const BorderSide(
-                                              color: white, width: 2),
+                                              color: black, width: 1),
                                           borderRadius:
                                               BorderRadius.circular(30.0)),
                                       border: OutlineInputBorder(
@@ -208,12 +212,16 @@ class ConfirmMnemonicView extends StatelessWidget {
                           UIHelper.verticalSpaceMedium,
                         ],
                       ),
+                UIHelper.verticalSpaceSmall,
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 15),
                   child: ElevatedButton(
                     style: ButtonStyle(
+                      padding: MaterialStateProperty.all(
+                          const EdgeInsets.symmetric(
+                              horizontal: 25, vertical: 10)),
+                      elevation: MaterialStateProperty.all(10.0),
                       backgroundColor: MaterialStateProperty.all(primaryColor),
-                      elevation: MaterialStateProperty.all(5),
                       shape: MaterialStateProperty.all(const StadiumBorder(
                           side: BorderSide(color: primaryColor, width: 2))),
                     ),
