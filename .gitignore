@@ -84,3 +84,4 @@ ios/Podfile.lock
 ios/build
 pubspec.lock
 .fvm/flutter_sdk
+*.env

@@ -86,6 +86,8 @@ class SendViewModel extends BaseViewModel {
   String feeUnit = '';
   int decimalLimit = 8;
   var fabUtils = FabUtils();
+  List<String> domainTlds = [];
+  String userTypedDomain = '';
 
   // Init State
   initState() async {
@@ -128,7 +130,51 @@ class SendViewModel extends BaseViewModel {
       decimalLimit = t.decimal;
     });
     if (decimalLimit == null || decimalLimit == 0) decimalLimit = 8;
+    domainTlds = await apiService.getDomainSupportedTlds();
     setBusy(false);
+  }
+
+  clearAddress() {
+    receiverWalletAddressTextController.text = '';
+    userTypedDomain = '';
+    notifyListeners();
+    setBusyForObject(userTypedDomain, false);
+  }
+
+  checkDomain(String domainName) async {
+    setBusyForObject(userTypedDomain, true);
+    bool isValidDomainFormat = false;
+    userTypedDomain = '';
+    if (domainTlds == null || domainTlds.isEmpty) {
+      domainTlds = await apiService.getDomainSupportedTlds();
+    }
+    if ((domainTlds != null || domainTlds.isNotEmpty) &&
+        domainName.contains('.')) {
+      isValidDomainFormat = domainTlds.contains(domainName.split('.')[1]);
+    }
+
+    if (isValidDomainFormat) {
+      var domainInfo = await apiService.getDomainRecord(domainName);
+      log.w('get domain data for $domainName -- $domainInfo');
+      String ticker = walletInfo.tokenType.isEmpty
+          ? walletInfo.tickerName
+          : walletInfo.tokenType;
+      String domainAddress = domainInfo['records']['crypto.$ticker.address'];
+      String owner = domainInfo['meta']['owner'];
+
+      if (domainAddress != null) {
+        receiverWalletAddressTextController.text = domainAddress;
+        userTypedDomain = domainName;
+      } else if ((owner != null && owner.isNotEmpty) && domainAddress == null) {
+        userTypedDomain = FlutterI18n.translate(context, "addressNotSet");
+      } else {
+        userTypedDomain = FlutterI18n.translate(context, "invalidDomain");
+      }
+      notifyListeners();
+    } else {
+      log.e('invalid domain format');
+      setBusyForObject(userTypedDomain, false);
+    }
   }
 
   bool isTrx() {
@@ -366,7 +412,7 @@ class SendViewModel extends BaseViewModel {
 
           if (txHash.isNotEmpty) {
             log.w('Txhash $txHash');
-            receiverWalletAddressTextController.text = '';
+            clearAddress();
             sendAmountTextController.text = '';
             isShowErrorDetailsButton = false;
             isShowDetailsMessage = false;

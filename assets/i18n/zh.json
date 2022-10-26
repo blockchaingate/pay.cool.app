@@ -452,5 +452,8 @@
     "unConfirmedBalance": "未确认余额",
     "userDataUsage":"我们不存储或共享用户数据",
     "accept":"接受",
-    "decline":"拒不"
+    "decline":"拒不",
+    "domain": "域",
+    "invalidDomain": "无效的域",
+    "addressNotSet": "地址未设置"
 }

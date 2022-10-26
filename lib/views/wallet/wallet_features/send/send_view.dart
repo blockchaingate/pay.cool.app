@@ -77,32 +77,93 @@ class SendWalletView extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: <Widget>[
                               Padding(
-                                  padding: const EdgeInsets.only(bottom: 10.0),
+                                  padding: const EdgeInsets.only(bottom: 3.0),
                                   child: GestureDetector(
                                     child: TextField(
                                       maxLines: 1,
                                       controller: model
                                           .receiverWalletAddressTextController,
+                                      onChanged: (value) =>
+                                          model.checkDomain(value),
                                       decoration: InputDecoration(
                                           enabledBorder:
                                               const UnderlineInputBorder(
                                                   borderSide: BorderSide(
                                                       color: grey, width: 0.5)),
-                                          suffixIcon: IconButton(
-                                            icon:
-                                                const Icon(Icons.content_paste),
-                                            onPressed: () async {
-                                              await model.pasteClipBoardData();
-                                            },
-                                            iconSize: 25,
-                                            color: primaryColor,
+                                          suffixIcon: Container(
+                                            margin: EdgeInsets.only(
+                                              top: 2,
+                                            ),
+                                            child: Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.end,
+                                              children: [
+                                                model.receiverWalletAddressTextController
+                                                        .text.isNotEmpty
+                                                    ? IconButton(
+                                                        icon: const Icon(
+                                                            Icons.cancel),
+                                                        onPressed: () {
+                                                          model.clearAddress();
+                                                        },
+                                                        iconSize: 18,
+                                                        color: white
+                                                            .withAlpha(190),
+                                                      )
+                                                    : Container(),
+                                                IconButton(
+                                                  icon: const Icon(
+                                                      Icons.content_paste),
+                                                  onPressed: () async {
+                                                    await model
+                                                        .pasteClipBoardData();
+                                                  },
+                                                  iconSize: 22,
+                                                  color: primaryColor,
+                                                ),
+                                              ],
+                                            ),
                                           ),
                                           labelText: FlutterI18n.translate(
-                                              context, "receiverWalletAddress"),
+                                                  context,
+                                                  "receiverWalletAddress") +
+                                              ', ' +
+                                              'DNS',
                                           labelStyle: headText6),
-                                      style: headText5,
+                                      style: headText6,
                                     ),
                                   )),
+                              model.busy(model.userTypedDomain)
+                                  ? Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.all(3.0),
+                                          child: SizedBox(
+                                              width: 15,
+                                              height: 15,
+                                              child: model.sharedService
+                                                  .loadingIndicator()),
+                                        ),
+                                      ],
+                                    )
+                                  : Container(),
+                              model.userTypedDomain.isNotEmpty &&
+                                      !model.busy(model.userTypedDomain)
+                                  ? Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          model.userTypedDomain,
+                                          style:
+                                              headText6.copyWith(color: grey),
+                                        ),
+                                      ],
+                                    )
+                                  : Container(),
                               TextButton(
                                   style: ButtonStyle(
                                       padding: MaterialStateProperty.all(

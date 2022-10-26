@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:logger/logger.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:package_info/package_info.dart';
@@ -50,6 +51,7 @@ Future<void> main() async {
 
     SystemChannels.textInput
         .invokeMethod('TextInput.hide'); // Hides keyboard initially
+    await dotenv.load();
     runApp(MyApp(flutterI18nDelegate, packageInfo));
   } catch (err) {
     debugPrint('main.dart (Catch) Locator setup has failed $err');

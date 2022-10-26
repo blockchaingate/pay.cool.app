@@ -454,5 +454,8 @@
     "askPrivacyConsent":"Por favor, lea nuestra política de privacidad y acepte el uso de la aplicación",
     "userDataUsage":"No almacenamos ni compartimos datos de usuario",
     "accept":"Aceptar",
-    "decline":"Rechazar"
+    "decline":"Rechazar",
+    "domain": "Dominio",
+    "invalidDomain": "Dominio no válido",
+    "addressNotSet": "Dirección no establecida"
 }

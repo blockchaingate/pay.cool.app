@@ -455,5 +455,9 @@
     "askPrivacyConsent":"Please read our privacy policy and accept to use the app",
     "userDataUsage":"We do not store or share user data",
     "accept":"Accept",
-    "decline":"Decline"
+    "decline":"Decline",
+    "domain": "Domain",
+    "invalidDomain": "Invalid Domain",
+    "addressNotSet": "Address not set",
+    "others": "Others"
 }
