@@ -120,7 +120,7 @@ class WalletSetupViewmodel extends BaseViewModel {
     showModalBottomSheet(
         isScrollControlled: true,
         constraints:
-            BoxConstraints(maxHeight: MediaQuery.of(context).size.height / 1.2),
+            BoxConstraints(maxHeight: MediaQuery.of(context).size.height - 120),
         isDismissible: false,
         enableDrag: false,
         // shape: RoundedRectangleBorder(
