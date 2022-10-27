@@ -459,6 +459,9 @@
     "primaryPartner": "Primary Partner",
     "juniorPartner": "Junior Partner",
     "intermediatePartner": "Intermediate Partner",
-    "seniorPartner": "Senior Partner"
-
+    "seniorPartner": "Senior Partner",
+    "domain": "Domain",
+    "invalidDomain": "Invalid Domain",
+    "addressNotSet": "Address not set",
+    "others": "Others"
 }

@@ -458,5 +458,8 @@
     "primaryPartner": "Socio principal",
     "juniorPartner": "Socio intermedio",
     "intermediatePartner": "Intermediate Partner",
-    "seniorPartner": "Socio senior"
+    "seniorPartner": "Socio senior",
+    "domain": "Dominio",
+    "invalidDomain": "Dominio no válido",
+    "addressNotSet": "Dirección no establecida"
 }

@@ -31,6 +31,7 @@ import 'config_service.dart';
 import 'db/core_wallet_database_service.dart';
 import 'local_storage_service.dart';
 import 'shared_service.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 /// The service responsible for networking requests
 class ApiService {
@@ -42,6 +43,48 @@ class ApiService {
   LocalStorageService storageService = locator<LocalStorageService>();
   CoreWalletDatabaseService coreWalletDatabaseService =
       locator<CoreWalletDatabaseService>();
+
+  // Get unstoppable supported tlds
+  Future<List<String>> getDomainSupportedTlds() async {
+    var url = "https://resolve.unstoppabledomains.com/supported_tlds";
+    log.i('getDomainSupportedTlds url $url');
+    try {
+      var response = await client.get(url, headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      });
+      var json = jsonDecode(response.body)['tlds'];
+      json = json.cast<String>();
+      log.w('getDomainSupportedTlds func: json data $json');
+
+      return json;
+    } catch (err) {
+      log.e('getDomainSupportedTlds CATCH $err');
+      throw Exception(err);
+    }
+  }
+
+  // Get unstoppable domain info
+  Future getDomainRecord(String domain) async {
+    var token = dotenv.env['UD_BEARER_TOKEN'];
+    var url = "https://resolve.unstoppabledomains.com/domains/$domain";
+    log.i('getDomainRecord url $url');
+    try {
+      var response = await client.get(url, headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+      var json = jsonDecode(response.body);
+
+      log.w('getDomainRecord func: json data $json');
+
+      return json;
+    } catch (err) {
+      log.e('getDomainRecord CATCH $err');
+      throw Exception(err);
+    }
+  }
 
   Future getTronTsWalletBalance(String address) async {
     var body = {"address": address, "visible": true};

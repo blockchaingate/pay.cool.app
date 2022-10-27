@@ -871,11 +871,15 @@ class MoveToWalletViewmodel extends BaseViewModel {
       log.w('single coin exchange balance check ${walletInfo.inExchange}');
     });
 
-    if (isWithdrawChoice && isSubmittingTx) {
+    if (isSubmittingTx) {
       log.i(
           'is withdraw choice and is submitting is true-- fetching ts wallet balance of group $_groupValue');
       if (_groupValue == 'ETH') await getEthChainBalance();
-      if (_groupValue == 'TRX') await getTrxUsdtTsWalletBalance();
+      if (_groupValue == 'TRX') {
+        tickerName == 'TRX'
+            ? await getTrxTsWalletBalance()
+            : await getTrxUsdtTsWalletBalance();
+      }
 
       if (_groupValue == 'FAB') {
         tickerName == 'FAB'
@@ -1125,20 +1129,20 @@ class MoveToWalletViewmodel extends BaseViewModel {
         return;
       }
       await getSingleCoinExchangeBal();
-      // if (amount == null ||
-      //     amount > walletInfo.inExchange ||
-      //     amount == 0 ||
-      //     amount.isNegative) {
-      //   sharedService.alertDialog(FlutterI18n.translate(context, "invalidAmount"),
-      //       FlutterI18n.translate(context, "pleaseEnterValidNumber"),
-      //       isWarning: false);
-      //   setBusy(false);
-      //   return;
-      // }
 
-      if (isWithdrawChoice) if (!isShowTrxTsWalletBalance &&
-          isShowFabChainBalance &&
-          amount > fabChainBalance) {
+      if (amount == null ||
+          amount > walletInfo.inExchange ||
+          amount == 0 ||
+          amount.isNegative) {
+        sharedService.alertDialog(
+            FlutterI18n.translate(context, "invalidAmount"),
+            FlutterI18n.translate(context, "pleaseEnterValidNumber"),
+            isWarning: false);
+        setBusy(false);
+        return;
+      }
+
+      if (groupValue == 'FAB' && amount > fabChainBalance) {
         sharedService.alertDialog(
             FlutterI18n.translate(context, "notice"),
             FlutterI18n.translate(context, "lowTsWalletBalanceErrorFirstPart") +
@@ -1155,9 +1159,7 @@ class MoveToWalletViewmodel extends BaseViewModel {
 
       /// show warning like amount should be less than ts wallet balance
       /// instead of displaying the generic error
-      if (isWithdrawChoice) if (!isShowTrxTsWalletBalance &&
-          !isShowFabChainBalance &&
-          amount > ethChainBalance) {
+      if (groupValue == 'ETH' && amount > ethChainBalance) {
         sharedService.alertDialog(
             FlutterI18n.translate(context, "notice"),
             FlutterI18n.translate(context, "lowTsWalletBalanceErrorFirstPart") +
@@ -1171,9 +1173,7 @@ class MoveToWalletViewmodel extends BaseViewModel {
         setBusy(false);
         return;
       }
-      if (isWithdrawChoice) if (isShowTrxTsWalletBalance &&
-          !isShowFabChainBalance &&
-          amount > trxTsWalletBalance) {
+      if (groupValue == 'TRX' && amount > trxTsWalletBalance) {
         sharedService.alertDialog(
             FlutterI18n.translate(context, "notice"),
             FlutterI18n.translate(context, "lowTsWalletBalanceErrorFirstPart") +
@@ -1248,8 +1248,8 @@ class MoveToWalletViewmodel extends BaseViewModel {
 
         if (walletInfo.tickerName == 'TRX' ||
             walletInfo.tickerName == 'USDTX') {
-          //      int kanbanGasPrice = environment['chains']['KANBAN']['gasPrice'];
-          // int kanbanGasLimit = environment['chains']['KANBAN']['gasLimit'];
+          int kanbanGasPrice = environment['chains']['KANBAN']['gasPrice'];
+          int kanbanGasLimit = environment['chains']['KANBAN']['gasLimit'];
           await walletService
               .withdrawTron(seed, coinName, coinAddress, tokenType, amount,
                   kanbanPrice, kanbanGasLimit)

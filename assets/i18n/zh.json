@@ -452,9 +452,12 @@
     "unConfirmedBalance": "未确认余额",
     "userDataUsage":"我们不存储或共享用户数据",
     "accept":"接受",
-    "decline":"拒不",
     "primaryPartner": "主要合作伙伴",
     "juniorPartner": "初级合伙人",
     "intermediatePartner": "中级合作伙伴",
-    "seniorPartner": "高级合伙人"
+    "seniorPartner": "高级合伙人",
+    "decline":"拒绝",
+    "domain": "域",
+    "invalidDomain": "无效的域",
+    "addressNotSet": "地址未设置"
 }
