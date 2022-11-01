@@ -46,8 +46,7 @@ class LightningRemitView extends StatelessWidget {
               }
             },
             child: Container(
-              color: secondaryColor,
-              // margin: EdgeInsets.only(top: 40),
+              decoration: BoxDecoration(image: blurBackgroundImage()),
               child: ListView(children: [
                 SizedBox(
                   // width: double.infinity,
@@ -71,22 +70,22 @@ class LightningRemitView extends StatelessWidget {
                     //               0.5,
                     //               1.0
                     //             ]))),
-                    Positioned(
-                      bottom: 30,
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      child: Container(
-                        decoration: const BoxDecoration(
-                            image: DecorationImage(
-                                image: AssetImage(
-                                  // 'assets/images/wallet-page/background.png'
-                                  'assets/images/paycool/Waves_01_5-3.png',
-                                ),
-                                alignment: Alignment.center,
-                                fit: BoxFit.fitWidth)),
-                      ),
-                    ),
+                    // Positioned(
+                    //   bottom: 30,
+                    //   top: 0,
+                    //   left: 0,
+                    //   right: 0,
+                    //   child: Container(
+                    //     decoration: const BoxDecoration(
+                    //         image: DecorationImage(
+                    //             image: AssetImage(
+                    //               // 'assets/images/wallet-page/background.png'
+                    //               'assets/images/paycool/Waves_01_5-3.png',
+                    //             ),
+                    //             alignment: Alignment.center,
+                    //             fit: BoxFit.fitWidth)),
+                    //   ),
+                    // ),
                     Positioned(
                       // top: 100,
                       left: 0,
@@ -118,7 +117,7 @@ class LightningRemitView extends StatelessWidget {
                                 style: const TextStyle(
                                     fontSize: 28,
                                     fontWeight: FontWeight.bold,
-                                    color: white),
+                                    color: primaryColor),
                               ),
                               // SizedBox(
                               //   width: 10,
@@ -208,20 +207,12 @@ class LightningRemitView extends StatelessWidget {
                           : Container(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 10),
-                              height: 45,
-                              decoration: BoxDecoration(
-                                color: primaryColor,
-                                borderRadius: BorderRadius.circular(100.0),
-                                border: Border.all(
-                                    color: model.exchangeBalances.isEmpty
-                                        ? Colors.transparent
-                                        : primaryColor,
-                                    style: BorderStyle.solid,
-                                    width: 0.50),
-                              ),
+                              //height: 45,
+                              decoration:
+                                  roundedBoxDecoration(color: secondaryColor),
                               child: DropdownButton(
                                   underline: const SizedBox.shrink(),
-                                  elevation: 5,
+                                  elevation: 15,
                                   isExpanded: true,
                                   icon: const Padding(
                                     padding: EdgeInsets.only(right: 8.0),
@@ -273,8 +264,8 @@ class LightningRemitView extends StatelessWidget {
                                     (coin) {
                                       return DropdownMenuItem(
                                         child: Container(
-                                          height: 40,
-                                          color: primaryColor,
+                                          //   height: 40,
+                                          color: secondaryColor,
                                           padding:
                                               const EdgeInsets.only(left: 10.0),
                                           child: Row(
@@ -282,14 +273,13 @@ class LightningRemitView extends StatelessWidget {
                                               Text(coin.ticker.toString(),
                                                   textAlign: TextAlign.center,
                                                   style: headText4.copyWith(
-                                                      color: black,
                                                       fontWeight:
                                                           FontWeight.bold)),
+                                              UIHelper.divider,
                                               UIHelper.horizontalSpaceSmall,
                                               Text(
                                                 coin.unlockedAmount.toString(),
                                                 style: headText5.copyWith(
-                                                    color: black,
                                                     fontWeight:
                                                         FontWeight.bold),
                                               )
@@ -301,10 +291,6 @@ class LightningRemitView extends StatelessWidget {
                                     },
                                   ).toList()),
                             ),
-
-/*----------------------------------------------------------------------------------------------------
-                                        Receiver Address textfield
-----------------------------------------------------------------------------------------------------*/
 
                       UIHelper.verticalSpaceMedium,
                       SizedBox(
@@ -323,13 +309,14 @@ class LightningRemitView extends StatelessWidget {
                                     decoration: InputDecoration(
                                         contentPadding:
                                             const EdgeInsets.symmetric(
-                                                horizontal: 15, vertical: 0),
+                                                horizontal: 15, vertical: 10),
                                         suffixIcon: IconButton(
                                             padding: EdgeInsets.zero,
                                             icon: Image.asset(
                                               "assets/images/paycool/paste.png",
                                               width: 20,
                                               height: 20,
+                                              color: black,
                                             ),
                                             // Icon(
                                             //   Icons.content_paste,
@@ -338,11 +325,15 @@ class LightningRemitView extends StatelessWidget {
                                             // ),
                                             onPressed: () =>
                                                 model.contentPaste()),
-                                        enabledBorder: OutlineInputBorder(
+                                        enabledBorder: UnderlineInputBorder(
                                             borderRadius:
-                                                BorderRadius.circular(50),
+                                                BorderRadius.circular(10),
                                             borderSide: const BorderSide(
-                                                color: primaryColor, width: 1)),
+                                                color: grey, width: 1)),
+                                        focusedBorder:
+                                            const UnderlineInputBorder(
+                                                borderSide: BorderSide(
+                                                    color: primaryColor)),
                                         hintText: FlutterI18n.translate(
                                             context, "receiverWalletAddress"),
                                         hintStyle: headText4),
@@ -362,6 +353,7 @@ class LightningRemitView extends StatelessWidget {
                                   "assets/images/paycool/qr-code.png",
                                   width: 28,
                                   height: 28,
+                                  color: black,
                                 ),
                                 // Icon(
                                 //   Icons.camera_alt,
@@ -390,11 +382,14 @@ class LightningRemitView extends StatelessWidget {
                                 decimal: true),
                             decoration: InputDecoration(
                                 contentPadding: const EdgeInsets.symmetric(
-                                    horizontal: 15, vertical: 0),
-                                enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(50),
+                                    horizontal: 15, vertical: 10),
+                                enabledBorder: UnderlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
                                     borderSide: const BorderSide(
-                                        color: primaryColor, width: 1)),
+                                        color: grey, width: 1)),
+                                focusedBorder: const UnderlineInputBorder(
+                                    borderSide:
+                                        BorderSide(color: primaryColor)),
                                 hintText: FlutterI18n.translate(
                                     context, "enterAmount"),
                                 hintStyle: headText4),
@@ -417,8 +412,8 @@ class LightningRemitView extends StatelessWidget {
                                 decoration: BoxDecoration(
                                     color: primaryColor,
                                     borderRadius: BorderRadius.circular(50)),
-                                child: TextButton(
-                                  // style: ButtonStyle(textStyle: MaterialStateProperty<TextStyle>()),
+                                child: ElevatedButton(
+                                  style: generalButtonStyle(primaryColor),
                                   onPressed: () {
                                     model.isBusy
                                         ? debugPrint('busy')
@@ -432,7 +427,7 @@ class LightningRemitView extends StatelessWidget {
                                               context, "tranfser"),
                                           style: headText4.copyWith(
                                               fontWeight: FontWeight.bold,
-                                              color: black)),
+                                              color: white)),
                                     ],
                                   ),
                                 ),
@@ -449,9 +444,10 @@ class LightningRemitView extends StatelessWidget {
                                 height: 45,
                                 // width: 400,
                                 decoration: BoxDecoration(
-                                    color: tertiaryColor,
+                                    color: buyPrice,
                                     borderRadius: BorderRadius.circular(50)),
-                                child: TextButton(
+                                child: ElevatedButton(
+                                  style: generalButtonStyle(secondaryColor),
                                   onPressed: () {
                                     model.isBusy
                                         ? debugPrint('busy')
@@ -461,6 +457,7 @@ class LightningRemitView extends StatelessWidget {
                                       FlutterI18n.translate(context, "receive"),
                                       style: headText4.copyWith(
                                         fontWeight: FontWeight.bold,
+                                        color: black,
                                         height: 0.8,
                                       )),
                                 ),
@@ -479,6 +476,7 @@ class LightningRemitView extends StatelessWidget {
                             color: Colors.black,
                             borderRadius: BorderRadius.circular(50)),
                         child: TextButton(
+                          style: generalButtonStyle(black),
                           onPressed: () async {
                             if (!model.isBusy) {
                               await model.getBindpayTransactionHistory();
@@ -554,56 +552,47 @@ class CoinListBottomSheetFloatingActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      // padding: EdgeInsets.all(10.0),
-      width: double.infinity,
-      child: FloatingActionButton(
-          backgroundColor: secondaryColor,
-          child: Container(
-            decoration: BoxDecoration(
-              color: primaryColor,
-              border: Border.all(width: 1),
-              borderRadius: const BorderRadius.all(Radius.circular(100)),
-            ),
-            width: 400,
-            height: 45,
-            //  color: secondaryColor,
-            child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              Padding(
-                padding: const EdgeInsets.only(right: 5.0),
-                child: model.exchangeBalances.isEmpty
-                    ? Text(FlutterI18n.translate(context, "noCoinBalance"))
-                    : Text(
-                        //model.tickerName == ''
-                        // ? FlutterI18n.translate(context, "selectCoin")
-                        // :
-                        model.tickerName,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: black,
-                        ),
+    return InkWell(
+        child: Container(
+          decoration: roundedBoxDecoration(color: secondaryColor),
+          //  width: 400,
+          //  height: 45,
+          padding: EdgeInsets.all(15),
+          child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            Padding(
+              padding: const EdgeInsets.only(right: 5.0),
+              child: model.exchangeBalances.isEmpty
+                  ? Text(FlutterI18n.translate(context, "noCoinBalance"))
+                  : Text(
+                      //model.tickerName == ''
+                      // ? FlutterI18n.translate(context, "selectCoin")
+                      // :
+                      model.tickerName,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: black,
                       ),
+                    ),
+            ),
+            Text(
+              model.quantity == 0.0 ? '' : model.quantity.toString(),
+              style: const TextStyle(
+                color: black,
               ),
-              Text(
-                model.quantity == 0.0 ? '' : model.quantity.toString(),
-                style: const TextStyle(
-                  color: black,
-                ),
-              ),
-              model.exchangeBalances.isNotEmpty
-                  ? const Icon(
-                      Icons.arrow_drop_down,
-                      color: black,
-                    )
-                  : Container()
-            ]),
-          ),
-          onPressed: () {
-            if (model.exchangeBalances.isNotEmpty) {
-              model.coinListBottomSheet(context);
-            }
-          }),
-    );
+            ),
+            model.exchangeBalances.isNotEmpty
+                ? const Icon(
+                    Icons.arrow_drop_down,
+                    color: black,
+                  )
+                : Container()
+          ]),
+        ),
+        onTap: () {
+          if (model.exchangeBalances.isNotEmpty) {
+            model.coinListBottomSheet(context);
+          }
+        });
   }
 }
 

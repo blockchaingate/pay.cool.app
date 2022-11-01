@@ -12,6 +12,7 @@
 */
 
 import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:paycool/shared/ui_helpers.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:flutter/material.dart';
 import 'package:overlay_support/overlay_support.dart';
@@ -159,9 +160,9 @@ class _DialogManagerState extends State<DialogManager> {
         style: AlertStyle(
             animationType: AnimationType.grow,
             isOverlayTapDismiss: false,
-            backgroundColor: walletCardColor,
-            descStyle: Theme.of(context).textTheme.bodyText1,
-            titleStyle: headText3.copyWith(fontWeight: FontWeight.bold)),
+            backgroundColor: secondaryColor,
+            descStyle: headText6,
+            titleStyle: headText4.copyWith(fontWeight: FontWeight.bold)),
         context: context,
         title: request.title,
         desc: request.description,
@@ -177,16 +178,18 @@ class _DialogManagerState extends State<DialogManager> {
         },
         content: Column(
           children: <Widget>[
+            UIHelper.verticalSpaceSmall,
             TextField(
               autofocus: true,
-              style: const TextStyle(color: white),
+              style: const TextStyle(color: black),
               controller: controller,
               obscureText: true,
               decoration: InputDecoration(
-                labelStyle: Theme.of(context)
-                    .textTheme
-                    .bodyText1
-                    .copyWith(color: white),
+                labelStyle: headText6,
+                focusedBorder: const UnderlineInputBorder(
+                    borderSide: BorderSide(color: primaryColor)),
+                enabledBorder: const UnderlineInputBorder(
+                    borderSide: BorderSide(color: grey)),
                 icon: const Icon(
                   Icons.security,
                   color: primaryColor,
@@ -269,7 +272,7 @@ class _DialogManagerState extends State<DialogManager> {
             },
             child: Text(
               request.buttonTitle,
-              style: headText4,
+              style: headText4.copyWith(color: white),
             ),
           ),
         ]).show();

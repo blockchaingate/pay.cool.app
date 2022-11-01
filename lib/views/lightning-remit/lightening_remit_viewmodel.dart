@@ -169,16 +169,7 @@ class LightningRemitViewmodel extends FutureViewModel {
         context: context1,
         builder: (context1) => Container(
           width: double.infinity,
-          height: 150,
-          margin: const EdgeInsets.symmetric(horizontal: 10.0),
-          decoration: BoxDecoration(
-            color: grey.withAlpha(300),
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
-            // boxShadow: [
-            //   BoxShadow(
-            //       blurRadius: 3, color: Colors.grey[600], spreadRadius: 2)
-            // ]
-          ),
+          height: 250,
           child: ListView.separated(
               separatorBuilder: (context, _) => UIHelper.divider,
               itemCount: exchangeBalances.length,

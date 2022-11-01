@@ -34,6 +34,15 @@ buttonRoundShape(Color color) {
   return shapeRoundBorder;
 }
 
+ButtonStyle generalButtonStyle(Color color) {
+  return ButtonStyle(
+      padding: MaterialStateProperty.all(
+          const EdgeInsets.symmetric(horizontal: 15, vertical: 5)),
+      backgroundColor: MaterialStateProperty.all(color),
+      elevation: MaterialStateProperty.all(10),
+      shape: buttonRoundShape(color));
+}
+
 DecorationImage blurBackgroundImage() {
   return const DecorationImage(
       fit: BoxFit.cover,
@@ -98,7 +107,7 @@ Decoration rectangularGradientBoxDecoration() {
 Decoration roundedBoxDecoration({Color color = primaryColor}) {
   return BoxDecoration(
     color: color,
-    borderRadius: const BorderRadius.all(Radius.circular(15)),
+    borderRadius: const BorderRadius.all(Radius.circular(25)),
   );
 }
 

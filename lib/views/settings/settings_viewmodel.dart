@@ -338,9 +338,6 @@ class SettingsViewmodel extends BaseViewModel with StoppableService {
     setBusy(false);
     log.w('setShowPaycoolWallet: ' + storageService.showPaycoolClub.toString());
     navigationService.navigateUsingPushReplacementNamed(SettingViewRoute);
-    // storageService.showPaycoolClub?
-    // navigationService.navigateUsingpopAndPushedNamed(PayCoolClubDashboardViewRoute):
-    // navigationService.navigateUsingpopAndPushedNamed(DashboardViewRoute);
   }
 
 /*-------------------------------------------------------------------------------------

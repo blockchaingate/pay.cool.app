@@ -11,6 +11,8 @@
 *----------------------------------------------------------------------
 */
 
+import 'dart:ui';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:paycool/constants/api_routes.dart';
@@ -42,12 +44,13 @@ class SettingsView extends StatelessWidget {
         child: Scaffold(
           // When the keyboard appears, the Flutter widgets resize to avoid that we use resizeToAvoidBottomInset: false
           resizeToAvoidBottomInset: false,
+
           appBar: AppBar(
+            elevation: 0,
+            backgroundColor: primaryColor.withAlpha(100),
             centerTitle: true,
             title: Text(FlutterI18n.translate(context, "settings"),
                 style: headText3),
-            backgroundColor: secondaryColor,
-            leading: Container(),
           ),
           body: model.isBusy
               ? Center(child: model.sharedService.loadingIndicator())
@@ -110,6 +113,7 @@ class SettingsContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      decoration: BoxDecoration(image: blurBackgroundImage()),
       padding: const EdgeInsets.all(10),
       child: ListView(
           // crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -126,38 +130,32 @@ class SettingsContainer extends StatelessWidget {
 
             InkWell(
               splashColor: primaryColor,
-              child: Card(
-                elevation: 4,
-                child: Container(
-                  alignment: Alignment.centerLeft,
-                  color: walletCardColor,
-                  padding: const EdgeInsets.all(20),
-                  // height: 100,
-                  child:
-                      // !model.isShowCaseOnce
-                      //     ? Showcase(
-                      //         key: model.one,
-                      //         description: 'Delete wallet from this device',
-                      //         child: deleteWalletRow(context),
-                      //       )
-                      //     :
-                      deleteWalletRow(context),
-                ),
+              child: Container(
+                padding: const EdgeInsets.all(20),
+                // height: 100,
+                child:
+                    // !model.isShowCaseOnce
+                    //     ? Showcase(
+                    //         key: model.one,
+                    //         description: 'Delete wallet from this device',
+                    //         child: deleteWalletRow(context),
+                    //       )
+                    //     :
+                    deleteWalletRow(context),
               ),
               onTap: () async {
                 await model.deleteWallet();
               },
             ),
+            UIHelper.divider,
             InkWell(
               splashColor: primaryColor,
-              child: Card(
-                elevation: 5,
-                child: showMnemonicContainer(context),
-              ),
+              child: showMnemonicContainer(context),
               onTap: () {
                 model.displayMnemonic();
               },
             ),
+            UIHelper.divider,
             //  InkWell(
             //   splashColor: primaryColor,
             //   child: Card(
@@ -176,208 +174,195 @@ class SettingsContainer extends StatelessWidget {
                 child: Center(
                     child: Text(
                   model.mnemonic,
-                  style: Theme.of(context).textTheme.bodyText1,
+                  style: headText6,
                 )),
               ),
             ),
 
-            Card(
-              elevation: 5,
-              color: walletCardColor,
-              child: Center(
-                child: DropdownButtonHideUnderline(
-                  child: DropdownButton(
-                      iconEnabledColor: primaryColor,
-                      iconSize: 26,
-                      hint: Text(
-                        FlutterI18n.translate(context, "changeWalletLanguage"),
-                        textAlign: TextAlign.center,
-                        style: headText5,
+            Center(
+              child: DropdownButtonHideUnderline(
+                child: DropdownButton(
+                    iconEnabledColor: primaryColor,
+                    iconSize: 26,
+                    hint: Text(
+                      FlutterI18n.translate(context, "changeWalletLanguage"),
+                      textAlign: TextAlign.center,
+                      style: headText5,
+                    ),
+                    value: model.selectedLanguage,
+                    onChanged: (newValue) {
+                      model.changeWalletLanguage(newValue);
+                    },
+                    items: [
+                      DropdownMenuItem(
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              "assets/images/flags/en.png",
+                              width: 20,
+                              height: 20,
+                            ),
+                            const SizedBox(width: 15),
+                            Text("English",
+                                textAlign: TextAlign.center, style: headText6),
+                          ],
+                        ),
+                        value: model.languages['en'],
                       ),
-                      value: model.selectedLanguage,
-                      onChanged: (newValue) {
-                        model.changeWalletLanguage(newValue);
-                      },
-                      items: [
-                        DropdownMenuItem(
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Image.asset(
-                                "assets/images/flags/en.png",
-                                width: 20,
-                                height: 20,
-                              ),
-                              const SizedBox(width: 15),
-                              Text("English",
-                                  textAlign: TextAlign.center,
-                                  style: headText6),
-                            ],
-                          ),
-                          value: model.languages['en'],
+                      DropdownMenuItem(
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              "assets/images/flags/zh.png",
+                              width: 20,
+                              height: 20,
+                            ),
+                            const SizedBox(width: 15),
+                            Text("简体中文",
+                                textAlign: TextAlign.center, style: headText6),
+                          ],
                         ),
-                        DropdownMenuItem(
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Image.asset(
-                                "assets/images/flags/zh.png",
-                                width: 20,
-                                height: 20,
-                              ),
-                              const SizedBox(width: 15),
-                              Text("简体中文",
-                                  textAlign: TextAlign.center,
-                                  style: headText6),
-                            ],
-                          ),
-                          value: model.languages['zh'],
+                        value: model.languages['zh'],
+                      ),
+                      DropdownMenuItem(
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              "assets/images/flags/es.webp",
+                              width: 20,
+                              height: 20,
+                            ),
+                            const SizedBox(width: 15),
+                            Text("Español",
+                                textAlign: TextAlign.center, style: headText6),
+                          ],
                         ),
-                        DropdownMenuItem(
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Image.asset(
-                                "assets/images/flags/es.webp",
-                                width: 20,
-                                height: 20,
-                              ),
-                              const SizedBox(width: 15),
-                              Text("Español",
-                                  textAlign: TextAlign.center,
-                                  style: headText6),
-                            ],
-                          ),
-                          value: model.languages['es'],
-                        ),
-                      ]),
-                ),
+                        value: model.languages['es'],
+                      ),
+                    ]),
               ),
             ),
-
+            UIHelper.divider,
             // Showcase club dashboard
-            Card(
-                elevation: 5,
-                color: walletCardColor,
-                child: Container(
-                  padding: const EdgeInsets.all(10),
-                  child: Row(
-                    //  crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      const Padding(
-                        padding: EdgeInsets.only(left: 5.0, right: 8.0),
-                        child: Icon(Icons.account_balance_wallet,
-                            color: white, size: 18),
-                      ),
-                      Expanded(
-                        child: Text(
-                            FlutterI18n.translate(context, "showPaycoolClub"),
-                            style: headText5,
-                            textAlign: TextAlign.left),
-                      ),
-                      SizedBox(
-                        height: 20,
-                        child: Switch(
-                            inactiveThumbColor: grey,
-                            activeTrackColor: white,
-                            activeColor: primaryColor,
-                            inactiveTrackColor: white,
-                            value: model.isShowPaycoolClub,
-                            onChanged: (value) {
-                              model.setShowPaycoolClub(value);
-                            }),
-                      ),
-                      // ),
-                    ],
+            Container(
+              padding: const EdgeInsets.all(15),
+              child: Row(
+                //  crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  const Padding(
+                    padding: EdgeInsets.only(left: 5.0, right: 8.0),
+                    child: Icon(Icons.account_balance_wallet,
+                        color: white, size: 18),
                   ),
-                )),
-
+                  Expanded(
+                    child: Text(
+                        FlutterI18n.translate(context, "showPaycoolClub"),
+                        style: headText5,
+                        textAlign: TextAlign.left),
+                  ),
+                  SizedBox(
+                    height: 20,
+                    child: Switch(
+                        inactiveThumbColor: grey,
+                        activeTrackColor: white,
+                        activeColor: primaryColor,
+                        inactiveTrackColor: white,
+                        value: model.isShowPaycoolClub,
+                        onChanged: (value) {
+                          model.setShowPaycoolClub(value);
+                        }),
+                  ),
+                  // ),
+                ],
+              ),
+            ),
+            UIHelper.divider,
             // Showcase ON/OFF
-            Card(
-                elevation: 5,
-                color: walletCardColor,
-                child: Container(
-                  padding: const EdgeInsets.all(10),
-                  child: Row(
-                    //  crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      const Padding(
-                        padding: EdgeInsets.only(left: 5.0, right: 8.0),
-                        child: Icon(Icons.qr_code, color: white, size: 18),
-                      ),
-                      Expanded(
-                        child: Text(
-                            FlutterI18n.translate(
-                                context, "autoStartPaycoolScan"),
-                            //FlutterI18n.translate(context, "autoStartPaycoolScan"),
-                            style: headText5,
-                            textAlign: TextAlign.left),
-                      ),
-                      SizedBox(
-                        height: 20,
-                        child: Switch(
-                            inactiveThumbColor: grey,
-                            activeTrackColor: white,
-                            activeColor: primaryColor,
-                            inactiveTrackColor: white,
-                            value: model.isAutoStartPaycoolScan,
-                            onChanged: (value) {
-                              model.setAutoScanPaycool(value);
-                            }),
-                      ),
-                      // ),
-                    ],
+            Container(
+              padding: const EdgeInsets.all(15),
+              child: Row(
+                //  crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  const Padding(
+                    padding: EdgeInsets.only(left: 5.0, right: 8.0),
+                    child: Icon(Icons.qr_code, color: white, size: 18),
                   ),
-                )),
-            Card(
-                elevation: 5,
-                color: walletCardColor,
-                child: Container(
-                  padding: const EdgeInsets.all(10),
-                  child: Row(
-                    //  crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      const Padding(
-                        padding: EdgeInsets.only(left: 5.0, right: 8.0),
-                        child:
-                            Icon(Icons.insert_comment, color: white, size: 18),
-                      ),
-                      Expanded(
-                        child: Text(
-                            FlutterI18n.translate(
-                                context, "settingsShowcaseInstructions"),
-                            style: headText5,
-                            textAlign: TextAlign.left),
-                      ),
-                      SizedBox(
-                        height: 20,
-                        child: Switch(
-                            inactiveThumbColor: grey,
-                            activeTrackColor: white,
-                            activeColor: primaryColor,
-                            inactiveTrackColor: white,
-                            value: model.isShowCaseOnce,
-                            onChanged: (value) {
-                              model.setIsShowcase(value);
-                            }),
-                      ),
-                      // ),
-                    ],
+                  Expanded(
+                    child: Text(
+                        FlutterI18n.translate(context, "autoStartPaycoolScan"),
+                        //FlutterI18n.translate(context, "autoStartPaycoolScan"),
+                        style: headText5,
+                        textAlign: TextAlign.left),
                   ),
-                )),
+                  SizedBox(
+                    height: 20,
+                    child: Switch(
+                        inactiveThumbColor: grey,
+                        activeTrackColor: white,
+                        activeColor: primaryColor,
+                        inactiveTrackColor: white,
+                        value: model.isAutoStartPaycoolScan,
+                        onChanged: (value) {
+                          model.setAutoScanPaycool(value);
+                        }),
+                  ),
+                  // ),
+                ],
+              ),
+            ),
+            UIHelper.divider,
+            // Card(
+            //     elevation: 5,
+            //     color: secondaryColor,
+            //     child: Container(
+            //       padding: const EdgeInsets.all(10),
+            //       child: Row(
+            //         //  crossAxisAlignment: CrossAxisAlignment.start,
+            //         mainAxisAlignment: MainAxisAlignment.center,
+            //         children: <Widget>[
+            //           const Padding(
+            //             padding: EdgeInsets.only(left: 5.0, right: 8.0),
+            //             child:
+            //                 Icon(Icons.insert_comment, color: white, size: 18),
+            //           ),
+            //           Expanded(
+            //             child: Text(
+            //                 FlutterI18n.translate(
+            //                     context, "settingsShowcaseInstructions"),
+            //                 style: headText5,
+            //                 textAlign: TextAlign.left),
+            //           ),
+            //           SizedBox(
+            //             height: 20,
+            //             child: Switch(
+            //                 inactiveThumbColor: grey,
+            //                 activeTrackColor: white,
+            //                 activeColor: primaryColor,
+            //                 inactiveTrackColor: white,
+            //                 value: model.isShowCaseOnce,
+            //                 onChanged: (value) {
+            //                   model.setIsShowcase(value);
+            //                 }),
+            //           ),
+            //           // ),
+            //         ],
+            //       ),
+            //     )),
 
             // Biometric authentication toggle
             // Card(
             //     elevation: 5,
-            //     color: walletCardColor,
+            //     color: secondaryColor,
             //     child: Container(
             //       padding: EdgeInsets.all(10),
             //       child: Row(
@@ -421,7 +406,7 @@ class SettingsContainer extends StatelessWidget {
             //         model.storageService.hasPhoneProtectionEnabled
             //     ? Card(
             //         elevation: 5,
-            //         color: walletCardColor,
+            //         color: secondaryColor,
             //         child: Container(
             //           padding: EdgeInsets.all(10),
             //           child: Row(
@@ -463,42 +448,38 @@ class SettingsContainer extends StatelessWidget {
             //       onPressed: () => model.reloadApp(),
             //       child: Text('Reload app')),
             // ),
-            Card(
-                elevation: 5,
-                color: walletCardColor,
-                child: Container(
-                  padding: const EdgeInsets.all(10),
-                  child: Row(
-                    //  crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      const Padding(
-                        padding: EdgeInsets.only(left: 5.0, right: 8.0),
-                        child: Icon(Icons.storage, color: white, size: 18),
-                      ),
-                      // Add column here and add text box that shows which node is current
-                      Expanded(
-                        child: Text(
-                            FlutterI18n.translate(context, "useAsiaNode"),
-                            style: headText5,
-                            textAlign: TextAlign.left),
-                      ),
-                      SizedBox(
-                        height: 20,
-                        child: Switch(
-                            inactiveThumbColor: grey,
-                            activeTrackColor: white,
-                            activeColor: primaryColor,
-                            inactiveTrackColor: white,
-                            value: model.storageService.isHKServer,
-                            onChanged: (value) {
-                              model.changeBaseAppUrl();
-                            }),
-                      ),
-                      // ),
-                    ],
+
+            Container(
+              padding: const EdgeInsets.all(15),
+              child: Row(
+                //  crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  const Padding(
+                    padding: EdgeInsets.only(left: 5.0, right: 8.0),
+                    child: Icon(Icons.storage, color: white, size: 18),
                   ),
-                )),
+                  // Add column here and add text box that shows which node is current
+                  Expanded(
+                    child: Text(FlutterI18n.translate(context, "useAsiaNode"),
+                        style: headText5, textAlign: TextAlign.left),
+                  ),
+                  SizedBox(
+                    height: 20,
+                    child: Switch(
+                        inactiveThumbColor: grey,
+                        activeTrackColor: white,
+                        activeColor: primaryColor,
+                        inactiveTrackColor: white,
+                        value: model.storageService.isHKServer,
+                        onChanged: (value) {
+                          model.changeBaseAppUrl();
+                        }),
+                  ),
+                  // ),
+                ],
+              ),
+            ),
 
             //Card(child: Container(child: Text(model.test))),
             // Version Code
@@ -556,7 +537,6 @@ class SettingsContainer extends StatelessWidget {
 
   Container showMnemonicContainer(BuildContext context) {
     return Container(
-      color: walletCardColor,
       padding: const EdgeInsets.all(20),
       child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
         Padding(
