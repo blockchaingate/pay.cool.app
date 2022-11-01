@@ -16,6 +16,7 @@ import 'package:paycool/services/shared_service.dart';
 import 'package:paycool/services/wallet_service.dart';
 import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/utils/custom_http_util.dart';
+import 'package:paycool/utils/number_util.dart';
 import 'package:paycool/utils/string_util.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -90,7 +91,9 @@ class MoveToWalletViewmodel extends BaseViewModel {
     kanbanGasPriceTextController.text = gasPrice.toString();
     kanbanGasLimitTextController.text = gasLimit.toString();
     tokenType = walletInfo.tokenType;
-    kanbanTransFee = bigNum2Double(gasPrice * gasLimit);
+    kanbanTransFee =
+        NumberUtil.rawStringToDecimal((gasPrice * gasLimit).toString())
+            .toDouble();
 
     if (walletInfo.tickerName == 'ETH' || walletInfo.tickerName == 'USDT') {
       gasFeeUnit = 'WEI';
@@ -975,7 +978,8 @@ class MoveToWalletViewmodel extends BaseViewModel {
     // if ((decimal != null) && (decimal > 0)) {
     //   tokenBalance = ((unlockInt) / BigInt.parse(pow(10, decimal).toString()));
     // } else {
-    tokenBalance = bigNum2Double(unlockInt);
+    tokenBalance =
+        NumberUtil.rawStringToDecimal(unlockInt.toString()).toDouble();
     //   // debugPrint('tokenBalance for EXG==');
     //   // debugPrint(tokenBalance);
     // }
@@ -1365,8 +1369,9 @@ class MoveToWalletViewmodel extends BaseViewModel {
 
     var kanbanPriceBig = BigInt.from(kanbanPrice);
     var kanbanGasLimitBig = BigInt.from(kanbanGasLimit);
-    var kanbanTransFeeDouble =
-        bigNum2Double(kanbanPriceBig * kanbanGasLimitBig);
+    var kanbanTransFeeDouble = NumberUtil.rawStringToDecimal(
+            (kanbanPriceBig * kanbanGasLimitBig).toString())
+        .toDouble();
     debugPrint('Update trans fee $kanbanTransFeeDouble');
 
     kanbanTransFee = kanbanTransFeeDouble;

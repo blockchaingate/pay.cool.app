@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:paycool/logger.dart';
 import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/shared_service.dart';
-import 'package:paycool/views/paycool/rewards/paycool_rewards_model.dart';
 import 'package:paycool/views/paycool/paycool_service.dart';
+import 'package:paycool/views/paycool/rewards/payment_rewards_model.dart';
 import 'package:paycool/widgets/pagination/pagination_model.dart';
 import 'package:stacked/stacked.dart';
 
@@ -14,10 +14,8 @@ class PayCoolRewardsViewModel extends FutureViewModel
   final sharedService = locator<SharedService>();
   String fabAddress = '';
   BuildContext context;
-  List<PayCoolRewardsModel> rewards = [];
-  List<String> rewardCoins = ['FAB', 'EXG', 'BST'];
-  bool isShowAllTxIds = false;
-  String selectedTxId = '';
+  List<PaymentReward> paymentRewards = [];
+
   PaginationModel paginationModel = PaginationModel();
   int pageNumber = 1;
   int pageSize = 10;
@@ -28,7 +26,7 @@ class PayCoolRewardsViewModel extends FutureViewModel
   @override
   Future futureToRun() async {
     fabAddress = await sharedService.getFabAddressFromCoreWalletDatabase();
-    return await payCoolService.getPayCoolRewards(fabAddress,
+    return await payCoolService.getPaymentRewards(fabAddress,
         pageSize: paginationModel.pageSize,
         pageNumber: paginationModel.pageNumber);
   }
@@ -36,44 +34,24 @@ class PayCoolRewardsViewModel extends FutureViewModel
   @override
   void onData(data) async {
     setBusy(true);
-    rewards = data;
+    paymentRewards = data;
 
-    _totalRewardListCount = await payCoolService.getRewardListCount(fabAddress);
+    _totalRewardListCount =
+        await payCoolService.getPaymentRewardCount(fabAddress);
     paginationModel.totalPages =
         (_totalRewardListCount / paginationModel.pageSize).ceil();
     paginationModel.pages = [];
-    paginationModel.pages.addAll(rewards);
+    paginationModel.pages.addAll(paymentRewards);
     log.i('paginationModel ${paginationModel.toString()}');
     setBusy(false);
   }
-
-  init() {}
-  // update() {
-  //   getPaginationRewards();
-  //   return sharedService.loadingIndicator();
-  // }
 
   getPaginationRewards(int pageNumber) async {
     setBusy(true);
     paginationModel.pageNumber = pageNumber;
     var paginationResults = await futureToRun();
-    rewards = paginationResults;
+    paymentRewards = paginationResults;
 
     setBusy(false);
-  }
-
-  showAllTxIds(String firstTxId) {
-    setBusyForObject(isShowAllTxIds, true);
-    if (selectedTxId == firstTxId) {
-      isShowAllTxIds = !isShowAllTxIds;
-      setBusyForObject(isShowAllTxIds, false);
-      return;
-    }
-
-    selectedTxId = '';
-    selectedTxId = firstTxId;
-
-    isShowAllTxIds = true;
-    setBusyForObject(isShowAllTxIds, false);
   }
 }

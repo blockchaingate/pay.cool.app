@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -418,7 +419,7 @@ class PayCoolView extends StatelessWidget {
                                                           color: Colors.white,
                                                         ))),
                                                     onPressed: () =>
-                                                        model.scanBarcodeV3(
+                                                        model.scanBarcodeV2(
                                                             addressType: Constants
                                                                 .MerchantAddressText),
                                                     child: Row(
@@ -720,7 +721,7 @@ class PayCoolView extends StatelessWidget {
                                                       Expanded(
                                                           flex: 2,
                                                           child: Text(
-                                                              '${NumberUtil().truncateDoubleWithoutRouding(model.amountPayable, precision: model.decimalLimit).toString()} ${model.coinPayable}',
+                                                              '${model.amountPayable.toString()} ${model.coinPayable}',
                                                               textAlign:
                                                                   TextAlign
                                                                       .right,
@@ -755,7 +756,7 @@ class PayCoolView extends StatelessWidget {
                                                       Expanded(
                                                         flex: 2,
                                                         child: Text(
-                                                            '${NumberUtil().truncateDoubleWithoutRouding(model.taxAmount, precision: model.decimalLimit).toString()} ${model.coinPayable}',
+                                                            '${model.taxAmount.toString()} ${model.coinPayable}',
                                                             textAlign:
                                                                 TextAlign.right,
                                                             style: headText5.copyWith(
@@ -787,7 +788,7 @@ class PayCoolView extends StatelessWidget {
                                                       Expanded(
                                                         flex: 2,
                                                         child: Text(
-                                                            '${(NumberUtil().truncateDoubleWithoutRouding(model.amountPayable + model.taxAmount, precision: model.decimalLimit)).toString()} ${model.coinPayable}',
+                                                            '${(model.amountPayable + model.taxAmount).toString()} ${model.coinPayable}',
                                                             textAlign:
                                                                 TextAlign.right,
                                                             style: headText5.copyWith(
@@ -802,7 +803,7 @@ class PayCoolView extends StatelessWidget {
                                                 Visibility(
                                                   visible:
                                                       model.amountPayable !=
-                                                          0.0,
+                                                          Decimal.zero,
                                                   child: Container(
                                                     padding: const EdgeInsets
                                                             .symmetric(
@@ -827,7 +828,7 @@ class PayCoolView extends StatelessWidget {
                                                         Expanded(
                                                           flex: 2,
                                                           child: Text(
-                                                              '${NumberUtil().truncateDoubleWithoutRouding(model.scanToPayModelV2.myreward ?? 0.0, precision: model.decimalLimit).toString()} FAB',
+                                                              '${model.rewardInfoModel.getTotalRewards.toString()} FAB',
                                                               textAlign:
                                                                   TextAlign
                                                                       .right,
@@ -865,8 +866,8 @@ class PayCoolView extends StatelessWidget {
                                                   ))),
                                               onPressed: () {
                                                 if (model.isBusy ||
-                                                    model.scanToPayModelV2
-                                                            .abiHex ==
+                                                    model.rewardInfoModel.params
+                                                            .first.data ==
                                                         null) {
                                                   debugPrint('busy');
                                                 } else {

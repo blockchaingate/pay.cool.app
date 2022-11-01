@@ -201,37 +201,6 @@ bigNumToDouble(BigInt bigNum, {int decimalLength = 8}) {
   return d;
 }
 
-bigNum2Double(bigNum, {int decimalLength = 8}) {
-  var dec =
-      Decimal.parse(bigNum.toString()) / Decimal.parse('1000000000000000000');
-  if (dec.toDouble() > 999999) {
-    return double.parse(dec.toDouble().toStringAsFixed(8));
-  }
-  var str = dec.toString();
-  var s = str;
-  var d = dec.toDouble();
-  if (str.length > decimalLength) {
-    s = str.substring(0, 8);
-
-    d = double.parse(s);
-  }
-  return d;
-  // if (str.length > 6) {
-  //   s = str.substring(0, 6);
-  // }
-
-  // double d = double.parse(s);
-  // if (d == 0.0) {
-  //   if (str.length > 7) {
-  //     s = str.substring(0, 7);
-  //   }
-  //   d = double.parse(s);
-  // }
-
-  //double d = (BigInt.parse(bigNum.toString()) / BigInt.parse('1000000000000')).round() / 1000000;
-  //return d;
-}
-
 /*----------------------------------------------------------------------
                 Format Date and time string
 ----------------------------------------------------------------------*/
@@ -247,7 +216,7 @@ String formatStringDate(String date) {
 String formatStringDateV2(String date) {
   String wholeDate = date;
   var dateToFormat = DateTime.parse(wholeDate);
-  String formattedDate = DateFormat('MM/dd/yyyy').format(dateToFormat);
+  String formattedDate = DateFormat('MM-dd-yyyy').format(dateToFormat);
   String formattedTime = DateFormat('kk:mm:ss').format(dateToFormat);
   formattedDate = '$formattedDate $formattedTime';
   return formattedDate;

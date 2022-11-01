@@ -5,13 +5,13 @@ import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/utils/number_util.dart';
 import 'package:paycool/utils/string_util.dart';
-import 'package:paycool/views/paycool/paycool_model.dart';
+import 'package:paycool/views/paycool_club/join_club_payment_model.dart';
 import 'package:stacked/stacked.dart';
 import 'package:paycool/views/paycool_club/join_club/join_paycool_club_viewmodel.dart';
 
 class JoinPayCoolClubView
     extends ViewModelBuilderWidget<JoinPayCoolClubViewModel> {
-  final ScanToPayModel scanToPayModel;
+  final JoinClubPaymentModel scanToPayModel;
 
   const JoinPayCoolClubView({this.scanToPayModel});
   @override
@@ -237,8 +237,7 @@ class JoinPayCoolClubView
                                 flex: 3,
                                 child: Padding(
                                   padding: const EdgeInsets.only(left: 2.0),
-                                  child:
-                                      Text(model.paycoolSmartContractAddress),
+                                  child: Text(model.paycoolReferralAddress),
                                 )),
                           ],
                         ),

@@ -34,6 +34,12 @@ buttonRoundShape(Color color) {
   return shapeRoundBorder;
 }
 
+DecorationImage blurBackgroundImage() {
+  return const DecorationImage(
+      fit: BoxFit.cover,
+      image: AssetImage("assets/images/shared/blur-background.png"));
+}
+
 var shapeRoundBorder = MaterialStateProperty.all<RoundedRectangleBorder>(
     RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(25.0),
@@ -93,5 +99,13 @@ Decoration roundedBoxDecoration({Color color = primaryColor}) {
   return BoxDecoration(
     color: color,
     borderRadius: const BorderRadius.all(Radius.circular(15)),
+  );
+}
+
+Decoration roundedTopLeftRightBoxDecoration({Color color = primaryColor}) {
+  return BoxDecoration(
+    color: color,
+    borderRadius: const BorderRadius.only(
+        topLeft: Radius.circular(15), topRight: Radius.circular(15)),
   );
 }

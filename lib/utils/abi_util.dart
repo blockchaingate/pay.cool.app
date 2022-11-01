@@ -17,6 +17,7 @@ import 'package:paycool/logger.dart';
 import 'package:paycool/utils/exaddr.dart';
 import 'package:paycool/utils/fab_util.dart';
 import 'package:paycool/utils/number_util.dart';
+import 'package:paycool/views/paycool/models/payment_model.dart';
 import './string_util.dart';
 import 'package:web3dart/web3dart.dart';
 import 'package:hex/hex.dart';
@@ -161,6 +162,7 @@ getPayCoolClubFuncABI(int coinType, String walletAddr, String referralAddr) {
 /*----------------------------------------------------------------------
                     Seven Star Pay Abi
 ----------------------------------------------------------------------*/
+
 getPayCoolFuncABI(int coinType, amount, String abi) {
   var abiHex = abi;
 

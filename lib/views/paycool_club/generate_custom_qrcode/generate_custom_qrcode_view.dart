@@ -167,8 +167,8 @@ class _GenerateCustomQrCodeViewState extends State<GenerateCustomQrCodeView> {
     int dusdCoinType = 131074;
     String fabAddress =
         await sharedService.getFabAddressFromCoreWalletDatabase();
-    var paycoolSmartContractAddress = environment['addresses']['smartContract']
-        ['PaycoolSmartContractAddress'];
+    var paycoolSmartContractAddress =
+        environment['addresses']['smartContract']['PaycoolReferralAddress'];
     var abiHex = getPayCoolClubFuncABI(
         dusdCoinType, fabAddress, referralController.text);
     var holder = {

@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:paycool/utils/number_util.dart';
 
 import '../../environments/coins.dart' as coinList;
 import '../../utils/string_util.dart';
@@ -32,8 +33,12 @@ class ExchangeBalanceModel {
     return ExchangeBalanceModel(
         ticker: tickerName,
         coinType: json['coinType'],
-        unlockedAmount: bigNum2Double(json['unlockedAmount']).toDouble(),
-        lockedAmount: bigNum2Double(json['lockedAmount']).toDouble());
+        unlockedAmount:
+            NumberUtil.rawStringToDecimal(json['unlockedAmount'].toString())
+                .toDouble(),
+        lockedAmount:
+            NumberUtil.rawStringToDecimal(json['lockedAmount'].toString())
+                .toDouble());
   }
 
   Map<String, dynamic> toJson() {

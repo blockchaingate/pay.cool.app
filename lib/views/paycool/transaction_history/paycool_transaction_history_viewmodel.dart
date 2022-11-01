@@ -15,6 +15,8 @@ import 'package:stacked/stacked.dart';
 import 'package:hex/hex.dart';
 import 'dart:typed_data';
 
+import '../../../widgets/pagination/pagination_model.dart';
+
 class PayCoolTransactionHistoryViewModel extends FutureViewModel {
   final log = getLogger('PayCoolTransactionHistoryViewmodel');
   final payCoolService = locator<PayCoolService>();
@@ -23,7 +25,7 @@ class PayCoolTransactionHistoryViewModel extends FutureViewModel {
   WalletService walletService = locator<WalletService>();
   BuildContext context;
   String fabAddress = '';
-  List<PayCoolTransactionHistoryModel> transactions = [];
+  List<PayCoolTransactionHistory> transactions = [];
   final bool _isShowRefundButton = false;
   bool get isShowRefundButton => _isShowRefundButton;
   String selectedTxOrderId = '';
@@ -31,10 +33,14 @@ class PayCoolTransactionHistoryViewModel extends FutureViewModel {
   bool isProcessingAction = false;
   int decimalLimit = 8;
 
+  PaginationModel paginationModel = PaginationModel();
+
   @override
   Future futureToRun() async {
     fabAddress = await sharedService.getFabAddressFromCoreWalletDatabase();
-    return await payCoolService.getPayTransactionDetails(fabAddress);
+    return await payCoolService.getTransactionHistory(fabAddress,
+        pageSize: paginationModel.pageSize,
+        pageNumber: paginationModel.pageNumber);
   }
 
   @override
@@ -49,6 +55,15 @@ class PayCoolTransactionHistoryViewModel extends FutureViewModel {
     // _isShowRefundButton = !_isShowRefundButton;
     selectedTxOrderId = orderId;
     log.w('order id $selectedTxOrderId');
+    setBusy(false);
+  }
+
+  getPaginationRewards(int pageNumber) async {
+    setBusy(true);
+    paginationModel.pageNumber = pageNumber;
+    var paginationResults = await futureToRun();
+    transactions = paginationResults;
+
     setBusy(false);
   }
 
@@ -106,25 +121,25 @@ class PayCoolTransactionHistoryViewModel extends FutureViewModel {
         //{"ok":true,"_body":{"transactionHash":"0x855f2d8ec57418670dd4cb27ecb71c6794ada5686e771fe06c48e30ceafe0548","status":"0x1"}}
 
         debugPrint('res $res');
-        if (res['status'] == '0x1') {
-          sharedService.sharedSimpleNotification(
-              FlutterI18n.translate(context, "success"),
-              isError: false);
-          if (!isCancel) {
-            var selectedTxToUpdate =
-                transactions.singleWhere((t) => t.id == orderId);
-            selectedTxToUpdate.status = 2;
-          } else if (isCancel) {
-            var selectedTxToUpdate =
-                transactions.singleWhere((t) => t.id == orderId);
-            selectedTxToUpdate.status = 1;
-          }
-          //  await futureToRun();
-        } else if (res['status'] == '0x0') {
-          sharedService.sharedSimpleNotification(
-              FlutterI18n.translate(context, "failed"),
-              isError: true);
-        }
+        // if (res['status'] == '0x1') {
+        //   sharedService.sharedSimpleNotification(
+        //       FlutterI18n.translate(context, "success"),
+        //       isError: false);
+        //   if (!isCancel) {
+        //     var selectedTxToUpdate =
+        //         transactions.singleWhere((t) => t.id == orderId);
+        //     selectedTxToUpdate.status = 2;
+        //   } else if (isCancel) {
+        //     var selectedTxToUpdate =
+        //         transactions.singleWhere((t) => t.id == orderId);
+        //     selectedTxToUpdate.status = 1;
+        //   }
+        //   //  await futureToRun();
+        // } else if (res['status'] == '0x0') {
+        //   sharedService.sharedSimpleNotification(
+        //       FlutterI18n.translate(context, "failed"),
+        //       isError: true);
+        // }
         var errMsg = res['errMsg'];
         // if (txHash != null && txHash != '') {
         //   setBusy(true);

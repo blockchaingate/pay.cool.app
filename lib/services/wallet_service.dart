@@ -1131,7 +1131,8 @@ class WalletService {
           res['balance'] != null &&
           res['balance']['FAB'] != null) {
         var newBal = BigInt.parse(res['balance']['FAB']);
-        gasAmount = stringUtils.bigNum2Double(newBal);
+        // 2243802047700000000
+        gasAmount = NumberUtil.rawStringToDecimal(newBal.toString()).toDouble();
       }
     }).timeout(const Duration(seconds: 25), onTimeout: () {
       log.e('Timeout');
@@ -1797,12 +1798,17 @@ class WalletService {
                   .toInt() -
               transFee)
           .round();
-
-      transFeeDouble = ((Decimal.parse(extraTransactionFee.toString()) +
-              Decimal.parse(transFee.toString()) / Decimal.parse('1e8')))
+      transFee = (Decimal.parse(extraTransactionFee.toString()) +
+              (Decimal.parse(transFee.toString()) / Decimal.parse('1e8'))
+                  .toDecimal())
           .toDouble();
       if (getTransFeeOnly) {
-        return {'txHex': '', 'errMsg': '', 'transFee': transFeeDouble};
+        return {
+          'txHex': '',
+          'errMsg': '',
+          'transFee':
+              NumberUtil().truncateDoubleWithoutRouding(transFee, precision: 8),
+        };
       }
       var output2 = BigInt.parse(NumberUtil.toBigInt(amount, 8)).toInt();
       amountInTx = BigInt.from(output2);
@@ -1810,7 +1816,8 @@ class WalletService {
         return {
           'txHex': '',
           'errMsg': 'output1 or output2 should be greater than 0.',
-          'transFee': transFeeDouble,
+          'transFee': NumberUtil()
+              .truncateDoubleWithoutRouding(transFeeDouble, precision: 8),
           'amountInTx': amountInTx
         };
       }

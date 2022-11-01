@@ -19,8 +19,8 @@ import 'package:paycool/utils/barcode_util.dart';
 import 'package:paycool/utils/kanban.util.dart';
 import 'package:paycool/utils/number_util.dart';
 import 'package:paycool/utils/wallet/wallet_util.dart';
+import 'package:paycool/views/paycool_club/join_club_payment_model.dart';
 import 'package:paycool/views/paycool_club/paycool_club_service.dart';
-import 'package:paycool/views/paycool/paycool_model.dart';
 import 'package:stacked/stacked.dart';
 import 'package:paycool/services/local_dialog_service.dart';
 
@@ -43,8 +43,8 @@ class JoinPayCoolClubViewModel extends BaseViewModel {
   double gasAmount = 0.0;
 
   String exgWalletAddress = '';
-  var paycoolSmartContractAddress =
-      environment['addresses']['smartContract']['PaycoolSmartContractAddress'];
+  var paycoolReferralAddress =
+      environment['addresses']['smartContract']['PaycoolReferralAddress'];
 
   String dusdWalletAddress = '';
   double dusdExchangeBalance = 0.0;
@@ -58,7 +58,7 @@ class JoinPayCoolClubViewModel extends BaseViewModel {
   final referralCode = TextEditingController();
   bool isEnoughDusdWalletBalance = true;
   double fixedAmountToPay = 10000.0;
-  ScanToPayModel scanToPayModel = ScanToPayModel();
+  JoinClubPaymentModel scanToPayModel = JoinClubPaymentModel();
   bool isValidReferralAddress = false;
   String _groupValue;
   get groupValue => _groupValue;
@@ -443,8 +443,8 @@ class JoinPayCoolClubViewModel extends BaseViewModel {
             groupValue == "DUSD" ? dusdCoinType : usdtCoinType,
             fabAddress,
             referralCode.text);
-        var txId = await generateRawTxAndSend(
-            seed, abiHex, paycoolSmartContractAddress);
+        var txId =
+            await generateRawTxAndSend(seed, abiHex, paycoolReferralAddress);
         if (txId != null) {
           debugPrint('final else res txid $txId');
           await payCoolClubService.saveOrder(fabAddress, txId).then((res) {

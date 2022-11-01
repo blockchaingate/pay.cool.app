@@ -19,6 +19,7 @@ import 'package:paycool/models/wallet/wallet.dart';
 import 'package:paycool/shared/ui_helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
+import 'package:paycool/utils/number_util.dart';
 import 'package:paycool/views/wallet/wallet_features/redeposit/redeposit_viewmodel.dart';
 import 'package:stacked/stacked.dart';
 import '../../../../utils/string_util.dart';
@@ -67,7 +68,9 @@ class RedepositView extends StatelessWidget {
                                           style: headText4),
                                       UIHelper.horizontalSpaceSmall,
                                       Text(
-                                        bigNum2Double(data["amount"])
+                                        NumberUtil.rawStringToDecimal(
+                                                data["amount"].toString())
+                                            .toDouble()
                                             .toString(),
                                         style: headText4,
                                       ),

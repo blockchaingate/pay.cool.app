@@ -15,6 +15,7 @@ import 'package:flutter/widgets.dart';
 import 'package:paycool/constants/api_routes.dart';
 import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/coin_service.dart';
+import 'package:paycool/utils/number_util.dart';
 import 'package:paycool/utils/string_util.dart';
 import 'package:keccak/keccak.dart';
 import 'package:hex/hex.dart';
@@ -68,7 +69,8 @@ Future getEthBalanceByAddress(String address) async {
   try {
     var response = await client.get(url);
     Map<String, dynamic> balance = jsonDecode(response.body);
-    ethBalance = bigNum2Double(balance['balance']);
+    ethBalance =
+        NumberUtil.rawStringToDecimal(balance['balance'].toString()).toDouble();
   } catch (e) {}
   return {'balance': ethBalance, 'lockbalance': 0.0};
 }

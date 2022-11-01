@@ -8,10 +8,11 @@ import 'package:paycool/services/db/core_wallet_database_service.dart';
 import 'package:paycool/utils/custom_http_util.dart';
 import 'package:paycool/views/paycool/models/paycool_store_model.dart';
 import 'package:paycool/views/paycool/models/store_and_merchant_model.dart';
-import 'package:paycool/views/paycool/rewards/paycool_rewards_model.dart';
-import 'package:paycool/views/paycool/models/paycool_model.dart';
+import 'package:paycool/views/paycool/rewards/payment_rewards_model.dart';
 import 'package:paycool/views/paycool/transaction_history/paycool_transaction_history_model.dart';
 import 'package:stacked/stacked.dart';
+
+import 'models/payment_model.dart';
 
 //@LazySingleton()
 class PayCoolService with ReactiveServiceMixin {
@@ -137,43 +138,41 @@ class PayCoolService with ReactiveServiceMixin {
     }
   }
 
-  Future<ScanToPayModelV2> scanToPayV2Info(String id) async {
+  Future<PaymentModel> getRewardInfo(String id) async {
     String fabAddress =
         await coreWalletDatabaseService.getWalletAddressByTickerName('FAB');
-    // url example https://test.blockchaingate.com/v2/orders/62a0eb10d447e63ed49f7c0e/Paycool
-    String url = baseBlockchainGateV2Url +
-        ordersTextApiRoute +
+    //fabtest.info/api/userpay/635045f6f3999b02d1598c2c/mowmfJjDSfCNLvu5jjHD55aeXphf6cH2eT/rewardInfo
+    String url = fabInfoBaseUrl +
+        'api/userpay/v2/order/' +
         id +
         '/' +
-        paycoolTextApiRoute;
-    var body = {"address": fabAddress};
-    log.i('scanToPayV2Info url $url -- body ${jsonEncode(body)}');
-    ScanToPayModelV2 scanToPayModelV2;
+        fabAddress +
+        '/rewardInfo';
+
+    log.i('getRewardInfo url $url');
+    PaymentModel rewardInfoModel;
     try {
-      var response = await client.post(url, body: jsonEncode(body), headers: {
-        'Content-type': 'application/json',
-        'Accept': 'application/json'
-      });
+      var response = await client.get(url);
       if (response.statusCode == 200 || response.statusCode == 201) {
         var json = jsonDecode(response.body)['_body'];
-        var isDataCorrect = jsonDecode(response.body)['ok'];
+        var isDataCorrect = jsonDecode(response.body)['success'];
         if (json.isNotEmpty) {
-          log.w('scanToPayV2Info json $json');
+          log.w('getRewardInfo json $json');
 
           if (!isDataCorrect) {
-            log.e('In scanToPayV2Info catch $json');
+            log.e('In getRewardInfo catch $json');
             throw Exception(json);
           } else if (isDataCorrect) {
-            scanToPayModelV2 = ScanToPayModelV2.fromJson(json);
+            rewardInfoModel = PaymentModel.fromJson(json);
           }
         }
       } else {
         log.e(
             'Response failed : reson ${response.toString()} -- body ${response.body}');
       }
-      return scanToPayModelV2;
+      return rewardInfoModel;
     } catch (err) {
-      log.e('In scanToPayV2Info catch $err');
+      log.e('In getRewardInfo catch $err');
       throw Exception(err);
     }
   }
@@ -257,31 +256,40 @@ class PayCoolService with ReactiveServiceMixin {
     }
   }
 
-  Future<List<PayCoolTransactionHistoryModel>> getPayTransactionDetails(
-      String address) async {
-    String url = payCoolTransactionHistoryUrl + address;
-    log.i('getPayTransactionDetails url $url');
+  Future<List<PayCoolTransactionHistory>> getTransactionHistory(String address,
+      {int pageSize = 10, int pageNumber = 0}) async {
+    String url = paymentTransactionHistoryUrl + address;
+
+    // page number - 1 because page number start from 0 in the api but in front end its from 1
+    if (pageNumber != 0) {
+      pageNumber = pageNumber - 1;
+    }
+    url = url + '/$pageSize/$pageNumber';
+    log.i('getTransactionHistory url $url');
+
     try {
       var response = await client.get(url);
       if (response.statusCode == 200 || response.statusCode == 201) {
-        var json = jsonDecode(response.body)['_body'] as List;
+        var json = jsonDecode(response.body) as List;
 
-        log.w('getPayTransactionDetails json first object ${json[0]}');
+        log.w('getTransactionHistory json first object ${json[0]}');
         if (json.isNotEmpty) {
+          var l = [];
+          l.add(json[3]);
           PayCoolTransactionHistoryModelList transactionList =
-              PayCoolTransactionHistoryModelList.fromJson(json);
+              PayCoolTransactionHistoryModelList.fromJson(l);
           log.w(
-              'getpaytransaction func:  transactions length -- ${transactionList.transactions.length}');
+              'getTransactionHistory func:  transactions length -- ${transactionList.transactions.length}');
           return transactionList.transactions;
         } else {
           return [];
         }
       } else {
-        log.e("getPayTransactionDetails error: " + response.body);
+        log.e("getTransactionHistory error: " + response.body);
         return [];
       }
     } catch (err) {
-      log.e('In getPayTransactionDetails catch $err');
+      log.e('In getTransactionHistory catch $err');
       return [];
     }
   }
@@ -388,42 +396,42 @@ class PayCoolService with ReactiveServiceMixin {
 /*----------------------------------------------------------------------
                             Get Rewards
 ----------------------------------------------------------------------*/
-  Future<int> getRewardListCount(String fabAddress) async {
-    String url = payCoolRewardUrl + fabAddress + '/count';
+  Future<int> getPaymentRewardCount(String fabAddress) async {
+    String url = paymentRewardUrl + fabAddress + '/totalCount';
     int referralCount = 0;
-    log.i('getRewardListCount url $url');
+    log.i('getPaymentRewardTotalCount url $url');
     try {
       var response = await client.get(url);
       if (response.statusCode == 200 || response.statusCode == 201) {
         var json = jsonDecode(response.body);
 
         // log.w('getChildrenByAddress json $json');
-        if (json.isNotEmpty) {
-          referralCount = json['_body'];
-          log.i('getRewardListCount count $referralCount');
+        if (json["success"]) {
+          referralCount = json['_body']['totalCount'];
+          log.i('getPaymentRewardTotalCount count $referralCount');
           return referralCount;
         } else {
           return 0;
         }
       } else {
-        log.e("getRewardListCount error: " + response.body);
+        log.e("getPaymentRewardTotalCount error: " + response.body);
         return 0;
       }
     } catch (err) {
-      log.e('In getRewardListCount catch $err');
+      log.e('In getPaymentRewardTotalCount catch $err');
       return 0;
     }
   }
 
-  Future<List<PayCoolRewardsModel>> getPayCoolRewards(String address,
+  Future<List<PaymentReward>> getPaymentRewards(String address,
       {int pageSize = 10, int pageNumber = 0}) async {
-    String url = payCoolRewardUrl + address;
+    String url = paymentRewardUrl + address;
     // page number - 1 because page number start from 0 in the api but in front end its from 1
     if (pageNumber != 0) {
       pageNumber = pageNumber - 1;
     }
     url = url + '/$pageSize/$pageNumber';
-    log.i('getPayRewards url $url');
+    log.i('getPaymentRewards url $url');
     try {
       var response = await client.get(url);
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -431,20 +439,20 @@ class PayCoolService with ReactiveServiceMixin {
 
         // log.w('getPayRewards json ${json[0]}');
         if (json.isNotEmpty) {
-          PayCoolRewardsModelList paycoolReferralList =
-              PayCoolRewardsModelList.fromJson(json);
+          PaymentRewards paymentRewardList = PaymentRewards.fromJson(json);
 
-          log.e('rewards length ${paycoolReferralList.rewards.length}');
-          return paycoolReferralList.rewards;
+          log.e(
+              'getPaymentRewards length ${paymentRewardList.paymentRewards.length}');
+          return paymentRewardList.paymentRewards;
         } else {
           return [];
         }
       } else {
-        log.e("getPayRewards error: " + response.body);
+        log.e("getPaymentRewards error: " + response.body);
         return [];
       }
     } catch (err) {
-      log.e('In getPayRewards catch $err');
+      log.e('In getPaymentRewards catch $err');
       return [];
     }
   }

@@ -22,7 +22,7 @@ import 'package:flutter/material.dart';
 import 'package:paycool/utils/barcode_util.dart';
 import 'package:paycool/views/paycool_club/referral/referral_model.dart';
 import 'package:paycool/views/paycool_club/paycool_club_service.dart';
-import 'package:paycool/views/paycool/paycool_model.dart';
+import 'package:paycool/views/paycool_club/join_club_payment_model.dart';
 import 'package:share/share.dart';
 import 'package:stacked/stacked.dart';
 import 'package:paycool/services/db/wallet_database_service.dart';
@@ -70,7 +70,7 @@ class PayCoolClubDashboardViewModel extends BaseViewModel {
   bool isPayMember = false;
   GlobalKey globalKey = GlobalKey();
   PaycoolDashboard dashboard = PaycoolDashboard();
-  ScanToPayModel scanToPayModel = ScanToPayModel();
+  JoinClubPaymentModel scanToPayModel = JoinClubPaymentModel();
   bool isValidClubReferralCode = false;
   bool isFreeFabAvailable = false;
   final freeFabAnswerTextController = TextEditingController();
@@ -623,7 +623,7 @@ class PayCoolClubDashboardViewModel extends BaseViewModel {
       log.i('barcode res $barcode');
 
       if (barcode != "" || barcode != null) {
-        scanToPayModel = ScanToPayModel.fromJson(jsonDecode(barcode));
+        scanToPayModel = JoinClubPaymentModel.fromJson(jsonDecode(barcode));
         debugPrint('payCoolModel ${scanToPayModel.toJson()}');
         navigationService.navigateTo(JoinPayCoolClubViewRoute,
             arguments: scanToPayModel);
@@ -953,7 +953,7 @@ class PayCoolClubDashboardViewModel extends BaseViewModel {
       result = await BarcodeUtils().scanQR(context);
 
       log.i("Barcode Res: $result ");
-      scanToPayModel = ScanToPayModel.fromJson(jsonDecode(result));
+      scanToPayModel = JoinClubPaymentModel.fromJson(jsonDecode(result));
       navigationService.navigateTo(JoinPayCoolClubViewRoute,
           arguments: scanToPayModel);
       setBusy(false);

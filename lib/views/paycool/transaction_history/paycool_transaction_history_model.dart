@@ -1,30 +1,32 @@
-import 'package:paycool/utils/string_util.dart';
-import '../../../environments/coins.dart' as coinList;
+import 'package:decimal/decimal.dart';
+import 'package:paycool/constants/constants.dart';
+import 'package:paycool/utils/number_util.dart';
+import '../../../environments/coins.dart' as coin_list;
 
-class PayCoolTransactionHistoryModel {
+class PayCoolTransactionHistory {
   // 0: refunded   1: valid   2: request refund
   // when user made request refund, status will be changed to 2,
   // when he cancel his request, the status will be changed back to 1,
   // when merchant approve the request, status will be changed  to 0
-  int status;
+  //int status;
   String id;
   String from;
   String address;
   String merchantRecipient;
   String exchangilyRecipient;
-
+  String txid;
   int coinType;
   int rate;
-  double merchantGet;
-  double feePayment;
-  double rewardAmount;
-  double tax;
+  Decimal merchantGet;
+  Decimal feePayment;
+  Decimal rewardAmount;
+  Decimal tax;
   String dateCreated;
-  double totalTransactionAmount;
+  Decimal totalTransactionAmount;
   String tickerName;
 
-  PayCoolTransactionHistoryModel(
-      {this.status,
+  PayCoolTransactionHistory(
+      { //this.status,
       this.id,
       this.from,
       this.address,
@@ -33,6 +35,7 @@ class PayCoolTransactionHistoryModel {
       this.coinType,
       this.rate,
       this.merchantGet,
+      this.txid,
       this.feePayment,
       this.rewardAmount,
       this.tax,
@@ -40,50 +43,53 @@ class PayCoolTransactionHistoryModel {
       this.totalTransactionAmount,
       this.tickerName});
 
-  factory PayCoolTransactionHistoryModel.fromJson(Map<String, dynamic> json) {
+  factory PayCoolTransactionHistory.fromJson(Map<String, dynamic> json) {
     //double merchantAmount = BigInt.from(json['merchantGet']).toDouble() / 1e8;
-    double merchantAmount =
-        bigNum2Double(json['merchantGet'] ?? 0.0, decimalLength: 16);
-    double exchangilyAmount =
-        bigNum2Double(json['feePayment'] ?? 0.0, decimalLength: 16);
-    double rewardAmountDouble =
-        bigNum2Double(json['rewardAmount'] ?? 0.0, decimalLength: 16);
-    double taxAmountDouble = bigNum2Double(json['tax'] ?? 0, decimalLength: 16);
+    Decimal merchantAmount = NumberUtil.rawStringToDecimal(
+      json['merchantGet'].toString(),
+    );
+    Decimal exchangilyAmount = NumberUtil.rawStringToDecimal(
+      json['paymentFee'].toString(),
+    );
+    Decimal rewardAmount = NumberUtil.rawStringToDecimal(
+      json['totalReward'].toString(),
+    );
+    Decimal taxAmount = NumberUtil.rawStringToDecimal(
+      json['tax'].toString(),
+    );
 
-    double total = 0.0;
+    Decimal total = Constants.decimalZero;
     if (merchantAmount != null &&
         exchangilyAmount != null &&
-        taxAmountDouble != null) {
-      total = merchantAmount +
-          exchangilyAmount +
-          taxAmountDouble +
-          rewardAmountDouble;
+        taxAmount != null) {
+      total = merchantAmount + exchangilyAmount + taxAmount + rewardAmount;
     }
 
-    String t = coinList.newCoinTypeMap[json['coinType']];
+    String ticker = coin_list.newCoinTypeMap[json['paidCoin']];
 
-    return PayCoolTransactionHistoryModel(
-        status: json['status'],
-        id: json['id'],
-        from: json['from'],
-        address: json['address'],
+    return PayCoolTransactionHistory(
+        // status: json['status'],
+        id: json['_id'],
+        // from: json['from'],
+        //  address: json['address'],
         merchantRecipient: json['merchantRecipient'],
         exchangilyRecipient: json['exchangilyRecipient'],
-        coinType: json['coinType'],
+        coinType: json['paidCoin'],
         rate: json['rate'],
         merchantGet: merchantAmount,
         feePayment: exchangilyAmount,
-        rewardAmount: rewardAmountDouble,
-        tax: taxAmountDouble,
+        rewardAmount: rewardAmount,
+        tax: taxAmount,
         dateCreated: json['dateCreated'],
         totalTransactionAmount: total,
-        tickerName: t);
+        txid: json['txid'],
+        tickerName: ticker);
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['status'] = status;
-    data['id'] = id;
+    //  data['status'] = status;
+    data['_id'] = id;
     data['from'] = from;
     data['address'] = address;
     data['merchantRecipient'] = merchantRecipient;
@@ -94,6 +100,7 @@ class PayCoolTransactionHistoryModel {
     data['exchangilyGet'] = feePayment;
     data['rewardAmount'] = rewardAmount;
     data['tax'] = tax;
+    data['txid'] = txid;
     data['dateCreated'] = dateCreated;
     data['totalTransactionAmount'] = totalTransactionAmount;
     return data;
@@ -101,15 +108,14 @@ class PayCoolTransactionHistoryModel {
 }
 
 class PayCoolTransactionHistoryModelList {
-  final List<PayCoolTransactionHistoryModel> transactions;
+  final List<PayCoolTransactionHistory> transactions;
   PayCoolTransactionHistoryModelList({this.transactions});
 
   factory PayCoolTransactionHistoryModelList.fromJson(
       List<dynamic> parsedJson) {
-    List<PayCoolTransactionHistoryModel> transactions = [];
-    transactions = parsedJson
-        .map((i) => PayCoolTransactionHistoryModel.fromJson(i))
-        .toList();
+    List<PayCoolTransactionHistory> transactions = [];
+    transactions =
+        parsedJson.map((i) => PayCoolTransactionHistory.fromJson(i)).toList();
     return PayCoolTransactionHistoryModelList(transactions: transactions);
   }
 }

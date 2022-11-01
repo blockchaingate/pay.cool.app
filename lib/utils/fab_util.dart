@@ -15,6 +15,7 @@ import 'package:flutter/widgets.dart';
 import 'package:paycool/logger.dart';
 import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/coin_service.dart';
+import 'package:paycool/utils/number_util.dart';
 import '../environments/environment.dart';
 import './string_util.dart';
 import 'dart:convert';
@@ -309,7 +310,8 @@ class FabUtils {
         tokenBalance =
             ((unlockInt) / BigInt.parse(pow(10, decimal).toString()));
       } else {
-        tokenBalance = bigNum2Double(unlockInt);
+        tokenBalance =
+            NumberUtil.rawStringToDecimal(unlockInt.toString()).toDouble();
         // debugPrint('tokenBalance for EXG==');
         // debugPrint(tokenBalance);
       }

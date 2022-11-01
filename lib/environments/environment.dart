@@ -90,9 +90,7 @@ Map devConfig = {
       "KNC": '0x3aad796ceb3a1063f727c6d0c698e37053292d10',
       "GVT": '0x3e610d9fb322063e50d185e2cc1b45f007e7180c',
       "DRGN": '0xbbdd7a557a0d8a9bf166dcc2730ae3ccec7df05c',
-      "PaycoolSmartContractAddress":
-          '0x294b2befc6f725d941917aee5b4022e8165eb540',
-      "PaycoolReferralAddress": "0xa62d5facbdce11fef7d41c71e7661d7131c8c7f0"
+      "PaycoolReferralAddress": "0xa76af08ba89012e617cd33641f70cb6c2ec957e6"
     },
     'exchangilyOfficial': [
       {'name': 'EXG', 'address': '0xed76be271bb47a6df055bbc2039733c26fdecc82'},

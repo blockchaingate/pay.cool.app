@@ -1,14 +1,43 @@
 import 'dart:math';
 import 'package:decimal/decimal.dart';
 import 'package:flutter/widgets.dart';
+import 'package:paycool/constants/constants.dart';
 import 'package:paycool/logger.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 class NumberUtil {
-  static const int DEFAULT_DECIMAL_DIGITS = 2;
   int maxDecimalDigits;
   final log = getLogger('NumberUtil');
+
+  static Decimal rawStringToDecimal(String raw, {decimalPrecision = 18}) {
+    if (raw.isNotEmpty) {
+      Decimal amount = Decimal.parse(raw.toString());
+      var x = Decimal.fromInt(pow(10, decimalPrecision));
+      Decimal result = (amount / x).toDecimal();
+
+      return result;
+    } else {
+      return Decimal.zero;
+    }
+  }
+
+  /// Breaks at precision 19
+  static Decimal decimalLimiter(Decimal input, {int decimalPrecision = 2}) {
+    var finalRes = Constants.decimalZero;
+    input ??= Constants.decimalZero;
+    if (input != Constants.decimalZero) {
+      var p = pow(10, decimalPrecision);
+      var t = Decimal.fromInt(p);
+      var x = input * t;
+      var trunc = x.truncate();
+      var resInRational = trunc / t;
+      finalRes =
+          resInRational.toDecimal(scaleOnInfinitePrecision: decimalPrecision);
+    }
+    //debugPrint('finalRes $finalRes');
+    return finalRes;
+  }
 
   static String fixed32Chars(String input, int keyLength) {
     if (input.length < 32) {

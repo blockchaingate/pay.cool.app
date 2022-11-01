@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:decimal/decimal.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -39,11 +40,9 @@ import 'package:paycool/utils/coin_util.dart';
 import 'package:paycool/utils/fab_util.dart';
 import 'package:paycool/utils/kanban.util.dart';
 import 'package:paycool/utils/keypair_util.dart';
-import 'package:paycool/utils/number_util.dart';
 import 'package:paycool/utils/string_util.dart';
 import 'package:paycool/views/paycool_club/paycool_club_service.dart';
 import 'package:paycool/views/paycool/models/paycool_store_model.dart';
-import 'package:paycool/views/paycool/models/paycool_model.dart';
 import 'package:paycool/views/paycool/models/store_and_merchant_model.dart';
 import 'package:paycool/views/paycool/paycool_service.dart';
 import 'package:share/share.dart';
@@ -55,6 +54,7 @@ import '../../environments/environment.dart';
 import '../../services/config_service.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../services/local_dialog_service.dart';
+import 'models/payment_model.dart';
 
 class PayCoolViewmodel extends FutureViewModel {
   final log = getLogger('PayCoolViewmodel');
@@ -93,8 +93,8 @@ class PayCoolViewmodel extends FutureViewModel {
   var seed = [];
   bool isMember = false;
   bool isAutoStartPaycoolScan;
-  double amountPayable = 0.0;
-  double taxAmount = 0.0;
+  Decimal amountPayable = Decimal.zero;
+  Decimal taxAmount = Decimal.zero;
   String coinPayable = '';
   final referralController = TextEditingController();
 
@@ -113,7 +113,7 @@ class PayCoolViewmodel extends FutureViewModel {
   // final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   int decimalLimit = 8;
   var fabUtils = FabUtils();
-  ScanToPayModelV2 scanToPayModelV2 = ScanToPayModelV2();
+  PaymentModel rewardInfoModel = PaymentModel();
   String orderId = '';
   StoreMerchantModel storeMerchangeModel = StoreMerchantModel();
   String orderIdFromCreateStoreOrder = '';
@@ -368,7 +368,7 @@ class PayCoolViewmodel extends FutureViewModel {
       return;
     }
     if (walletBalanceRes[0].unlockedExchangeBalance <
-        amountPayable + taxAmount) {
+        (amountPayable + taxAmount).toDouble()) {
       sharedService.sharedSimpleNotification(
           FlutterI18n.translate(context, "insufficientBalance"),
           isError: true);
@@ -377,7 +377,7 @@ class PayCoolViewmodel extends FutureViewModel {
     }
     //displayAbiHexinReadableFormat(scanToPayModel.datAbiHex);
     try {
-      await signTxV2(scanToPayModelV2.feeChargerSmartContractAddress);
+      await signSendTx();
     } catch (err) {
       log.e('CATCH signtx v2 failed $err');
     }
@@ -386,16 +386,10 @@ class PayCoolViewmodel extends FutureViewModel {
     setBusy(false);
   }
 
-  signTxV2(String contractAddress) async {
+  signSendTx() async {
     String exgAddress =
         await sharedService.getExgAddressFromCoreWalletDatabase();
-    var nonce = await getNonce(exgAddress);
 
-    //   Web
-    String finalAbiHex =
-        //  Constants.payCoolSignOrderAbi +
-        scanToPayModelV2.abiHex;
-    log.i('finalAbiHex $finalAbiHex');
     await dialogService
         .showDialog(
             title: FlutterI18n.translate(context, "enterPassword"),
@@ -412,29 +406,33 @@ class PayCoolViewmodel extends FutureViewModel {
         debugPrint('keyPairKanban $keyPairKanban');
         int kanbanGasPrice = environment["chains"]["KANBAN"]["gasPrice"];
         int kanbanGasLimit = environment["chains"]["KANBAN"]["gasLimit"];
+
         var txKanbanHex;
+        var res;
+        for (var i = 0; i < rewardInfoModel.params.length; i++) {
+          var nonce = await getNonce(exgAddress);
+          try {
+            txKanbanHex = await signAbiHexWithPrivateKey(
+                rewardInfoModel.params[i].data,
+                HEX.encode(keyPairKanban["privateKey"]),
+                rewardInfoModel.params[i].to,
+                nonce,
+                kanbanGasPrice,
+                kanbanGasLimit);
 
-        try {
-          txKanbanHex = await signAbiHexWithPrivateKey(
-              finalAbiHex,
-              HEX.encode(keyPairKanban["privateKey"]),
-              contractAddress,
-              nonce,
-              kanbanGasPrice,
-              kanbanGasLimit);
+            log.i('txKanbanHex $txKanbanHex');
+          } catch (err) {
+            setBusy(false);
+            log.e('err $err');
+          }
 
-          log.i('txKanbanHex $txKanbanHex');
-        } catch (err) {
-          setBusy(false);
-          log.e('err $err');
+          var resBody = await sendPayCoolRawTransaction(txKanbanHex);
+          res = resBody['_body'];
+          var txHash = res['transactionHash'];
+          //{"ok":true,"_body":{"transactionHash":"0x855f2d8ec57418670dd4cb27ecb71c6794ada5686e771fe06c48e30ceafe0548","status":"0x1"}}
+
+          debugPrint('res $res');
         }
-
-        var resBody = await sendPayCoolRawTransaction(txKanbanHex);
-        var res = resBody['_body'];
-        var txHash = res['transactionHash'];
-        //{"ok":true,"_body":{"transactionHash":"0x855f2d8ec57418670dd4cb27ecb71c6794ada5686e771fe06c48e30ceafe0548","status":"0x1"}}
-
-        debugPrint('res $res');
         if (res['status'] == '0x1') {
           payOrderConfirmationPopup();
         } else if (res['status'] == '0x0') {
@@ -452,6 +450,7 @@ class PayCoolViewmodel extends FutureViewModel {
         //           FlutterI18n.translate(context, "placeOrderTransactionSuccessful")),
         //       position: NotificationPosition.bottom);
         // }
+
       } else if (passRes.returnedText == 'Closed' && !passRes.confirmed) {
         log.e('Dialog Closed By User');
 
@@ -481,125 +480,6 @@ class PayCoolViewmodel extends FutureViewModel {
     });
   }
 
-// sign tx v1
-  signTx(String contractAddress) async {
-    String exgAddress =
-        await sharedService.getExgAddressFromCoreWalletDatabase();
-    var nonce = await getNonce(exgAddress);
-    var scanToPayModel;
-    abiHex = scanToPayModel.datAbiHex;
-    log.w('abi hex $abiHex');
-    var abi = scanToPayModel.datAbiHex.substring(0, 10);
-// get ref parent address
-    List<String> parentAddresses = [];
-    await payCoolService.getParentAddress(fabAddress).then((res) {
-      if (res.isNotEmpty) {
-        for (var address in res) {
-          parentAddresses.add(fabUtils.fabToExgAddress(address));
-        }
-      }
-    });
-    log.w('parentAddresses $parentAddresses');
-
-    List<String> agentAddresses = [];
-    await payCoolService.getRegionalAgent(fabAddress).then((res) {
-      if (res.isNotEmpty) {
-        for (var address in res) {
-          agentAddresses.add(fabUtils.fabToExgAddress(address));
-        }
-      }
-    });
-    log.w('agentAddresses $agentAddresses');
-
-    // decode data abihex
-    // await payCoolService
-    //     .decodeScannedAbiHex(abiHex)
-    //     .then((value) => decodedData = value);
-    // debugPrint('decodedData $decodedData');
-
-    // encode (decoded data and parent addresses
-    var decodedData;
-    await payCoolService
-        .encodeAbiHex(decodedData[0], int.parse(decodedData[1]), decodedData[2],
-            decodedData[3], agentAddresses, parentAddresses, '')
-        .then((value) => abiHex = value);
-    String finalAbiHex = abi + abiHex;
-    log.i('finalAbiHex $finalAbiHex');
-    await dialogService
-        .showDialog(
-            title: FlutterI18n.translate(context, "enterPassword"),
-            description: FlutterI18n.translate(
-                context, "dialogManagerTypeSamePasswordNote"),
-            buttonTitle: FlutterI18n.translate(context, "confirm"))
-        .then((passRes) async {
-      if (passRes.confirmed) {
-        setBusy(true);
-        String mnemonic = passRes.returnedText;
-
-        seed = walletService.generateSeed(mnemonic);
-        var keyPairKanban = getExgKeyPair(Uint8List.fromList(seed));
-        debugPrint('keyPairKanban $keyPairKanban');
-        int kanbanGasPrice = environment["chains"]["KANBAN"]["gasPrice"];
-        int kanbanGasLimit = environment["chains"]["KANBAN"]["gasLimit"];
-        var txKanbanHex;
-
-        try {
-          txKanbanHex = await signAbiHexWithPrivateKey(
-              finalAbiHex,
-              HEX.encode(keyPairKanban["privateKey"]),
-              contractAddress,
-              nonce,
-              kanbanGasPrice,
-              kanbanGasLimit);
-
-          log.i('txKanbanHex $txKanbanHex');
-        } catch (err) {
-          setBusy(false);
-          log.e('err $err');
-        }
-
-        var resBody = await sendPayCoolRawTransaction(txKanbanHex);
-        var res = resBody['_body'];
-        var txHash = res['transactionHash'];
-        //{"ok":true,"_body":{"transactionHash":"0x855f2d8ec57418670dd4cb27ecb71c6794ada5686e771fe06c48e30ceafe0548","status":"0x1"}}
-
-        debugPrint('res $res');
-        if (res['status'] == '0x1') {
-          sharedService.sharedSimpleNotification(
-              FlutterI18n.translate(context, "success"),
-
-              // subtitle: txHash.toString(),
-              isError: false);
-        } else if (res['status'] == '0x0') {
-          sharedService.sharedSimpleNotification(
-              FlutterI18n.translate(context, "failed"),
-              isError: true);
-        }
-        var errMsg = res['errMsg'];
-        // if (txHash != null && txHash != '') {
-        //   setBusy(true);
-        //   apiRes = txHash;
-        //   setBusy(false);
-        //   showSimpleNotification(
-        //       Text(
-        //           FlutterI18n.translate(context, "placeOrderTransactionSuccessful")),
-        //       position: NotificationPosition.bottom);
-        // }
-      } else if (passRes.returnedText == 'Closed' && !passRes.confirmed) {
-        log.e('Dialog Closed By User');
-
-        setBusy(false);
-      } else {
-        log.e('Wrong pass');
-        setBusy(false);
-
-        sharedService.sharedSimpleNotification(
-            FlutterI18n.translate(context, "pleaseProvideTheCorrectPassword"),
-            isError: true);
-      }
-    });
-    setBusy(false);
-  }
 /*----------------------------------------------------------------------
                           Tx history
 ----------------------------------------------------------------------*/
@@ -1016,16 +896,14 @@ class PayCoolViewmodel extends FutureViewModel {
       "items": [
         {
           "title": memo,
-          "giveAwayRate": storeMerchangeModel.giveAwayRate,
+          "rebateRate": storeMerchangeModel.giveAwayRate,
           "taxRate": 0,
           "lockedDays": storeMerchangeModel.lockedDays,
           "price": amount,
           "quantity": 1
         }
       ],
-      "store": storeMerchangeModel.sId,
-      "totalSale": amount,
-      "totalTax": 0
+      "merchantId": storeMerchangeModel.sId,
     };
 
     return body;
@@ -1122,8 +1000,8 @@ class PayCoolViewmodel extends FutureViewModel {
     bool isFailed = false;
 
     await payCoolService
-        .scanToPayV2Info(scanRes)
-        .then((value) => scanToPayModelV2 = value)
+        .getRewardInfo(scanRes)
+        .then((value) => rewardInfoModel = value)
         .catchError((onError) {
       debugPrint('catch error $onError');
       log.e('getOrderDetailsById func -- Catch scan to pay model $onError',
@@ -1143,7 +1021,7 @@ class PayCoolViewmodel extends FutureViewModel {
       setBusy(false);
       return;
     }
-    coinPayable = scanToPayModelV2.currency;
+    coinPayable = newCoinTypeMap[rewardInfoModel.paidCoin];
     final v =
         exchangeBalances.indexWhere((element) => element.ticker == coinPayable);
     if (v.isNegative) {
@@ -1157,7 +1035,9 @@ class PayCoolViewmodel extends FutureViewModel {
       return;
     }
     try {
-      await coinService.getSingleTokenData(scanToPayModelV2.currency).then((t) {
+      await coinService
+          .getSingleTokenData(coinPayable, coinType: rewardInfoModel.paidCoin)
+          .then((t) {
         decimalLimit = t.decimal;
         log.i('decimalLimit $decimalLimit');
       });
@@ -1165,12 +1045,9 @@ class PayCoolViewmodel extends FutureViewModel {
       if (decimalLimit == null || decimalLimit == 0) decimalLimit = 8;
       log.e('Decimal limit CATCH in barcode scan: $err');
     }
-    amountPayable = NumberUtil().truncateDoubleWithoutRouding(
-        scanToPayModelV2.totalAmount,
-        precision: decimalLimit);
-    taxAmount = NumberUtil().truncateDoubleWithoutRouding(
-        scanToPayModelV2.totalTax,
-        precision: decimalLimit);
+    amountPayable = rewardInfoModel.totalAmount;
+
+    taxAmount = rewardInfoModel.totalTax;
 
     if (Platform.isIOS) {
       updateSelectedTickernameIOS(
@@ -1182,113 +1059,7 @@ class PayCoolViewmodel extends FutureViewModel {
     } else {
       updateSelectedTickername(coinPayable);
     }
-    loadingStatus = FlutterI18n.translate(context, "fetchingStoreInfo");
-    await payCoolService
-        .getStoreInfo(scanToPayModelV2.feeChargerSmartContractAddress)
-        .then((value) => storeInfoModel = value);
     loadingStatus = '';
-    setBusy(false);
-  }
-
-  void scanBarcode({String addressType = Constants.MerchantAddressText}) async {
-    try {
-      setBusy(true);
-      var barcodeRes = [];
-      ScanResult scanResult;
-      var options = ScanOptions(strings: {
-        "cancel": FlutterI18n.translate(context, "cancel"),
-        "flash_on": FlutterI18n.translate(context, "flashOn"),
-        "flash_off": FlutterI18n.translate(context, "flashOff"),
-      });
-
-      scanResult = await BarcodeScanner.scan(options: options);
-      // await BarcodeUtils().scanQR(context);
-      log.i('barcode res ${scanResult.toString()}');
-      if (addressType == Constants.ReferralAddressText) {
-        debugPrint('in 1st if-- barcode res-- ${scanResult.rawContent}');
-
-        referralController.text = scanResult.rawContent;
-      }
-      if (addressType == Constants.MerchantAddressText) {
-        if (scanResult != null) {
-          var scanToPayModel;
-          //    ScanToPayModel.fromJson(jsonDecode(scanResult.rawContent));
-          debugPrint('payCoolModel ${scanToPayModel.toJson()}');
-          barcodeRes.add(scanToPayModel.toJson());
-          addressController.text = scanToPayModel.toAddress;
-          String data = scanToPayModel.datAbiHex.toString();
-          List<String> res;
-          await payCoolService
-              .decodeScannedAbiHex(data.substring(10, data.length))
-              .then((value) => res = value);
-          log.w('barcode scan decodeScannedAbiHex res $res');
-
-          int ct = int.parse(res[1]);
-          coinPayable = newCoinTypeMap[ct];
-          try {
-            await coinService
-                .getSingleTokenData(tickerName, coinType: ct)
-                .then((t) {
-              decimalLimit = t.decimal;
-              log.i('decimalLimit $decimalLimit');
-            });
-          } catch (err) {
-            if (decimalLimit == null || decimalLimit == 0) decimalLimit = 8;
-            log.e('Decimal limit CATCH in barcode scan: $err');
-          }
-          // amountPayable = bigNumToDouble(res[2], decimalLength: decimalLimit);
-          // taxAmount = bigNumToDouble(res[3], decimalLength: decimalLimit);
-          // if (Platform.isAndroid) updateSelectedTickername(coinPayable);
-          // tickerName = coinPayable;
-          if (Platform.isIOS) {
-            updateSelectedTickernameIOS(
-                exchangeBalances
-                    .indexWhere((element) => element.ticker == coinPayable),
-                exchangeBalances
-                    .firstWhere((element) => element.ticker == coinPayable)
-                    .unlockedAmount);
-          } else {
-            updateSelectedTickername(coinPayable);
-          }
-          var decodedData = res;
-          //  payCool();
-          await payCoolService
-              .getStoreInfo(scanToPayModel.toAddress)
-              .then((value) => storeInfoModel = value);
-        } else if (scanResult.rawContent == '-1') {
-          sharedService.sharedSimpleNotification(
-            FlutterI18n.translate(context, "scanCancelled"),
-          );
-          setBusy(false);
-          return;
-        }
-      }
-      setBusy(false);
-    } on PlatformException catch (e) {
-      if (e.code == "PERMISSION_NOT_GRANTED") {
-        setBusy(false);
-        sharedService.sharedSimpleNotification(
-          FlutterI18n.translate(context, "userAccessDenied"),
-        );
-        // receiverWalletAddressTextController.text =
-        //     FlutterI18n.translate(context, "userAccessDenied");
-      } else {
-        // setBusy(true);
-        sharedService.sharedSimpleNotification(
-          FlutterI18n.translate(context, "unknownError $e"),
-        );
-      }
-    } on FormatException {
-      log.e('scan barcode func: FormatException');
-      sharedService.sharedSimpleNotification(
-        FlutterI18n.translate(context, "scanCancelled"),
-      );
-    } catch (e) {
-      sharedService.sharedSimpleNotification(
-          FlutterI18n.translate(context, "unknownError"),
-          isError: true);
-      log.e('barcode scan catch $e');
-    }
     setBusy(false);
   }
 

@@ -19,6 +19,7 @@ import 'package:paycool/utils/coin_util.dart';
 
 import 'package:paycool/utils/kanban.util.dart';
 import 'package:paycool/utils/keypair_util.dart';
+import 'package:paycool/utils/number_util.dart';
 import 'package:paycool/utils/string_util.dart';
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
@@ -89,7 +90,9 @@ class RedepositViewModel extends FutureViewModel {
     kanbanGasPriceTextController.text = gasPrice.toString();
     kanbanGasLimitTextController.text = gasLimit.toString();
 
-    var kanbanTransFee = bigNum2Double(gasPrice * gasLimit);
+    var kanbanTransFee =
+        NumberUtil.rawStringToDecimal((gasPrice * gasLimit).toString())
+            .toDouble();
 
     log.w('errDepositList=== $errDepositList');
     // if there is only one redeposit entry
@@ -252,7 +255,9 @@ class RedepositViewModel extends FutureViewModel {
   updateTransFee() async {
     var kanbanPrice = int.tryParse(kanbanGasPriceTextController.text);
     var kanbanGasLimit = int.tryParse(kanbanGasLimitTextController.text);
-    var kanbanTransFeeDouble = bigNum2Double(kanbanPrice * kanbanGasLimit);
+    var kanbanTransFeeDouble =
+        NumberUtil.rawStringToDecimal((kanbanPrice * kanbanGasLimit).toString())
+            .toDouble();
 
     kanbanTransFee = kanbanTransFeeDouble;
   }

@@ -1,8 +1,8 @@
-class ScanToPayModel {
+class JoinClubPaymentModel {
   String toAddress;
   String datAbiHex;
 
-  ScanToPayModel({this.toAddress, this.datAbiHex});
+  JoinClubPaymentModel({this.toAddress, this.datAbiHex});
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
@@ -13,8 +13,8 @@ class ScanToPayModel {
     return data;
   }
 
-  factory ScanToPayModel.fromJson(Map<String, dynamic> json) {
-    return ScanToPayModel(
+  factory JoinClubPaymentModel.fromJson(Map<String, dynamic> json) {
+    return JoinClubPaymentModel(
       toAddress: json['to'],
       datAbiHex: json['data'],
     );

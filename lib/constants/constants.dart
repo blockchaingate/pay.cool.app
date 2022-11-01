@@ -1,4 +1,8 @@
+import 'package:decimal/decimal.dart';
+
 class Constants {
+  static Decimal decimalZero = Decimal.zero;
+
   static const List<String> specialTokens = [
     'USDTX',
     'FABE',

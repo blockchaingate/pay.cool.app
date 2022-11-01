@@ -14,7 +14,7 @@ const String baseKanbanUrl = isProduction
     : 'https://kanbantest.fabcoinapi.com/';
 
 const String fabInfoBaseUrl =
-    isProduction ? ' https://fabprod.info/' : ' https://fabtest.info/';
+    isProduction ? 'https://fabprod.info/' : 'https://fabtest.info/';
 
 const String tronBaseApiUrl = 'https://api.trongrid.io/';
 const String kanbanApiRoute = 'kanban/';
@@ -60,6 +60,9 @@ const String isValidPaycoolReferralRoute = "api/userreferral/user/";
 // https://fabtest.info/api/userreferral/user/myVKCpWKSpMDvpZZRS69re3KmSta29ZFnK/totalCount
 const String totalCountRoute = "/totalCount";
 
+const String paymentRewardUrl = fabInfoBaseUrl + 'api/payreward/v2/user/';
+const String paymentTransactionHistoryUrl = fabInfoBaseUrl + 'api/charge/user/';
+
 // ** https://api.blockchaingate.com/v2/stores/feeChargerSmartContractAddress/0x1e89b7d555fe1b68c048b68eb28724950e1051f2
 const String storeInfoPayCoolUrl =
     baseBlockchainGateV2Url + 'stores/feeChargerSmartContractAddress/';
@@ -84,17 +87,11 @@ const String payCoolApiRoute = kanbanApiRoute + 'coders/encodeFunctionCall';
 const String payCoolCreateReferralUrl =
     baseBlockchainGateV2Url + paycoolRef + '/create';
 
-const String payCoolRewardUrl =
-    baseBlockchainGateV2Url + '7star-locker/ownedBy/';
-
 const String payCoolDecodeAbiUrl =
     baseKanbanUrl + kanbanApiRoute + 'coders/decodeParams';
 
 const String payCoolEncodeAbiUrl =
     baseKanbanUrl + kanbanApiRoute + 'coders/encodeParams';
-
-const String payCoolTransactionHistoryUrl =
-    baseBlockchainGateV2Url + '7star-charge-fund/customer/';
 
 const String paycoolParentAddressUrl =
     baseBlockchainGateV2Url + paycoolRef + '/parents/';

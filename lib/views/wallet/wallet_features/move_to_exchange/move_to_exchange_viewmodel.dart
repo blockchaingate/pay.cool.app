@@ -543,7 +543,9 @@ class MoveToExchangeViewModel extends BaseViewModel {
     if (kanbanGasLimit != null && kanbanPrice != null) {
       var kanbanPriceBig = BigInt.from(kanbanPrice);
       var kanbanGasLimitBig = BigInt.from(kanbanGasLimit);
-      kanbanTransFeeDouble = bigNum2Double(kanbanPriceBig * kanbanGasLimitBig);
+      kanbanTransFeeDouble = NumberUtil.rawStringToDecimal(
+              (kanbanPriceBig * kanbanGasLimitBig).toString())
+          .toDouble();
       //  kanbanTransFee = kanbanTransFeeDouble;
       log.w('fee $kanbanPrice $kanbanGasLimit $kanbanTransFeeDouble');
     }

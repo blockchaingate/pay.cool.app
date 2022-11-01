@@ -19,237 +19,168 @@ class PayCoolTransactionHistoryView extends StatelessWidget {
       builder: (BuildContext context, PayCoolTransactionHistoryViewModel model,
               child) =>
           Scaffold(
+        extendBodyBehindAppBar: true,
         appBar: AppBar(
+          elevation: 0,
+          iconTheme: const IconThemeData(color: Colors.black),
+          backgroundColor: Colors.transparent,
           automaticallyImplyLeading: true,
           centerTitle: true,
           title: Text(
             FlutterI18n.translate(context, "transactionHistory"),
-            style: headText4.copyWith(fontWeight: FontWeight.w400),
+            style: headText3.copyWith(fontWeight: FontWeight.bold),
           ),
         ),
-        body: model.isBusy && !model.isProcessingAction
-            ? model.sharedService.loadingIndicator()
-            : model.transactions.isEmpty
-                ? const Center(
-                    child: Icon(Icons.history_toggle_off_rounded, color: white),
-                  )
-                : Container(
-                    margin: const EdgeInsets.only(
-                      top: 5,
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        UIHelper.verticalSpaceSmall,
-                        Theme(
-                          data: ThemeData(
-                              textTheme: const TextTheme(
-                                  bodyText1: TextStyle(color: white))),
-                          child: Row(
-                            children: [
-                              UIHelper.horizontalSpaceMedium,
-                              Expanded(
-                                flex: 2,
-                                child: Text(
-                                    FlutterI18n.translate(context, "date")),
-                              ),
-                              Expanded(
-                                flex: 2,
-                                child: Text(
-                                    FlutterI18n.translate(context, "coin")),
-                              ),
-                              Expanded(
-                                flex: 2,
-                                child: Text(
-                                    FlutterI18n.translate(context, "amount")),
-                              ),
-                              Expanded(
-                                flex: 2,
-                                child: Text(
-                                    FlutterI18n.translate(context, "status")),
-                              )
-                            ],
-                          ),
-                        ),
-                        Expanded(
-                          child: Theme(
-                            data: ThemeData(
-                                textTheme: const TextTheme(
-                                    bodyText2: TextStyle(color: white))),
+        body: Container(
+          decoration: BoxDecoration(image: blurBackgroundImage()),
+          child: model.isBusy && !model.isProcessingAction
+              ? model.sharedService.loadingIndicator()
+              : model.transactions.isEmpty
+                  ? const Center(
+                      child:
+                          Icon(Icons.history_toggle_off_rounded, color: white),
+                    )
+                  : Container(
+                      margin: const EdgeInsets.all(8),
+                      padding: const EdgeInsets.all(5.0),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          UIHelper.verticalSpaceSmall,
+                          // Container(
+                          //   padding: const EdgeInsets.symmetric(
+                          //       horizontal: 2.0, vertical: 10),
+                          //   decoration: roundedTopLeftRightBoxDecoration(
+                          //       color: secondaryColor),
+                          //   child: Row(
+                          //     mainAxisSize: MainAxisSize.min,
+                          //     children: [
+                          //       UIHelper.horizontalSpaceMedium,
+                          //       Expanded(
+                          //         flex: 2,
+                          //         child: Text(
+                          //             FlutterI18n.translate(context, "date")),
+                          //       ),
+                          //       Expanded(
+                          //         flex: 2,
+                          //         child: Text(
+                          //             FlutterI18n.translate(context, "coin")),
+                          //       ),
+                          //       Expanded(
+                          //         flex: 2,
+                          //         child: Text(
+                          //             FlutterI18n.translate(context, "amount")),
+                          //       ),
+                          //       Expanded(
+                          //         flex: 2,
+                          //         child: Text(
+                          //             FlutterI18n.translate(context, "status")),
+                          //       )
+                          //     ],
+                          //   ),
+                          // ),
+                          Expanded(
                             child: ListView.builder(
                                 itemCount: model.transactions.length,
                                 itemBuilder: (BuildContext context, int index) {
                                   return GestureDetector(
                                     onTap: () => model.showRefundButton(
                                         model.transactions[index].id),
-                                    child: Card(
-                                      color: walletCardColor,
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          UIHelper.verticalSpaceSmall,
-                                          Row(
+                                    child: Container(
+                                      margin: const EdgeInsets.all(5.0),
+                                      padding: const EdgeInsets.all(10.0),
+                                      decoration: roundedBoxDecoration(
+                                          color: secondaryColor),
+                                      child: ListTile(
+                                        title: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Text(
+                                              model.transactions[index]
+                                                      .tickerName +
+                                                  ' ',
+                                              style: headText5,
+                                            ),
+                                            Text(
+                                              NumberUtil.decimalLimiter(
+                                                      model.transactions[index]
+                                                          .totalTransactionAmount,
+                                                      decimalPrecision: 6)
+                                                  .toString(),
+                                              style: const TextStyle(
+                                                  fontSize: 14,
+                                                  color: primaryColor,
+                                                  fontWeight: FontWeight.bold),
+                                            )
+                                          ],
+                                        ),
+                                        subtitle: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 8.0),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: [
-                                              UIHelper.horizontalSpaceSmall,
+                                              Text(
+                                                FlutterI18n.translate(
+                                                    context, "txId"),
+                                                style: const TextStyle(
+                                                    fontSize: 14,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
                                               Expanded(
-                                                flex: 2,
-                                                child: Text(formatStringDate(
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 5.0),
+                                                  child: Text(
                                                     model.transactions[index]
-                                                        .dateCreated)),
+                                                        .txid,
+                                                    maxLines: 2,
+                                                    style: const TextStyle(
+                                                      fontSize: 12,
+                                                    ),
+                                                  ),
+                                                ),
                                               ),
-                                              Expanded(
-                                                flex: 2,
-                                                child: Text((model
-                                                    .transactions[index]
-                                                    .tickerName)),
-                                              ),
-                                              Expanded(
-                                                flex: 2,
-                                                child: Text(NumberUtil()
-                                                    .truncateDoubleWithoutRouding(
-                                                        model
-                                                            .transactions[index]
-                                                            .totalTransactionAmount,
-                                                        precision: 6)
-                                                    .toString()),
-                                              ),
-                                              Expanded(
-                                                flex: 2,
-                                                child: Text(model
-                                                            .transactions[index]
-                                                            .status ==
-                                                        0
-                                                    ? FlutterI18n.translate(
-                                                        context, "refunded")
-                                                    : model.transactions[index]
-                                                                .status ==
-                                                            1
-                                                        ? FlutterI18n.translate(
-                                                            context, "valid")
-                                                        : FlutterI18n.translate(
-                                                            context,
-                                                            "requestRefund")),
-                                              )
                                             ],
                                           ),
-                                          UIHelper.verticalSpaceSmall,
-                                          // show refund button
-                                          //  model.isShowRefundButton &&
-                                          model.selectedTxOrderId ==
-                                                  model.transactions[index].id
-                                              ? Row(
-                                                  mainAxisSize:
-                                                      MainAxisSize.min,
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: [
-                                                    if (model
-                                                            .transactions[index]
-                                                            .status ==
-                                                        2)
-                                                      ElevatedButton(
-                                                          style: ButtonStyle(
-                                                              backgroundColor:
-                                                                  MaterialStateProperty.all(
-                                                                      sellPrice)),
-                                                          onPressed: () {
-                                                            if (!model
-                                                                .isProcessingAction) {
-                                                              model.txAction(
-                                                                  model
-                                                                      .transactions[
-                                                                          index]
-                                                                      .id,
-                                                                  model
-                                                                      .transactions[
-                                                                          index]
-                                                                      .address,
-                                                                  isCancel:
-                                                                      true);
-                                                            }
-                                                            debugPrint(model
-                                                                .isProcessingAction
-                                                                .toString());
-                                                          },
-                                                          child: Text(model
-                                                                      .isBusy &&
-                                                                  model.selectedTxOrderId ==
-                                                                      model
-                                                                          .transactions[
-                                                                              index]
-                                                                          .id &&
-                                                                  model
-                                                                      .isProcessingAction
-                                                              ? FlutterI18n
-                                                                  .translate(
-                                                                      context,
-                                                                      "processing")
-                                                              : FlutterI18n.translate(
-                                                                  context,
-                                                                  "cancelRefundRequest"))),
-                                                    UIHelper
-                                                        .horizontalSpaceSmall,
-                                                    if (model
-                                                            .transactions[index]
-                                                            .status ==
-                                                        1)
-                                                      ElevatedButton(
-                                                          style: ButtonStyle(
-                                                              backgroundColor:
-                                                                  MaterialStateProperty
-                                                                      .all(
-                                                                          yellow)),
-                                                          onPressed: () {
-                                                            if (!model
-                                                                .isProcessingAction) {
-                                                              model.txAction(
-                                                                  model
-                                                                      .transactions[
-                                                                          index]
-                                                                      .id,
-                                                                  model
-                                                                      .transactions[
-                                                                          index]
-                                                                      .address);
-                                                            }
-                                                            debugPrint(model
-                                                                .isProcessingAction
-                                                                .toString());
-                                                          },
-                                                          child: Text(
-                                                            model.isBusy &&
-                                                                    model.selectedTxOrderId ==
-                                                                        model
-                                                                            .transactions[
-                                                                                index]
-                                                                            .id &&
-                                                                    model
-                                                                        .isProcessingAction
-                                                                ? FlutterI18n
-                                                                    .translate(
-                                                                        context,
-                                                                        "processing")
-                                                                : FlutterI18n
-                                                                    .translate(
-                                                                        context,
-                                                                        "requestRefund"),
-                                                            style: const TextStyle(
-                                                                color:
-                                                                    secondaryColor),
-                                                          )),
-                                                  ],
-                                                )
-                                              : Container(),
-                                        ],
+                                        ),
+                                        trailing: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              formatStringDateV2(model
+                                                      .transactions[index]
+                                                      .dateCreated)
+                                                  .split(' ')[0],
+                                              style: headText4,
+                                            ),
+                                            Text(
+                                              formatStringDateV2(model
+                                                      .transactions[index]
+                                                      .dateCreated)
+                                                  .split(' ')[1],
+                                              style: headText5,
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   );
                                 }),
-                          ),
-                        )
-                      ],
+                          )
+                        ],
+                      ),
                     ),
-                  ),
+        ),
       ),
     );
   }
