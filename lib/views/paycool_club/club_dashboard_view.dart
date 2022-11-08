@@ -199,6 +199,8 @@ class ClubDashboardView extends StatelessWidget {
                                       "assets/images/shared/blur-background.png"))),
                           child: CustomScrollView(
                             slivers: [
+                              SliverToBoxAdapter(
+                                  child: UIHelper.verticalSpaceLarge),
                               // makeHeader(),
 
                               // SliverList(
@@ -221,99 +223,144 @@ class ClubDashboardView extends StatelessWidget {
                                           .loadingIndicator())
                                   : SliverToBoxAdapter(
                                       child: Container(
-                                        color: red,
+                                        color: secondaryColor,
                                         height: model.isValidMember ? 200 : 400,
                                         child: Stack(
                                           children: [
-                                            ListView.builder(
-                                                shrinkWrap: true,
+                                            SizedBox(
+                                              height: 200, // card height
+                                              child: PageView.builder(
                                                 itemCount:
                                                     model.projects.length,
-                                                scrollDirection:
-                                                    Axis.horizontal,
-                                                itemBuilder:
-                                                    (BuildContext context,
-                                                        int index) {
-                                                  return Row(
-                                                    children: [
-                                                      Container(
-                                                        width: MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .width -
-                                                            10,
-                                                        decoration: BoxDecoration(
-                                                            image: DecorationImage(
-                                                                colorFilter:
-                                                                    ColorFilter
-                                                                        .linearToSrgbGamma(),
-                                                                opacity: 0.5,
-                                                                fit: BoxFit
-                                                                    .cover,
-                                                                image: NetworkImage(model
-                                                                    .projects[
-                                                                        index]
-                                                                    .image))),
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(15),
-                                                        child: Row(
+                                                controller: PageController(
+                                                    viewportFraction: 0.7),
+                                                onPageChanged: (int index) =>
+                                                    model.updateProjectIndex(
+                                                        index),
+                                                itemBuilder: (_, i) {
+                                                  return Transform.scale(
+                                                    scale:
+                                                        i == model.projectIndex
+                                                            ? 1
+                                                            : 0.9,
+                                                    child: Card(
+                                                      color: Colors.transparent,
+                                                      elevation: 6,
+                                                      shape:
+                                                          RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          20)),
+                                                      child: Container(
+                                                        decoration:
+                                                            BoxDecoration(
+                                                                borderRadius: const BorderRadius
+                                                                        .all(
+                                                                    Radius
+                                                                        .circular(
+                                                                            10)),
+                                                                gradient:
+                                                                    LinearGradient(
+                                                                        colors: [
+                                                                          primaryColor,
+                                                                          primaryColor
+                                                                              .withAlpha(155),
+                                                                        ],
+                                                                        begin: const FractionalOffset(
+                                                                            0.0,
+                                                                            0.0),
+                                                                        end: const FractionalOffset(
+                                                                            1.0,
+                                                                            0.0),
+                                                                        stops: [
+                                                                          0.0,
+                                                                          1.0
+                                                                        ],
+                                                                        tileMode:
+                                                                            TileMode.clamp)),
+                                                        child: Column(
                                                           mainAxisAlignment:
                                                               MainAxisAlignment
-                                                                  .spaceBetween,
+                                                                  .center,
                                                           crossAxisAlignment:
                                                               CrossAxisAlignment
                                                                   .center,
                                                           children: [
-                                                            Column(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .center,
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .start,
-                                                                children: [
-                                                                  Text(
-                                                                    model.storageService.language ==
-                                                                            'en'
-                                                                        ? model
-                                                                            .projects[
-                                                                                index]
-                                                                            .name
-                                                                            .en
-                                                                        : model
-                                                                            .projects[index]
-                                                                            .name
-                                                                            .sc,
-                                                                    style:
-                                                                        headText1,
+                                                            Row(
+                                                              mainAxisSize:
+                                                                  MainAxisSize
+                                                                      .min,
+                                                              children: [
+                                                                Padding(
+                                                                  padding: const EdgeInsets.all(8.0),
+                                                                  child: Image.network(
+                                                                    model
+                                                                        .projects[
+                                                                            model
+                                                                                .projectIndex]
+                                                                        .image
+                                                                        .toString(),
+                                                                    width: 25,
+                                                                    height: 25,
                                                                   ),
-                                                                  Text(
-                                                                    model.storageService.language ==
-                                                                            'en'
-                                                                        ? model
-                                                                            .projects[
-                                                                                index]
-                                                                            .description
-                                                                            .en
-                                                                        : model
-                                                                            .projects[index]
-                                                                            .description
-                                                                            .sc,
-                                                                    style:
-                                                                        headText2,
-                                                                  )
-                                                                ]),
+                                                                ),
+                                                                Text(
+                                                                  model.storageService
+                                                                              .language ==
+                                                                          'en'
+                                                                      ? model
+                                                                          .projects[model
+                                                                              .projectIndex]
+                                                                          .name
+                                                                          .en
+                                                                      : model
+                                                                          .projects[
+                                                                              model.projectIndex]
+                                                                          .name
+                                                                          .sc,
+                                                                  style:
+                                                                      headText1,
+                                                                ),
+                                                              ],
+                                                            ),
+                                                            Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .all(8.0),
+                                                              child: Text(
+                                                                model.storageService
+                                                                            .language ==
+                                                                        'en'
+                                                                    ? model
+                                                                        .projects[model
+                                                                            .projectIndex]
+                                                                        .description
+                                                                        .en
+                                                                    : model
+                                                                        .projects[
+                                                                            model.projectIndex]
+                                                                        .description
+                                                                        .sc,
+                                                                style:
+                                                                    headText2,
+                                                                overflow:
+                                                                    TextOverflow
+                                                                        .ellipsis,
+                                                              ),
+                                                            ),
+                                                            UIHelper
+                                                                .verticalSpaceSmall,
                                                             SizedBox(
                                                               width: 150,
                                                               child:
                                                                   ElevatedButton(
                                                                       style:
-                                                                          generalButtonStyle1,
+                                                                          outlinedButtonStyles2,
                                                                       onPressed:
                                                                           () {
                                                                         model.goToProjectDetails(model
-                                                                            .projects[index]
+                                                                            .projects[model.projectIndex]
                                                                             .sId);
                                                                       },
                                                                       child:
@@ -327,9 +374,118 @@ class ClubDashboardView extends StatelessWidget {
                                                           ],
                                                         ),
                                                       ),
-                                                    ],
+                                                    ),
                                                   );
-                                                }),
+                                                },
+                                              ),
+                                            ),
+                                            // ListView.builder(
+                                            //     physics:
+                                            //         const PageScrollPhysics(),
+                                            //     shrinkWrap: true,
+                                            //     itemCount:
+                                            //         model.projects.length,
+                                            //     scrollDirection:
+                                            //         Axis.horizontal,
+                                            //     itemBuilder:
+                                            //         (BuildContext context,
+                                            //             int index) {
+                                            //       return Row(
+                                            //         children: [
+                                            //           Container(
+                                            //             width: MediaQuery.of(
+                                            //                         context)
+                                            //                     .size
+                                            //                     .width -
+                                            //                 10,
+                                            //             decoration: BoxDecoration(
+                                            //                 image: DecorationImage(
+                                            //                     colorFilter:
+                                            //                         ColorFilter
+                                            //                             .linearToSrgbGamma(),
+                                            //                     opacity: 0.5,
+                                            //                     fit: BoxFit
+                                            //                         .cover,
+                                            //                     image: NetworkImage(model
+                                            //                         .projects[
+                                            //                             index]
+                                            //                         .image))),
+                                            //             padding:
+                                            //                 const EdgeInsets
+                                            //                     .all(15),
+                                            //             child: Row(
+                                            //               mainAxisAlignment:
+                                            //                   MainAxisAlignment
+                                            //                       .spaceBetween,
+                                            //               crossAxisAlignment:
+                                            //                   CrossAxisAlignment
+                                            //                       .center,
+                                            //               children: [
+                                            //                 Column(
+                                            //                     mainAxisAlignment:
+                                            //                         MainAxisAlignment
+                                            //                             .center,
+                                            //                     crossAxisAlignment:
+                                            //                         CrossAxisAlignment
+                                            //                             .start,
+                                            //                     children: [
+                                            //                       Text(
+                                            //                         model.storageService.language ==
+                                            //                                 'en'
+                                            //                             ? model
+                                            //                                 .projects[
+                                            //                                     index]
+                                            //                                 .name
+                                            //                                 .en
+                                            //                             : model
+                                            //                                 .projects[index]
+                                            //                                 .name
+                                            //                                 .sc,
+                                            //                         style:
+                                            //                             headText1,
+                                            //                       ),
+                                            //                       Text(
+                                            //                         model.storageService.language ==
+                                            //                                 'en'
+                                            //                             ? model
+                                            //                                 .projects[
+                                            //                                     index]
+                                            //                                 .description
+                                            //                                 .en
+                                            //                             : model
+                                            //                                 .projects[index]
+                                            //                                 .description
+                                            //                                 .sc,
+                                            //                         style:
+                                            //                             headText2,
+                                            //                       )
+                                            //                     ]),
+                                            //                 SizedBox(
+                                            //                   width: 150,
+                                            //                   child:
+                                            //                       ElevatedButton(
+                                            //                           style:
+                                            //                               generalButtonStyle1,
+                                            //                           onPressed:
+                                            //                               () {
+                                            //                             model.goToProjectDetails(model
+                                            //                                 .projects[index]
+                                            //                                 .sId);
+                                            //                           },
+                                            //                           child:
+                                            //                               Text(
+                                            //                             'Join',
+                                            //                             style: headText4.copyWith(
+                                            //                                 color:
+                                            //                                     secondaryColor),
+                                            //                           )),
+                                            //                 )
+                                            //               ],
+                                            //             ),
+                                            //           ),
+                                            //         ],
+                                            //       );
+                                            //     }),
                                             Container(
                                               margin: const EdgeInsets.only(
                                                   bottom: 10),
@@ -340,7 +496,7 @@ class ClubDashboardView extends StatelessWidget {
                                                   for (var i = 0;
                                                       i < model.projects.length;
                                                       i++)
-                                                    const Padding(
+                                                    Padding(
                                                       padding:
                                                           EdgeInsets.all(2.0),
                                                       child: Align(
@@ -349,7 +505,11 @@ class ClubDashboardView extends StatelessWidget {
                                                           child: Icon(
                                                             Icons
                                                                 .ac_unit_outlined,
-                                                            color: white,
+                                                            color:
+                                                                model.projectIndex ==
+                                                                        i
+                                                                    ? white
+                                                                    : grey,
                                                             size: 12,
                                                           )),
                                                     ),
