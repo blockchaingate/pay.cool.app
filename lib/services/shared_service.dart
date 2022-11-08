@@ -155,6 +155,10 @@ class SharedService {
     return await coreWalletDatabaseService.getWalletAddressByTickerName('FAB');
   }
 
+  Future<String> getCoinAddressFromCoreWalletDatabase(String ticker) async {
+    return await coreWalletDatabaseService.getWalletAddressByTickerName(ticker);
+  }
+
 /*---------------------------------------------------
       Get EXG Official address
 --------------------------------------------------- */

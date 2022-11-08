@@ -96,7 +96,7 @@ class _GenerateCustomQrCodeViewState extends State<GenerateCustomQrCodeView> {
                   ),
                 ),
                 onChanged: (value) async {
-                  await clubService.isValidReferralCode(value).then((value) {
+                  await clubService.isValidMember(value).then((value) {
                     setState(() {
                       isValid = value;
                     });
@@ -221,7 +221,7 @@ class _GenerateCustomQrCodeViewState extends State<GenerateCustomQrCodeView> {
         log.i('paste data ${referralController.text}');
       });
     }
-    await clubService.isValidReferralCode(holder.text).then((value) {
+    await clubService.isValidMember(holder.text).then((value) {
       setState(() {
         isValid = value;
         log.w('isValid paste $isValid');
@@ -245,7 +245,7 @@ class _GenerateCustomQrCodeViewState extends State<GenerateCustomQrCodeView> {
         referralController.text = barcode;
       });
 
-      await clubService.isValidReferralCode(barcode).then((value) {
+      await clubService.isValidMember(barcode).then((value) {
         setState(() {
           isValid = value;
           log.w('isValid scan barcode $isValid');

@@ -5,7 +5,7 @@ import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/utils/number_util.dart';
 import 'package:paycool/utils/string_util.dart';
-import 'package:paycool/views/paycool_club/join_club_payment_model.dart';
+import 'package:paycool/views/paycool_club/join_club/join_club_payment_model.dart';
 import 'package:stacked/stacked.dart';
 import 'package:paycool/views/paycool_club/join_club/join_paycool_club_viewmodel.dart';
 

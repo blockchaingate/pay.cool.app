@@ -14,13 +14,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:paycool/logger.dart';
+import 'package:paycool/views/paycool_club/checkout/club_package_checkout_view.dart';
+import 'package:paycool/views/paycool_club/club_projects/club_package_checkout_model.dart';
+import 'package:paycool/views/paycool_club/club_projects/club_project_details_view.dart';
+import 'package:paycool/widgets/club/club_rewards_view.dart';
 import 'constants/route_names.dart';
 import 'views/lightning-remit/lightning-remit_view.dart';
 import 'views/settings/settings_view.dart';
 import 'views/paycool_club/generate_custom_qrcode/generate_custom_qrcode_view.dart';
 import 'views/paycool_club/join_club/join_paycool_club_view.dart';
 import 'views/paycool_club/referral/paycool_referral_view.dart';
-import 'views/paycool_club/paycool_club_dashboard_view.dart';
+import 'views/paycool_club/club_dashboard_view.dart';
 import 'views/paycool/rewards/paycool_rewards_view.dart';
 import 'views/paycool/paycool_view.dart';
 import 'views/paycool/transaction_history/paycool_transaction_history_view.dart';
@@ -132,12 +136,28 @@ class RouteGenerator {
       case PayCoolClubDashboardViewRoute:
         return MaterialPageRoute(
             settings: const RouteSettings(name: 'PayCoolClubDashboardView'),
-            builder: (_) => const PayCoolClubDashboardView());
+            builder: (_) => const ClubDashboardView());
 
       case PayCoolClubReferralViewRoute:
         return MaterialPageRoute(
             builder: (_) => PaycoolReferralView(
                   address: args,
+                ));
+      case clubRewardsViewRoute:
+        return MaterialPageRoute(
+            builder: (_) => ClubRewardsView(
+                  rewardsSummary: args,
+                ));
+      case clubProjectDetailsViewRoute:
+        return MaterialPageRoute(
+            builder: (_) => ClubProjectDetailsView(
+                  projectDetails: args,
+                ));
+
+      case clubPackageCheckoutViewRoute:
+        return MaterialPageRoute(
+            builder: (_) => ClubPackageCheckoutView(
+                  packageWithPaymentCoin: args,
                 ));
       case JoinPayCoolClubViewRoute:
         return MaterialPageRoute(
@@ -149,51 +169,8 @@ class RouteGenerator {
         return MaterialPageRoute(
             builder: (_) => const GenerateCustomQrCodeView());
 
-      // case '/campaignPayment':
-      //   return MaterialPageRoute(builder: (_) => CampaignPaymentScreen());
-
-      // case '/campaignDashboard':
-      //   return MaterialPageRoute(builder: (_) => CampaignDashboardScreen());
-
-      // case '/campaignTokenDetails':
-      //   return MaterialPageRoute(
-      //       builder: (_) =>
-      //           CampaignTokenDetailsScreen(campaignRewardList: args));
-
-      // case '/MyRewardDetails':
-      //   return MaterialPageRoute(
-      //       builder: (_) => MyRewardDetailsScreen(campaignRewardList: args));
-
-      // case '/campaignOrderDetails':
-      //   return MaterialPageRoute(
-      //       builder: (_) => CampaignOrderDetailsScreen(orderInfoList: args));
-
-      // case '/teamRewardDetails':
-      //   return MaterialPageRoute(
-      //       builder: (_) => TeamRewardDetailsView(team: args));
-
-      // case '/teamReferralView':
-      //   return MaterialPageRoute(
-      //       builder: (_) => CampaignTeamReferralView(rewardDetails: args));
-
-      // case '/myReferralView':
-      //   return MaterialPageRoute(
-      //       builder: (_) => MyReferralView(referralDetails: args));
-
-      // case '/campaignLogin':
-      //   return MaterialPageRoute(
-      //       builder: (_) => CampaignLoginScreen(
-      //             errorMessage: args,
-      //           ));
-
-      // case '/campaignRegisterAccount':
-      //   return MaterialPageRoute(
-      //       builder: (_) => CampaignRegisterAccountScreen());
-
-      // case '/switchLanguage':
-      //   return MaterialPageRoute(builder: (_) => LanguageScreen());
 /*----------------------------------------------------------------------
-                      Seven Star Pay Routes
+                      Pay.cool Routes
 ----------------------------------------------------------------------*/
       case PayCoolViewRoute:
         return MaterialPageRoute(

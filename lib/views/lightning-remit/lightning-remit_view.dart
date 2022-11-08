@@ -218,7 +218,7 @@ class LightningRemitView extends StatelessWidget {
                                     padding: EdgeInsets.only(right: 8.0),
                                     child: Icon(
                                       Icons.arrow_drop_down,
-                                      color: Colors.white,
+                                      color: black,
                                     ),
                                   ),
                                   iconEnabledColor: primaryColor,

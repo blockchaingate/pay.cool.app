@@ -457,11 +457,23 @@
     "accept":"Accept",
     "decline":"Decline",
     "primaryPartner": "Primary Partner",
+    "basicPartner": "Basic Partner",
     "juniorPartner": "Junior Partner",
     "intermediatePartner": "Intermediate Partner",
     "seniorPartner": "Senior Partner",
+    "executivePartner": "Executive Partner",
+    "noPartner": "You have not joined any partner project",
     "domain": "Domain",
     "invalidDomain": "Invalid Domain",
     "addressNotSet": "Address not set",
-    "others": "Others"
+    "others": "Others",
+    "marketing": "Marketing",
+    "gap":"Gap",
+    "leadership": "Leadership",
+    "global": "Global",
+    "merchant": "Merchant",
+    "merchantReferral": "Merchant Referral",
+    "merchantNode" : "Merchant Node",
+    "exchangeBalance" : "Exchange Balance"
+
 }

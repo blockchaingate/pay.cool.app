@@ -24,13 +24,16 @@ const String SendViewRoute = '/send';
 const String ReceiveViewRoute = '/receive';
 const String TransactionHistoryViewRoute = '/transactionHistory';
 
-/*----------------------------------------------------------------------
-                        Seven Star Routes
-----------------------------------------------------------------------*/
+// Club Routes
+
 const String GenerateCustomQrViewRoute = '/generateCustomQrCode';
 const String JoinPayCoolClubViewRoute = '/joinPayCoolClub';
 const String PayCoolClubReferralViewRoute = '/payCoolClubReferral';
+const String clubRewardsViewRoute = '/clubRewards';
+const String clubProjectDetailsViewRoute = '/clubProjectDetails';
+const String clubPackageCheckoutViewRoute = '/clubPackageCheckout';
 
+// Pay.cool Routes
 const String PayCoolViewRoute = '/paycool';
 const String PayCoolRewardsViewRoute = '/payCoolRewards';
 const String PayCoolTransactionHistoryViewRoute = '/paycoolTransactionHistory';

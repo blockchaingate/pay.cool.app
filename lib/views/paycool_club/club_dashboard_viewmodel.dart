@@ -5,6 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:paycool/views/paycool_club/club_dashboard_model.dart';
+import 'package:paycool/views/paycool_club/club_projects/club_project_model.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
@@ -22,27 +24,25 @@ import 'package:flutter/material.dart';
 import 'package:paycool/utils/barcode_util.dart';
 import 'package:paycool/views/paycool_club/referral/referral_model.dart';
 import 'package:paycool/views/paycool_club/paycool_club_service.dart';
-import 'package:paycool/views/paycool_club/join_club_payment_model.dart';
+import 'package:paycool/views/paycool_club/join_club/join_club_payment_model.dart';
 import 'package:share/share.dart';
 import 'package:stacked/stacked.dart';
 import 'package:paycool/services/db/wallet_database_service.dart';
 import 'package:paycool/services/local_dialog_service.dart';
-import 'package:paycool/views/paycool_club/paycool_club_model/paycool_club_model.dart';
-import 'package:paycool/views/paycool_club/paycool_dashboard_model.dart';
 import '../../models/wallet/wallet.dart';
 import '../../services/wallet_service.dart';
 
-class PayCoolClubDashboardViewModel extends BaseViewModel {
+class ClubDashboardViewModel extends BaseViewModel {
   final log = getLogger('PayCoolClubDashboardViewModel');
   final apiService = locator<ApiService>();
   final sharedService = locator<SharedService>();
   final walletService = locator<WalletService>();
   final dialogService = locator<LocalDialogService>();
-  final payCoolClubService = locator<PayCoolClubService>();
+  final clubService = locator<PayCoolClubService>();
   final walletDatabaseService = locator<WalletDatabaseService>();
   final navigationService = locator<NavigationService>();
   final storageService = locator<LocalStorageService>();
-  List<PayCoolClubModel> payCoolClubDetails = [];
+  List<ClubProject> projects = [];
   bool isDialogUp = false;
   BuildContext context;
   bool isDUSD = false;
@@ -66,10 +66,10 @@ class PayCoolClubDashboardViewModel extends BaseViewModel {
   List<PaycoolReferral> children = [];
   TextEditingController refereeReferralCode = TextEditingController();
   bool isEnoughDusdWalletBalance = true;
-  bool isClubMember = false;
-  bool isPayMember = false;
+  bool isValidMember = false;
   GlobalKey globalKey = GlobalKey();
-  PaycoolDashboard dashboard = PaycoolDashboard();
+  //PaycoolDashboard dashboard = PaycoolDashboard();
+  ClubDashboard dashboard = ClubDashboard();
   JoinClubPaymentModel scanToPayModel = JoinClubPaymentModel();
   bool isValidClubReferralCode = false;
   bool isFreeFabAvailable = false;
@@ -82,19 +82,20 @@ class PayCoolClubDashboardViewModel extends BaseViewModel {
   int referralCount = 0;
   bool isServerDown = false;
   bool isAcceptingMembers = false;
+  String memberType = '';
 
   void init() async {
     setBusy(true);
     sharedService.context = context;
     fabAddress = await sharedService.getFabAddressFromCoreWalletDatabase();
 
-    await getPayCoolClubDetails();
+    await getProjects();
 
-    await hasJoinedClub();
-    log.e('isClubMember : $isClubMember -- isPayMember $isPayMember');
-    if (isClubMember || isPayMember) {
+    await memberValidation();
+    log.e('isClubMember : $isValidMember');
+    if (isValidMember) {
       try {
-        await getDashboardDetails();
+        await getDashboardSummary();
         await getReferralCount();
       } catch (err) {
         log.e('catch during dashboard details or get children $err');
@@ -660,41 +661,59 @@ class PayCoolClubDashboardViewModel extends BaseViewModel {
     await sharedService.onBackButtonPressed(DashboardViewRoute);
   }
 
-  hasJoinedClub() async {
+  memberValidation() async {
     setBusy(true);
     try {
-      await payCoolClubService
-          .isValidReferralCode(fabAddress)
-          .then((res) => isClubMember = res);
-
-      await payCoolClubService
-          .isValidReferralCode(fabAddress, isValidPaycoolMember: true)
-          .then((res) => isPayMember = res);
+      await clubService
+          .isValidMember(fabAddress)
+          .then((res) => isValidMember = res);
     } catch (err) {
-      log.e('Has joined club CATCH $err');
+      log.e('memberValidation CATCH $err');
     }
     setBusy(false);
   }
 
-  getPayCoolClubDetails() async {
+  goToProjectDetails(String projectId) async {
+    var projectDetails = await clubService.getProjectDetails(projectId);
+    navigationService.navigateTo(clubProjectDetailsViewRoute,
+        arguments: projectDetails);
+  }
+
+  getProjects() async {
     setBusy(true);
     isServerDown = false;
     try {
-      await payCoolClubService.getPayCoolClubDetails().then((data) {
-        if (data != null && data.isNotEmpty) payCoolClubDetails = data;
-        isAcceptingMembers = payCoolClubDetails[0].keyNodeAvailable;
+      await clubService.getClubProjects().then((data) {
+        if (data != null && data.isNotEmpty) projects = data;
+        //   isAcceptingMembers = projects[0].keyNodeAvailable;
       });
     } catch (err) {
-      log.e('getPayCoolClubDetails CATCH $err');
+      log.e('getProjects CATCH $err');
       isServerDown = true;
       return;
     }
     setBusy(false);
   }
 
+  // getPayCoolClubDetails() async {
+  //   setBusy(true);
+  //   isServerDown = false;
+  //   try {
+  //     await payCoolClubService.getPayCoolClubDetails().then((data) {
+  //       if (data != null && data.isNotEmpty) payCoolClubDetails = data;
+  //       isAcceptingMembers = payCoolClubDetails[0].keyNodeAvailable;
+  //     });
+  //   } catch (err) {
+  //     log.e('getPayCoolClubDetails CATCH $err');
+  //     isServerDown = true;
+  //     return;
+  //   }
+  //   setBusy(false);
+  // }
+
   getReferralCount() async {
     setBusy(true);
-    await payCoolClubService
+    await clubService
         .getUserReferralCount(
       fabAddress,
     )
@@ -710,22 +729,147 @@ class PayCoolClubDashboardViewModel extends BaseViewModel {
     // setBusy(false);
   }
 
-  getDashboardDetails() async {
+  assignMemberType() {
+    if (dashboard.status == 0) {
+      memberType = FlutterI18n.translate(context, "basicPartner");
+    } else if (dashboard.status == 1) {
+      memberType = FlutterI18n.translate(context, "juniorPartner");
+    } else if (dashboard.status == 2) {
+      memberType = FlutterI18n.translate(context, "seniorPartner");
+    } else if (dashboard.status == 3) {
+      memberType = FlutterI18n.translate(context, "executivePartner");
+    } else {
+      memberType = FlutterI18n.translate(context, "noPartner");
+    }
+  }
+
+  getDashboardSummary() async {
     setBusy(true);
-    await payCoolClubService
-        .getDashboardDataByAddress(fabAddress)
+    await clubService
+        .getDashboardSummary(fabAddress)
         .then((dashboardDetails) async {
-      if (isClubMember && dashboardDetails.memberTypeCode == 1) {
-        memberTypeCode = 1;
-        dashboard = dashboardDetails;
-      } else if (isPayMember && dashboardDetails.memberTypeCode == 2) {
-        memberTypeCode = 2;
-        dashboard = dashboardDetails;
-      } else {
-        dashboard = null;
-      }
+      dashboard = dashboardDetails;
+      assignMemberType();
     });
     setBusy(false);
+  }
+
+  bindpayUI(context, model) {
+    return Container(
+      child: Column(
+        children: [
+          UIHelper.divider,
+          UIHelper.verticalSpaceSmall,
+          Container(
+            // width: MediaQuery.of(context).size.width * 0.52,
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Text(
+              FlutterI18n.translate(context, "lightningRemit") +
+                  ' ' +
+                  FlutterI18n.translate(context, "receiveAddress"),
+              style: headText5,
+            ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          SizedBox(
+            width: MediaQuery.of(context).size.width * 0.52,
+            child: ElevatedButton(
+              style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(primaryColor)),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    FlutterI18n.translate(context, "lightningRemit"),
+                    style: headText3,
+                  ),
+                  // Text(
+                  //   FlutterI18n.translate(context, "LightningRemit") +
+                  //       ' ' +
+                  //       AppLocalizations.of(context)
+                  //           .receiveAddress,
+                  //   style: headText3,
+                  // ),
+                  // UIHelper.horizontalSpaceSmall,
+                  // Icon(Icons.qr_code)
+                ],
+              ),
+              onPressed: () {
+                model.showLightningRemitBarcode();
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  scanToPay(context, model) {
+    return Container(
+      child: Column(
+        children: <Widget>[
+          UIHelper.divider,
+          UIHelper.verticalSpaceSmall,
+          Container(
+            // width: MediaQuery.of(context).size.width * 0.52,
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Text(
+              FlutterI18n.translate(context, "scanToPayMessage"),
+              style: headText5,
+            ),
+          ),
+
+          // UIHelper.verticalSpaceSmall,
+          SizedBox(
+            width: MediaQuery.of(context).size.width * 0.52,
+            child: ElevatedButton(
+              style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(yellow)),
+              child: Text(
+                FlutterI18n.translate(context, "scanToPay"),
+                style: headText3.copyWith(
+                    color: black, fontWeight: FontWeight.w500),
+              ),
+              onPressed: () {
+                model.scanBarCode();
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  generateQR(context, model) {
+    return Column(
+      children: <Widget>[
+        Container(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Text(
+                FlutterI18n.translate(context, "generateQrCodeToScanAndPay"),
+                style: headText5)),
+        UIHelper.verticalSpaceSmall,
+        SizedBox(
+          width: MediaQuery.of(context).size.width * 0.52,
+          child: ElevatedButton(
+            style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all(Colors.lightBlue)),
+            child: Text(
+              FlutterI18n.translate(context, "generateQrCode"),
+              style: headText3.copyWith(
+                  color: secondaryColor, fontWeight: FontWeight.w500),
+            ),
+            onPressed: () {
+              model.navigationService.navigateTo(GenerateCustomQrViewRoute);
+              //  model.joinClub();
+            },
+          ),
+        ),
+        UIHelper.verticalSpaceMedium,
+      ],
+    );
   }
 
   showBarcode() {

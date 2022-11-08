@@ -104,7 +104,7 @@ class MoveToExchangeView extends StatelessWidget {
                 controller: model.amountController,
                 style: headText5.copyWith(
                     fontWeight: FontWeight.w300,
-                    color: model.isValid ? white : red),
+                    color: model.isValidAmount ? white : red),
               ),
               UIHelper.verticalSpaceSmall,
               // Wallet Balance
@@ -468,7 +468,9 @@ class MoveToExchangeView extends StatelessWidget {
               ElevatedButton(
                 style: generalButtonStyle1,
                 onPressed: () {
-                  model.checkPass();
+                  if (model.isValidAmount && model.amount != 0.0) {
+                    model.checkPass();
+                  }
                 },
                 child: model.isBusy
                     ? const SizedBox(
@@ -478,7 +480,10 @@ class MoveToExchangeView extends StatelessWidget {
                           strokeWidth: 1,
                         ))
                     : Text(FlutterI18n.translate(context, "confirm"),
-                        style: headText4),
+                        style: headText4.copyWith(
+                            color: model.isValidAmount && model.amount != 0.0
+                                ? white
+                                : grey)),
               ),
             ],
           ),

@@ -161,7 +161,6 @@ class CreatePasswordViewModel extends BaseViewModel {
         setBusy(false);
         return;
       } else {
-        setBusy(true);
         await createOfflineWallets();
         passTextController.text = '';
         confirmPassTextController.text = '';

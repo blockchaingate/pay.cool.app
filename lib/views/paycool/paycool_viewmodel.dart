@@ -61,10 +61,10 @@ class PayCoolViewmodel extends FutureViewModel {
 
   final addressController = TextEditingController();
   ApiService apiService = locator<ApiService>();
+  SharedService sharedService = locator<SharedService>();
   NavigationService navigationService = locator<NavigationService>();
   TokenListDatabaseService tokenListDatabaseService =
       locator<TokenListDatabaseService>();
-  SharedService sharedService = locator<SharedService>();
   LocalStorageService storageService = locator<LocalStorageService>();
   TransactionHistoryDatabaseService transactionHistoryDatabaseService =
       locator<TransactionHistoryDatabaseService>();
@@ -225,9 +225,7 @@ class PayCoolViewmodel extends FutureViewModel {
       fabAddress = await sharedService.getFabAddressFromCoreWalletDatabase();
     }
     try {
-      await payCoolClubService
-          .isValidReferralCode(fabAddress, isValidPaycoolMember: true)
-          .then((value) {
+      await payCoolClubService.isValidMember(fabAddress).then((value) {
         isMember = value;
 
         if (isMember && isAutoStartPaycoolScan) {
@@ -257,8 +255,7 @@ class PayCoolViewmodel extends FutureViewModel {
       return;
     }
     await payCoolClubService
-        .isValidReferralCode(referralController.text,
-            isValidPaycoolMember: true)
+        .isValidMember(referralController.text)
         .then((value) {
       if (value != null) {
         log.w('isValid paymember: $value');

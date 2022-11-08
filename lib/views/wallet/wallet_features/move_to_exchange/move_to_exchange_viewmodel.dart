@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+import 'package:decimal/decimal.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
@@ -46,7 +47,7 @@ class MoveToExchangeViewModel extends BaseViewModel {
   String tokenType = '';
   String message = '';
   final amountController = TextEditingController();
-  bool isValid = false;
+  bool isValidAmount = false;
   double gasAmount = 0.0;
   bool isShowErrorDetailsButton = false;
   bool isShowDetailsMessage = false;
@@ -58,7 +59,7 @@ class MoveToExchangeViewModel extends BaseViewModel {
   int decimalLimit = 6;
   double unconfirmedBalance = 0.0;
   TokenModel tokenModel = TokenModel();
-
+  double chainBalance = 0.0;
   void initState() async {
     setBusy(true);
     coinName = walletInfo.tickerName;
@@ -86,7 +87,18 @@ class MoveToExchangeViewModel extends BaseViewModel {
       decimalLimit = t.decimal;
     });
     if (decimalLimit == null || decimalLimit == 0) decimalLimit = 8;
+    if (tokenType.isNotEmpty) await getNativeChainTickerBalance();
     setBusy(false);
+  }
+
+  // get native chain ticker balance
+  getNativeChainTickerBalance() async {
+    var fabAddress = await sharedService.getFabAddressFromCoreWalletDatabase();
+
+    var _tokenType = tokenType == 'POLYGON' ? 'MATICM' : tokenType;
+    await apiService
+        .getSingleWalletBalance(fabAddress, _tokenType, walletInfo.address)
+        .then((walletBalance) => chainBalance = walletBalance.first.balance);
   }
 
   showDetailsMessageToggle() {
@@ -169,9 +181,85 @@ class MoveToExchangeViewModel extends BaseViewModel {
     return gasAmount;
   }
 
+  bool isTrx() {
+    log.w(
+        'tickername ${walletInfo.tickerName}:  isTrx ${walletInfo.tickerName == 'TRX' || walletInfo.tokenType == 'TRX'}');
+    return walletInfo.tickerName == 'TRX' || walletInfo.tokenType == 'TRX'
+        ? true
+        : false;
+  }
 /*---------------------------------------------------
                 Check pass and amount
 --------------------------------------------------- */
+
+  Future<double> amountAfterFee({bool isMaxAmount = false}) async {
+    setBusy(true);
+    if (amountController.text == '.') {
+      setBusy(false);
+      return 0.0;
+    }
+    if (amountController.text.isEmpty) {
+      transFee = 0.0;
+      kanbanTransFee = 0.0;
+      setBusy(false);
+      return 0.0;
+    }
+    amount = NumberUtil().truncateDoubleWithoutRouding(
+        double.parse(amountController.text),
+        precision: decimalLimit);
+    log.w('amountAfterFee func: amount $amount');
+
+    double finalAmount = 0.0;
+    // update if transfee is 0
+    await updateTransFee();
+    // if tron coins then assign fee accordingly
+    if (isTrx()) {
+      if (walletInfo.tickerName == 'USDTX') {
+        transFee = 15;
+        finalAmount = amount;
+        finalAmount <= walletInfo.availableBalance
+            ? isValidAmount = true
+            : isValidAmount = false;
+      }
+
+      if (walletInfo.tickerName == 'TRX') {
+        transFee = 1.0;
+        finalAmount = isMaxAmount ? amount - transFee : amount + transFee;
+      }
+    } else {
+      // in any token transfer, gas fee is paid in native tokens so
+      // in case of non-native tokens, need to check the balance of native tokens
+      // so that there is fee to pay when transffering non-native tokens
+      if (tokenType.isEmpty) {
+        if (isMaxAmount) {
+          finalAmount = (Decimal.parse(amount.toString()) -
+                  Decimal.parse(transFee.toString()))
+              .toDouble();
+        } else {
+          finalAmount = (Decimal.parse(transFee.toString()) +
+                  Decimal.parse(amount.toString()))
+              .toDouble();
+
+          log.e(
+              'final amount ${finalAmount} = amount $amount  + transFee $transFee');
+        }
+      } else {
+        finalAmount = amount;
+      }
+    }
+    finalAmount = NumberUtil()
+        .truncateDoubleWithoutRouding(finalAmount, precision: decimalLimit);
+    finalAmount <= walletInfo.availableBalance
+        ? isValidAmount = true
+        : isValidAmount = false;
+    log.i(
+        'Func:amountAfterFee --trans fee $transFee  -- entered amount $amount =  finalAmount $finalAmount -- decimal limit final amount ${NumberUtil().truncateDoubleWithoutRouding(finalAmount, precision: decimalLimit)} -- isValidAmount $isValidAmount');
+    setBusy(false);
+    //0.025105000000000002
+    return NumberUtil()
+        .truncateDoubleWithoutRouding(finalAmount, precision: decimalLimit);
+  }
+
   checkPass() async {
     setBusy(true);
 
@@ -196,9 +284,16 @@ class MoveToExchangeViewModel extends BaseViewModel {
       setBusy(false);
       return;
     }
-    if (!isValid &&
+    var checkTransFeeAgainst;
+    if (tokenType.isEmpty) {
+      checkTransFeeAgainst = walletInfo.availableBalance;
+    } else {
+      checkTransFeeAgainst = chainBalance;
+    }
+    if (transFee > checkTransFeeAgainst &&
         walletInfo.tickerName != 'TRX' &&
-        walletInfo.tickerName != 'USDTX') {
+        walletInfo.tickerName != 'USDTX' &&
+        walletInfo.tickerName != 'TRX') {
       sharedService.showInfoFlushbar(
           FlutterI18n.translate(context, "notice"),
           FlutterI18n.translate(context, "insufficientBalance"),
@@ -210,7 +305,21 @@ class MoveToExchangeViewModel extends BaseViewModel {
     }
     var amount = double.tryParse(amountController.text);
     await refreshBalance();
-
+    var finalAmount;
+    if (!isTrx()) {
+      finalAmount = await amountAfterFee();
+    }
+    if (amount == null ||
+        finalAmount > walletInfo.availableBalance ||
+        amount == 0 ||
+        amount.isNegative) {
+      log.e('amount $amount --- wallet bal: ${walletInfo.availableBalance}');
+      sharedService.alertDialog(FlutterI18n.translate(context, "invalidAmount"),
+          FlutterI18n.translate(context, "insufficientBalance"),
+          isWarning: false);
+      setBusy(false);
+      return;
+    }
 // check trx balance if tron usdt deposit
     if (walletInfo.tickerName == 'USDTX') {
       log.e('amount $amount --- wallet bal: ${walletInfo.availableBalance}');
@@ -245,20 +354,6 @@ class MoveToExchangeViewModel extends BaseViewModel {
         sharedService.alertDialog(
             '${FlutterI18n.translate(context, "fee")} ${FlutterI18n.translate(context, "notice")}',
             'TRX ${FlutterI18n.translate(context, "insufficientBalance")}',
-            isWarning: false);
-        setBusy(false);
-        return;
-      }
-
-      double totalAmount = amount + kanbanTransFee + transFee;
-      if (amount == null ||
-          totalAmount > walletInfo.availableBalance ||
-          amount == 0 ||
-          amount.isNegative) {
-        log.e('amount $amount --- wallet bal: ${walletInfo.availableBalance}');
-        sharedService.alertDialog(
-            FlutterI18n.translate(context, "invalidAmount"),
-            FlutterI18n.translate(context, "insufficientBalance"),
             isWarning: false);
         setBusy(false);
         return;
@@ -344,7 +439,7 @@ class MoveToExchangeViewModel extends BaseViewModel {
             .depositTron(
                 mnemonic: mnemonic,
                 walletInfo: walletInfo,
-                amount: amount,
+                amount: finalAmount,
                 isTrxUsdt: walletInfo.tickerName == 'USDTX' ? true : false,
                 isBroadcast: false,
                 options: option)
@@ -523,7 +618,7 @@ class MoveToExchangeViewModel extends BaseViewModel {
       setBusy(false);
       return;
     }
-    isValid = true;
+    isValidAmount = true;
     var gasPrice = int.tryParse(gasPriceTextController.text) ?? 0;
     var gasLimit = int.tryParse(gasLimitTextController.text) ?? 0;
     var satoshisPerBytes = int.tryParse(satoshisPerByteTextController.text);
@@ -570,7 +665,7 @@ class MoveToExchangeViewModel extends BaseViewModel {
       }
       if (walletInfo.tickerName != 'TRX' &&
           walletInfo.tickerName != 'USDTX') if (transFee == 0.0) {
-        isValid = false;
+        isValidAmount = false;
       }
       //  log.e('total amount with fee ${amount + kanbanTransFee + transFee}');
       log.i('availableBalance ${walletInfo.availableBalance}');

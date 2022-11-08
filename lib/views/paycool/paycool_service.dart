@@ -1,17 +1,24 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:observable_ish/observable_ish.dart';
 import 'package:paycool/constants/api_routes.dart';
+import 'package:paycool/environments/environment.dart';
 import 'package:paycool/logger.dart';
 import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/db/core_wallet_database_service.dart';
+import 'package:paycool/services/shared_service.dart';
+import 'package:paycool/utils/abi_util.dart';
 import 'package:paycool/utils/custom_http_util.dart';
+import 'package:paycool/utils/kanban.util.dart';
+import 'package:paycool/utils/keypair_util.dart';
 import 'package:paycool/views/paycool/models/paycool_store_model.dart';
 import 'package:paycool/views/paycool/models/store_and_merchant_model.dart';
 import 'package:paycool/views/paycool/rewards/payment_rewards_model.dart';
 import 'package:paycool/views/paycool/transaction_history/paycool_transaction_history_model.dart';
+import 'package:paycool/views/paycool_club/club_models/club_params_model.dart';
 import 'package:stacked/stacked.dart';
-
+import 'package:hex/hex.dart';
 import 'models/payment_model.dart';
 
 //@LazySingleton()
@@ -20,6 +27,7 @@ class PayCoolService with ReactiveServiceMixin {
 
   final client = CustomHttpUtil.createLetsEncryptUpdatedCertClient();
   final coreWalletDatabaseService = locator<CoreWalletDatabaseService>();
+  SharedService sharedService = locator<SharedService>();
 
   final RxValue<int> _pageNumber = RxValue<int>(1);
   int get pageNumber => _pageNumber.value;
@@ -487,5 +495,44 @@ class PayCoolService with ReactiveServiceMixin {
       }
       return res;
     }
+  }
+
+  Future<String> signSendTx(Uint8List seed, List<ClubParams> params) async {
+    String result = '';
+    String exgAddress =
+        await sharedService.getExgAddressFromCoreWalletDatabase();
+
+    var keyPairKanban = getExgKeyPair(Uint8List.fromList(seed));
+    log.w('keyPairKanban $keyPairKanban');
+    int kanbanGasPrice = environment["chains"]["KANBAN"]["gasPrice"];
+    int kanbanGasLimit = environment["chains"]["KANBAN"]["gasLimit"];
+
+    var txKanbanHex;
+    var res;
+    for (var i = 0; i < 2; i++) {
+      var nonce = await getNonce(exgAddress);
+      try {
+        txKanbanHex = await signAbiHexWithPrivateKey(
+            params[i].data,
+            HEX.encode(keyPairKanban["privateKey"]),
+            params[i].to,
+            nonce,
+            kanbanGasPrice,
+            kanbanGasLimit);
+
+        log.i('txKanbanHex $txKanbanHex');
+      } catch (err) {
+        log.e('err $err');
+      }
+
+      var resBody = await sendPayCoolRawTransaction(txKanbanHex);
+      res = resBody['_body'];
+      var txHash = res['transactionHash'];
+      //{"ok":true,"_body":{"transactionHash":"0x855f2d8ec57418670dd4cb27ecb71c6794ada5686e771fe06c48e30ceafe0548","status":"0x1"}}
+
+      log.w('res $res');
+      result = res['status'];
+    }
+    return result;
   }
 }

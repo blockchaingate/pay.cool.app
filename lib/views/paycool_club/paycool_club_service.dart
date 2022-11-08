@@ -5,18 +5,22 @@ import 'package:paycool/logger.dart';
 
 import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/config_service.dart';
+import 'package:paycool/services/shared_service.dart';
 import 'package:paycool/utils/custom_http_util.dart';
-import 'package:paycool/views/paycool_club/paycool_club_model/paycool_club_model.dart';
-
-import 'package:paycool/views/paycool_club/paycool_club_model/paycool_create_order_model.dart';
+import 'package:paycool/views/paycool_club/club_dashboard_model.dart';
+import 'package:paycool/views/paycool_club/club_projects/club_package_checkout_model.dart';
+import 'package:paycool/views/paycool_club/club_projects/club_project_model.dart';
 import 'package:paycool/views/paycool_club/referral/referral_model.dart';
-import 'package:paycool/views/paycool_club/paycool_dashboard_model.dart';
+import 'package:paycool/views/paycool_club/paycool_dashboard_model_old.dart';
+
+import '../../models/paycool/paycool_order_model.dart';
 
 class PayCoolClubService {
   final log = getLogger('PayCoolClubService');
 
   final client = CustomHttpUtil.createLetsEncryptUpdatedCertClient();
   final configService = locator<ConfigService>();
+  final sharedService = locator<SharedService>();
   final String campaignId = '1';
 
 /*----------------------------------------------------------------------
@@ -57,19 +61,15 @@ class PayCoolClubService {
 /*----------------------------------------------------------------------
                      Check if referral is valid
 ----------------------------------------------------------------------*/
-  Future<bool> isValidReferralCode(String fabAddress,
-      {bool isValidPaycoolMember = false}) async {
-    String url = (isValidPaycoolMember
-            ? isValidPaycoolMemberUrl
-            : isValidPaidReferralCodeUrl) +
-        fabAddress;
-    log.i('isValidReferralCode url $url');
+  Future<bool> isValidMember(String fabAddress) async {
+    String url = isValidPaycoolMemberUrl + fabAddress;
+    log.i('isValidMember url $url');
     bool res = false;
     try {
       var response = await client.get(url);
       var json = jsonDecode(response.body);
       if (response.statusCode == 200 || response.statusCode == 201) {
-        log.w('isValidReferralCode json $json');
+        log.w('isValidMember json $json');
 
         var isValid = json['isValid'];
         if (isValid != null) {
@@ -78,11 +78,11 @@ class PayCoolClubService {
         }
         return res;
       } else {
-        log.e("isValidReferralCode error: " + json);
+        log.e("isValidMember error: " + json);
         return false;
       }
     } catch (e) {
-      log.e('isValidReferralCode failed to load the data from the API $e');
+      log.e('isValidMember failed to load the data from the API $e');
       throw Exception(e);
     }
   }
@@ -124,27 +124,115 @@ class PayCoolClubService {
                             Pay.cool Club Details
 ----------------------------------------------------------------------*/
 
-  Future<List<PayCoolClubModel>> getPayCoolClubDetails() async {
-    String url = campaignListUrl;
-    log.w('getPayCoolClubDetails url $url');
+  // https://fabtest.info/api/project/v2/10/0
+  Future<List<ClubProject>> getClubProjects(
+      {int pageSize = 10, int pageNumber = 0}) async {
+    String url = clubProjectsUrl;
+
+    if (pageNumber != 0) {
+      pageNumber = pageNumber - 1;
+    }
+    // page number - 1 because page number start from 0 in the api but in front end its from 1
+    url = url + '/$pageSize/$pageNumber';
+    log.i('getClubProjects url $url');
 
     try {
       var response = await client.get(url);
-      var json = jsonDecode(response.body) as List;
-      log.w('getPayCoolClubDetails json $json');
+      var json = jsonDecode(response.body)['_body'] as List;
+      log.w('getClubProjects json $json');
       if (response.statusCode == 200 || response.statusCode == 201) {
-        PayCoolClubModelList payCoolClubModel =
-            PayCoolClubModelList.fromJson(json);
-        return payCoolClubModel.payCoolClubModeList;
+        ClubProjectList clubProjectList = ClubProjectList.fromJson(json);
+        log.i(
+            "getClubProjects clubProjectList: ${clubProjectList.clubProjects[0].toJson()}");
+        return clubProjectList.clubProjects;
       } else {
-        log.e("getPayCoolClubDetails error: " + response.body);
+        log.e("getClubProjects error: " + response.body);
         return [];
       }
     } catch (e) {
-      log.e('getPayCoolClubDetails failed to load the data from the API $e');
+      log.e('getClubProjects failed to load the data from the API $e');
       return [];
     }
   }
+
+// https://fabtest.info/api/projectpackage/v2/project/635d62c88e64d290833fa321/10/0
+  Future<List<ClubProject>> getProjectDetails(String projectId,
+      {int pageSize = 10, int pageNumber = 0}) async {
+    String url = clubProjectDetailsUrl + projectId;
+
+    if (pageNumber != 0) {
+      pageNumber = pageNumber - 1;
+    }
+    // page number - 1 because page number start from 0 in the api but in front end its from 1
+    url = url + '/$pageSize/$pageNumber';
+    log.i('getProjectDetails url $url');
+
+    try {
+      var response = await client.get(url);
+      var json = jsonDecode(response.body)['_body'] as List;
+      log.w('getProjectDetails json $json');
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        ClubProjectList clubProjectList = ClubProjectList.fromJson(json);
+        log.i(
+            "getProjectDetails clubProjectList: ${clubProjectList.clubProjects[0].toJson()}");
+        return clubProjectList.clubProjects;
+      } else {
+        log.e("getProjectDetails error: " + response.body);
+        return [];
+      }
+    } catch (e) {
+      log.e('getProjectDetails failed to load the data from the API $e');
+      return [];
+    }
+  }
+
+// https://fabtest.info/api/projectpackage/v2/635d9597b3e4d42b56b1f327/params/muMdVtayH2se3qK361vEz7mjDJuY7owzVK/DUSD
+  Future<ClubPackageCheckout> getPackageCheckoutDetails(
+      String id, String ticker) async {
+    String address = await sharedService.getFabAddressFromCoreWalletDatabase();
+    String url =
+        baseProjectPackageUrl + id + '/params/' + address + '/' + ticker;
+    log.i('getPackageCheckoutDetails url $url');
+    try {
+      var response = await client.get(url);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        var json = jsonDecode(response.body)['_body'];
+
+        log.w('getPackageCheckoutDetails $json');
+        ClubPackageCheckout packageCheckoutDetails =
+            ClubPackageCheckout.fromJson(json);
+        return packageCheckoutDetails;
+      } else {
+        log.e("getPackageCheckoutDetails error: " + response.body);
+        return null;
+      }
+    } catch (err) {
+      log.e('In getPackageCheckoutDetails catch $err');
+      return null;
+    }
+  }
+
+  // Future<List<PayCoolClubModel>> getPayCoolClubDetails() async {
+  //   String url = campaignListUrl;
+  //   log.w('getPayCoolClubDetails url $url');
+
+  //   try {
+  //     var response = await client.get(url);
+  //     var json = jsonDecode(response.body) as List;
+  //     log.w('getPayCoolClubDetails json $json');
+  //     if (response.statusCode == 200 || response.statusCode == 201) {
+  //       PayCoolClubModelList payCoolClubModel =
+  //           PayCoolClubModelList.fromJson(json);
+  //       return payCoolClubModel.clubProjects;
+  //     } else {
+  //       log.e("getPayCoolClubDetails error: " + response.body);
+  //       return [];
+  //     }
+  //   } catch (e) {
+  //     log.e('getPayCoolClubDetails failed to load the data from the API $e');
+  //     return [];
+  //   }
+  // }
 
 /*-------------------------------------------------------------------------------------
                         create order
@@ -244,7 +332,7 @@ class PayCoolClubService {
   Future<int> getUserReferralCount(
     String address,
   ) async {
-    String url = fabInfoUrl + 'user/' + address + '/totalCount';
+    String url = fabInfoUserReferralUrl + 'user/' + address + '/totalCount';
     int referralCount = 0;
     log.i('getReferralCount url $url');
     try {
@@ -305,7 +393,7 @@ class PayCoolClubService {
   // new
   Future<List<PaycoolReferral>> getDownlineByAddress(String address,
       {int pageSize = 10, int pageNumber = 0}) async {
-    String url = fabInfoUrl + 'user/' + address;
+    String url = fabInfoUserReferralUrl + 'user/' + address;
     if (pageNumber != 0) {
       pageNumber = pageNumber - 1;
     }
@@ -340,6 +428,30 @@ class PayCoolClubService {
 /*-------------------------------------------------------------------------------------
                             Get Dashboard details
 -------------------------------------------------------------------------------------*/
+//https://fabtest.info/api/userreferral/v2/user/myqZGzmy1fArKKx1RcgAxQTd4v1KutZgzY/summary
+  Future<ClubDashboard> getDashboardSummary(String address) async {
+    String url = clubDashboardUrl + address + '/summary';
+    log.i('getDashboardSummary url $url');
+    try {
+      var response = await client.get(url);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        var json = jsonDecode(response.body)['_body'];
+
+        log.w('getDashboardSummary json $json');
+        ClubDashboard dashboard = ClubDashboard.fromJson(json);
+        log.i(
+            'getDashboardSummary club dashboard obj -- ${dashboard.toJson()}');
+
+        return dashboard;
+      } else {
+        log.e("getDashboardSummary error: " + response.body);
+        return null;
+      }
+    } catch (err) {
+      log.e('In getDashboardSummary catch $err');
+      return null;
+    }
+  }
 
   Future<PaycoolDashboard> getDashboardDataByAddress(String address) async {
     String url = payCoolClubrRefUrl + 'dashboard/' + address;

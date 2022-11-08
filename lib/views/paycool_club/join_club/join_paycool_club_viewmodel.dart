@@ -19,7 +19,7 @@ import 'package:paycool/utils/barcode_util.dart';
 import 'package:paycool/utils/kanban.util.dart';
 import 'package:paycool/utils/number_util.dart';
 import 'package:paycool/utils/wallet/wallet_util.dart';
-import 'package:paycool/views/paycool_club/join_club_payment_model.dart';
+import 'package:paycool/views/paycool_club/join_club/join_club_payment_model.dart';
 import 'package:paycool/views/paycool_club/paycool_club_service.dart';
 import 'package:stacked/stacked.dart';
 import 'package:paycool/services/local_dialog_service.dart';
@@ -351,9 +351,7 @@ class JoinPayCoolClubViewModel extends BaseViewModel {
       return;
     }
 
-    await payCoolClubService
-        .isValidReferralCode(referralCode.text)
-        .then((value) {
+    await payCoolClubService.isValidMember(referralCode.text).then((value) {
       if (value != null) {
         log.w('isValid paste $value');
 
