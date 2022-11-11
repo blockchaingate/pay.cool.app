@@ -72,7 +72,7 @@ class PayCoolViewmodel extends FutureViewModel {
       locator<WalletDatabaseService>();
   final dialogService = locator<LocalDialogService>();
   WalletService walletService = locator<WalletService>();
-  final payCoolService = locator<PayCoolService>();
+  final paycoolService = locator<PayCoolService>();
   ConfigService configService = locator<ConfigService>();
   final payCoolClubService = locator<PayCoolClubService>();
   final userSettingsDatabaseService = locator<UserSettingsDatabaseService>();
@@ -119,6 +119,7 @@ class PayCoolViewmodel extends FutureViewModel {
   String orderIdFromCreateStoreOrder = '';
   bool isScanningImage = false;
   bool isServerDown = false;
+  Decimal gasBalance = Constants.decimalZero;
 
 /*----------------------------------------------------------------------
                     Default Future to Run
@@ -193,8 +194,16 @@ class PayCoolViewmodel extends FutureViewModel {
     fabAddress = await sharedService.getFabAddressFromCoreWalletDatabase();
 
     await isValidMember();
-
+    await getGas();
     setBusy(false);
+  }
+
+  getGas() async {
+    String address = await sharedService.getExgAddressFromCoreWalletDatabase();
+    await walletService.gasBalance(address).then((data) {
+      gasBalance = Decimal.parse(data.toString());
+    }).catchError((onError) => log.e(onError));
+    log.w('gas amount $gasBalance');
   }
 
   scanImageFile() async {
@@ -245,12 +254,21 @@ class PayCoolViewmodel extends FutureViewModel {
     setBusy(false);
   }
 
-  createReferral() async {
+  createAccount() async {
     setBusy(true);
     bool isValidReferralAddress = false;
     if (referralController.text.isEmpty) {
       sharedService.sharedSimpleNotification(
           FlutterI18n.translate(context, "invalidReferralCode"));
+      setBusy(false);
+      return;
+    }
+    // check gas balance
+    await getGas();
+    if (gasBalance == Constants.decimalZero) {
+      sharedService.sharedSimpleNotification(
+          FlutterI18n.translate(context, "notice"),
+          subtitle: FlutterI18n.translate(context, "insufficientGasAmount"));
       setBusy(false);
       return;
     }
@@ -270,61 +288,31 @@ class PayCoolViewmodel extends FutureViewModel {
       return;
     }
 
-    await dialogService
-        .showDialog(
-            title: FlutterI18n.translate(context, "enterPassword"),
-            description: FlutterI18n.translate(
-                context, "dialogManagerTypeSamePasswordNote"),
-            buttonTitle: FlutterI18n.translate(context, "confirm"))
-        .then((res) async {
-      if (res.confirmed) {
-        var seed;
-        String mnemonic = res.returnedText;
+    var seed = await walletService.getSeedDialog(context);
 
-        seed = walletService.generateSeed(mnemonic);
-        var bodySig;
-        var parentIdString = "parentId=${referralController.text}";
-        try {
-          Uint8List bodySigUint;
-          await signKanbanMessage(Uint8List.fromList(seed), parentIdString)
-              .then((res) => bodySigUint = res);
-          bodySig = uint8ListToHex(bodySigUint);
-          await payCoolService
-              .createStarPayReferral(bodySig, referralController.text)
-              .then((res) async {
-            apiRes = res;
-            if (fabAddress == null || fabAddress.isEmpty) {
-              fabAddress =
-                  await sharedService.getFabAddressFromCoreWalletDatabase();
-            }
-            if (apiRes["id"] == fabAddress) {
-              isMember = true;
-            } else {
-              sharedService.sharedSimpleNotification(
-                  FlutterI18n.translate(context, "failed"));
-              apiRes = apiRes["message"] ?? '';
-            }
-          });
-        } catch (err) {
-          log.e('create ref CATCH $err');
-          setBusy(false);
-        }
-      } else if (res.returnedText == 'Closed' && !res.confirmed) {
-        log.e('Dialog Closed By User');
+    try {
+      var paycoolReferralAddress =
+          environment['addresses']['smartContract']['PaycoolReferralAddress'];
 
-        setBusy(false);
+      var abiHex = generateGenericAbiHex(
+          Constants.payCoolCreateAccountAbiCode, referralController.text);
+      var res =
+          await paycoolService.signSendTx(seed, abiHex, paycoolReferralAddress);
+
+      if (res != null && res != '') {
+        sharedService.alertDialog(
+            FlutterI18n.translate(context, "newAccountCreated"),
+            FlutterI18n.translate(context, "newAccountNote"));
       } else {
-        log.e('Wrong pass');
-        setBusy(false);
-
-        sharedService.sharedSimpleNotification(
-            FlutterI18n.translate(context, "pleaseProvideTheCorrectPassword"));
+        sharedService
+            .sharedSimpleNotification(FlutterI18n.translate(context, "failed"));
+        apiRes = apiRes["message"] ?? '';
       }
-    }).catchError((error) {
-      log.e(error);
-
+    } catch (err) {
+      log.e('create ref CATCH $err');
       setBusy(false);
-    });
+    }
+
     setBusy(false);
   }
 
@@ -357,13 +345,7 @@ class PayCoolViewmodel extends FutureViewModel {
         walletBalanceRes = walletBalance;
       }
     });
-    if (taxAmount > amountPayable) {
-      sharedService.sharedSimpleNotification(
-          FlutterI18n.translate(context, "serverError"),
-          isError: true);
-      setBusy(false);
-      return;
-    }
+
     if (walletBalanceRes[0].unlockedExchangeBalance <
         (amountPayable + taxAmount).toDouble()) {
       sharedService.sharedSimpleNotification(
@@ -374,93 +356,23 @@ class PayCoolViewmodel extends FutureViewModel {
     }
     //displayAbiHexinReadableFormat(scanToPayModel.datAbiHex);
     try {
-      await signSendTx();
+      var seed = await walletService.getSeedDialog(context);
+      var res;
+      for (var param in rewardInfoModel.params) {
+        res = await paycoolService.signSendTx(seed, param.data, param.to);
+      }
+      if (res == '0x1') {
+        payOrderConfirmationPopup();
+      } else if (res == '0x0') {
+        sharedService.sharedSimpleNotification(
+            FlutterI18n.translate(context, "failed"),
+            isError: true);
+      }
     } catch (err) {
       log.e('CATCH signtx v2 failed $err');
     }
 
     isPaying = false;
-    setBusy(false);
-  }
-
-  signSendTx() async {
-    String exgAddress =
-        await sharedService.getExgAddressFromCoreWalletDatabase();
-
-    await dialogService
-        .showDialog(
-            title: FlutterI18n.translate(context, "enterPassword"),
-            description: FlutterI18n.translate(
-                context, "dialogManagerTypeSamePasswordNote"),
-            buttonTitle: FlutterI18n.translate(context, "confirm"))
-        .then((passRes) async {
-      if (passRes.confirmed) {
-        setBusy(true);
-        String mnemonic = passRes.returnedText;
-
-        seed = walletService.generateSeed(mnemonic);
-        var keyPairKanban = getExgKeyPair(Uint8List.fromList(seed));
-        debugPrint('keyPairKanban $keyPairKanban');
-        int kanbanGasPrice = environment["chains"]["KANBAN"]["gasPrice"];
-        int kanbanGasLimit = environment["chains"]["KANBAN"]["gasLimit"];
-
-        var txKanbanHex;
-        var res;
-        for (var i = 0; i < rewardInfoModel.params.length; i++) {
-          var nonce = await getNonce(exgAddress);
-          try {
-            txKanbanHex = await signAbiHexWithPrivateKey(
-                rewardInfoModel.params[i].data,
-                HEX.encode(keyPairKanban["privateKey"]),
-                rewardInfoModel.params[i].to,
-                nonce,
-                kanbanGasPrice,
-                kanbanGasLimit);
-
-            log.i('txKanbanHex $txKanbanHex');
-          } catch (err) {
-            setBusy(false);
-            log.e('err $err');
-          }
-
-          var resBody = await sendPayCoolRawTransaction(txKanbanHex);
-          res = resBody['_body'];
-          var txHash = res['transactionHash'];
-          //{"ok":true,"_body":{"transactionHash":"0x855f2d8ec57418670dd4cb27ecb71c6794ada5686e771fe06c48e30ceafe0548","status":"0x1"}}
-
-          debugPrint('res $res');
-        }
-        if (res['status'] == '0x1') {
-          payOrderConfirmationPopup();
-        } else if (res['status'] == '0x0') {
-          sharedService.sharedSimpleNotification(
-              FlutterI18n.translate(context, "failed"),
-              isError: true);
-        }
-        var errMsg = res['errMsg'];
-        // if (txHash != null && txHash != '') {
-        //   setBusy(true);
-        //   apiRes = txHash;
-        //   setBusy(false);
-        //   showSimpleNotification(
-        //       Text(
-        //           FlutterI18n.translate(context, "placeOrderTransactionSuccessful")),
-        //       position: NotificationPosition.bottom);
-        // }
-
-      } else if (passRes.returnedText == 'Closed' && !passRes.confirmed) {
-        log.e('Dialog Closed By User');
-
-        setBusy(false);
-      } else {
-        log.e('Wrong pass');
-        setBusy(false);
-
-        sharedService.sharedSimpleNotification(
-            FlutterI18n.translate(context, "pleaseProvideTheCorrectPassword"),
-            isError: true);
-      }
-    });
     setBusy(false);
   }
 
@@ -857,7 +769,7 @@ class PayCoolViewmodel extends FutureViewModel {
                                       }
                                       // call paycool pay service and create store order
 
-                                      var orderId = await payCoolService
+                                      var orderId = await paycoolService
                                           .createStoreMerchantOrder(body);
                                       setState(() {
                                         orderIdFromCreateStoreOrder = orderId;
@@ -922,13 +834,13 @@ class PayCoolViewmodel extends FutureViewModel {
       scannedStoreId =
           extractId(barcodeScanData); // jsonDecode(scanResult.rawContent)["s"];
       storeMerchangeModel =
-          await payCoolService.getStoreMerchantInfo(scannedStoreId);
+          await paycoolService.getStoreMerchantInfo(scannedStoreId);
 
       createStoreOrderDialogWidget(storeMerchangeModel, context);
     } else if (charToCompare == "t") {
       scannedTemplateId = extractId(barcodeScanData);
       orderIdFromCreateStoreOrder =
-          await payCoolService.createTemplateById(scannedTemplateId);
+          await paycoolService.createTemplateById(scannedTemplateId);
       getOrderDetailsById(orderIdFromCreateStoreOrder);
     } else {
       sharedService.sharedSimpleNotification('Incorrect data format');
@@ -996,7 +908,7 @@ class PayCoolViewmodel extends FutureViewModel {
     orderId = scanRes;
     bool isFailed = false;
 
-    await payCoolService
+    await paycoolService
         .getRewardInfo(scanRes)
         .then((value) => rewardInfoModel = value)
         .catchError((onError) {

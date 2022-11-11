@@ -36,7 +36,7 @@ class PaycoolReferralViewmodel extends FutureViewModel {
   @override
   Future futureToRun() async {
     fabAddress = await sharedService.getFabAddressFromCoreWalletDatabase();
-    return await payCoolClubService.getDownlineByAddress(
+    return await payCoolClubService.getUserDownlineByAddress(
         address != null && address.isNotEmpty ? address : fabAddress,
         pageSize: paginationModel.pageSize,
         pageNumber: paginationModel.pageNumber);
@@ -77,7 +77,7 @@ class PaycoolReferralViewmodel extends FutureViewModel {
     for (var referral in children) {
       int index = children.indexWhere((element) => element.id == referral.id);
       await payCoolClubService
-          .getChildrenByAddress(referral.id)
+          .getUserDownlineByAddress(referral.id)
           .then((downlineReferralList) {
         setBusy(true);
         // debugPrint(downlineReferralList);

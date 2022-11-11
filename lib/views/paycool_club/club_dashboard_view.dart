@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:paycool/constants/colors.dart';
@@ -199,7 +200,7 @@ class ClubDashboardView extends StatelessWidget {
                                       "assets/images/shared/blur-background.png"))),
                           child: CustomScrollView(
                             slivers: [
-                              SliverToBoxAdapter(
+                              const SliverToBoxAdapter(
                                   child: UIHelper.verticalSpaceLarge),
                               // makeHeader(),
 
@@ -223,8 +224,12 @@ class ClubDashboardView extends StatelessWidget {
                                           .loadingIndicator())
                                   : SliverToBoxAdapter(
                                       child: Container(
-                                        color: secondaryColor,
-                                        height: model.isValidMember ? 200 : 400,
+                                        // color: secondaryColor,
+                                        decoration: BoxDecoration(
+                                          image: blurBackgroundImage(),
+                                        ),
+                                        margin: EdgeInsets.only(top: 10),
+                                        height: 200,
                                         child: Stack(
                                           children: [
                                             SizedBox(
@@ -245,7 +250,7 @@ class ClubDashboardView extends StatelessWidget {
                                                             : 0.9,
                                                     child: Card(
                                                       color: Colors.transparent,
-                                                      elevation: 6,
+                                                      elevation: 2,
                                                       shape:
                                                           RoundedRectangleBorder(
                                                               borderRadius:
@@ -263,7 +268,7 @@ class ClubDashboardView extends StatelessWidget {
                                                                 gradient:
                                                                     LinearGradient(
                                                                         colors: [
-                                                                          primaryColor,
+                                                                          secondaryColor,
                                                                           primaryColor
                                                                               .withAlpha(155),
                                                                         ],
@@ -273,7 +278,7 @@ class ClubDashboardView extends StatelessWidget {
                                                                         end: const FractionalOffset(
                                                                             1.0,
                                                                             0.0),
-                                                                        stops: [
+                                                                        stops: const [
                                                                           0.0,
                                                                           1.0
                                                                         ],
@@ -293,12 +298,15 @@ class ClubDashboardView extends StatelessWidget {
                                                                       .min,
                                                               children: [
                                                                 Padding(
-                                                                  padding: const EdgeInsets.all(8.0),
-                                                                  child: Image.network(
+                                                                  padding:
+                                                                      const EdgeInsets
+                                                                              .all(
+                                                                          8.0),
+                                                                  child: Image
+                                                                      .network(
                                                                     model
                                                                         .projects[
-                                                                            model
-                                                                                .projectIndex]
+                                                                            model.projectIndex]
                                                                         .image
                                                                         .toString(),
                                                                     width: 25,
@@ -356,7 +364,7 @@ class ClubDashboardView extends StatelessWidget {
                                                               child:
                                                                   ElevatedButton(
                                                                       style:
-                                                                          outlinedButtonStyles2,
+                                                                          generalButtonStyle1,
                                                                       onPressed:
                                                                           () {
                                                                         model.goToProjectDetails(model
@@ -379,113 +387,6 @@ class ClubDashboardView extends StatelessWidget {
                                                 },
                                               ),
                                             ),
-                                            // ListView.builder(
-                                            //     physics:
-                                            //         const PageScrollPhysics(),
-                                            //     shrinkWrap: true,
-                                            //     itemCount:
-                                            //         model.projects.length,
-                                            //     scrollDirection:
-                                            //         Axis.horizontal,
-                                            //     itemBuilder:
-                                            //         (BuildContext context,
-                                            //             int index) {
-                                            //       return Row(
-                                            //         children: [
-                                            //           Container(
-                                            //             width: MediaQuery.of(
-                                            //                         context)
-                                            //                     .size
-                                            //                     .width -
-                                            //                 10,
-                                            //             decoration: BoxDecoration(
-                                            //                 image: DecorationImage(
-                                            //                     colorFilter:
-                                            //                         ColorFilter
-                                            //                             .linearToSrgbGamma(),
-                                            //                     opacity: 0.5,
-                                            //                     fit: BoxFit
-                                            //                         .cover,
-                                            //                     image: NetworkImage(model
-                                            //                         .projects[
-                                            //                             index]
-                                            //                         .image))),
-                                            //             padding:
-                                            //                 const EdgeInsets
-                                            //                     .all(15),
-                                            //             child: Row(
-                                            //               mainAxisAlignment:
-                                            //                   MainAxisAlignment
-                                            //                       .spaceBetween,
-                                            //               crossAxisAlignment:
-                                            //                   CrossAxisAlignment
-                                            //                       .center,
-                                            //               children: [
-                                            //                 Column(
-                                            //                     mainAxisAlignment:
-                                            //                         MainAxisAlignment
-                                            //                             .center,
-                                            //                     crossAxisAlignment:
-                                            //                         CrossAxisAlignment
-                                            //                             .start,
-                                            //                     children: [
-                                            //                       Text(
-                                            //                         model.storageService.language ==
-                                            //                                 'en'
-                                            //                             ? model
-                                            //                                 .projects[
-                                            //                                     index]
-                                            //                                 .name
-                                            //                                 .en
-                                            //                             : model
-                                            //                                 .projects[index]
-                                            //                                 .name
-                                            //                                 .sc,
-                                            //                         style:
-                                            //                             headText1,
-                                            //                       ),
-                                            //                       Text(
-                                            //                         model.storageService.language ==
-                                            //                                 'en'
-                                            //                             ? model
-                                            //                                 .projects[
-                                            //                                     index]
-                                            //                                 .description
-                                            //                                 .en
-                                            //                             : model
-                                            //                                 .projects[index]
-                                            //                                 .description
-                                            //                                 .sc,
-                                            //                         style:
-                                            //                             headText2,
-                                            //                       )
-                                            //                     ]),
-                                            //                 SizedBox(
-                                            //                   width: 150,
-                                            //                   child:
-                                            //                       ElevatedButton(
-                                            //                           style:
-                                            //                               generalButtonStyle1,
-                                            //                           onPressed:
-                                            //                               () {
-                                            //                             model.goToProjectDetails(model
-                                            //                                 .projects[index]
-                                            //                                 .sId);
-                                            //                           },
-                                            //                           child:
-                                            //                               Text(
-                                            //                             'Join',
-                                            //                             style: headText4.copyWith(
-                                            //                                 color:
-                                            //                                     secondaryColor),
-                                            //                           )),
-                                            //                 )
-                                            //               ],
-                                            //             ),
-                                            //           ),
-                                            //         ],
-                                            //       );
-                                            //     }),
                                             Container(
                                               margin: const EdgeInsets.only(
                                                   bottom: 10),
@@ -699,16 +600,6 @@ class ClubDashboardView extends StatelessWidget {
                                                       mainAxisSize:
                                                           MainAxisSize.min,
                                                       children: [
-                                                        Text(
-                                                          'Projects joined  ',
-                                                          style: headText5,
-                                                        ),
-                                                        Text(
-                                                          model.dashboard
-                                                              .summary.length
-                                                              .toString(),
-                                                          style: headText5,
-                                                        ),
                                                         UIHelper
                                                             .horizontalSpaceSmall,
                                                         const Icon(
@@ -727,44 +618,87 @@ class ClubDashboardView extends StatelessWidget {
                                                         .navigateTo(
                                                             PayCoolClubReferralViewRoute),
                                                     child: ListTile(
-                                                        horizontalTitleGap: 0,
-                                                        leading: const Icon(
+                                                      horizontalTitleGap: 0,
+                                                      leading: const Icon(
+                                                        Icons
+                                                            .call_split_outlined,
+                                                        color: black,
+                                                        size: 18,
+                                                      ),
+                                                      title: Text(
+                                                        FlutterI18n.translate(
+                                                            context,
+                                                            "myReferralsDetails"),
+                                                        style:
+                                                            headText4.copyWith(
+                                                                color: black),
+                                                      ),
+                                                      trailing: Row(
+                                                        mainAxisSize:
+                                                            MainAxisSize.min,
+                                                        children: [
+                                                          Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .all(8.0),
+                                                            child: Text(
+                                                                model.referralCount
+                                                                        .toString() ??
+                                                                    '0',
+                                                                style:
+                                                                    headText5),
+                                                          ),
+                                                          const Icon(
+                                                            Icons
+                                                                .arrow_forward_ios,
+                                                            color: grey,
+                                                            size: 16,
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  // Joined projects
+                                                  ListTile(
+                                                    horizontalTitleGap: 0,
+                                                    onTap: () => model
+                                                        .getPurchasedPackageHistory(),
+                                                    leading: const Icon(
+                                                      Icons
+                                                          .align_vertical_bottom_sharp,
+                                                      color: black,
+                                                      size: 18,
+                                                    ),
+                                                    title: Text(
+                                                      FlutterI18n.translate(
+                                                          context,
+                                                          "purchasedPackages"),
+                                                      style: headText4.copyWith(
+                                                          color: black),
+                                                    ),
+                                                    trailing: Row(
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      children: [
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(8.0),
+                                                          child: Text(
+                                                            model.dashboard
+                                                                .summary.length
+                                                                .toString(),
+                                                            style: headText5,
+                                                          ),
+                                                        ),
+                                                        const Icon(
                                                           Icons
-                                                              .call_split_outlined,
-                                                          color: black,
-                                                          size: 18,
+                                                              .arrow_forward_ios,
+                                                          color: grey,
+                                                          size: 16,
                                                         ),
-                                                        title: Text(
-                                                          FlutterI18n.translate(
-                                                              context,
-                                                              "myReferralsDetails"),
-                                                          style: headText4
-                                                              .copyWith(
-                                                                  color: black),
-                                                        ),
-                                                        trailing: Row(
-                                                          mainAxisSize:
-                                                              MainAxisSize.min,
-                                                          children: [
-                                                            Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                      .all(8.0),
-                                                              child: Text(
-                                                                  model.referralCount
-                                                                          .toString() ??
-                                                                      '0',
-                                                                  style:
-                                                                      headText5),
-                                                            ),
-                                                            const Icon(
-                                                              Icons
-                                                                  .arrow_forward_ios,
-                                                              color: grey,
-                                                              size: 16,
-                                                            ),
-                                                          ],
-                                                        )),
+                                                      ],
+                                                    ),
                                                   ),
                                                 ],
                                               ),
@@ -775,9 +709,59 @@ class ClubDashboardView extends StatelessWidget {
                                     )
                                   : SliverToBoxAdapter(
                                       child: Container(
-                                        child: const Center(
-                                          child:
-                                              Text('YOU ARE NOT A MEMBER YET'),
+                                        alignment: Alignment.center,
+                                        child: Center(
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              UIHelper.verticalSpaceLarge,
+                                              Text(
+                                                FlutterI18n.translate(
+                                                    context, "paycoolCaption"),
+                                                style: headText2,
+                                                textAlign: TextAlign.center,
+                                              ),
+                                              UIHelper.verticalSpaceSmall,
+                                              Container(
+                                                width: 150,
+                                                decoration: BoxDecoration(
+                                                    // color: Color(mainColor),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            25),
+                                                    gradient:
+                                                        const LinearGradient(
+                                                            colors: [
+                                                          Color(0xFFcd45ff),
+                                                          Color(0xFF7368ff),
+                                                        ])),
+                                                margin:
+                                                    const EdgeInsetsDirectional
+                                                        .only(top: 10.0),
+                                                child: TextButton(
+                                                  style: ButtonStyle(
+                                                      textStyle:
+                                                          MaterialStateProperty
+                                                              .all(
+                                                                  const TextStyle(
+                                                    color: Colors.white,
+                                                  ))),
+                                                  onPressed: () {
+                                                    model.navigationService
+                                                        .navigateTo(
+                                                            PayCoolViewRoute);
+                                                  },
+                                                  child: Text(
+                                                      FlutterI18n.translate(
+                                                          context, "joinNow"),
+                                                      style: headText4),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     ),

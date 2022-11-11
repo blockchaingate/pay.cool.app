@@ -329,13 +329,13 @@ class JoinPayCoolClubViewModel extends BaseViewModel {
 
 // generate raw tx and send
   generateRawTxAndSend(seed, abiHex, toAddress) async {
-    var rawTxHex = await walletService.generateRawTx(seed, abiHex, toAddress);
-    var resKanban = await sendKanbanRawTransaction(rawTxHex);
-    var res;
-    if (resKanban != null && resKanban["transactionHash"] != null) {
-      res = resKanban["transactionHash"];
-    }
-    return res;
+    // var rawTxHex = await walletService.generateRawTx(seed, abiHex, toAddress);
+    // var resKanban = await sendKanbanRawTransaction(rawTxHex);
+    // var res;
+    // if (resKanban != null && resKanban["transactionHash"] != null) {
+    //   res = resKanban["transactionHash"];
+    // }
+    // return res;
   }
 /*----------------------------------------------------------------------
                     Join Club

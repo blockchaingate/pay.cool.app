@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:paycool/constants/colors.dart';
@@ -48,14 +49,20 @@ class _ClubProjectDetailsViewState extends State<ClubProjectDetailsView> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            Column(
+              children: [
+                //Text(data)
+              ],
+            ),
             Text(
-              'Select a Package to unlock',
-              style: headText1.copyWith(color: primaryColor),
+              FlutterI18n.translate(context, "selectPackageDetails"),
+              style: headText1.copyWith(
+                  color: primaryColor, fontWeight: FontWeight.bold),
             ),
             Container(
               alignment: Alignment.center,
               child: ListView.builder(
-                  padding: EdgeInsets.only(top: 10),
+                  padding: const EdgeInsets.only(top: 10),
                   shrinkWrap: true,
                   itemCount: widget.projectDetails.length,
                   itemBuilder: (BuildContext context, int index) {
@@ -66,24 +73,71 @@ class _ClubProjectDetailsViewState extends State<ClubProjectDetailsView> {
                       decoration:
                           roundedBoxDecoration(color: grey.withAlpha(150)),
                       child: ListTile(
+                        onTap: () => navigationService.navigateTo(
+                            clubPackageCheckoutViewRoute,
+                            arguments: {
+                              "package": widget.projectDetails[index],
+                              'paymentCoin': selectedCoin[index]
+                            }),
                         leading: Container(
-                            padding: const EdgeInsets.all(8),
-                            child: Image.network(
-                              widget.projectDetails[index].image,
-                              width: 40,
-                              height: 40,
-                            )),
+                            // decoration:
+                            //     roundedBoxDecoration(color: secondaryColor),
+                            // padding: const EdgeInsets.all(8),
+                            child: CircleAvatar(
+                                backgroundImage: NetworkImage(
+                          widget.projectDetails[index].image,
+                        ))),
                         title: Text(
                           storageService.language == 'en'
                               ? widget.projectDetails[index].name.en
                               : widget.projectDetails[index].name.sc,
-                          style: headText2.copyWith(
+                          style: headText3.copyWith(
                               fontWeight: FontWeight.bold, color: white),
                         ),
-                        subtitle: Text(
-                          storageService.language == 'en'
-                              ? widget.projectDetails[index].description.en
-                              : widget.projectDetails[index].description.sc,
+                        subtitle: RichText(
+                          text: TextSpan(
+                              text: storageService.language == 'en'
+                                  ? widget.projectDetails[index].description.en
+                                  : widget.projectDetails[index].description.sc,
+                              style: const TextStyle(
+                                  fontSize: 12,
+                                  decoration: TextDecoration.underline,
+                                  color: primaryColor),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return AlertDialog(
+                                            titleTextStyle: headText3.copyWith(
+                                                color: black),
+                                            title: Text(
+                                              FlutterI18n.translate(
+                                                  context, "description"),
+                                              textAlign: TextAlign.center,
+                                              style: headText3.copyWith(
+                                                  color: black),
+                                            ),
+                                            contentTextStyle:
+                                                const TextStyle(color: grey),
+                                            content: SizedBox(
+                                              height: 120,
+                                              child: SingleChildScrollView(
+                                                  child: Text(
+                                                storageService.language == 'en'
+                                                    ? widget
+                                                        .projectDetails[index]
+                                                        .description
+                                                        .en
+                                                    : widget
+                                                        .projectDetails[index]
+                                                        .description
+                                                        .sc,
+                                                style: headText3,
+                                              )),
+                                            ));
+                                      });
+                                }),
                         ),
                         trailing: SizedBox(
                           width: 200,
@@ -111,29 +165,17 @@ class _ClubProjectDetailsViewState extends State<ClubProjectDetailsView> {
                                             const EdgeInsets.only(left: 10.0),
                                         child: Text(coin.toString(),
                                             textAlign: TextAlign.center,
-                                            style: headText4.copyWith(
+                                            style: headText5.copyWith(
                                                 fontWeight: FontWeight.bold)),
                                       ),
                                     );
                                   },
                                 ).toList(),
                               ),
-                              SizedBox(
-                                width: 100,
-                                height: 50,
-                                child: ElevatedButton(
-                                    style: generalButtonStyle1.copyWith(
-                                        padding: MaterialStateProperty.all(
-                                            const EdgeInsets.all(0))),
-                                    onPressed: () => navigationService
-                                            .navigateTo(
-                                                clubPackageCheckoutViewRoute,
-                                                arguments: {
-                                              "package":
-                                                  widget.projectDetails[index],
-                                              'paymentCoin': selectedCoin[index]
-                                            }),
-                                    child: const Text('Buy')),
+                              UIHelper.horizontalSpaceMedium,
+                              const Icon(
+                                Icons.arrow_forward_ios,
+                                color: primaryColor,
                               ),
                             ],
                           ),

@@ -465,39 +465,8 @@ class PayCoolService with ReactiveServiceMixin {
     }
   }
 
-/*----------------------------------------------------------------------
-                            Create Referral
-----------------------------------------------------------------------*/
-
-  Future<dynamic> createStarPayReferral(
-      String signature, String referralAddress) async {
-    String url = payCoolCreateReferralUrl;
-    var body = {'parentId': referralAddress, 'sig': '0x' + signature};
-    log.w('createStarPayReferral url $url --  body $body');
-    try {
-      final res = await client.post(url, body: body);
-      log.w('createStarPayReferral json ${jsonDecode(res.body)}');
-      var json = jsonDecode(res.body);
-      if (res.statusCode == 200 || res.statusCode == 201) {
-        return json;
-      } else {
-        log.e("error: " + res.body);
-        return res.body;
-      }
-    } catch (e) {
-      String res;
-      log.e('createStarPayReferral failed to load the data from the API $e');
-      if (e.toString().contains('Error')) {
-        res = e
-            .toString()
-            .split(')')[1]
-            .substring(1, (e.toString().split(')')[1].length - 2));
-      }
-      return res;
-    }
-  }
-
-  Future<String> signSendTx(Uint8List seed, List<ClubParams> params) async {
+  Future<String> signSendTx(
+      Uint8List seed, String abiHex, String toAddress) async {
     String result = '';
     String exgAddress =
         await sharedService.getExgAddressFromCoreWalletDatabase();
@@ -509,29 +478,34 @@ class PayCoolService with ReactiveServiceMixin {
 
     var txKanbanHex;
     var res;
-    for (var i = 0; i < 2; i++) {
-      var nonce = await getNonce(exgAddress);
-      try {
-        txKanbanHex = await signAbiHexWithPrivateKey(
-            params[i].data,
-            HEX.encode(keyPairKanban["privateKey"]),
-            params[i].to,
-            nonce,
-            kanbanGasPrice,
-            kanbanGasLimit);
 
-        log.i('txKanbanHex $txKanbanHex');
-      } catch (err) {
-        log.e('err $err');
-      }
+    var nonce = await getNonce(exgAddress);
+    try {
+      txKanbanHex = await signAbiHexWithPrivateKey(
+          abiHex,
+          HEX.encode(keyPairKanban["privateKey"]),
+          toAddress,
+          nonce,
+          kanbanGasPrice,
+          kanbanGasLimit);
 
-      var resBody = await sendPayCoolRawTransaction(txKanbanHex);
+      log.i('txKanbanHex $txKanbanHex');
+    } catch (err) {
+      log.e('err $err');
+    }
+    if (txKanbanHex != '') {
+      var resBody =
+          await sendKanbanRawTransaction(baseBlockchainGateV2Url, txKanbanHex);
       res = resBody['_body'];
       var txHash = res['transactionHash'];
       //{"ok":true,"_body":{"transactionHash":"0x855f2d8ec57418670dd4cb27ecb71c6794ada5686e771fe06c48e30ceafe0548","status":"0x1"}}
 
       log.w('res $res');
-      result = res['status'];
+      if (res['status'] != null) {
+        result = res['status'];
+      } else {
+        result = res['transactionHash'];
+      }
     }
     return result;
   }

@@ -8,6 +8,8 @@ import 'dart:async';
 import 'package:bip39/bip39.dart' as bip39;
 import 'package:bip32/bip32.dart' as bip32;
 import 'package:hex/hex.dart';
+import 'package:paycool/services/config_service.dart';
+import 'package:paycool/services/local_dialog_service.dart';
 import 'dart:typed_data';
 import 'package:web3dart/web3dart.dart';
 import '../constants/colors.dart';
@@ -78,6 +80,8 @@ class WalletService {
   final coreWalletDatabaseService = locator<CoreWalletDatabaseService>();
   double currentTickerUsdValue;
   var txids = [];
+  ConfigService configService = locator<ConfigService>();
+  final dialogService = locator<LocalDialogService>();
 
   double coinUsdBalance;
   List<String> coinTickers = [
@@ -422,6 +426,33 @@ class WalletService {
 /*----------------------------------------------------------------------
                 Generate Seed
 ----------------------------------------------------------------------*/
+
+  Future<Uint8List> getSeedDialog(BuildContext context) async {
+    var seed;
+    await dialogService
+        .showDialog(
+            title: FlutterI18n.translate(context, "enterPassword"),
+            description: FlutterI18n.translate(
+                context, "dialogManagerTypeSamePasswordNote"),
+            buttonTitle: FlutterI18n.translate(context, "confirm"))
+        .then((res) async {
+      if (res.confirmed) {
+        String mnemonic = res.returnedText;
+
+        seed = generateSeed(mnemonic);
+      } else if (res.returnedText == 'Closed' && !res.confirmed) {
+        log.e('Dialog Closed By User');
+      } else {
+        log.e('Wrong pass');
+
+        sharedService.sharedSimpleNotification(
+            FlutterI18n.translate(context, "pleaseProvideTheCorrectPassword"));
+      }
+    }).catchError((error) {
+      log.e(error);
+    });
+    return seed;
+  }
 
   generateSeed(String mnemonic) {
     Uint8List seed = bip39.mnemonicToSeed(mnemonic);
@@ -1318,8 +1349,8 @@ class WalletService {
         nonce,
         kanbanPrice,
         kanbanGasLimit);
-
-    var res = await sendKanbanRawTransaction(txKanbanHex);
+    var url = configService.getKanbanBaseUrl();
+    var res = await sendKanbanRawTransaction(url, txKanbanHex);
     if (res['transactionHash'] == null) {
       return res;
     }
@@ -1382,7 +1413,8 @@ class WalletService {
         kanbanPrice,
         kanbanGasLimit);
 
-    var res = await sendKanbanRawTransaction(txKanbanHex);
+    var url = configService.getKanbanBaseUrl();
+    var res = await sendKanbanRawTransaction(url, txKanbanHex);
 
     if (res['transactionHash'] != '') {
       res['success'] = true;
@@ -1924,7 +1956,8 @@ class WalletService {
     var txHex = await txHexforSendCoin(
         seed, coinType, kbPaymentAddress, amountInLink, gasPrice, gasLimit);
     log.e('txhex $txHex');
-    var resKanban = await sendKanbanRawTransaction(txHex);
+    var url = configService.getKanbanBaseUrl();
+    var resKanban = await sendKanbanRawTransaction(url, txHex);
     debugPrint('resKanban=');
     debugPrint(resKanban.toString());
     return resKanban;

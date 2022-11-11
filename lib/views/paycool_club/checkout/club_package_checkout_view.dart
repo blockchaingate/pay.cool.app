@@ -3,6 +3,7 @@ import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/shared/ui_helpers.dart';
+import 'package:paycool/utils/number_util.dart';
 import 'package:paycool/views/paycool_club/checkout/club_package_checkout_viewmodel.dart';
 import 'package:paycool/views/paycool_club/club_projects/club_project_model.dart';
 import 'package:stacked/stacked.dart';
@@ -48,10 +49,10 @@ class ClubPackageCheckoutView extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    'Checkout',
-                    style: headText1.copyWith(color: black),
+                    FlutterI18n.translate(context, "checkout"),
+                    style: headText1.copyWith(color: primaryColor),
                   ),
-                  UIHelper.verticalSpaceMedium,
+                  UIHelper.verticalSpaceLarge,
                   Container(
                     //  decoration: BoxDecoration(image: blurBackgroundImage()),
                     child: Center(
@@ -59,7 +60,7 @@ class ClubPackageCheckoutView extends StatelessWidget {
                         // height: 300,
                         width: 350,
                         alignment: Alignment.center,
-                        padding: EdgeInsets.symmetric(horizontal: 20),
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
                         // decoration: roundedBoxDecoration(color: primaryColor),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
@@ -74,38 +75,26 @@ class ClubPackageCheckoutView extends StatelessWidget {
                                 FlutterI18n.translate(context, "gas") +
                                     ' ' +
                                     FlutterI18n.translate(context, "balance"),
-                                model.gasBalance.toString(),
+                                NumberUtil.decimalLimiter(model.gasBalance,
+                                        decimalPrecision: 12)
+                                    .toString(),
                                 context),
                             UIHelper.verticalSpaceSmall,
                             UIHelper.verticalSpaceSmall,
                             UIHelper.divider,
                             UIHelper.verticalSpaceSmall,
-                            Row(
-                              children: [
-                                Expanded(
-                                  flex: 2,
-                                  child: Text(
-                                    FlutterI18n.translate(context, "name"),
-                                    textAlign: TextAlign.left,
-                                  ),
-                                ),
-                                Expanded(
-                                  flex: 2,
-                                  child: Text(
-                                    model.title,
-                                    textAlign: TextAlign.right,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            UIHelper.verticalSpaceSmall,
                             checkoutFields(
-                                FlutterI18n.translate(context, "description"),
-                                model.desc.toString(),
+                                FlutterI18n.translate(context, "name"),
+                                model.title,
                                 context),
+
+                            // checkoutFields(
+                            //     FlutterI18n.translate(context, "description"),
+                            //     model.desc.toString(),
+                            //     context),
                             UIHelper.verticalSpaceSmall,
                             checkoutFields(
-                                FlutterI18n.translate(context, "packakgeValue"),
+                                FlutterI18n.translate(context, "packageValue"),
                                 package.joiningFee.toString(),
                                 context),
                             UIHelper.verticalSpaceLarge,
@@ -121,7 +110,10 @@ class ClubPackageCheckoutView extends StatelessWidget {
                                       onPressed: () => !model.isBusy
                                           ? model.buyPackage()
                                           : model.log.e('model busy'),
-                                      child: Text('Purchase')),
+                                      child: Text(
+                                        FlutterI18n.translate(
+                                            context, "purchase"),
+                                      )),
                                 ),
                                 UIHelper.verticalSpaceSmall,
                                 SizedBox(
@@ -132,7 +124,10 @@ class ClubPackageCheckoutView extends StatelessWidget {
                                       onPressed: () => !model.isBusy
                                           ? model.navigationService.goBack()
                                           : model.log.e('model busy'),
-                                      child: Text('Cancel')),
+                                      child: Text(
+                                        FlutterI18n.translate(
+                                            context, "cancel"),
+                                      )),
                                 ),
                               ],
                             )
@@ -158,6 +153,7 @@ class ClubPackageCheckoutView extends StatelessWidget {
           child: Text(
             title,
             textAlign: TextAlign.left,
+            style: headText5.copyWith(fontWeight: FontWeight.bold),
           ),
         ),
         Expanded(
@@ -165,6 +161,7 @@ class ClubPackageCheckoutView extends StatelessWidget {
           child: Text(
             value,
             textAlign: TextAlign.right,
+            style: headText5.copyWith(fontWeight: FontWeight.bold),
           ),
         ),
       ],

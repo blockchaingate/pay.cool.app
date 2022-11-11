@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:flutter/widgets.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:paycool/environments/coins.dart' as coin_list;
 import 'package:paycool/logger.dart';
 import 'package:paycool/models/wallet/core_wallet_model.dart';
@@ -12,6 +14,7 @@ import 'package:paycool/services/db/token_list_database_service.dart';
 import 'package:paycool/services/db/transaction_history_database_service.dart';
 import 'package:paycool/services/db/user_settings_database_service.dart';
 import 'package:paycool/services/db/wallet_database_service.dart';
+import 'package:paycool/services/local_dialog_service.dart';
 import 'package:paycool/services/local_storage_service.dart';
 import 'package:paycool/services/vault_service.dart';
 import 'package:paycool/services/version_service.dart';

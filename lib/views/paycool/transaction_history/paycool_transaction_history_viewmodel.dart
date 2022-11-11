@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:paycool/constants/api_routes.dart';
 import 'package:paycool/environments/environment.dart';
 import 'package:paycool/logger.dart';
 import 'package:paycool/service_locator.dart';
@@ -115,7 +116,8 @@ class PayCoolTransactionHistoryViewModel extends FutureViewModel {
           log.e('err $err');
         }
 
-        var resBody = await sendPayCoolRawTransaction(txKanbanHex);
+        var resBody = await sendKanbanRawTransaction(
+            baseBlockchainGateV2Url, txKanbanHex);
         var res = resBody['_body'];
         var txHash = res['transactionHash'];
         //{"ok":true,"_body":{"transactionHash":"0x855f2d8ec57418670dd4cb27ecb71c6794ada5686e771fe06c48e30ceafe0548","status":"0x1"}}

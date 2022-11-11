@@ -84,10 +84,10 @@ class PayCoolView extends StatelessWidget {
                             ? model.sharedService.loadingIndicator()
                             : !model.isMember
                                 ? Container(
-                                    decoration: roundedBoxDecoration(
-                                        color: secondaryColor),
-                                    //  width: 400,
-                                    margin:
+                                    decoration:
+                                        roundedTopLeftRightBoxDecoration(
+                                            color: secondaryColor),
+                                    padding:
                                         MediaQuery.of(context).size.height < 670
                                             ? const EdgeInsets.fromLTRB(
                                                 10, 70, 10, 10)
@@ -110,12 +110,11 @@ class PayCoolView extends StatelessWidget {
                                                           left: 10),
                                                       alignment:
                                                           Alignment.centerLeft,
-                                                      tooltip:
-                                                          FlutterI18n.translate(
-                                                              context, "scanBarCode"),
+                                                      tooltip: FlutterI18n.translate(
+                                                          context, "scanBarCode"),
                                                       icon: const Icon(
                                                         Icons.camera_alt,
-                                                        color: white,
+                                                        color: primaryColor,
                                                         size: 18,
                                                       ),
                                                       onPressed: () {
@@ -137,11 +136,12 @@ class PayCoolView extends StatelessWidget {
                                                           model.contentPaste(
                                                               addressType: Constants
                                                                   .ReferralAddressText)),
-                                                  enabledBorder: const OutlineInputBorder(
-                                                      borderSide: BorderSide(
-                                                          color:
-                                                              Color(0XFF871fff),
-                                                          width: 0.5)),
+                                                  enabledBorder:
+                                                      const OutlineInputBorder(
+                                                          borderSide: BorderSide(
+                                                              color:
+                                                                  primaryColor,
+                                                              width: 0.5)),
                                                   hintText: FlutterI18n.translate(
                                                       context, "referralCode"),
                                                   hintStyle: headText5),
@@ -179,7 +179,7 @@ class PayCoolView extends StatelessWidget {
                                               onPressed: () {
                                                 model.isBusy
                                                     ? debugPrint('busy')
-                                                    : model.createReferral();
+                                                    : model.createAccount();
                                               },
                                               child: Text(
                                                   FlutterI18n.translate(
@@ -188,13 +188,15 @@ class PayCoolView extends StatelessWidget {
                                             ),
                                           ),
                                           UIHelper.verticalSpaceSmall,
+                                          UIHelper.verticalSpaceSmall,
                                           Container(
                                               child: Center(
                                             child: Text(
                                                 FlutterI18n.translate(
                                                     context, "joinPaycoolNote"),
                                                 style: headText5),
-                                          ))
+                                          )),
+                                          UIHelper.verticalSpaceSmall,
                                         ]))
                                 : Container(
                                     padding: const EdgeInsets.only(
@@ -292,17 +294,16 @@ class PayCoolView extends StatelessWidget {
                                                                   title: Text(
                                                                       FlutterI18n.translate(
                                                                           context,
-                                                                          "inBalance"),
-                                                                      style: Theme.of(
-                                                                              context)
+                                                                          "noCoinBalance"),
+                                                                      style: Theme.of(context)
                                                                           .textTheme
                                                                           .bodyText2),
                                                                   subtitle: Text(
                                                                       FlutterI18n.translate(
                                                                           context,
-                                                                          "ransferFundsToExchangeUsingDepositButton"),
+                                                                          "transferFundsToExchangeUsingDepositButton"),
                                                                       style:
-                                                                          subText2))
+                                                                          subText2.copyWith(color: white)))
                                                               : Center(
                                                                   child: Text(
                                                                     FlutterI18n.translate(

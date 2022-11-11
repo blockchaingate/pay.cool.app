@@ -122,41 +122,23 @@ class ClubPackageCheckoutViewModel extends FutureViewModel {
       setBusy(false);
       return;
     }
-    await dialogService
-        .showDialog(
-            title: FlutterI18n.translate(context, "enterPassword"),
-            description: FlutterI18n.translate(
-                context, "dialogManagerTypeSamePasswordNote"),
-            buttonTitle: FlutterI18n.translate(context, "confirm"))
-        .then((passRes) async {
-      if (passRes.confirmed) {
-        setBusy(true);
-        String mnemonic = passRes.returnedText;
 
-        var seed = walletService.generateSeed(mnemonic);
-        var res = await paycoolService.signSendTx(
-            seed, clubPackageCheckout.clubParams);
+    setBusy(true);
 
-        if (res == '0x1') {
-          payOrderConfirmationPopup();
-        } else if (res == '0x0') {
-          sharedService.sharedSimpleNotification(
-              FlutterI18n.translate(context, "failed"),
-              isError: true);
-        }
-        // var errMsg = res['errMsg'];
-      } else if (passRes.returnedText == 'Closed' && !passRes.confirmed) {
-        log.e('Dialog Closed By User');
+    var res;
+    var seed = await walletService.getSeedDialog(context);
+    for (var param in clubPackageCheckout.clubParams) {
+      res = await paycoolService.signSendTx(seed, param.data, param.to);
+    }
 
-        setBusy(false);
-      } else {
-        log.e('Wrong pass');
+    if (res == '0x1') {
+      payOrderConfirmationPopup();
+    } else if (res == '0x0') {
+      sharedService.sharedSimpleNotification(
+          FlutterI18n.translate(context, "failed"),
+          isError: true);
+    }
 
-        sharedService.sharedSimpleNotification(
-            FlutterI18n.translate(context, "pleaseProvideTheCorrectPassword"),
-            isError: true);
-      }
-    });
     setBusy(false);
   }
 

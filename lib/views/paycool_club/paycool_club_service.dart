@@ -275,10 +275,6 @@ class PayCoolClubService {
     }
   }
 
-/*-------------------------------------------------------------------------------------
-                            Get Parent By address
--------------------------------------------------------------------------------------*/
-
   Future<PaycoolReferral> getReferralParentByAddress(String address) async {
     try {
       var response = await client.get(payCoolClubrRefUrl + address);
@@ -298,32 +294,28 @@ class PayCoolClubService {
     }
   }
 
-// old
-  Future<int> getReferralCount(
+  Future<int> getPurchasedPackageCount(
     String address,
   ) async {
-    String url = payCoolClubrRefUrl + 'children/' + address + '/count';
+    String url = fabInfoBaseUrl + 'api/buy/v2/user' + address + '/totalCount';
     int referralCount = 0;
-    log.i('getReferralCount url $url');
+    log.i('getPurchasedPackageCount url $url');
     try {
       var response = await client.get(url);
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        var json = jsonDecode(response.body);
 
-        // log.w('getChildrenByAddress json $json');
-        if (json.isNotEmpty) {
-          referralCount = json['_body'];
-          log.i('referral count $referralCount');
-          return referralCount;
-        } else {
-          return 0;
-        }
+      var json = jsonDecode(response.body);
+
+      // log.w('getChildrenByAddress json $json');
+      if (json.isNotEmpty) {
+        referralCount = json['totalCount'];
+        log.i('getPurchasedPackageCount count $referralCount');
+        return referralCount;
       } else {
-        log.e("getReferralCount error: " + response.body);
+        log.e("getPurchasedPackageCount error: " + response.body);
         return 0;
       }
     } catch (err) {
-      log.e('In getReferralCount catch $err');
+      log.e('In getPurchasedPackageCount catch $err');
       return 0;
     }
   }
@@ -355,43 +347,8 @@ class PayCoolClubService {
     }
   }
 
-  // Old
-  Future<List<PaycoolReferral>> getChildrenByAddress(String address,
-      {int pageSize = 10, int pageNumber = 0}) async {
-    String url = payCoolClubrRefUrl + 'children/' + address;
-    if (pageNumber != 0) {
-      pageNumber = pageNumber - 1;
-    }
-    // page number - 1 because page number start from 0 in the api but in front end its from 1
-    url = url + '/$pageSize/$pageNumber';
-    log.i('getChildrenByAddress url $url');
-    try {
-      var response = await client.get(url);
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        var json = jsonDecode(response.body) as List;
-
-        // log.w('getChildrenByAddress json $json');
-        if (json.isNotEmpty) {
-          PaycoolReferralList paycoolReferralList =
-              PaycoolReferralList.fromJson(json);
-          log.i(
-              'first childeren obj ${paycoolReferralList.paycoolReferralList[0].toJson()}');
-          return paycoolReferralList.paycoolReferralList;
-        } else {
-          return [];
-        }
-      } else {
-        log.e("getChildrenByAddress error: " + response.body);
-        return [];
-      }
-    } catch (err) {
-      log.e('In getChildrenByAddress catch $err');
-      return [];
-    }
-  }
-
   // new
-  Future<List<PaycoolReferral>> getDownlineByAddress(String address,
+  Future<List<PaycoolReferral>> getUserDownlineByAddress(String address,
       {int pageSize = 10, int pageNumber = 0}) async {
     String url = fabInfoUserReferralUrl + 'user/' + address;
     if (pageNumber != 0) {
@@ -399,7 +356,7 @@ class PayCoolClubService {
     }
     // page number - 1 because page number start from 0 in the api but in front end its from 1
     url = url + '/$pageSize/$pageNumber';
-    log.i('getChildrenByAddress url $url');
+    log.i('getUserDownlineByAddress url $url');
     try {
       var response = await client.get(url);
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -416,11 +373,45 @@ class PayCoolClubService {
           return [];
         }
       } else {
-        log.e("getChildrenByAddress error: " + response.body);
+        log.e("getUserDownlineByAddress error: " + response.body);
         return [];
       }
     } catch (err) {
-      log.e('In getChildrenByAddress catch $err');
+      log.e('In getUserDownlineByAddress catch $err');
+      return [];
+    }
+  }
+
+  Future<List<PaycoolReferral>> getPurchasedPackageHistory(String address,
+      {int pageSize = 10, int pageNumber = 0}) async {
+    String url = fabInfoBaseUrl + 'api/buy/v2/user' + address;
+    if (pageNumber != 0) {
+      pageNumber = pageNumber - 1;
+    }
+    // page number - 1 because page number start from 0 in the api but in front end its from 1
+    url = url + '/$pageSize/$pageNumber';
+    log.i('getPurchasedPackageHistory url $url');
+    try {
+      var response = await client.get(url);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        var json = jsonDecode(response.body) as List;
+
+        // log.w('getChildrenByAddress json $json');
+        if (json.isNotEmpty) {
+          PaycoolReferralList paycoolReferralList =
+              PaycoolReferralList.fromJson(json);
+          log.i(
+              'first childeren obj ${paycoolReferralList.paycoolReferralList[0].toJson()}');
+          return paycoolReferralList.paycoolReferralList;
+        } else {
+          return [];
+        }
+      } else {
+        log.e("getPurchasedPackageHistory error: " + response.body);
+        return [];
+      }
+    } catch (err) {
+      log.e('In getPurchasedPackageHistory catch $err');
       return [];
     }
   }

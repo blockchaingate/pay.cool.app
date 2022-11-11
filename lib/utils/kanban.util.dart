@@ -163,10 +163,8 @@ Future<Map<String, dynamic>> submitReDeposit(
 }
 
 Future<Map<String, dynamic>> sendKanbanRawTransaction(
-    String rawKanbanTransaction) async {
-  ConfigService configService = locator<ConfigService>();
-  var url =
-      configService.getKanbanBaseUrl() + kanbanApiRoute + SendRawTxApiRoute;
+    String baseUrl, String rawKanbanTransaction) async {
+  var url = baseUrl + kanbanApiRoute + SendRawTxApiRoute;
   debugPrint('URL sendKanbanRawTransaction $url');
   var data = {'signedTransactionData': rawKanbanTransaction};
 
@@ -180,28 +178,6 @@ Future<Map<String, dynamic>> sendKanbanRawTransaction(
     Map<String, dynamic> res = jsonDecode(response.body);
     return res;
   } catch (e) {
-    //return e;
-    return {'success': false, 'data': 'error $e'};
-  }
-}
-
-Future<Map<String, dynamic>> sendPayCoolRawTransaction(
-    String rawKanbanTransaction) async {
-  var url = baseBlockchainGateV2Url + kanbanApiRoute + SendRawTxApiRoute;
-  debugPrint('URL sendPayCoolRawTransaction $url');
-  var data = {'signedTransactionData': rawKanbanTransaction};
-
-  try {
-    var response = await client.post(url, body: data);
-    debugPrint('response from sendPayCoolRawTransaction=');
-    debugPrint(response.body.toString());
-    if (response.body.contains('TS crosschain withdraw verification failed')) {
-      return {'success': false, 'data': response.body};
-    }
-    Map<String, dynamic> res = jsonDecode(response.body);
-    return res;
-  } catch (e) {
-    debugPrint('Catch sendPayCoolRawTransaction $e');
     //return e;
     return {'success': false, 'data': 'error $e'};
   }

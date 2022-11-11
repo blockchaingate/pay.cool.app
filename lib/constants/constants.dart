@@ -30,7 +30,7 @@ class Constants {
   static const String payCoolRefundAbi = "0x775274a1";
   static const String payCoolCancelAbi = "0x5806abae";
   static const String payCoolSignOrderAbi = "0x09953d6d";
-  static const String payCoolJoinAsReferralAbi = "0x9859387b";
+  static const String payCoolCreateAccountAbiCode = "0x9859387b";
 
   static const String EthMessagePrefix = '\u0019Ethereum Signed Message:\n';
   static const String BtcMessagePrefix = '\x18Bitcoin Signed Message:\n';

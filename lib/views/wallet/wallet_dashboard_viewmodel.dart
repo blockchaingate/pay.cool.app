@@ -665,7 +665,7 @@ class WalletDashboardViewModel extends BaseViewModel {
                           contentTextStyle: const TextStyle(color: grey),
                           contentPadding:
                               const EdgeInsets.symmetric(horizontal: 10),
-                          backgroundColor: walletCardColor.withOpacity(0.95),
+                          backgroundColor: secondaryColor.withOpacity(0.95),
                           title: Text(
                             FlutterI18n.translate(context, "question"),
                             textAlign: TextAlign.center,
@@ -682,7 +682,7 @@ class WalletDashboardViewModel extends BaseViewModel {
                               ),
                               TextField(
                                 minLines: 1,
-                                style: const TextStyle(color: white),
+                                style: const TextStyle(color: black),
                                 controller: freeFabAnswerTextController,
                                 obscureText: false,
                                 decoration: const InputDecoration(

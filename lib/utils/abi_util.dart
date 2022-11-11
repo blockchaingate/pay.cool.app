@@ -162,6 +162,12 @@ getPayCoolClubFuncABI(int coinType, String walletAddr, String referralAddr) {
 /*----------------------------------------------------------------------
                     Seven Star Pay Abi
 ----------------------------------------------------------------------*/
+String generateGenericAbiHex(String abiCode, String data) {
+  var exgAddress = fabUtils.fabToExgAddress(data);
+  String abiHex = abiCode + fixLength(trimHexPrefix(exgAddress), 64);
+  // 0x775274a17266776165667761726165617700000000000000000000000000000000000000
+  return abiHex;
+}
 
 getPayCoolFuncABI(int coinType, amount, String abi) {
   var abiHex = abi;

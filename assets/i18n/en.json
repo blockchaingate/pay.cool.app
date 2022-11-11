@@ -474,6 +474,15 @@
     "merchant": "Merchant",
     "merchantReferral": "Merchant Referral",
     "merchantNode" : "Merchant Node",
-    "exchangeBalance" : "Exchange Balance"
+    "exchangeBalance" : "Exchange Balance",
+    "newAccountCreated": "Pay.cool account created successfully",
+    "newAccountNote": "You can enjoy payment rewards as well participate in club projects.",
+    "description" : "Description",
+    "name": "Name",
+    "checkout": "Checkout",
+    "packageValue": "Package Value",
+    "selectPackageDetails": "Select a Package to unlock",
+    "purchase": "Purchase",
+    "purchasedPackages": "Purchased Packages"
 
 }
