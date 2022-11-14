@@ -387,7 +387,7 @@ class SharedService {
             titlePadding: const EdgeInsets.all(0),
             actionsPadding: const EdgeInsets.all(0),
             elevation: 5,
-            backgroundColor: walletCardColor.withOpacity(0.95),
+            backgroundColor: secondaryColor,
             title: title == ""
                 ? Container()
                 : Container(
@@ -581,8 +581,10 @@ class SharedService {
 
   void showInfoFlushbar(String title, String message, IconData iconData,
       Color leftBarColor, BuildContext context) {
-    showSimpleNotification(Text(title, style: headText5),
-        subtitle: Text(message, style: headText6),
+    showSimpleNotification(
+        Text(title, style: headText4.copyWith(color: secondaryColor)),
+        background: primaryColor,
+        subtitle: Text(message, style: headText5),
         position: NotificationPosition.bottom);
   }
 
@@ -594,6 +596,7 @@ class SharedService {
     Clipboard.setData(ClipboardData(text: text));
     showSimpleNotification(
         Text(FlutterI18n.translate(context, "addressCopied")),
+        background: primaryColor,
         position: NotificationPosition.bottom);
   }
 

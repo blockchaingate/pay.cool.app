@@ -52,26 +52,8 @@ class MoveToWalletView extends StatelessWidget {
           return Future.value(false);
         },
         child: Scaffold(
-          appBar: CupertinoNavigationBar(
-            padding: const EdgeInsetsDirectional.only(start: 0),
-            leading: CupertinoButton(
-              padding: const EdgeInsets.all(0),
-              child: const Icon(
-                Icons.arrow_back,
-                color: Colors.white,
-              ),
-              onPressed: () {
-                if (Navigator.canPop(context)) {
-                  Navigator.pop(context);
-                }
-              },
-            ),
-            middle: Text(
-                '${FlutterI18n.translate(context, "move")}  ${model.specialTicker}  ${FlutterI18n.translate(context, "toWallet")}',
-                style: headText5),
-            backgroundColor: const Color(0XFF1f2233),
-          ),
-          backgroundColor: const Color(0xFF1F2233),
+          appBar: customAppBarWithTitle(
+              '${FlutterI18n.translate(context, "move")}  ${model.specialTicker}  ${FlutterI18n.translate(context, "toWallet")}'),
           body: SingleChildScrollView(
             child: Container(
                 padding: const EdgeInsets.all(10),
@@ -115,9 +97,12 @@ class MoveToWalletView extends StatelessWidget {
                                     decimalLimit: model.token.decimal)
                               ],
                             ),
-                            enabledBorder: const OutlineInputBorder(
+                            focusedBorder: const OutlineInputBorder(
                                 borderSide: BorderSide(
-                                    color: Color(0XFF871fff), width: 1.0)),
+                                    color: primaryColor, width: 1.0)),
+                            enabledBorder: const OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: black, width: 1.0)),
                             hintText:
                                 FlutterI18n.translate(context, "enterAmount"),
                             hintStyle: headText5.copyWith(

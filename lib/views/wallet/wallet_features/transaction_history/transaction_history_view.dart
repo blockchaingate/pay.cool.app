@@ -50,7 +50,7 @@ class TransactionHistoryView extends StatelessWidget {
                   title: Text(
                       FlutterI18n.translate(context, "transactionHistory"),
                       style: headText3),
-                  backgroundColor: secondaryColor,
+                  backgroundColor: primaryColor,
                 ),
                 body: !model.dataReady || model.isBusy
                     ? SizedBox(
@@ -65,9 +65,11 @@ class TransactionHistoryView extends StatelessWidget {
                                     color: white)))
                         : Container(
                             padding: const EdgeInsets.all(4.0),
+                            margin: EdgeInsets.symmetric(vertical: 5),
                             child: Column(
                               children: <Widget>[
                                 //  IconButton(icon:Icon(Icons.ac_unit,color:colors.white),onPressed: ()=> model.test(),),
+
                                 Row(
                                   children: [
                                     UIHelper.horizontalSpaceSmall,

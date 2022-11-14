@@ -33,7 +33,7 @@ class TxHisotryCardWidget extends StatelessWidget {
         elevation: 4,
         child: Container(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
-            color: walletCardColor,
+            color: secondaryColor,
             child: Row(children: <Widget>[
               Expanded(
                 child: Column(
@@ -231,8 +231,8 @@ class TxHisotryCardWidget extends StatelessWidget {
                                   firstCharToUppercase(FlutterI18n.translate(
                                       context, "pending")),
                                   style: TextStyle(
-                                      fontSize: customFontSize, color: yellow))
-                            // depsoit pending if ticker chain staus is pending
+                                      fontSize: customFontSize, color: black))
+                            // depsoit pending if kanban chain staus is pending
                             else if (transaction.tag.toUpperCase() ==
                                     model.deposit.toUpperCase() &&
                                 transaction.kanbanTxStatus == model.pending)
@@ -240,12 +240,15 @@ class TxHisotryCardWidget extends StatelessWidget {
                                   firstCharToUppercase(FlutterI18n.translate(
                                       context, "pending")),
                                   style: TextStyle(
-                                      fontSize: customFontSize, color: yellow))
+                                      fontSize: customFontSize, color: black))
                             else if (transaction.tag.toUpperCase() ==
                                         model.deposit.toUpperCase() &&
                                     transaction.kanbanTxStatus ==
                                         model.rejected ||
-                                transaction.kanbanTxStatus == model.rejected)
+                                transaction.tickerChainTxStatus ==
+                                    model.rejected ||
+                                model.rejected
+                                    .contains(transaction.tickerChainTxStatus))
                               RichText(
                                 text: TextSpan(
                                     text: FlutterI18n.translate(
@@ -307,7 +310,7 @@ class TxHisotryCardWidget extends StatelessWidget {
                   alignment: Alignment.centerRight,
                   child: IconButton(
                       padding: EdgeInsets.zero,
-                      icon: const Icon(Icons.more, color: white, size: 14),
+                      icon: const Icon(Icons.more, color: black, size: 14),
                       onPressed: () {
                         debugPrint('tx histoy ${transaction.toJson()}');
                         model.showTxDetailDialog(transaction);

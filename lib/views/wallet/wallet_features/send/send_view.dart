@@ -44,12 +44,8 @@ class SendWalletView extends StatelessWidget {
         },
         builder: (context, model, child) => Scaffold(
               resizeToAvoidBottomInset: false,
-              appBar: AppBar(
-                backgroundColor: walletCardColor,
-                title: Text(FlutterI18n.translate(context, "send"),
-                    style: headText3),
-                centerTitle: true,
-              ),
+              appBar:
+                  customAppBarWithTitle(FlutterI18n.translate(context, "send")),
               body: GestureDetector(
                 onTap: () {
                   FocusScope.of(context).unfocus();
@@ -69,7 +65,7 @@ class SendWalletView extends StatelessWidget {
 
                         Container(
                           margin: const EdgeInsets.only(bottom: 10),
-                          color: walletCardColor,
+                          color: secondaryColor,
                           padding: const EdgeInsets.symmetric(
                               vertical: 20, horizontal: 10),
                           child: Column(
@@ -195,7 +191,7 @@ class SendWalletView extends StatelessWidget {
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------*/
                         Container(
-                            color: walletCardColor,
+                            color: secondaryColor,
                             padding: const EdgeInsets.all(10),
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -636,7 +632,8 @@ class SendWalletView extends StatelessWidget {
                                             .loadingIndicator())
                                     : Text(
                                         FlutterI18n.translate(context, "send"),
-                                        style: headText4),
+                                        style: headText4.copyWith(
+                                            color: secondaryColor)),
                               ),
                             ),
                           ],

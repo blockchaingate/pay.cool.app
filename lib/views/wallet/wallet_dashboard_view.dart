@@ -65,6 +65,7 @@ class WalletDashboardView extends StatelessWidget {
             },
             child: Scaffold(
               key: key,
+              appBar: customAppBar(),
               body: GestureDetector(
                 onTap: () {
                   FocusScope.of(context).requestFocus(FocusNode());
@@ -340,7 +341,7 @@ class WalletDashboardView extends StatelessWidget {
                                   icon: const Icon(
                                     Icons.add,
                                     size: 14,
-                                    color: white,
+                                    color: primaryColor,
                                   ),
                                   label: Text(
                                     FlutterI18n.translate(context, "getFree") +

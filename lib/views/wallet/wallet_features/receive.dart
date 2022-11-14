@@ -74,7 +74,7 @@ class _ReceiveWalletScreenState extends State<ReceiveWalletScreen> {
               Container(
                 width: double.infinity,
                 height: 150,
-                color: walletCardColor,
+                color: secondaryColor,
                 padding: const EdgeInsets.all(10),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -119,7 +119,7 @@ class _ReceiveWalletScreenState extends State<ReceiveWalletScreen> {
               Container(
                 width: double.infinity,
                 height: 350,
-                color: walletCardColor,
+                color: secondaryColor,
                 padding: const EdgeInsets.all(10),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -163,6 +163,7 @@ class _ReceiveWalletScreenState extends State<ReceiveWalletScreen> {
                               FlutterI18n.translate(
                                   context, "saveAndShareQrCode"),
                               style: headText4.copyWith(
+                                  color: secondaryColor,
                                   fontWeight: FontWeight.w400)),
                           onPressed: () {
                             String receiveFileName = 'qr-code.png';
@@ -211,6 +212,7 @@ class _ReceiveWalletScreenState extends State<ReceiveWalletScreen> {
           FlutterI18n.translate(context, "addressCopied"),
           style: const TextStyle(color: white, fontWeight: FontWeight.bold),
         ),
+        background: primaryColor,
         position: NotificationPosition.bottom);
   }
 

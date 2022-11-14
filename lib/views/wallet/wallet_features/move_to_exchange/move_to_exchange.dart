@@ -41,33 +41,15 @@ class MoveToExchangeView extends StatelessWidget {
         model.initState();
       },
       builder: (context, model, child) => Scaffold(
-        appBar: CupertinoNavigationBar(
-          padding: const EdgeInsetsDirectional.only(start: 0),
-          leading: CupertinoButton(
-            padding: const EdgeInsets.all(0),
-            child: const Icon(
-              Icons.arrow_back,
-              color: Colors.white,
-            ),
-            onPressed: () {
-              if (Navigator.canPop(context)) {
-                Navigator.pop(context);
-              }
-            },
-          ),
-          middle: Text(
-            '${FlutterI18n.translate(context, "move")}  ${model.specialTicker}  ${FlutterI18n.translate(context, "toExchange")}',
-            style: headText5,
-          ),
-          backgroundColor: const Color(0XFF1f2233),
-        ),
-        backgroundColor: const Color(0xFF1F2233),
+        appBar: customAppBarWithTitle(
+            '${FlutterI18n.translate(context, "move")}  ${model.specialTicker}  ${FlutterI18n.translate(context, "toExchange")}'),
         body: Container(
           padding: const EdgeInsets.all(10),
           child: ListView(
             // mainAxisAlignment: MainAxisAlignment.center,
             // crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
+              UIHelper.verticalSpaceSmall,
               TextField(
                 keyboardType:
                     const TextInputType.numberWithOptions(decimal: true),
@@ -95,8 +77,7 @@ class MoveToExchangeView extends StatelessWidget {
                   // ),
                   suffix: DecimalLimitWidget(decimalLimit: model.decimalLimit),
                   enabledBorder: const OutlineInputBorder(
-                      borderSide:
-                          BorderSide(color: Color(0XFF871fff), width: 1.0)),
+                      borderSide: BorderSide(color: primaryColor, width: 1.0)),
                   hintText: FlutterI18n.translate(context, "enterAmount"),
                   hintStyle:
                       const TextStyle(fontSize: 14.0, color: Colors.grey),
@@ -104,7 +85,7 @@ class MoveToExchangeView extends StatelessWidget {
                 controller: model.amountController,
                 style: headText5.copyWith(
                     fontWeight: FontWeight.w300,
-                    color: model.isValidAmount ? white : red),
+                    color: model.isValidAmount ? black : red),
               ),
               UIHelper.verticalSpaceSmall,
               // Wallet Balance

@@ -25,7 +25,21 @@ TextStyle bodyText1 =
 TextStyle bodyText2 = const TextStyle(fontSize: 13, color: red);
 TextStyle headText6 =
     const TextStyle(fontSize: 10.5, color: black, fontWeight: FontWeight.w500);
-
+AppBar customAppBar({Color color = primaryColor}) => AppBar(
+      automaticallyImplyLeading: false,
+      backgroundColor: color,
+      toolbarHeight: 2.0,
+    );
+AppBar customAppBarWithTitle(String title, {Color color = primaryColor}) =>
+    AppBar(
+      title: Text(
+        title,
+        style: headText3.copyWith(color: secondaryColor),
+      ),
+      automaticallyImplyLeading: true,
+      backgroundColor: color,
+      centerTitle: true,
+    );
 buttonRoundShape(Color color) {
   var shapeRoundBorder = MaterialStateProperty.all<RoundedRectangleBorder>(
       RoundedRectangleBorder(

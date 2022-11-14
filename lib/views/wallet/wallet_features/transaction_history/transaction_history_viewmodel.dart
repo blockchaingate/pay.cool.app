@@ -138,12 +138,6 @@ class TransactionHistoryViewmodel extends FutureViewModel {
     return await apiService.getTransactionHistoryEvents();
   }
 
-  getWalletFromDb() async {
-    await walletDataBaseService.getWalletBytickerName(tickerName).then((res) {
-      walletInfo = res;
-    });
-  }
-
 /*----------------------------------------------------------------------
                   Update special tokens ticker
 ----------------------------------------------------------------------*/

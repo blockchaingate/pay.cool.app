@@ -38,10 +38,11 @@ class GasBalanceAndAddGasButtonWidget extends StatelessWidget {
               child: Container(
                   decoration: const BoxDecoration(
                       color: iconBackgroundColor, shape: BoxShape.circle),
-                  width: 25,
-                  height: 25,
+                  width: 26,
+                  height: 26,
                   child: Icon(
                     Icons.local_gas_station,
+                    size: 20,
                     color: isProduction ? secondaryColor : red.withAlpha(200),
                   )),
             ),
@@ -61,7 +62,7 @@ class GasBalanceAndAddGasButtonWidget extends StatelessWidget {
               },
               child: Text(
                 FlutterI18n.translate(context, "addGas"),
-                style: headText6,
+                style: headText6.copyWith(color: secondaryColor),
               ),
             ),
           ],

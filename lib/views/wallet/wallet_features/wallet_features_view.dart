@@ -40,7 +40,12 @@ class WalletFeaturesView extends StatelessWidget {
         model.init();
       },
       builder: (context, model, child) => Scaffold(
-        //  appBar: AppBar(),
+        //    extendBodyBehindAppBar: true,
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          backgroundColor: primaryColor,
+          toolbarHeight: 2.0,
+        ),
         key: key,
         body: ListView(
           children: <Widget>[
@@ -104,6 +109,20 @@ class WalletFeaturesView extends StatelessWidget {
                                         model.navigationService
                                             .navigateTo('/dashboard');
                                       })),
+                              Align(
+                                alignment: Alignment.topRight,
+                                child: IconButton(
+                                  padding: EdgeInsets.zero,
+                                  icon: model.isFavorite
+                                      ? const Icon(Icons.star,
+                                          color: white, size: 20)
+                                      : const Icon(Icons.star_border_outlined,
+                                          color: white, size: 22),
+                                  onPressed: () =>
+                                      model.updateFavWalletCoinsList(
+                                          model.walletInfo.tickerName),
+                                ),
+                              ),
                               Positioned(
                                   bottom: 10,
                                   left: 0,
@@ -121,8 +140,8 @@ class WalletFeaturesView extends StatelessWidget {
               },
             ),
             Container(
-              // color: Colors.blue,
-              margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 25),
+              color: secondaryColor,
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 25),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
@@ -190,10 +209,10 @@ class WalletFeaturesView extends StatelessWidget {
                   Container(
                     margin: const EdgeInsets.symmetric(horizontal: 0.0),
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 0.0, vertical: 8.0),
+                        horizontal: 3.0, vertical: 8.0),
                     child: Material(
-                      borderRadius: BorderRadius.circular(50),
-                      color: walletCardColor,
+                      borderRadius: BorderRadius.circular(5),
+                      color: secondaryColor,
                       elevation: model.elevation,
                       child: InkWell(
                         splashColor: primaryColor.withAlpha(30),
@@ -244,6 +263,7 @@ class WalletFeaturesView extends StatelessWidget {
             ),
           ],
         ),
+
         // bottomNavigationBar: BottomNavBar(count: 0),
       ),
     );
@@ -262,11 +282,14 @@ class WalletFeaturesView extends StatelessWidget {
               padding: const EdgeInsets.only(left: 5),
               child: Row(
                 children: <Widget>[
-                  Text(model.specialTicker, style: subText1),
-                  const Icon(
-                    Icons.arrow_forward,
-                    size: 17,
-                    color: white,
+                  Text(model.specialTicker, style: headText5),
+                  Padding(
+                    padding: const EdgeInsets.all(2.0),
+                    child: const Icon(
+                      Icons.arrow_forward,
+                      size: 17,
+                      color: white,
+                    ),
                   ),
                   Text(walletInfo.name ?? '', style: subText1)
                 ],
@@ -296,7 +319,7 @@ class WalletFeaturesView extends StatelessWidget {
     String nativeTicker = model.specialTicker.split('(')[0];
     return Card(
         elevation: model.elevation,
-        color: walletCardColor,
+        color: secondaryColor,
         child: Container(
           padding: const EdgeInsets.all(5),
           child: Column(
@@ -329,7 +352,7 @@ class WalletFeaturesView extends StatelessWidget {
                             : const Center(
                                 child: Icon(
                                   Icons.refresh,
-                                  color: white,
+                                  color: black,
                                   size: 18,
                                 ),
                               ),
@@ -361,7 +384,7 @@ class WalletFeaturesView extends StatelessWidget {
                         style: subText1),
                     Text(
                         '${NumberUtil().truncateDoubleWithoutRouding(model.walletInfo.availableBalance, precision: model.decimalLimit).toString()} ${model.specialTicker}',
-                        style: Theme.of(context).textTheme.bodyText1),
+                        style: headText5),
                   ],
                 ),
               ),
@@ -380,7 +403,7 @@ class WalletFeaturesView extends StatelessWidget {
                               style: subText1),
                           Text(
                               '${NumberUtil().truncateDoubleWithoutRouding(model.unconfirmedBalance, precision: model.decimalLimit).toString()} ${model.specialTicker}',
-                              style: Theme.of(context).textTheme.bodyText1),
+                              style: headText5),
                         ],
                       ),
                     )
@@ -397,22 +420,6 @@ class WalletFeaturesView extends StatelessWidget {
                       child: Text(
                           '${FlutterI18n.translate(context, "inExchange")} ${model.specialTicker.contains('(') ? '\n' + message + ' ' + nativeTicker : ''}',
                           style: subText1),
-                    ),
-                    Expanded(
-                      flex: 2,
-                      child: SizedBox(
-                        height: 20,
-                        child: IconButton(
-                          padding: EdgeInsets.zero,
-                          icon: model.isFavorite
-                              ? const Icon(Icons.star,
-                                  color: primaryColor, size: 20)
-                              : const Icon(Icons.star_border_outlined,
-                                  color: white, size: 18),
-                          onPressed: () => model.updateFavWalletCoinsList(
-                              model.walletInfo.tickerName),
-                        ),
-                      ),
                     ),
                     Expanded(
                         flex: 4,
@@ -435,7 +442,7 @@ class WalletFeaturesView extends StatelessWidget {
   // Features Card
 
   Widget _featuresCard(context, index, WalletFeaturesViewModel model) => Card(
-        color: walletCardColor,
+        color: secondaryColor,
         elevation: model.elevation,
         child: InkWell(
           splashColor: primaryColor.withAlpha(30),

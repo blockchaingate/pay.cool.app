@@ -197,7 +197,7 @@ class MoveToWalletViewmodel extends BaseViewModel {
             titlePadding: EdgeInsets.zero,
             contentPadding: const EdgeInsets.all(5.0),
             elevation: 5,
-            backgroundColor: walletCardColor.withOpacity(0.85),
+            backgroundColor: secondaryColor,
             title: Container(
               padding: const EdgeInsets.all(10.0),
               color: secondaryColor.withOpacity(0.5),
@@ -489,11 +489,8 @@ class MoveToWalletViewmodel extends BaseViewModel {
                                     child: Text(
                                       FlutterI18n.translate(
                                           context, "withdraw"),
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyText2
-                                          .copyWith(
-                                              fontWeight: FontWeight.bold),
+                                      style: headText5.copyWith(
+                                          fontWeight: FontWeight.bold),
                                     ),
                                     onPressed: () {
                                       Navigator.of(context).pop();
