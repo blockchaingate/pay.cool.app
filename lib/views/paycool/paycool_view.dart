@@ -867,10 +867,10 @@ class PayCoolView extends StatelessWidget {
                                                   ))),
                                               onPressed: () {
                                                 if (model.isBusy ||
-                                                    model.rewardInfoModel.params
-                                                            .first.data ==
+                                                    model.rewardInfoModel
+                                                            .params ==
                                                         null) {
-                                                  debugPrint('busy');
+                                                  debugPrint('busy or no data');
                                                 } else {
                                                   model.payOrder();
                                                 }

@@ -483,6 +483,7 @@
     "packageValue": "Package Value",
     "selectPackageDetails": "Select a Package to unlock",
     "purchase": "Purchase",
-    "purchasedPackages": "Purchased Packages"
+    "purchasedPackages": "Purchased Packages",
+    "notJoinedPaycool": "You are not a Pay.cool member"
 
 }

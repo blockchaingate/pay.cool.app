@@ -297,7 +297,7 @@ class PayCoolClubService {
   Future<int> getPurchasedPackageCount(
     String address,
   ) async {
-    String url = fabInfoBaseUrl + 'api/buy/v2/user' + address + '/totalCount';
+    String url = paycoolBaseUrl + 'api/buy/v2/user' + address + '/totalCount';
     int referralCount = 0;
     log.i('getPurchasedPackageCount url $url');
     try {
@@ -324,7 +324,7 @@ class PayCoolClubService {
   Future<int> getUserReferralCount(
     String address,
   ) async {
-    String url = fabInfoUserReferralUrl + 'user/' + address + '/totalCount';
+    String url = paycoolBaseUrl + 'user/' + address + '/totalCount';
     int referralCount = 0;
     log.i('getReferralCount url $url');
     try {
@@ -350,7 +350,7 @@ class PayCoolClubService {
   // new
   Future<List<PaycoolReferral>> getUserDownlineByAddress(String address,
       {int pageSize = 10, int pageNumber = 0}) async {
-    String url = fabInfoUserReferralUrl + 'user/' + address;
+    String url = paycoolBaseUrl + 'user/' + address;
     if (pageNumber != 0) {
       pageNumber = pageNumber - 1;
     }
@@ -384,7 +384,7 @@ class PayCoolClubService {
 
   Future<List<PaycoolReferral>> getPurchasedPackageHistory(String address,
       {int pageSize = 10, int pageNumber = 0}) async {
-    String url = fabInfoBaseUrl + 'api/buy/v2/user' + address;
+    String url = paycoolBaseUrl + 'api/buy/v2/user' + address;
     if (pageNumber != 0) {
       pageNumber = pageNumber - 1;
     }

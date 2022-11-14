@@ -150,7 +150,7 @@ class PayCoolService with ReactiveServiceMixin {
     String fabAddress =
         await coreWalletDatabaseService.getWalletAddressByTickerName('FAB');
     //fabtest.info/api/userpay/635045f6f3999b02d1598c2c/mowmfJjDSfCNLvu5jjHD55aeXphf6cH2eT/rewardInfo
-    String url = fabInfoBaseUrl +
+    String url = paycoolBaseUrl +
         'api/userpay/v2/order/' +
         id +
         '/' +

@@ -367,9 +367,15 @@ class ClubDashboardView extends StatelessWidget {
                                                                           generalButtonStyle1,
                                                                       onPressed:
                                                                           () {
-                                                                        model.goToProjectDetails(model
-                                                                            .projects[model.projectIndex]
-                                                                            .sId);
+                                                                        if (model
+                                                                            .isValidMember) {
+                                                                          model.goToProjectDetails(model
+                                                                              .projects[model.projectIndex]
+                                                                              .sId);
+                                                                        } else {
+                                                                          model
+                                                                              .showJoinPaycoolPopup();
+                                                                        }
                                                                       },
                                                                       child:
                                                                           Text(

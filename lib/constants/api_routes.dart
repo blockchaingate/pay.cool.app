@@ -13,8 +13,8 @@ const String baseKanbanUrl = isProduction
     ? 'https://kanbanprod.fabcoinapi.com/'
     : 'https://kanbantest.fabcoinapi.com/';
 
-const String fabInfoBaseUrl =
-    isProduction ? 'https://fabprod.info/' : 'https://fabtest.info/';
+const String paycoolBaseUrl =
+    isProduction ? 'https://api.pay.cool/api/' : 'https://fabtest.info/api/';
 
 const String tronBaseApiUrl = 'https://api.trongrid.io/';
 const String kanbanApiRoute = 'kanban/';
@@ -28,11 +28,11 @@ const String paycoolPrivacyUrl = "https://www.pay.cool/privacy";
                         Pay.cool Club
 ----------------------------------------------------------------------*/
 
-const String clubDashboardUrl = "${fabInfoBaseUrl}api/userreferral/v2/user/";
+const String clubDashboardUrl = "${paycoolBaseUrl}userreferral/v2/user/";
 
-const String baseProjectPackageUrl = "${fabInfoBaseUrl}api/projectpackage/v2/";
+const String baseProjectPackageUrl = "${paycoolBaseUrl}projectpackage/v2/";
 
-const String clubProjectsUrl = "${fabInfoBaseUrl}api/project/v2/";
+const String clubProjectsUrl = "${paycoolBaseUrl}project/v2/";
 const String clubProjectDetailsUrl = "${baseProjectPackageUrl}project/";
 
 const String paycoolRef = '7star-ref';
@@ -52,13 +52,11 @@ const String isValidPaidReferralCodeUrl =
 /*----------------------------------------------------------------------
                         Pay.cool Pay
 ----------------------------------------------------------------------*/
-String fabInfoUserReferralUrl = isProduction
-    ? 'https://fabprod.info/api/userreferral/'
-    : 'https://fabtest.info/api/userreferral/';
+
 // valid Referralcode
-String isValidPaycoolMemberUrl = fabInfoUserReferralUrl + 'isValid/';
+String isValidPaycoolMemberUrl = paycoolBaseUrl + 'userreferral/isValid/';
 // https://fabtest.info/api/userreferral/user/myVKCpWKSpMDvpZZRS69re3KmSta29ZFnK
-const String isValidPaycoolReferralRoute = "api/userreferral/user/";
+const String isValidPaycoolReferralRoute = "userreferral/user/";
 
 // Get downline (count / pagenumber)
 // https://fabtest.info/api/userreferral/user/myVKCpWKSpMDvpZZRS69re3KmSta29ZFnK/10/0
@@ -67,8 +65,8 @@ const String isValidPaycoolReferralRoute = "api/userreferral/user/";
 // https://fabtest.info/api/userreferral/user/myVKCpWKSpMDvpZZRS69re3KmSta29ZFnK/totalCount
 const String totalCountRoute = "/totalCount";
 
-const String paymentRewardUrl = fabInfoBaseUrl + 'api/payreward/v2/user/';
-const String paymentTransactionHistoryUrl = fabInfoBaseUrl + 'api/charge/user/';
+const String paymentRewardUrl = paycoolBaseUrl + 'payreward/v2/user/';
+const String paymentTransactionHistoryUrl = paycoolBaseUrl + 'charge/user/';
 
 // ** https://api.blockchaingate.com/v2/stores/feeChargerSmartContractAddress/0x1e89b7d555fe1b68c048b68eb28724950e1051f2
 const String storeInfoPayCoolUrl =

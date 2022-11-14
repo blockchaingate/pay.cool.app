@@ -25,6 +25,7 @@ import 'package:paycool/utils/barcode_util.dart';
 import 'package:paycool/views/paycool_club/referral/referral_model.dart';
 import 'package:paycool/views/paycool_club/paycool_club_service.dart';
 import 'package:paycool/views/paycool_club/join_club/join_club_payment_model.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:share/share.dart';
 import 'package:stacked/stacked.dart';
 import 'package:paycool/services/db/wallet_database_service.dart';
@@ -106,7 +107,38 @@ class ClubDashboardViewModel extends BaseViewModel {
     await checkGas();
     if (gasAmount == 0.0) await checkFreeFabForNewWallet();
     setBusy(false);
+  } // init ends
+
+  showJoinPaycoolPopup() {
+    Alert(
+        style: AlertStyle(
+            animationType: AnimationType.grow,
+            isOverlayTapDismiss: false,
+            backgroundColor: secondaryColor,
+            descStyle: headText6,
+            titleStyle: headText3.copyWith(fontWeight: FontWeight.bold)),
+        context: context,
+        title: FlutterI18n.translate(context, "notJoinedPaycool"),
+        desc: FlutterI18n.translate(context, "joinPayCoolNote"),
+        closeFunction: () {
+          FocusScope.of(context).requestFocus(FocusNode());
+          Navigator.of(context).pop();
+        },
+        buttons: [
+          DialogButton(
+            color: primaryColor,
+            onPressed: () {
+              navigationService.navigateTo(PayCoolViewRoute);
+            },
+            child: Text(
+              FlutterI18n.translate(context, "joinPayCoolButton"),
+              style: buttonText,
+            ),
+          )
+        ]).show();
   }
+
+  getPurchasedPackageHistory() {}
 
   updateProjectIndex(int i) {
     projectIndex = i;

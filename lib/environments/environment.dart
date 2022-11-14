@@ -232,9 +232,7 @@ Map productionConfig = {
       "CNB": "ceb9a838c3f3ee6e3168c06734f9188f2693999f",
       "NVZN": "0x99963ee76c886fc43d5063428ff8f926e8a50985",
       "BST": "0x4fe1819daf783a3f3151ea0937090063b85d6122",
-      "PaycoolSmartContractAddress":
-          '0x99013cf2e650ab80c0852288445cdf4d18f5f2d4',
-      "PaycoolReferralAddress": "0x1a6640a4a0d83d1c8c38cee54a28f4d2edf634c3"
+      "PaycoolReferralAddress": "0x1c6acdff5fd3f7e732083f5f6d3950d08f345e9b"
     },
     'exchangilyOfficial': [
       {'name': 'EXG', 'address': '0xa7c8257b0571dc3d3c96b24b668c6569391b3ac9'},
