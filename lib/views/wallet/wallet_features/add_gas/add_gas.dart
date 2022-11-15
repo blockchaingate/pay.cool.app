@@ -16,7 +16,6 @@ import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/utils/number_util.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:paycool/views/wallet/wallet_features/add_gas/add_gas_viewmodel.dart';

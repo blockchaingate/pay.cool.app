@@ -130,17 +130,27 @@ class ClubDashboardViewModel extends BaseViewModel {
               )),
             ),
             actions: [
-              DialogButton(
-                color: primaryColor,
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  navigationService.navigateTo(PayCoolViewRoute);
-                },
-                child: Text(
-                  FlutterI18n.translate(context, "join"),
-                  style: buttonText,
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        style: generalButtonStyle1,
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          navigationService.navigateTo(PayCoolViewRoute);
+                        },
+                        child: Text(
+                          FlutterI18n.translate(context, "join"),
+                          style: buttonText,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              )
+              ),
+              UIHelper.verticalSpaceSmall
             ],
           );
         });

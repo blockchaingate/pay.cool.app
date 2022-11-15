@@ -30,13 +30,8 @@ class ImportWalletView extends StatelessWidget {
         model.route = 'import';
       },
       builder: (context, model, child) => Scaffold(
-        appBar: AppBar(
-            centerTitle: true,
-            title: Text(
-              FlutterI18n.translate(context, "importWallet"),
-              style: headText3.copyWith(color: secondaryColor),
-            ),
-            backgroundColor: primaryColor),
+        appBar: customAppBarWithTitleNB(
+            FlutterI18n.translate(context, "importWallet")),
         body: Container(
           alignment: Alignment.center,
           padding: const EdgeInsets.all(10),

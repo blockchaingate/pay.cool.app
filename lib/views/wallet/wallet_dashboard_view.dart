@@ -328,7 +328,7 @@ class WalletDashboardView extends StatelessWidget {
                         : Container(
                             margin: const EdgeInsets.symmetric(vertical: 8.0),
                             decoration: BoxDecoration(
-                                color: primaryColor,
+                                color: secondaryColor,
                                 borderRadius: BorderRadius.circular(30)),
                             child: SizedBox(
                               width: 120,

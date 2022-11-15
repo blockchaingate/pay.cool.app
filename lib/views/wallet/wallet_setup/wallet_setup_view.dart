@@ -19,6 +19,7 @@ import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/views/wallet/wallet_setup/wallet_setup_viewmodel.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:stacked/stacked.dart';
+import 'package:flutter_svg/svg.dart';
 
 class WalletSetupView extends StatelessWidget {
   const WalletSetupView({Key key}) : super(key: key);
@@ -69,16 +70,10 @@ class WalletSetupView extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Text(FlutterI18n.translate(context, "payCool"),
-                              textAlign: TextAlign.center,
-                              style: headText4.copyWith(
-                                  color: primaryColor,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 60)),
-                          // Text("Consumerchant Club",
-                          //     textAlign: TextAlign.center,
-                          //     style: headText4.copyWith(
-                          //         fontWeight: FontWeight.bold, fontSize: 22)),
+                          SvgPicture.asset(
+                            "assets/images/paycool/paycool-with-caption.svg",
+                            color: primaryColor,
+                          ),
                           const SizedBox(
                             height: 10,
                           ),
