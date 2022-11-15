@@ -31,7 +31,9 @@ class PayCoolView extends StatelessWidget {
           return Future(() => false);
         },
         child: Scaffold(
-          backgroundColor: secondaryColor,
+          extendBodyBehindAppBar: true,
+          //  backgroundColor: secondaryColor,
+          //  appBar: customAppBar(color: secondaryColor),
           body: GestureDetector(
             onTap: () {
               FocusScope.of(context).requestFocus(FocusNode());

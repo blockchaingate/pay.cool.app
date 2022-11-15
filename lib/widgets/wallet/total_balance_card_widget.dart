@@ -70,7 +70,9 @@ class TotalBalanceCardWidget extends StatelessWidget {
                                   style: Theme.of(context)
                                       .textTheme
                                       .subtitle1
-                                      .copyWith(fontWeight: FontWeight.w400)),
+                                      .copyWith(
+                                          fontWeight: FontWeight.w400,
+                                          color: black)),
                         ],
                       ),
                     ),

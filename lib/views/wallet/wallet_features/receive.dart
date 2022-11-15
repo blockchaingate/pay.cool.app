@@ -60,11 +60,8 @@ class _ReceiveWalletScreenState extends State<ReceiveWalletScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: scaffoldKey,
-      appBar: AppBar(
-        title:
-            Text(FlutterI18n.translate(context, "receive"), style: headText3),
-        centerTitle: true,
-      ),
+      appBar:
+          customAppBarWithTitleNB(FlutterI18n.translate(context, "receive")),
       body: SingleChildScrollView(
         child: Container(
           margin: const EdgeInsets.all(10.0),

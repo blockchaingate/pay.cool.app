@@ -11,7 +11,6 @@
 *----------------------------------------------------------------------
 */
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
@@ -41,7 +40,7 @@ class MoveToExchangeView extends StatelessWidget {
         model.initState();
       },
       builder: (context, model, child) => Scaffold(
-        appBar: customAppBarWithTitle(
+        appBar: customAppBarWithTitleNB(
             '${FlutterI18n.translate(context, "move")}  ${model.specialTicker}  ${FlutterI18n.translate(context, "toExchange")}'),
         body: Container(
           padding: const EdgeInsets.all(10),

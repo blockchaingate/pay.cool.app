@@ -39,19 +39,25 @@ class TransactionHistoryView extends StatelessWidget {
                 appBar: AppBar(
                   leading: Container(
                       child: IconButton(
-                          icon: const Icon(Icons.arrow_back),
+                          icon: const Icon(
+                            Icons.arrow_back,
+                            color: black,
+                          ),
                           onPressed: () => Navigator.of(context).pop())),
                   centerTitle: true,
                   actions: [
                     IconButton(
-                      icon: const Icon(Icons.refresh),
+                      icon: const Icon(
+                        Icons.refresh,
+                        color: primaryColor,
+                      ),
                       onPressed: () => model.reloadTransactions(),
                     )
                   ],
                   title: Text(
                       FlutterI18n.translate(context, "transactionHistory"),
-                      style: headText3),
-                  backgroundColor: primaryColor,
+                      style: headText3.copyWith(color: black)),
+                  backgroundColor: secondaryColor,
                 ),
                 body: !model.dataReady || model.isBusy
                     ? SizedBox(

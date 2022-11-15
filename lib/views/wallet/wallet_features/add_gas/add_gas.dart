@@ -32,8 +32,8 @@ class AddGasView extends StatelessWidget {
         },
         viewModelBuilder: () => AddGasViewModel(),
         builder: (context, AddGasViewModel model, _) => Scaffold(
-            appBar:
-                customAppBarWithTitle(FlutterI18n.translate(context, "addGas")),
+            appBar: customAppBarWithTitleNB(
+                FlutterI18n.translate(context, "addGas")),
             body: Container(
                 padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
                 child: ListView(

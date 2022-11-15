@@ -47,7 +47,7 @@ Future<void> main() async {
     await serviceLocator();
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
 
-    Logger.level = Level.info;
+    Logger.level = Level.nothing;
 
     SystemChannels.textInput
         .invokeMethod('TextInput.hide'); // Hides keyboard initially
@@ -119,7 +119,7 @@ class MyApp extends StatelessWidget {
             actionsIconTheme: IconThemeData(color: Colors.white),
             iconTheme: IconThemeData(color: Colors.white),
             systemOverlayStyle: SystemUiOverlayStyle(
-              statusBarColor: primaryColor,
+              statusBarColor: secondaryColor,
               statusBarIconBrightness: Brightness.dark,
               statusBarBrightness: Brightness.light,
             ),

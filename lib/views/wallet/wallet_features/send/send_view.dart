@@ -44,8 +44,8 @@ class SendWalletView extends StatelessWidget {
         },
         builder: (context, model, child) => Scaffold(
               resizeToAvoidBottomInset: false,
-              appBar:
-                  customAppBarWithTitle(FlutterI18n.translate(context, "send")),
+              appBar: customAppBarWithTitleNB(
+                  FlutterI18n.translate(context, "send")),
               body: GestureDetector(
                 onTap: () {
                   FocusScope.of(context).unfocus();

@@ -133,7 +133,7 @@ class PayCoolClubService {
       pageNumber = pageNumber - 1;
     }
     // page number - 1 because page number start from 0 in the api but in front end its from 1
-    url = url + '/$pageSize/$pageNumber';
+    url = url + '$pageSize/$pageNumber';
     log.i('getClubProjects url $url');
 
     try {
