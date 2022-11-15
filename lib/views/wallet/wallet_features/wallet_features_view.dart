@@ -40,6 +40,7 @@ class WalletFeaturesView extends StatelessWidget {
         model.init();
       },
       builder: (context, model, child) => Scaffold(
+        extendBodyBehindAppBar: true,
         appBar: AppBar(
           automaticallyImplyLeading: false,
           backgroundColor: primaryColor,

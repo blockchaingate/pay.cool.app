@@ -115,10 +115,15 @@ class MyApp extends StatelessWidget {
           visualDensity: VisualDensity.adaptivePlatformDensity,
           // added unselectedWidgetColor to update inactive radio button's color
           appBarTheme: const AppBarTheme(
-              backgroundColor: primaryColor,
-              actionsIconTheme: IconThemeData(color: Colors.white),
-              iconTheme: IconThemeData(color: Colors.white),
-              systemOverlayStyle: SystemUiOverlayStyle.light),
+            backgroundColor: primaryColor,
+            actionsIconTheme: IconThemeData(color: Colors.white),
+            iconTheme: IconThemeData(color: Colors.white),
+            systemOverlayStyle: SystemUiOverlayStyle(
+              statusBarColor: primaryColor,
+              statusBarIconBrightness: Brightness.dark,
+              statusBarBrightness: Brightness.light,
+            ),
+          ),
           unselectedWidgetColor: Colors.black,
           disabledColor: grey.withAlpha(100),
           primaryColor: primaryColor,

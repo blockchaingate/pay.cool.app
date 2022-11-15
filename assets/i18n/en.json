@@ -485,6 +485,7 @@
     "purchase": "Purchase",
     "purchasedPackages": "Purchased Packages",
     "notJoinedPaycool": "You are not a Pay.cool member",
-    "join": "Join"
+    "join": "Join",
+    "visitDashboard": "Visit Dashboard"
 
 }

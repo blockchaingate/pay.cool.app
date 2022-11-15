@@ -3,7 +3,6 @@ import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/shared/ui_helpers.dart';
-import 'package:paycool/utils/number_util.dart';
 import 'package:paycool/views/paycool_club/club_dashboard_model.dart';
 
 import '../../service_locator.dart';
@@ -32,81 +31,92 @@ class ClubRewardsView extends StatelessWidget {
       ),
       body: Container(
         decoration: BoxDecoration(image: blurBackgroundImage()),
-        child: Container(
-          margin: const EdgeInsets.all(8),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              UIHelper.verticalSpaceSmall,
-              Expanded(
-                  child: ListView.separated(
-                      shrinkWrap: true,
-                      itemCount: rewardsSummary.length,
-                      separatorBuilder: (BuildContext context, int index) =>
-                          const Divider(
-                            height: 15,
-                          ),
-                      itemBuilder: (BuildContext context, int index) {
-                        return Container(
-                          margin: const EdgeInsets.all(5.0),
-                          padding: const EdgeInsets.all(10.0),
-                          decoration:
-                              roundedBoxDecoration(color: secondaryColor),
-                          child: ListTile(
-                            onTap: () =>
-                                showRewardDistributionDialog(context, index),
-                            horizontalTitleGap: 0,
-                            leading: const Icon(
-                              Icons.monetization_on_outlined,
-                              color: black,
-                              size: 18,
-                            ),
-                            title: Text(
-                              storageService.language == "en"
-                                  ? rewardsSummary[index].project.en
-                                  : rewardsSummary[index].project.sc,
-                              style: headText4,
-                            ),
-                            subtitle: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                for (var j = 0;
-                                    j <
-                                        rewardsSummary[index]
-                                            .totalReward
-                                            .length;
-                                    j++)
-                                  Text(
-                                      rewardsSummary[index]
-                                              .totalReward[j]
-                                              .coin +
-                                          ' ' +
-                                          rewardsSummary[index]
-                                              .totalReward[j]
-                                              .amount
-                                              .toStringAsFixed(2),
-                                      style: headText5),
-                              ],
-                            ),
-                            trailing: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                UIHelper.horizontalSpaceSmall,
-                                Text(
-                                  'Rewards distribution details',
-                                  style: headText5.copyWith(
-                                      color: primaryColor,
-                                      decoration: TextDecoration.underline),
-                                )
-                              ],
-                            ),
-                          ),
-                        );
-                      }))
-            ],
-          ),
-        ),
+        child: rewardsSummary.first.totalReward.first.coin == null
+            ? Center(
+                child: Image.asset(
+                  "assets/images/img/rewards.png",
+                  width: 25,
+                  height: 25,
+                ),
+              )
+            : Container(
+                margin: const EdgeInsets.all(8),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    UIHelper.verticalSpaceSmall,
+                    Expanded(
+                        child: ListView.separated(
+                            shrinkWrap: true,
+                            itemCount: rewardsSummary.length,
+                            separatorBuilder:
+                                (BuildContext context, int index) =>
+                                    const Divider(
+                                      height: 15,
+                                    ),
+                            itemBuilder: (BuildContext context, int index) {
+                              return Container(
+                                margin: const EdgeInsets.all(5.0),
+                                padding: const EdgeInsets.all(10.0),
+                                decoration:
+                                    roundedBoxDecoration(color: secondaryColor),
+                                child: ListTile(
+                                  onTap: () => showRewardDistributionDialog(
+                                      context, index),
+                                  horizontalTitleGap: 0,
+                                  leading: const Icon(
+                                    Icons.monetization_on_outlined,
+                                    color: black,
+                                    size: 18,
+                                  ),
+                                  title: Text(
+                                    storageService.language == "en"
+                                        ? rewardsSummary[index].project.en
+                                        : rewardsSummary[index].project.sc,
+                                    style: headText4,
+                                  ),
+                                  subtitle: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      for (var j = 0;
+                                          j <
+                                              rewardsSummary[index]
+                                                  .totalReward
+                                                  .length;
+                                          j++)
+                                        Text(
+                                            rewardsSummary[index]
+                                                    .totalReward[j]
+                                                    .coin +
+                                                ' ' +
+                                                rewardsSummary[index]
+                                                    .totalReward[j]
+                                                    .amount
+                                                    .toStringAsFixed(2),
+                                            style: headText5),
+                                    ],
+                                  ),
+                                  trailing: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      UIHelper.horizontalSpaceSmall,
+                                      Text(
+                                        'Rewards distribution details',
+                                        style: headText5.copyWith(
+                                            color: primaryColor,
+                                            decoration:
+                                                TextDecoration.underline),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              );
+                            }))
+                  ],
+                ),
+              ),
       ),
       // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       // floatingActionButton: model.paginationModel.pages.isEmpty

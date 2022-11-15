@@ -65,7 +65,7 @@ class WalletDashboardView extends StatelessWidget {
             },
             child: Scaffold(
               key: key,
-              appBar: customAppBar(),
+              appBar: customAppBar(color: secondaryColor),
               body: GestureDetector(
                 onTap: () {
                   FocusScope.of(context).requestFocus(FocusNode());

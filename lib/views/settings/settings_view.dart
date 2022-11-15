@@ -39,11 +39,12 @@ class SettingsView extends StatelessWidget {
           return Future(() => false);
         },
         child: Scaffold(
+          extendBodyBehindAppBar: true,
           // When the keyboard appears, the Flutter widgets resize to avoid that we use resizeToAvoidBottomInset: false
           resizeToAvoidBottomInset: false,
 
-          appBar:
-              customAppBarWithTitle(FlutterI18n.translate(context, "settings")),
+          appBar: customAppBarWithTitleNB(
+              FlutterI18n.translate(context, "settings")),
           body: model.isBusy
               ? Center(child: model.sharedService.loadingIndicator())
               // : model.isShowCaseOnce == false
@@ -487,7 +488,7 @@ class SettingsContainer extends StatelessWidget {
                   children: <Widget>[
                     Text(
                       'v ${model.versionName}.${model.buildNumber}',
-                      style: headText6,
+                      style: headText6.copyWith(color: secondaryColor),
                     ),
                     if (!isProduction)
                       const Text(' Debug',

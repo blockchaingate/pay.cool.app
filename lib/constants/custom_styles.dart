@@ -40,6 +40,18 @@ AppBar customAppBarWithTitle(String title, {Color color = primaryColor}) =>
       backgroundColor: color,
       centerTitle: true,
     );
+
+AppBar customAppBarWithTitleNB(String title) => AppBar(
+      iconTheme: const IconThemeData(color: black),
+      title: Text(
+        title,
+        style: headText3.copyWith(color: black),
+      ),
+      automaticallyImplyLeading: true,
+      backgroundColor: Colors.transparent,
+      centerTitle: true,
+      elevation: 0,
+    );
 buttonRoundShape(Color color) {
   var shapeRoundBorder = MaterialStateProperty.all<RoundedRectangleBorder>(
       RoundedRectangleBorder(
