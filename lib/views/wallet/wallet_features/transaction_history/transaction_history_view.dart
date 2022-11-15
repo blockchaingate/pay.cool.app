@@ -2,24 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
+import 'package:paycool/models/wallet/wallet.dart';
 import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/views/wallet/wallet_features/transaction_history/transaction_history_card_widget.dart';
 import 'package:paycool/views/wallet/wallet_features/transaction_history/transaction_history_viewmodel.dart';
 import 'package:stacked/stacked.dart';
 
 class TransactionHistoryView extends StatelessWidget {
-  final String tickerName;
-  const TransactionHistoryView({Key key, this.tickerName}) : super(key: key);
+  final WalletInfo walletInfo;
+  const TransactionHistoryView({Key key, this.walletInfo}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     double customFontSize = 12;
     return ViewModelBuilder<TransactionHistoryViewmodel>.reactive(
         viewModelBuilder: () =>
-            TransactionHistoryViewmodel(tickerName: tickerName),
+            TransactionHistoryViewmodel(tickerName: walletInfo.tickerName),
         onModelReady: (model) async {
           model.context = context;
-          // model.getWalletFromDb();
+          model.walletInfo = walletInfo;
         },
         builder: (context, model, child) => WillPopScope(
               onWillPop: () async {

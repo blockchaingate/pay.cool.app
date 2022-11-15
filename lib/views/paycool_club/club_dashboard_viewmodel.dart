@@ -110,32 +110,40 @@ class ClubDashboardViewModel extends BaseViewModel {
   } // init ends
 
   showJoinPaycoolPopup() {
-    Alert(
-        style: AlertStyle(
-            animationType: AnimationType.grow,
-            isOverlayTapDismiss: false,
-            backgroundColor: secondaryColor,
-            descStyle: headText6,
-            titleStyle: headText3.copyWith(fontWeight: FontWeight.bold)),
+    showDialog(
         context: context,
-        title: FlutterI18n.translate(context, "notJoinedPaycool"),
-        desc: FlutterI18n.translate(context, "joinPayCoolNote"),
-        closeFunction: () {
-          FocusScope.of(context).requestFocus(FocusNode());
-          Navigator.of(context).pop();
-        },
-        buttons: [
-          DialogButton(
-            color: primaryColor,
-            onPressed: () {
-              navigationService.navigateTo(PayCoolViewRoute);
-            },
-            child: Text(
-              FlutterI18n.translate(context, "joinPayCoolButton"),
-              style: buttonText,
+        builder: (context) {
+          return AlertDialog(
+            titleTextStyle: headText3.copyWith(color: black),
+            title: Text(
+              FlutterI18n.translate(context, "notJoinedPaycool"),
+              textAlign: TextAlign.center,
+              style: headText3.copyWith(color: black),
             ),
-          )
-        ]).show();
+            contentTextStyle: const TextStyle(color: grey),
+            content: SizedBox(
+              height: 50,
+              child: SingleChildScrollView(
+                  child: Text(
+                FlutterI18n.translate(context, "joinPayCoolNote"),
+                style: headText3,
+              )),
+            ),
+            actions: [
+              DialogButton(
+                color: primaryColor,
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  navigationService.navigateTo(PayCoolViewRoute);
+                },
+                child: Text(
+                  FlutterI18n.translate(context, "join"),
+                  style: buttonText,
+                ),
+              )
+            ],
+          );
+        });
   }
 
   getPurchasedPackageHistory() {}

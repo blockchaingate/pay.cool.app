@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:paycool/constants/colors.dart';
@@ -360,11 +359,13 @@ class ClubDashboardView extends StatelessWidget {
                                                             UIHelper
                                                                 .verticalSpaceSmall,
                                                             SizedBox(
-                                                              width: 150,
+                                                              width: 90,
+                                                              height: 50,
                                                               child:
                                                                   ElevatedButton(
-                                                                      style:
-                                                                          generalButtonStyle1,
+                                                                      style: generalButtonStyle1.copyWith(
+                                                                          padding: MaterialStateProperty.all(EdgeInsets
+                                                                              .zero)),
                                                                       onPressed:
                                                                           () {
                                                                         if (model
@@ -379,7 +380,9 @@ class ClubDashboardView extends StatelessWidget {
                                                                       },
                                                                       child:
                                                                           Text(
-                                                                        'Join',
+                                                                        FlutterI18n.translate(
+                                                                            context,
+                                                                            "details"),
                                                                         style: headText4.copyWith(
                                                                             color:
                                                                                 secondaryColor),
@@ -724,6 +727,7 @@ class ClubDashboardView extends StatelessWidget {
                                                 CrossAxisAlignment.center,
                                             children: [
                                               UIHelper.verticalSpaceLarge,
+                                              UIHelper.verticalSpaceLarge,
                                               Text(
                                                 FlutterI18n.translate(
                                                     context, "paycoolCaption"),
@@ -762,8 +766,12 @@ class ClubDashboardView extends StatelessWidget {
                                                   },
                                                   child: Text(
                                                       FlutterI18n.translate(
-                                                          context, "joinNow"),
-                                                      style: headText4),
+                                                          context,
+                                                          "joinPayCoolButton"),
+                                                      style: headText4.copyWith(
+                                                          color: secondaryColor,
+                                                          fontWeight:
+                                                              FontWeight.bold)),
                                                 ),
                                               ),
                                             ],

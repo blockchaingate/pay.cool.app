@@ -127,6 +127,10 @@ class ClubPackageCheckoutViewModel extends FutureViewModel {
 
     var res;
     var seed = await walletService.getSeedDialog(context);
+    if (seed == null) {
+      setBusy(false);
+      return;
+    }
     for (var param in clubPackageCheckout.clubParams) {
       res = await paycoolService.signSendTx(seed, param.data, param.to);
     }

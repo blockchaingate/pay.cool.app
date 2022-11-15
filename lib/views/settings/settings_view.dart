@@ -10,9 +10,6 @@
 * Author: barry-ruprai@exchangily.com
 *----------------------------------------------------------------------
 */
-
-import 'dart:ui';
-
 import 'package:flutter/gestures.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:paycool/constants/api_routes.dart';
@@ -45,13 +42,8 @@ class SettingsView extends StatelessWidget {
           // When the keyboard appears, the Flutter widgets resize to avoid that we use resizeToAvoidBottomInset: false
           resizeToAvoidBottomInset: false,
 
-          appBar: AppBar(
-            elevation: 0,
-            backgroundColor: primaryColor.withAlpha(100),
-            centerTitle: true,
-            title: Text(FlutterI18n.translate(context, "settings"),
-                style: headText3),
-          ),
+          appBar:
+              customAppBarWithTitle(FlutterI18n.translate(context, "settings")),
           body: model.isBusy
               ? Center(child: model.sharedService.loadingIndicator())
               // : model.isShowCaseOnce == false
@@ -261,7 +253,7 @@ class SettingsContainer extends StatelessWidget {
                   const Padding(
                     padding: EdgeInsets.only(left: 5.0, right: 8.0),
                     child: Icon(Icons.account_balance_wallet,
-                        color: white, size: 18),
+                        color: black, size: 18),
                   ),
                   Expanded(
                     child: Text(
@@ -295,7 +287,7 @@ class SettingsContainer extends StatelessWidget {
                 children: <Widget>[
                   const Padding(
                     padding: EdgeInsets.only(left: 5.0, right: 8.0),
-                    child: Icon(Icons.qr_code, color: white, size: 18),
+                    child: Icon(Icons.qr_code, color: black, size: 18),
                   ),
                   Expanded(
                     child: Text(
@@ -457,7 +449,7 @@ class SettingsContainer extends StatelessWidget {
                 children: <Widget>[
                   const Padding(
                     padding: EdgeInsets.only(left: 5.0, right: 8.0),
-                    child: Icon(Icons.storage, color: white, size: 18),
+                    child: Icon(Icons.storage, color: black, size: 18),
                   ),
                   // Add column here and add text box that shows which node is current
                   Expanded(

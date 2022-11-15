@@ -106,8 +106,9 @@ class PayCoolView extends StatelessWidget {
                                               keyboardType: TextInputType.text,
                                               decoration: InputDecoration(
                                                   prefixIcon: IconButton(
-                                                      padding: const EdgeInsets.only(
-                                                          left: 10),
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              left: 10),
                                                       alignment:
                                                           Alignment.centerLeft,
                                                       tooltip: FlutterI18n.translate(
@@ -132,23 +133,22 @@ class PayCoolView extends StatelessWidget {
                                                         color: green,
                                                         size: 18,
                                                       ),
-                                                      onPressed: () =>
-                                                          model.contentPaste(
-                                                              addressType: Constants
-                                                                  .ReferralAddressText)),
-                                                  enabledBorder:
-                                                      const OutlineInputBorder(
-                                                          borderSide: BorderSide(
-                                                              color:
-                                                                  primaryColor,
-                                                              width: 0.5)),
+                                                      onPressed: () => model.contentPaste(
+                                                          addressType: Constants
+                                                              .ReferralAddressText)),
+                                                  focusedBorder: const UnderlineInputBorder(
+                                                      borderSide: BorderSide(
+                                                          color: primaryColor,
+                                                          width: 0.5)),
+                                                  enabledBorder: const OutlineInputBorder(
+                                                      borderSide: BorderSide(
+                                                          color: primaryColor,
+                                                          width: 0.5)),
                                                   hintText: FlutterI18n.translate(
                                                       context, "referralCode"),
                                                   hintStyle: headText5),
-                                              controller:
-                                                  model.referralController,
-                                              style: headText5.copyWith(
-                                                  fontWeight: FontWeight.bold)),
+                                              controller: model.referralController,
+                                              style: headText5.copyWith(fontWeight: FontWeight.bold)),
                                           model.apiRes != null && !model.isBusy
                                               ? Column(children: [
                                                   UIHelper.verticalSpaceMedium,
@@ -184,7 +184,10 @@ class PayCoolView extends StatelessWidget {
                                               child: Text(
                                                   FlutterI18n.translate(
                                                       context, "joinNow"),
-                                                  style: headText4),
+                                                  style: headText4.copyWith(
+                                                      color: secondaryColor,
+                                                      fontWeight:
+                                                          FontWeight.bold)),
                                             ),
                                           ),
                                           UIHelper.verticalSpaceSmall,

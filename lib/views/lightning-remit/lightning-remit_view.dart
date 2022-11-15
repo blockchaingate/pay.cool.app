@@ -609,12 +609,8 @@ class TxHistoryView extends StatelessWidget {
 ----------------------------------------------------------------------*/
 
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text(FlutterI18n.translate(context, "transactionHistory"),
-            style: headText3),
-        backgroundColor: secondaryColor,
-      ),
+      appBar: customAppBarWithTitle(
+          FlutterI18n.translate(context, "transactionHistory")),
       body: SingleChildScrollView(
         child: Container(
             padding: const EdgeInsets.all(4.0),
@@ -626,7 +622,7 @@ class TxHistoryView extends StatelessWidget {
                     child: Container(
                       padding: const EdgeInsets.symmetric(
                           vertical: 8.0, horizontal: 4.0),
-                      color: walletCardColor,
+                      color: secondaryColor,
                       child: Row(
                         children: <Widget>[
                           SizedBox(
@@ -688,7 +684,7 @@ class TxHistoryView extends StatelessWidget {
                                     ),
                                     IconButton(
                                       icon: const Icon(Icons.copy_outlined,
-                                          color: white, size: 16),
+                                          color: black, size: 16),
                                       onPressed: () => model.copyAddress(
                                           transaction.tickerChainTxId),
                                     )

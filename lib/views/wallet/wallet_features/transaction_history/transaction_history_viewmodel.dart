@@ -213,12 +213,12 @@ class TransactionHistoryViewmodel extends FutureViewModel {
         builder: (BuildContext context) {
           return Platform.isIOS
               ? Theme(
-                  data: ThemeData.dark(),
+                  data: ThemeData.light(),
                   child: CupertinoAlertDialog(
                     title: Container(
                       child: Center(
                           child: Text(
-                        '${FlutterI18n.translate(context, "transactionDetails")}....',
+                        FlutterI18n.translate(context, "transactionDetails"),
                         style: headText4.copyWith(
                             color: primaryColor, fontWeight: FontWeight.w500),
                       )),
@@ -231,7 +231,7 @@ class TransactionHistoryViewmodel extends FutureViewModel {
                           transactionHistory.tag != send
                               ? Text(
                                   '${FlutterI18n.translate(context, "kanban")} ${FlutterI18n.translate(context, "transactionId")}',
-                                  style: Theme.of(context).textTheme.bodyText1,
+                                  style: headText5,
                                 )
                               : Container(),
                           transactionHistory.tag != send
@@ -276,7 +276,7 @@ class TransactionHistoryViewmodel extends FutureViewModel {
                                         : CupertinoButton(
                                             child: const Icon(
                                                 FontAwesomeIcons.copy,
-                                                color: white,
+                                                color: black,
                                                 size: 16),
                                             onPressed: () => copyAddress(
                                                 transactionHistory.kanbanTxId),
@@ -328,7 +328,7 @@ class TransactionHistoryViewmodel extends FutureViewModel {
                                   ? Container()
                                   : CupertinoButton(
                                       child: const Icon(FontAwesomeIcons.copy,
-                                          color: white, size: 16),
+                                          color: black, size: 16),
                                       onPressed: () => copyAddress(
                                           transactionHistory.tickerChainTxId),
                                     )
@@ -349,10 +349,8 @@ class TransactionHistoryViewmodel extends FutureViewModel {
                                   const BorderRadius.all(Radius.circular(4)),
                               child: Text(
                                 FlutterI18n.translate(context, "close"),
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyText2
-                                    .copyWith(fontWeight: FontWeight.bold),
+                                style: headText5.copyWith(
+                                    fontWeight: FontWeight.bold),
                               ),
                               onPressed: () {
                                 Navigator.of(context).pop(true);
@@ -368,7 +366,7 @@ class TransactionHistoryViewmodel extends FutureViewModel {
                   titlePadding: EdgeInsets.zero,
                   contentPadding: const EdgeInsets.all(5.0),
                   elevation: 5,
-                  backgroundColor: walletCardColor.withOpacity(0.85),
+                  backgroundColor: secondaryColor,
                   title: Container(
                     padding: const EdgeInsets.all(10.0),
                     color: secondaryColor.withOpacity(0.5),
@@ -386,7 +384,7 @@ class TransactionHistoryViewmodel extends FutureViewModel {
                           ? Text(
                               //FlutterI18n.translate(context, "t")).,
                               '${FlutterI18n.translate(context, "kanban")} ${FlutterI18n.translate(context, "transactionId")}',
-                              style: Theme.of(context).textTheme.bodyText1,
+                              style: headText5,
                             )
                           : Container(),
                       transactionHistory.tag != send
@@ -428,7 +426,7 @@ class TransactionHistoryViewmodel extends FutureViewModel {
                                     ? Container()
                                     : IconButton(
                                         icon: const Icon(Icons.copy_outlined,
-                                            color: white, size: 16),
+                                            color: black, size: 16),
                                         onPressed: () => copyAddress(
                                             transactionHistory.kanbanTxId),
                                       )
@@ -439,7 +437,7 @@ class TransactionHistoryViewmodel extends FutureViewModel {
                       Text(
                         //FlutterI18n.translate(context, "quantity"),FlutterI18n.translate(context, "quantity")
                         '${transactionHistory.chainName} ${FlutterI18n.translate(context, "chain")} ${FlutterI18n.translate(context, "transactionId")}',
-                        style: Theme.of(context).textTheme.bodyText1,
+                        style: headText5,
                       ),
                       Row(
                         mainAxisSize: MainAxisSize.max,
@@ -477,7 +475,7 @@ class TransactionHistoryViewmodel extends FutureViewModel {
                           ),
                           IconButton(
                             icon: const Icon(Icons.copy_outlined,
-                                color: white, size: 16),
+                                color: black, size: 16),
                             onPressed: () =>
                                 copyAddress(transactionHistory.tickerChainTxId),
                           )

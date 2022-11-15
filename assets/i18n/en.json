@@ -295,7 +295,7 @@
     "website": "Website",
     "clickOnWebsiteButton": "or click on website button to download the latest version from the official Exchangily site",
     "serverBusy": "Server Busy",
-    "lightningRemit": "LightningRemit",
+    "lightningRemit": "Lightning Remit",
     "tranfser": "Transfer",
     "share": "Share",
     "validationError": "Validation Error",
@@ -484,6 +484,7 @@
     "selectPackageDetails": "Select a Package to unlock",
     "purchase": "Purchase",
     "purchasedPackages": "Purchased Packages",
-    "notJoinedPaycool": "You are not a Pay.cool member"
+    "notJoinedPaycool": "You are not a Pay.cool member",
+    "join": "Join"
 
 }

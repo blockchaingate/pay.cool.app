@@ -66,12 +66,10 @@ class _ClubProjectDetailsViewState extends State<ClubProjectDetailsView> {
                   shrinkWrap: true,
                   itemCount: widget.projectDetails.length,
                   itemBuilder: (BuildContext context, int index) {
-                    return Container(
-                      margin: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 8),
-                      padding: const EdgeInsets.all(5),
-                      decoration:
-                          roundedBoxDecoration(color: grey.withAlpha(150)),
+                    return Card(
+                      margin: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+                      color: secondaryColor,
+                      elevation: 10,
                       child: ListTile(
                         onTap: () => navigationService.navigateTo(
                             clubPackageCheckoutViewRoute,
@@ -92,7 +90,7 @@ class _ClubProjectDetailsViewState extends State<ClubProjectDetailsView> {
                               ? widget.projectDetails[index].name.en
                               : widget.projectDetails[index].name.sc,
                           style: headText3.copyWith(
-                              fontWeight: FontWeight.bold, color: white),
+                              fontWeight: FontWeight.bold, color: black),
                         ),
                         subtitle: RichText(
                           text: TextSpan(

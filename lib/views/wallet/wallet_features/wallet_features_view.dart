@@ -40,7 +40,6 @@ class WalletFeaturesView extends StatelessWidget {
         model.init();
       },
       builder: (context, model, child) => Scaffold(
-        //    extendBodyBehindAppBar: true,
         appBar: AppBar(
           automaticallyImplyLeading: false,
           backgroundColor: primaryColor,
@@ -64,18 +63,8 @@ class WalletFeaturesView extends StatelessWidget {
                       children: <Widget>[
                         SizedBox(
                           width: MediaQuery.of(context).size.width,
-                          // height: 60,
                           child: Stack(
                             children: [
-                              // Align(
-                              //   alignment: Alignment.center,
-                              //   child: Image.asset(
-                              //     'assets/images/start-page/logo.png',
-                              //     width: 200,
-                              //     height: 60,
-                              //     color: white,
-                              //   ),
-                              // ),
                               Align(
                                 alignment: Alignment.topCenter,
                                 child: Container(
@@ -104,8 +93,6 @@ class WalletFeaturesView extends StatelessWidget {
                                         color: Colors.white,
                                       ),
                                       onPressed: () {
-                                        //Navigator.pop(context);
-                                        // Navigator.of(context, rootNavigator: true).pop('dialog');
                                         model.navigationService
                                             .navigateTo('/dashboard');
                                       })),
@@ -219,7 +206,7 @@ class WalletFeaturesView extends StatelessWidget {
                         onTap: () {
                           var route = model.features[6].route;
                           Navigator.pushNamed(context, route,
-                              arguments: walletInfo.tickerName);
+                              arguments: walletInfo);
                         },
                         child: Container(
                           height: 45,
@@ -283,9 +270,9 @@ class WalletFeaturesView extends StatelessWidget {
               child: Row(
                 children: <Widget>[
                   Text(model.specialTicker, style: headText5),
-                  Padding(
-                    padding: const EdgeInsets.all(2.0),
-                    child: const Icon(
+                  const Padding(
+                    padding: EdgeInsets.all(2.0),
+                    child: Icon(
                       Icons.arrow_forward,
                       size: 17,
                       color: white,

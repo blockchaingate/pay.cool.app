@@ -469,7 +469,7 @@ class LightningRemitViewmodel extends FutureViewModel {
                   insetPadding:
                       const EdgeInsets.symmetric(vertical: 25, horizontal: 20),
                   elevation: 5,
-                  backgroundColor: walletCardColor.withOpacity(0.85),
+                  backgroundColor: secondaryColor,
                   title: Container(
                     padding: const EdgeInsets.all(10.0),
                     color: secondaryColor.withOpacity(0.5),
@@ -508,7 +508,7 @@ class LightningRemitViewmodel extends FutureViewModel {
                       ),
                       // UIHelper.verticalSpaceLarge,
                       Container(
-                          margin: const EdgeInsets.only(top: 10.0),
+                          margin: const EdgeInsets.only(top: 20.0),
                           width: 250,
                           height: 250,
                           child: Center(
@@ -541,39 +541,64 @@ class LightningRemitViewmodel extends FutureViewModel {
 
                     Container(
                       padding: const EdgeInsets.all(10.0),
-                      child: RaisedButton(
-                          child: Text(FlutterI18n.translate(context, "share"),
-                              style: headText6),
-                          onPressed: () {
-                            String receiveFileName =
-                                'Lightning-remit-kanban-receive-address.png';
-                            getApplicationDocumentsDirectory().then((dir) {
-                              String filePath = "${dir.path}/$receiveFileName";
-                              File file = File(filePath);
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Row(
+                            children: [
+                              Expanded(
+                                child: ElevatedButton(
+                                    style: generalButtonStyle1,
+                                    child: Text(
+                                        FlutterI18n.translate(context, "share"),
+                                        style: headText6.copyWith(
+                                            color: secondaryColor)),
+                                    onPressed: () {
+                                      String receiveFileName =
+                                          'Lightning-remit-kanban-receive-address.png';
+                                      getApplicationDocumentsDirectory()
+                                          .then((dir) {
+                                        String filePath =
+                                            "${dir.path}/$receiveFileName";
+                                        File file = File(filePath);
 
-                              Future.delayed(const Duration(milliseconds: 30),
-                                  () {
-                                sharedService
-                                    .capturePng(globalKey: globalKey)
-                                    .then((byteData) {
-                                  file.writeAsBytes(byteData).then((onFile) {
-                                    Share.shareFiles([onFile.path],
-                                        text: kbAddress);
-                                  });
-                                });
-                              });
-                            });
-                          }),
-                    ),
-                    OutlinedButton(
-                      style: outlinedButtonStyles1,
-                      child: Text(
-                        FlutterI18n.translate(context, "close"),
-                        style: headText6,
+                                        Future.delayed(
+                                            const Duration(milliseconds: 30),
+                                            () {
+                                          sharedService
+                                              .capturePng(globalKey: globalKey)
+                                              .then((byteData) {
+                                            file
+                                                .writeAsBytes(byteData)
+                                                .then((onFile) {
+                                              Share.shareFiles([onFile.path],
+                                                  text: kbAddress);
+                                            });
+                                          });
+                                        });
+                                      });
+                                    }),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: OutlinedButton(
+                                  style: outlinedButtonStyles1,
+                                  child: Text(
+                                    FlutterI18n.translate(context, "close"),
+                                    style: headText6,
+                                  ),
+                                  onPressed: () {
+                                    Navigator.of(context).pop(false);
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
-                      onPressed: () {
-                        Navigator.of(context).pop(false);
-                      },
                     ),
                   ],
                 );
