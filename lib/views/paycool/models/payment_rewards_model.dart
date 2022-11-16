@@ -1,6 +1,6 @@
 import 'package:decimal/decimal.dart';
 
-class PaymentModel {
+class PaymentRewardsModel {
   String orderId;
   Decimal totalAmount;
   Decimal totalTax;
@@ -12,7 +12,7 @@ class PaymentModel {
   String rewardInfo;
   List<Params> params;
 
-  PaymentModel(
+  PaymentRewardsModel(
       {this.orderId,
       this.totalAmount,
       this.totalTax,
@@ -23,7 +23,7 @@ class PaymentModel {
       this.rewardDetails,
       this.params});
 
-  PaymentModel.fromJson(Map<String, dynamic> json) {
+  PaymentRewardsModel.fromJson(Map<String, dynamic> json) {
     orderId = json['orderId'];
     totalAmount = Decimal.parse(json['totalAmount'].toString());
     totalTax = Decimal.parse(json['totalTax'].toString());

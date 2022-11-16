@@ -119,11 +119,11 @@ class CreatePasswordViewModel extends BaseViewModel {
   }
 
   Future validatePassword() async {
-    setBusy(true);
     RegExp regex = RegExp(pattern);
     String pass = passTextController.text;
     String confirmPass = confirmPassTextController.text;
     if (pass.isEmpty) {
+      setBusy(true);
       password = '';
       confirmPassword = '';
       checkPasswordConditions = false;
@@ -166,6 +166,5 @@ class CreatePasswordViewModel extends BaseViewModel {
         confirmPassTextController.text = '';
       }
     }
-    setBusy(false);
   }
 }

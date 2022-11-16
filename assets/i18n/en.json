@@ -1,5 +1,5 @@
 {
-    "title": "Pay.cool Wallet",
+    "appTitle": "Pay.cool",
     "confirm": "Confirm",
     "cancel": "Cancel",
     "close": "Close",
@@ -282,7 +282,7 @@
     "toLatestBuild": "to latest build",
     "inText": "in",
     "submitYourAnswer": "Submit your answer",
-    "question": "Question",
+  
     "freeFabUpdate": "Free Fab Update",
     "freeFabSuccess": "Your will get your FAB shortly, Thank you",
     "getFree": "Get free",
@@ -486,6 +486,10 @@
     "purchasedPackages": "Purchased Packages",
     "notJoinedPaycool": "You are not a Pay.cool member",
     "join": "Join",
-    "visitDashboard": "Visit Dashboard"
+    "visitDashboard": "Visit Dashboard",
+    "freeGasQuestionNote": "Answer the question below",
+    "title": "Title",
+    "taxRate": "Tax Rate",
+    "rebateRate": "Rebate Rate"
 
 }

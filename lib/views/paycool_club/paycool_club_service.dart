@@ -10,6 +10,7 @@ import 'package:paycool/utils/custom_http_util.dart';
 import 'package:paycool/views/paycool_club/club_dashboard_model.dart';
 import 'package:paycool/views/paycool_club/club_projects/club_package_checkout_model.dart';
 import 'package:paycool/views/paycool_club/club_projects/club_project_model.dart';
+import 'package:paycool/views/paycool_club/purchased_package_history/purchased_package_history_model.dart';
 import 'package:paycool/views/paycool_club/referral/referral_model.dart';
 import 'package:paycool/views/paycool_club/paycool_dashboard_model_old.dart';
 
@@ -297,13 +298,13 @@ class PayCoolClubService {
   Future<int> getPurchasedPackageCount(
     String address,
   ) async {
-    String url = paycoolBaseUrl + 'api/buy/v2/user' + address + '/totalCount';
+    String url = paycoolBaseUrl + 'buy/v2/user/' + address + '/totalCount';
     int referralCount = 0;
     log.i('getPurchasedPackageCount url $url');
     try {
       var response = await client.get(url);
 
-      var json = jsonDecode(response.body);
+      var json = jsonDecode(response.body)["_body"];
 
       // log.w('getChildrenByAddress json $json');
       if (json.isNotEmpty) {
@@ -317,6 +318,42 @@ class PayCoolClubService {
     } catch (err) {
       log.e('In getPurchasedPackageCount catch $err');
       return 0;
+    }
+  }
+
+  Future<List<PurchasedPackageHistory>> getPurchasedPackageHistory(
+      String address,
+      {int pageSize = 10,
+      int pageNumber = 0}) async {
+    String url = paycoolBaseUrl + 'buy/v2/user/' + address;
+    if (pageNumber != 0) {
+      pageNumber = pageNumber - 1;
+    }
+    // page number - 1 because page number start from 0 in the api but in front end its from 1
+    url = url + '/$pageSize/$pageNumber';
+    log.i('getPurchasedPackageHistory url $url');
+    try {
+      var response = await client.get(url);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        var json = jsonDecode(response.body)["_body"] as List;
+
+        // log.w('getChildrenByAddress json $json');
+        if (json.isNotEmpty) {
+          PurchasedPackageHistoryList historyList =
+              PurchasedPackageHistoryList.fromJson(json);
+          log.i(
+              'getPurchasedPackageHistory first childeren obj ${historyList.purchasedPackageHistoryList[0].toJson()}');
+          return historyList.purchasedPackageHistoryList;
+        } else {
+          return [];
+        }
+      } else {
+        log.e("getPurchasedPackageHistory error: " + response.body);
+        return [];
+      }
+    } catch (err) {
+      log.e('In getPurchasedPackageHistory catch $err');
+      return [];
     }
   }
 
@@ -378,40 +415,6 @@ class PayCoolClubService {
       }
     } catch (err) {
       log.e('In getUserDownlineByAddress catch $err');
-      return [];
-    }
-  }
-
-  Future<List<PaycoolReferral>> getPurchasedPackageHistory(String address,
-      {int pageSize = 10, int pageNumber = 0}) async {
-    String url = paycoolBaseUrl + 'api/buy/v2/user' + address;
-    if (pageNumber != 0) {
-      pageNumber = pageNumber - 1;
-    }
-    // page number - 1 because page number start from 0 in the api but in front end its from 1
-    url = url + '/$pageSize/$pageNumber';
-    log.i('getPurchasedPackageHistory url $url');
-    try {
-      var response = await client.get(url);
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        var json = jsonDecode(response.body) as List;
-
-        // log.w('getChildrenByAddress json $json');
-        if (json.isNotEmpty) {
-          PaycoolReferralList paycoolReferralList =
-              PaycoolReferralList.fromJson(json);
-          log.i(
-              'first childeren obj ${paycoolReferralList.paycoolReferralList[0].toJson()}');
-          return paycoolReferralList.paycoolReferralList;
-        } else {
-          return [];
-        }
-      } else {
-        log.e("getPurchasedPackageHistory error: " + response.body);
-        return [];
-      }
-    } catch (err) {
-      log.e('In getPurchasedPackageHistory catch $err');
       return [];
     }
   }

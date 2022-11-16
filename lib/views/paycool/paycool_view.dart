@@ -707,6 +707,63 @@ class PayCoolView extends StatelessWidget {
                                                       )
                                                     : Container(),
                                                 UIHelper.verticalSpaceSmall,
+                                                // order details
+                                                Container(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 5),
+                                                  child: Row(
+                                                    children: [
+                                                      Expanded(
+                                                        flex: 2,
+                                                        child: Text(
+                                                            FlutterI18n
+                                                                .translate(
+                                                                    context,
+                                                                    "title"),
+                                                            style: headText5),
+                                                      ),
+                                                      UIHelper
+                                                          .horizontalSpaceMedium,
+                                                      Expanded(
+                                                          flex: 2,
+                                                          child: Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .end,
+                                                            children: [
+                                                              Text(
+                                                                  '${model.payOrder.title}',
+                                                                  maxLines: 2,
+                                                                  textAlign:
+                                                                      TextAlign
+                                                                          .right,
+                                                                  style: headText5
+                                                                      .copyWith(
+                                                                          fontWeight:
+                                                                              FontWeight.bold)),
+                                                              TextButton(
+                                                                  onPressed:
+                                                                      () {
+                                                                    model
+                                                                        .showOrderDetails();
+                                                                  },
+                                                                  child: Text(
+                                                                    FlutterI18n.translate(
+                                                                        context,
+                                                                        "details"),
+                                                                    style: TextStyle(
+                                                                        fontSize:
+                                                                            12),
+                                                                  ))
+                                                            ],
+                                                          )),
+                                                    ],
+                                                  ),
+                                                ),
+
+                                                UIHelper.divider,
+                                                UIHelper.verticalSpaceSmall,
                                                 // amount payable
                                                 Container(
                                                   padding:
@@ -827,7 +884,10 @@ class PayCoolView extends StatelessWidget {
                                                                   .translate(
                                                                       context,
                                                                       "rewards"),
-                                                              style: headText5),
+                                                              style: headText5
+                                                                  .copyWith(
+                                                                      color:
+                                                                          secondaryColor)),
                                                         ),
                                                         UIHelper
                                                             .horizontalSpaceMedium,
@@ -841,7 +901,9 @@ class PayCoolView extends StatelessWidget {
                                                               style: headText5.copyWith(
                                                                   fontWeight:
                                                                       FontWeight
-                                                                          .bold)),
+                                                                          .bold,
+                                                                  color:
+                                                                      secondaryColor)),
                                                         ),
                                                       ],
                                                     ),
@@ -877,7 +939,7 @@ class PayCoolView extends StatelessWidget {
                                                         null) {
                                                   debugPrint('busy or no data');
                                                 } else {
-                                                  model.payOrder();
+                                                  model.makePayment();
                                                 }
                                               },
                                               child: model.isBusy &&

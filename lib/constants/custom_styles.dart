@@ -60,10 +60,10 @@ buttonRoundShape(Color color) {
   return shapeRoundBorder;
 }
 
-ButtonStyle generalButtonStyle(Color color) {
+ButtonStyle generalButtonStyle(Color color, {double horizontalPadding = 15}) {
   return ButtonStyle(
       padding: MaterialStateProperty.all(
-          const EdgeInsets.symmetric(horizontal: 15, vertical: 5)),
+          EdgeInsets.symmetric(horizontal: horizontalPadding, vertical: 5)),
       backgroundColor: MaterialStateProperty.all(color),
       elevation: MaterialStateProperty.all(10),
       shape: buttonRoundShape(color));

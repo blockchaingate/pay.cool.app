@@ -7,6 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:paycool/views/paycool_club/club_dashboard_model.dart';
 import 'package:paycool/views/paycool_club/club_projects/club_project_model.dart';
+import 'package:paycool/views/paycool_club/purchased_package_history/purchased_package_history_model.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
@@ -25,7 +26,6 @@ import 'package:paycool/utils/barcode_util.dart';
 import 'package:paycool/views/paycool_club/referral/referral_model.dart';
 import 'package:paycool/views/paycool_club/paycool_club_service.dart';
 import 'package:paycool/views/paycool_club/join_club/join_club_payment_model.dart';
-import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:share/share.dart';
 import 'package:stacked/stacked.dart';
 import 'package:paycool/services/db/wallet_database_service.dart';
@@ -155,8 +155,6 @@ class ClubDashboardViewModel extends BaseViewModel {
           );
         });
   }
-
-  getPurchasedPackageHistory() {}
 
   updateProjectIndex(int i) {
     projectIndex = i;

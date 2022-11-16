@@ -222,6 +222,14 @@ String formatStringDateV2(String date) {
   return formattedDate;
 }
 
+String formatStringDateV3(String date) {
+  String wholeDate = date;
+  var dateToFormat = DateTime.parse(wholeDate);
+  String formattedDate = DateFormat('MM-dd-yyyy').format(dateToFormat);
+
+  return formattedDate;
+}
+
 String formatStringDateWithMonth(String date) {
   String wholeDate = date;
   var dateToFormat = DateTime.parse(wholeDate);

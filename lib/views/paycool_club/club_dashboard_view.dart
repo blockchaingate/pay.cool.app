@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:paycool/constants/colors.dart';
@@ -6,6 +8,7 @@ import 'package:paycool/constants/route_names.dart';
 import 'package:paycool/constants/ui_var.dart';
 import 'package:paycool/views/paycool_club/club_dashboard_viewmodel.dart';
 import 'package:paycool/shared/ui_helpers.dart';
+import 'package:paycool/views/paycool_club/purchased_package_history/purchased_package_history_view.dart';
 import 'package:paycool/widgets/bottom_nav.dart';
 import 'package:flutter/material.dart';
 import 'package:paycool/widgets/server_error_widget.dart';
@@ -30,7 +33,7 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   @override
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return new SizedBox.expand(child: child);
+    return SizedBox.expand(child: child);
   }
 
   @override
@@ -179,465 +182,510 @@ class ClubDashboardView extends StatelessWidget {
                     })));
           }
 
-          return Scaffold(
-            extendBodyBehindAppBar: true,
-            body: model.isServerDown
-                ? const Center(child: ServerErrorWidget())
-                : model.isBusy
-                    ? model.sharedService.loadingIndicator()
-                    : WillPopScope(
-                        onWillPop: () {
-                          model.onBackButtonPressed();
+          return AnnotatedRegion<SystemUiOverlayStyle>(
+            value: SystemUiOverlayStyle.dark,
+            child: Scaffold(
+              extendBodyBehindAppBar: true,
+              body: model.isServerDown
+                  ? const Center(child: ServerErrorWidget())
+                  : model.isBusy
+                      ? model.sharedService.loadingIndicator()
+                      : WillPopScope(
+                          onWillPop: () {
+                            model.onBackButtonPressed();
 
-                          return Future(() => false);
-                        },
-                        child: Container(
-                          decoration: const BoxDecoration(
-                              image: DecorationImage(
-                                  fit: BoxFit.cover,
-                                  image: AssetImage(
-                                      "assets/images/shared/blur-background.png"))),
-                          child: CustomScrollView(
-                            slivers: [
-                              const SliverToBoxAdapter(
-                                  child: UIHelper.verticalSpaceLarge),
-                              // makeHeader(),
+                            return Future(() => false);
+                          },
+                          child: Container(
+                            decoration: const BoxDecoration(
+                                image: DecorationImage(
+                                    fit: BoxFit.cover,
+                                    image: AssetImage(
+                                        "assets/images/shared/blur-background.png"))),
+                            child: CustomScrollView(
+                              slivers: [
+                                const SliverToBoxAdapter(
+                                    child: UIHelper.verticalSpaceLarge),
+                                // makeHeader(),
 
-                              // SliverList(
-                              //     delegate: SliverChildBuilderDelegate(
-                              //   (context, index) {
-                              //     return Container(
-                              //       padding: EdgeInsets.all(15),
-                              //       child: Column(children: [
-                              //         model.storageService.language == 'en'
-                              //             ? Text(model.projects[index].name.en)
-                              //             : Text(model.projects[index].name.sc)
-                              //       ]),
-                              //     );
-                              //   },
-                              //   childCount: model.projects.length,
-                              // )),
-                              model.isBusy
-                                  ? SliverToBoxAdapter(
-                                      child: model.sharedService
-                                          .loadingIndicator())
-                                  : SliverToBoxAdapter(
-                                      child: Container(
-                                        // color: secondaryColor,
-                                        decoration: BoxDecoration(
-                                          image: blurBackgroundImage(),
-                                        ),
-                                        margin: EdgeInsets.only(top: 10),
-                                        height: 200,
-                                        child: Stack(
-                                          children: [
-                                            SizedBox(
-                                              height: 200, // card height
-                                              child: PageView.builder(
-                                                itemCount:
-                                                    model.projects.length,
-                                                controller: PageController(
-                                                    viewportFraction: 0.7),
-                                                onPageChanged: (int index) =>
-                                                    model.updateProjectIndex(
-                                                        index),
-                                                itemBuilder: (_, i) {
-                                                  return Transform.scale(
-                                                    scale:
-                                                        i == model.projectIndex
-                                                            ? 1
-                                                            : 0.9,
-                                                    child: Card(
-                                                      color: Colors.transparent,
-                                                      elevation: 2,
-                                                      shape:
-                                                          RoundedRectangleBorder(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          20)),
-                                                      child: Container(
-                                                        decoration:
-                                                            BoxDecoration(
-                                                                borderRadius: const BorderRadius
-                                                                        .all(
-                                                                    Radius
-                                                                        .circular(
-                                                                            10)),
-                                                                gradient:
-                                                                    LinearGradient(
-                                                                        colors: [
-                                                                          secondaryColor,
-                                                                          primaryColor
-                                                                              .withAlpha(155),
-                                                                        ],
-                                                                        begin: const FractionalOffset(
+                                // SliverList(
+                                //     delegate: SliverChildBuilderDelegate(
+                                //   (context, index) {
+                                //     return Container(
+                                //       padding: EdgeInsets.all(15),
+                                //       child: Column(children: [
+                                //         model.storageService.language == 'en'
+                                //             ? Text(model.projects[index].name.en)
+                                //             : Text(model.projects[index].name.sc)
+                                //       ]),
+                                //     );
+                                //   },
+                                //   childCount: model.projects.length,
+                                // )),
+                                model.isBusy
+                                    ? SliverToBoxAdapter(
+                                        child: model.sharedService
+                                            .loadingIndicator())
+                                    : SliverToBoxAdapter(
+                                        child: Container(
+                                          // color: secondaryColor,
+                                          decoration: BoxDecoration(
+                                            image: blurBackgroundImage(),
+                                          ),
+                                          margin: EdgeInsets.only(top: 10),
+                                          height: 200,
+                                          child: Stack(
+                                            children: [
+                                              SizedBox(
+                                                height: 200, // card height
+                                                child: PageView.builder(
+                                                  itemCount:
+                                                      model.projects.length,
+                                                  controller: PageController(
+                                                      viewportFraction: 0.7),
+                                                  onPageChanged: (int index) =>
+                                                      model.updateProjectIndex(
+                                                          index),
+                                                  itemBuilder: (_, i) {
+                                                    return Transform.scale(
+                                                      scale: i ==
+                                                              model.projectIndex
+                                                          ? 1
+                                                          : 0.9,
+                                                      child: Card(
+                                                        color:
+                                                            Colors.transparent,
+                                                        elevation: 2,
+                                                        shape: RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        20)),
+                                                        child: Container(
+                                                          decoration:
+                                                              BoxDecoration(
+                                                                  borderRadius:
+                                                                      const BorderRadius.all(
+                                                                          Radius.circular(
+                                                                              10)),
+                                                                  gradient:
+                                                                      LinearGradient(
+                                                                          colors: [
+                                                                            secondaryColor,
+                                                                            primaryColor.withAlpha(155),
+                                                                          ],
+                                                                          begin: const FractionalOffset(
+                                                                              0.0,
+                                                                              0.0),
+                                                                          end: const FractionalOffset(
+                                                                              1.0,
+                                                                              0.0),
+                                                                          stops: const [
                                                                             0.0,
-                                                                            0.0),
-                                                                        end: const FractionalOffset(
-                                                                            1.0,
-                                                                            0.0),
-                                                                        stops: const [
-                                                                          0.0,
-                                                                          1.0
-                                                                        ],
-                                                                        tileMode:
-                                                                            TileMode.clamp)),
-                                                        child: Column(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .center,
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .center,
-                                                          children: [
-                                                            Row(
-                                                              mainAxisSize:
-                                                                  MainAxisSize
-                                                                      .min,
-                                                              children: [
-                                                                Padding(
-                                                                  padding:
-                                                                      const EdgeInsets
-                                                                              .all(
-                                                                          8.0),
-                                                                  child: Image
-                                                                      .network(
-                                                                    model
-                                                                        .projects[
-                                                                            model.projectIndex]
-                                                                        .image
-                                                                        .toString(),
-                                                                    width: 25,
-                                                                    height: 25,
+                                                                            1.0
+                                                                          ],
+                                                                          tileMode:
+                                                                              TileMode.clamp)),
+                                                          child: Column(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .center,
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .center,
+                                                            children: [
+                                                              Row(
+                                                                mainAxisSize:
+                                                                    MainAxisSize
+                                                                        .min,
+                                                                children: [
+                                                                  Padding(
+                                                                    padding:
+                                                                        const EdgeInsets.all(
+                                                                            8.0),
+                                                                    child: Image
+                                                                        .network(
+                                                                      model
+                                                                          .projects[
+                                                                              model.projectIndex]
+                                                                          .image
+                                                                          .toString(),
+                                                                      width: 25,
+                                                                      height:
+                                                                          25,
+                                                                    ),
                                                                   ),
-                                                                ),
-                                                                Text(
+                                                                  Text(
+                                                                    model.storageService.language ==
+                                                                            'en'
+                                                                        ? model
+                                                                            .projects[model
+                                                                                .projectIndex]
+                                                                            .name
+                                                                            .en
+                                                                        : model
+                                                                            .projects[model.projectIndex]
+                                                                            .name
+                                                                            .sc,
+                                                                    style:
+                                                                        headText1,
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                              Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                            .all(
+                                                                        8.0),
+                                                                child: Text(
                                                                   model.storageService
                                                                               .language ==
                                                                           'en'
                                                                       ? model
                                                                           .projects[model
                                                                               .projectIndex]
-                                                                          .name
+                                                                          .description
                                                                           .en
                                                                       : model
                                                                           .projects[
                                                                               model.projectIndex]
-                                                                          .name
+                                                                          .description
                                                                           .sc,
                                                                   style:
-                                                                      headText1,
+                                                                      headText2,
+                                                                  overflow:
+                                                                      TextOverflow
+                                                                          .ellipsis,
                                                                 ),
+                                                              ),
+                                                              UIHelper
+                                                                  .verticalSpaceSmall,
+                                                              SizedBox(
+                                                                width: 90,
+                                                                height: 50,
+                                                                child:
+                                                                    ElevatedButton(
+                                                                        style: generalButtonStyle1.copyWith(
+                                                                            padding: MaterialStateProperty.all(EdgeInsets
+                                                                                .zero)),
+                                                                        onPressed:
+                                                                            () {
+                                                                          if (model
+                                                                              .isValidMember) {
+                                                                            model.goToProjectDetails(model.projects[model.projectIndex].sId);
+                                                                          } else {
+                                                                            model.showJoinPaycoolPopup();
+                                                                          }
+                                                                        },
+                                                                        child:
+                                                                            Text(
+                                                                          FlutterI18n.translate(
+                                                                              context,
+                                                                              "details"),
+                                                                          style:
+                                                                              headText4.copyWith(color: secondaryColor),
+                                                                        )),
+                                                              )
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    );
+                                                  },
+                                                ),
+                                              ),
+                                              Container(
+                                                margin: const EdgeInsets.only(
+                                                    bottom: 10),
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    for (var i = 0;
+                                                        i <
+                                                            model.projects
+                                                                .length;
+                                                        i++)
+                                                      Padding(
+                                                        padding:
+                                                            EdgeInsets.all(2.0),
+                                                        child: Align(
+                                                            alignment: Alignment
+                                                                .bottomCenter,
+                                                            child: Icon(
+                                                              Icons
+                                                                  .ac_unit_outlined,
+                                                              color:
+                                                                  model.projectIndex ==
+                                                                          i
+                                                                      ? white
+                                                                      : grey,
+                                                              size: 12,
+                                                            )),
+                                                      ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+
+                                model.isValidMember
+                                    ? SliverToBoxAdapter(
+                                        child: Container(
+                                          child: Column(
+                                            children: [
+                                              UIHelper.verticalSpaceLarge,
+                                              // !model.isValidMember
+                                              //     ? Container()
+                                              //     : topPaycoolWidget(
+                                              //         context, model),
+                                              //display myReferralCode when this user is a basic or VIP member
+                                              Container(
+                                                decoration:
+                                                    roundedBoxDecoration(
+                                                        color: secondaryColor),
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 10,
+                                                        horizontal: 2),
+                                                margin:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 2,
+                                                        horizontal: 15),
+                                                // color: secondaryColor,
+                                                child: Column(
+                                                  children: [
+                                                    Visibility(
+                                                      visible:
+                                                          model.isValidMember,
+                                                      child: ListTile(
+                                                        horizontalTitleGap: 0,
+                                                        leading: const Icon(
+                                                          Icons.link,
+                                                          color: black,
+                                                          size: 18,
+                                                        ),
+                                                        title: Text(
+                                                          FlutterI18n.translate(
+                                                              context,
+                                                              "myReferralCode"),
+                                                          style: headText4,
+                                                        ),
+                                                        subtitle: Text(
+                                                          model.fabAddress,
+                                                          style: bodyText1,
+                                                        ),
+                                                        trailing: Row(
+                                                          mainAxisSize:
+                                                              MainAxisSize.min,
+                                                          children: [
+                                                            IconButton(
+                                                              icon: const Icon(
+                                                                Icons.copy,
+                                                                size: 19,
+                                                                color: black,
+                                                              ),
+                                                              onPressed: () => model
+                                                                  .sharedService
+                                                                  .copyAddress(
+                                                                      context,
+                                                                      model
+                                                                          .fabAddress),
+                                                            ),
+                                                            IconButton(
+                                                              icon: const Icon(
+                                                                Icons
+                                                                    .share_outlined,
+                                                                size: 19,
+                                                                color:
+                                                                    primaryColor,
+                                                              ),
+                                                              onPressed: () => model
+                                                                  .showBarcode(),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+
+                                                    // member type tile
+                                                    ListTile(
+                                                      horizontalTitleGap: 0,
+                                                      leading: const Icon(
+                                                        FontAwesomeIcons.user,
+                                                        color: primaryColor,
+                                                        size: 18,
+                                                      ),
+                                                      title: Text(
+                                                        model.memberType,
+                                                        style: headText4,
+                                                      ),
+                                                    ),
+                                                    // joined date tile
+                                                    // ListTile(
+                                                    //   horizontalTitleGap: 0,
+                                                    //   leading: const Icon(
+                                                    //     Icons
+                                                    //         .stacked_line_chart_sharp,
+                                                    //     color: black,
+                                                    //     size: 18,
+                                                    //   ),
+                                                    //   title: Text(
+                                                    //     FlutterI18n.translate(
+                                                    //         context, "joinedDate"),
+                                                    //     style: headText4,
+                                                    //   ),
+                                                    //   trailing: Text(
+                                                    //       model.dashboard
+                                                    //           .dateCreated,
+                                                    //       style: headText5),
+                                                    // ),
+                                                    // asset value tile
+
+                                                    ListTile(
+                                                      onTap: () => model
+                                                          .navigationService
+                                                          .navigateTo(
+                                                              clubRewardsViewRoute,
+                                                              arguments: model
+                                                                  .dashboard
+                                                                  .summary),
+                                                      horizontalTitleGap: 0,
+                                                      leading: const Icon(
+                                                        Icons
+                                                            .monetization_on_outlined,
+                                                        color: black,
+                                                        size: 18,
+                                                      ),
+                                                      title: Text(
+                                                        FlutterI18n.translate(
+                                                            context, "rewards"),
+                                                        style: headText4,
+                                                      ),
+                                                      subtitle: SizedBox(
+                                                        width: 50,
+                                                        child: Row(
+                                                          mainAxisSize:
+                                                              MainAxisSize.min,
+                                                          children: [
+                                                            Column(
+                                                              mainAxisSize:
+                                                                  MainAxisSize
+                                                                      .min,
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .start,
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .center,
+                                                              children: [
+                                                                Text(
+                                                                    'FAB'
+                                                                            ' ' +
+                                                                        model
+                                                                            .dashboard
+                                                                            .totalFabRewards()[
+                                                                                'FAB']
+                                                                            .toString(),
+                                                                    style:
+                                                                        headText5),
+                                                                Text(
+                                                                    'FET'
+                                                                            ' ' +
+                                                                        model
+                                                                            .dashboard
+                                                                            .totalFabRewards()[
+                                                                                "FET"]
+                                                                            .toString(),
+                                                                    style:
+                                                                        headText5),
                                                               ],
                                                             ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      trailing: Row(
+                                                        mainAxisSize:
+                                                            MainAxisSize.min,
+                                                        children: const [
+                                                          UIHelper
+                                                              .horizontalSpaceSmall,
+                                                          Icon(
+                                                            Icons
+                                                                .arrow_forward_ios,
+                                                            color: grey,
+                                                            size: 16,
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+
+                                                    InkWell(
+                                                      onTap: () => model
+                                                          .navigationService
+                                                          .navigateTo(
+                                                              PayCoolClubReferralViewRoute),
+                                                      child: ListTile(
+                                                        horizontalTitleGap: 0,
+                                                        leading: const Icon(
+                                                          Icons
+                                                              .call_split_outlined,
+                                                          color: black,
+                                                          size: 18,
+                                                        ),
+                                                        title: Text(
+                                                          FlutterI18n.translate(
+                                                              context,
+                                                              "myReferralsDetails"),
+                                                          style: headText4
+                                                              .copyWith(
+                                                                  color: black),
+                                                        ),
+                                                        trailing: Row(
+                                                          mainAxisSize:
+                                                              MainAxisSize.min,
+                                                          children: [
                                                             Padding(
                                                               padding:
                                                                   const EdgeInsets
                                                                       .all(8.0),
                                                               child: Text(
-                                                                model.storageService
-                                                                            .language ==
-                                                                        'en'
-                                                                    ? model
-                                                                        .projects[model
-                                                                            .projectIndex]
-                                                                        .description
-                                                                        .en
-                                                                    : model
-                                                                        .projects[
-                                                                            model.projectIndex]
-                                                                        .description
-                                                                        .sc,
-                                                                style:
-                                                                    headText2,
-                                                                overflow:
-                                                                    TextOverflow
-                                                                        .ellipsis,
-                                                              ),
+                                                                  model.referralCount
+                                                                          .toString() ??
+                                                                      '0',
+                                                                  style:
+                                                                      headText5),
                                                             ),
-                                                            UIHelper
-                                                                .verticalSpaceSmall,
-                                                            SizedBox(
-                                                              width: 90,
-                                                              height: 50,
-                                                              child:
-                                                                  ElevatedButton(
-                                                                      style: generalButtonStyle1.copyWith(
-                                                                          padding: MaterialStateProperty.all(EdgeInsets
-                                                                              .zero)),
-                                                                      onPressed:
-                                                                          () {
-                                                                        if (model
-                                                                            .isValidMember) {
-                                                                          model.goToProjectDetails(model
-                                                                              .projects[model.projectIndex]
-                                                                              .sId);
-                                                                        } else {
-                                                                          model
-                                                                              .showJoinPaycoolPopup();
-                                                                        }
-                                                                      },
-                                                                      child:
-                                                                          Text(
-                                                                        FlutterI18n.translate(
-                                                                            context,
-                                                                            "details"),
-                                                                        style: headText4.copyWith(
-                                                                            color:
-                                                                                secondaryColor),
-                                                                      )),
-                                                            )
+                                                            const Icon(
+                                                              Icons
+                                                                  .arrow_forward_ios,
+                                                              color: grey,
+                                                              size: 16,
+                                                            ),
                                                           ],
                                                         ),
                                                       ),
                                                     ),
-                                                  );
-                                                },
-                                              ),
-                                            ),
-                                            Container(
-                                              margin: const EdgeInsets.only(
-                                                  bottom: 10),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  for (var i = 0;
-                                                      i < model.projects.length;
-                                                      i++)
-                                                    Padding(
-                                                      padding:
-                                                          EdgeInsets.all(2.0),
-                                                      child: Align(
-                                                          alignment: Alignment
-                                                              .bottomCenter,
-                                                          child: Icon(
-                                                            Icons
-                                                                .ac_unit_outlined,
-                                                            color:
-                                                                model.projectIndex ==
-                                                                        i
-                                                                    ? white
-                                                                    : grey,
-                                                            size: 12,
-                                                          )),
-                                                    ),
-                                                ],
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-
-                              model.isValidMember
-                                  ? SliverToBoxAdapter(
-                                      child: Container(
-                                        child: Column(
-                                          children: [
-                                            UIHelper.verticalSpaceLarge,
-                                            // !model.isValidMember
-                                            //     ? Container()
-                                            //     : topPaycoolWidget(
-                                            //         context, model),
-                                            //display myReferralCode when this user is a basic or VIP member
-                                            Container(
-                                              decoration: roundedBoxDecoration(
-                                                  color: secondaryColor),
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 10,
-                                                      horizontal: 2),
-                                              margin:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 2,
-                                                      horizontal: 15),
-                                              // color: secondaryColor,
-                                              child: Column(
-                                                children: [
-                                                  Visibility(
-                                                    visible:
-                                                        model.isValidMember,
-                                                    child: ListTile(
+                                                    // Joined projects
+                                                    ListTile(
                                                       horizontalTitleGap: 0,
-                                                      leading: const Icon(
-                                                        Icons.link,
-                                                        color: black,
-                                                        size: 18,
-                                                      ),
-                                                      title: Text(
-                                                        FlutterI18n.translate(
-                                                            context,
-                                                            "myReferralCode"),
-                                                        style: headText4,
-                                                      ),
-                                                      subtitle: Text(
-                                                        model.fabAddress,
-                                                        style: bodyText1,
-                                                      ),
-                                                      trailing: Row(
-                                                        mainAxisSize:
-                                                            MainAxisSize.min,
-                                                        children: [
-                                                          IconButton(
-                                                            icon: const Icon(
-                                                              Icons.copy,
-                                                              size: 19,
-                                                              color: black,
-                                                            ),
-                                                            onPressed: () => model
-                                                                .sharedService
-                                                                .copyAddress(
-                                                                    context,
-                                                                    model
-                                                                        .fabAddress),
-                                                          ),
-                                                          IconButton(
-                                                            icon: const Icon(
-                                                              Icons
-                                                                  .share_outlined,
-                                                              size: 19,
-                                                              color:
-                                                                  primaryColor,
-                                                            ),
-                                                            onPressed: () => model
-                                                                .showBarcode(),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ),
-
-                                                  // member type tile
-                                                  ListTile(
-                                                    horizontalTitleGap: 0,
-                                                    leading: const Icon(
-                                                      FontAwesomeIcons.user,
-                                                      color: primaryColor,
-                                                      size: 18,
-                                                    ),
-                                                    title: Text(
-                                                      model.memberType,
-                                                      style: headText4,
-                                                    ),
-                                                  ),
-                                                  // joined date tile
-                                                  // ListTile(
-                                                  //   horizontalTitleGap: 0,
-                                                  //   leading: const Icon(
-                                                  //     Icons
-                                                  //         .stacked_line_chart_sharp,
-                                                  //     color: black,
-                                                  //     size: 18,
-                                                  //   ),
-                                                  //   title: Text(
-                                                  //     FlutterI18n.translate(
-                                                  //         context, "joinedDate"),
-                                                  //     style: headText4,
-                                                  //   ),
-                                                  //   trailing: Text(
-                                                  //       model.dashboard
-                                                  //           .dateCreated,
-                                                  //       style: headText5),
-                                                  // ),
-                                                  // asset value tile
-
-                                                  ListTile(
-                                                    onTap: () => model
-                                                        .navigationService
-                                                        .navigateTo(
-                                                            clubRewardsViewRoute,
-                                                            arguments: model
-                                                                .dashboard
-                                                                .summary),
-                                                    horizontalTitleGap: 0,
-                                                    leading: const Icon(
-                                                      Icons
-                                                          .monetization_on_outlined,
-                                                      color: black,
-                                                      size: 18,
-                                                    ),
-                                                    title: Text(
-                                                      FlutterI18n.translate(
-                                                          context, "rewards"),
-                                                      style: headText4,
-                                                    ),
-                                                    subtitle: SizedBox(
-                                                      width: 50,
-                                                      child: Row(
-                                                        mainAxisSize:
-                                                            MainAxisSize.min,
-                                                        children: [
-                                                          Column(
-                                                            mainAxisSize:
-                                                                MainAxisSize
-                                                                    .min,
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .start,
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .center,
-                                                            children: [
-                                                              Text(
-                                                                  'FAB'
-                                                                          ' ' +
-                                                                      model
-                                                                          .dashboard
-                                                                          .totalFabRewards()[
-                                                                              'FAB']
-                                                                          .toString(),
-                                                                  style:
-                                                                      headText5),
-                                                              Text(
-                                                                  'FET'
-                                                                          ' ' +
-                                                                      model
-                                                                          .dashboard
-                                                                          .totalFabRewards()[
-                                                                              "FET"]
-                                                                          .toString(),
-                                                                  style:
-                                                                      headText5),
-                                                            ],
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                    trailing: Row(
-                                                      mainAxisSize:
-                                                          MainAxisSize.min,
-                                                      children: [
-                                                        UIHelper
-                                                            .horizontalSpaceSmall,
-                                                        const Icon(
-                                                          Icons
-                                                              .arrow_forward_ios,
-                                                          color: grey,
-                                                          size: 16,
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-
-                                                  InkWell(
-                                                    onTap: () => model
-                                                        .navigationService
-                                                        .navigateTo(
-                                                            PayCoolClubReferralViewRoute),
-                                                    child: ListTile(
-                                                      horizontalTitleGap: 0,
+                                                      onTap: () => Navigator.push(
+                                                          context,
+                                                          CupertinoPageRoute(
+                                                              builder: (context) =>
+                                                                  PurchasedPackageView())),
                                                       leading: const Icon(
                                                         Icons
-                                                            .call_split_outlined,
+                                                            .align_vertical_bottom_sharp,
                                                         color: black,
                                                         size: 18,
                                                       ),
                                                       title: Text(
                                                         FlutterI18n.translate(
                                                             context,
-                                                            "myReferralsDetails"),
+                                                            "purchasedPackages"),
                                                         style:
                                                             headText4.copyWith(
                                                                 color: black),
@@ -651,11 +699,13 @@ class ClubDashboardView extends StatelessWidget {
                                                                 const EdgeInsets
                                                                     .all(8.0),
                                                             child: Text(
-                                                                model.referralCount
-                                                                        .toString() ??
-                                                                    '0',
-                                                                style:
-                                                                    headText5),
+                                                              model
+                                                                  .dashboard
+                                                                  .summary
+                                                                  .length
+                                                                  .toString(),
+                                                              style: headText5,
+                                                            ),
                                                           ),
                                                           const Icon(
                                                             Icons
@@ -666,124 +716,84 @@ class ClubDashboardView extends StatelessWidget {
                                                         ],
                                                       ),
                                                     ),
-                                                  ),
-                                                  // Joined projects
-                                                  ListTile(
-                                                    horizontalTitleGap: 0,
-                                                    onTap: () => model
-                                                        .getPurchasedPackageHistory(),
-                                                    leading: const Icon(
-                                                      Icons
-                                                          .align_vertical_bottom_sharp,
-                                                      color: black,
-                                                      size: 18,
-                                                    ),
-                                                    title: Text(
-                                                      FlutterI18n.translate(
-                                                          context,
-                                                          "purchasedPackages"),
-                                                      style: headText4.copyWith(
-                                                          color: black),
-                                                    ),
-                                                    trailing: Row(
-                                                      mainAxisSize:
-                                                          MainAxisSize.min,
-                                                      children: [
-                                                        Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .all(8.0),
-                                                          child: Text(
-                                                            model.dashboard
-                                                                .summary.length
-                                                                .toString(),
-                                                            style: headText5,
-                                                          ),
-                                                        ),
-                                                        const Icon(
-                                                          Icons
-                                                              .arrow_forward_ios,
-                                                          color: grey,
-                                                          size: 16,
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    )
-                                  : SliverToBoxAdapter(
-                                      child: Container(
-                                        alignment: Alignment.center,
-                                        child: Center(
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            children: [
-                                              UIHelper.verticalSpaceLarge,
-                                              UIHelper.verticalSpaceLarge,
-                                              Text(
-                                                FlutterI18n.translate(
-                                                    context, "paycoolCaption"),
-                                                style: headText2,
-                                                textAlign: TextAlign.center,
-                                              ),
-                                              UIHelper.verticalSpaceSmall,
-                                              Container(
-                                                width: 150,
-                                                decoration: BoxDecoration(
-                                                    // color: Color(mainColor),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            25),
-                                                    gradient:
-                                                        const LinearGradient(
-                                                            colors: [
-                                                          Color(0xFFcd45ff),
-                                                          Color(0xFF7368ff),
-                                                        ])),
-                                                margin:
-                                                    const EdgeInsetsDirectional
-                                                        .only(top: 10.0),
-                                                child: TextButton(
-                                                  style: ButtonStyle(
-                                                      textStyle:
-                                                          MaterialStateProperty
-                                                              .all(
-                                                                  const TextStyle(
-                                                    color: Colors.white,
-                                                  ))),
-                                                  onPressed: () {
-                                                    model.navigationService
-                                                        .navigateTo(
-                                                            PayCoolViewRoute);
-                                                  },
-                                                  child: Text(
-                                                      FlutterI18n.translate(
-                                                          context,
-                                                          "joinPayCoolButton"),
-                                                      style: headText4.copyWith(
-                                                          color: secondaryColor,
-                                                          fontWeight:
-                                                              FontWeight.bold)),
+                                                  ],
                                                 ),
                                               ),
                                             ],
                                           ),
                                         ),
+                                      )
+                                    : SliverToBoxAdapter(
+                                        child: Container(
+                                          alignment: Alignment.center,
+                                          child: Center(
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                UIHelper.verticalSpaceLarge,
+                                                UIHelper.verticalSpaceLarge,
+                                                Text(
+                                                  FlutterI18n.translate(context,
+                                                      "paycoolCaption"),
+                                                  style: headText2,
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                                UIHelper.verticalSpaceSmall,
+                                                Container(
+                                                  width: 150,
+                                                  decoration: BoxDecoration(
+                                                      // color: Color(mainColor),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              25),
+                                                      gradient:
+                                                          const LinearGradient(
+                                                              colors: [
+                                                            Color(0xFFcd45ff),
+                                                            Color(0xFF7368ff),
+                                                          ])),
+                                                  margin:
+                                                      const EdgeInsetsDirectional
+                                                          .only(top: 10.0),
+                                                  child: TextButton(
+                                                    style: ButtonStyle(
+                                                        textStyle:
+                                                            MaterialStateProperty
+                                                                .all(
+                                                                    const TextStyle(
+                                                      color: Colors.white,
+                                                    ))),
+                                                    onPressed: () {
+                                                      model.navigationService
+                                                          .navigateTo(
+                                                              PayCoolViewRoute);
+                                                    },
+                                                    child: Text(
+                                                        FlutterI18n.translate(
+                                                            context,
+                                                            "joinPayCoolButton"),
+                                                        style: headText4.copyWith(
+                                                            color:
+                                                                secondaryColor,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold)),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-            bottomNavigationBar: BottomNavBar(count: 0),
+              bottomNavigationBar: BottomNavBar(count: 0),
+            ),
           );
         });
   }

@@ -482,5 +482,6 @@
     "purchasedPackages": "Paquetes comprados",
     "notJoinedPaycool": "No eres miembro de Pay.cool",
     "join": "Únase a",
-    "visitDashboard": "Visitar el panel de control"
+    "visitDashboard": "Visitar el panel de control",
+    "freeGasQuestionNote": "Answer the question below"
 }

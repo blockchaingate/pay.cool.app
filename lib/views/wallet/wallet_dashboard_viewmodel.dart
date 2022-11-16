@@ -658,16 +658,19 @@ class WalletDashboardViewModel extends BaseViewModel {
                     child: ListView(
                       children: [
                         AlertDialog(
-                          titlePadding: const EdgeInsets.symmetric(vertical: 5),
+                          titlePadding:
+                              const EdgeInsets.symmetric(vertical: 15),
                           actionsPadding: const EdgeInsets.all(0),
                           elevation: 5,
-                          titleTextStyle: headText4,
+                          titleTextStyle:
+                              headText4.copyWith(fontWeight: FontWeight.bold),
                           contentTextStyle: const TextStyle(color: grey),
                           contentPadding:
                               const EdgeInsets.symmetric(horizontal: 10),
                           backgroundColor: secondaryColor.withOpacity(0.95),
                           title: Text(
-                            FlutterI18n.translate(context, "question"),
+                            FlutterI18n.translate(
+                                context, "freeGasQuestionNote"),
                             textAlign: TextAlign.center,
                           ),
                           content: Column(
@@ -675,10 +678,8 @@ class WalletDashboardViewModel extends BaseViewModel {
                               UIHelper.verticalSpaceSmall,
                               Text(
                                 res['_body']['question'].toString(),
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyText1
-                                    .copyWith(color: red),
+                                style: headText4.copyWith(
+                                    color: red, letterSpacing: 5.0),
                               ),
                               TextField(
                                 minLines: 1,
@@ -686,9 +687,13 @@ class WalletDashboardViewModel extends BaseViewModel {
                                 controller: freeFabAnswerTextController,
                                 obscureText: false,
                                 decoration: const InputDecoration(
+                                  focusedBorder: const UnderlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: primaryColor)),
                                   icon: Icon(
                                     Icons.question_answer,
                                     color: primaryColor,
+                                    size: 18,
                                   ),
                                 ),
                               ),
@@ -711,20 +716,14 @@ class WalletDashboardViewModel extends BaseViewModel {
                                     children: [
                                       // Cancel
                                       OutlinedButton(
-                                          style: ButtonStyle(
-                                            backgroundColor:
-                                                MaterialStateProperty.all(
-                                                    primaryColor),
-                                            padding: MaterialStateProperty.all(
-                                                const EdgeInsets.all(0)),
-                                          ),
+                                          style: generalButtonStyle(
+                                              secondaryColor),
                                           child: Center(
                                             child: Text(
                                               FlutterI18n.translate(
                                                   context, "close"),
-                                              style: const TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 12),
+                                              style:
+                                                  const TextStyle(fontSize: 12),
                                             ),
                                           ),
                                           onPressed: () {
@@ -738,20 +737,15 @@ class WalletDashboardViewModel extends BaseViewModel {
                                       UIHelper.horizontalSpaceSmall,
                                       // Confirm
                                       OutlinedButton(
-                                          style: ButtonStyle(
-                                            backgroundColor:
-                                                MaterialStateProperty.all(
-                                                    primaryColor),
-                                            padding: MaterialStateProperty.all(
-                                                const EdgeInsets.all(0)),
-                                          ),
+                                          style:
+                                              generalButtonStyle(primaryColor),
                                           child: Center(
                                             child: Text(
                                               FlutterI18n.translate(
                                                   context, "confirm"),
                                               style: const TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 12),
+                                                  fontSize: 12,
+                                                  color: secondaryColor),
                                             ),
                                           ),
                                           onPressed: () async {
@@ -780,27 +774,27 @@ class WalletDashboardViewModel extends BaseViewModel {
                                                     setState(() =>
                                                         isFreeFabNotUsed =
                                                             false);
-                                                    walletService.showInfoFlushbar(
-                                                        FlutterI18n.translate(
-                                                            context,
-                                                            "freeFabUpdate"),
-                                                        FlutterI18n.translate(
-                                                            context,
-                                                            "freeFabSuccess"),
-                                                        Icons.account_balance,
-                                                        green,
-                                                        context);
+                                                    sharedService
+                                                        .sharedSimpleNotification(
+                                                            FlutterI18n.translate(
+                                                                context,
+                                                                "freeFabUpdate"),
+                                                            subtitle: FlutterI18n
+                                                                .translate(
+                                                                    context,
+                                                                    "freeFabSuccess"),
+                                                            isError: false);
                                                   } else {
-                                                    walletService.showInfoFlushbar(
-                                                        FlutterI18n.translate(
-                                                            context,
-                                                            "freeFabUpdate"),
-                                                        FlutterI18n.translate(
-                                                            context,
-                                                            "incorrectAnswer"),
-                                                        Icons.cancel,
-                                                        red,
-                                                        context);
+                                                    sharedService
+                                                        .sharedSimpleNotification(
+                                                      FlutterI18n.translate(
+                                                          context,
+                                                          "freeFabUpdate"),
+                                                      subtitle:
+                                                          FlutterI18n.translate(
+                                                              context,
+                                                              "incorrectAnswer"),
+                                                    );
                                                   }
                                                 } else {
                                                   walletService

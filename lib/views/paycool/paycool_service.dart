@@ -12,6 +12,7 @@ import 'package:paycool/utils/abi_util.dart';
 import 'package:paycool/utils/custom_http_util.dart';
 import 'package:paycool/utils/kanban.util.dart';
 import 'package:paycool/utils/keypair_util.dart';
+import 'package:paycool/views/paycool/models/pay_order_model.dart';
 import 'package:paycool/views/paycool/models/paycool_store_model.dart';
 import 'package:paycool/views/paycool/models/store_and_merchant_model.dart';
 import 'package:paycool/views/paycool/rewards/payment_rewards_model.dart';
@@ -19,7 +20,7 @@ import 'package:paycool/views/paycool/transaction_history/paycool_transaction_hi
 import 'package:paycool/views/paycool_club/club_models/club_params_model.dart';
 import 'package:stacked/stacked.dart';
 import 'package:hex/hex.dart';
-import 'models/payment_model.dart';
+import 'models/payment_rewards_model.dart';
 
 //@LazySingleton()
 class PayCoolService with ReactiveServiceMixin {
@@ -146,41 +147,73 @@ class PayCoolService with ReactiveServiceMixin {
     }
   }
 
-  Future<PaymentModel> getRewardInfo(String id) async {
+  Future<PaymentRewardsModel> getPayOrderInfoWithRewards(String id) async {
     String fabAddress =
         await coreWalletDatabaseService.getWalletAddressByTickerName('FAB');
-    //fabtest.info/api/userpay/635045f6f3999b02d1598c2c/mowmfJjDSfCNLvu5jjHD55aeXphf6cH2eT/rewardInfo
+    https: //fabtest.info/api/userpay/v2/order/635ab250f8ba77d673a32474
     String url = paycoolBaseUrl +
-        'api/userpay/v2/order/' +
+        'userpay/v2/order/' +
         id +
         '/' +
         fabAddress +
         '/rewardInfo';
 
-    log.i('getRewardInfo url $url');
-    PaymentModel rewardInfoModel;
+    log.i('getPayOrderInfoWithRewards url $url');
+    PaymentRewardsModel rewardInfoModel;
     try {
       var response = await client.get(url);
       if (response.statusCode == 200 || response.statusCode == 201) {
         var json = jsonDecode(response.body)['_body'];
         var isDataCorrect = jsonDecode(response.body)['success'];
         if (json.isNotEmpty) {
-          log.w('getRewardInfo json $json');
+          log.w('getPayOrderInfoWithRewards json $json');
 
           if (!isDataCorrect) {
-            log.e('In getRewardInfo catch $json');
+            log.e('In getPayOrderInfoWithRewards catch $json');
             throw Exception(json);
           } else if (isDataCorrect) {
-            rewardInfoModel = PaymentModel.fromJson(json);
+            rewardInfoModel = PaymentRewardsModel.fromJson(json);
           }
         }
       } else {
         log.e(
-            'Response failed : reson ${response.toString()} -- body ${response.body}');
+            'getPayOrderInfoWithRewards Response failed : reson ${response.toString()} -- body ${response.body}');
       }
       return rewardInfoModel;
     } catch (err) {
-      log.e('In getRewardInfo catch $err');
+      log.e('In getPayOrderInfoWithRewards catch $err');
+      throw Exception(err);
+    }
+  }
+
+  Future<PayOrder> getPayOrderInfo(String id) async {
+    //  https: //fabtest.info/api/userpay/v2/order/635ab250f8ba77d673a32474
+    String url = paycoolBaseUrl + 'userpay/v2/order/' + id;
+
+    log.i('getPayOrderInfo url $url');
+    PayOrder payOrder;
+    try {
+      var response = await client.get(url);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        var json = jsonDecode(response.body)['_body']['items'];
+        var isDataCorrect = jsonDecode(response.body)['success'];
+        if (json.isNotEmpty) {
+          log.w('getPayOrderInfo json $json');
+
+          if (!isDataCorrect) {
+            log.e('In getPayOrderInfo catch $json');
+            throw Exception(json);
+          } else if (isDataCorrect) {
+            payOrder = PayOrder.fromJson(json.first);
+          }
+        }
+      } else {
+        log.e(
+            'getPayOrderInfo Response failed : reson ${response.toString()} -- body ${response.body}');
+      }
+      return payOrder;
+    } catch (err) {
+      log.e('In getPayOrderInfo catch $err');
       throw Exception(err);
     }
   }
@@ -280,12 +313,11 @@ class PayCoolService with ReactiveServiceMixin {
       if (response.statusCode == 200 || response.statusCode == 201) {
         var json = jsonDecode(response.body) as List;
 
-        log.w('getTransactionHistory json first object ${json[0]}');
+        log.w(
+            'getTransactionHistory - LENGTH ${json.length} -- json first object ${json[0]}');
         if (json.isNotEmpty) {
-          var l = [];
-          l.add(json[3]);
           PayCoolTransactionHistoryModelList transactionList =
-              PayCoolTransactionHistoryModelList.fromJson(l);
+              PayCoolTransactionHistoryModelList.fromJson(json);
           log.w(
               'getTransactionHistory func:  transactions length -- ${transactionList.transactions.length}');
           return transactionList.transactions;

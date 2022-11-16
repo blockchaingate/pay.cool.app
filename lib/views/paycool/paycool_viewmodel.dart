@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:decimal/decimal.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -54,7 +53,8 @@ import '../../environments/environment.dart';
 import '../../services/config_service.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../services/local_dialog_service.dart';
-import 'models/payment_model.dart';
+import 'models/pay_order_model.dart';
+import 'models/payment_rewards_model.dart';
 
 class PayCoolViewmodel extends FutureViewModel {
   final log = getLogger('PayCoolViewmodel');
@@ -113,13 +113,14 @@ class PayCoolViewmodel extends FutureViewModel {
   // final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   int decimalLimit = 8;
   var fabUtils = FabUtils();
-  PaymentModel rewardInfoModel = PaymentModel();
+  PaymentRewardsModel rewardInfoModel = PaymentRewardsModel();
   String orderId = '';
   StoreMerchantModel storeMerchangeModel = StoreMerchantModel();
   String orderIdFromCreateStoreOrder = '';
   bool isScanningImage = false;
   bool isServerDown = false;
   Decimal gasBalance = Constants.decimalZero;
+  PayOrder payOrder = PayOrder();
 
 /*----------------------------------------------------------------------
                     Default Future to Run
@@ -302,7 +303,8 @@ class PayCoolViewmodel extends FutureViewModel {
       if (res != null && res != '') {
         sharedService.alertDialog(
             FlutterI18n.translate(context, "newAccountCreated"),
-            FlutterI18n.translate(context, "newAccountNote"));
+            FlutterI18n.translate(context, "newAccountNote"),
+            path: PayCoolViewRoute);
       } else {
         sharedService
             .sharedSimpleNotification(FlutterI18n.translate(context, "failed"));
@@ -316,7 +318,7 @@ class PayCoolViewmodel extends FutureViewModel {
     setBusy(false);
   }
 
-  payOrder() async {
+  makePayment() async {
     setBusy(true);
     isPaying = true;
     if (storeInfoModel.status == 0) {
@@ -818,6 +820,140 @@ class PayCoolViewmodel extends FutureViewModel {
     return body;
   }
 
+  showOrderDetails() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            titleTextStyle: headText3.copyWith(
+              color: black,
+            ),
+            title: Text(
+              'Order Details',
+              textAlign: TextAlign.center,
+            ),
+            content: SizedBox(
+              height: 200,
+              child: Column(mainAxisSize: MainAxisSize.min, children: [
+                UIHelper.verticalSpaceMedium,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                        flex: 1,
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 8.0, bottom: 3),
+                          child: Text(
+                            FlutterI18n.translate(context, "title"),
+                            style: headText5,
+                          ),
+                        )),
+                    Expanded(
+                        flex: 1,
+                        child: Text(
+                          payOrder.title,
+                          style: headText5,
+                        ))
+                  ],
+                ),
+                UIHelper.verticalSpaceSmall,
+                UIHelper.divider,
+                UIHelper.verticalSpaceSmall,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                        flex: 1,
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 8.0, bottom: 3),
+                          child: Text(
+                            FlutterI18n.translate(context, "taxRate"),
+                            style: headText5,
+                          ),
+                        )),
+                    Expanded(
+                        flex: 1,
+                        child: Text(
+                          payOrder.tax.toString(),
+                          style: headText5,
+                        ))
+                  ],
+                ),
+                UIHelper.verticalSpaceSmall,
+                UIHelper.divider,
+                UIHelper.verticalSpaceSmall,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                        flex: 1,
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 8.0, bottom: 3),
+                          child: Text(
+                            FlutterI18n.translate(context, "price"),
+                            style: headText5,
+                          ),
+                        )),
+                    Expanded(
+                        flex: 1,
+                        child: Text(
+                          payOrder.price.toString(),
+                          style: headText5,
+                        ))
+                  ],
+                ),
+                UIHelper.verticalSpaceSmall,
+                UIHelper.divider,
+                UIHelper.verticalSpaceSmall,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                        flex: 1,
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 8.0, bottom: 3),
+                          child: Text(
+                            FlutterI18n.translate(context, "quantity"),
+                            style: headText5,
+                          ),
+                        )),
+                    Expanded(
+                        flex: 1,
+                        child: Text(
+                          payOrder.qty.toString(),
+                          style: headText5,
+                        ))
+                  ],
+                ),
+                UIHelper.verticalSpaceSmall,
+                UIHelper.divider,
+                UIHelper.verticalSpaceSmall,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                        flex: 1,
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 8.0, bottom: 3),
+                          child: Text(
+                            FlutterI18n.translate(context, "rebateRate"),
+                            style: headText5,
+                          ),
+                        )),
+                    Expanded(
+                        flex: 1,
+                        child: Text(
+                          payOrder.rebateRate.toString(),
+                          style: headText5,
+                        ))
+                  ],
+                ),
+              ]),
+            ),
+          );
+        });
+  }
+
   orderDetails({String barcodeScanData}) async {
     String scannedOrderId = '';
     String scannedStoreId = '';
@@ -907,9 +1043,9 @@ class PayCoolViewmodel extends FutureViewModel {
     setBusy(true);
     orderId = scanRes;
     bool isFailed = false;
-
+    payOrder = await paycoolService.getPayOrderInfo(scanRes);
     await paycoolService
-        .getRewardInfo(scanRes)
+        .getPayOrderInfoWithRewards(scanRes)
         .then((value) => rewardInfoModel = value)
         .catchError((onError) {
       debugPrint('catch error $onError');

@@ -1,5 +1,5 @@
 {
-    "title": "派多客钱包",
+    "appTitle": "贝库",
     "confirm": "确认",
     "cancel": "取消",
     "close": "关闭",
@@ -483,5 +483,6 @@
     "purchasedPackages": "购买的套餐",
     "notJoinedPaycool": "你不是Pay.cool会员",
     "join": "加盟",
-    "visitDashboard": "访问仪表板"
+    "visitDashboard": "访问仪表板",
+    "freeGasQuestionNote": "Answer the question below"
 }
