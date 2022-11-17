@@ -483,5 +483,9 @@
     "notJoinedPaycool": "No eres miembro de Pay.cool",
     "join": "Únase a",
     "visitDashboard": "Visitar el panel de control",
-    "freeGasQuestionNote": "Answer the question below"
+    "freeGasQuestionNote": "Responda a la siguiente pregunta",
+    "title": "Título",
+    "taxRate": "Tipo impositivo",
+    "rebateRate": "Tasa de reembolso"
+
 }

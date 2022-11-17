@@ -35,11 +35,7 @@ import 'package:paycool/services/wallet_service.dart';
 import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/utils/abi_util.dart';
 import 'package:paycool/utils/barcode_util.dart';
-import 'package:paycool/utils/coin_util.dart';
 import 'package:paycool/utils/fab_util.dart';
-import 'package:paycool/utils/kanban.util.dart';
-import 'package:paycool/utils/keypair_util.dart';
-import 'package:paycool/utils/string_util.dart';
 import 'package:paycool/views/paycool_club/paycool_club_service.dart';
 import 'package:paycool/views/paycool/models/paycool_store_model.dart';
 import 'package:paycool/views/paycool/models/store_and_merchant_model.dart';
@@ -47,7 +43,6 @@ import 'package:paycool/views/paycool/paycool_service.dart';
 import 'package:share/share.dart';
 import 'package:stacked/stacked.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:hex/hex.dart';
 import 'package:barcode_scan/barcode_scan.dart';
 import '../../environments/environment.dart';
 import '../../services/config_service.dart';
@@ -829,7 +824,7 @@ class PayCoolViewmodel extends FutureViewModel {
               color: black,
             ),
             title: Text(
-              'Order Details',
+              FlutterI18n.translate(context, "orderDetails"),
               textAlign: TextAlign.center,
             ),
             content: SizedBox(
@@ -928,26 +923,29 @@ class PayCoolViewmodel extends FutureViewModel {
                 UIHelper.verticalSpaceSmall,
                 UIHelper.divider,
                 UIHelper.verticalSpaceSmall,
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Expanded(
-                        flex: 1,
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 8.0, bottom: 3),
-                          child: Text(
-                            FlutterI18n.translate(context, "rebateRate"),
-                            style: headText5,
-                          ),
-                        )),
-                    Expanded(
-                        flex: 1,
-                        child: Text(
-                          payOrder.rebateRate.toString(),
-                          style: headText5,
-                        ))
-                  ],
-                ),
+                payOrder.rebateRate != null
+                    ? Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Expanded(
+                              flex: 1,
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.only(left: 8.0, bottom: 3),
+                                child: Text(
+                                  FlutterI18n.translate(context, "rebateRate"),
+                                  style: headText5,
+                                ),
+                              )),
+                          Expanded(
+                              flex: 1,
+                              child: Text(
+                                payOrder.rebateRate.toString(),
+                                style: headText5,
+                              ))
+                        ],
+                      )
+                    : Container(),
               ]),
             ),
           );

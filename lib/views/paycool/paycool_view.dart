@@ -83,7 +83,10 @@ class PayCoolView extends StatelessWidget {
                     model.isServerDown
                         ? const ServerErrorWidget()
                         : model.isBusy && !model.isPaying
-                            ? model.sharedService.loadingIndicator()
+                            ? Padding(
+                                padding: const EdgeInsets.only(top: 20.0),
+                                child: model.sharedService.loadingIndicator(),
+                              )
                             : !model.isMember
                                 ? Container(
                                     decoration:
@@ -897,7 +900,7 @@ class PayCoolView extends StatelessWidget {
                                                         Expanded(
                                                           flex: 2,
                                                           child: Text(
-                                                              '${model.rewardInfoModel.getTotalRewards.toString()} FAB',
+                                                              '${model.rewardInfoModel.getTotalRewards.toString()} ${model.coinPayable}',
                                                               textAlign:
                                                                   TextAlign
                                                                       .right,

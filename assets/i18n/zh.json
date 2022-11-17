@@ -484,5 +484,9 @@
     "notJoinedPaycool": "你不是Pay.cool会员",
     "join": "加盟",
     "visitDashboard": "访问仪表板",
-    "freeGasQuestionNote": "Answer the question below"
+    "freeGasQuestionNote": "回答下面的问题",
+    "title": "标题",
+    "taxRate": "税率",
+    "rebateRate": "回扣率"
+
 }

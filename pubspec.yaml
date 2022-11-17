@@ -1,6 +1,6 @@
 name: paycool
 description: Crypto payment application
-version: 2.2.70+116
+version: 2.2.71+117
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `pub publish`. This is preferred for private packages.
@@ -60,9 +60,9 @@ dependencies:
   webview_flutter: 
   flutter_dotenv: 
   flutter_svg: ^0.19.2+1
+  flutter_launcher_icons: ^0.8.1
   
 dev_dependencies:
-  flutter_launcher_icons: ^0.7.0
   flutter_lints: ^1.0.4
   flutter_test:
     sdk: flutter
@@ -91,7 +91,7 @@ flutter:
     - .env
 
 flutter_icons:
-  image_path: "assets/images/launcher/paycool-logo.jpg"
+  image_path: "assets/images/launcher/paycool-logo-v1.jpg"
   android: true
   ios: true
 

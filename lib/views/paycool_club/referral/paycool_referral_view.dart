@@ -6,7 +6,6 @@ import 'package:qr_flutter/qr_flutter.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/constants/route_names.dart';
-import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/widgets/pagination/pagination_widget.dart';
 
 import 'package:stacked/stacked.dart';
@@ -26,27 +25,8 @@ class PaycoolReferralView extends StatelessWidget {
         model.init();
       },
       builder: (context, model, _) => Scaffold(
-          appBar: AppBar(
-            leading: Container(
-              margin: const EdgeInsets.only(
-                  right: 12, left: 9, top: 12, bottom: 10),
-              decoration: BoxDecoration(
-                color: white,
-                borderRadius: BorderRadius.circular(25),
-              ),
-              child: IconButton(
-                  onPressed: (() => model.navigationService.goBack()),
-                  icon: const Icon(
-                    Icons.arrow_back,
-                    color: black,
-                    size: 20,
-                  )),
-            ),
-            backgroundColor: Colors.transparent,
-            centerTitle: true,
-            title: Text(FlutterI18n.translate(context, "referrals"),
-                style: headText4.copyWith(fontWeight: FontWeight.bold)),
-          ),
+          appBar: customAppBarWithTitleNB(
+              FlutterI18n.translate(context, "referrals")),
           body: model.isBusy
               ? SizedBox(
                   height: 500,

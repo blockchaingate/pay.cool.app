@@ -50,6 +50,11 @@ class ClubPackageCheckoutViewModel extends FutureViewModel {
   @override
   void onData(data) async {
     clubPackageCheckout = data;
+    if (clubPackageCheckout.clubParams == null ||
+        clubPackageCheckout.clubParams.isEmpty) {
+      setBusy(false);
+      return;
+    }
     title = storageService.language == 'en'
         ? clubProject.name.en
         : clubProject.name.sc;

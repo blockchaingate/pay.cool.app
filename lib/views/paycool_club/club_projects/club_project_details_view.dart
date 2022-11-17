@@ -79,10 +79,9 @@ class _ClubProjectDetailsViewState extends State<ClubProjectDetailsView> {
                             }),
                         leading: widget.projectDetails[index].image == null
                             ? Container(
+                                width: 30,
+                                height: 30,
                                 decoration: roundedBoxDecoration(),
-                                child: Placeholder(
-                                  child: Text('NI'),
-                                ),
                               )
                             : Container(
                                 // decoration:
@@ -101,7 +100,7 @@ class _ClubProjectDetailsViewState extends State<ClubProjectDetailsView> {
                           storageService.language == 'en'
                               ? widget.projectDetails[index].name.en
                               : widget.projectDetails[index].name.sc,
-                          style: headText3.copyWith(
+                          style: headText4.copyWith(
                               fontWeight: FontWeight.bold, color: black),
                         ),
                         subtitle: RichText(
@@ -150,7 +149,7 @@ class _ClubProjectDetailsViewState extends State<ClubProjectDetailsView> {
                                 }),
                         ),
                         trailing: SizedBox(
-                          width: 200,
+                          // width: 200,
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             mainAxisAlignment: MainAxisAlignment.end,

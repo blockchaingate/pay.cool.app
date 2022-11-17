@@ -3,6 +3,7 @@ import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/shared/ui_helpers.dart';
+import 'package:paycool/utils/number_util.dart';
 import 'package:paycool/views/paycool_club/club_dashboard_model.dart';
 
 import '../../service_locator.dart';
@@ -64,10 +65,19 @@ class ClubRewardsView extends StatelessWidget {
                                   onTap: () => showRewardDistributionDialog(
                                       context, index),
                                   horizontalTitleGap: 0,
-                                  leading: const Icon(
-                                    Icons.monetization_on_outlined,
-                                    color: black,
-                                    size: 18,
+                                  leading: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(top: 8.0),
+                                        child: const Icon(
+                                          Icons.monetization_on_outlined,
+                                          color: black,
+                                          size: 18,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                   title: Text(
                                     storageService.language == "en"
@@ -91,26 +101,35 @@ class ClubRewardsView extends StatelessWidget {
                                                     .totalReward[j]
                                                     .coin +
                                                 ' ' +
-                                                rewardsSummary[index]
-                                                    .totalReward[j]
-                                                    .amount
-                                                    .toStringAsFixed(2),
+                                                NumberUtil.decimalLimiter(
+                                                        rewardsSummary[index]
+                                                            .totalReward[j]
+                                                            .amount,
+                                                        decimalPrecision: 18)
+                                                    .toString(),
                                             style: headText5),
                                     ],
                                   ),
-                                  trailing: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      UIHelper.horizontalSpaceSmall,
-                                      Text(
-                                        'Rewards distribution details',
-                                        style: headText5.copyWith(
-                                            color: primaryColor,
-                                            decoration:
-                                                TextDecoration.underline),
-                                      )
-                                    ],
-                                  ),
+                                  trailing: rewardsSummary[index]
+                                              .rewardDistribution
+                                              .gap ==
+                                          null
+                                      ? Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [])
+                                      : Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            UIHelper.horizontalSpaceSmall,
+                                            Text(
+                                              'Rewards distribution details',
+                                              style: headText5.copyWith(
+                                                  color: primaryColor,
+                                                  decoration:
+                                                      TextDecoration.underline),
+                                            )
+                                          ],
+                                        ),
                                 ),
                               );
                             }))

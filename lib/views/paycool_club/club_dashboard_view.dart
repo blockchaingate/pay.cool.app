@@ -233,11 +233,11 @@ class ClubDashboardView extends StatelessWidget {
                                             image: blurBackgroundImage(),
                                           ),
                                           margin: EdgeInsets.only(top: 10),
-                                          height: 200,
+                                          height: 235,
                                           child: Stack(
                                             children: [
                                               SizedBox(
-                                                height: 200, // card height
+                                                // height: 240, // card height
                                                 child: PageView.builder(
                                                   itemCount:
                                                       model.projects.length,
@@ -301,22 +301,22 @@ class ClubDashboardView extends StatelessWidget {
                                                                     MainAxisSize
                                                                         .min,
                                                                 children: [
-                                                                  Padding(
-                                                                    padding:
-                                                                        const EdgeInsets.all(
-                                                                            8.0),
-                                                                    child: Image
-                                                                        .network(
-                                                                      model
-                                                                          .projects[
-                                                                              model.projectIndex]
-                                                                          .image
-                                                                          .toString(),
-                                                                      width: 30,
-                                                                      height:
-                                                                          30,
-                                                                    ),
-                                                                  ),
+                                                                  model.projects[model.projectIndex]
+                                                                              .image ==
+                                                                          null
+                                                                      ? Container()
+                                                                      : Padding(
+                                                                          padding:
+                                                                              const EdgeInsets.all(8.0),
+                                                                          child:
+                                                                              Image.network(
+                                                                            model.projects[model.projectIndex].image.toString(),
+                                                                            width:
+                                                                                30,
+                                                                            height:
+                                                                                30,
+                                                                          ),
+                                                                        ),
                                                                   Text(
                                                                     model.storageService.language ==
                                                                             'en'
@@ -403,7 +403,7 @@ class ClubDashboardView extends StatelessWidget {
                                               ),
                                               Container(
                                                 margin: const EdgeInsets.only(
-                                                    bottom: 5, top: 15),
+                                                    bottom: 5, top: 5),
                                                 child: Row(
                                                   mainAxisAlignment:
                                                       MainAxisAlignment.center,
@@ -427,7 +427,7 @@ class ClubDashboardView extends StatelessWidget {
                                                                           i
                                                                       ? white
                                                                       : grey,
-                                                              size: 12,
+                                                              size: 10,
                                                             )),
                                                       ),
                                                   ],
@@ -707,9 +707,7 @@ class ClubDashboardView extends StatelessWidget {
                                                                     .all(8.0),
                                                             child: Text(
                                                               model
-                                                                  .dashboard
-                                                                  .summary
-                                                                  .length
+                                                                  .purchasedPackagesCount
                                                                   .toString(),
                                                               style: headText5,
                                                             ),

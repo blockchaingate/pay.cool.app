@@ -199,10 +199,14 @@ class PayCoolClubService {
       if (response.statusCode == 200 || response.statusCode == 201) {
         var json = jsonDecode(response.body)['_body'];
 
-        log.w('getPackageCheckoutDetails $json');
-        ClubPackageCheckout packageCheckoutDetails =
-            ClubPackageCheckout.fromJson(json);
-        return packageCheckoutDetails;
+        log.w('getPackageCheckoutDetails json $json');
+        if (json != null) {
+          ClubPackageCheckout packageCheckoutDetails =
+              ClubPackageCheckout.fromJson(json);
+          return packageCheckoutDetails;
+        } else {
+          return ClubPackageCheckout(clubParams: [], rewardDetails: []);
+        }
       } else {
         log.e("getPackageCheckoutDetails error: " + response.body);
         return null;
@@ -361,7 +365,8 @@ class PayCoolClubService {
   Future<int> getUserReferralCount(
     String address,
   ) async {
-    String url = paycoolBaseUrl + 'user/' + address + '/totalCount';
+    String url =
+        paycoolBaseUrl + 'userreferral/user/' + address + '/totalCount';
     int referralCount = 0;
     log.i('getReferralCount url $url');
     try {
@@ -387,7 +392,7 @@ class PayCoolClubService {
   // new
   Future<List<PaycoolReferral>> getUserDownlineByAddress(String address,
       {int pageSize = 10, int pageNumber = 0}) async {
-    String url = paycoolBaseUrl + 'user/' + address;
+    String url = paycoolBaseUrl + 'userreferral/user/' + address;
     if (pageNumber != 0) {
       pageNumber = pageNumber - 1;
     }

@@ -85,6 +85,7 @@ class ClubDashboardViewModel extends BaseViewModel {
   bool isAcceptingMembers = false;
   String memberType = '';
   int projectIndex = 0;
+  int purchasedPackagesCount = 0;
 
   void init() async {
     setBusy(true);
@@ -103,7 +104,8 @@ class ClubDashboardViewModel extends BaseViewModel {
         log.e('catch during dashboard details or get children $err');
       }
     }
-
+    purchasedPackagesCount =
+        await clubService.getPurchasedPackageCount(fabAddress);
     await checkGas();
     if (gasAmount == 0.0) await checkFreeFabForNewWallet();
     setBusy(false);
