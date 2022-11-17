@@ -77,14 +77,26 @@ class _ClubProjectDetailsViewState extends State<ClubProjectDetailsView> {
                               "package": widget.projectDetails[index],
                               'paymentCoin': selectedCoin[index]
                             }),
-                        leading: Container(
-                            // decoration:
-                            //     roundedBoxDecoration(color: secondaryColor),
-                            // padding: const EdgeInsets.all(8),
-                            child: CircleAvatar(
-                                backgroundImage: NetworkImage(
-                          widget.projectDetails[index].image,
-                        ))),
+                        leading: widget.projectDetails[index].image == null
+                            ? Container(
+                                decoration: roundedBoxDecoration(),
+                                child: Placeholder(
+                                  child: Text('NI'),
+                                ),
+                              )
+                            : Container(
+                                // decoration:
+                                //     roundedBoxDecoration(color: secondaryColor),
+                                // padding: const EdgeInsets.all(8),
+                                child: CircleAvatar(
+                                    onBackgroundImageError:
+                                        ((exception, stackTrace) =>
+                                            const Placeholder(
+                                              color: primaryColor,
+                                            )),
+                                    backgroundImage: NetworkImage(
+                                      widget.projectDetails[index].image,
+                                    ))),
                         title: Text(
                           storageService.language == 'en'
                               ? widget.projectDetails[index].name.en

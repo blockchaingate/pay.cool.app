@@ -708,59 +708,62 @@ class PayCoolView extends StatelessWidget {
                                                     : Container(),
                                                 UIHelper.verticalSpaceSmall,
                                                 // order details
-                                                Container(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          left: 5),
-                                                  child: Row(
-                                                    children: [
-                                                      Expanded(
-                                                        flex: 2,
-                                                        child: Text(
-                                                            FlutterI18n
-                                                                .translate(
-                                                                    context,
-                                                                    "title"),
-                                                            style: headText5),
+                                                model.payOrder.title == null
+                                                    ? Container()
+                                                    : Container(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .only(left: 5),
+                                                        child: Row(
+                                                          children: [
+                                                            Expanded(
+                                                              flex: 2,
+                                                              child: Text(
+                                                                  FlutterI18n
+                                                                      .translate(
+                                                                          context,
+                                                                          "title"),
+                                                                  style:
+                                                                      headText5),
+                                                            ),
+                                                            UIHelper
+                                                                .horizontalSpaceMedium,
+                                                            Expanded(
+                                                                flex: 2,
+                                                                child: Row(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .end,
+                                                                  children: [
+                                                                    Text(
+                                                                        '${model.payOrder.title}',
+                                                                        maxLines:
+                                                                            2,
+                                                                        textAlign:
+                                                                            TextAlign
+                                                                                .right,
+                                                                        style: headText5.copyWith(
+                                                                            fontWeight:
+                                                                                FontWeight.bold)),
+                                                                    TextButton(
+                                                                        onPressed:
+                                                                            () {
+                                                                          model
+                                                                              .showOrderDetails();
+                                                                        },
+                                                                        child:
+                                                                            Text(
+                                                                          FlutterI18n.translate(
+                                                                              context,
+                                                                              "details"),
+                                                                          style:
+                                                                              TextStyle(fontSize: 12),
+                                                                        ))
+                                                                  ],
+                                                                )),
+                                                          ],
+                                                        ),
                                                       ),
-                                                      UIHelper
-                                                          .horizontalSpaceMedium,
-                                                      Expanded(
-                                                          flex: 2,
-                                                          child: Row(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .end,
-                                                            children: [
-                                                              Text(
-                                                                  '${model.payOrder.title}',
-                                                                  maxLines: 2,
-                                                                  textAlign:
-                                                                      TextAlign
-                                                                          .right,
-                                                                  style: headText5
-                                                                      .copyWith(
-                                                                          fontWeight:
-                                                                              FontWeight.bold)),
-                                                              TextButton(
-                                                                  onPressed:
-                                                                      () {
-                                                                    model
-                                                                        .showOrderDetails();
-                                                                  },
-                                                                  child: Text(
-                                                                    FlutterI18n.translate(
-                                                                        context,
-                                                                        "details"),
-                                                                    style: TextStyle(
-                                                                        fontSize:
-                                                                            12),
-                                                                  ))
-                                                            ],
-                                                          )),
-                                                    ],
-                                                  ),
-                                                ),
 
                                                 UIHelper.divider,
                                                 UIHelper.verticalSpaceSmall,
@@ -953,6 +956,7 @@ class PayCoolView extends StatelessWidget {
                                                       strutStyle:
                                                           const StrutStyle(),
                                                       style: headText4.copyWith(
+                                                          color: secondaryColor,
                                                           fontWeight:
                                                               FontWeight.bold)),
                                             ),

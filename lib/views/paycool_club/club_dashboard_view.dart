@@ -262,6 +262,8 @@ class ClubDashboardView extends StatelessWidget {
                                                                     .circular(
                                                                         20)),
                                                         child: Container(
+                                                          padding:
+                                                              EdgeInsets.all(4),
                                                           decoration:
                                                               BoxDecoration(
                                                                   borderRadius:
@@ -271,7 +273,7 @@ class ClubDashboardView extends StatelessWidget {
                                                                   gradient:
                                                                       LinearGradient(
                                                                           colors: [
-                                                                            secondaryColor,
+                                                                            primaryColor,
                                                                             primaryColor.withAlpha(155),
                                                                           ],
                                                                           begin: const FractionalOffset(
@@ -294,7 +296,7 @@ class ClubDashboardView extends StatelessWidget {
                                                                 CrossAxisAlignment
                                                                     .center,
                                                             children: [
-                                                              Row(
+                                                              Column(
                                                                 mainAxisSize:
                                                                     MainAxisSize
                                                                         .min,
@@ -310,9 +312,9 @@ class ClubDashboardView extends StatelessWidget {
                                                                               model.projectIndex]
                                                                           .image
                                                                           .toString(),
-                                                                      width: 25,
+                                                                      width: 30,
                                                                       height:
-                                                                          25,
+                                                                          30,
                                                                     ),
                                                                   ),
                                                                   Text(
@@ -327,8 +329,14 @@ class ClubDashboardView extends StatelessWidget {
                                                                             .projects[model.projectIndex]
                                                                             .name
                                                                             .sc,
-                                                                    style:
-                                                                        headText1,
+                                                                    style: headText2.copyWith(
+                                                                        fontSize:
+                                                                            22,
+                                                                        color:
+                                                                            secondaryColor,
+                                                                        fontWeight:
+                                                                            FontWeight.bold),
+                                                                    maxLines: 2,
                                                                   ),
                                                                 ],
                                                               ),
@@ -360,32 +368,31 @@ class ClubDashboardView extends StatelessWidget {
                                                               ),
                                                               UIHelper
                                                                   .verticalSpaceSmall,
-                                                              SizedBox(
-                                                                width: 90,
-                                                                height: 50,
-                                                                child:
-                                                                    ElevatedButton(
-                                                                        style: generalButtonStyle1.copyWith(
-                                                                            padding: MaterialStateProperty.all(EdgeInsets
-                                                                                .zero)),
-                                                                        onPressed:
-                                                                            () {
-                                                                          if (model
-                                                                              .isValidMember) {
-                                                                            model.goToProjectDetails(model.projects[model.projectIndex].sId);
-                                                                          } else {
-                                                                            model.showJoinPaycoolPopup();
-                                                                          }
-                                                                        },
-                                                                        child:
-                                                                            Text(
-                                                                          FlutterI18n.translate(
-                                                                              context,
-                                                                              "details"),
-                                                                          style:
-                                                                              headText4.copyWith(color: secondaryColor),
-                                                                        )),
-                                                              )
+                                                              ElevatedButton(
+                                                                  style: generalButtonStyle(
+                                                                      secondaryColor),
+                                                                  onPressed:
+                                                                      () {
+                                                                    if (model
+                                                                        .isValidMember) {
+                                                                      model.goToProjectDetails(model
+                                                                          .projects[
+                                                                              model.projectIndex]
+                                                                          .sId);
+                                                                    } else {
+                                                                      model
+                                                                          .showJoinPaycoolPopup();
+                                                                    }
+                                                                  },
+                                                                  child: Text(
+                                                                    FlutterI18n.translate(
+                                                                        context,
+                                                                        "details"),
+                                                                    style: headText5
+                                                                        .copyWith(
+                                                                            color:
+                                                                                primaryColor),
+                                                                  ))
                                                             ],
                                                           ),
                                                         ),
@@ -396,7 +403,7 @@ class ClubDashboardView extends StatelessWidget {
                                               ),
                                               Container(
                                                 margin: const EdgeInsets.only(
-                                                    bottom: 10),
+                                                    bottom: 5, top: 15),
                                                 child: Row(
                                                   mainAxisAlignment:
                                                       MainAxisAlignment.center,

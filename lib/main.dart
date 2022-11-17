@@ -47,7 +47,7 @@ Future<void> main() async {
     await serviceLocator();
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
 
-    Logger.level = Level.info;
+    Logger.level = Level.nothing;
 
     SystemChannels.textInput
         .invokeMethod('TextInput.hide'); // Hides keyboard initially
@@ -68,7 +68,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return OverlaySupport(
       child: MaterialApp(
-        darkTheme: ThemeData.dark(),
+        // darkTheme: ThemeData.dark(),
         debugShowCheckedModeBanner: false,
         navigatorKey: locator<NavigationService>().navigatorKey,
         builder: (context, widget) => Stack(
