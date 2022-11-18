@@ -36,163 +36,181 @@ class _ClubProjectDetailsViewState extends State<ClubProjectDetailsView> {
           widget.projectDetails.length, selectedCoin.length);
     }
     return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.black),
-        backgroundColor: Colors.transparent,
-        automaticallyImplyLeading: true,
-      ),
+      // extendBodyBehindAppBar: true,
+      appBar: customAppBarWithTitleNB(
+          FlutterI18n.translate(context, "selectPackageDetails")),
       body: Container(
+        margin: const EdgeInsets.only(bottom: 20),
         alignment: Alignment.center,
         decoration: BoxDecoration(image: blurBackgroundImage()),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Column(
-              children: [
-                //Text(data)
-              ],
-            ),
-            Text(
-              FlutterI18n.translate(context, "selectPackageDetails"),
-              style: headText1.copyWith(
-                  color: primaryColor, fontWeight: FontWeight.bold),
-            ),
-            Container(
-              alignment: Alignment.center,
-              child: ListView.builder(
-                  padding: const EdgeInsets.only(top: 10),
-                  shrinkWrap: true,
-                  itemCount: widget.projectDetails.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return Card(
-                      margin: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-                      color: secondaryColor,
-                      elevation: 10,
-                      child: ListTile(
-                        onTap: () => navigationService.navigateTo(
-                            clubPackageCheckoutViewRoute,
-                            arguments: {
-                              "package": widget.projectDetails[index],
-                              'paymentCoin': selectedCoin[index]
-                            }),
-                        leading: widget.projectDetails[index].image == null
-                            ? Container(
-                                width: 30,
-                                height: 30,
-                                decoration: roundedBoxDecoration(),
-                              )
-                            : Container(
-                                // decoration:
-                                //     roundedBoxDecoration(color: secondaryColor),
-                                // padding: const EdgeInsets.all(8),
-                                child: CircleAvatar(
-                                    onBackgroundImageError:
-                                        ((exception, stackTrace) =>
-                                            const Placeholder(
-                                              color: primaryColor,
-                                            )),
-                                    backgroundImage: NetworkImage(
-                                      widget.projectDetails[index].image,
-                                    ))),
-                        title: Text(
-                          storageService.language == 'en'
-                              ? widget.projectDetails[index].name.en
-                              : widget.projectDetails[index].name.sc,
-                          style: headText4.copyWith(
-                              fontWeight: FontWeight.bold, color: black),
-                        ),
-                        subtitle: RichText(
-                          text: TextSpan(
-                              text: storageService.language == 'en'
-                                  ? widget.projectDetails[index].description.en
-                                  : widget.projectDetails[index].description.sc,
-                              style: const TextStyle(
-                                  fontSize: 12,
-                                  decoration: TextDecoration.underline,
-                                  color: primaryColor),
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () {
-                                  showDialog(
-                                      context: context,
-                                      builder: (context) {
-                                        return AlertDialog(
-                                            titleTextStyle: headText3.copyWith(
-                                                color: black),
-                                            title: Text(
-                                              FlutterI18n.translate(
-                                                  context, "description"),
-                                              textAlign: TextAlign.center,
-                                              style: headText3.copyWith(
-                                                  color: black),
-                                            ),
-                                            contentTextStyle:
-                                                const TextStyle(color: grey),
-                                            content: SizedBox(
-                                              height: 120,
-                                              child: SingleChildScrollView(
-                                                  child: Text(
-                                                storageService.language == 'en'
-                                                    ? widget
-                                                        .projectDetails[index]
-                                                        .description
-                                                        .en
-                                                    : widget
-                                                        .projectDetails[index]
-                                                        .description
-                                                        .sc,
-                                                style: headText3,
+            UIHelper.verticalSpaceMedium,
+
+            // Text(
+            //   FlutterI18n.translate(context, "selectPackageDetails"),
+            //   style: headText1.copyWith(
+            //       color: primaryColor, fontWeight: FontWeight.bold),
+            // ),
+            Expanded(
+              child: Container(
+                alignment: Alignment.center,
+                child: ListView.builder(
+                    padding: const EdgeInsets.only(top: 10),
+                    shrinkWrap: true,
+                    itemCount: widget.projectDetails.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Card(
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 15, vertical: 5),
+                        color: secondaryColor,
+                        elevation: 10,
+                        child: ListTile(
+                          minVerticalPadding: 15,
+                          onTap: () => navigationService.navigateTo(
+                              clubPackageCheckoutViewRoute,
+                              arguments: {
+                                "package": widget.projectDetails[index],
+                                'paymentCoin': selectedCoin[index]
+                              }),
+                          leading: widget.projectDetails[index].image == null
+                              ? Container(
+                                  width: 30,
+                                  height: 30,
+                                  decoration: roundedBoxDecoration(),
+                                )
+                              : Container(
+                                  // decoration:
+                                  //     roundedBoxDecoration(color: secondaryColor),
+                                  // padding: const EdgeInsets.all(8),
+                                  child: CircleAvatar(
+                                      onBackgroundImageError:
+                                          ((exception, stackTrace) =>
+                                              const Placeholder(
+                                                color: primaryColor,
                                               )),
-                                            ));
-                                      });
-                                }),
-                        ),
-                        trailing: SizedBox(
-                          // width: 200,
-                          child: Row(
+                                      backgroundImage: NetworkImage(
+                                        widget.projectDetails[index].image,
+                                      ))),
+                          title: Text(
+                            storageService.language == 'en'
+                                ? widget.projectDetails[index].name.en
+                                : widget.projectDetails[index].name.sc,
+                            style: headText4.copyWith(
+                                fontWeight: FontWeight.bold, color: black),
+                          ),
+                          subtitle: Row(
                             mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.end,
                             children: [
-                              DropdownButton(
-                                elevation: 15,
-                                underline: const SizedBox.shrink(),
-                                value: selectedCoin[index],
-                                onChanged: (newValue) {
-                                  setState(() {
-                                    selectedCoin[index] = newValue;
-                                  });
-                                },
-                                items: widget.projectDetails[index].coins.map(
-                                  (coin) {
-                                    return DropdownMenuItem(
-                                      value: coin,
-                                      child: Container(
-                                        //   height: 40,
-                                        //  color: secondaryColor,
-                                        padding:
-                                            const EdgeInsets.only(left: 10.0),
-                                        child: Text(coin.toString(),
-                                            textAlign: TextAlign.center,
-                                            style: headText5.copyWith(
-                                                fontWeight: FontWeight.bold)),
-                                      ),
-                                    );
-                                  },
-                                ).toList(),
-                              ),
-                              UIHelper.horizontalSpaceMedium,
-                              const Icon(
-                                Icons.arrow_forward_ios,
-                                color: primaryColor,
+                              Expanded(
+                                child: RichText(
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  text: TextSpan(
+                                      text: storageService.language == 'en'
+                                          ? widget.projectDetails[index]
+                                              .description.en
+                                          : widget.projectDetails[index]
+                                              .description.sc,
+                                      style: const TextStyle(
+                                          fontSize: 12,
+                                          decoration: TextDecoration.underline,
+                                          color: primaryColor),
+                                      recognizer: TapGestureRecognizer()
+                                        ..onTap = () {
+                                          showDialog(
+                                              context: context,
+                                              builder: (context) {
+                                                return AlertDialog(
+                                                    titleTextStyle: headText3
+                                                        .copyWith(color: black),
+                                                    title: Text(
+                                                      FlutterI18n.translate(
+                                                          context,
+                                                          "description"),
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style: headText3.copyWith(
+                                                          color: black),
+                                                    ),
+                                                    contentTextStyle:
+                                                        const TextStyle(
+                                                            color: grey),
+                                                    content: SizedBox(
+                                                      height: 120,
+                                                      child:
+                                                          SingleChildScrollView(
+                                                              child: Text(
+                                                        storageService
+                                                                    .language ==
+                                                                'en'
+                                                            ? widget
+                                                                .projectDetails[
+                                                                    index]
+                                                                .description
+                                                                .en
+                                                            : widget
+                                                                .projectDetails[
+                                                                    index]
+                                                                .description
+                                                                .sc,
+                                                        style: headText3,
+                                                      )),
+                                                    ));
+                                              });
+                                        }),
+                                ),
                               ),
                             ],
                           ),
+                          trailing: SizedBox(
+                            // width: 200,
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                DropdownButton(
+                                  elevation: 15,
+                                  underline: const SizedBox.shrink(),
+                                  value: selectedCoin[index],
+                                  onChanged: (newValue) {
+                                    setState(() {
+                                      selectedCoin[index] = newValue;
+                                    });
+                                  },
+                                  items: widget.projectDetails[index].coins.map(
+                                    (coin) {
+                                      return DropdownMenuItem(
+                                        value: coin,
+                                        child: Container(
+                                          //   height: 40,
+                                          //  color: secondaryColor,
+                                          //  decoration:
+                                          padding:
+                                              const EdgeInsets.only(left: 10.0),
+                                          child: Text(coin.toString(),
+                                              textAlign: TextAlign.center,
+                                              style: headText5.copyWith(
+                                                  fontWeight: FontWeight.bold)),
+                                        ),
+                                      );
+                                    },
+                                  ).toList(),
+                                ),
+                                UIHelper.horizontalSpaceMedium,
+                                const Icon(
+                                  Icons.arrow_forward_ios,
+                                  color: primaryColor,
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
-                      ),
-                    );
-                  }),
-            )
+                      );
+                    }),
+              ),
+            ),
           ],
         ),
       ),

@@ -124,7 +124,9 @@ class ClubPackageCheckoutView extends StatelessWidget {
                                   checkoutFields(
                                       FlutterI18n.translate(
                                           context, "packageValue"),
-                                      package.joiningFee.toString(),
+                                      package.joiningFee.toString() +
+                                          ' ' +
+                                          packageWithPaymentCoin['paymentCoin'],
                                       context),
                                   UIHelper.verticalSpaceLarge,
                                   Column(
