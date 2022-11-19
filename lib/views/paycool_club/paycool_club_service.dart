@@ -127,7 +127,7 @@ class PayCoolClubService {
 
   // https://fabtest.info/api/project/v2/10/0
   Future<List<ClubProject>> getClubProjects(
-      {int pageSize = 10, int pageNumber = 0}) async {
+      {int pageSize = 20, int pageNumber = 0}) async {
     String url = clubProjectsUrl;
 
     if (pageNumber != 0) {
@@ -158,7 +158,7 @@ class PayCoolClubService {
 
 // https://fabtest.info/api/projectpackage/v2/project/635d62c88e64d290833fa321/10/0
   Future<List<ClubProject>> getProjectDetails(String projectId,
-      {int pageSize = 10, int pageNumber = 0}) async {
+      {int pageSize = 20, int pageNumber = 0}) async {
     String url = clubProjectDetailsUrl + projectId;
 
     if (pageNumber != 0) {
@@ -327,7 +327,7 @@ class PayCoolClubService {
 
   Future<List<PurchasedPackageHistory>> getPurchasedPackageHistory(
       String address,
-      {int pageSize = 10,
+      {int pageSize = 20,
       int pageNumber = 0}) async {
     String url = paycoolBaseUrl + 'buy/v2/user/' + address;
     if (pageNumber != 0) {
@@ -391,7 +391,7 @@ class PayCoolClubService {
 
   // new
   Future<List<PaycoolReferral>> getUserDownlineByAddress(String address,
-      {int pageSize = 10, int pageNumber = 0}) async {
+      {int pageSize = 20, int pageNumber = 0}) async {
     String url = paycoolBaseUrl + 'userreferral/user/' + address;
     if (pageNumber != 0) {
       pageNumber = pageNumber - 1;

@@ -35,6 +35,7 @@ class _ClubProjectDetailsViewState extends State<ClubProjectDetailsView> {
       selectedCoin.removeRange(
           widget.projectDetails.length, selectedCoin.length);
     }
+    debugPrint('projects length ${widget.projectDetails.length}');
     return Scaffold(
       // extendBodyBehindAppBar: true,
       appBar: customAppBarWithTitleNB(
