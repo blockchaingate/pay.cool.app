@@ -796,7 +796,7 @@ class ClubDashboardViewModel extends BaseViewModel {
     } else if (dashboard.status == 3) {
       memberType = FlutterI18n.translate(context, "executivePartner");
     } else {
-      memberType = FlutterI18n.translate(context, "noPartner");
+      memberType = FlutterI18n.translate(context, "notJoinedProject");
     }
   }
 

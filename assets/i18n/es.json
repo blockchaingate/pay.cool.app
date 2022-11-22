@@ -486,6 +486,9 @@
     "freeGasQuestionNote": "Responda a la siguiente pregunta",
     "title": "Título",
     "taxRate": "Tipo impositivo",
-    "rebateRate": "Tasa de reembolso"
+    "rebateRate": "Tasa de reembolso",
+    "stakeToEarn": "Apostar para ganar",
+    "noPartner": "Ningún socio",
+    "joinedProjects":"Joined Projects"
 
 }

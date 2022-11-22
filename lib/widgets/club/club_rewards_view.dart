@@ -56,6 +56,25 @@ class ClubRewardsView extends StatelessWidget {
                                       height: 15,
                                     ),
                             itemBuilder: (BuildContext context, int index) {
+                              String memberType() {
+                                if (rewardsSummary[index].status == 0) {
+                                  return FlutterI18n.translate(
+                                      context, "basicPartner");
+                                } else if (rewardsSummary[index].status == 1) {
+                                  return FlutterI18n.translate(
+                                      context, "juniorPartner");
+                                } else if (rewardsSummary[index].status == 2) {
+                                  return FlutterI18n.translate(
+                                      context, "seniorPartner");
+                                } else if (rewardsSummary[index].status == 3) {
+                                  return FlutterI18n.translate(
+                                      context, "executivePartner");
+                                } else {
+                                  return FlutterI18n.translate(
+                                      context, "notJoinedProject");
+                                }
+                              }
+
                               return Container(
                                 margin: const EdgeInsets.all(5.0),
                                 padding: const EdgeInsets.all(10.0),
@@ -65,17 +84,22 @@ class ClubRewardsView extends StatelessWidget {
                                   onTap: () => showRewardDistributionDialog(
                                       context, index),
                                   horizontalTitleGap: 0,
-                                  leading: Row(
+                                  leading: Column(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(top: 8.0),
-                                        child: const Icon(
-                                          Icons.monetization_on_outlined,
-                                          color: black,
-                                          size: 18,
-                                        ),
+                                      Container(
+                                        width: 50,
+                                        margin:
+                                            const EdgeInsets.only(right: 10),
+                                        child: Padding(
+                                            padding:
+                                                const EdgeInsets.only(top: 8.0),
+                                            child: Text(
+                                              memberType(),
+                                              style: headText5.copyWith(
+                                                  color: primaryColor,
+                                                  fontWeight: FontWeight.bold),
+                                            )),
                                       ),
                                     ],
                                   ),
@@ -96,40 +120,49 @@ class ClubRewardsView extends StatelessWidget {
                                                   .totalReward
                                                   .length;
                                           j++)
-                                        Text(
-                                            rewardsSummary[index]
+                                        rewardsSummary[index]
                                                     .totalReward[j]
-                                                    .coin +
-                                                ' ' +
-                                                NumberUtil.decimalLimiter(
-                                                        rewardsSummary[index]
+                                                    .coin ==
+                                                null
+                                            ? Container()
+                                            : Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 4.0),
+                                                child: Text(
+                                                    rewardsSummary[index]
                                                             .totalReward[j]
-                                                            .amount,
-                                                        decimalPrecision: 18)
-                                                    .toString(),
-                                            style: headText5),
+                                                            .coin +
+                                                        ' ' +
+                                                        NumberUtil.decimalLimiter(
+                                                                rewardsSummary[
+                                                                        index]
+                                                                    .totalReward[
+                                                                        j]
+                                                                    .amount,
+                                                                decimalPrecision:
+                                                                    18)
+                                                            .toString(),
+                                                    style: headText5),
+                                              ),
                                     ],
                                   ),
-                                  trailing: rewardsSummary[index]
-                                              .rewardDistribution
-                                              .gap ==
-                                          null
-                                      ? Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [])
-                                      : Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            UIHelper.horizontalSpaceSmall,
-                                            Text(
-                                              'Rewards distribution details',
-                                              style: headText5.copyWith(
-                                                  color: primaryColor,
-                                                  decoration:
-                                                      TextDecoration.underline),
-                                            )
-                                          ],
-                                        ),
+                                  // trailing:
+
+                                  //     Row(
+                                  //   mainAxisSize: MainAxisSize.min,
+                                  //   children: [
+                                  //     UIHelper.horizontalSpaceSmall,
+                                  //     Text(
+                                  //       FlutterI18n.translate(
+                                  //           context, "details"),
+                                  //       style: headText5.copyWith(
+                                  //           color: primaryColor,
+                                  //           decoration:
+                                  //               TextDecoration.underline),
+                                  //     )
+                                  //   ],
+                                  // ),
                                 ),
                               );
                             }))
@@ -165,40 +198,54 @@ class ClubRewardsView extends StatelessWidget {
             BoxConstraints(maxHeight: MediaQuery.of(context).size.height - 150),
         context: context,
         builder: (BuildContext context) {
+          rewardsCoinWithAmount(String title, List<SummaryReward> rewards) {
+            return Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Expanded(
+                  flex: 2,
+                  child: Text(
+                    title,
+                    style: headText4.copyWith(color: black),
+                  ),
+                ),
+                UIHelper.horizontalSpaceMedium,
+                rewards.isEmpty
+                    ? Container()
+                    : Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          for (var m = 0; m < rewards.length; m++)
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  rewards[m].coin,
+                                  textAlign: TextAlign.right,
+                                  style: headText5,
+                                ),
+                                Text(
+                                  rewards[m].amount.toString(),
+                                  textAlign: TextAlign.right,
+                                  style: headText5,
+                                ),
+                              ],
+                            ),
+                        ],
+                      ),
+              ],
+            );
+          }
+
           return Container(
               decoration:
                   roundedTopLeftRightBoxDecoration(color: secondaryColor),
               child: Container(
-                margin: EdgeInsets.all(15),
+                margin: const EdgeInsets.all(15),
                 child: Column(children: [
                   UIHelper.verticalSpaceMedium,
-                  Row(
-                    children: [
-                      Expanded(
-                          flex: 1,
-                          child: Text(
-                            'Type',
-                            style: headText3.copyWith(color: primaryColor),
-                          )),
-                      Expanded(
-                          flex: 2,
-                          child: Text(
-                            'FAB',
-                            style: headText3.copyWith(color: primaryColor),
-                            textAlign: TextAlign.right,
-                          )),
-                      Expanded(
-                          flex: 2,
-                          child: Text(
-                            'FET',
-                            style: headText3.copyWith(color: primaryColor),
-                            textAlign: TextAlign.right,
-                          )),
-                    ],
-                  ),
-                  UIHelper.verticalSpaceSmall,
-                  UIHelper.divider,
-                  UIHelper.verticalSpaceSmall,
                   Expanded(
                     child: ListView.separated(
                         shrinkWrap: true,
@@ -206,38 +253,37 @@ class ClubRewardsView extends StatelessWidget {
                         itemCount: 7,
                         itemBuilder: (BuildContext context, int j) {
                           return Container(
-                            padding: EdgeInsets.symmetric(
+                            padding: const EdgeInsets.symmetric(
                                 vertical: 10, horizontal: 2),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Expanded(
-                                  flex: 1,
-                                  child: Text(
-                                    rewardTypes[j],
-                                    style: headText4.copyWith(color: black),
-                                  ),
-                                ),
-                                for (var m = 0;
-                                    m <
+                                rewardsSummary[index].rewardDistribution.gap ==
+                                        null
+                                    ? Container(
+                                        child: rewardsCoinWithAmount(
+                                            FlutterI18n.translate(
+                                                context, "gap"),
+                                            []),
+                                      )
+                                    : rewardsCoinWithAmount(
+                                        FlutterI18n.translate(context, "gap"),
                                         rewardsSummary[index]
                                             .rewardDistribution
-                                            .gap
-                                            .length;
-                                    m++)
-                                  Expanded(
-                                    flex: 2,
-                                    child: Text(
-                                      rewardsSummary[index]
-                                          .rewardDistribution
-                                          .gap[m]
-                                          .amount
-                                          .toString(),
-                                      textAlign: TextAlign.right,
-                                      style: headText5,
-                                    ),
-                                  ),
+                                            .gap),
+                                // rewardsSummary[index]
+                                //             .rewardDistribution
+                                //             .leadership ==
+                                //         null
+                                //     ? Container()
+                                //     : Expanded(
+                                //         flex: 5,
+                                //         child: rewardsCoinWithAmount(
+                                //             rewardsSummary[index]
+                                //                 .rewardDistribution
+                                //                 .leadership),
+                                //       )
                               ],
                             ),
                           );

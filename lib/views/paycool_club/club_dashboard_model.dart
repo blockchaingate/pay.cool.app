@@ -38,12 +38,14 @@ class ClubDashboard {
     var totalFabRewards = Decimal.zero;
     var totalFetRewards = Decimal.zero;
     for (var project in summary) {
-      for (var reward in project.totalReward) {
-        if (reward.coin == 'FAB') {
-          totalFabRewards += reward.amount;
-        }
-        if (reward.coin == 'FET') {
-          totalFetRewards += reward.amount;
+      if (project.totalReward != null) {
+        for (var reward in project.totalReward) {
+          if (reward.coin == 'FAB') {
+            totalFabRewards += reward.amount;
+          }
+          if (reward.coin == 'FET') {
+            totalFetRewards += reward.amount;
+          }
         }
       }
     }
@@ -57,17 +59,23 @@ class Summary {
   Project project;
   Rewards rewardDistribution;
   List<SummaryReward> totalReward;
+  String referral; // parentId
+  int status;
 
-  Summary({this.project, this.rewardDistribution});
+  Summary({this.project, this.rewardDistribution, this.referral, this.status});
 
   Summary.fromJson(Map<String, dynamic> json) {
     project =
         json['project'] != null ? Project.fromJson(json['project']) : null;
     rewardDistribution =
         json['rewards'] != null ? Rewards.fromJson(json['rewards']) : null;
-    totalReward = (json['total'] as List)
-        .map((e) => e == null ? null : SummaryReward.fromJson(e))
-        .toList();
+    totalReward = json['total'] != null
+        ? (json['total'] as List)
+            .map((e) => e == null ? null : SummaryReward.fromJson(e))
+            .toList()
+        : null;
+    referral = json['referral'];
+    status = json['status'];
   }
 
   Map<String, dynamic> toJson() {
@@ -81,6 +89,8 @@ class Summary {
     if (totalReward != null) {
       data['total'] = totalReward.map((e) => e.toJson()).toList();
     }
+    data['referral'] = referral;
+    data['status'] = status;
     return data;
   }
 }

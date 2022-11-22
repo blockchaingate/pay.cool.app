@@ -462,7 +462,7 @@
     "intermediatePartner": "Intermediate Partner",
     "seniorPartner": "Senior Partner",
     "executivePartner": "Executive Partner",
-    "noPartner": "You have not joined any partner project",
+    "notJoinedProject": "You have not joined any partner project",
     "domain": "Domain",
     "invalidDomain": "Invalid Domain",
     "addressNotSet": "Address not set",
@@ -490,6 +490,9 @@
     "freeGasQuestionNote": "Answer the question below",
     "title": "Title",
     "taxRate": "Tax Rate",
-    "rebateRate": "Rebate Rate"
+    "rebateRate": "Rebate Rate",
+    "stakeToEarn": "Stake to Earn",
+    "noPartner": "No partner",
+    "joinedProjects":"Joined Projects"
 
 }

@@ -454,11 +454,10 @@
     "accept": "接受",
     "primaryPartner": "主要合作伙伴",
     "juniorPartner": "初级合伙人",
-    "intermediatePartner": "中级合作伙伴",
-    "seniorPartner": "高级合伙人",
-    "executivePartner": "执行合伙人",
-    "basicPartner": "基本伙伴",
-    "noPartner": "你没有加入任何伙伴项目",
+    "seniorPartner": "中级合伙人",
+    "executivePartner": "高级合伙人",
+    "basicPartner": "基础合伙人",
+    "notJoinedProject": "你没有加入任何伙伴项目",
     "decline": "拒绝",
     "domain": "域",
     "invalidDomain": "无效的域",
@@ -487,6 +486,9 @@
     "freeGasQuestionNote": "回答下面的问题",
     "title": "标题",
     "taxRate": "税率",
-    "rebateRate": "回扣率"
+    "rebateRate": "回扣率",
+    "stakeToEarn": "质押获取收益",
+    "noPartner": "非合伙人",
+    "joinedProjects":"我已加入的项目"
 
 }

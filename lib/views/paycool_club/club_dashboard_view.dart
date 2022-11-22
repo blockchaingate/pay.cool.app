@@ -232,7 +232,8 @@ class ClubDashboardView extends StatelessWidget {
                                           decoration: BoxDecoration(
                                             image: blurBackgroundImage(),
                                           ),
-                                          margin: EdgeInsets.only(top: 10),
+                                          margin:
+                                              const EdgeInsets.only(top: 10),
                                           height: 235,
                                           child: Stack(
                                             children: [
@@ -263,7 +264,8 @@ class ClubDashboardView extends StatelessWidget {
                                                                         20)),
                                                         child: Container(
                                                           padding:
-                                                              EdgeInsets.all(4),
+                                                              const EdgeInsets
+                                                                  .all(4),
                                                           decoration:
                                                               BoxDecoration(
                                                                   borderRadius:
@@ -312,9 +314,9 @@ class ClubDashboardView extends StatelessWidget {
                                                                               Image.network(
                                                                             model.projects[model.projectIndex].image.toString(),
                                                                             width:
-                                                                                30,
+                                                                                40,
                                                                             height:
-                                                                                30,
+                                                                                40,
                                                                           ),
                                                                         ),
                                                                   Text(
@@ -337,6 +339,9 @@ class ClubDashboardView extends StatelessWidget {
                                                                         fontWeight:
                                                                             FontWeight.bold),
                                                                     maxLines: 2,
+                                                                    textAlign:
+                                                                        TextAlign
+                                                                            .center,
                                                                   ),
                                                                 ],
                                                               ),
@@ -415,7 +420,8 @@ class ClubDashboardView extends StatelessWidget {
                                                         i++)
                                                       Padding(
                                                         padding:
-                                                            EdgeInsets.all(2.0),
+                                                            const EdgeInsets
+                                                                .all(2.0),
                                                         child: Align(
                                                             alignment: Alignment
                                                                 .bottomCenter,
@@ -427,7 +433,7 @@ class ClubDashboardView extends StatelessWidget {
                                                                           i
                                                                       ? white
                                                                       : grey,
-                                                              size: 10,
+                                                              size: 8,
                                                             )),
                                                       ),
                                                   ],
@@ -518,16 +524,71 @@ class ClubDashboardView extends StatelessWidget {
                                                     ),
 
                                                     // member type tile
-                                                    ListTile(
-                                                      horizontalTitleGap: 0,
-                                                      leading: const Icon(
-                                                        FontAwesomeIcons.user,
-                                                        color: primaryColor,
-                                                        size: 18,
-                                                      ),
-                                                      title: Text(
-                                                        model.memberType,
-                                                        style: headText4,
+                                                    Container(
+                                                      decoration:
+                                                          rectangularGradientBoxDecoration(
+                                                              colorOne:
+                                                                  primaryColor
+                                                                      .withAlpha(
+                                                                          100),
+                                                              colorTwo:
+                                                                  primaryColor),
+                                                      child: ListTile(
+                                                        horizontalTitleGap: 0,
+                                                        leading: const Padding(
+                                                          padding:
+                                                              EdgeInsets.all(
+                                                                  8.0),
+                                                          child: Icon(
+                                                            FontAwesomeIcons
+                                                                .user,
+                                                            color: primaryColor,
+                                                            size: 18,
+                                                          ),
+                                                        ),
+                                                        title: Text(
+                                                          model.memberType,
+                                                          style: headText4.copyWith(
+                                                              color:
+                                                                  secondaryColor,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold),
+                                                        ),
+                                                        subtitle: Row(
+                                                          children: [
+                                                            Text(
+                                                              FlutterI18n.translate(
+                                                                  context,
+                                                                  "joinedProjects"),
+                                                              style: headText5,
+                                                            ),
+                                                            UIHelper
+                                                                .horizontalSpaceSmall,
+                                                            Text(
+                                                              model
+                                                                  .dashboard
+                                                                  .summary
+                                                                  .length
+                                                                  .toString(),
+                                                              style: headText5,
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        // trailing: Row(
+                                                        //   mainAxisSize:
+                                                        //       MainAxisSize.min,
+                                                        //   children: const [
+                                                        //     UIHelper
+                                                        //         .horizontalSpaceSmall,
+                                                        //     Icon(
+                                                        //       Icons
+                                                        //           .arrow_forward_ios,
+                                                        //       color: grey,
+                                                        //       size: 16,
+                                                        //     ),
+                                                        //   ],
+                                                        // ),
                                                       ),
                                                     ),
                                                     // joined date tile
@@ -682,7 +743,7 @@ class ClubDashboardView extends StatelessWidget {
                                                           context,
                                                           CupertinoPageRoute(
                                                               builder: (context) =>
-                                                                  PurchasedPackageView())),
+                                                                  const PurchasedPackageView())),
                                                       leading: const Icon(
                                                         Icons
                                                             .align_vertical_bottom_sharp,

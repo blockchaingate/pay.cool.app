@@ -36,14 +36,16 @@ class PaycoolReferralView extends StatelessWidget {
                       height: 400,
                       child: Center(
                         child: Text(
-                            FlutterI18n.translate(context, "noReferralsYet")),
+                            FlutterI18n.translate(context, "noReferralsYet"),
+                            style:
+                                const TextStyle(fontWeight: FontWeight.bold)),
                       ),
                     )
                   : Container(
                       decoration: const BoxDecoration(
                         color: white,
                         borderRadius: BorderRadius.only(
-                            topLeft: const Radius.circular(20),
+                            topLeft: Radius.circular(20),
                             topRight: Radius.circular(20)),
                       ),
                       child: Column(
@@ -74,7 +76,9 @@ class PaycoolReferralView extends StatelessWidget {
                                       padding: const EdgeInsets.all(8.0),
                                       child: Text(
                                         i.toString() + ' ',
-                                        style: headText5.copyWith(color: black),
+                                        style: headText5.copyWith(
+                                            color: black,
+                                            fontWeight: FontWeight.bold),
                                       ),
                                     ),
                                     title: Container(
@@ -91,17 +95,30 @@ class PaycoolReferralView extends StatelessWidget {
                                                   .smartContractAddress
                                                   .isNotEmpty
                                               ? Container(
-                                                  color: const Color.fromARGB(
-                                                      255, 218, 146, 52),
+                                                  color: primaryColor
+                                                      .withAlpha(120),
                                                   padding:
-                                                      const EdgeInsets.all(3.0),
+                                                      const EdgeInsets.all(4.0),
                                                   child: Column(
                                                     children: [
                                                       if (model.children[index]
                                                               .status ==
+                                                          -1) ...[
+                                                        Text(
+                                                            ' ${FlutterI18n.translate(context, "noPartner")}',
+                                                            style: headText6
+                                                                .copyWith(
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                    color:
+                                                                        black)),
+                                                      ] else if (model
+                                                              .children[index]
+                                                              .status ==
                                                           0) ...[
                                                         Text(
-                                                            ' ${FlutterI18n.translate(context, "primaryPartner")}',
+                                                            ' ${FlutterI18n.translate(context, "basicPartner")}',
                                                             style: headText6
                                                                 .copyWith(
                                                                     fontWeight:
@@ -127,7 +144,7 @@ class PaycoolReferralView extends StatelessWidget {
                                                               .status ==
                                                           2) ...[
                                                         Text(
-                                                            ' ${FlutterI18n.translate(context, "intermediatePartner")}',
+                                                            ' ${FlutterI18n.translate(context, "seniorPartner")}',
                                                             style: headText6
                                                                 .copyWith(
                                                                     fontWeight:
@@ -140,7 +157,7 @@ class PaycoolReferralView extends StatelessWidget {
                                                               .status ==
                                                           3) ...[
                                                         Text(
-                                                            ' ${FlutterI18n.translate(context, "seniorPartner")}',
+                                                            ' ${FlutterI18n.translate(context, "executivePartner")}',
                                                             style: headText6
                                                                 .copyWith(
                                                                     fontWeight:

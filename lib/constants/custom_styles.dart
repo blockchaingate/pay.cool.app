@@ -119,11 +119,12 @@ Decoration circularGradientBoxDecoration() {
   );
 }
 
-Decoration rectangularGradientBoxDecoration() {
-  return const BoxDecoration(
+Decoration rectangularGradientBoxDecoration(
+    {Color colorOne = Colors.redAccent, Color colorTwo = Colors.yellow}) {
+  return BoxDecoration(
     // borderRadius: BorderRadius.all(Radius.circular(25)),
     gradient: LinearGradient(
-      colors: [Colors.redAccent, Colors.yellow],
+      colors: [colorOne, colorTwo],
       begin: FractionalOffset.topLeft,
       end: FractionalOffset.bottomRight,
     ),

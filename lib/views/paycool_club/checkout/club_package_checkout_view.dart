@@ -144,7 +144,7 @@ class ClubPackageCheckoutView extends StatelessWidget {
                                                 : model.log.e('model busy'),
                                             child: Text(
                                               FlutterI18n.translate(
-                                                  context, "purchase"),
+                                                  context, "stakeToEarn"),
                                             )),
                                       ),
                                       UIHelper.verticalSpaceSmall,
