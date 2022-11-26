@@ -115,9 +115,14 @@ class ClubDashboardViewModel extends BaseViewModel {
     for (var project in dashboard.summary) {
       for (var reward in project.totalReward) {
         if (reward.coin != null) {
-          // reward token price
-          var rtp = await clubService.getPriceOfRewardToken(reward.coin);
-          rewardTokenPriceMap.addAll({reward.coin: rtp});
+          try {
+            // reward token price
+            var rtp = await clubService.getPriceOfRewardToken(reward.coin);
+            rewardTokenPriceMap.addAll({reward.coin: rtp});
+          } catch (err) {
+            log.e(
+                'CATCH getPriceOfRewardToken getting price for ${reward.coin}');
+          }
         }
       }
     }

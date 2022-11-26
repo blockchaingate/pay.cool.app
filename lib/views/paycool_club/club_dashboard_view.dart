@@ -679,7 +679,10 @@ class ClubDashboardView extends StatelessWidget {
                                                                     child: model.dashboard.totalFabRewards()["FET"] != null &&
                                                                             model.rewardTokenPriceMap !=
                                                                                 null &&
-                                                                            model.rewardTokenPriceMap.isNotEmpty
+                                                                            model
+                                                                                .rewardTokenPriceMap.isNotEmpty &&
+                                                                            model.rewardTokenPriceMap['FET'] !=
+                                                                                null
                                                                         ? Row(
                                                                             mainAxisSize:
                                                                                 MainAxisSize.min,
@@ -701,7 +704,9 @@ class ClubDashboardView extends StatelessWidget {
                                                                               null &&
                                                                           model
                                                                               .rewardTokenPriceMap
-                                                                              .isNotEmpty
+                                                                              .isNotEmpty &&
+                                                                          model.rewardTokenPriceMap['FETDUSD-LP'] !=
+                                                                              null
                                                                       ? Row(
                                                                           mainAxisSize:
                                                                               MainAxisSize.min,
