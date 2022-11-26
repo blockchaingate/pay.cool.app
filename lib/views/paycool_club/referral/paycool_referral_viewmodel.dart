@@ -21,7 +21,7 @@ class PaycoolReferralViewmodel extends FutureViewModel {
   BuildContext context;
   String fabAddress = '';
   PaycoolReferral parent = PaycoolReferral();
-  List<PaycoolReferral> children = [];
+  List<PaycoolReferral> referrals = [];
 
   String address = '';
   PaginationModel paginationModel = PaginationModel();
@@ -36,7 +36,7 @@ class PaycoolReferralViewmodel extends FutureViewModel {
   @override
   Future futureToRun() async {
     fabAddress = await sharedService.getFabAddressFromCoreWalletDatabase();
-    return await payCoolClubService.getUserDownlineByAddress(
+    return await payCoolClubService.getReferrals(
         address != null && address.isNotEmpty ? address : fabAddress,
         pageSize: paginationModel.pageSize,
         pageNumber: paginationModel.pageNumber);
@@ -48,14 +48,14 @@ class PaycoolReferralViewmodel extends FutureViewModel {
   @override
   void onData(data) async {
     setBusy(true);
-    children = data;
+    referrals = data;
     _totalReferrals = await payCoolClubService.getUserReferralCount(fabAddress);
     paginationModel.totalPages =
         (_totalReferrals / paginationModel.pageSize).ceil();
     paginationModel.pages = [];
-    paginationModel.pages.addAll(children);
+    paginationModel.pages.addAll(referrals);
     log.i('paginationModel ${paginationModel.toString()}');
-    await getDownlineCount();
+    //await getDownlineCount();
     setBusy(false);
   }
 
@@ -69,21 +69,21 @@ class PaycoolReferralViewmodel extends FutureViewModel {
     setBusy(true);
     paginationModel.pageNumber = pageNumber;
     var paginationResults = await futureToRun();
-    children = paginationResults;
+    referrals = paginationResults;
     setBusy(false);
   }
 
-  getDownlineCount() async {
-    for (var referral in children) {
-      int index = children.indexWhere((element) => element.id == referral.id);
-      await payCoolClubService
-          .getUserDownlineByAddress(referral.id)
-          .then((downlineReferralList) {
-        setBusy(true);
-        // debugPrint(downlineReferralList);
-        downlineReferralCount = downlineReferralList.length;
-      });
-      setBusy(false);
-    }
-  }
+  // getDownlineCount() async {
+  //   for (var referral in children) {
+  //     int index = children.indexWhere((element) => element.id == referral.id);
+  //     await payCoolClubService
+  //         .getReferrals(referral.userAddress)
+  //         .then((downlineReferralList) {
+  //       setBusy(true);
+  //       // debugPrint(downlineReferralList);
+  //       downlineReferralCount = downlineReferralList.length;
+  //     });
+  //     setBusy(false);
+  //   }
+  // }
 }

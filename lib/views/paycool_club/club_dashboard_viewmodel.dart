@@ -1,10 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:decimal/decimal.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:paycool/constants/constants.dart';
 import 'package:paycool/views/paycool_club/club_dashboard_model.dart';
 import 'package:paycool/views/paycool_club/club_projects/club_project_model.dart';
 import 'package:paycool/views/paycool_club/purchased_package_history/purchased_package_history_model.dart';
@@ -87,6 +89,8 @@ class ClubDashboardViewModel extends BaseViewModel {
   int projectIndex = 0;
   int purchasedPackagesCount = 0;
 
+  Map<String, Decimal> rewardTokenPriceMap = {};
+
   void init() async {
     setBusy(true);
     sharedService.context = context;
@@ -108,6 +112,17 @@ class ClubDashboardViewModel extends BaseViewModel {
         await clubService.getPurchasedPackageCount(fabAddress);
     await checkGas();
     if (gasAmount == 0.0) await checkFreeFabForNewWallet();
+    for (var project in dashboard.summary) {
+      for (var reward in project.totalReward) {
+        if (reward.coin != null) {
+          // reward token price
+          var rtp = await clubService.getPriceOfRewardToken(reward.coin);
+          rewardTokenPriceMap.addAll({reward.coin: rtp});
+        }
+      }
+    }
+    log.e('rewardTokenPriceMap ${rewardTokenPriceMap}');
+
     setBusy(false);
   } // init ends
 
@@ -752,22 +767,6 @@ class ClubDashboardViewModel extends BaseViewModel {
     setBusy(false);
   }
 
-  // getPayCoolClubDetails() async {
-  //   setBusy(true);
-  //   isServerDown = false;
-  //   try {
-  //     await payCoolClubService.getPayCoolClubDetails().then((data) {
-  //       if (data != null && data.isNotEmpty) payCoolClubDetails = data;
-  //       isAcceptingMembers = payCoolClubDetails[0].keyNodeAvailable;
-  //     });
-  //   } catch (err) {
-  //     log.e('getPayCoolClubDetails CATCH $err');
-  //     isServerDown = true;
-  //     return;
-  //   }
-  //   setBusy(false);
-  // }
-
   getReferralCount() async {
     setBusy(true);
     await clubService
@@ -796,7 +795,7 @@ class ClubDashboardViewModel extends BaseViewModel {
     } else if (dashboard.status == 3) {
       memberType = FlutterI18n.translate(context, "executivePartner");
     } else {
-      memberType = FlutterI18n.translate(context, "notJoinedProject");
+      memberType = FlutterI18n.translate(context, "noPartner");
     }
   }
 

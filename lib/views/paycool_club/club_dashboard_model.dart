@@ -1,5 +1,12 @@
 import 'package:decimal/decimal.dart';
 import 'package:flutter/widgets.dart';
+import 'package:paycool/utils/number_util.dart';
+
+class ClubRewardsArgs {
+  List<Summary> summary;
+  Map<String, Decimal> rewardTokenPriceMap;
+  ClubRewardsArgs({this.summary, this.rewardTokenPriceMap});
+}
 
 class ClubDashboard {
   List<Summary> summary;
@@ -10,6 +17,12 @@ class ClubDashboard {
   ClubDashboard({this.summary, this.user, this.referral, this.status});
 
   ClubDashboard.fromJson(Map<String, dynamic> json) {
+    var st = json['status'].toString();
+    if (st.toString().contains('.')) {
+      st = st.toString().split('.')[0];
+    }
+    int intStatus = int.parse(st.toString());
+
     var s = json['summary'] as List;
     if (s != null) {
       summary = <Summary>[];
@@ -19,7 +32,7 @@ class ClubDashboard {
     }
     user = json['user'];
     referral = json['referral'];
-    status = json['status'];
+    status = intStatus;
   }
 
   Map<String, dynamic> toJson() {
@@ -37,6 +50,7 @@ class ClubDashboard {
     Map<String, Decimal> result = {};
     var totalFabRewards = Decimal.zero;
     var totalFetRewards = Decimal.zero;
+    var totalFetLpRewards = Decimal.zero;
     for (var project in summary) {
       if (project.totalReward != null) {
         for (var reward in project.totalReward) {
@@ -46,10 +60,19 @@ class ClubDashboard {
           if (reward.coin == 'FET') {
             totalFetRewards += reward.amount;
           }
+          if (reward.coin == 'FETDUSD-LP') {
+            if (reward.amount != null)
+              totalFetLpRewards +=
+                  NumberUtil.rawStringToDecimal(reward.amount.toString());
+          }
         }
       }
     }
-    result.addAll({'FAB': totalFabRewards, 'FET': totalFetRewards});
+    result.addAll({
+      'FAB': totalFabRewards,
+      'FET': totalFetRewards,
+      'FETLP': totalFetLpRewards
+    });
     debugPrint('Club dashboard model: totalFabRewards-func -- $result');
     return result;
   }
@@ -65,6 +88,12 @@ class Summary {
   Summary({this.project, this.rewardDistribution, this.referral, this.status});
 
   Summary.fromJson(Map<String, dynamic> json) {
+    var st = json['status'].toString();
+    if (st.toString().contains('.')) {
+      st = st.toString().split('.')[0];
+    }
+    int intStatus = int.parse(st.toString());
+
     project =
         json['project'] != null ? Project.fromJson(json['project']) : null;
     rewardDistribution =
@@ -75,7 +104,7 @@ class Summary {
             .toList()
         : null;
     referral = json['referral'];
-    status = json['status'];
+    status = intStatus;
   }
 
   Map<String, dynamic> toJson() {

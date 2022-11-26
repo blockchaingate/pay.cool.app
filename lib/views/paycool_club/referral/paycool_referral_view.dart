@@ -31,7 +31,7 @@ class PaycoolReferralView extends StatelessWidget {
               ? SizedBox(
                   height: 500,
                   child: Center(child: model.sharedService.loadingIndicator()))
-              : model.children == null || model.children.isEmpty
+              : model.referrals == null || model.referrals.isEmpty
                   ? SizedBox(
                       height: 400,
                       child: Center(
@@ -54,7 +54,7 @@ class PaycoolReferralView extends StatelessWidget {
                           Expanded(
                             child: ListView.builder(
                               shrinkWrap: true,
-                              itemCount: model.children.length,
+                              itemCount: model.referrals.length,
                               itemBuilder: (BuildContext context, int index) {
                                 int i = index + 1;
                                 return Container(
@@ -65,11 +65,13 @@ class PaycoolReferralView extends StatelessWidget {
                                   )),
                                   child: ListTile(
                                     onTap: () {
-                                      if (model.downlineReferralCount > 0) {
+                                      if (int.parse(
+                                              model.referrals[index].count) >
+                                          0) {
                                         model.navigationService.navigateTo(
                                             PayCoolClubReferralViewRoute,
-                                            arguments:
-                                                model.children[index].id);
+                                            arguments: model
+                                                .referrals[index].userAddress);
                                       }
                                     },
                                     leading: Padding(
@@ -90,9 +92,7 @@ class PaycoolReferralView extends StatelessWidget {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          model
-                                                  .children[index]
-                                                  .smartContractAddress
+                                          model.referrals[index].count
                                                   .isNotEmpty
                                               ? Container(
                                                   color: primaryColor
@@ -101,7 +101,7 @@ class PaycoolReferralView extends StatelessWidget {
                                                       const EdgeInsets.all(4.0),
                                                   child: Column(
                                                     children: [
-                                                      if (model.children[index]
+                                                      if (model.referrals[index]
                                                               .status ==
                                                           -1) ...[
                                                         Text(
@@ -114,7 +114,7 @@ class PaycoolReferralView extends StatelessWidget {
                                                                     color:
                                                                         black)),
                                                       ] else if (model
-                                                              .children[index]
+                                                              .referrals[index]
                                                               .status ==
                                                           0) ...[
                                                         Text(
@@ -127,7 +127,7 @@ class PaycoolReferralView extends StatelessWidget {
                                                                     color:
                                                                         black)),
                                                       ] else if (model
-                                                              .children[index]
+                                                              .referrals[index]
                                                               .status ==
                                                           1) ...[
                                                         Text(
@@ -140,7 +140,7 @@ class PaycoolReferralView extends StatelessWidget {
                                                                     color:
                                                                         black)),
                                                       ] else if (model
-                                                              .children[index]
+                                                              .referrals[index]
                                                               .status ==
                                                           2) ...[
                                                         Text(
@@ -153,7 +153,7 @@ class PaycoolReferralView extends StatelessWidget {
                                                                     color:
                                                                         black)),
                                                       ] else if (model
-                                                              .children[index]
+                                                              .referrals[index]
                                                               .status ==
                                                           3) ...[
                                                         Text(
@@ -186,14 +186,21 @@ class PaycoolReferralView extends StatelessWidget {
                                               //           color: black)),
                                               // ),
                                               Flexible(
-                                                child: Text(
-                                                  model.children[index]
-                                                      .userAddress,
-                                                  style: headText5.copyWith(
-                                                      color: grey),
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  maxLines: 2,
+                                                child: Padding(
+                                                  padding: const EdgeInsets
+                                                      .symmetric(vertical: 4),
+                                                  child: Text(
+                                                    model.referrals[index]
+                                                        .userAddress,
+                                                    style: headText5.copyWith(
+                                                      decoration: TextDecoration
+                                                          .underline,
+                                                      color: primaryColor,
+                                                    ),
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    maxLines: 2,
+                                                  ),
                                                 ),
                                               ),
                                             ],
@@ -203,7 +210,7 @@ class PaycoolReferralView extends StatelessWidget {
                                               FlutterI18n.translate(context,
                                                       "referralCount") +
                                                   ' ' +
-                                                  model.downlineReferralCount
+                                                  model.referrals[index].count
                                                       .toString(),
                                               style: headText5.copyWith(
                                                   color: black)),
@@ -224,7 +231,8 @@ class PaycoolReferralView extends StatelessWidget {
                                             onPressed: () {
                                               model.sharedService.copyAddress(
                                                   context,
-                                                  model.children[index].id)();
+                                                  model.referrals[index]
+                                                      .userAddress)();
                                             }),
                                         CupertinoButton(
                                             child: const Icon(
@@ -239,8 +247,8 @@ class PaycoolReferralView extends StatelessWidget {
                                                   MaterialPageRoute(
                                                       builder: (context) =>
                                                           DisplayQrCode(model
-                                                              .children[index]
-                                                              .id)));
+                                                              .referrals[index]
+                                                              .userAddress)));
                                             }),
                                       ],
                                     )),
@@ -275,12 +283,13 @@ class DisplayQrCode extends StatelessWidget {
       appBar: AppBar(
         title: Row(
           children: [
-            Text(FlutterI18n.translate(context, "id") + ':',
-                style: headText5.copyWith(fontWeight: FontWeight.bold)),
+            Text(FlutterI18n.translate(context, "id") + ': ',
+                style: headText5.copyWith(
+                    fontWeight: FontWeight.bold, color: secondaryColor)),
             Flexible(
               child: Text(
                 qr,
-                style: headText5.copyWith(color: primaryColor),
+                style: headText5.copyWith(color: secondaryColor),
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
               ),
@@ -294,7 +303,7 @@ class DisplayQrCode extends StatelessWidget {
               data: qr,
               version: QrVersions.auto,
               size: 200.0,
-              foregroundColor: Colors.white),
+              foregroundColor: black),
         ),
       ),
     );

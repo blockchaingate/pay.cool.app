@@ -144,7 +144,7 @@ class RouteGenerator {
       case clubRewardsViewRoute:
         return MaterialPageRoute(
             builder: (_) => ClubRewardsView(
-                  rewardsSummary: args,
+                  clubRewardsArgs: args,
                 ));
       case clubProjectDetailsViewRoute:
         return MaterialPageRoute(

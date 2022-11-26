@@ -51,6 +51,7 @@ class CreatePasswordViewModel extends BaseViewModel {
 
   bool _isShowPass = false;
   get isShowPass => _isShowPass;
+  bool isCreatingWallet = false;
 
   toggelPassword() {
     setBusyForObject(isShowPass, true);
@@ -63,19 +64,16 @@ class CreatePasswordViewModel extends BaseViewModel {
     -------------------------------------------------- */
 
   Future createOfflineWallets() async {
+    isCreatingWallet = true;
     setBusy(true);
-
+    Future.delayed(Duration(milliseconds: 500), () {
+      log.i('going to create wallet');
+      setBusy(true);
+    });
     await _walletService
         .createOfflineWalletsV1(
             randomMnemonicFromRoute, passTextController.text)
         .then((data) {
-      //  _walletInfo = data;
-      // Navigator.pushNamed(context, '/mainNav', arguments: _walletInfo);
-      //  navigationService.navigateTo('/mainNav', arguments: 0);
-
-      // navigationService.navigateUsingPushNamedAndRemoveUntil(
-      //     PayCoolClubDashboardViewRoute);
-
       navigationService.navigateUsingPushNamedAndRemoveUntil(PayCoolViewRoute);
       storageService.showPaycoolClub = false;
       randomMnemonicFromRoute = '';
@@ -89,6 +87,7 @@ class CreatePasswordViewModel extends BaseViewModel {
       log.e(onError);
       setBusy(false);
     });
+    isCreatingWallet = false;
     setBusy(false);
   }
 
@@ -161,6 +160,7 @@ class CreatePasswordViewModel extends BaseViewModel {
         setBusy(false);
         return;
       } else {
+        log.w('0: $isBusy');
         createOfflineWallets();
         passTextController.text = '';
         confirmPassTextController.text = '';

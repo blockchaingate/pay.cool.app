@@ -93,22 +93,16 @@
 // }
 
 class PaycoolReferral {
-  String id;
-  String smartContractAddress;
+  String count;
   String userAddress;
   String referralParent;
   int status;
 
   PaycoolReferral(
-      {this.id,
-      this.smartContractAddress,
-      this.userAddress,
-      this.referralParent,
-      this.status});
+      {this.count, this.userAddress, this.referralParent, this.status});
 
   PaycoolReferral.fromJson(Map<String, dynamic> json) {
-    id = json['_id'];
-    smartContractAddress = json['address'];
+    count = json['childrenCount'].toString();
     userAddress = json['user'];
     referralParent = json['referral'];
     status = json['status'];
@@ -116,8 +110,8 @@ class PaycoolReferral {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = {};
-    data['_id'] = id;
-    data['address'] = smartContractAddress;
+
+    data['childrenCount'] = count;
     data['user'] = userAddress;
     data['referral'] = referralParent;
     data['status'] = status;

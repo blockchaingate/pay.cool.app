@@ -25,15 +25,17 @@ class NumberUtil {
   /// Breaks at precision 19
   static Decimal decimalLimiter(Decimal input, {int decimalPrecision = 2}) {
     var finalRes = Constants.decimalZero;
-    input ??= Constants.decimalZero;
-    if (input != Constants.decimalZero) {
-      var p = pow(10, decimalPrecision);
-      var t = Decimal.fromInt(p);
-      var x = input * t;
-      var trunc = x.truncate();
-      var resInRational = trunc / t;
-      finalRes =
-          resInRational.toDecimal(scaleOnInfinitePrecision: decimalPrecision);
+    if (input != null) {
+      input ??= Constants.decimalZero;
+      if (input != Constants.decimalZero) {
+        var p = pow(10, decimalPrecision);
+        var t = Decimal.fromInt(p);
+        var x = input * t;
+        var trunc = x.truncate();
+        var resInRational = trunc / t;
+        finalRes =
+            resInRational.toDecimal(scaleOnInfinitePrecision: decimalPrecision);
+      }
     }
     //debugPrint('finalRes $finalRes');
     return finalRes;

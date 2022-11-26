@@ -1,6 +1,8 @@
 import 'dart:convert';
 
+import 'package:decimal/decimal.dart';
 import 'package:paycool/constants/api_routes.dart';
+import 'package:paycool/constants/constants.dart';
 import 'package:paycool/logger.dart';
 
 import 'package:paycool/service_locator.dart';
@@ -361,6 +363,31 @@ class PayCoolClubService {
     }
   }
 
+  Future<Decimal> getPriceOfRewardToken(
+    String ticker,
+  ) async {
+    String url = paycoolBaseUrl + 'common/v2/price/' + ticker;
+
+    log.i('getPriceOfRewardToken url $url');
+    try {
+      var response = await client.get(url);
+
+      var json = jsonDecode(response.body);
+
+      log.w('getPriceOfRewardToken json $json');
+      if (json['success']) {
+        log.i('getPriceOfRewardToken price ${json['_body']}');
+        return Decimal.parse(json['_body']['price'].toString());
+      } else {
+        log.e("getReferralCount error: " + response.body);
+        return Constants.decimalZero;
+      }
+    } catch (err) {
+      log.e('In getReferralCount catch $err');
+      return Constants.decimalZero;
+    }
+  }
+
 // new
   Future<int> getUserReferralCount(
     String address,
@@ -390,7 +417,7 @@ class PayCoolClubService {
   }
 
   // new
-  Future<List<PaycoolReferral>> getUserDownlineByAddress(String address,
+  Future<List<PaycoolReferral>> getReferrals(String address,
       {int pageSize = 20, int pageNumber = 0}) async {
     String url = paycoolBaseUrl + 'userreferral/user/' + address;
     if (pageNumber != 0) {
@@ -398,7 +425,7 @@ class PayCoolClubService {
     }
     // page number - 1 because page number start from 0 in the api but in front end its from 1
     url = url + '/$pageSize/$pageNumber';
-    log.i('getUserDownlineByAddress url $url');
+    log.i('getReferrals url $url');
     try {
       var response = await client.get(url);
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -408,18 +435,18 @@ class PayCoolClubService {
         if (json.isNotEmpty) {
           PaycoolReferralList paycoolReferralList =
               PaycoolReferralList.fromJson(json);
-          log.i(
-              'first childeren obj ${paycoolReferralList.paycoolReferralList[0].toJson()}');
+          log.w(
+              'getReferrals first childeren obj ${paycoolReferralList.paycoolReferralList[0].toJson()}');
           return paycoolReferralList.paycoolReferralList;
         } else {
           return [];
         }
       } else {
-        log.e("getUserDownlineByAddress error: " + response.body);
+        log.e("getReferrals error: " + response.body);
         return [];
       }
     } catch (err) {
-      log.e('In getUserDownlineByAddress catch $err');
+      log.e('In getReferrals catch $err');
       return [];
     }
   }

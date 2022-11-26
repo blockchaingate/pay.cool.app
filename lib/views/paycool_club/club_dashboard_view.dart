@@ -6,11 +6,14 @@ import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/constants/route_names.dart';
 import 'package:paycool/constants/ui_var.dart';
+import 'package:paycool/utils/number_util.dart';
+import 'package:paycool/views/paycool_club/club_dashboard_model.dart';
 import 'package:paycool/views/paycool_club/club_dashboard_viewmodel.dart';
 import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/views/paycool_club/purchased_package_history/purchased_package_history_view.dart';
 import 'package:paycool/widgets/bottom_nav.dart';
 import 'package:flutter/material.dart';
+import 'package:paycool/widgets/club/club_rewards_view.dart';
 import 'package:paycool/widgets/server_error_widget.dart';
 import 'package:stacked/stacked.dart';
 
@@ -617,9 +620,13 @@ class ClubDashboardView extends StatelessWidget {
                                                           .navigationService
                                                           .navigateTo(
                                                               clubRewardsViewRoute,
-                                                              arguments: model
-                                                                  .dashboard
-                                                                  .summary),
+                                                              arguments: ClubRewardsArgs(
+                                                                  summary: model
+                                                                      .dashboard
+                                                                      .summary,
+                                                                  rewardTokenPriceMap:
+                                                                      model
+                                                                          .rewardTokenPriceMap)),
                                                       horizontalTitleGap: 0,
                                                       leading: const Icon(
                                                         Icons
@@ -634,44 +641,86 @@ class ClubDashboardView extends StatelessWidget {
                                                       ),
                                                       subtitle: SizedBox(
                                                         width: 50,
-                                                        child: Row(
-                                                          mainAxisSize:
-                                                              MainAxisSize.min,
-                                                          children: [
-                                                            Column(
-                                                              mainAxisSize:
-                                                                  MainAxisSize
-                                                                      .min,
-                                                              crossAxisAlignment:
-                                                                  CrossAxisAlignment
-                                                                      .start,
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment
-                                                                      .center,
-                                                              children: [
-                                                                Text(
-                                                                    'FAB'
-                                                                            ' ' +
-                                                                        model
-                                                                            .dashboard
-                                                                            .totalFabRewards()[
-                                                                                'FAB']
-                                                                            .toString(),
-                                                                    style:
-                                                                        headText5),
-                                                                Text(
-                                                                    'FET'
-                                                                            ' ' +
-                                                                        model
-                                                                            .dashboard
-                                                                            .totalFabRewards()[
-                                                                                "FET"]
-                                                                            .toString(),
-                                                                    style:
-                                                                        headText5),
-                                                              ],
-                                                            ),
-                                                          ],
+                                                        child: Container(
+                                                          margin:
+                                                              EdgeInsets.only(
+                                                                  top: 4),
+                                                          child: Row(
+                                                            mainAxisSize:
+                                                                MainAxisSize
+                                                                    .min,
+                                                            children: [
+                                                              Column(
+                                                                mainAxisSize:
+                                                                    MainAxisSize
+                                                                        .min,
+                                                                crossAxisAlignment:
+                                                                    CrossAxisAlignment
+                                                                        .start,
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .center,
+                                                                children: [
+                                                                  Text(
+                                                                      'FAB'
+                                                                              ' ' +
+                                                                          model
+                                                                              .dashboard
+                                                                              .totalFabRewards()[
+                                                                                  'FAB']
+                                                                              .toString(),
+                                                                      style:
+                                                                          headText5),
+                                                                  Padding(
+                                                                    padding: const EdgeInsets
+                                                                            .symmetric(
+                                                                        vertical:
+                                                                            4.0),
+                                                                    child: model.dashboard.totalFabRewards()["FET"] != null &&
+                                                                            model.rewardTokenPriceMap !=
+                                                                                null &&
+                                                                            model.rewardTokenPriceMap.isNotEmpty
+                                                                        ? Row(
+                                                                            mainAxisSize:
+                                                                                MainAxisSize.min,
+                                                                            children: [
+                                                                              Text(
+                                                                                  'FET'
+                                                                                          ' ' +
+                                                                                      model.dashboard.totalFabRewards()["FET"].toString(),
+                                                                                  style: headText5),
+                                                                              Text('  \$${NumberUtil.decimalLimiter(model.dashboard.totalFabRewards()["FET"] * model.rewardTokenPriceMap['FET'])}', maxLines: 2, style: headText5.copyWith(color: green, fontWeight: FontWeight.bold))
+                                                                            ],
+                                                                          )
+                                                                        : Container(),
+                                                                  ),
+                                                                  model.dashboard.totalFabRewards()[
+                                                                                  "FETLP"] !=
+                                                                              null &&
+                                                                          model.rewardTokenPriceMap !=
+                                                                              null &&
+                                                                          model
+                                                                              .rewardTokenPriceMap
+                                                                              .isNotEmpty
+                                                                      ? Row(
+                                                                          mainAxisSize:
+                                                                              MainAxisSize.min,
+                                                                          children: [
+                                                                            Text(
+                                                                                'FETDUSD-LP'
+                                                                                        ' ' +
+                                                                                    model.dashboard.totalFabRewards()["FETLP"].toString(),
+                                                                                style: headText5),
+                                                                            Text('  \$${NumberUtil.decimalLimiter(model.dashboard.totalFabRewards()["FETLP"] * model.rewardTokenPriceMap['FETDUSD-LP'])}',
+                                                                                maxLines: 2,
+                                                                                style: headText5.copyWith(color: green, fontWeight: FontWeight.bold)),
+                                                                          ],
+                                                                        )
+                                                                      : Container(),
+                                                                ],
+                                                              ),
+                                                            ],
+                                                          ),
                                                         ),
                                                       ),
                                                       trailing: Row(
