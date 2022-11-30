@@ -796,11 +796,11 @@ class ClubDashboardViewModel extends BaseViewModel {
     } else if (dashboard.status == 1) {
       memberType = FlutterI18n.translate(context, "basicPartner");
     } else if (dashboard.status == 2) {
-      memberType = FlutterI18n.translate(context, "juniorPartner");
+      memberType = FlutterI18n.translate(context, "beginnerPartner");
     } else if (dashboard.status == 3) {
-      memberType = FlutterI18n.translate(context, "sophomorePartner");
+      memberType = FlutterI18n.translate(context, "intermediatePartner");
     } else if (dashboard.status == 4) {
-      memberType = FlutterI18n.translate(context, "executivePartner");
+      memberType = FlutterI18n.translate(context, "advancedPartner");
     } else {
       memberType = FlutterI18n.translate(context, "noPartner");
     }

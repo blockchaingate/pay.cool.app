@@ -143,7 +143,7 @@ class PaycoolReferralView extends StatelessWidget {
                                                             .status ==
                                                         2) ...[
                                                       Text(
-                                                          ' ${FlutterI18n.translate(context, "juniorPartner")}',
+                                                          ' ${FlutterI18n.translate(context, "beginnerPartner")}',
                                                           style: headText6
                                                               .copyWith(
                                                                   fontWeight:
@@ -156,7 +156,7 @@ class PaycoolReferralView extends StatelessWidget {
                                                             .status ==
                                                         3) ...[
                                                       Text(
-                                                          ' ${FlutterI18n.translate(context, "sophomorePartner")}',
+                                                          ' ${FlutterI18n.translate(context, "intermediatePartner")}',
                                                           style: headText6
                                                               .copyWith(
                                                                   fontWeight:
@@ -169,7 +169,7 @@ class PaycoolReferralView extends StatelessWidget {
                                                             .status ==
                                                         4) ...[
                                                       Text(
-                                                          ' ${FlutterI18n.translate(context, "executivePartner")}',
+                                                          ' ${FlutterI18n.translate(context, "advancedPartner")}',
                                                           style: headText6
                                                               .copyWith(
                                                                   fontWeight:

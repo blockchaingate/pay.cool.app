@@ -454,11 +454,14 @@
     "askPrivacyConsent":"Por favor, lea nuestra política de privacidad y acepte el uso de la aplicación",
     "userDataUsage":"No almacenamos ni compartimos datos de usuario",
     "accept":"Aceptar",
-    "decline":"Rechazar",
+    "decline":"Rechazar", 
+    "noPartner": "Ningún socio",
     "primaryPartner": "Socio principal",
-    "juniorPartner": "Socio intermedio",
+    "basicPartner": "Basic Partner",
+    "beginnerPartner": "Socio intermedio",
     "intermediatePartner": "Intermediate Partner",
     "seniorPartner": "Socio senior",
+    "advancedPartner": "Advanced Partner",
     "domain": "Dominio",
     "invalidDomain": "Dominio no válido",
     "addressNotSet": "Dirección no establecida",
@@ -488,7 +491,6 @@
     "taxRate": "Tipo impositivo",
     "rebateRate": "Tasa de reembolso",
     "stakeToEarn": "Apostar para ganar",
-    "noPartner": "Ningún socio",
     "joinedProjects":"Joined Projects"
 
 }

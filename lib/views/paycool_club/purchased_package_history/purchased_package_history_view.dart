@@ -113,7 +113,7 @@ class PurchasedPackageView extends StatelessWidget {
                                           //                     .status ==
                                           //                 1) ...[
                                           //               Text(
-                                          //                   ' ${FlutterI18n.translate(context, "juniorPartner")}',
+                                          //                   ' ${FlutterI18n.translate(context, "beginnerPartner")}',
                                           //                   style: headText6
                                           //                       .copyWith(
                                           //                           fontWeight:

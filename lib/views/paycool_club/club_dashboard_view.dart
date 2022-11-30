@@ -312,14 +312,14 @@ class ClubDashboardView extends StatelessWidget {
                                                                       ? Container()
                                                                       : Padding(
                                                                           padding:
-                                                                              const EdgeInsets.all(8.0),
+                                                                              const EdgeInsets.all(2.0),
                                                                           child:
                                                                               Image.network(
                                                                             model.projects[model.projectIndex].image.toString(),
                                                                             width:
-                                                                                40,
+                                                                                80,
                                                                             height:
-                                                                                40,
+                                                                                80,
                                                                           ),
                                                                         ),
                                                                   Text(
@@ -352,7 +352,7 @@ class ClubDashboardView extends StatelessWidget {
                                                                 padding:
                                                                     const EdgeInsets
                                                                             .all(
-                                                                        8.0),
+                                                                        4.0),
                                                                 child: Text(
                                                                   model.storageService
                                                                               .language ==

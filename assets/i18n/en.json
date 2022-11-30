@@ -456,12 +456,13 @@
     "userDataUsage":"We do not store or share user data",
     "accept":"Accept",
     "decline":"Decline",
+    "noPartner": "No partner",
     "primaryPartner": "Primary Partner",
     "basicPartner": "Basic Partner",
-    "juniorPartner": "Junior Partner",
+    "beginnerPartner": "Beginner Partner",
     "intermediatePartner": "Intermediate Partner",
     "seniorPartner": "Senior Partner",
-    "executivePartner": "Executive Partner",
+    "advancedPartner": "Advanced Partner",
     "notJoinedProject": "You have not joined any partner project",
     "domain": "Domain",
     "invalidDomain": "Invalid Domain",
@@ -492,7 +493,6 @@
     "taxRate": "Tax Rate",
     "rebateRate": "Rebate Rate",
     "stakeToEarn": "Stake to Earn",
-    "noPartner": "No partner",
     "joinedProjects":"Joined Projects"
 
 }
