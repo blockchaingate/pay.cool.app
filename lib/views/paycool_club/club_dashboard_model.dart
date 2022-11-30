@@ -17,12 +17,14 @@ class ClubDashboard {
   ClubDashboard({this.summary, this.user, this.referral, this.status});
 
   ClubDashboard.fromJson(Map<String, dynamic> json) {
-    var st = json['status'].toString();
-    if (st.toString().contains('.')) {
-      st = st.toString().split('.')[0];
+    int intStatus;
+    if (json['status'] != null) {
+      var st = json['status'].toString();
+      if (st.toString().contains('.')) {
+        st = st.toString().split('.')[0];
+      }
+      intStatus = int.parse(st.toString());
     }
-    int intStatus = int.parse(st.toString());
-
     var s = json['summary'] as List;
     if (s != null) {
       summary = <Summary>[];
@@ -88,12 +90,14 @@ class Summary {
   Summary({this.project, this.rewardDistribution, this.referral, this.status});
 
   Summary.fromJson(Map<String, dynamic> json) {
-    var st = json['status'].toString();
-    if (st.toString().contains('.')) {
-      st = st.toString().split('.')[0];
+    int intStatus;
+    if (json['status'] != null) {
+      var st = json['status'].toString();
+      if (st.toString().contains('.')) {
+        st = st.toString().split('.')[0];
+      }
+      intStatus = int.parse(st.toString());
     }
-    int intStatus = int.parse(st.toString());
-
     project =
         json['project'] != null ? Project.fromJson(json['project']) : null;
     rewardDistribution =

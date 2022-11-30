@@ -478,10 +478,9 @@ class ClubDashboardView extends StatelessWidget {
                                                           model.isValidMember,
                                                       child: ListTile(
                                                         horizontalTitleGap: 0,
-                                                        leading: const Icon(
-                                                          Icons.link,
-                                                          color: black,
-                                                          size: 18,
+                                                        leading: Image.asset(
+                                                          'assets/images/club/user.png',
+                                                          width: 30,
                                                         ),
                                                         title: Text(
                                                           FlutterI18n.translate(
@@ -538,17 +537,24 @@ class ClubDashboardView extends StatelessWidget {
                                                                   primaryColor),
                                                       child: ListTile(
                                                         horizontalTitleGap: 0,
-                                                        leading: const Padding(
-                                                          padding:
-                                                              EdgeInsets.all(
-                                                                  8.0),
-                                                          child: Icon(
-                                                            FontAwesomeIcons
-                                                                .user,
-                                                            color: primaryColor,
-                                                            size: 18,
-                                                          ),
-                                                        ),
+                                                        leading:
+                                                            model.isValidMember
+                                                                ? Image.asset(
+                                                                    'assets/images/club/member.png',
+                                                                    width: 30,
+                                                                  )
+                                                                : const Padding(
+                                                                    padding:
+                                                                        EdgeInsets.all(
+                                                                            8.0),
+                                                                    child: Icon(
+                                                                      FontAwesomeIcons
+                                                                          .user,
+                                                                      color:
+                                                                          primaryColor,
+                                                                      size: 18,
+                                                                    ),
+                                                                  ),
                                                         title: Text(
                                                           model.memberType,
                                                           style: headText4.copyWith(
@@ -628,11 +634,9 @@ class ClubDashboardView extends StatelessWidget {
                                                                       model
                                                                           .rewardTokenPriceMap)),
                                                       horizontalTitleGap: 0,
-                                                      leading: const Icon(
-                                                        Icons
-                                                            .monetization_on_outlined,
-                                                        color: black,
-                                                        size: 18,
+                                                      leading: Image.asset(
+                                                        'assets/images/club/gift.png',
+                                                        width: 30,
                                                       ),
                                                       title: Text(
                                                         FlutterI18n.translate(
@@ -751,11 +755,9 @@ class ClubDashboardView extends StatelessWidget {
                                                               PayCoolClubReferralViewRoute),
                                                       child: ListTile(
                                                         horizontalTitleGap: 0,
-                                                        leading: const Icon(
-                                                          Icons
-                                                              .call_split_outlined,
-                                                          color: black,
-                                                          size: 18,
+                                                        leading: Image.asset(
+                                                          'assets/images/club/network.png',
+                                                          width: 30,
                                                         ),
                                                         title: Text(
                                                           FlutterI18n.translate(
@@ -798,11 +800,9 @@ class ClubDashboardView extends StatelessWidget {
                                                           CupertinoPageRoute(
                                                               builder: (context) =>
                                                                   const PurchasedPackageView())),
-                                                      leading: const Icon(
-                                                        Icons
-                                                            .align_vertical_bottom_sharp,
-                                                        color: black,
-                                                        size: 18,
+                                                      leading: Image.asset(
+                                                        'assets/images/club/packages.png',
+                                                        width: 30,
                                                       ),
                                                       title: Text(
                                                         FlutterI18n.translate(

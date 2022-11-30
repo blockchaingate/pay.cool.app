@@ -99,75 +99,86 @@ class PaycoolReferralView extends StatelessWidget {
                                                       .withAlpha(120),
                                                   padding:
                                                       const EdgeInsets.all(4.0),
-                                                  child: Column(
-                                                    children: [
-                                                      if (model.referrals[index]
-                                                              .status ==
-                                                          -1) ...[
-                                                        Text(
-                                                            ' ${FlutterI18n.translate(context, "noPartner")}',
-                                                            style: headText6
-                                                                .copyWith(
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold,
-                                                                    color:
-                                                                        black)),
-                                                      ] else if (model
-                                                              .referrals[index]
-                                                              .status ==
-                                                          0) ...[
-                                                        Text(
-                                                            ' ${FlutterI18n.translate(context, "basicPartner")}',
-                                                            style: headText6
-                                                                .copyWith(
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold,
-                                                                    color:
-                                                                        black)),
-                                                      ] else if (model
-                                                              .referrals[index]
-                                                              .status ==
-                                                          1) ...[
-                                                        Text(
-                                                            ' ${FlutterI18n.translate(context, "juniorPartner")}',
-                                                            style: headText6
-                                                                .copyWith(
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold,
-                                                                    color:
-                                                                        black)),
-                                                      ] else if (model
-                                                              .referrals[index]
-                                                              .status ==
-                                                          2) ...[
-                                                        Text(
-                                                            ' ${FlutterI18n.translate(context, "seniorPartner")}',
-                                                            style: headText6
-                                                                .copyWith(
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold,
-                                                                    color:
-                                                                        black)),
-                                                      ] else if (model
-                                                              .referrals[index]
-                                                              .status ==
-                                                          3) ...[
-                                                        Text(
-                                                            ' ${FlutterI18n.translate(context, "executivePartner")}',
-                                                            style: headText6
-                                                                .copyWith(
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold,
-                                                                    color:
-                                                                        black)),
-                                                      ]
+                                                  child: Column(children: [
+                                                    if (model.referrals[index]
+                                                            .status ==
+                                                        -1) ...[
+                                                      Text(
+                                                          ' ${FlutterI18n.translate(context, "noPartner")}',
+                                                          style: headText6
+                                                              .copyWith(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                  color:
+                                                                      black)),
+                                                    ] else if (model
+                                                            .referrals[index]
+                                                            .status ==
+                                                        0) ...[
+                                                      Text(
+                                                          ' ${FlutterI18n.translate(context, "noPartner")}',
+                                                          style: headText6
+                                                              .copyWith(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                  color:
+                                                                      black)),
+                                                    ] else if (model
+                                                            .referrals[index]
+                                                            .status ==
+                                                        1) ...[
+                                                      Text(
+                                                          ' ${FlutterI18n.translate(context, "basicPartner")}',
+                                                          style: headText6
+                                                              .copyWith(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                  color:
+                                                                      black)),
+                                                    ] else if (model
+                                                            .referrals[index]
+                                                            .status ==
+                                                        2) ...[
+                                                      Text(
+                                                          ' ${FlutterI18n.translate(context, "juniorPartner")}',
+                                                          style: headText6
+                                                              .copyWith(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                  color:
+                                                                      black)),
+                                                    ] else if (model
+                                                            .referrals[index]
+                                                            .status ==
+                                                        3) ...[
+                                                      Text(
+                                                          ' ${FlutterI18n.translate(context, "sophomorePartner")}',
+                                                          style: headText6
+                                                              .copyWith(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                  color:
+                                                                      black)),
+                                                    ] else if (model
+                                                            .referrals[index]
+                                                            .status ==
+                                                        4) ...[
+                                                      Text(
+                                                          ' ${FlutterI18n.translate(context, "executivePartner")}',
+                                                          style: headText6
+                                                              .copyWith(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                  color:
+                                                                      black)),
                                                     ],
-                                                  ),
+                                                  ]),
                                                 )
                                               : Container(),
                                           // id

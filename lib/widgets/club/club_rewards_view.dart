@@ -61,20 +61,25 @@ class ClubRewardsView extends StatelessWidget {
                                 if (clubRewardsArgs.summary[index].status ==
                                     0) {
                                   return FlutterI18n.translate(
-                                      context, "basicPartner");
+                                      context, "noPartner");
                                 } else if (clubRewardsArgs
                                         .summary[index].status ==
                                     1) {
                                   return FlutterI18n.translate(
-                                      context, "juniorPartner");
+                                      context, "basicPartner");
                                 } else if (clubRewardsArgs
                                         .summary[index].status ==
                                     2) {
                                   return FlutterI18n.translate(
-                                      context, "seniorPartner");
+                                      context, "juniorPartner");
                                 } else if (clubRewardsArgs
                                         .summary[index].status ==
                                     3) {
+                                  return FlutterI18n.translate(
+                                      context, "sophomorePartner");
+                                } else if (clubRewardsArgs
+                                        .summary[index].status ==
+                                    4) {
                                   return FlutterI18n.translate(
                                       context, "executivePartner");
                                 } else {

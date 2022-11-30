@@ -607,7 +607,7 @@ class MoveToWalletViewmodel extends BaseViewModel {
       builder: (BuildContext context) {
         return Platform.isIOS
             ? Theme(
-                data: ThemeData.dark(),
+                data: ThemeData.light(),
                 child: CupertinoAlertDialog(
                   title: Container(
                     margin: const EdgeInsets.only(bottom: 5.0),
@@ -652,24 +652,21 @@ class MoveToWalletViewmodel extends BaseViewModel {
                   actions: <Widget>[
                     Container(
                       margin: const EdgeInsets.all(5),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          CupertinoButton(
-                            padding: const EdgeInsets.only(left: 5),
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(4)),
-                            child: Text(
-                              FlutterI18n.translate(context, "close"),
-                              style: bodyText2.copyWith(
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            onPressed: () {
-                              Navigator.of(context).pop(true);
-                              updateIsAlert(false);
-                            },
+                      child: Center(
+                        child: CupertinoButton(
+                          padding: const EdgeInsets.only(left: 5),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(4)),
+                          child: Text(
+                            FlutterI18n.translate(context, "close"),
+                            style:
+                                bodyText2.copyWith(fontWeight: FontWeight.bold),
                           ),
-                        ],
+                          onPressed: () {
+                            Navigator.of(context).pop(true);
+                            updateIsAlert(false);
+                          },
+                        ),
                       ),
                     ),
                   ],
@@ -678,7 +675,7 @@ class MoveToWalletViewmodel extends BaseViewModel {
                 titlePadding: EdgeInsets.zero,
                 contentPadding: const EdgeInsets.all(5.0),
                 elevation: 5,
-                backgroundColor: walletCardColor.withOpacity(0.85),
+                backgroundColor: secondaryColor,
                 title: Container(
                   padding: const EdgeInsets.all(10.0),
                   color: secondaryColor.withOpacity(0.5),
@@ -692,7 +689,7 @@ class MoveToWalletViewmodel extends BaseViewModel {
                   child: !isTSWalletInfo
                       ? Column(
                           mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.start,
+                          //  mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                               Text(
@@ -704,14 +701,17 @@ class MoveToWalletViewmodel extends BaseViewModel {
                                 child: Text('e.g. FAB and FAB(ERC20)',
                                     style: headText5),
                               ),
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                  updateIsAlert(false);
-                                },
-                                child: Text(
-                                  FlutterI18n.translate(context, "close"),
-                                  style: const TextStyle(color: red),
+                              Center(
+                                child: TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                    updateIsAlert(false);
+                                  },
+                                  child: Text(
+                                    FlutterI18n.translate(context, "close"),
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(color: red),
+                                  ),
                                 ),
                               )
                             ])
@@ -737,14 +737,16 @@ class MoveToWalletViewmodel extends BaseViewModel {
                                   FlutterI18n.translate(
                                       context, "specialWithdrawFailNote"),
                                   style: headText5),
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                  updateIsAlert(false);
-                                },
-                                child: Text(
-                                  FlutterI18n.translate(context, "close"),
-                                  style: const TextStyle(color: red),
+                              Center(
+                                child: TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                    updateIsAlert(false);
+                                  },
+                                  child: Text(
+                                    FlutterI18n.translate(context, "close"),
+                                    style: const TextStyle(color: red),
+                                  ),
                                 ),
                               )
                             ]),
@@ -786,7 +788,7 @@ class MoveToWalletViewmodel extends BaseViewModel {
       log.i('setWithdrawLimit coin type $ct');
     });
     await tokenListDatabaseService.getByCointype(ct).then((res) async {
-      if (res != null) {
+      if (res != null && res.feeWithdraw != "null") {
         token = res;
         if (_groupValue == 'ETH') ercChainToken = token;
         if (_groupValue == 'TRX' || _groupValue == 'FAB') {

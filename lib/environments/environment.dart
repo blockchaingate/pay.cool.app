@@ -70,7 +70,7 @@ Map devConfig = {
     "smartContract": {
       "FABLOCK": '0xa7d4a4e23bf7dd7a1e03eda9eb7c28a016fd54aa',
       "EXG": '0x867480ba8e577402fa44f43c33875ce74bdc5df6',
-      "DUSD": '0x78f6bedc7c3d6500e004c6dca19c8d614cfd91ed',
+      "DUSD": '35cb9b675495714909c80c1c11366dc8d396cbe7',
       "USDT": '0x1c35eCBc06ae6061d925A2fC2920779a1896282c',
       "BNB": '0xE90e361892d258F28e3a2E758EEB7E571e370c6f',
       "INB": '0x919c6d21670fe8cEBd1E86a82a1A74E9AA2988F8',
@@ -232,7 +232,8 @@ Map productionConfig = {
       "CNB": "ceb9a838c3f3ee6e3168c06734f9188f2693999f",
       "NVZN": "0x99963ee76c886fc43d5063428ff8f926e8a50985",
       "BST": "0x4fe1819daf783a3f3151ea0937090063b85d6122",
-      "PaycoolReferralAddress": "0x1c6acdff5fd3f7e732083f5f6d3950d08f345e9b"
+      "PaycoolReferralAddress": "0xcd9c20e8e1252d5cd5eacd825e1be2dbda808000",
+      "ProjectUserRelation": "0xb16cb516bc0de12e89c7ce6a495012cd00ac2ebf"
     },
     'exchangilyOfficial': [
       {'name': 'EXG', 'address': '0xa7c8257b0571dc3d3c96b24b668c6569391b3ac9'},
