@@ -31,246 +31,74 @@ class PaycoolReferralView extends StatelessWidget {
               ? SizedBox(
                   height: 500,
                   child: Center(child: model.sharedService.loadingIndicator()))
-              : model.referrals == null || model.referrals.isEmpty
-                  ? SizedBox(
-                      height: 400,
-                      child: Center(
-                        child: Text(
-                            FlutterI18n.translate(context, "noReferralsYet"),
-                            style:
-                                const TextStyle(fontWeight: FontWeight.bold)),
-                      ),
-                    )
-                  : Container(
-                      decoration: const BoxDecoration(
-                        color: white,
-                        borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(20),
-                            topRight: Radius.circular(20)),
-                      ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Expanded(
-                            child: ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: model.referrals.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                int i = index + 1;
-                                return Container(
-                                  decoration: BoxDecoration(
-                                      border: Border(
-                                    bottom:
-                                        BorderSide(color: grey.withAlpha(40)),
-                                  )),
-                                  child: ListTile(
-                                    onTap: () {
-                                      if (int.parse(
-                                              model.referrals[index].count) >
-                                          0) {
-                                        model.navigationService.navigateTo(
-                                            PayCoolClubReferralViewRoute,
-                                            arguments: model
-                                                .referrals[index].userAddress);
-                                      }
-                                    },
-                                    leading: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Text(
-                                        i.toString() + ' ',
-                                        style: headText5.copyWith(
-                                            color: black,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
-                                    title: Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 10.0),
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          model.referrals[index].count
-                                                  .isNotEmpty
-                                              ? Container(
-                                                  color: primaryColor
-                                                      .withAlpha(120),
-                                                  padding:
-                                                      const EdgeInsets.all(4.0),
-                                                  child: Column(children: [
-                                                    if (model.referrals[index]
-                                                            .status ==
-                                                        -1) ...[
-                                                      Text(
-                                                          ' ${FlutterI18n.translate(context, "noPartner")}',
-                                                          style: headText6
-                                                              .copyWith(
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                  color:
-                                                                      black)),
-                                                    ] else if (model
-                                                            .referrals[index]
-                                                            .status ==
-                                                        0) ...[
-                                                      Text(
-                                                          ' ${FlutterI18n.translate(context, "noPartner")}',
-                                                          style: headText6
-                                                              .copyWith(
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                  color:
-                                                                      black)),
-                                                    ] else if (model
-                                                            .referrals[index]
-                                                            .status ==
-                                                        1) ...[
-                                                      Text(
-                                                          ' ${FlutterI18n.translate(context, "basicPartner")}',
-                                                          style: headText6
-                                                              .copyWith(
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                  color:
-                                                                      black)),
-                                                    ] else if (model
-                                                            .referrals[index]
-                                                            .status ==
-                                                        2) ...[
-                                                      Text(
-                                                          ' ${FlutterI18n.translate(context, "beginnerPartner")}',
-                                                          style: headText6
-                                                              .copyWith(
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                  color:
-                                                                      black)),
-                                                    ] else if (model
-                                                            .referrals[index]
-                                                            .status ==
-                                                        3) ...[
-                                                      Text(
-                                                          ' ${FlutterI18n.translate(context, "intermediatePartner")}',
-                                                          style: headText6
-                                                              .copyWith(
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                  color:
-                                                                      black)),
-                                                    ] else if (model
-                                                            .referrals[index]
-                                                            .status ==
-                                                        4) ...[
-                                                      Text(
-                                                          ' ${FlutterI18n.translate(context, "advancedPartner")}',
-                                                          style: headText6
-                                                              .copyWith(
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                  color:
-                                                                      black)),
-                                                    ],
-                                                  ]),
-                                                )
-                                              : Container(),
-                                          // id
-                                          Row(
-                                            children: [
-                                              // Padding(
-                                              //   padding: const EdgeInsets.only(
-                                              //       right: 2.0),
-                                              //   child: Text(
-                                              //       FlutterI18n.translate(
-                                              //               context, "id") +
-                                              //           ':',
-                                              //       style: headText5.copyWith(
-                                              //           fontWeight:
-                                              //               FontWeight.bold,
-                                              //           color: black)),
-                                              // ),
-                                              Flexible(
-                                                child: Padding(
-                                                  padding: const EdgeInsets
-                                                      .symmetric(vertical: 4),
-                                                  child: Text(
-                                                    model.referrals[index]
-                                                        .userAddress,
-                                                    style: headText5.copyWith(
-                                                      decoration: TextDecoration
-                                                          .underline,
-                                                      color: primaryColor,
-                                                    ),
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    maxLines: 2,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
+              : DefaultTabController(
+                  length: 2,
+                  initialIndex: model.currentTabSelection,
+                  child: NestedScrollView(
+                    headerSliverBuilder:
+                        (BuildContext context, bool innerBoxIsScrolled) {
+                      return <Widget>[
+                        SliverPersistentHeader(
+                            pinned: true,
+                            delegate: _SliverAppBarDelegate(
+                              TabBar(
+                                  // labelPadding: EdgeInsets.only(bottom: 14, top: 14),
 
-                                          Text(
-                                              FlutterI18n.translate(context,
-                                                      "referralCount") +
-                                                  ' ' +
-                                                  model.referrals[index].count
-                                                      .toString(),
-                                              style: headText5.copyWith(
-                                                  color: black)),
-                                        ],
-                                      ),
+                                  onTap: (int tabIndex) {
+                                    model.updateTabSelection(tabIndex);
+                                  },
+                                  labelColor: primaryColor,
+                                  unselectedLabelColor: grey,
+                                  indicatorColor: primaryColor,
+                                  indicatorSize: TabBarIndicatorSize.tab,
+                                  tabs: [
+                                    Tab(
+                                      text: FlutterI18n.translate(
+                                          context, "appTitle"),
+
+                                      // child: Text(
+                                      //     model.walletInfoCopy.length.toString(),
+                                      //     style: TextStyle(fontSize: 10, color: grey))
                                     ),
-                                    trailing: Container(
-                                        child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        CupertinoButton(
-                                            child: const Icon(
-                                              FontAwesomeIcons.copy,
-                                              //  CupertinoIcons.,
-                                              color: primaryColor,
-                                              size: 14,
-                                            ),
-                                            onPressed: () {
-                                              model.sharedService.copyAddress(
-                                                  context,
-                                                  model.referrals[index]
-                                                      .userAddress)();
-                                            }),
-                                        CupertinoButton(
-                                            child: const Icon(
-                                              FontAwesomeIcons.qrcode,
-                                              //  CupertinoIcons.,
-                                              color: primaryColor,
-                                              size: 14,
-                                            ),
-                                            onPressed: () {
-                                              Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          DisplayQrCode(model
-                                                              .referrals[index]
-                                                              .userAddress)));
-                                            }),
-                                      ],
-                                    )),
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                                    Tab(
+                                      text: FlutterI18n.translate(
+                                          context, "metaforce"),
+
+                                      // child: Text(
+                                      //     model.favWalletInfoList.length.toString(),
+                                      //     style: TextStyle(fontSize: 10, color: grey)),
+                                    )
+                                  ]),
+                            ))
+                      ];
+                    },
+                    body: TabBarView(children: [
+                      model.referrals == null || model.referrals.isEmpty
+                          ? SizedBox(
+                              height: 400,
+                              child: Center(
+                                child: Text(
+                                    FlutterI18n.translate(
+                                        context, "noReferralsYet"),
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold)),
+                              ),
+                            )
+                          : referralMethod(model),
+                      model.referrals == null || model.referrals.isEmpty
+                          ? SizedBox(
+                              height: 400,
+                              child: Center(
+                                child: Text(
+                                    FlutterI18n.translate(
+                                        context, "noReferralsYet"),
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold)),
+                              ),
+                            )
+                          : referralMethod(model)
+                    ]),
+                  )),
           floatingActionButtonLocation:
               FloatingActionButtonLocation.centerDocked,
           floatingActionButton: model.paginationModel.pages.isEmpty
@@ -279,6 +107,183 @@ class PaycoolReferralView extends StatelessWidget {
                   pageCallback: model.getPaginationRewards,
                   paginationModel: model.paginationModel,
                 )),
+    );
+  }
+
+  Container referralMethod(PaycoolReferralViewmodel model) {
+    return Container(
+      decoration: const BoxDecoration(
+        color: white,
+        borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Expanded(
+            child: ListView.builder(
+              shrinkWrap: true,
+              itemCount: model.referrals.length,
+              itemBuilder: (BuildContext context, int index) {
+                int i = index + 1;
+                return Container(
+                  decoration: BoxDecoration(
+                      border: Border(
+                    bottom: BorderSide(color: grey.withAlpha(40)),
+                  )),
+                  child: ListTile(
+                    onTap: () {
+                      if (int.parse(model.referrals[index].count) > 0 &&
+                          model.currentTabSelection != 1) {
+                        model.navigationService.navigateTo(
+                            PayCoolClubReferralViewRoute,
+                            arguments: model.referrals[index].userAddress);
+                      }
+                    },
+                    leading: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        i.toString() + ' ',
+                        style: headText5.copyWith(
+                            color: black, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    title: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 10.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          model.referrals[index].count.isNotEmpty
+                              ? Container(
+                                  color: primaryColor.withAlpha(120),
+                                  padding: const EdgeInsets.all(4.0),
+                                  child: Column(children: [
+                                    if (model.referrals[index].status ==
+                                        -1) ...[
+                                      Text(
+                                          ' ${FlutterI18n.translate(context, "noPartner")}',
+                                          style: headText6.copyWith(
+                                              fontWeight: FontWeight.bold,
+                                              color: white)),
+                                    ] else if (model.referrals[index].status ==
+                                        0) ...[
+                                      Text(
+                                          ' ${FlutterI18n.translate(context, "noPartner")}',
+                                          style: headText6.copyWith(
+                                              fontWeight: FontWeight.bold,
+                                              color: white)),
+                                    ] else if (model.referrals[index].status ==
+                                        1) ...[
+                                      Text(
+                                          ' ${FlutterI18n.translate(context, "basicPartner")}',
+                                          style: headText6.copyWith(
+                                              fontWeight: FontWeight.bold,
+                                              color: white)),
+                                    ] else if (model.referrals[index].status ==
+                                        2) ...[
+                                      Text(
+                                          ' ${FlutterI18n.translate(context, "juniorPartner")}',
+                                          style: headText6.copyWith(
+                                              fontWeight: FontWeight.bold,
+                                              color: white)),
+                                    ] else if (model.referrals[index].status ==
+                                        3) ...[
+                                      Text(
+                                          ' ${FlutterI18n.translate(context, "seniorPartner")}',
+                                          style: headText6.copyWith(
+                                              fontWeight: FontWeight.bold,
+                                              color: white)),
+                                    ] else if (model.referrals[index].status ==
+                                        4) ...[
+                                      Text(
+                                          ' ${FlutterI18n.translate(context, "executivePartner")}',
+                                          style: headText6.copyWith(
+                                              fontWeight: FontWeight.bold,
+                                              color: white)),
+                                    ],
+                                  ]),
+                                )
+                              : Container(),
+                          // id
+                          Row(
+                            children: [
+                              // Padding(
+                              //   padding: const EdgeInsets.only(
+                              //       right: 2.0),
+                              //   child: Text(
+                              //       FlutterI18n.translate(
+                              //               context, "id") +
+                              //           ':',
+                              //       style: headText5.copyWith(
+                              //           fontWeight:
+                              //               FontWeight.bold,
+                              //           color: black)),
+                              // ),
+                              Flexible(
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 4),
+                                  child: Text(
+                                    model.referrals[index].userAddress,
+                                    style: headText5.copyWith(
+                                      decoration: TextDecoration.underline,
+                                      color: primaryColor,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 2,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          Text(
+                              FlutterI18n.translate(context, "referralCount") +
+                                  ' ' +
+                                  model.referrals[index].count.toString(),
+                              style: headText5.copyWith(color: black)),
+                        ],
+                      ),
+                    ),
+                    trailing: Container(
+                        child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        CupertinoButton(
+                            child: const Icon(
+                              FontAwesomeIcons.copy,
+                              //  CupertinoIcons.,
+                              color: primaryColor,
+                              size: 14,
+                            ),
+                            onPressed: () {
+                              model.sharedService.copyAddress(context,
+                                  model.referrals[index].userAddress)();
+                            }),
+                        CupertinoButton(
+                            child: const Icon(
+                              FontAwesomeIcons.qrcode,
+                              //  CupertinoIcons.,
+                              color: primaryColor,
+                              size: 14,
+                            ),
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => DisplayQrCode(
+                                          model.referrals[index].userAddress)));
+                            }),
+                      ],
+                    )),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -318,5 +323,30 @@ class DisplayQrCode extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
+  _SliverAppBarDelegate(this._tabBar);
+
+  final TabBar _tabBar;
+
+  @override
+  double get minExtent => _tabBar.preferredSize.height;
+  @override
+  double get maxExtent => _tabBar.preferredSize.height;
+
+  @override
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return Container(
+      child: _tabBar,
+      color: secondaryColor,
+    );
+  }
+
+  @override
+  bool shouldRebuild(_SliverAppBarDelegate oldDelegate) {
+    return false;
   }
 }

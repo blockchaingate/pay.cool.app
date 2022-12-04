@@ -72,7 +72,7 @@ class ClubDashboardViewModel extends BaseViewModel {
   bool isValidMember = false;
   GlobalKey globalKey = GlobalKey();
   //PaycoolDashboard dashboard = PaycoolDashboard();
-  ClubDashboard dashboard = ClubDashboard();
+  ClubDashboard dashboardSummary = ClubDashboard();
   JoinClubPaymentModel scanToPayModel = JoinClubPaymentModel();
   bool isValidClubReferralCode = false;
   bool isFreeFabAvailable = false;
@@ -85,10 +85,9 @@ class ClubDashboardViewModel extends BaseViewModel {
   int referralCount = 0;
   bool isServerDown = false;
   bool isAcceptingMembers = false;
-  String memberType = '';
   int projectIndex = 0;
   int purchasedPackagesCount = 0;
-
+  int joinedProjectCount = 0;
   Map<String, Decimal> rewardTokenPriceMap = {};
 
   void init() async {
@@ -111,8 +110,9 @@ class ClubDashboardViewModel extends BaseViewModel {
     purchasedPackagesCount =
         await clubService.getPurchasedPackageCount(fabAddress);
     await checkGas();
+
     if (gasAmount == 0.0) await checkFreeFabForNewWallet();
-    for (var project in dashboard.summary) {
+    for (var project in dashboardSummary.summary) {
       for (var reward in project.totalReward) {
         if (reward.coin != null) {
           try {
@@ -130,6 +130,73 @@ class ClubDashboardViewModel extends BaseViewModel {
 
     setBusy(false);
   } // init ends
+
+  showJoinedProjectsPopup() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            elevation: 10,
+            titleTextStyle: headText3.copyWith(color: black),
+            title: Text(
+              FlutterI18n.translate(context, "joinedProjects"),
+              textAlign: TextAlign.center,
+              style: headText3.copyWith(color: black),
+            ),
+            contentTextStyle: const TextStyle(color: grey),
+            content: SizedBox(
+              child: SingleChildScrollView(
+                child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      for (var i = 0; i < dashboardSummary.summary.length; i++)
+                        dashboardSummary.summary[i].status != 0
+                            ? Padding(
+                                padding: const EdgeInsets.all(4.0),
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      '${storageService.language == "en" ? dashboardSummary.summary[i].project.en : dashboardSummary.summary[i].project.sc}  ',
+                                      textAlign: TextAlign.start,
+                                      style: headText4.copyWith(
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                    Text(
+                                      assignMemberType(
+                                          status: dashboardSummary
+                                              .summary[i].status),
+                                      textAlign: TextAlign.end,
+                                      style: headText6.copyWith(color: green),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            : Container(),
+                    ]),
+              ),
+            ),
+            actions: [
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ElevatedButton(
+                    style: generalButtonStyle(primaryColor),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text(
+                      FlutterI18n.translate(context, "close"),
+                      style: headText5.copyWith(color: white),
+                    ),
+                  ),
+                ),
+              ),
+              UIHelper.verticalSpaceSmall
+            ],
+          );
+        });
+  }
 
   showJoinPaycoolPopup() {
     showDialog(
@@ -790,19 +857,29 @@ class ClubDashboardViewModel extends BaseViewModel {
     // setBusy(false);
   }
 
-  assignMemberType() {
-    if (dashboard.status == 0) {
-      memberType = FlutterI18n.translate(context, "noPartner");
-    } else if (dashboard.status == 1) {
-      memberType = FlutterI18n.translate(context, "basicPartner");
-    } else if (dashboard.status == 2) {
-      memberType = FlutterI18n.translate(context, "beginnerPartner");
-    } else if (dashboard.status == 3) {
-      memberType = FlutterI18n.translate(context, "intermediatePartner");
-    } else if (dashboard.status == 4) {
-      memberType = FlutterI18n.translate(context, "advancedPartner");
+  String assignMemberType({int status}) {
+    var condition = status ?? dashboardSummary.status;
+    if (condition == 0) {
+      return FlutterI18n.translate(context, "noPartner");
+    } else if (condition == 1) {
+      return FlutterI18n.translate(context, "basicPartner");
+    } else if (condition == 2) {
+      return FlutterI18n.translate(context, "juniorPartner");
+    } else if (condition == 3) {
+      return FlutterI18n.translate(context, "seniorPartner");
+    } else if (condition == 4) {
+      return FlutterI18n.translate(context, "executivePartner");
     } else {
-      memberType = FlutterI18n.translate(context, "noPartner");
+      return FlutterI18n.translate(context, "noPartner");
+    }
+  }
+
+// joined projects
+  jp() {
+    for (var summary in dashboardSummary.summary) {
+      if (summary.status != 0) {
+        joinedProjectCount++;
+      }
     }
   }
 
@@ -811,9 +888,10 @@ class ClubDashboardViewModel extends BaseViewModel {
     await clubService
         .getDashboardSummary(fabAddress)
         .then((dashboardDetails) async {
-      dashboard = dashboardDetails;
+      dashboardSummary = dashboardDetails;
       assignMemberType();
     });
+    jp();
     setBusy(false);
   }
 

@@ -457,12 +457,10 @@
     "accept":"Accept",
     "decline":"Decline",
     "noPartner": "No partner",
-    "primaryPartner": "Primary Partner",
     "basicPartner": "Basic Partner",
-    "beginnerPartner": "Beginner Partner",
-    "intermediatePartner": "Intermediate Partner",
+    "juniorPartner": "Junior Partner",
     "seniorPartner": "Senior Partner",
-    "advancedPartner": "Advanced Partner",
+    "executivePartner": "Executive Partner",
     "notJoinedProject": "You have not joined any partner project",
     "domain": "Domain",
     "invalidDomain": "Invalid Domain",
@@ -493,6 +491,7 @@
     "taxRate": "Tax Rate",
     "rebateRate": "Rebate Rate",
     "stakeToEarn": "Stake to Earn",
-    "joinedProjects":"Joined Projects"
+    "joinedProjects":"Joined Projects",
+    "metaforce": "Meta force"
 
 }

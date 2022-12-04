@@ -456,12 +456,10 @@
     "accept":"Aceptar",
     "decline":"Rechazar", 
     "noPartner": "Ningún socio",
-    "primaryPartner": "Socio principal",
     "basicPartner": "Basic Partner",
-    "beginnerPartner": "Socio intermedio",
-    "intermediatePartner": "Intermediate Partner",
+    "juniorPartner": "Socio intermedio",
     "seniorPartner": "Socio senior",
-    "advancedPartner": "Advanced Partner",
+    "executivePartner": "Advanced Partner",
     "domain": "Dominio",
     "invalidDomain": "Dominio no válido",
     "addressNotSet": "Dirección no establecida",
@@ -491,6 +489,7 @@
     "taxRate": "Tipo impositivo",
     "rebateRate": "Tasa de reembolso",
     "stakeToEarn": "Apostar para ganar",
-    "joinedProjects":"Joined Projects"
+    "joinedProjects":"Joined Projects",
+    "metaforce": "Meta force"
 
 }

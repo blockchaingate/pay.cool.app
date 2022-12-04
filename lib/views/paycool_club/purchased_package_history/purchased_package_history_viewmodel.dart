@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:paycool/logger.dart';
 import 'package:paycool/service_locator.dart';
+import 'package:paycool/services/local_storage_service.dart';
 import 'package:paycool/services/navigation_service.dart';
 import 'package:paycool/services/shared_service.dart';
 import 'package:paycool/views/paycool_club/purchased_package_history/purchased_package_history_model.dart';
@@ -29,6 +30,7 @@ class PurchasedPackageViewmodel extends FutureViewModel {
 
   int _totalPackages = 0;
   get totalPackages => _totalPackages;
+  final storageService = locator<LocalStorageService>();
 
 /*----------------------------------------------------------------------
                     Default Future to Run

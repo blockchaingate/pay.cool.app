@@ -454,10 +454,9 @@
     "accept": "接受",
     "noPartner": "非合伙人",
     "basicPartner": "基础合伙人",
-    "beginnerPartner": "初级合伙人",
-    "primaryPartner": "主要合作合伙人",
-    "intermediatePartner": "中级合伙人",
-    "advancedPartner": "高级合伙人",
+    "juniorPartner": "初级合伙人",
+    "seniorPartner": "中级合伙人",
+    "executivePartner": "高级合伙人",
     "notJoinedProject": "你没有加入任何合伙人项目",
     "decline": "拒绝",
     "domain": "域",
@@ -489,7 +488,7 @@
     "taxRate": "税率",
     "rebateRate": "回扣率",
     "stakeToEarn": "质押获取收益",
-    
-    "joinedProjects":"我已加入的项目"
+    "joinedProjects":"我已加入的项目",
+    "metaforce": "原力计划"
 
 }

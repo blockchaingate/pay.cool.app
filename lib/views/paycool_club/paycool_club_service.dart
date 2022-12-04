@@ -388,12 +388,15 @@ class PayCoolClubService {
     }
   }
 
-// new
-  Future<int> getUserReferralCount(
-    String address,
-  ) async {
-    String url =
-        paycoolBaseUrl + 'userreferral/user/' + address + '/totalCount';
+// Referral count
+  Future<int> getUserReferralCount(String address,
+      {bool isProject = false, int projectId = 0}) async {
+    String url = isProject
+        ? paycoolBaseUrl +
+            'projectuser/project/$projectId/user/' +
+            address +
+            '/totalCount'
+        : paycoolBaseUrl + 'userreferral/user/' + address + '/totalCount';
     int referralCount = 0;
     log.i('getReferralCount url $url');
     try {
@@ -416,10 +419,16 @@ class PayCoolClubService {
     }
   }
 
-  // new
+// Referrals
   Future<List<PaycoolReferral>> getReferrals(String address,
-      {int pageSize = 20, int pageNumber = 0}) async {
-    String url = paycoolBaseUrl + 'userreferral/user/' + address;
+      {int pageSize = 20,
+      int pageNumber = 0,
+      bool isProject = false,
+      int projectId = 0}) async {
+    String url = isProject
+        ? paycoolBaseUrl + 'projectuser/project/$projectId/user/' + address
+        : paycoolBaseUrl + 'userreferral/user/' + address;
+
     if (pageNumber != 0) {
       pageNumber = pageNumber - 1;
     }

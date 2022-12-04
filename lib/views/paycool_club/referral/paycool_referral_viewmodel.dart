@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:paycool/environments/environment_type.example.dart';
 import 'package:paycool/logger.dart';
 import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/navigation_service.dart';
@@ -10,7 +11,7 @@ import 'package:paycool/widgets/pagination/pagination_model.dart';
 
 import 'package:stacked/stacked.dart';
 
-class PaycoolReferralViewmodel extends FutureViewModel {
+class PaycoolReferralViewmodel extends BaseViewModel {
   final log = getLogger('PaycoolReferralViewmodel');
 
   NavigationService navigationService = locator<NavigationService>();
@@ -29,27 +30,34 @@ class PaycoolReferralViewmodel extends FutureViewModel {
   int _totalReferrals = 0;
   get totalReferrals => _totalReferrals;
   var downlineReferralCount;
+  int currentTabSelection = 0;
 
 /*----------------------------------------------------------------------
-                    Default Future to Run
+                          INIT
 ----------------------------------------------------------------------*/
-  @override
-  Future futureToRun() async {
-    fabAddress = await sharedService.getFabAddressFromCoreWalletDatabase();
-    return await payCoolClubService.getReferrals(
-        address != null && address.isNotEmpty ? address : fabAddress,
-        pageSize: paginationModel.pageSize,
-        pageNumber: paginationModel.pageNumber);
-  }
 
-/*----------------------------------------------------------------------
-                  After Future Data is ready
-----------------------------------------------------------------------*/
-  @override
-  void onData(data) async {
+  init() async {
     setBusy(true);
+    var fabAddress = await sharedService.getFabAddressFromCoreWalletDatabase();
+    var data = currentTabSelection == 1
+        ? await payCoolClubService.getReferrals(
+            address != null && address.isNotEmpty ? address : fabAddress,
+            isProject: true,
+            projectId: isProduction ? 1 : 9,
+            pageSize: paginationModel.pageSize,
+            pageNumber: paginationModel.pageNumber)
+        : await payCoolClubService.getReferrals(
+            address != null && address.isNotEmpty ? address : fabAddress,
+            pageSize: paginationModel.pageSize,
+            pageNumber: paginationModel.pageNumber);
+
+    debugPrint('in on data');
+
     referrals = data;
-    _totalReferrals = await payCoolClubService.getUserReferralCount(fabAddress);
+    _totalReferrals = currentTabSelection == 1
+        ? await payCoolClubService.getUserReferralCount(fabAddress,
+            isProject: true, projectId: isProduction ? 1 : 9)
+        : await payCoolClubService.getUserReferralCount(fabAddress);
     paginationModel.totalPages =
         (_totalReferrals / paginationModel.pageSize).ceil();
     paginationModel.pages = [];
@@ -59,16 +67,18 @@ class PaycoolReferralViewmodel extends FutureViewModel {
     setBusy(false);
   }
 
-/*----------------------------------------------------------------------
-                          INIT
-----------------------------------------------------------------------*/
-
-  init() {}
+  updateTabSelection(int tabIndex) async {
+    setBusy(true);
+    currentTabSelection = tabIndex;
+    await init();
+    setBusy(false);
+    // notifyListeners();
+  }
 
   getPaginationRewards(int pageNumber) async {
     setBusy(true);
     paginationModel.pageNumber = pageNumber;
-    var paginationResults = await futureToRun();
+    var paginationResults = await init();
     referrals = paginationResults;
     setBusy(false);
   }

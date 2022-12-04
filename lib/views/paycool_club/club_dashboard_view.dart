@@ -237,7 +237,7 @@ class ClubDashboardView extends StatelessWidget {
                                           ),
                                           margin:
                                               const EdgeInsets.only(top: 10),
-                                          height: 235,
+                                          height: 240,
                                           child: Stack(
                                             children: [
                                               SizedBox(
@@ -367,8 +367,11 @@ class ClubDashboardView extends StatelessWidget {
                                                                               model.projectIndex]
                                                                           .description
                                                                           .sc,
+                                                                  textAlign:
+                                                                      TextAlign
+                                                                          .center,
                                                                   style:
-                                                                      headText2,
+                                                                      headText3,
                                                                   overflow:
                                                                       TextOverflow
                                                                           .ellipsis,
@@ -527,6 +530,9 @@ class ClubDashboardView extends StatelessWidget {
 
                                                     // member type tile
                                                     Container(
+                                                      margin:
+                                                          EdgeInsets.symmetric(
+                                                              vertical: 4),
                                                       decoration:
                                                           rectangularGradientBoxDecoration(
                                                               colorOne:
@@ -536,6 +542,8 @@ class ClubDashboardView extends StatelessWidget {
                                                               colorTwo:
                                                                   primaryColor),
                                                       child: ListTile(
+                                                        onTap: (() => model
+                                                            .showJoinedProjectsPopup()),
                                                         horizontalTitleGap: 0,
                                                         leading:
                                                             model.isValidMember
@@ -555,14 +563,36 @@ class ClubDashboardView extends StatelessWidget {
                                                                       size: 18,
                                                                     ),
                                                                   ),
-                                                        title: Text(
-                                                          model.memberType,
-                                                          style: headText4.copyWith(
-                                                              color:
-                                                                  secondaryColor,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold),
+                                                        title: Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          mainAxisSize:
+                                                              MainAxisSize.min,
+                                                          children: [
+                                                            Text(
+                                                              FlutterI18n
+                                                                  .translate(
+                                                                      context,
+                                                                      "appTitle"),
+                                                              style: headText6.copyWith(
+                                                                  color:
+                                                                      secondaryColor,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold),
+                                                            ),
+                                                            Text(
+                                                              model
+                                                                  .assignMemberType(),
+                                                              style: headText4.copyWith(
+                                                                  color:
+                                                                      secondaryColor,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold),
+                                                            ),
+                                                          ],
                                                         ),
                                                         subtitle: Row(
                                                           children: [
@@ -576,28 +606,26 @@ class ClubDashboardView extends StatelessWidget {
                                                                 .horizontalSpaceSmall,
                                                             Text(
                                                               model
-                                                                  .dashboard
-                                                                  .summary
-                                                                  .length
+                                                                  .joinedProjectCount
                                                                   .toString(),
                                                               style: headText5,
                                                             ),
                                                           ],
                                                         ),
-                                                        // trailing: Row(
-                                                        //   mainAxisSize:
-                                                        //       MainAxisSize.min,
-                                                        //   children: const [
-                                                        //     UIHelper
-                                                        //         .horizontalSpaceSmall,
-                                                        //     Icon(
-                                                        //       Icons
-                                                        //           .arrow_forward_ios,
-                                                        //       color: grey,
-                                                        //       size: 16,
-                                                        //     ),
-                                                        //   ],
-                                                        // ),
+                                                        trailing: Row(
+                                                          mainAxisSize:
+                                                              MainAxisSize.min,
+                                                          children: const [
+                                                            UIHelper
+                                                                .horizontalSpaceSmall,
+                                                            Icon(
+                                                              Icons
+                                                                  .arrow_forward_ios,
+                                                              color: white,
+                                                              size: 16,
+                                                            ),
+                                                          ],
+                                                        ),
                                                       ),
                                                     ),
                                                     // joined date tile
@@ -628,7 +656,7 @@ class ClubDashboardView extends StatelessWidget {
                                                               clubRewardsViewRoute,
                                                               arguments: ClubRewardsArgs(
                                                                   summary: model
-                                                                      .dashboard
+                                                                      .dashboardSummary
                                                                       .summary,
                                                                   rewardTokenPriceMap:
                                                                       model
@@ -636,7 +664,7 @@ class ClubDashboardView extends StatelessWidget {
                                                       horizontalTitleGap: 0,
                                                       leading: Image.asset(
                                                         'assets/images/club/gift.png',
-                                                        width: 30,
+                                                        width: 28,
                                                       ),
                                                       title: Text(
                                                         FlutterI18n.translate(
@@ -669,7 +697,7 @@ class ClubDashboardView extends StatelessWidget {
                                                                       'FAB'
                                                                               ' ' +
                                                                           model
-                                                                              .dashboard
+                                                                              .dashboardSummary
                                                                               .totalFabRewards()[
                                                                                   'FAB']
                                                                               .toString(),
@@ -680,7 +708,7 @@ class ClubDashboardView extends StatelessWidget {
                                                                             .symmetric(
                                                                         vertical:
                                                                             4.0),
-                                                                    child: model.dashboard.totalFabRewards()["FET"] != null &&
+                                                                    child: model.dashboardSummary.totalFabRewards()["FET"] != null &&
                                                                             model.rewardTokenPriceMap !=
                                                                                 null &&
                                                                             model
@@ -694,14 +722,14 @@ class ClubDashboardView extends StatelessWidget {
                                                                               Text(
                                                                                   'FET'
                                                                                           ' ' +
-                                                                                      model.dashboard.totalFabRewards()["FET"].toString(),
+                                                                                      model.dashboardSummary.totalFabRewards()["FET"].toString(),
                                                                                   style: headText5),
-                                                                              Text('  \$${NumberUtil.decimalLimiter(model.dashboard.totalFabRewards()["FET"] * model.rewardTokenPriceMap['FET'])}', maxLines: 2, style: headText5.copyWith(color: green, fontWeight: FontWeight.bold))
+                                                                              Text('  \$${NumberUtil.decimalLimiter(model.dashboardSummary.totalFabRewards()["FET"] * model.rewardTokenPriceMap['FET'])}', maxLines: 2, style: headText5.copyWith(color: green, fontWeight: FontWeight.bold))
                                                                             ],
                                                                           )
                                                                         : Container(),
                                                                   ),
-                                                                  model.dashboard.totalFabRewards()[
+                                                                  model.dashboardSummary.totalFabRewards()[
                                                                                   "FETLP"] !=
                                                                               null &&
                                                                           model.rewardTokenPriceMap !=
@@ -718,9 +746,9 @@ class ClubDashboardView extends StatelessWidget {
                                                                             Text(
                                                                                 'FETDUSD-LP'
                                                                                         ' ' +
-                                                                                    model.dashboard.totalFabRewards()["FETLP"].toString(),
+                                                                                    model.dashboardSummary.totalFabRewards()["FETLP"].toString(),
                                                                                 style: headText5),
-                                                                            Text('  \$${NumberUtil.decimalLimiter(model.dashboard.totalFabRewards()["FETLP"] * model.rewardTokenPriceMap['FETDUSD-LP'])}',
+                                                                            Text('  \$${NumberUtil.decimalLimiter(model.dashboardSummary.totalFabRewards()["FETLP"] * model.rewardTokenPriceMap['FETDUSD-LP'])}',
                                                                                 maxLines: 2,
                                                                                 style: headText5.copyWith(color: green, fontWeight: FontWeight.bold)),
                                                                           ],

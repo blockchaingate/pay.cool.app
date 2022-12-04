@@ -39,7 +39,7 @@ class PurchasedPackageView extends StatelessWidget {
                         child: Image.asset(
                           'assets/images/paycool/box.png',
                           color: red,
-                          width: 80,
+                          width: 50,
                         ),
                       ),
                     )
@@ -71,10 +71,63 @@ class PurchasedPackageView extends StatelessWidget {
                                     onTap: () {},
                                     leading: Padding(
                                       padding: const EdgeInsets.all(8.0),
-                                      child: Text(
-                                        model.purchasedPackages[index].date,
-                                        style: headText5.copyWith(
-                                            fontWeight: FontWeight.bold),
+                                      child: Column(
+                                        children: [
+                                          Text(
+                                            model.purchasedPackages[index].date,
+                                            style: headText5.copyWith(
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          if (model.purchasedPackages[index]
+                                                  .project.status ==
+                                              0) ...[
+                                            Text(
+                                                ' ${FlutterI18n.translate(context, "noPartner")}',
+                                                style: headText6.copyWith(
+                                                    fontWeight: FontWeight.bold,
+                                                    color: black)),
+                                          ] else if (model
+                                                  .purchasedPackages[index]
+                                                  .project
+                                                  .status ==
+                                              1) ...[
+                                            Text(
+                                                ' ${FlutterI18n.translate(context, "basicPartner")}',
+                                                style: headText6.copyWith(
+                                                    fontWeight: FontWeight.bold,
+                                                    color: black)),
+                                          ] else if (model
+                                                  .purchasedPackages[index]
+                                                  .project
+                                                  .status ==
+                                              2) ...[
+                                            Text(
+                                                ' ${FlutterI18n.translate(context, "juniorPartner")}',
+                                                style: headText6.copyWith(
+                                                    fontWeight: FontWeight.bold,
+                                                    color: black)),
+                                          ] else if (model
+                                                  .purchasedPackages[index]
+                                                  .project
+                                                  .status ==
+                                              3) ...[
+                                            Text(
+                                                ' ${FlutterI18n.translate(context, "seniorPartner")}',
+                                                style: headText6.copyWith(
+                                                    fontWeight: FontWeight.bold,
+                                                    color: black)),
+                                          ] else if (model
+                                                  .purchasedPackages[index]
+                                                  .project
+                                                  .status ==
+                                              4) ...[
+                                            Text(
+                                                ' ${FlutterI18n.translate(context, "executivePartner")}',
+                                                style: headText6.copyWith(
+                                                    fontWeight: FontWeight.bold,
+                                                    color: black)),
+                                          ]
+                                        ],
                                       ),
                                     ),
                                     title: Container(
@@ -86,76 +139,35 @@ class PurchasedPackageView extends StatelessWidget {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          // model.purchasedPackages[index].txid
-                                          //         .isNotEmpty
-                                          //     ? Container(
-                                          //         padding: const EdgeInsets
-                                          //             .symmetric(vertical: 5.0),
-                                          //         child: Column(
-                                          //           children: [
-                                          //             if (model
-                                          //                     .purchasedPackages[
-                                          //                         index]
-                                          //                     .status ==
-                                          //                 0) ...[
-                                          //               Text(
-                                          //                   ' ${FlutterI18n.translate(context, "primaryPartner")}',
-                                          //                   style: headText6
-                                          //                       .copyWith(
-                                          //                           fontWeight:
-                                          //                               FontWeight
-                                          //                                   .bold,
-                                          //                           color:
-                                          //                               black)),
-                                          //             ] else if (model
-                                          //                     .purchasedPackages[
-                                          //                         index]
-                                          //                     .status ==
-                                          //                 1) ...[
-                                          //               Text(
-                                          //                   ' ${FlutterI18n.translate(context, "beginnerPartner")}',
-                                          //                   style: headText6
-                                          //                       .copyWith(
-                                          //                           fontWeight:
-                                          //                               FontWeight
-                                          //                                   .bold,
-                                          //                           color:
-                                          //                               black)),
-                                          //             ] else if (model
-                                          //                     .purchasedPackages[
-                                          //                         index]
-                                          //                     .status ==
-                                          //                 2) ...[
-                                          //               Text(
-                                          //                   ' ${FlutterI18n.translate(context, "intermediatePartner")}',
-                                          //                   style: headText6
-                                          //                       .copyWith(
-                                          //                           fontWeight:
-                                          //                               FontWeight
-                                          //                                   .bold,
-                                          //                           color:
-                                          //                               black)),
-                                          //             ] else if (model
-                                          //                     .purchasedPackages[
-                                          //                         index]
-                                          //                     .status ==
-                                          //                 3) ...[
-                                          //               Text(
-                                          //                   ' ${FlutterI18n.translate(context, "seniorPartner")}',
-                                          //                   style: headText6
-                                          //                       .copyWith(
-                                          //                           fontWeight:
-                                          //                               FontWeight
-                                          //                                   .bold,
-                                          //                           color:
-                                          //                               black)),
-                                          //             ]
-                                          //           ],
-                                          //         ),
-                                          //       )
-                                          //     :
-
-                                          //     Container(),
+                                          model.purchasedPackages[index].txid
+                                                  .isNotEmpty
+                                              ? Container(
+                                                  padding: const EdgeInsets
+                                                      .symmetric(vertical: 5.0),
+                                                  child: Column(
+                                                    children: [
+                                                      Text(
+                                                        model.storageService
+                                                                    .language ==
+                                                                'en'
+                                                            ? model
+                                                                .purchasedPackages[
+                                                                    index]
+                                                                .project
+                                                                .name
+                                                                .en
+                                                            : model
+                                                                .purchasedPackages[
+                                                                    index]
+                                                                .project
+                                                                .name
+                                                                .sc,
+                                                        style: headText4,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                )
+                                              : Container(),
                                           // id
                                           Row(
                                             children: [
@@ -188,7 +200,8 @@ class PurchasedPackageView extends StatelessWidget {
                                       ),
                                     ),
                                     trailing: Container(
-                                        margin: EdgeInsets.only(left: 10),
+                                        margin: EdgeInsets.only(
+                                            left: 10, right: 10),
                                         child: Column(
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
