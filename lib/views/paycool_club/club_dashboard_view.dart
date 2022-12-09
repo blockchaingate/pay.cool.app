@@ -20,6 +20,8 @@ import 'package:stacked/stacked.dart';
 import '../../constants/colors.dart';
 import 'dart:math' as math;
 
+import 'referral/referral_model.dart';
+
 class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   _SliverAppBarDelegate({
     @required this.minHeight,
@@ -778,12 +780,28 @@ class ClubDashboardView extends StatelessWidget {
                                                     ),
 
                                                     InkWell(
-                                                      onTap: () => model
-                                                          .navigationService
-                                                          .navigateTo(
-                                                              referralViewRoute,
-                                                              arguments: model
-                                                                  .joinedProjects),
+                                                      onTap: () {
+                                                        if (model.joinedProjects
+                                                                .length ==
+                                                            1) {
+                                                          model
+                                                              .navigationService
+                                                              .navigateTo(
+                                                                  referralDetailsViewRoute,
+                                                                  arguments:
+                                                                      ReferalRoute(
+                                                                    project: model
+                                                                        .joinedProjects[0],
+                                                                  ));
+                                                        } else {
+                                                          model
+                                                              .navigationService
+                                                              .navigateTo(
+                                                                  referralViewRoute,
+                                                                  arguments: model
+                                                                      .joinedProjects);
+                                                        }
+                                                      },
                                                       child: ListTile(
                                                         horizontalTitleGap: 0,
                                                         leading: Image.asset(

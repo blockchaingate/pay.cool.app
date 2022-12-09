@@ -81,7 +81,8 @@ class ReferralViewmodel extends BaseViewModel {
     }
     debugPrint('idReferralsMap $idReferralsMap');
 
-    if (referalRoute.address != null) {
+    if (referalRoute.address != null ||
+        (referalRoute.project != null && referalRoute.project.id == 0)) {
       _totalReferrals = referalRoute.project.id != 0
           ? await payCoolClubService.getUserReferralCount(addressUsed,
               isProject: true, projectId: referalRoute.project.id)
@@ -90,7 +91,8 @@ class ReferralViewmodel extends BaseViewModel {
           (_totalReferrals / paginationModel.pageSize).ceil();
       paginationModel.pages = [];
       referalRoute.referrals = idReferralsMap[referalRoute.project.id];
-      paginationModel.pages.addAll(referalRoute.referrals);
+      if (referalRoute.referrals != null)
+        paginationModel.pages.addAll(referalRoute.referrals);
       log.i('paginationModel ${paginationModel.toString()}');
     }
     //await getDownlineCount();
