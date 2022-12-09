@@ -129,18 +129,21 @@ class Summary {
 }
 
 class Project {
+  int id;
   String en;
   String sc;
 
-  Project({this.en, this.sc});
+  Project({this.en, this.sc, this.id});
 
   Project.fromJson(Map<String, dynamic> json) {
+    id = int.parse(json['id'].toString());
     en = json['en'];
     sc = json['sc'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
     data['en'] = en;
     data['sc'] = sc;
     return data;

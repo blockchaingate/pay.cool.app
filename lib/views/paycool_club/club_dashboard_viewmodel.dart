@@ -87,7 +87,7 @@ class ClubDashboardViewModel extends BaseViewModel {
   bool isAcceptingMembers = false;
   int projectIndex = 0;
   int purchasedPackagesCount = 0;
-  int joinedProjectCount = 0;
+  List<Project> joinedProjects = [];
   Map<String, Decimal> rewardTokenPriceMap = {};
 
   void init() async {
@@ -878,7 +878,7 @@ class ClubDashboardViewModel extends BaseViewModel {
   jp() {
     for (var summary in dashboardSummary.summary) {
       if (summary.status != 0) {
-        joinedProjectCount++;
+        joinedProjects.add(summary.project);
       }
     }
   }

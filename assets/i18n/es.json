@@ -473,6 +473,7 @@
     "merchantNode" : "Nodo mercantil",
     "exchangeBalance" : "Saldo de la balanza de pagos",
     "newAccountCreated": "Cuenta Pay.cool creada con éxito.",
+    "waitForNewAccountSetUp": "Please wait for few moments as we are setting up your Pay.cool account",
     "newAccountNote": "Puedes disfrutar de recompensas de pago, así como participar en los proyectos del club.",
     "description" : "Descripción",
     "name": "Nombre",

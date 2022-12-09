@@ -41,11 +41,22 @@ AppBar customAppBarWithTitle(String title, {Color color = primaryColor}) =>
       centerTitle: true,
     );
 
-AppBar customAppBarWithTitleNB(String title) => AppBar(
+AppBar customAppBarWithTitleNB(String title, {String subTitle = ''}) => AppBar(
       iconTheme: const IconThemeData(color: black),
-      title: Text(
-        title,
-        style: headText3.copyWith(color: black),
+      title: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            title,
+            style: headText3.copyWith(color: black),
+          ),
+          subTitle.isEmpty
+              ? Container()
+              : Text(
+                  subTitle,
+                  style: headText4.copyWith(color: black),
+                ),
+        ],
       ),
       automaticallyImplyLeading: true,
       backgroundColor: Colors.transparent,
@@ -131,11 +142,13 @@ Decoration rectangularGradientBoxDecoration(
   );
 }
 
-Decoration roundedBoxDecoration({Color color = primaryColor}) {
+Decoration roundedBoxDecoration(
+    {Color color = primaryColor, double radius = 25.0}) {
   return BoxDecoration(
-    color: color,
-    borderRadius: const BorderRadius.all(Radius.circular(25)),
-  );
+      color: color,
+      borderRadius: BorderRadius.all(
+        Radius.circular(radius),
+      ));
 }
 
 Decoration roundedTopLeftRightBoxDecoration({Color color = primaryColor}) {

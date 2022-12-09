@@ -606,7 +606,8 @@ class ClubDashboardView extends StatelessWidget {
                                                                 .horizontalSpaceSmall,
                                                             Text(
                                                               model
-                                                                  .joinedProjectCount
+                                                                  .joinedProjects
+                                                                  .length
                                                                   .toString(),
                                                               style: headText5,
                                                             ),
@@ -722,7 +723,7 @@ class ClubDashboardView extends StatelessWidget {
                                                                               Text(
                                                                                   'FET'
                                                                                           ' ' +
-                                                                                      model.dashboardSummary.totalFabRewards()["FET"].toString(),
+                                                                                      NumberUtil.decimalLimiter(model.dashboardSummary.totalFabRewards()["FET"], decimalPrecision: 8).toString(),
                                                                                   style: headText5),
                                                                               Text('  \$${NumberUtil.decimalLimiter(model.dashboardSummary.totalFabRewards()["FET"] * model.rewardTokenPriceMap['FET'])}', maxLines: 2, style: headText5.copyWith(color: green, fontWeight: FontWeight.bold))
                                                                             ],
@@ -746,7 +747,7 @@ class ClubDashboardView extends StatelessWidget {
                                                                             Text(
                                                                                 'FETDUSD-LP'
                                                                                         ' ' +
-                                                                                    model.dashboardSummary.totalFabRewards()["FETLP"].toString(),
+                                                                                    NumberUtil.decimalLimiter(model.dashboardSummary.totalFabRewards()["FETLP"], decimalPrecision: 8).toString(),
                                                                                 style: headText5),
                                                                             Text('  \$${NumberUtil.decimalLimiter(model.dashboardSummary.totalFabRewards()["FETLP"] * model.rewardTokenPriceMap['FETDUSD-LP'])}',
                                                                                 maxLines: 2,
@@ -780,7 +781,9 @@ class ClubDashboardView extends StatelessWidget {
                                                       onTap: () => model
                                                           .navigationService
                                                           .navigateTo(
-                                                              PayCoolClubReferralViewRoute),
+                                                              referralViewRoute,
+                                                              arguments: model
+                                                                  .joinedProjects),
                                                       child: ListTile(
                                                         horizontalTitleGap: 0,
                                                         leading: Image.asset(

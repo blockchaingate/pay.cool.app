@@ -296,10 +296,15 @@ class PayCoolViewmodel extends FutureViewModel {
           await paycoolService.signSendTx(seed, abiHex, paycoolReferralAddress);
 
       if (res != null && res != '') {
-        sharedService.alertDialog(
-            FlutterI18n.translate(context, "newAccountCreated"),
-            FlutterI18n.translate(context, "newAccountNote"),
-            path: PayCoolViewRoute);
+        if (res == '0x1') {
+          sharedService.alertDialog(
+              FlutterI18n.translate(context, "newAccountCreated"),
+              '${FlutterI18n.translate(context, "newAccountNote")} ${FlutterI18n.translate(context, "waitForNewAccountSetUp")}',
+              path: PayCoolViewRoute);
+        } else if (res == '0x0') {
+          sharedService.sharedSimpleNotification(
+              FlutterI18n.translate(context, "failed"));
+        }
       } else {
         sharedService
             .sharedSimpleNotification(FlutterI18n.translate(context, "failed"));

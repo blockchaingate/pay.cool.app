@@ -59,6 +59,11 @@ class StringUtils {
     debugPrint('String util- hex to ascii res $res');
     return res;
   }
+
+  static String showPartialAddress(
+      {String address, int startLimit = 6, int endLimit = 6}) {
+    return '${address.substring(0, startLimit)}...${address.substring(address.length - endLimit)}';
+  }
 }
 
 String getLast64CharAbiHex(String abiHex) {

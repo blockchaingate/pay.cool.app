@@ -19,9 +19,10 @@ import 'package:paycool/views/paycool_club/club_projects/club_project_details_vi
 import 'package:paycool/widgets/club/club_rewards_view.dart';
 import 'constants/route_names.dart';
 import 'views/lightning-remit/lightning-remit_view.dart';
+import 'views/paycool_club/referral/referral_view.dart';
 import 'views/settings/settings_view.dart';
 import 'views/paycool_club/join_club/join_paycool_club_view.dart';
-import 'views/paycool_club/referral/paycool_referral_view.dart';
+import 'views/paycool_club/referral/referral_details_view.dart';
 import 'views/paycool_club/club_dashboard_view.dart';
 import 'views/paycool/rewards/paycool_rewards_view.dart';
 import 'views/paycool/paycool_view.dart';
@@ -136,10 +137,16 @@ class RouteGenerator {
             settings: const RouteSettings(name: 'PayCoolClubDashboardView'),
             builder: (_) => const ClubDashboardView());
 
-      case PayCoolClubReferralViewRoute:
+      case referralViewRoute:
         return MaterialPageRoute(
-            builder: (_) => PaycoolReferralView(
-                  address: args,
+            builder: (_) => ReferralView(
+                  projects: args,
+                ));
+
+      case referralDetailsViewRoute:
+        return MaterialPageRoute(
+            builder: (_) => PaycoolReferralDetailsView(
+                  referalRoute: args,
                 ));
       case clubRewardsViewRoute:
         return MaterialPageRoute(

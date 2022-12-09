@@ -2,6 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:paycool/utils/paycool_util.dart';
+import 'package:paycool/utils/string_util.dart';
+import 'package:paycool/views/paycool_club/referral/referral_model.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
@@ -9,96 +12,44 @@ import 'package:paycool/constants/route_names.dart';
 import 'package:paycool/widgets/pagination/pagination_widget.dart';
 
 import 'package:stacked/stacked.dart';
-import 'package:paycool/views/paycool_club/referral/paycool_referral_viewmodel.dart';
+import 'package:paycool/views/paycool_club/referral/referral_viewmodel.dart';
 
-class PaycoolReferralView extends StatelessWidget {
-  final String address;
-  const PaycoolReferralView({Key key, this.address}) : super(key: key);
+class PaycoolReferralDetailsView extends StatelessWidget {
+  final ReferalRoute referalRoute;
+  const PaycoolReferralDetailsView({Key key, this.referalRoute})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return ViewModelBuilder<PaycoolReferralViewmodel>.reactive(
-      viewModelBuilder: () => PaycoolReferralViewmodel(),
-      onModelReady: (PaycoolReferralViewmodel model) {
-        model.address = address ?? '';
+    return ViewModelBuilder<ReferralViewmodel>.reactive(
+      viewModelBuilder: () => ReferralViewmodel(),
+      onModelReady: (ReferralViewmodel model) {
         model.context = context;
+        model.referalRoute = referalRoute;
         model.init();
       },
       builder: (context, model, _) => Scaffold(
           appBar: customAppBarWithTitleNB(
-              FlutterI18n.translate(context, "referrals")),
+              '${model.referalRoute.address != null ? StringUtils.showPartialAddress(address: model.referalRoute.address) : PaycoolUtil.localizedProjectData(model.referalRoute.project)} - ${FlutterI18n.translate(context, "referrals")}',
+              subTitle: referalRoute.address == null
+                  ? ''
+                  : PaycoolUtil.localizedProjectData(referalRoute.project)),
           body: model.isBusy
               ? SizedBox(
                   height: 500,
                   child: Center(child: model.sharedService.loadingIndicator()))
-              : DefaultTabController(
-                  length: 2,
-                  initialIndex: model.currentTabSelection,
-                  child: NestedScrollView(
-                    headerSliverBuilder:
-                        (BuildContext context, bool innerBoxIsScrolled) {
-                      return <Widget>[
-                        SliverPersistentHeader(
-                            pinned: true,
-                            delegate: _SliverAppBarDelegate(
-                              TabBar(
-                                  // labelPadding: EdgeInsets.only(bottom: 14, top: 14),
-
-                                  onTap: (int tabIndex) {
-                                    model.updateTabSelection(tabIndex);
-                                  },
-                                  labelColor: primaryColor,
-                                  unselectedLabelColor: grey,
-                                  indicatorColor: primaryColor,
-                                  indicatorSize: TabBarIndicatorSize.tab,
-                                  tabs: [
-                                    Tab(
-                                      text: FlutterI18n.translate(
-                                          context, "appTitle"),
-
-                                      // child: Text(
-                                      //     model.walletInfoCopy.length.toString(),
-                                      //     style: TextStyle(fontSize: 10, color: grey))
-                                    ),
-                                    Tab(
-                                      text: FlutterI18n.translate(
-                                          context, "metaforce"),
-
-                                      // child: Text(
-                                      //     model.favWalletInfoList.length.toString(),
-                                      //     style: TextStyle(fontSize: 10, color: grey)),
-                                    )
-                                  ]),
-                            ))
-                      ];
-                    },
-                    body: TabBarView(children: [
-                      model.referrals == null || model.referrals.isEmpty
-                          ? SizedBox(
-                              height: 400,
-                              child: Center(
-                                child: Text(
-                                    FlutterI18n.translate(
-                                        context, "noReferralsYet"),
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.bold)),
-                              ),
-                            )
-                          : referralMethod(model),
-                      model.referrals == null || model.referrals.isEmpty
-                          ? SizedBox(
-                              height: 400,
-                              child: Center(
-                                child: Text(
-                                    FlutterI18n.translate(
-                                        context, "noReferralsYet"),
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.bold)),
-                              ),
-                            )
-                          : referralMethod(model)
-                    ]),
-                  )),
+              : model.referalRoute.referrals == null ||
+                      model.referalRoute.referrals.isEmpty
+                  ? SizedBox(
+                      height: 400,
+                      child: Center(
+                        child: Text(
+                            FlutterI18n.translate(context, "noReferralsYet"),
+                            style:
+                                const TextStyle(fontWeight: FontWeight.bold)),
+                      ),
+                    )
+                  : referralMethod(model),
           floatingActionButtonLocation:
               FloatingActionButtonLocation.centerDocked,
           floatingActionButton: model.paginationModel.pages.isEmpty
@@ -110,7 +61,7 @@ class PaycoolReferralView extends StatelessWidget {
     );
   }
 
-  Container referralMethod(PaycoolReferralViewmodel model) {
+  Container referralMethod(ReferralViewmodel model) {
     return Container(
       decoration: const BoxDecoration(
         color: white,
@@ -123,7 +74,7 @@ class PaycoolReferralView extends StatelessWidget {
           Expanded(
             child: ListView.builder(
               shrinkWrap: true,
-              itemCount: model.referrals.length,
+              itemCount: model.referalRoute.referrals.length,
               itemBuilder: (BuildContext context, int index) {
                 int i = index + 1;
                 return Container(
@@ -133,12 +84,12 @@ class PaycoolReferralView extends StatelessWidget {
                   )),
                   child: ListTile(
                     onTap: () {
-                      if (int.parse(model.referrals[index].count) > 0 &&
-                          model.currentTabSelection != 1) {
-                        model.navigationService.navigateTo(
-                            PayCoolClubReferralViewRoute,
-                            arguments: model.referrals[index].userAddress);
-                      }
+                      model.navigationService.navigateTo(
+                          referralDetailsViewRoute,
+                          arguments: ReferalRoute(
+                              project: model.referalRoute.project,
+                              address: model
+                                  .referalRoute.referrals[index].userAddress));
                     },
                     leading: Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -154,47 +105,53 @@ class PaycoolReferralView extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          model.referrals[index].count.isNotEmpty
+                          model.referalRoute.referrals[index].count.isNotEmpty
                               ? Container(
                                   color: primaryColor.withAlpha(120),
                                   padding: const EdgeInsets.all(4.0),
                                   child: Column(children: [
-                                    if (model.referrals[index].status ==
+                                    if (model.referalRoute.referrals[index]
+                                            .status ==
                                         -1) ...[
                                       Text(
                                           ' ${FlutterI18n.translate(context, "noPartner")}',
                                           style: headText6.copyWith(
                                               fontWeight: FontWeight.bold,
                                               color: white)),
-                                    ] else if (model.referrals[index].status ==
+                                    ] else if (model.referalRoute
+                                            .referrals[index].status ==
                                         0) ...[
                                       Text(
                                           ' ${FlutterI18n.translate(context, "noPartner")}',
                                           style: headText6.copyWith(
                                               fontWeight: FontWeight.bold,
                                               color: white)),
-                                    ] else if (model.referrals[index].status ==
+                                    ] else if (model.referalRoute
+                                            .referrals[index].status ==
                                         1) ...[
                                       Text(
                                           ' ${FlutterI18n.translate(context, "basicPartner")}',
                                           style: headText6.copyWith(
                                               fontWeight: FontWeight.bold,
                                               color: white)),
-                                    ] else if (model.referrals[index].status ==
+                                    ] else if (model.referalRoute
+                                            .referrals[index].status ==
                                         2) ...[
                                       Text(
                                           ' ${FlutterI18n.translate(context, "juniorPartner")}',
                                           style: headText6.copyWith(
                                               fontWeight: FontWeight.bold,
                                               color: white)),
-                                    ] else if (model.referrals[index].status ==
+                                    ] else if (model.referalRoute
+                                            .referrals[index].status ==
                                         3) ...[
                                       Text(
                                           ' ${FlutterI18n.translate(context, "seniorPartner")}',
                                           style: headText6.copyWith(
                                               fontWeight: FontWeight.bold,
                                               color: white)),
-                                    ] else if (model.referrals[index].status ==
+                                    ] else if (model.referalRoute
+                                            .referrals[index].status ==
                                         4) ...[
                                       Text(
                                           ' ${FlutterI18n.translate(context, "executivePartner")}',
@@ -225,7 +182,8 @@ class PaycoolReferralView extends StatelessWidget {
                                   padding:
                                       const EdgeInsets.symmetric(vertical: 4),
                                   child: Text(
-                                    model.referrals[index].userAddress,
+                                    model.referalRoute.referrals[index]
+                                        .userAddress,
                                     style: headText5.copyWith(
                                       decoration: TextDecoration.underline,
                                       color: primaryColor,
@@ -241,7 +199,8 @@ class PaycoolReferralView extends StatelessWidget {
                           Text(
                               FlutterI18n.translate(context, "referralCount") +
                                   ' ' +
-                                  model.referrals[index].count.toString(),
+                                  model.referalRoute.referrals[index].count
+                                      .toString(),
                               style: headText5.copyWith(color: black)),
                         ],
                       ),
@@ -258,8 +217,10 @@ class PaycoolReferralView extends StatelessWidget {
                               size: 14,
                             ),
                             onPressed: () {
-                              model.sharedService.copyAddress(context,
-                                  model.referrals[index].userAddress)();
+                              model.sharedService.copyAddress(
+                                  context,
+                                  model.referalRoute.referrals[index]
+                                      .userAddress)();
                             }),
                         CupertinoButton(
                             child: const Icon(
@@ -272,8 +233,10 @@ class PaycoolReferralView extends StatelessWidget {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => DisplayQrCode(
-                                          model.referrals[index].userAddress)));
+                                      builder: (context) => DisplayQrCode(model
+                                          .referalRoute
+                                          .referrals[index]
+                                          .userAddress)));
                             }),
                       ],
                     )),
@@ -323,30 +286,5 @@ class DisplayQrCode extends StatelessWidget {
         ),
       ),
     );
-  }
-}
-
-class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
-  _SliverAppBarDelegate(this._tabBar);
-
-  final TabBar _tabBar;
-
-  @override
-  double get minExtent => _tabBar.preferredSize.height;
-  @override
-  double get maxExtent => _tabBar.preferredSize.height;
-
-  @override
-  Widget build(
-      BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return Container(
-      child: _tabBar,
-      color: secondaryColor,
-    );
-  }
-
-  @override
-  bool shouldRebuild(_SliverAppBarDelegate oldDelegate) {
-    return false;
   }
 }

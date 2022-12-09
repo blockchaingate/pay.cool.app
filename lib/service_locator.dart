@@ -32,7 +32,7 @@ import 'services/wallet_service.dart';
 import 'views/lightning-remit/lightening_remit_viewmodel.dart';
 import 'views/settings/settings_viewmodel.dart';
 import 'views/paycool_club/join_club/join_paycool_club_viewmodel.dart';
-import 'views/paycool_club/referral/paycool_referral_viewmodel.dart';
+import 'views/paycool_club/referral/referral_viewmodel.dart';
 import 'views/paycool_club/club_dashboard_viewmodel.dart';
 import 'views/paycool_club/paycool_club_service.dart';
 import 'views/paycool/rewards/paycool_rewards_viewmodel.dart';
@@ -111,7 +111,7 @@ Future serviceLocator() async {
   // Pay.cool Club
   locator.registerFactory(() => ClubDashboardViewModel());
   locator.registerFactory(() => JoinPayCoolClubViewModel());
-  locator.registerFactory(() => PaycoolReferralViewmodel());
+  locator.registerFactory(() => ReferralViewmodel());
 
   // Campaign
   // locator.registerFactory(() => CampaignInstructionsScreenState());

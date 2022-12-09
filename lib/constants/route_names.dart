@@ -28,11 +28,11 @@ const String TransactionHistoryViewRoute = '/transactionHistory';
 
 const String GenerateCustomQrViewRoute = '/generateCustomQrCode';
 const String JoinPayCoolClubViewRoute = '/joinPayCoolClub';
-const String PayCoolClubReferralViewRoute = '/payCoolClubReferral';
+const String referralDetailsViewRoute = '/payCoolClubReferral';
 const String clubRewardsViewRoute = '/clubRewards';
 const String clubProjectDetailsViewRoute = '/clubProjectDetails';
 const String clubPackageCheckoutViewRoute = '/clubPackageCheckout';
-
+const String referralViewRoute = '/referral';
 // Pay.cool Routes
 const String PayCoolViewRoute = '/paycool';
 const String PayCoolRewardsViewRoute = '/payCoolRewards';
@@ -50,7 +50,7 @@ const String SettingViewRoute = '/settings';
 /*----------------------------------------------------------------------
                       Campaign Routes
 ----------------------------------------------------------------------*/
-const String ReferralViewRoute = '/referral';
+
 const String PayCoolClubDashboardViewRoute = '/campaignListDashboard';
 
 const String LoginViewRoute = '/login';

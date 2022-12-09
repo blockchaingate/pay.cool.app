@@ -84,7 +84,7 @@ class PayCoolView extends StatelessWidget {
                         ? const ServerErrorWidget()
                         : model.isBusy && !model.isPaying
                             ? Padding(
-                                padding: const EdgeInsets.only(top: 20.0),
+                                padding: const EdgeInsets.only(top: 30.0),
                                 child: model.sharedService.loadingIndicator(),
                               )
                             : !model.isMember
@@ -107,53 +107,58 @@ class PayCoolView extends StatelessWidget {
                                           // Referral Code textfield
 
                                           UIHelper.verticalSpaceSmall,
-                                          TextField(
-                                              keyboardType: TextInputType.text,
-                                              decoration: InputDecoration(
-                                                  prefixIcon: IconButton(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              left: 10),
-                                                      alignment:
-                                                          Alignment.centerLeft,
-                                                      tooltip: FlutterI18n.translate(
-                                                          context, "scanBarCode"),
-                                                      icon: const Icon(
-                                                        Icons.camera_alt,
-                                                        color: primaryColor,
-                                                        size: 18,
-                                                      ),
-                                                      onPressed: () {
-                                                        model.scanBarcodeV2(
+                                          Container(
+                                            margin: EdgeInsets.all(10),
+                                            child: TextField(
+                                                keyboardType:
+                                                    TextInputType.text,
+                                                decoration: InputDecoration(
+                                                    prefixIcon: IconButton(
+                                                        padding:
+                                                            const EdgeInsets.only(
+                                                                left: 15),
+                                                        alignment: Alignment
+                                                            .centerLeft,
+                                                        tooltip: FlutterI18n.translate(
+                                                            context, "scanBarCode"),
+                                                        icon: const Icon(
+                                                          Icons.camera_alt,
+                                                          color: primaryColor,
+                                                          size: 22,
+                                                        ),
+                                                        onPressed: () {
+                                                          model.scanBarcodeV2(
+                                                              addressType: Constants
+                                                                  .ReferralAddressText);
+                                                          FocusScope.of(context)
+                                                              .requestFocus(
+                                                                  FocusNode());
+                                                        }),
+                                                    suffixIcon: IconButton(
+                                                        padding:
+                                                            EdgeInsets.zero,
+                                                        icon: const Icon(
+                                                          Icons.content_paste,
+                                                          color: green,
+                                                          size: 22,
+                                                        ),
+                                                        onPressed: () => model.contentPaste(
                                                             addressType: Constants
-                                                                .ReferralAddressText);
-                                                        FocusScope.of(context)
-                                                            .requestFocus(
-                                                                FocusNode());
-                                                      }),
-                                                  suffixIcon: IconButton(
-                                                      padding: EdgeInsets.zero,
-                                                      icon: const Icon(
-                                                        Icons.content_paste,
-                                                        color: green,
-                                                        size: 18,
-                                                      ),
-                                                      onPressed: () => model.contentPaste(
-                                                          addressType: Constants
-                                                              .ReferralAddressText)),
-                                                  focusedBorder: const UnderlineInputBorder(
-                                                      borderSide: BorderSide(
-                                                          color: primaryColor,
-                                                          width: 0.5)),
-                                                  enabledBorder: const OutlineInputBorder(
-                                                      borderSide: BorderSide(
-                                                          color: primaryColor,
-                                                          width: 0.5)),
-                                                  hintText: FlutterI18n.translate(
-                                                      context, "referralCode"),
-                                                  hintStyle: headText5),
-                                              controller: model.referralController,
-                                              style: headText5.copyWith(fontWeight: FontWeight.bold)),
+                                                                .ReferralAddressText)),
+                                                    focusedBorder: const UnderlineInputBorder(
+                                                        borderSide: BorderSide(
+                                                            color: primaryColor,
+                                                            width: 0.5)),
+                                                    enabledBorder:
+                                                        const OutlineInputBorder(
+                                                            borderSide: BorderSide(
+                                                                color: primaryColor,
+                                                                width: 0.5)),
+                                                    hintText: FlutterI18n.translate(context, "referralCode"),
+                                                    hintStyle: headText4),
+                                                controller: model.referralController,
+                                                style: headText4.copyWith(fontWeight: FontWeight.bold)),
+                                          ),
                                           model.apiRes != null && !model.isBusy
                                               ? Column(children: [
                                                   UIHelper.verticalSpaceMedium,
@@ -198,12 +203,14 @@ class PayCoolView extends StatelessWidget {
                                           UIHelper.verticalSpaceSmall,
                                           UIHelper.verticalSpaceSmall,
                                           Container(
+                                              margin: EdgeInsets.all(10),
                                               child: Center(
-                                            child: Text(
-                                                FlutterI18n.translate(
-                                                    context, "joinPaycoolNote"),
-                                                style: headText5),
-                                          )),
+                                                child: Text(
+                                                    FlutterI18n.translate(
+                                                        context,
+                                                        "joinPaycoolNote"),
+                                                    style: headText5),
+                                              )),
                                           UIHelper.verticalSpaceSmall,
                                         ]))
                                 : Container(

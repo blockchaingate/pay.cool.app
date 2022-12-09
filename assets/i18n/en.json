@@ -476,6 +476,7 @@
     "exchangeBalance" : "Exchange Balance",
     "newAccountCreated": "Pay.cool account created successfully",
     "newAccountNote": "You can enjoy payment rewards as well participate in club projects.",
+    "waitForNewAccountSetUp": "Please wait for few moments as we are setting up your Pay.cool account",
     "description" : "Description",
     "name": "Name",
     "checkout": "Checkout",

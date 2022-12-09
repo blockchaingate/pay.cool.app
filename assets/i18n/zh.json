@@ -473,6 +473,7 @@
     "exchangeBalance": "兑换余额",
     "newAccountCreated": "Pay.cool账户创建成功",
     "newAccountNote": "你可以享受付款奖励，也可以参与俱乐部项目。",
+    "waitForNewAccountSetUp": "我们正在为你设置贝库账户,请稍等片刻.",
     "description": "描述",
     "name": "命名",
     "checkout": "结账",

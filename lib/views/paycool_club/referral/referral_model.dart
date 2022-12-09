@@ -92,6 +92,16 @@
 //   }
 // }
 
+import 'package:paycool/views/paycool_club/club_dashboard_model.dart';
+
+class ReferalRoute {
+  Project project;
+  String address;
+  List<PaycoolReferral> referrals;
+
+  ReferalRoute({this.project, this.address, this.referrals});
+}
+
 class PaycoolReferral {
   String count;
   String userAddress;
