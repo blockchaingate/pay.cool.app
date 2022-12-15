@@ -609,9 +609,9 @@ class PayCoolView extends StatelessWidget {
                                                               .center,
                                                       children: [
                                                         // merchant name
-                                                        model.merchangeModel !=
+                                                        model.merchantModel !=
                                                                     null &&
-                                                                model.merchangeModel
+                                                                model.merchantModel
                                                                         .name !=
                                                                     null
                                                             ? Container(
@@ -645,15 +645,15 @@ class PayCoolView extends StatelessWidget {
                                                                           mainAxisAlignment:
                                                                               MainAxisAlignment.end,
                                                                           children: [
-                                                                            model.merchangeModel.image != null
+                                                                            model.merchantModel.image != null
                                                                                 ? Image.network(
-                                                                                    model.merchangeModel.image,
+                                                                                    model.merchantModel.image,
                                                                                     width: 20,
                                                                                     height: 20,
                                                                                   )
                                                                                 : Container(),
                                                                             UIHelper.horizontalSpaceSmall,
-                                                                            Text(model.storageService.language == "en" ? model.merchangeModel.name.en : model.merchangeModel.name.sc,
+                                                                            Text(model.storageService.language == "en" ? model.merchantModel.name.en : model.merchantModel.name.sc,
                                                                                 textAlign: TextAlign.right,
                                                                                 style: headText5.copyWith(fontWeight: FontWeight.bold)),
                                                                             // TextButton(
@@ -917,7 +917,7 @@ class PayCoolView extends StatelessWidget {
                                                                 Expanded(
                                                                   flex: 2,
                                                                   child: Text(
-                                                                      '${model.rewardInfoModel.getTotalRewards.toString()} ${model.merchangeModel.rewardCoin}',
+                                                                      '${model.rewardInfoModel.getTotalRewards.toString()} ${model.merchantModel.rewardCoin}',
                                                                       textAlign:
                                                                           TextAlign
                                                                               .right,

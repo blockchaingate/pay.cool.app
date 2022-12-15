@@ -109,7 +109,7 @@ class PayCoolViewmodel extends FutureViewModel {
   var fabUtils = FabUtils();
   PaymentRewardsModel rewardInfoModel = PaymentRewardsModel();
   String orderId = '';
-  MerchantModel merchangeModel = MerchantModel();
+  MerchantModel merchantModel = MerchantModel();
   String orderIdFromCreateStoreOrder = '';
   bool isScanningImage = false;
   bool isServerDown = false;
@@ -320,7 +320,7 @@ class PayCoolViewmodel extends FutureViewModel {
   makePayment() async {
     setBusy(true);
     isPaying = true;
-    if (merchangeModel.status == 0) {
+    if (merchantModel.status == 0) {
       sharedService.sharedSimpleNotification(
           FlutterI18n.translate(context, "storeNotApproved"));
       isPaying = false;
@@ -806,14 +806,14 @@ class PayCoolViewmodel extends FutureViewModel {
       "items": [
         {
           "title": memo,
-          "rebateRate": merchangeModel.rebateRate,
+          "rebateRate": merchantModel.rebateRate,
           "taxRate": 0,
-          "lockedDays": merchangeModel.lockedDays,
+          "lockedDays": merchantModel.lockedDays,
           "price": amount,
           "quantity": 1
         }
       ],
-      "merchantId": merchangeModel.sId,
+      "merchantId": merchantModel.sId,
     };
 
     return body;
@@ -1201,7 +1201,7 @@ class PayCoolViewmodel extends FutureViewModel {
       invalidScanData(err);
     });
 
-    merchangeModel =
+    merchantModel =
         await paycoolService.getMerchantInfo(rewardInfoModel.merchantId);
     coinPayable = newCoinTypeMap[rewardInfoModel.paidCoin];
     final v =
@@ -1251,7 +1251,7 @@ class PayCoolViewmodel extends FutureViewModel {
   resetVariables() {
     payOrder = PayOrder();
     rewardInfoModel = PaymentRewardsModel();
-    merchangeModel = MerchantModel();
+    merchantModel = MerchantModel();
     amountPayable = Constants.decimalZero;
     taxAmount = Constants.decimalZero;
     coinPayable = '';
