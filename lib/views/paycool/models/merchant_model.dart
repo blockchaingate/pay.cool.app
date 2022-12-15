@@ -1,7 +1,9 @@
-class StoreMerchantModel {
+import 'package:paycool/views/paycool/models/localization_model.dart';
+
+class MerchantModel {
   String sId;
   int status;
-  Name name;
+  LocalizationModel name;
   String phone;
   int version;
   int lockedDays;
@@ -9,17 +11,18 @@ class StoreMerchantModel {
   String openTime;
   String closeTime;
   String coin;
-  int giveAwayRate;
+  int rebateRate;
   int taxRate;
   String refAddress;
   String image;
   String feeChargerSmartContractAddress;
   String owner;
-  String objectId;
+  String id;
   bool hideOnStore;
-  Merchant merchant;
+  String rewardCoin;
+  //Merchant merchant;
 
-  StoreMerchantModel(
+  MerchantModel(
       {this.sId,
       this.status,
       this.name,
@@ -30,20 +33,23 @@ class StoreMerchantModel {
       this.openTime,
       this.closeTime,
       this.coin,
-      this.giveAwayRate,
+      this.rebateRate,
       this.taxRate,
       this.refAddress,
       this.image,
       this.feeChargerSmartContractAddress,
       this.owner,
-      this.objectId,
+      this.id,
       this.hideOnStore,
-      this.merchant});
+      this.rewardCoin
+      // this.merchant
+      });
 
-  StoreMerchantModel.fromJson(Map<String, dynamic> json) {
+  MerchantModel.fromJson(Map<String, dynamic> json) {
     sId = json['_id'] ?? '';
     status = json['status'] ?? 0;
-    name = json['name'] != null ? Name.fromJson(json['name']) : null;
+    name =
+        json['name'] != null ? LocalizationModel.fromJson(json['name']) : null;
     phone = json['phone'];
     version = json['version'];
     lockedDays = json['lockedDays'];
@@ -51,16 +57,17 @@ class StoreMerchantModel {
     openTime = json['openTime'];
     closeTime = json['closeTime'];
     coin = json['coin'];
-    giveAwayRate = json['giveAwayRate'];
+    rebateRate = json['rebateRate'];
     taxRate = json['taxRate'];
     refAddress = json['refAddress'];
     image = json['image'];
     feeChargerSmartContractAddress = json['feeChargerSmartContractAddress'];
     owner = json['owner'];
-    objectId = json['objectId'];
+    id = json['id'];
     hideOnStore = json['hideOnStore'] ?? false;
-    merchant =
-        json['merchant'] != null ? Merchant.fromJson(json['merchant']) : null;
+    rewardCoin = json["rewardCoin"];
+    // merchant =
+    //     json['merchant'] != null ? Merchant.fromJson(json['merchant']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -77,36 +84,18 @@ class StoreMerchantModel {
     data['openTime'] = openTime;
     data['closeTime'] = closeTime;
     data['coin'] = coin;
-    data['giveAwayRate'] = giveAwayRate;
+    data['giveAwayRate'] = rebateRate;
     data['taxRate'] = taxRate;
     data['refAddress'] = refAddress;
     data['image'] = image;
     data['feeChargerSmartContractAddress'] = feeChargerSmartContractAddress;
     data['owner'] = owner;
-    data['objectId'] = objectId;
+    data['objectId'] = id;
     data['hideOnStore'] = hideOnStore;
-    if (merchant != null) {
-      data['merchant'] = merchant.toJson();
-    }
-    return data;
-  }
-}
-
-class Name {
-  String en;
-  String sc;
-
-  Name({this.en, this.sc});
-
-  Name.fromJson(Map<String, dynamic> json) {
-    en = json['en'];
-    sc = json['sc'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['en'] = en;
-    data['sc'] = sc;
+    data["rewardCoin"] = rewardCoin;
+    // if (merchant != null) {
+    //   data['merchant'] = merchant.toJson();
+    // }
     return data;
   }
 }
@@ -114,13 +103,13 @@ class Name {
 class Merchant {
   String sId;
   String owner;
-  Name addressLan;
-  Name businessContentsLan;
+  LocalizationModel addressLan;
+  LocalizationModel businessContentsLan;
   String closeTime;
-  Name contactNameLan;
+  LocalizationModel contactNameLan;
   String email;
   String fax;
-  Name nameLan;
+  LocalizationModel nameLan;
   String openTime;
   String phone;
   String website;
@@ -142,18 +131,21 @@ class Merchant {
   Merchant.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
     owner = json['owner'];
-    addressLan =
-        json['addressLan'] != null ? Name.fromJson(json['addressLan']) : null;
+    addressLan = json['addressLan'] != null
+        ? LocalizationModel.fromJson(json['addressLan'])
+        : null;
     businessContentsLan = json['businessContentsLan'] != null
-        ? Name.fromJson(json['businessContentsLan'])
+        ? LocalizationModel.fromJson(json['businessContentsLan'])
         : null;
     closeTime = json['closeTime'];
     contactNameLan = json['contactNameLan'] != null
-        ? Name.fromJson(json['contactNameLan'])
+        ? LocalizationModel.fromJson(json['contactNameLan'])
         : null;
     email = json['email'];
     fax = json['fax'];
-    nameLan = json['nameLan'] != null ? Name.fromJson(json['nameLan']) : null;
+    nameLan = json['nameLan'] != null
+        ? LocalizationModel.fromJson(json['nameLan'])
+        : null;
     openTime = json['openTime'];
     phone = json['phone'];
     website = json['website'];

@@ -255,6 +255,41 @@ class WalletService {
     }
     return res;
   }
+
+  storeTokenListUpdatesInDB() async {
+    debugPrint(
+        'Store token TIME START ${DateTime.now().toLocal().toIso8601String()}');
+    List existingTokensInTokenDatabase;
+    try {
+      existingTokensInTokenDatabase = await tokenListDatabaseService.getAll();
+    } catch (err) {
+      existingTokensInTokenDatabase = [];
+      log.e('getTokenList tokenListDatabaseService.getAll CATCH err $err');
+    }
+    await _apiService
+        .getTokenListUpdates()
+        .then((newTokenListFromTokenUpdateApi) async {
+      if (newTokenListFromTokenUpdateApi != null &&
+          newTokenListFromTokenUpdateApi.isNotEmpty) {
+        existingTokensInTokenDatabase ??= [];
+        if (existingTokensInTokenDatabase.length !=
+            newTokenListFromTokenUpdateApi.length) {
+          await tokenListDatabaseService.deleteDb().whenComplete(() => log.e(
+              'token list database cleared before inserting updated token data from api'));
+
+          /// Fill the token list database with new data from the api
+
+          for (var singleNewToken in newTokenListFromTokenUpdateApi) {
+            await tokenListDatabaseService.insert(singleNewToken);
+          }
+        } else {
+          log.i('storeTokenListInDB -- local token db same length as api\'s ');
+        }
+      }
+    });
+    debugPrint(
+        'Store token TIME FINISH ${DateTime.now().toLocal().toIso8601String()}');
+  }
 /*----------------------------------------------------------------------
                 Check coin wallet balance
 ----------------------------------------------------------------------*/

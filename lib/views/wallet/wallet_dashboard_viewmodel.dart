@@ -159,6 +159,9 @@ class WalletDashboardViewModel extends BaseViewModel {
 
     setBusy(false);
     await versionService.checkVersion(context, isForceUpdate: true);
+    Future.delayed(const Duration(seconds: 2), () async {
+      await walletService.storeTokenListUpdatesInDB();
+    });
   }
 
   assignDefaultWalletForIos() async {

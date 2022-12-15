@@ -37,8 +37,7 @@ import 'package:paycool/utils/abi_util.dart';
 import 'package:paycool/utils/barcode_util.dart';
 import 'package:paycool/utils/fab_util.dart';
 import 'package:paycool/views/paycool_club/paycool_club_service.dart';
-import 'package:paycool/views/paycool/models/paycool_store_model.dart';
-import 'package:paycool/views/paycool/models/store_and_merchant_model.dart';
+import 'package:paycool/views/paycool/models/merchant_model.dart';
 import 'package:paycool/views/paycool/paycool_service.dart';
 import 'package:share/share.dart';
 import 'package:stacked/stacked.dart';
@@ -102,7 +101,7 @@ class PayCoolViewmodel extends FutureViewModel {
 
   List<ExchangeBalanceModel> exchangeBalances = [];
   //var decodedData;
-  StoreInfoModel storeInfoModel = StoreInfoModel();
+
   String lang = '';
   bool isPaying = false;
   // final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -110,7 +109,7 @@ class PayCoolViewmodel extends FutureViewModel {
   var fabUtils = FabUtils();
   PaymentRewardsModel rewardInfoModel = PaymentRewardsModel();
   String orderId = '';
-  StoreMerchantModel storeMerchangeModel = StoreMerchantModel();
+  MerchantModel merchangeModel = MerchantModel();
   String orderIdFromCreateStoreOrder = '';
   bool isScanningImage = false;
   bool isServerDown = false;
@@ -156,16 +155,16 @@ class PayCoolViewmodel extends FutureViewModel {
     data.forEach((ExchangeBalanceModel wallet) async {
       log.w('onData func - ${wallet.toJson().toString()}');
       if (wallet.ticker.isEmpty) {
-        tokenListDatabaseService
-            .getTickerNameByCoinType(wallet.coinType)
-            .then((ticker) {
+        await coinService
+            .getSingleTokenData('', coinType: wallet.coinType)
+            .then((token) {
           //storageService.tokenList.forEach((newToken){
-          debugPrint(ticker);
+          debugPrint(token.toJson().toString());
           // var json = jsonDecode(newToken);
           // Token token = Token.fromJson(json);
           // if (token.tokenType == element.coinType){ debugPrint(token.tickerName);
 
-          wallet.ticker = ticker; //}
+          wallet.ticker = token.tickerName; //}
         });
 //element.ticker =tradeService.setTickerNameByType(element.coinType);
         debugPrint('exchanageBalanceModel tickerName ${wallet.ticker}');
@@ -321,7 +320,7 @@ class PayCoolViewmodel extends FutureViewModel {
   makePayment() async {
     setBusy(true);
     isPaying = true;
-    if (storeInfoModel.status == 0) {
+    if (merchangeModel.status == 0) {
       sharedService.sharedSimpleNotification(
           FlutterI18n.translate(context, "storeNotApproved"));
       isPaying = false;
@@ -503,7 +502,7 @@ class PayCoolViewmodel extends FutureViewModel {
   }
 
   createStoreOrderDialogWidget(
-    StoreMerchantModel storeMerchantModel,
+    MerchantModel storeMerchantModel,
     BuildContext context,
   ) async {
     orderIdFromCreateStoreOrder = '';
@@ -807,17 +806,154 @@ class PayCoolViewmodel extends FutureViewModel {
       "items": [
         {
           "title": memo,
-          "rebateRate": storeMerchangeModel.giveAwayRate,
+          "rebateRate": merchangeModel.rebateRate,
           "taxRate": 0,
-          "lockedDays": storeMerchangeModel.lockedDays,
+          "lockedDays": merchangeModel.lockedDays,
           "price": amount,
           "quantity": 1
         }
       ],
-      "merchantId": storeMerchangeModel.sId,
+      "merchantId": merchangeModel.sId,
     };
 
     return body;
+  }
+
+  showMerchantDetails() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            titleTextStyle: headText3.copyWith(
+              color: black,
+            ),
+            title: Text(
+              FlutterI18n.translate(context, "merchantDetails"),
+              textAlign: TextAlign.center,
+            ),
+            content: SizedBox(
+              height: 200,
+              child: Column(mainAxisSize: MainAxisSize.min, children: [
+                UIHelper.verticalSpaceMedium,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                        flex: 1,
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 8.0, bottom: 3),
+                          child: Text(
+                            FlutterI18n.translate(context, "title"),
+                            style: headText5,
+                          ),
+                        )),
+                    Expanded(
+                        flex: 1,
+                        child: Text(
+                          payOrder.title,
+                          style: headText5,
+                        ))
+                  ],
+                ),
+                UIHelper.verticalSpaceSmall,
+                UIHelper.divider,
+                UIHelper.verticalSpaceSmall,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                        flex: 1,
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 8.0, bottom: 3),
+                          child: Text(
+                            FlutterI18n.translate(context, "taxRate"),
+                            style: headText5,
+                          ),
+                        )),
+                    Expanded(
+                        flex: 1,
+                        child: Text(
+                          payOrder.tax.toString(),
+                          style: headText5,
+                        ))
+                  ],
+                ),
+                UIHelper.verticalSpaceSmall,
+                UIHelper.divider,
+                UIHelper.verticalSpaceSmall,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                        flex: 1,
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 8.0, bottom: 3),
+                          child: Text(
+                            FlutterI18n.translate(context, "price"),
+                            style: headText5,
+                          ),
+                        )),
+                    Expanded(
+                        flex: 1,
+                        child: Text(
+                          payOrder.price.toString(),
+                          style: headText5,
+                        ))
+                  ],
+                ),
+                UIHelper.verticalSpaceSmall,
+                UIHelper.divider,
+                UIHelper.verticalSpaceSmall,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                        flex: 1,
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 8.0, bottom: 3),
+                          child: Text(
+                            FlutterI18n.translate(context, "quantity"),
+                            style: headText5,
+                          ),
+                        )),
+                    Expanded(
+                        flex: 1,
+                        child: Text(
+                          payOrder.qty.toString(),
+                          style: headText5,
+                        ))
+                  ],
+                ),
+                UIHelper.verticalSpaceSmall,
+                UIHelper.divider,
+                UIHelper.verticalSpaceSmall,
+                payOrder.rebateRate != null
+                    ? Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Expanded(
+                              flex: 1,
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.only(left: 8.0, bottom: 3),
+                                child: Text(
+                                  FlutterI18n.translate(context, "rebateRate"),
+                                  style: headText5,
+                                ),
+                              )),
+                          Expanded(
+                              flex: 1,
+                              child: Text(
+                                payOrder.rebateRate.toString(),
+                                style: headText5,
+                              ))
+                        ],
+                      )
+                    : Container(),
+              ]),
+            ),
+          );
+        });
   }
 
   showOrderDetails() {
@@ -959,23 +1095,15 @@ class PayCoolViewmodel extends FutureViewModel {
 
   orderDetails({String barcodeScanData}) async {
     String scannedOrderId = '';
-    String scannedStoreId = '';
+
     String scannedTemplateId = '';
     String charToCompare = barcodeScanData[0];
     debugPrint('charToCompare $charToCompare');
     loadingStatus = FlutterI18n.translate(context, "gettingOrderDetails");
     if (charToCompare == "i") {
-      //jsonDecode(scanResult.rawContent)["i"];
       scannedOrderId = extractId(barcodeScanData);
       log.i('scanRes $scannedOrderId');
       await getOrderDetailsById(scannedOrderId);
-    } else if (charToCompare == "s") {
-      scannedStoreId =
-          extractId(barcodeScanData); // jsonDecode(scanResult.rawContent)["s"];
-      storeMerchangeModel =
-          await paycoolService.getStoreMerchantInfo(scannedStoreId);
-
-      createStoreOrderDialogWidget(storeMerchangeModel, context);
     } else if (charToCompare == "t") {
       scannedTemplateId = extractId(barcodeScanData);
       orderIdFromCreateStoreOrder =
@@ -989,11 +1117,13 @@ class PayCoolViewmodel extends FutureViewModel {
   void scanBarcodeV2({
     String addressType = Constants.MerchantAddressText,
   }) async {
+    resetVariables();
     try {
       setBusy(true);
+      log.w('setbusy 1 $isBusy');
       ScanResult scanResult;
       String barcodeScanData = '';
-
+      payOrder = PayOrder();
       scanResult = await BarcodeUtils().scanBarcode(context);
       barcodeScanData = scanResult.rawContent;
 
@@ -1004,7 +1134,9 @@ class PayCoolViewmodel extends FutureViewModel {
       }
       if (addressType == Constants.MerchantAddressText) {
         if (scanResult != null) {
-          orderDetails(barcodeScanData: barcodeScanData);
+          log.w('setbusy 1.2 $isBusy');
+          await orderDetails(barcodeScanData: barcodeScanData);
+          log.w('setbusy 1.3 $isBusy');
         } else if (scanResult.rawContent == '-1') {
           sharedService.sharedSimpleNotification(
             FlutterI18n.translate(context, "scanCancelled"),
@@ -1013,7 +1145,6 @@ class PayCoolViewmodel extends FutureViewModel {
           return;
         }
       }
-      setBusy(false);
     } on PlatformException catch (e) {
       if (e.code == "PERMISSION_NOT_GRANTED") {
         setBusy(false);
@@ -1039,46 +1170,52 @@ class PayCoolViewmodel extends FutureViewModel {
           isError: true);
       log.e('barcode scan catch $e');
     }
+    log.w('setbusy 2 $isBusy');
+    setBusy(false);
+    log.w('setbusy 3 $isBusy');
+  }
+
+  invalidScanData(error) {
+    log.e('catch error $error');
+    String t = error.toString();
+    loadingStatus = t;
     setBusy(false);
   }
 
   Future<void> getOrderDetailsById(String scanRes) async {
-    setBusy(true);
+    //setBusy(true);
+    loadingStatus = '';
     orderId = scanRes;
-    bool isFailed = false;
-    payOrder = await paycoolService.getPayOrderInfo(scanRes);
+    try {
+      await paycoolService
+          .getPayOrderInfo(scanRes)
+          .then((order) => payOrder = order);
+    } catch (err) {
+      invalidScanData(err);
+      return;
+    }
     await paycoolService
         .getPayOrderInfoWithRewards(scanRes)
         .then((value) => rewardInfoModel = value)
-        .catchError((onError) {
-      debugPrint('catch error $onError');
-      log.e('getOrderDetailsById func -- Catch scan to pay model $onError',
-          onError);
-      String t = onError.toString();
-      debugPrint('t $t');
-      dialogService.showBasicDialog(
-          title: FlutterI18n.translate(context, "invalidScanData"),
-          description: t,
-          buttonTitle: FlutterI18n.translate(context, "close"));
-      loadingStatus = '';
-      setBusy(false);
-
-      isFailed = true;
+        .catchError((err) {
+      invalidScanData(err);
     });
-    if (isFailed) {
-      setBusy(false);
-      return;
-    }
+
+    merchangeModel =
+        await paycoolService.getMerchantInfo(rewardInfoModel.merchantId);
     coinPayable = newCoinTypeMap[rewardInfoModel.paidCoin];
     final v =
         exchangeBalances.indexWhere((element) => element.ticker == coinPayable);
     if (v.isNegative) {
+      var nullToken = await coinService.getSingleTokenData('',
+          coinType: rewardInfoModel.paidCoin);
       dialogService.showBasicDialog(
           title:
-              "$coinPayable ${FlutterI18n.translate(context, "insufficientBalanceForPayment")}",
+              "${nullToken.tickerName} ${FlutterI18n.translate(context, "insufficientBalanceForPayment")}",
           description:
               FlutterI18n.translate(context, "PaycoolInsufficientBalanceDesc"),
           buttonTitle: FlutterI18n.translate(context, "close"));
+      resetVariables();
       setBusy(false);
       return;
     }
@@ -1108,7 +1245,16 @@ class PayCoolViewmodel extends FutureViewModel {
       updateSelectedTickername(coinPayable);
     }
     loadingStatus = '';
-    setBusy(false);
+    // setBusy(false);
+  }
+
+  resetVariables() {
+    payOrder = PayOrder();
+    rewardInfoModel = PaymentRewardsModel();
+    merchangeModel = MerchantModel();
+    amountPayable = Constants.decimalZero;
+    taxAmount = Constants.decimalZero;
+    coinPayable = '';
   }
 
 /*----------------------------------------------------------------------

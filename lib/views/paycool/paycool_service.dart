@@ -13,11 +13,9 @@ import 'package:paycool/utils/custom_http_util.dart';
 import 'package:paycool/utils/kanban.util.dart';
 import 'package:paycool/utils/keypair_util.dart';
 import 'package:paycool/views/paycool/models/pay_order_model.dart';
-import 'package:paycool/views/paycool/models/paycool_store_model.dart';
-import 'package:paycool/views/paycool/models/store_and_merchant_model.dart';
+import 'package:paycool/views/paycool/models/merchant_model.dart';
 import 'package:paycool/views/paycool/rewards/payment_rewards_model.dart';
 import 'package:paycool/views/paycool/transaction_history/paycool_transaction_history_model.dart';
-import 'package:paycool/views/paycool_club/club_models/club_params_model.dart';
 import 'package:stacked/stacked.dart';
 import 'package:hex/hex.dart';
 import 'models/payment_rewards_model.dart';
@@ -127,22 +125,22 @@ class PayCoolService with ReactiveServiceMixin {
     }
   }
 
-  Future<StoreMerchantModel> getStoreMerchantInfo(String id) async {
-    String url = baseBlockchainGateV2Url + 'stores/' + id;
-    log.i('getStoreMerchantInfo url $url');
+  Future<MerchantModel> getMerchantInfo(String id) async {
+    String url = paycoolBaseUrl + 'merchantreferral/v2/' + id;
+    log.i('getMerchantInfo url $url');
     try {
       var response = await client.get(url);
 
       var json = jsonDecode(response.body)['_body'];
-      StoreMerchantModel storeModel = StoreMerchantModel();
+      MerchantModel merchantModel = MerchantModel();
       if (json.isNotEmpty) {
-        log.w('getStoreMerchantInfo json $json');
-        storeModel = StoreMerchantModel.fromJson(json);
-        log.w('StoreMerchantModel json ${storeModel.toJson()}');
+        log.w('getMerchantInfo json $json');
+        merchantModel = MerchantModel.fromJson(json);
+        log.w('getMerchantInfo json ${merchantModel.toJson()}');
       }
-      return storeModel;
+      return merchantModel;
     } catch (err) {
-      log.e('In getStoreMerchantInfo catch $err');
+      log.e('In getMerchantInfo catch $err');
       return null;
     }
   }
@@ -150,7 +148,7 @@ class PayCoolService with ReactiveServiceMixin {
   Future<PaymentRewardsModel> getPayOrderInfoWithRewards(String id) async {
     String fabAddress =
         await coreWalletDatabaseService.getWalletAddressByTickerName('FAB');
-    https: //fabtest.info/api/userpay/v2/order/635ab250f8ba77d673a32474
+    //https:fabtest.info/api/userpay/v2/order/635ab250f8ba77d673a32474
     String url = paycoolBaseUrl +
         'userpay/v2/order/' +
         id +
@@ -195,47 +193,21 @@ class PayCoolService with ReactiveServiceMixin {
     try {
       var response = await client.get(url);
       if (response.statusCode == 200 || response.statusCode == 201) {
-        var json = jsonDecode(response.body)['_body']['items'];
         var isDataCorrect = jsonDecode(response.body)['success'];
-        if (json.isNotEmpty) {
-          log.w('getPayOrderInfo json $json');
 
-          if (!isDataCorrect) {
-            log.e('In getPayOrderInfo catch $json');
-            throw Exception(json);
-          } else if (isDataCorrect) {
-            payOrder = PayOrder.fromJson(json.first);
-          }
+        if (!isDataCorrect) {
+          throw Exception(jsonDecode(response.body)['error']);
+        } else if (isDataCorrect) {
+          var jsonData = jsonDecode(response.body)['_body']['items'];
+          log.w('getPayOrderInfo json $jsonData');
+          payOrder = PayOrder.fromJson(jsonData.first);
         }
-      } else {
-        log.e(
-            'getPayOrderInfo Response failed : reson ${response.toString()} -- body ${response.body}');
       }
+
       return payOrder;
     } catch (err) {
       log.e('In getPayOrderInfo catch $err');
       throw Exception(err);
-    }
-  }
-
-  Future<StoreInfoModel> getStoreInfo(String smartContractAddress) async {
-    String url = storeInfoPayCoolUrl + smartContractAddress;
-    StoreInfoModel payCoolStoreModel = StoreInfoModel();
-    log.i('getStoreInfo url $url');
-    try {
-      var response = await client.get(url);
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        var json = jsonDecode(response.body)['_body'];
-
-        if (json.isNotEmpty) {
-          log.w('getStoreInfo json $json');
-          payCoolStoreModel = StoreInfoModel.fromJson(json);
-        }
-      }
-      return payCoolStoreModel;
-    } catch (err) {
-      log.e('In getStoreInfo catch $err');
-      return null;
     }
   }
 
