@@ -26,6 +26,7 @@ class ReferralViewmodel extends BaseViewModel {
 
   List<Project> projects = [];
   Map<int, List<PaycoolReferral>> idReferralsMap = {};
+  Map<int, int> idReferralCountMap = {};
 
   PaginationModel paginationModel = PaginationModel();
 
@@ -69,6 +70,9 @@ class ReferralViewmodel extends BaseViewModel {
               pageSize: paginationModel.pageSize,
               pageNumber: paginationModel.pageNumber);
           idReferralsMap.addAll({p.id: refs});
+          var refCount =
+              await payCoolClubService.getUserReferralCount(addressUsed);
+          idReferralCountMap.addAll({p.id: refCount});
         } else {
           var refs = await payCoolClubService.getReferrals(addressUsed,
               isProject: true,
@@ -76,6 +80,11 @@ class ReferralViewmodel extends BaseViewModel {
               pageSize: paginationModel.pageSize,
               pageNumber: paginationModel.pageNumber);
           idReferralsMap.addAll({p.id: refs});
+          var refCount = await payCoolClubService.getUserReferralCount(
+              addressUsed,
+              isProject: true,
+              projectId: p.id);
+          idReferralCountMap.addAll({p.id: refCount});
         }
       }
     }
@@ -91,8 +100,10 @@ class ReferralViewmodel extends BaseViewModel {
           (_totalReferrals / paginationModel.pageSize).ceil();
       paginationModel.pages = [];
       referalRoute.referrals = idReferralsMap[referalRoute.project.id];
-      if (referalRoute.referrals != null)
+      if (referalRoute.referrals != null) {
         paginationModel.pages.addAll(referalRoute.referrals);
+      }
+      notifyListeners();
       log.i('paginationModel ${paginationModel.toString()}');
     }
     //await getDownlineCount();
@@ -110,8 +121,8 @@ class ReferralViewmodel extends BaseViewModel {
   getPaginationRewards(int pageNumber) async {
     setBusy(true);
     paginationModel.pageNumber = pageNumber;
-    var paginationResults = await init();
-    referalRoute.referrals = paginationResults;
+    await init();
+    // referalRoute.referrals = paginationResults;
     setBusy(false);
   }
 

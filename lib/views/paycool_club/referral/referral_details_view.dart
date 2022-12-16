@@ -55,8 +55,8 @@ class PaycoolReferralDetailsView extends StatelessWidget {
           floatingActionButton: model.paginationModel.pages.isEmpty
               ? Container()
               : PaginationWidget(
-                  pageCallback: model.getPaginationRewards,
                   paginationModel: model.paginationModel,
+                  pageCallback: model.getPaginationRewards,
                 )),
     );
   }
@@ -94,7 +94,9 @@ class PaycoolReferralDetailsView extends StatelessWidget {
                     leading: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
-                        i.toString() + ' ',
+                        model.paginationModel.pageNumber > 1
+                            ? '${model.paginationModel.pageNumber - 1}${i.toString()}'
+                            : i.toString() + ' ',
                         style: headText5.copyWith(
                             color: black, fontWeight: FontWeight.bold),
                       ),

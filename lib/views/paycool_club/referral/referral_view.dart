@@ -98,10 +98,8 @@ class ReferralView extends StatelessWidget {
                                           model.idReferralsMap.containsKey(
                                                   projects[index].id)
                                               ? Text(
-                                                  model
-                                                      .idReferralsMap[
+                                                  model.idReferralCountMap[
                                                           projects[index].id]
-                                                      .length
                                                       .toString(),
                                                   style: headText5.copyWith(
                                                       color: green),
