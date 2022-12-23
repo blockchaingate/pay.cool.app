@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:paycool/environments/environment_type.dart';
 
 // final Color primaryColor = Color.fromRGBO(135, 31, 255, 1);
 // final Color secondaryColor = Color.fromRGBO(31, 33, 51, 1);
 
+//color for Tulum app
+const Color tulumColor = Color(0xff0c4d29);
+const Color tulumYellow = Color.fromARGB(255, 249, 218, 156);
+
 //const Color primaryColor = Color(0xff3ecef3);
-const Color primaryColor = Color.fromARGB(255, 118, 125, 255);
+const Color primaryColor =
+    isTulum ? tulumColor : Color.fromARGB(255, 118, 125, 255);
 
 //const Color secondaryColor = Color(0xff02193d);
 const Color secondaryColor = Colors.white;

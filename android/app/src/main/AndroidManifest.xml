@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="cool.pay.paycool">
    <application
-        android:label="Pay.cool"
+        android:label="Tulum"
         android:icon="@mipmap/ic_launcher"
          android:usesCleartextTraffic="true"
          android:name="androidx.multidex.MultiDexApplication" 

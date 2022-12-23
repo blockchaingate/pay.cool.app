@@ -15,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
+import 'package:paycool/environments/environment_type.dart';
 import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/views/wallet/wallet_setup/wallet_setup_viewmodel.dart';
 import 'package:shimmer/shimmer.dart';
@@ -41,18 +42,26 @@ class WalletSetupView extends StatelessWidget {
         child: Scaffold(
           body: Stack(
             children: [
+              Image.asset(
+                "assets/images/tulum/background.jpg",
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                fit: BoxFit.cover,
+              ),
               Container(
                 height: MediaQuery.of(context).size.height,
-                color: secondaryColor,
                 padding:
                     const EdgeInsets.symmetric(vertical: 5, horizontal: 30),
                 // color: walletCardColor,
-                // decoration: BoxDecoration(
-                //     image: DecorationImage(
-                //         image: AssetImage("assets/images/img/starMainBg2.jpg"),
-                //         colorFilter: new ColorFilter.mode(
-                //             Colors.black.withOpacity(0.8), BlendMode.dstATop),
-                //         fit: BoxFit.cover)),
+                decoration: const BoxDecoration(
+                    color: isTulum ? Colors.transparent : secondaryColor,
+                    image: isTulum
+                        ? DecorationImage(
+                            image:
+                                AssetImage("assets/images/tulum/Plants2.png"),
+                            fit: BoxFit.fitWidth,
+                            alignment: Alignment.topCenter)
+                        : null),
                 child: Column(
                   //  mainAxisSize: MainAxisSize.min,
                   // crossAxisAlignment: CrossAxisAlignment.center,
@@ -66,26 +75,50 @@ class WalletSetupView extends StatelessWidget {
                       // decoration: BoxDecoration(
                       //     color: Color(0xff030303),
                       //     borderRadius: BorderRadius.circular(30)),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          SvgPicture.asset(
-                            "assets/images/paycool/paycool-with-caption.svg",
-                            color: primaryColor,
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          Text(FlutterI18n.translate(context, "paycoolCaption"),
-                              textAlign: TextAlign.center,
-                              style: headText4.copyWith(
-                                  fontWeight: FontWeight.w400, fontSize: 14)),
-                        ],
+                      child: Visibility(
+                        visible: !isTulum,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            SvgPicture.asset(
+                              "assets/images/paycool/paycool-with-caption.svg",
+                              color: primaryColor,
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Text(
+                                FlutterI18n.translate(
+                                    context, "paycoolCaption"),
+                                textAlign: TextAlign.center,
+                                style: headText4.copyWith(
+                                    fontWeight: FontWeight.w400, fontSize: 14)),
+                          ],
+                        ),
                       ),
                     ),
+                    Visibility(
+                      visible: isTulum,
+                      child: Image.asset(
+                        "assets/images/tulum/TC-Word.png",
+                        width: 230,
+                      ),
+                      // Text(
+                      //   "TULUM WALLET",
+                      //   style: TextStyle(
+                      //       color: tulumYellow,
+                      //       fontSize: 30,
+                      //       fontWeight: FontWeight.bold),
+                      // )
+                    ),
                     UIHelper.verticalSpaceMedium,
-                    Image.asset("assets/images/paycool/Crypto5.png"),
+                    isTulum
+                        ? Image.asset(
+                            "assets/images/tulum/2DCoin.png",
+                            width: 230,
+                          )
+                        : Image.asset("assets/images/paycool/Crypto5.png"),
                     UIHelper.verticalSpaceMedium,
 
                     model.isDeleting
@@ -251,15 +284,18 @@ class WalletSetupView extends StatelessWidget {
                                                           ),
                                                           backgroundColor:
                                                               MaterialStateProperty
-                                                                  .all(
-                                                                      primaryColor)),
+                                                                  .all(isTulum
+                                                                      ? tulumYellow
+                                                                      : primaryColor)),
                                                       child: Text(
                                                         FlutterI18n.translate(
                                                             context,
                                                             "importWallet"),
                                                         style:
                                                             headText5.copyWith(
-                                                                color: white),
+                                                                color: isTulum
+                                                                    ? tulumColor
+                                                                    : white),
                                                       ),
                                                       onPressed: () {
                                                         if (!model.isBusy) {
@@ -350,77 +386,80 @@ class WalletSetupView extends StatelessWidget {
                   margin: const EdgeInsets.only(top: 30),
                   padding: const EdgeInsets.only(top: 30),
                   child: DropdownButtonHideUnderline(
-                    child: DropdownButton(
-                        iconEnabledColor: primaryColor,
-                        iconSize: 26,
-                        hint: Text(
-                          FlutterI18n.translate(
-                              context, "changeWalletLanguage"),
-                          textAlign: TextAlign.center,
-                          style: headText5,
-                        ),
-                        value: model.selectedLanguage,
-                        onChanged: (newValue) {
-                          model.changeWalletLanguage(newValue);
-                        },
-                        items: [
-                          DropdownMenuItem(
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Image.asset(
-                                  "assets/images/flags/en.png",
-                                  width: 20,
-                                  height: 20,
-                                ),
-                                const SizedBox(width: 15),
-                                Text("English",
-                                    textAlign: TextAlign.center,
-                                    style: headText6),
-                              ],
-                            ),
-                            value: model.languages['en'],
+                    child: Container(
+                      color: const Color(0xaaffffff),
+                      child: DropdownButton(
+                          iconEnabledColor: primaryColor,
+                          iconSize: 26,
+                          hint: Text(
+                            FlutterI18n.translate(
+                                context, "changeWalletLanguage"),
+                            textAlign: TextAlign.center,
+                            style: headText5,
                           ),
-                          DropdownMenuItem(
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Image.asset(
-                                  "assets/images/flags/zh.png",
-                                  width: 20,
-                                  height: 20,
-                                ),
-                                const SizedBox(width: 15),
-                                Text("简体中文",
-                                    textAlign: TextAlign.center,
-                                    style: headText6),
-                              ],
+                          value: model.selectedLanguage,
+                          onChanged: (newValue) {
+                            model.changeWalletLanguage(newValue);
+                          },
+                          items: [
+                            DropdownMenuItem(
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Image.asset(
+                                    "assets/images/flags/en.png",
+                                    width: 20,
+                                    height: 20,
+                                  ),
+                                  const SizedBox(width: 15),
+                                  Text("English",
+                                      textAlign: TextAlign.center,
+                                      style: headText6),
+                                ],
+                              ),
+                              value: model.languages['en'],
                             ),
-                            value: model.languages['zh'],
-                          ),
-                          DropdownMenuItem(
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Image.asset(
-                                  "assets/images/flags/es.webp",
-                                  width: 20,
-                                  height: 20,
-                                ),
-                                const SizedBox(width: 15),
-                                Text("Español",
-                                    textAlign: TextAlign.center,
-                                    style: headText6),
-                              ],
+                            DropdownMenuItem(
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Image.asset(
+                                    "assets/images/flags/zh.png",
+                                    width: 20,
+                                    height: 20,
+                                  ),
+                                  const SizedBox(width: 15),
+                                  Text("简体中文",
+                                      textAlign: TextAlign.center,
+                                      style: headText6),
+                                ],
+                              ),
+                              value: model.languages['zh'],
                             ),
-                            value: model.languages['es'],
-                          ),
-                        ]),
+                            DropdownMenuItem(
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Image.asset(
+                                    "assets/images/flags/es.webp",
+                                    width: 20,
+                                    height: 20,
+                                  ),
+                                  const SizedBox(width: 15),
+                                  Text("Español",
+                                      textAlign: TextAlign.center,
+                                      style: headText6),
+                                ],
+                              ),
+                              value: model.languages['es'],
+                            ),
+                          ]),
+                    ),
                   ),
                 ),
               ),

@@ -508,22 +508,24 @@ class SettingsContainer extends StatelessWidget {
               ),
             ),
             UIHelper.verticalSpaceLarge,
-            Center(
-              child: RichText(
-                text: TextSpan(
-                  recognizer: TapGestureRecognizer()
-                    ..onTap = () {
-                      model.sharedService
-                          .launchInBrowser(Uri.parse(paycoolPrivacyUrl));
-                    },
-                  text: FlutterI18n.translate(context, "privacyPolicy"),
-                  style: Theme.of(context).textTheme.bodyText1.copyWith(
-                        color: Colors.blue,
-                        decoration: TextDecoration.underline,
+            isTulum
+                ? Container()
+                : Center(
+                    child: RichText(
+                      text: TextSpan(
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            model.sharedService
+                                .launchInBrowser(Uri.parse(paycoolPrivacyUrl));
+                          },
+                        text: FlutterI18n.translate(context, "privacyPolicy"),
+                        style: Theme.of(context).textTheme.bodyText1.copyWith(
+                              color: Colors.blue,
+                              decoration: TextDecoration.underline,
+                            ),
                       ),
-                ),
-              ),
-            ),
+                    ),
+                  ),
           ]),
     );
   }

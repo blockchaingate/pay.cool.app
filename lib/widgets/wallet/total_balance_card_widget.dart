@@ -43,7 +43,9 @@ class TotalBalanceCardWidget extends StatelessWidget {
                           'assets/images/wallet-page/dollar-sign.png',
                           width: 30,
                           height: 30,
-                          color: iconBackgroundColor, // image background color
+                          color: isTulum
+                              ? tulumColor
+                              : iconBackgroundColor, // image background color
                           fit: BoxFit.contain,
                         )),
                     Expanded(
@@ -127,7 +129,9 @@ class TotalBalanceCardWidget2 extends StatelessWidget {
                             //     ?
                             Container(
                                 decoration: const BoxDecoration(
-                                    color: iconBackgroundColor,
+                                    color: isTulum
+                                        ? tulumColor
+                                        : iconBackgroundColor,
                                     shape: BoxShape.circle),
                                 width: 30,
                                 height: 30,

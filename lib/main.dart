@@ -10,7 +10,9 @@ import 'package:package_info/package_info.dart';
 import 'package:paycool/routes.dart';
 import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/navigation_service.dart';
+import 'package:paycool/theme/theme.dart';
 import 'constants/colors.dart';
+import 'environments/environment_type.dart';
 import 'managers/dialog_manager.dart';
 import 'services/local_dialog_service.dart';
 
@@ -111,59 +113,75 @@ class MyApp extends StatelessWidget {
             FlutterI18n.translate(context, "title"),
         onGenerateRoute: RouteGenerator.generateRoute,
         initialRoute: '/',
-        theme: ThemeData(
-          visualDensity: VisualDensity.adaptivePlatformDensity,
-          // added unselectedWidgetColor to update inactive radio button's color
-          appBarTheme: const AppBarTheme(
-            backgroundColor: primaryColor,
-            actionsIconTheme: IconThemeData(color: Colors.white),
-            iconTheme: IconThemeData(color: Colors.white),
-            systemOverlayStyle: SystemUiOverlayStyle(
-              statusBarColor: secondaryColor,
-              statusBarIconBrightness: Brightness.dark,
-              statusBarBrightness: Brightness.light,
-            ),
-          ),
-          unselectedWidgetColor: Colors.black,
-          disabledColor: grey.withAlpha(100),
-          primaryColor: primaryColor,
-          backgroundColor: secondaryColor,
-          cardColor: walletCardColor,
-          canvasColor: secondaryColor,
-          //  brightness: Brightness.dark,
-          buttonTheme: const ButtonThemeData(
-              minWidth: double.infinity,
-              buttonColor: primaryColor,
-              padding: EdgeInsets.all(15),
-              shape: StadiumBorder(),
-              textTheme: ButtonTextTheme.primary),
-          fontFamily: 'WorkSans',
-          textTheme: const TextTheme(
-              button: TextStyle(fontSize: 14, color: white),
-              headline1: TextStyle(
-                  fontSize: 22,
-                  color: white,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 1.25),
-              headline2: TextStyle(
-                  fontSize: 18, color: white, fontWeight: FontWeight.w300),
-              headline3: TextStyle(fontSize: 16, color: white),
-              headline4: TextStyle(
-                  fontSize: 15, color: white, fontWeight: FontWeight.w300),
-              subtitle1: TextStyle(
-                  fontSize: 14, color: white, fontWeight: FontWeight.w300),
-              headline5: TextStyle(
-                  fontSize: 12.5, color: white, fontWeight: FontWeight.w400),
-              subtitle2: TextStyle(
-                  fontSize: 10.3, color: grey, fontWeight: FontWeight.w400),
-              bodyText1: TextStyle(
-                  fontSize: 13, color: white, fontWeight: FontWeight.w400),
-              bodyText2: TextStyle(fontSize: 13, color: red),
-              headline6: TextStyle(
-                  fontSize: 10.5, color: white, fontWeight: FontWeight.w500)),
-          colorScheme:
-              ColorScheme.fromSwatch().copyWith(secondary: secondaryColor),
-        ),
+        theme: isTulum
+            ? tulumTheme
+            : ThemeData(
+                visualDensity: VisualDensity.adaptivePlatformDensity,
+                // added unselectedWidgetColor to update inactive radio button's color
+                appBarTheme: const AppBarTheme(
+                  backgroundColor: primaryColor,
+                  actionsIconTheme: IconThemeData(color: Colors.white),
+                  iconTheme: IconThemeData(color: Colors.white),
+                  systemOverlayStyle: SystemUiOverlayStyle(
+                    statusBarColor: secondaryColor,
+                    statusBarIconBrightness: Brightness.dark,
+                    statusBarBrightness: Brightness.light,
+                  ),
+                ),
+                unselectedWidgetColor: Colors.black,
+                disabledColor: grey.withAlpha(100),
+                primaryColor: primaryColor,
+                backgroundColor: secondaryColor,
+                cardColor: walletCardColor,
+                canvasColor: secondaryColor,
+                //  brightness: Brightness.dark,
+                buttonTheme: const ButtonThemeData(
+                    minWidth: double.infinity,
+                    buttonColor: primaryColor,
+                    padding: EdgeInsets.all(15),
+                    shape: StadiumBorder(),
+                    textTheme: ButtonTextTheme.primary),
+                fontFamily: 'WorkSans',
+                textTheme: const TextTheme(
+                    button: TextStyle(fontSize: 14, color: white),
+                    headline1: TextStyle(
+                        fontSize: 22,
+                        color: white,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1.25),
+                    headline2: TextStyle(
+                        fontSize: 18,
+                        color: white,
+                        fontWeight: FontWeight.w300),
+                    headline3: TextStyle(fontSize: 16, color: white),
+                    headline4: TextStyle(
+                        fontSize: 15,
+                        color: white,
+                        fontWeight: FontWeight.w300),
+                    subtitle1: TextStyle(
+                        fontSize: 14,
+                        color: white,
+                        fontWeight: FontWeight.w300),
+                    headline5: TextStyle(
+                        fontSize: 12.5,
+                        color: white,
+                        fontWeight: FontWeight.w400),
+                    subtitle2: TextStyle(
+                        fontSize: 10.3,
+                        color: grey,
+                        fontWeight: FontWeight.w400),
+                    bodyText1: TextStyle(
+                        fontSize: 13,
+                        color: white,
+                        fontWeight: FontWeight.w400),
+                    bodyText2: TextStyle(fontSize: 13, color: red),
+                    headline6: TextStyle(
+                        fontSize: 10.5,
+                        color: white,
+                        fontWeight: FontWeight.w500)),
+                colorScheme: ColorScheme.fromSwatch()
+                    .copyWith(secondary: secondaryColor),
+              ),
       ),
     );
   }

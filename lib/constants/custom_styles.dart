@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:paycool/environments/environment_type.dart';
 
 import 'colors.dart';
 
@@ -25,11 +27,19 @@ TextStyle bodyText1 =
 TextStyle bodyText2 = const TextStyle(fontSize: 13, color: red);
 TextStyle headText6 =
     const TextStyle(fontSize: 10.5, color: black, fontWeight: FontWeight.w500);
-AppBar customAppBar({Color color = primaryColor}) => AppBar(
-      automaticallyImplyLeading: false,
-      backgroundColor: color,
-      toolbarHeight: 2.0,
-    );
+AppBar customAppBar({Color color = primaryColor}) => isTulum
+    ? AppBar(
+        automaticallyImplyLeading: false,
+        backgroundColor: color,
+        toolbarHeight: 2.0,
+        systemOverlayStyle:
+            const SystemUiOverlayStyle(statusBarColor: Colors.red),
+      )
+    : AppBar(
+        automaticallyImplyLeading: false,
+        backgroundColor: color,
+        toolbarHeight: 2.0,
+      );
 AppBar customAppBarWithTitle(String title, {Color color = primaryColor}) =>
     AppBar(
       title: Text(

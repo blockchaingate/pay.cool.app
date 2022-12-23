@@ -9,6 +9,7 @@ import 'package:paycool/constants/constants.dart';
 import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/constants/route_names.dart';
 import 'package:paycool/constants/ui_var.dart';
+import 'package:paycool/environments/environment_type.dart';
 import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/utils/number_util.dart';
 import 'package:paycool/views/paycool/paycool_viewmodel.dart';
@@ -52,8 +53,13 @@ class PayCoolView extends StatelessWidget {
               decoration: const BoxDecoration(
                   image: DecorationImage(
                       scale: 1,
-                      image: AssetImage(
-                          "assets/images/paycool/dashboard-background.png"),
+                      opacity: isTulum ? 0.2 : 1,
+                      image: isTulum
+                          ? AssetImage(
+                              "assets/images/tulum/background.jpg",
+                            )
+                          : AssetImage(
+                              "assets/images/paycool/dashboard-background.png"),
                       fit: BoxFit.cover)),
               child: Scrollbar(
                 child: ListView(
@@ -65,7 +71,9 @@ class PayCoolView extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Image.asset(
-                          'assets/images/paycool/bank.png',
+                          isTulum
+                              ? 'assets/images/tulum/2DCoin.png'
+                              : 'assets/images/paycool/bank.png',
                           height: 170,
                           width: 170,
                           fit: BoxFit.contain,
@@ -173,7 +181,12 @@ class PayCoolView extends StatelessWidget {
                                                 borderRadius:
                                                     BorderRadius.circular(25),
                                                 gradient: const LinearGradient(
-                                                    colors: [
+                                                    colors: isTulum?
+                                                    [
+                                                      tulumColor,
+                                                      tulumColor,
+                                                    ]:
+                                                    [
                                                       Color(0xFFcd45ff),
                                                       Color(0xFF7368ff),
                                                     ])),

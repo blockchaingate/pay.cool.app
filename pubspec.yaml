@@ -87,6 +87,7 @@ flutter:
     - assets/images/shared/
     - assets/images/club/
     - assets/images/launcher/
+    - assets/images/tulum/
     - assets/i18n/
     - .env
 

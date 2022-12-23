@@ -37,7 +37,8 @@ class GasBalanceAndAddGasButtonWidget extends StatelessWidget {
               padding: const EdgeInsets.only(left: 5.0),
               child: Container(
                   decoration: const BoxDecoration(
-                      color: iconBackgroundColor, shape: BoxShape.circle),
+                      color: isTulum ? tulumColor : iconBackgroundColor,
+                      shape: BoxShape.circle),
                   width: 26,
                   height: 26,
                   child: Icon(

@@ -15,6 +15,7 @@ import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/constants/ui_var.dart';
+import 'package:paycool/environments/environment_type.dart';
 import 'package:paycool/logger.dart';
 import 'package:paycool/models/wallet/wallet.dart';
 
@@ -56,8 +57,9 @@ class WalletFeaturesView extends StatelessWidget {
                     height: 225,
                     decoration: const BoxDecoration(
                         image: DecorationImage(
-                            image: AssetImage(
-                                'assets/images/paycool/walletBg8.jpg'),
+                            image: AssetImage(isTulum
+                                ? 'assets/images/tulum/Plants2.png'
+                                : 'assets/images/paycool/walletBg8.jpg'),
                             fit: BoxFit.cover)),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,

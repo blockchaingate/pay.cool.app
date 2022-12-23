@@ -11,11 +11,13 @@
 *----------------------------------------------------------------------
 */
 
+import 'package:flutter/services.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/constants/ui_var.dart';
+import 'package:paycool/environments/environment_type.dart';
 import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/views/wallet/wallet_dashboard_viewmodel.dart';
 import 'package:paycool/views/wallet/wallet_features/wallet_features_view.dart';
@@ -155,11 +157,12 @@ class WalletDashboardView extends StatelessWidget {
   Widget topWidget(WalletDashboardViewModel model, BuildContext context) {
     return Container(
       height: 180,
-      decoration: const BoxDecoration(image: DecorationImage(image: AssetImage(
-          // 'assets/images/wallet-page/background.png'
-          // 'assets/images/img/starMainBg2.jpg',
-          // 'assets/images/paycool/Liquid1.jpg'
-          'assets/images/paycool/walletBg8.jpg'), fit: BoxFit.cover)),
+      decoration: const BoxDecoration(
+          image: DecorationImage(
+              image: AssetImage(isTulum
+                  ? 'assets/images/tulum/Plants2.png'
+                  : 'assets/images/paycool/walletBg8.jpg'),
+              fit: BoxFit.cover)),
       child: Stack(children: <Widget>[
         Container(
             // height: 350.0,
