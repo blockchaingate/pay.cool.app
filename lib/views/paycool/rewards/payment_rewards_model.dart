@@ -22,7 +22,7 @@ class PaymentReward {
 
   PaymentReward.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
-    orderid = json['order'];
+    orderid = json['txid'];
     user = json['user'];
     lockedDays = json['lockedDays'];
     coin = json['coin'];

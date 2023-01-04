@@ -655,7 +655,7 @@ class PayCoolViewmodel extends FutureViewModel {
                                 horizontal: 15, vertical: 0),
                             enabledBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(50),
-                                borderSide: const BorderSide(
+                                borderSide:  BorderSide(
                                     color: primaryColor, width: 1)),
                             hintText:
                                 FlutterI18n.translate(context, "enterAmount"),

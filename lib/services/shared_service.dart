@@ -592,10 +592,14 @@ class SharedService {
                 Copy Address
 --------------------------------------------------- */
 
-  copyAddress(context, text) {
+  copyAddress(context, text, {textColor = white}) {
     Clipboard.setData(ClipboardData(text: text));
     showSimpleNotification(
-        Text(FlutterI18n.translate(context, "addressCopied")),
+        Text(
+          FlutterI18n.translate(context, "addressCopied"),
+          textAlign: TextAlign.center,
+          style: TextStyle(color: textColor, fontSize: 13),
+        ),
         background: primaryColor,
         position: NotificationPosition.bottom);
   }

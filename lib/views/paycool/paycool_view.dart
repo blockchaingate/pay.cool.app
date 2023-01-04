@@ -181,15 +181,15 @@ class PayCoolView extends StatelessWidget {
                                                 borderRadius:
                                                     BorderRadius.circular(25),
                                                 gradient: const LinearGradient(
-                                                    colors: isTulum?
-                                                    [
-                                                      tulumColor,
-                                                      tulumColor,
-                                                    ]:
-                                                    [
-                                                      Color(0xFFcd45ff),
-                                                      Color(0xFF7368ff),
-                                                    ])),
+                                                    colors: isTulum
+                                                        ? [
+                                                            tulumColor,
+                                                            tulumColor,
+                                                          ]
+                                                        : [
+                                                            Color(0xFFcd45ff),
+                                                            Color(0xFF7368ff),
+                                                          ])),
                                             margin: const EdgeInsetsDirectional
                                                 .only(top: 10.0),
                                             child: TextButton(
@@ -229,8 +229,9 @@ class PayCoolView extends StatelessWidget {
                                 : Container(
                                     padding: const EdgeInsets.only(
                                         top: 20, left: 15, right: 15),
-                                    decoration: roundedBoxDecoration(
-                                        color: secondaryColor),
+                                    decoration:
+                                        roundedTopLeftRightBoxDecoration(
+                                            color: secondaryColor),
                                     child: Container(
                                       margin:
                                           MediaQuery.of(context).size.height <

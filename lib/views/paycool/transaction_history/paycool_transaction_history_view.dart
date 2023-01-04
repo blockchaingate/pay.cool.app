@@ -6,6 +6,7 @@ import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/utils/number_util.dart';
 import 'package:paycool/utils/string_util.dart';
 import 'package:paycool/views/paycool/transaction_history/paycool_transaction_history_viewmodel.dart';
+import 'package:paycool/widgets/shared/copy_clipboard_text_widget.dart';
 import 'package:stacked/stacked.dart';
 
 class PayCoolTransactionHistoryView extends StatelessWidget {
@@ -47,38 +48,6 @@ class PayCoolTransactionHistoryView extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           UIHelper.verticalSpaceSmall,
-                          // Container(
-                          //   padding: const EdgeInsets.symmetric(
-                          //       horizontal: 2.0, vertical: 10),
-                          //   decoration: roundedTopLeftRightBoxDecoration(
-                          //       color: secondaryColor),
-                          //   child: Row(
-                          //     mainAxisSize: MainAxisSize.min,
-                          //     children: [
-                          //       UIHelper.horizontalSpaceMedium,
-                          //       Expanded(
-                          //         flex: 2,
-                          //         child: Text(
-                          //             FlutterI18n.translate(context, "date")),
-                          //       ),
-                          //       Expanded(
-                          //         flex: 2,
-                          //         child: Text(
-                          //             FlutterI18n.translate(context, "coin")),
-                          //       ),
-                          //       Expanded(
-                          //         flex: 2,
-                          //         child: Text(
-                          //             FlutterI18n.translate(context, "amount")),
-                          //       ),
-                          //       Expanded(
-                          //         flex: 2,
-                          //         child: Text(
-                          //             FlutterI18n.translate(context, "status")),
-                          //       )
-                          //     ],
-                          //   ),
-                          // ),
                           Expanded(
                             child: ListView.builder(
                                 itemCount: model.transactions.length,
@@ -92,87 +61,98 @@ class PayCoolTransactionHistoryView extends StatelessWidget {
                                       decoration: roundedBoxDecoration(
                                           color: secondaryColor),
                                       child: ListTile(
-                                        title: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Text(
-                                              model.transactions[index]
-                                                      .tickerName +
-                                                  ' ',
-                                              style: headText5,
+                                          leading: Padding(
+                                            padding: const EdgeInsets.all(5.0),
+                                            child: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  formatStringDateV2(model
+                                                          .transactions[index]
+                                                          .dateCreated)
+                                                      .split(' ')[0],
+                                                  style: headText5.copyWith(
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                                Text(
+                                                  formatStringDateV2(model
+                                                          .transactions[index]
+                                                          .dateCreated)
+                                                      .split(' ')[1],
+                                                  style: headText5,
+                                                ),
+                                              ],
                                             ),
-                                            Text(
-                                              NumberUtil.decimalLimiter(
-                                                      model.transactions[index]
-                                                          .totalTransactionAmount,
-                                                      decimalPrecision: 6)
-                                                  .toString(),
-                                              style: const TextStyle(
-                                                  fontSize: 14,
-                                                  color: primaryColor,
-                                                  fontWeight: FontWeight.bold),
-                                            )
-                                          ],
-                                        ),
-                                        subtitle: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 8.0),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                                          ),
+                                          title: Row(
+                                            mainAxisSize: MainAxisSize.min,
                                             children: [
                                               Text(
-                                                FlutterI18n.translate(
-                                                    context, "txId"),
+                                                model.transactions[index]
+                                                        .tickerName +
+                                                    ' ',
+                                                style: headText5,
+                                              ),
+                                              Text(
+                                                NumberUtil.decimalLimiter(
+                                                        model
+                                                            .transactions[index]
+                                                            .totalTransactionAmount,
+                                                        decimalPrecision: 6)
+                                                    .toString(),
                                                 style: const TextStyle(
-                                                    fontSize: 14,
+                                                    fontSize: 13,
+                                                    color: primaryColor,
                                                     fontWeight:
                                                         FontWeight.bold),
-                                              ),
-                                              Expanded(
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          left: 5.0),
-                                                  child: Text(
-                                                    model.transactions[index]
-                                                        .txid,
-                                                    maxLines: 2,
-                                                    style: const TextStyle(
+                                              )
+                                            ],
+                                          ),
+                                          subtitle: Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 8.0),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  FlutterI18n.translate(
+                                                      context, "orderId"),
+                                                  style: const TextStyle(
                                                       fontSize: 12,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                                Expanded(
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                      left: 5.0,
+                                                    ),
+                                                    child: Text(
+                                                      model.transactions[index]
+                                                          .txid,
+                                                      maxLines: 1,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      style: const TextStyle(
+                                                        fontSize: 12,
+                                                      ),
                                                     ),
                                                   ),
                                                 ),
-                                              ),
-                                            ],
+                                              ],
+                                            ),
                                           ),
-                                        ),
-                                        trailing: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              formatStringDateV2(model
-                                                      .transactions[index]
-                                                      .dateCreated)
-                                                  .split(' ')[0],
-                                              style: headText4,
-                                            ),
-                                            Text(
-                                              formatStringDateV2(model
-                                                      .transactions[index]
-                                                      .dateCreated)
-                                                  .split(' ')[1],
-                                              style: headText5,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
+                                          trailing: CopyClipboardTextWidget(
+                                              model.transactions[index].txid)),
                                     ),
                                   );
                                 }),

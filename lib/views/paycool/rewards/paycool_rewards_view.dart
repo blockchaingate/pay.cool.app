@@ -6,6 +6,7 @@ import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/utils/number_util.dart';
 import 'package:paycool/utils/string_util.dart';
 import 'package:paycool/widgets/pagination/pagination_widget.dart';
+import 'package:paycool/widgets/shared/copy_clipboard_text_widget.dart';
 import 'package:stacked/stacked.dart';
 
 import 'package:paycool/views/paycool/rewards/paycool_rewards_viewmodel.dart';
@@ -65,85 +66,102 @@ class PayCoolRewardsView extends StatelessWidget {
                                       decoration: roundedBoxDecoration(
                                           color: secondaryColor),
                                       child: ListTile(
-                                        title: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Text(
-                                              model.paymentRewards[index].coin +
-                                                  ' ',
-                                              style: headText5,
-                                            ),
-                                            Text(
-                                              NumberUtil.decimalLimiter(
-                                                      model
-                                                          .paymentRewards[index]
-                                                          .amount,
-                                                      decimalPrecision: 6)
-                                                  .toString(),
-                                              style: const TextStyle(
-                                                  fontSize: 14,
-                                                  color: primaryColor,
-                                                  fontWeight: FontWeight.bold),
-                                            )
-                                          ],
-                                        ),
-                                        subtitle: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Row(
+                                          leading: Padding(
+                                            padding: const EdgeInsets.all(5.0),
+                                            child: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
                                               children: [
                                                 Text(
-                                                  FlutterI18n.translate(
-                                                      context, "orderId"),
-                                                  style: const TextStyle(
-                                                      fontSize: 14,
+                                                  formatStringDateV2(model
+                                                          .paymentRewards[index]
+                                                          .dateCreated)
+                                                      .split(' ')[0],
+                                                  style: headText5.copyWith(
                                                       fontWeight:
                                                           FontWeight.bold),
                                                 ),
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(5.0),
-                                                  child: Text(
-                                                    model.paymentRewards[index]
-                                                        .orderid,
-                                                    maxLines: 2,
-                                                    style: const TextStyle(
-                                                      fontSize: 12,
-                                                    ),
-                                                  ),
+                                                Text(
+                                                  formatStringDateV2(model
+                                                          .paymentRewards[index]
+                                                          .dateCreated)
+                                                      .split(' ')[1],
+                                                  style: headText5,
                                                 ),
                                               ],
                                             ),
-                                          ],
-                                        ),
-                                        trailing: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              formatStringDateV2(model
-                                                      .paymentRewards[index]
-                                                      .dateCreated)
-                                                  .split(' ')[0],
-                                              style: headText4,
-                                            ),
-                                            Text(
-                                              formatStringDateV2(model
-                                                      .paymentRewards[index]
-                                                      .dateCreated)
-                                                  .split(' ')[1],
-                                              style: headText5,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
+                                          ),
+                                          title: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Text(
+                                                model.paymentRewards[index]
+                                                        .coin +
+                                                    ' ',
+                                                style: headText5,
+                                              ),
+                                              Text(
+                                                NumberUtil.decimalLimiter(
+                                                        model
+                                                            .paymentRewards[
+                                                                index]
+                                                            .amount,
+                                                        decimalPrecision: 6)
+                                                    .toString(),
+                                                style: const TextStyle(
+                                                    fontSize: 13,
+                                                    color: primaryColor,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              )
+                                            ],
+                                          ),
+                                          subtitle: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  Text(
+                                                    FlutterI18n.translate(
+                                                        context, "orderId"),
+                                                    style: const TextStyle(
+                                                        fontSize: 14,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                  Expanded(
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              5.0),
+                                                      child: Text(
+                                                        model
+                                                            .paymentRewards[
+                                                                index]
+                                                            .orderid,
+                                                        maxLines: 1,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        style: const TextStyle(
+                                                          fontSize: 12,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                          trailing: CopyClipboardTextWidget(
+                                              model.paymentRewards[index]
+                                                  .orderid)),
                                     );
                                   }))
                         ],
