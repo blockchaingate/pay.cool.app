@@ -92,7 +92,7 @@ flutter:
     - .env
 
 flutter_icons:
-  image_path: "assets/images/launcher/paycool-logo-v1.jpg"
+  image_path: "assets/images/launcher/tulum.png"
   android: true
   ios: true
 
