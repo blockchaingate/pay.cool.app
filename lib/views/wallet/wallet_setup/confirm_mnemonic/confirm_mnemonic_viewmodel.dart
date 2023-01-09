@@ -13,11 +13,13 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:bip39/bip39.dart' as bip39;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/constants/route_names.dart';
+import 'package:paycool/environments/environment_type.dart';
 import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/navigation_service.dart';
 import 'package:stacked/stacked.dart';
@@ -182,19 +184,32 @@ class ConfirmMnemonicViewModel extends BaseViewModel {
     }
 
     if (routeName == 'import') {
-      if (userTypedMnemonicList[0] != '' &&
-          userTypedMnemonicList[1] != '' &&
-          userTypedMnemonicList[2] != '' &&
-          userTypedMnemonicList[3] != '' &&
-          userTypedMnemonicList[4] != '' &&
-          userTypedMnemonicList[5] != '' &&
-          userTypedMnemonicList[6] != '' &&
-          userTypedMnemonicList[7] != '' &&
-          userTypedMnemonicList[8] != '' &&
-          userTypedMnemonicList[9] != '' &&
-          userTypedMnemonicList[10] != '' &&
-          userTypedMnemonicList[11] != '') {
-        listToStringMnemonic = userTypedMnemonicList.join(' ');
+      if ((userTypedMnemonicList[0] != '' &&
+              userTypedMnemonicList[1] != '' &&
+              userTypedMnemonicList[2] != '' &&
+              userTypedMnemonicList[3] != '' &&
+              userTypedMnemonicList[4] != '' &&
+              userTypedMnemonicList[5] != '' &&
+              userTypedMnemonicList[6] != '' &&
+              userTypedMnemonicList[7] != '' &&
+              userTypedMnemonicList[8] != '' &&
+              userTypedMnemonicList[9] != '' &&
+              userTypedMnemonicList[10] != '' &&
+              userTypedMnemonicList[11] != '') ||
+          !isProduction) {
+        var localEnv;
+        if (!isProduction) {
+          try {
+            localEnv = dotenv.env['MNEMONIC'];
+          } catch (err) {
+            localEnv = null;
+            log.e('dot env can not find local env mnemonic');
+          }
+          log.w('local env $localEnv');
+        }
+        listToStringMnemonic = isProduction
+            ? userTypedMnemonicList.join(' ')
+            : localEnv ?? userTypedMnemonicList.join(' ');
         bool isValid = bip39.validateMnemonic(listToStringMnemonic);
         if (isValid) {
           importWallet(listToStringMnemonic, context);

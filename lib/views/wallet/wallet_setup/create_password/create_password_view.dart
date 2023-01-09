@@ -189,7 +189,7 @@ class CreatePasswordView extends StatelessWidget {
                     UIHelper.verticalSpaceLarge,
 
                     Center(
-                        child: model.isCreatingWallet
+                        child: model.isCreatingWallet && model.isBusy
                             ? Shimmer.fromColors(
                                 baseColor: primaryColor,
                                 highlightColor: grey,

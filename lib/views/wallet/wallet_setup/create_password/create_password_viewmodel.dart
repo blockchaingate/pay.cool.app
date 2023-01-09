@@ -10,17 +10,20 @@
 * Author: barry-ruprai@exchangily.com
 *----------------------------------------------------------------------
 */
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/constants/route_names.dart';
+import 'package:paycool/environments/environment_type.dart';
 import 'package:paycool/logger.dart';
 import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/local_storage_service.dart';
 import 'package:paycool/services/navigation_service.dart';
 import 'package:paycool/services/vault_service.dart';
 import 'package:paycool/services/wallet_service.dart';
+import 'package:paycool/utils/string_util.dart';
 import 'package:paycool/utils/string_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
@@ -66,10 +69,7 @@ class CreatePasswordViewModel extends BaseViewModel {
   Future createOfflineWallets() async {
     isCreatingWallet = true;
     setBusy(true);
-    Future.delayed(Duration(milliseconds: 500), () {
-      log.i('going to create wallet');
-      setBusy(true);
-    });
+
     await _walletService
         .createOfflineWalletsV1(
             randomMnemonicFromRoute, passTextController.text)
@@ -127,44 +127,56 @@ class CreatePasswordViewModel extends BaseViewModel {
       confirmPassword = '';
       checkPasswordConditions = false;
       checkConfirmPasswordConditions = false;
+
       showSimpleNotification(
           Text(FlutterI18n.translate(context, "emptyPassword"),
-              style: headText4.copyWith(fontWeight: FontWeight.bold)),
+              style: headText4.copyWith(
+                  fontWeight: FontWeight.bold, color: white)),
           position: NotificationPosition.bottom,
           background: primaryColor,
           subtitle: Text(
               FlutterI18n.translate(context, "pleaseFillBothPasswordFields")));
 
+      if (!isProduction) {
+        var localEnv;
+        try {
+          localEnv = dotenv.env['PASSWORD'];
+        } catch (err) {
+          localEnv = null;
+          log.e('dot env can not find local env password');
+        }
+        passTextController.text = localEnv ?? '';
+        if (passTextController.text.isNotEmpty) {
+          createOfflineWallets();
+        }
+      }
+
+      setBusy(false);
+      return;
+    } else if (!regex.hasMatch(pass)) {
+      showSimpleNotification(
+          Text(FlutterI18n.translate(context, "passwordConditionsMismatch"),
+              style: headText4.copyWith(fontWeight: FontWeight.bold)),
+          position: NotificationPosition.bottom,
+          background: primaryColor,
+          subtitle: Text(FlutterI18n.translate(context, "passwordConditions")));
+
+      setBusy(false);
+      return;
+    } else if (pass != confirmPass) {
+      showSimpleNotification(
+          Text(FlutterI18n.translate(context, "passwordConditionsMismatch"),
+              style: headText4.copyWith(fontWeight: FontWeight.bold)),
+          position: NotificationPosition.bottom,
+          background: primaryColor,
+          subtitle: Text(FlutterI18n.translate(context, "passwordRetype")));
+
       setBusy(false);
       return;
     } else {
-      if (!regex.hasMatch(pass)) {
-        showSimpleNotification(
-            Text(FlutterI18n.translate(context, "passwordConditionsMismatch"),
-                style: headText4.copyWith(fontWeight: FontWeight.bold)),
-            position: NotificationPosition.bottom,
-            background: primaryColor,
-            subtitle:
-                Text(FlutterI18n.translate(context, "passwordConditions")));
-
-        setBusy(false);
-        return;
-      } else if (pass != confirmPass) {
-        showSimpleNotification(
-            Text(FlutterI18n.translate(context, "passwordConditionsMismatch"),
-                style: headText4.copyWith(fontWeight: FontWeight.bold)),
-            position: NotificationPosition.bottom,
-            background: primaryColor,
-            subtitle: Text(FlutterI18n.translate(context, "passwordRetype")));
-
-        setBusy(false);
-        return;
-      } else {
-        log.w('0: $isBusy');
-        createOfflineWallets();
-        passTextController.text = '';
-        confirmPassTextController.text = '';
-      }
+      createOfflineWallets();
+      passTextController.text = '';
+      confirmPassTextController.text = '';
     }
   }
 }

@@ -227,6 +227,14 @@ String formatStringDateV2(String date) {
   return formattedDate;
 }
 
+String extractTimeFromDate(String date) {
+  String wholeDate = date;
+  var dateToFormat = DateTime.parse(wholeDate);
+  String formattedTime = DateFormat.ms().format(dateToFormat);
+
+  return formattedTime;
+}
+
 String formatStringDateV3(String date) {
   String wholeDate = date;
   var dateToFormat = DateTime.parse(wholeDate);

@@ -10,6 +10,7 @@ import 'package:bip32/bip32.dart' as bip32;
 import 'package:hex/hex.dart';
 import 'package:paycool/services/config_service.dart';
 import 'package:paycool/services/local_dialog_service.dart';
+import 'package:paycool/utils/string_util.dart';
 import 'dart:typed_data';
 import 'package:web3dart/web3dart.dart';
 import '../constants/colors.dart';
@@ -762,13 +763,25 @@ class WalletService {
       'BCH',
       'TRX'
     ];
-
+    log.w('generating seed');
+    debugPrint(extractTimeFromDate(DateTime.now().toString()));
     var seed = generateSeed(mnemonic);
+    log.w('generate seed Done');
+    debugPrint(extractTimeFromDate(DateTime.now().toString()));
+    log.i('generating root');
     var root = generateBip32Root(seed);
-
+    debugPrint(extractTimeFromDate(DateTime.now().toString()));
+    log.i('generated root');
     // BCH address
+    log.e('generating bch address');
     String bchAddress = await generateBchAddress(mnemonic);
+    debugPrint(extractTimeFromDate(DateTime.now().toString()));
+    log.e('generated bch adddress');
+
+    log.w('generating trx address');
     String trxAddress = generateTrxAddress(mnemonic);
+    debugPrint(extractTimeFromDate(DateTime.now().toString()));
+    log.w('generated trx address');
 
     try {
       for (int i = 0; i < coinTickers.length; i++) {

@@ -54,10 +54,7 @@ class PayCoolService with ReactiveServiceMixin {
 
   Future<String> createTemplateById(String id) async {
     String orderIdResult = '';
-    String url = baseBlockchainGateV2Url +
-        ordersTextApiRoute +
-        paycoolTextApiRoute +
-        '/createFromTemplate';
+    String url = paycoolBaseUrl + 'userpay/createOrderFromTemplate';
     var body = {"id": id};
     log.i('createTemplateById url $url -- body ${jsonEncode(body)}');
 
@@ -67,11 +64,10 @@ class PayCoolService with ReactiveServiceMixin {
         'Accept': 'application/json'
       });
       if (response.statusCode == 200 || response.statusCode == 201) {
-        var json = jsonDecode(response.body)['_body'];
+        var json = jsonDecode(response.body);
         log.w('createTemplateById json $json');
-        if (json.isNotEmpty) {
-          orderIdResult = json['_id'];
-        }
+
+        orderIdResult = json['_id'];
       } else {
         log.e(
             'createTemplateById Response failed : reson ${response.toString()} -- body ${response.body}');

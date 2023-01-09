@@ -156,7 +156,7 @@ class PayCoolTransactionHistoryView extends StatelessWidget {
                                               children: [
                                                 Text(
                                                   FlutterI18n.translate(
-                                                      context, "orderId"),
+                                                      context, "txid"),
                                                   style: const TextStyle(
                                                       fontSize: 12,
                                                       fontWeight:

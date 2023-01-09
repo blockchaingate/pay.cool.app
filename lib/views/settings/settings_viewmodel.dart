@@ -376,26 +376,34 @@ class SettingsViewmodel extends BaseViewModel with StoppableService {
         log.w('deleting wallet');
         await coreWalletDatabaseService
             .deleteDb()
-            .whenComplete(() => log.e('core wallet database deleted!!'));
+            .whenComplete(() => log.e('core wallet database deleted!!'))
+            .catchError((err) => log.e('Catch not able to delete core db'));
 
         await walletDatabaseService
             .deleteDb()
-            .whenComplete(() => log.e('wallet database deleted!!'));
+            .whenComplete(() => log.e('wallet database deleted!!'))
+            .catchError((err) => log.e('Catch not able to delete wallet db'));
 
-        await transactionHistoryDatabaseService.deleteDb().whenComplete(
-            () => log.e('trnasaction history database deleted!!'));
+        await transactionHistoryDatabaseService
+            .deleteDb()
+            .whenComplete(() => log.e('trnasaction history database deleted!!'))
+            .catchError((err) =>
+                log.e('Catch not able to delete transaction history db'));
 
         await vaultService
             .deleteEncryptedData()
-            .whenComplete(() => log.e('encrypted data deleted!!'));
+            .whenComplete(() => log.e('encrypted data deleted!!'))
+            .catchError((err) => log.e('Catch not able to delete vault db'));
 
         await tokenListDatabaseService
             .deleteDb()
-            .whenComplete(() => log.e('Token list database deleted!!'));
+            .whenComplete(() => log.e('Token list database deleted!!'))
+            .catchError((err) => log.e('Catch not able to delete token db'));
 
         await userSettingsDatabaseService
             .deleteDb()
-            .whenComplete(() => log.e('User settings database deleted!!'));
+            .whenComplete(() => log.e('User settings database deleted!!'))
+            .catchError((err) => log.e('Catch not able to delete user db'));
 
         storageService.walletBalancesBody = '';
         storageService.isShowCaseView = true;

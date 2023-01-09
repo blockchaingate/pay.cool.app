@@ -11,6 +11,7 @@ import 'package:paycool/routes.dart';
 import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/navigation_service.dart';
 import 'constants/colors.dart';
+import 'environments/environment_type.dart';
 import 'managers/dialog_manager.dart';
 import 'services/local_dialog_service.dart';
 
@@ -47,11 +48,17 @@ Future<void> main() async {
     await serviceLocator();
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
 
-    Logger.level = Level.nothing;
+    Logger.level = Level.info;
 
     SystemChannels.textInput
         .invokeMethod('TextInput.hide'); // Hides keyboard initially
-    await dotenv.load();
+    await dotenv
+        .load(fileName: isProduction ? 'envs/.env' : 'envs/local.env')
+        .catchError((err) {
+      log.e('dot env can not find local.env, loading default');
+      dotenv.load();
+    });
+
     runApp(MyApp(flutterI18nDelegate, packageInfo));
   } catch (err) {
     debugPrint('main.dart (Catch) Locator setup has failed $err');

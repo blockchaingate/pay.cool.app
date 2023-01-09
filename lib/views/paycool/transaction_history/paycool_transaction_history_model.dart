@@ -45,9 +45,11 @@ class PayCoolTransactionHistory {
 
   factory PayCoolTransactionHistory.fromJson(Map<String, dynamic> json) {
     //double merchantAmount = BigInt.from(json['merchantGet']).toDouble() / 1e8;
-    Decimal merchantAmount = NumberUtil.rawStringToDecimal(
-      json['merchantGet'].toString(),
-    );
+    Decimal merchantAmount = json['merchantGet'] == null
+        ? Constants.decimalZero
+        : NumberUtil.rawStringToDecimal(
+            json['merchantGet'].toString(),
+          );
     Decimal exchangilyAmount = NumberUtil.rawStringToDecimal(
       json['paymentFee'].toString(),
     );
@@ -71,11 +73,14 @@ class PayCoolTransactionHistory {
         // status: json['status'],
         id: json['_id'],
         // from: json['from'],
-        //  address: json['address'],
-        merchantRecipient: json['merchantRecipient'],
-        exchangilyRecipient: json['exchangilyRecipient'],
+        address: json['address'],
+        merchantRecipient:
+            json['merchantRecipient'] == null ? '' : json['merchantRecipient'],
+        exchangilyRecipient: json['exchangilyRecipient'] == null
+            ? ''
+            : json['exchangilyRecipient'],
         coinType: json['paidCoin'],
-        rate: json['rate'],
+        //rate: json['rate'],
         merchantGet: merchantAmount,
         feePayment: exchangilyAmount,
         rewardAmount: rewardAmount,
