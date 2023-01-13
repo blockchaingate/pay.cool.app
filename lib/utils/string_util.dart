@@ -12,47 +12,22 @@
 */
 
 import 'dart:convert';
+import 'dart:math';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:hex/hex.dart';
 import 'package:decimal/decimal.dart';
 import 'package:intl/intl.dart';
 import 'package:bs58check/bs58check.dart' as Base58;
-/*
-toBitInt(num, [zeroLength]) {
-  var numString = num.toString();
-  var numStringArray = numString.split('.');
-  zeroLength ??= 18;
-  var val = '';
-  if (numStringArray != null) {
-    val = numStringArray[0];
-    if (numStringArray.length == 2) {
-      zeroLength -= numStringArray[1].length;
-      val += numStringArray[1];
-    }
-  }
 
-  var valInt = int.parse(val);
-  val = valInt.toString();
-  for (var i = 0; i < zeroLength; i++) {
-    val += '0';
-  }
-
-  return val;
-}
-*/
-
-// extension ExtendedText on Widget {
-//   addContainer(){
-//     return Container(
-//       padding: const EdgeInsets.all(16),
-//       margin: const EdgeInsets.all(16),
-//       color: Colors.yellow,
-//       child: this,
-//     );
-//   }
-// }
 class StringUtils {
+  static final Random _random = Random.secure();
+
+  static String createCryptoRandomString([int length = 64]) {
+    var val = List<int>.generate(length, (index) => _random.nextInt(256));
+    return base64Url.encode(val);
+  }
+
   static String hexToAscii(String hexInput) {
     var bytes = hexToBytes(hexInput);
     var res = ascii.decode(bytes);

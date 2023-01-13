@@ -47,6 +47,61 @@ final ECDomainParameters _params = ECCurve_secp256k1();
 final BigInt _halfCurveOrder = _params.n >> 1;
 final log = getLogger('coin_util');
 var fabUtils = FabUtils();
+
+hashKanbanMessage(String message) {
+  Uint8List messagePrefix = utf8.encode('\u0017Kanban Signed Message:\n');
+  log.w('magicHashForKanban prefix=== $messagePrefix');
+
+  var messageHexToBytes = crypto_web3.hexToBytes(message);
+  debugPrint('messageHexToBytes $messageHexToBytes');
+
+  var messageBuffer = Uint8List(messageHexToBytes.length);
+
+  int preamble = messagePrefix.length + messageHexToBytes.length;
+  Uint8List preambleBuffer = Uint8List(preamble);
+
+  preambleBuffer.setRange(0, messagePrefix.length, messagePrefix);
+
+  int bufferStart = messagePrefix.length;
+  int bufferEnd = preamble;
+
+  preambleBuffer.setRange(bufferStart, bufferEnd, messageHexToBytes);
+
+  log.w('magicHashForKanban buffer $preambleBuffer');
+  return crypto_web3.keccak256(preambleBuffer);
+}
+
+Future signHashKanbanMessage(Uint8List seed, Uint8List hash) async {
+  var network = environment["chains"]["BTC"]["network"];
+
+  final root2 = bip32.BIP32.fromSeed(
+      seed,
+      bip32.NetworkType(
+          wif: network.wif,
+          bip32: bip32.Bip32Type(
+              public: network.bip32.public, private: network.bip32.private)));
+// 1150 = fab coin type
+  var bitCoinChild = root2.derivePath("m/44'/" + 1150.toString() + "'/0'/0/0");
+  var privateKey = bitCoinChild.privateKey;
+
+  var signature = sign(hash, privateKey);
+
+  debugPrint('signature.v=======' + signature.v.toString());
+
+  final chainIdV = signature.v + 27;
+  debugPrint('chainIdV=' + chainIdV.toString());
+  signature = crypto_web3.MsgSignature(signature.r, signature.s, chainIdV);
+
+  final r = _padTo32(crypto_web3.intToBytes(signature.r));
+  final s = _padTo32(crypto_web3.intToBytes(signature.s));
+  final v = crypto_web3.intToBytes(BigInt.from(signature.v));
+  final hexr = crypto_web3.bytesToHex(r.toList(), include0x: true);
+  final hexs = crypto_web3.bytesToHex(s.toList(), include0x: true);
+  final hexv = crypto_web3.bytesToHex(v, include0x: true);
+  var rsv = {"r": hexr, "s": hexs, "v": hexv};
+  return rsv;
+}
+
 /*----------------------------------------------------------------------
                     Magic hash kanban
 ----------------------------------------------------------------------*/

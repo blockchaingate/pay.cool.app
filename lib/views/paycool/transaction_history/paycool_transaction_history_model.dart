@@ -15,6 +15,7 @@ class PayCoolTransactionHistory {
   String merchantRecipient;
   String exchangilyRecipient;
   String txid;
+  String orderId;
   int coinType;
   int rate;
   Decimal merchantGet;
@@ -36,6 +37,7 @@ class PayCoolTransactionHistory {
       this.rate,
       this.merchantGet,
       this.txid,
+      this.orderId,
       this.feePayment,
       this.rewardAmount,
       this.tax,
@@ -74,11 +76,8 @@ class PayCoolTransactionHistory {
         id: json['_id'],
         // from: json['from'],
         address: json['address'],
-        merchantRecipient:
-            json['merchantRecipient'] == null ? '' : json['merchantRecipient'],
-        exchangilyRecipient: json['exchangilyRecipient'] == null
-            ? ''
-            : json['exchangilyRecipient'],
+        merchantRecipient: json['merchantRecipient'] ?? '',
+        exchangilyRecipient: json['exchangilyRecipient'] ?? '',
         coinType: json['paidCoin'],
         //rate: json['rate'],
         merchantGet: merchantAmount,
@@ -88,6 +87,7 @@ class PayCoolTransactionHistory {
         dateCreated: json['dateCreated'],
         totalTransactionAmount: total,
         txid: json['txid'],
+        orderId: json['orderId'],
         tickerName: ticker);
   }
 
@@ -106,6 +106,7 @@ class PayCoolTransactionHistory {
     data['rewardAmount'] = rewardAmount;
     data['tax'] = tax;
     data['txid'] = txid;
+    data['orderId'] = orderId;
     data['dateCreated'] = dateCreated;
     data['totalTransactionAmount'] = totalTransactionAmount;
     return data;

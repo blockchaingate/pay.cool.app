@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:paycool/constants/api_routes.dart';
@@ -8,8 +10,10 @@ import 'package:paycool/services/local_dialog_service.dart';
 import 'package:paycool/services/shared_service.dart';
 import 'package:paycool/services/wallet_service.dart';
 import 'package:paycool/utils/abi_util.dart';
+import 'package:paycool/utils/coin_util.dart';
 import 'package:paycool/utils/kanban.util.dart';
 import 'package:paycool/utils/keypair_util.dart';
+import 'package:paycool/utils/string_util.dart';
 import 'package:paycool/views/paycool/paycool_service.dart';
 import 'package:paycool/views/paycool/transaction_history/paycool_transaction_history_model.dart';
 import 'package:stacked/stacked.dart';
@@ -27,7 +31,7 @@ class PayCoolTransactionHistoryViewModel extends FutureViewModel {
   BuildContext context;
   String fabAddress = '';
   List<PayCoolTransactionHistory> transactions = [];
-  final bool _isShowRefundButton = false;
+  bool _isShowRefundButton = false;
   bool get isShowRefundButton => _isShowRefundButton;
   String selectedTxOrderId = '';
   var apiRes;
@@ -53,7 +57,7 @@ class PayCoolTransactionHistoryViewModel extends FutureViewModel {
   showRefundButton(String orderId) {
     setBusy(true);
     selectedTxOrderId = '';
-    // _isShowRefundButton = !_isShowRefundButton;
+    _isShowRefundButton = !_isShowRefundButton;
     selectedTxOrderId = orderId;
     log.w('order id $selectedTxOrderId');
     setBusy(false);
@@ -72,16 +76,17 @@ class PayCoolTransactionHistoryViewModel extends FutureViewModel {
                       Request refund /  Cancel refund Reqesut 
 ----------------------------------------------------------------------*/
 
-  txAction(String orderId, String smartContractAddress,
+  refund(String orderId, String smartContractAddress,
       {bool isCancel = false}) async {
     setBusy(true);
     isProcessingAction = true;
     log.i(
         'requestRefund orderId $orderId -- smart contract Address $smartContractAddress');
-    String abiHex = isCancel
-        ? constructPaycoolCancelAbiHex(orderId)
-        : constructPaycoolRefundAbiHex(orderId);
-    log.i('abi hex $abiHex');
+    String randomId = StringUtils.createCryptoRandomString();
+    log.i('randomId $randomId');
+    var id = "89d7e2530fc14714db77bc40b53c65ec27e4c39544278c90f4355a1e10dd8376";
+    var hashForSign = hashKanbanMessage(id);
+    log.i('hashForSign $hashForSign');
     await dialogService
         .showDialog(
             title: FlutterI18n.translate(context, "enterPassword"),
@@ -93,36 +98,32 @@ class PayCoolTransactionHistoryViewModel extends FutureViewModel {
         String mnemonic = passRes.returnedText;
 
         var seed = walletService.generateSeed(mnemonic);
-        var keyPairKanban = getExgKeyPair(Uint8List.fromList(seed));
-        debugPrint('keyPairKanban $keyPairKanban');
-        int kanbanGasPrice = environment["chains"]["KANBAN"]["gasPrice"];
-        int kanbanGasLimit = environment["chains"]["KANBAN"]["gasLimit"];
-        var txKanbanHex;
-        String exgAddress =
-            await sharedService.getExgAddressFromCoreWalletDatabase();
-        var nonce = await getNonce(exgAddress);
-        try {
-          txKanbanHex = await signAbiHexWithPrivateKey(
-              abiHex,
-              HEX.encode(keyPairKanban["privateKey"]),
-              smartContractAddress,
-              nonce,
-              kanbanGasPrice,
-              kanbanGasLimit);
+        var signature;
+        // var keyPairKanban = getExgKeyPair(Uint8List.fromList(seed));
+        // debugPrint('keyPairKanban $keyPairKanban');
+        // int kanbanGasPrice = environment["chains"]["KANBAN"]["gasPrice"];
+        // int kanbanGasLimit = environment["chains"]["KANBAN"]["gasLimit"];
 
-          log.i('txKanbanHex $txKanbanHex');
+        // String exgAddress =
+        //     await sharedService.getExgAddressFromCoreWalletDatabase();
+        //  var nonce = await getNonce(exgAddress);
+        try {
+          signature = await signHashKanbanMessage(seed, hashForSign);
+
+          log.i(' KanbanHex $signature');
         } catch (err) {
           setBusy(false);
           log.e('err $err');
         }
 
-        var resBody = await sendKanbanRawTransaction(
-            baseBlockchainGateV2Url, txKanbanHex);
-        var res = resBody['_body'];
-        var txHash = res['transactionHash'];
+        var res =
+            await payCoolService.applyRefund(orderId, randomId, signature);
+        // await sendKanbanRawTransaction(baseBlockchainGateV2Url, signature);
+        // var res = resBody['_body'];
+        // var txHash = res['transactionHash'];
         //{"ok":true,"_body":{"transactionHash":"0x855f2d8ec57418670dd4cb27ecb71c6794ada5686e771fe06c48e30ceafe0548","status":"0x1"}}
 
-        debugPrint('res $res');
+        log.w('refund post res $res');
         // if (res['status'] == '0x1') {
         //   sharedService.sharedSimpleNotification(
         //       FlutterI18n.translate(context, "success"),
@@ -142,7 +143,7 @@ class PayCoolTransactionHistoryViewModel extends FutureViewModel {
         //       FlutterI18n.translate(context, "failed"),
         //       isError: true);
         // }
-        var errMsg = res['errMsg'];
+        // var errMsg = res['errMsg'];
         // if (txHash != null && txHash != '') {
         //   setBusy(true);
         //   apiRes = txHash;

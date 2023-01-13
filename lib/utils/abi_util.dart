@@ -103,10 +103,10 @@ extractWalletAddressFromPayCoolClubScannedAbiHex(String abiHex) {
   return {'walletAddress': walletAddress};
 }
 /*--------------------------------------------------------
-                    Extract referral address
+Extract Referral Address From Pay Cool Club Scanned Abi Hex
 --------------------------------------------------------*/
 
-extractReferralAddressFromPayCoolClubScannedAbiHex(String abiHex) {
+extractAddressFromAbihex(String abiHex) {
   String abi = abiHex.substring(0, 10);
   debugPrint(abi.toString());
   // String orderIdHex = abiHex.substring(10, 74);

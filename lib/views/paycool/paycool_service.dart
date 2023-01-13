@@ -18,6 +18,7 @@ import 'package:paycool/views/paycool/rewards/payment_rewards_model.dart';
 import 'package:paycool/views/paycool/transaction_history/paycool_transaction_history_model.dart';
 import 'package:stacked/stacked.dart';
 import 'package:hex/hex.dart';
+import 'package:web3dart/crypto.dart';
 import 'models/payment_rewards_model.dart';
 
 //@LazySingleton()
@@ -263,6 +264,36 @@ class PayCoolService with ReactiveServiceMixin {
       log.e('In getParentAddress catch $err');
       return [];
     }
+  }
+
+  Future applyRefund(
+      String orderId, String randomId, MsgSignature signature) async {
+    String url = paycoolBaseUrl + 'charge/requestrefund/' + orderId;
+
+    var body = {
+      "refundAll": true,
+      "items": [],
+      "requestRefundId":
+          "0x89d7e2530fc14714db77bc40b53c65ec27e4c39544278c90f4355a1e10dd8376",
+      "r": '0x' + signature.r.toString(),
+      "s": '0x' + signature.s.toString(),
+      "v": '0x' + signature.v.toRadixString(16),
+    };
+    log.i('getRefund url $url -- body ${jsonEncode(body)}');
+    // try {
+    //   var response = await client.post(url, body: jsonEncode(body));
+    //   if (response.statusCode == 200 || response.statusCode == 201) {
+    //     var json = jsonDecode(response.body);
+
+    //     log.w(' json  object $json');
+    //   } else {
+    //     log.e("getRefund error: " + response.body);
+    //     return response.body;
+    //   }
+    // } catch (err) {
+    //   log.e('In getRefund catch $err');
+    //   return err;
+    // }
   }
 
   Future<List<PayCoolTransactionHistory>> getTransactionHistory(String address,

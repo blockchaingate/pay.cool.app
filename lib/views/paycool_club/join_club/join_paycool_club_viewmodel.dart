@@ -78,8 +78,7 @@ class JoinPayCoolClubViewModel extends BaseViewModel {
     if (scanToPayModel != null && scanToPayModel.datAbiHex != null) {
       log.i('in scan to pay if ${scanToPayModel.toJson()}');
       var extractedReferralAddress =
-          extractReferralAddressFromPayCoolClubScannedAbiHex(
-              scanToPayModel.datAbiHex);
+          extractAddressFromAbihex(scanToPayModel.datAbiHex);
       setBusy(true);
       referralCode.text = extractedReferralAddress['referralAddress'];
       setBusy(false);

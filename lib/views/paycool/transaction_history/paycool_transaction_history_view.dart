@@ -148,42 +148,65 @@ class PayCoolTransactionHistoryView extends StatelessWidget {
                                           subtitle: Padding(
                                             padding: const EdgeInsets.symmetric(
                                                 vertical: 8.0),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
+                                            child: Column(
                                               children: [
-                                                Text(
-                                                  FlutterI18n.translate(
-                                                      context, "txid"),
-                                                  style: const TextStyle(
-                                                      fontSize: 12,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                ),
-                                                Expanded(
-                                                  child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            left: 5.0),
-                                                    child: Text(
-                                                      model.transactions[index]
-                                                          .txid,
-                                                      maxLines: 1,
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      FlutterI18n.translate(
+                                                          context, "orderId"),
                                                       style: const TextStyle(
-                                                        fontSize: 12,
+                                                          fontSize: 12,
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                    ),
+                                                    Expanded(
+                                                      child: Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                    .only(
+                                                                left: 5.0),
+                                                        child: Text(
+                                                          model
+                                                              .transactions[
+                                                                  index]
+                                                              .id,
+                                                          maxLines: 1,
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          style:
+                                                              const TextStyle(
+                                                            fontSize: 12,
+                                                          ),
+                                                        ),
                                                       ),
                                                     ),
-                                                  ),
+                                                  ],
                                                 ),
+                                                // refund button
+                                                model.isShowRefundButton
+                                                    ? ElevatedButton(
+                                                        onPressed: () =>
+                                                            model.refund(
+                                                                model
+                                                                    .transactions[
+                                                                        index]
+                                                                    .id,
+                                                                model
+                                                                    .transactions[
+                                                                        index]
+                                                                    .address),
+                                                        child: Text('Refund'))
+                                                    : Container()
                                               ],
                                             ),
                                           ),
                                           trailing: CopyClipboardTextWidget(
-                                              model.transactions[index].txid)),
+                                              model.transactions[index].id)),
                                     ),
                                   );
                                 }),

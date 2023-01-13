@@ -18,7 +18,7 @@ class CopyClipboardTextWidget extends StatelessWidget {
           size: 16,
         ),
         onPressed: () {
-          sharedService.copyAddress(context, text)();
+          sharedService.copyAddress(context, text);
         });
   }
 }
