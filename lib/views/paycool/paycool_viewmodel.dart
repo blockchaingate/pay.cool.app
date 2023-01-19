@@ -1204,14 +1204,18 @@ class PayCoolViewmodel extends FutureViewModel {
     merchantModel =
         await paycoolService.getMerchantInfo(rewardInfoModel.merchantId);
     coinPayable = newCoinTypeMap[rewardInfoModel.paidCoin];
+    if (coinPayable == null) {
+      var nullToken = await coinService.getSingleTokenData('',
+          coinType: rewardInfoModel.paidCoin);
+      coinPayable = nullToken.tickerName;
+    }
+    // ignore: iterable_contains_unrelated_type
     final v =
         exchangeBalances.indexWhere((element) => element.ticker == coinPayable);
     if (v.isNegative) {
-      var nullToken = await coinService.getSingleTokenData('',
-          coinType: rewardInfoModel.paidCoin);
       dialogService.showBasicDialog(
           title:
-              "${nullToken.tickerName} ${FlutterI18n.translate(context, "insufficientBalanceForPayment")}",
+              "$coinPayable ${FlutterI18n.translate(context, "insufficientBalanceForPayment")}",
           description:
               FlutterI18n.translate(context, "PaycoolInsufficientBalanceDesc"),
           buttonTitle: FlutterI18n.translate(context, "close"));
