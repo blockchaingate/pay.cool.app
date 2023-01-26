@@ -1,8 +1,8 @@
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:barcode_scan/model/scan_result.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:majascan/majascan.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/logger.dart';
@@ -251,9 +251,9 @@ class LightningRemitViewmodel extends FutureViewModel {
       setBusy(true);
       // String barcode = '';
       // barcode = await BarcodeUtils().scanQR(context);
-      ScanResult scanResult = await BarcodeUtils().scanBarcode(context);
+      var scanResult = await BarcodeUtils().majaScan(context);
 
-      addressController.text = scanResult.rawContent;
+      addressController.text = scanResult.toString();
 
       setBusy(false);
     } on PlatformException catch (e) {

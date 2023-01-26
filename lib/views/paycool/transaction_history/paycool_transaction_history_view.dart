@@ -161,6 +161,7 @@ class PayCoolTransactionHistoryView extends StatelessWidget {
                                                           context, "orderId"),
                                                       style: const TextStyle(
                                                           fontSize: 12,
+                                                          color: black,
                                                           fontWeight:
                                                               FontWeight.bold),
                                                     ),
@@ -181,6 +182,7 @@ class PayCoolTransactionHistoryView extends StatelessWidget {
                                                           style:
                                                               const TextStyle(
                                                             fontSize: 12,
+                                                            color: black,
                                                           ),
                                                         ),
                                                       ),

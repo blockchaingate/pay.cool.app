@@ -2,43 +2,44 @@ import 'package:decimal/decimal.dart';
 
 class PaymentReward {
   String sId;
-  String orderid;
-  String user;
+  String txid;
+  String category;
   int lockedDays;
-  String coin;
-  Decimal amount;
+  String rewardCoin;
+  Decimal rewardAmount;
   String type;
   String dateCreated;
 
   PaymentReward(
       {this.sId,
-      this.orderid,
-      this.user,
+      this.txid,
+      this.category,
       this.lockedDays,
-      this.coin,
-      this.amount,
+      this.rewardCoin,
+      this.rewardAmount,
       this.type,
       this.dateCreated});
 
   PaymentReward.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
-    orderid = json['txid'];
-    user = json['user'];
+    txid = json['txid'];
+
     lockedDays = json['lockedDays'];
-    coin = json['coin'];
-    amount = Decimal.parse(json['amount'].toString());
+    rewardCoin = json['rewardCoin'];
+    rewardAmount = Decimal.parse(json['rewardAmount'].toString());
     type = json['type'];
+    type = json['category'];
     dateCreated = json['dateCreated'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['_id'] = sId;
-    data['order'] = orderid;
-    data['user'] = user;
+    data['txid'] = txid;
+    data['category'] = category;
     data['lockedDays'] = lockedDays;
-    data['coin'] = coin;
-    data['amount'] = amount;
+    data['rewardCoin'] = rewardCoin;
+    data['rewardAmount'] = rewardAmount;
     data['type'] = type;
     data['dateCreated'] = dateCreated;
     return data;

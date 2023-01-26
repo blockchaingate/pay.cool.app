@@ -15,6 +15,7 @@ import 'dart:async';
 import 'dart:typed_data';
 // import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:majascan/majascan.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/logger.dart';
@@ -819,9 +820,9 @@ class SendViewModel extends BaseViewModel {
       log.i("Barcode: try");
       String barcode = '';
 
-      var result = await BarcodeUtils().scanBarcode(context);
-      barcode = result.rawContent;
-      log.i("Barcode Res: $result ");
+      var scanResult = await BarcodeUtils().majaScan(context);
+      barcode = scanResult.toString();
+      log.i("Barcode Res: $barcode");
 
       receiverWalletAddressTextController.text = barcode;
       setBusy(false);

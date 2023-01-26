@@ -99,7 +99,7 @@ class PayCoolRewardsView extends StatelessWidget {
                                             children: [
                                               Text(
                                                 model.paymentRewards[index]
-                                                        .coin +
+                                                        .rewardCoin +
                                                     ' ',
                                                 style: headText5,
                                               ),
@@ -108,7 +108,7 @@ class PayCoolRewardsView extends StatelessWidget {
                                                         model
                                                             .paymentRewards[
                                                                 index]
-                                                            .amount,
+                                                            .rewardAmount,
                                                         decimalPrecision: 6)
                                                     .toString(),
                                                 style: const TextStyle(
@@ -130,9 +130,11 @@ class PayCoolRewardsView extends StatelessWidget {
                                                 children: [
                                                   Text(
                                                     FlutterI18n.translate(
-                                                        context, "orderId"),
+                                                        context,
+                                                        "transactionId"),
                                                     style: const TextStyle(
                                                         fontSize: 14,
+                                                        color: black,
                                                         fontWeight:
                                                             FontWeight.bold),
                                                   ),
@@ -145,13 +147,13 @@ class PayCoolRewardsView extends StatelessWidget {
                                                         model
                                                             .paymentRewards[
                                                                 index]
-                                                            .orderid,
+                                                            .txid,
                                                         maxLines: 1,
                                                         overflow: TextOverflow
                                                             .ellipsis,
                                                         style: const TextStyle(
-                                                          fontSize: 12,
-                                                        ),
+                                                            fontSize: 12,
+                                                            color: black),
                                                       ),
                                                     ),
                                                   ),
@@ -160,8 +162,8 @@ class PayCoolRewardsView extends StatelessWidget {
                                             ],
                                           ),
                                           trailing: CopyClipboardTextWidget(
-                                              model.paymentRewards[index]
-                                                  .orderid)),
+                                              model
+                                                  .paymentRewards[index].txid)),
                                     );
                                   }))
                         ],

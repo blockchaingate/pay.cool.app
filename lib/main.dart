@@ -48,7 +48,7 @@ Future<void> main() async {
     await serviceLocator();
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
 
-    Logger.level = Level.nothing;
+    Logger.level = Level.info;
 
     SystemChannels.textInput
         .invokeMethod('TextInput.hide'); // Hides keyboard initially
@@ -119,6 +119,7 @@ class MyApp extends StatelessWidget {
         onGenerateRoute: RouteGenerator.generateRoute,
         initialRoute: '/',
         theme: ThemeData(
+          brightness: Brightness.dark,
           visualDensity: VisualDensity.adaptivePlatformDensity,
           // added unselectedWidgetColor to update inactive radio button's color
           appBarTheme: const AppBarTheme(
@@ -131,9 +132,18 @@ class MyApp extends StatelessWidget {
               statusBarBrightness: Brightness.light,
             ),
           ),
+
+          // colorScheme: ColorScheme.fromSwatch(backgroundColor: grey)
+          //     .copyWith(secondary: red),
+          textSelectionTheme: TextSelectionThemeData(
+            cursorColor: primaryColor,
+            selectionColor: Colors.grey.withOpacity(0.4),
+            selectionHandleColor: primaryColor,
+          ),
           unselectedWidgetColor: Colors.black,
           disabledColor: grey.withAlpha(100),
           primaryColor: primaryColor,
+
           backgroundColor: secondaryColor,
           cardColor: walletCardColor,
           canvasColor: secondaryColor,
@@ -168,8 +178,6 @@ class MyApp extends StatelessWidget {
               bodyText2: TextStyle(fontSize: 13, color: red),
               headline6: TextStyle(
                   fontSize: 10.5, color: white, fontWeight: FontWeight.w500)),
-          colorScheme:
-              ColorScheme.fromSwatch().copyWith(secondary: secondaryColor),
         ),
       ),
     );

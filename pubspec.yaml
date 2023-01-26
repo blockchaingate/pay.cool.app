@@ -14,7 +14,8 @@ dependency_overrides:
 
 dependencies:
   auto_size_text: ^2.1.0
-  barcode_scan: null
+  #barcode_scan: null
+  majascan:
   bitbox: ^0.0.1
   bitcoin_flutter: ^2.0.1
   bs58check: ^1.0.1

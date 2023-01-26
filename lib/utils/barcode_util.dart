@@ -1,23 +1,35 @@
-import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 // import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:majascan/majascan.dart';
 //import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 class BarcodeUtils {
-  Future<ScanResult> scanBarcode(BuildContext context) async {
-    ScanResult scanResult;
-    var options = ScanOptions(strings: {
-      "cancel": FlutterI18n.translate(context, "cancel"),
-      "flash_on": FlutterI18n.translate(context, "flashOn"),
-      "flash_off": FlutterI18n.translate(context, "flashOff"),
-    });
+  // Future<ScanResult> scanBarcode(BuildContext context) async {
+  //   ScanResult scanResult;
+  //   var options = ScanOptions(strings: {
+  //     "cancel": FlutterI18n.translate(context, "cancel"),
+  //     "flash_on": FlutterI18n.translate(context, "flashOn"),
+  //     "flash_off": FlutterI18n.translate(context, "flashOff"),
+  //   });
 
-    scanResult = await BarcodeScanner.scan(options: options);
-    // await BarcodeUtils().scanQR(context);
-    debugPrint(
-        'BarcodeUtils : scanBarcode ${scanResult.rawContent.toString()}');
-    return scanResult;
+  //   scanResult = await BarcodeScanner.scan(options: options);
+  //   // await BarcodeUtils().scanQR(context);
+  //   debugPrint(
+  //       'BarcodeUtils : scanBarcode ${scanResult.rawContent.toString()}');
+  //   return scanResult;
+  // }
+
+  Future<String> majaScan(BuildContext context) async {
+    var t = await MajaScan.startScan(
+        title: "QRcode scanner",
+        titleColor: Colors.amberAccent[700],
+        qRCornerColor: Colors.orange,
+        qRScannerColor: Colors.orange);
+
+    debugPrint('barcode res $t');
+    return t;
   }
 
   Future scanQRV2(BuildContext context) async {

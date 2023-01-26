@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:majascan/majascan.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:qr_code_tools/qr_code_tools.dart';
@@ -42,7 +43,6 @@ import 'package:paycool/views/paycool/paycool_service.dart';
 import 'package:share/share.dart';
 import 'package:stacked/stacked.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:barcode_scan/barcode_scan.dart';
 import '../../environments/environment.dart';
 import '../../services/config_service.dart';
 import 'package:image_picker/image_picker.dart';
@@ -1121,23 +1121,22 @@ class PayCoolViewmodel extends FutureViewModel {
     try {
       setBusy(true);
       log.w('setbusy 1 $isBusy');
-      ScanResult scanResult;
+
       String barcodeScanData = '';
       payOrder = PayOrder();
-      scanResult = await BarcodeUtils().scanBarcode(context);
-      barcodeScanData = scanResult.rawContent;
+      barcodeScanData = await BarcodeUtils().majaScan(context);
 
       if (addressType == Constants.ReferralAddressText) {
-        debugPrint('in 1st if-- barcode res-- ${scanResult.rawContent}');
+        debugPrint('in 1st if-- barcode res-- ${barcodeScanData}');
 
-        referralController.text = scanResult.rawContent;
+        referralController.text = barcodeScanData;
       }
       if (addressType == Constants.MerchantAddressText) {
-        if (scanResult != null) {
+        if (barcodeScanData != null) {
           log.w('setbusy 1.2 $isBusy');
           await orderDetails(barcodeScanData: barcodeScanData);
           log.w('setbusy 1.3 $isBusy');
-        } else if (scanResult.rawContent == '-1') {
+        } else if (barcodeScanData == '-1') {
           sharedService.sharedSimpleNotification(
             FlutterI18n.translate(context, "scanCancelled"),
           );
