@@ -296,6 +296,33 @@ class PayCoolService with ReactiveServiceMixin {
     // }
   }
 
+  // Get Transaction History
+
+  Future<int> getTransactionHistoryCount(String fabAddress) async {
+    String url = paymentTransactionHistoryUrl + fabAddress + '/totalCount';
+    int totalCount = 0;
+    log.i('getTransactionHistoryCount url $url');
+    try {
+      var response = await client.get(url);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        var json = jsonDecode(response.body);
+        if (json["success"]) {
+          totalCount = json['_body']['totalCount'];
+          log.i('getTransactionHistoryCount count $totalCount');
+          return totalCount;
+        } else {
+          return 0;
+        }
+      } else {
+        log.e("getTransactionHistoryCount error: " + response.body);
+        return 0;
+      }
+    } catch (err) {
+      log.e('In getTransactionHistoryCount catch $err');
+      return 0;
+    }
+  }
+
   Future<List<PayCoolTransactionHistory>> getTransactionHistory(String address,
       {int pageSize = 10, int pageNumber = 0}) async {
     String url = paymentTransactionHistoryUrl + address;
@@ -310,7 +337,7 @@ class PayCoolService with ReactiveServiceMixin {
     try {
       var response = await client.get(url);
       if (response.statusCode == 200 || response.statusCode == 201) {
-        var json = jsonDecode(response.body) as List;
+        var json = jsonDecode(response.body)['_body'] as List;
 
         log.w(
             'getTransactionHistory - LENGTH ${json.length} -- json first object ${json[0]}');

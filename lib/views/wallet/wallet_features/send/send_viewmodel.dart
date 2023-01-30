@@ -14,9 +14,11 @@
 import 'dart:async';
 import 'dart:typed_data';
 // import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:decimal/decimal.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:majascan/majascan.dart';
 import 'package:paycool/constants/colors.dart';
+import 'package:paycool/constants/constants.dart';
 import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/logger.dart';
 import 'package:paycool/models/shared/pair_decimal_config_model.dart';
@@ -25,6 +27,7 @@ import 'package:paycool/models/wallet/wallet.dart';
 import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/api_service.dart';
 import 'package:paycool/services/coin_service.dart';
+import 'package:paycool/services/db/core_wallet_database_service.dart';
 import 'package:paycool/services/db/token_list_database_service.dart';
 import 'package:paycool/services/db/transaction_history_database_service.dart';
 import 'package:paycool/services/db/wallet_database_service.dart';
@@ -66,7 +69,7 @@ class SendViewModel extends BaseViewModel {
   String errorMessage = '';
   var updatedBal;
   String toAddress;
-  double amount = 0;
+  Decimal amount = Constants.decimalZero;
   int gasPrice = 0;
   int gasLimit = 0;
   int satoshisPerBytes = 0;
@@ -194,7 +197,7 @@ class SendViewModel extends BaseViewModel {
         .toString();
     log.i(sendAmountTextController.text);
     setBusy(false);
-    amount = double.parse(sendAmountTextController.text);
+    amount = NumberUtil.convertStringToDecimal(sendAmountTextController.text);
     checkAmount();
   }
 
@@ -343,7 +346,7 @@ class SendViewModel extends BaseViewModel {
                 privateKey: privateKey,
                 fromAddr: walletInfo.address,
                 toAddr: toAddress,
-                amount: amount,
+                amount: amount.toDouble(),
                 isTrxUsdt: walletInfo.tickerName == 'USDTX' ? true : false,
                 tickerName: walletInfo.tickerName,
                 isBroadcast: true)
@@ -365,7 +368,7 @@ class SendViewModel extends BaseViewModel {
               '$t ${FlutterI18n.translate(context, "isOnItsWay")}',
             );
             // add tx to db
-            addSendTransactionToDB(walletInfo, amount, txHash);
+            addSendTransactionToDB(walletInfo, amount.toDouble(), txHash);
             Future.delayed(const Duration(milliseconds: 3), () {
               refreshBalance();
             });
@@ -404,8 +407,8 @@ class SendViewModel extends BaseViewModel {
       } else {
         // Other coins transaction
         await walletService
-            .sendTransaction(
-                tickerName, seed, [0], [], toAddress, amount, options, true)
+            .sendTransaction(tickerName, seed, [0], [], toAddress,
+                amount.toDouble(), options, true)
             .then((res) async {
           log.w('Result $res');
           txHash = res["txHash"];
@@ -424,7 +427,7 @@ class SendViewModel extends BaseViewModel {
             //   var allTxids = res["txids"];
             //  walletService.addTxids(allTxids);
             // add tx to db
-            addSendTransactionToDB(walletInfo, amount, txHash);
+            addSendTransactionToDB(walletInfo, amount.toDouble(), txHash);
             Future.delayed(const Duration(milliseconds: 30), () {
               refreshBalance();
             });
@@ -574,7 +577,7 @@ class SendViewModel extends BaseViewModel {
           isWarning: false);
       return;
     }
-    amount = double.tryParse(sendAmountTextController.text);
+    amount = NumberUtil.convertStringToDecimal(sendAmountTextController.text);
     toAddress = receiverWalletAddressTextController.text;
     if (!isTrx()) {
       gasPrice = int.tryParse(gasPriceTextController.text);
@@ -600,10 +603,10 @@ class SendViewModel extends BaseViewModel {
     }
     // double totalAmount = amount + transFee;
     if (amount == null ||
-        amount == 0 ||
-        amount.isNegative ||
+        amount == Constants.decimalZero ||
+        amount.toDouble().isNegative ||
         !checkSendAmount ||
-        amount > walletInfo.availableBalance) {
+        amount.toDouble() > walletInfo.availableBalance) {
       debugPrint('amount no good');
       sharedService.alertDialog(FlutterI18n.translate(context, "invalidAmount"),
           FlutterI18n.translate(context, "pleaseEnterValidNumber"),
@@ -670,9 +673,9 @@ class SendViewModel extends BaseViewModel {
         await updateTransFee();
         double totalAmount = 0.0;
         if (walletInfo.tickerName == 'FAB') {
-          totalAmount = amount + transFee;
+          totalAmount = amount.toDouble() + transFee;
         } else {
-          totalAmount = amount;
+          totalAmount = amount.toDouble();
         }
         log.i('total amount $totalAmount');
         log.w('wallet bal ${walletInfo.availableBalance}');
@@ -682,7 +685,7 @@ class SendViewModel extends BaseViewModel {
           checkSendAmount = false;
         }
       } else if (walletInfo.tickerName == 'TRX') {
-        if (amount + 1 <= walletInfo.availableBalance) {
+        if (amount.toDouble() + 1 <= walletInfo.availableBalance) {
           checkSendAmount = true;
         } else {
           checkSendAmount = false;
@@ -692,7 +695,8 @@ class SendViewModel extends BaseViewModel {
 
         trxBalance = await getTrxBalance();
         log.w('checkAmount trx bal $trxBalance');
-        if (amount <= walletInfo.availableBalance && trxBalance >= 15) {
+        if (amount.toDouble() <= walletInfo.availableBalance &&
+            trxBalance >= 15) {
           checkSendAmount = true;
         } else {
           checkSendAmount = false;
@@ -715,9 +719,9 @@ class SendViewModel extends BaseViewModel {
   Future<double> getTrxBalance() async {
     double balance = 0.0;
     String trxWalletAddress = '';
-    await walletDatabaseService
-        .getWalletBytickerName('TRX')
-        .then((wallet) => trxWalletAddress = wallet.address);
+    final coreWalletDbService = locator<CoreWalletDatabaseService>();
+    trxWalletAddress =
+        await coreWalletDbService.getWalletAddressByTickerName('TRX');
     String fabAddress =
         await sharedService.getFabAddressFromCoreWalletDatabase();
     await apiService
@@ -766,7 +770,7 @@ class SendViewModel extends BaseViewModel {
     var to = coinService.getCoinOfficalAddress(
         walletInfo.tickerName.toUpperCase(),
         tokenType: walletInfo.tokenType.toUpperCase());
-    amount = double.tryParse(sendAmountTextController.text);
+    amount = NumberUtil.convertStringToDecimal(sendAmountTextController.text);
     var gasPrice = int.tryParse(gasPriceTextController.text);
     var gasLimit = int.tryParse(gasLimitTextController.text);
     var satoshisPerBytes = int.tryParse(satoshisPerByteTextController.text);
@@ -788,7 +792,7 @@ class SendViewModel extends BaseViewModel {
             [0],
             [address],
             to,
-            amount,
+            amount.toDouble(),
             options,
             false)
         .then((ret) {

@@ -206,7 +206,10 @@ class SendWalletView extends StatelessWidget {
                                   // change paste text color
                                   controller: model.sendAmountTextController,
                                   onChanged: (String amount) {
-                                    model.amount = double.parse(amount);
+                                    model.amount =
+                                        NumberUtil.convertStringToDecimal(
+                                            amount);
+
                                     model.checkAmount();
                                   },
 
@@ -226,7 +229,7 @@ class SendWalletView extends StatelessWidget {
                                       hintStyle: const TextStyle(
                                           fontSize: 14, color: grey)),
                                   style: model.checkSendAmount &&
-                                          model.amount <=
+                                          model.amount.toDouble() <=
                                               walletInfo.availableBalance
                                       ? const TextStyle(
                                           color: grey, fontSize: 14)

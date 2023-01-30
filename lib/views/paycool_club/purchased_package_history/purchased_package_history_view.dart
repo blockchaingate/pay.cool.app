@@ -78,55 +78,55 @@ class PurchasedPackageView extends StatelessWidget {
                                             style: headText5.copyWith(
                                                 fontWeight: FontWeight.bold),
                                           ),
-                                          if (model.purchasedPackages[index]
-                                                  .project.status ==
-                                              0) ...[
-                                            Text(
-                                                ' ${FlutterI18n.translate(context, "noPartner")}',
-                                                style: headText6.copyWith(
-                                                    fontWeight: FontWeight.bold,
-                                                    color: black)),
-                                          ] else if (model
-                                                  .purchasedPackages[index]
-                                                  .project
-                                                  .status ==
-                                              1) ...[
-                                            Text(
-                                                ' ${FlutterI18n.translate(context, "basicPartner")}',
-                                                style: headText6.copyWith(
-                                                    fontWeight: FontWeight.bold,
-                                                    color: black)),
-                                          ] else if (model
-                                                  .purchasedPackages[index]
-                                                  .project
-                                                  .status ==
-                                              2) ...[
-                                            Text(
-                                                ' ${FlutterI18n.translate(context, "juniorPartner")}',
-                                                style: headText6.copyWith(
-                                                    fontWeight: FontWeight.bold,
-                                                    color: black)),
-                                          ] else if (model
-                                                  .purchasedPackages[index]
-                                                  .project
-                                                  .status ==
-                                              3) ...[
-                                            Text(
-                                                ' ${FlutterI18n.translate(context, "seniorPartner")}',
-                                                style: headText6.copyWith(
-                                                    fontWeight: FontWeight.bold,
-                                                    color: black)),
-                                          ] else if (model
-                                                  .purchasedPackages[index]
-                                                  .project
-                                                  .status ==
-                                              4) ...[
-                                            Text(
-                                                ' ${FlutterI18n.translate(context, "executivePartner")}',
-                                                style: headText6.copyWith(
-                                                    fontWeight: FontWeight.bold,
-                                                    color: black)),
-                                          ]
+                                          // if (model.purchasedPackages[index]
+                                          //         .project.status ==
+                                          //     0) ...[
+                                          //   Text(
+                                          //       ' ${FlutterI18n.translate(context, "noPartner")}',
+                                          //       style: headText6.copyWith(
+                                          //           fontWeight: FontWeight.bold,
+                                          //           color: black)),
+                                          // ] else if (model
+                                          //         .purchasedPackages[index]
+                                          //         .project
+                                          //         .status ==
+                                          //     1) ...[
+                                          //   Text(
+                                          //       ' ${FlutterI18n.translate(context, "basicPartner")}',
+                                          //       style: headText6.copyWith(
+                                          //           fontWeight: FontWeight.bold,
+                                          //           color: black)),
+                                          // ] else if (model
+                                          //         .purchasedPackages[index]
+                                          //         .project
+                                          //         .status ==
+                                          //     2) ...[
+                                          //   Text(
+                                          //       ' ${FlutterI18n.translate(context, "juniorPartner")}',
+                                          //       style: headText6.copyWith(
+                                          //           fontWeight: FontWeight.bold,
+                                          //           color: black)),
+                                          // ] else if (model
+                                          //         .purchasedPackages[index]
+                                          //         .project
+                                          //         .status ==
+                                          //     3) ...[
+                                          //   Text(
+                                          //       ' ${FlutterI18n.translate(context, "seniorPartner")}',
+                                          //       style: headText6.copyWith(
+                                          //           fontWeight: FontWeight.bold,
+                                          //           color: black)),
+                                          // ] else if (model
+                                          //         .purchasedPackages[index]
+                                          //         .project
+                                          //         .status ==
+                                          //     4) ...[
+                                          //   Text(
+                                          //       ' ${FlutterI18n.translate(context, "executivePartner")}',
+                                          //       style: headText6.copyWith(
+                                          //           fontWeight: FontWeight.bold,
+                                          //           color: black)),
+                                          // ]
                                         ],
                                       ),
                                     ),

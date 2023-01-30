@@ -33,7 +33,7 @@ class PurchasedPackageViewmodel extends FutureViewModel {
   final storageService = locator<LocalStorageService>();
 
 /*----------------------------------------------------------------------
-                    Default Future to Run
+                    Future to Run
 ----------------------------------------------------------------------*/
   @override
   Future futureToRun() async {

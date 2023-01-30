@@ -137,6 +137,7 @@ class ClubDashboardViewModel extends BaseViewModel {
         builder: (context) {
           return AlertDialog(
             elevation: 10,
+            backgroundColor: white,
             titleTextStyle: headText3.copyWith(color: black),
             title: Text(
               FlutterI18n.translate(context, "joinedProjects"),
@@ -159,15 +160,17 @@ class ClubDashboardViewModel extends BaseViewModel {
                                     Text(
                                       '${storageService.language == "en" ? dashboardSummary.summary[i].project.en : dashboardSummary.summary[i].project.sc}  ',
                                       textAlign: TextAlign.start,
-                                      style: headText4.copyWith(
+                                      style: headText5.copyWith(
                                           fontWeight: FontWeight.w500),
                                     ),
-                                    Text(
-                                      assignMemberType(
-                                          status: dashboardSummary
-                                              .summary[i].status),
-                                      textAlign: TextAlign.end,
-                                      style: headText6.copyWith(color: green),
+                                    Flexible(
+                                      child: Text(
+                                        assignMemberType(
+                                            status: dashboardSummary
+                                                .summary[i].status),
+                                        textAlign: TextAlign.end,
+                                        style: headText5.copyWith(color: green),
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -818,7 +821,8 @@ class ClubDashboardViewModel extends BaseViewModel {
   }
 
   goToProjectDetails(String projectId) async {
-    var projectDetails = await clubService.getProjectDetails(projectId);
+    var projectDetails =
+        await clubService.getProjectDetails(projectId, fabAddress);
     navigationService.navigateTo(clubProjectDetailsViewRoute,
         arguments: projectDetails);
   }
@@ -875,7 +879,7 @@ class ClubDashboardViewModel extends BaseViewModel {
   }
 
 // joined projects
-  jp() {
+  fillJoinedProjects() {
     for (var summary in dashboardSummary.summary) {
       if (summary.status != 0) {
         joinedProjects.add(summary.project);
@@ -891,7 +895,7 @@ class ClubDashboardViewModel extends BaseViewModel {
       dashboardSummary = dashboardDetails;
       assignMemberType();
     });
-    jp();
+    fillJoinedProjects();
     setBusy(false);
   }
 

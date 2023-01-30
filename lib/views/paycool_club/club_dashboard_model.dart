@@ -1,6 +1,7 @@
 import 'package:decimal/decimal.dart';
 import 'package:flutter/widgets.dart';
 import 'package:paycool/utils/number_util.dart';
+import 'package:paycool/utils/string_util.dart';
 
 class ClubRewardsArgs {
   List<Summary> summary;
@@ -63,9 +64,10 @@ class ClubDashboard {
             totalFetRewards += reward.amount;
           }
           if (reward.coin == 'FETDUSD-LP') {
-            if (reward.amount != null)
+            if (reward.amount != null) {
               totalFetLpRewards +=
                   NumberUtil.rawStringToDecimal(reward.amount.toString());
+            }
           }
         }
       }
@@ -86,10 +88,42 @@ class Summary {
   List<SummaryReward> totalReward;
   String referral; // parentId
   int status;
+  String expiredAt;
 
-  Summary({this.project, this.rewardDistribution, this.referral, this.status});
+  Summary(
+      {this.project,
+      this.rewardDistribution,
+      this.referral,
+      this.status,
+      this.expiredAt});
+
+  // int expiredProjectInDays() {
+  //   var expiredDate = DateTime.parse(formatStringDateV3(expiredAt));
+  //   var diff = expiredDate.difference(DateTime.now());
+  //   return diff.inDays;
+  // }
+
+  // bool showExpiredProjectWarning() {
+  //   bool res = false;
+  //   if (expiredAt != null && expiredAt.isNotEmpty) {
+  //     if (expiredProjectInDays() < 30) {
+  //       res = true;
+  //     } else {
+  //       res = false;
+  //     }
+  //   }
+  //   return res;
+  // }
 
   Summary.fromJson(Map<String, dynamic> json) {
+    var ea;
+    if (json['expiredAt'] != null) {
+      ea = json['expiredAt'];
+    }
+    // else {
+    //   ea = formatStringDateV3("2023-01-20T16:44:40.663Z");
+    // }
+
     int intStatus;
     if (json['status'] != null) {
       var st = json['status'].toString();
@@ -109,6 +143,7 @@ class Summary {
         : null;
     referral = json['referral'];
     status = intStatus;
+    expiredAt = ea;
   }
 
   Map<String, dynamic> toJson() {
@@ -124,6 +159,7 @@ class Summary {
     }
     data['referral'] = referral;
     data['status'] = status;
+    data['expiredAt'] = expiredAt;
     return data;
   }
 }

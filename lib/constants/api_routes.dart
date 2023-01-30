@@ -65,8 +65,8 @@ const String isValidPaycoolReferralRoute = "userreferral/user/";
 // https://fabtest.info/api/userreferral/user/myVKCpWKSpMDvpZZRS69re3KmSta29ZFnK/totalCount
 const String totalCountRoute = "/totalCount";
 
-const String paymentRewardUrl = paycoolBaseUrl + 'payreward/v2/user/';
-const String paymentTransactionHistoryUrl = paycoolBaseUrl + 'charge/user/';
+const String paymentRewardUrl = paycoolBaseUrl + 'payreward/v2/project/0/user/';
+const String paymentTransactionHistoryUrl = paycoolBaseUrl + 'charge/v2/user/';
 
 // ** https://api.blockchaingate.com/v2/stores/feeChargerSmartContractAddress/0x1e89b7d555fe1b68c048b68eb28724950e1051f2
 const String storeInfoPayCoolUrl =

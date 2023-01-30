@@ -1,5 +1,7 @@
 import 'package:decimal/decimal.dart';
 import 'package:paycool/constants/constants.dart';
+import 'package:paycool/service_locator.dart';
+import 'package:paycool/services/coin_service.dart';
 import 'package:paycool/utils/number_util.dart';
 import '../../../environments/coins.dart' as coin_list;
 
@@ -47,6 +49,7 @@ class PayCoolTransactionHistory {
 
   factory PayCoolTransactionHistory.fromJson(Map<String, dynamic> json) {
     //double merchantAmount = BigInt.from(json['merchantGet']).toDouble() / 1e8;
+
     Decimal merchantAmount = json['merchantGet'] == null
         ? Constants.decimalZero
         : NumberUtil.rawStringToDecimal(
@@ -88,7 +91,7 @@ class PayCoolTransactionHistory {
         totalTransactionAmount: total,
         txid: json['txid'],
         orderId: json['orderId'],
-        tickerName: ticker);
+        tickerName: ticker ?? '');
   }
 
   Map<String, dynamic> toJson() {

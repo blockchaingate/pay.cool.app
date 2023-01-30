@@ -159,7 +159,9 @@ class PayCoolClubService {
   }
 
 // https://fabtest.info/api/projectpackage/v2/project/635d62c88e64d290833fa321/10/0
-  Future<List<ClubProject>> getProjectDetails(String projectId,
+// https://fabtest.info/api/projectpackage/v2/project/635d62c88e64d290833fa321/100/0/forUser/mvRFpsWcoQBSgDYtqqbhGYJp3BgKHTH6wg -- Updated Endpoint
+  Future<List<ClubProject>> getProjectDetails(
+      String projectId, String walletAddress,
       {int pageSize = 20, int pageNumber = 0}) async {
     String url = clubProjectDetailsUrl + projectId;
 
@@ -167,7 +169,7 @@ class PayCoolClubService {
       pageNumber = pageNumber - 1;
     }
     // page number - 1 because page number start from 0 in the api but in front end its from 1
-    url = url + '/$pageSize/$pageNumber';
+    url = url + '/$pageSize/$pageNumber' + '/forUser/' + walletAddress;
     log.i('getProjectDetails url $url');
 
     try {

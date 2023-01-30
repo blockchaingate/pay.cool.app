@@ -15,7 +15,7 @@ class PaginationWidget extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
-          color: grey.withAlpha(120),
+          color: grey.withAlpha(220),
           borderRadius: const BorderRadius.all(Radius.circular(25))),
       width: 200,
       height: 45,

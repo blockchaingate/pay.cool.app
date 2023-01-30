@@ -239,7 +239,7 @@ class ClubDashboardView extends StatelessWidget {
                                           ),
                                           margin:
                                               const EdgeInsets.only(top: 10),
-                                          height: 240,
+                                          height: 255,
                                           child: Stack(
                                             children: [
                                               SizedBox(
@@ -326,16 +326,16 @@ class ClubDashboardView extends StatelessWidget {
                                                                         ),
                                                                   Text(
                                                                     model.storageService.language ==
-                                                                            'en'
+                                                                            'sc'
                                                                         ? model
                                                                             .projects[model
                                                                                 .projectIndex]
                                                                             .name
-                                                                            .en
+                                                                            .sc
                                                                         : model
                                                                             .projects[model.projectIndex]
                                                                             .name
-                                                                            .sc,
+                                                                            .en,
                                                                     style: headText2.copyWith(
                                                                         fontSize:
                                                                             22,
@@ -358,17 +358,17 @@ class ClubDashboardView extends StatelessWidget {
                                                                 child: Text(
                                                                   model.storageService
                                                                               .language ==
-                                                                          'en'
+                                                                          'sc'
                                                                       ? model
                                                                           .projects[model
                                                                               .projectIndex]
                                                                           .description
-                                                                          .en
+                                                                          .sc
                                                                       : model
                                                                           .projects[
                                                                               model.projectIndex]
                                                                           .description
-                                                                          .sc,
+                                                                          .en,
                                                                   textAlign:
                                                                       TextAlign
                                                                           .center,
@@ -379,6 +379,38 @@ class ClubDashboardView extends StatelessWidget {
                                                                           .ellipsis,
                                                                 ),
                                                               ),
+                                                              // model
+                                                              //         .dashboardSummary
+                                                              //         .summary[model
+                                                              //             .projectIndex]
+                                                              //         .showExpiredProjectWarning()
+                                                              //     ? Container(
+                                                              //         decoration:
+                                                              //             roundedBoxDecoration(
+                                                              //                 color: red),
+                                                              //         padding: EdgeInsets.symmetric(
+                                                              //             horizontal:
+                                                              //                 6,
+                                                              //             vertical:
+                                                              //                 3),
+                                                              //         child:
+                                                              //             Text(
+                                                              //           model.storageService.language ==
+                                                              //                   'sc'
+                                                              //               ? '您的 ${model.projects[model.projectIndex].name.sc} 项目质押将在  ${model.dashboardSummary.summary[model.projectIndex].expiredProjectInDays().toString()} 天后到期, 您可以通过购买月费或年费来续订'
+                                                              //               : 'Your ${model.projects[model.projectIndex].name.en} project staking is expiring in ${model.dashboardSummary.summary[model.projectIndex].expiredProjectInDays().toString()} days, you can renew it by stacking monthly or annually',
+                                                              //           textAlign:
+                                                              //               TextAlign.center,
+                                                              //           style: const TextStyle(
+                                                              //               color:
+                                                              //                   white,
+                                                              //               fontSize:
+                                                              //                   8,
+                                                              //               fontWeight:
+                                                              //                   FontWeight.bold),
+                                                              //         ),
+                                                              //       )
+                                                              //     : Container(),
                                                               UIHelper
                                                                   .verticalSpaceSmall,
                                                               ElevatedButton(
@@ -532,9 +564,9 @@ class ClubDashboardView extends StatelessWidget {
 
                                                     // member type tile
                                                     Container(
-                                                      margin:
-                                                          EdgeInsets.symmetric(
-                                                              vertical: 4),
+                                                      margin: const EdgeInsets
+                                                              .symmetric(
+                                                          vertical: 4),
                                                       decoration:
                                                           rectangularGradientBoxDecoration(
                                                               colorOne:
@@ -678,8 +710,8 @@ class ClubDashboardView extends StatelessWidget {
                                                         width: 50,
                                                         child: Container(
                                                           margin:
-                                                              EdgeInsets.only(
-                                                                  top: 4),
+                                                              const EdgeInsets
+                                                                  .only(top: 4),
                                                           child: Row(
                                                             mainAxisSize:
                                                                 MainAxisSize
@@ -856,7 +888,7 @@ class ClubDashboardView extends StatelessWidget {
                                                       title: Text(
                                                         FlutterI18n.translate(
                                                             context,
-                                                            "purchasedPackages"),
+                                                            "stackedPackages"),
                                                         style:
                                                             headText4.copyWith(
                                                                 color: black),

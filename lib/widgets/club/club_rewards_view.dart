@@ -96,18 +96,17 @@ class ClubRewardsView extends StatelessWidget {
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       Container(
-                                        width: 50,
+                                        width: 57,
                                         margin:
                                             const EdgeInsets.only(right: 10),
                                         child: Padding(
                                             padding:
                                                 const EdgeInsets.only(top: 8.0),
-                                            child: Text(
-                                              memberType(),
-                                              style: headText5.copyWith(
+                                            child: Text(memberType(),
+                                                maxLines: 2,
+                                                style: headText5.copyWith(
                                                   color: primaryColor,
-                                                  fontWeight: FontWeight.bold),
-                                            )),
+                                                ))),
                                       ),
                                     ],
                                   ),

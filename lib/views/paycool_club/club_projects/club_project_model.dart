@@ -50,7 +50,7 @@ class ClubProject {
     status = json['status'];
     dateCreated = json['dateCreated'];
     address = json['address'];
-    image = json['image'] != null ? json['image'] : null;
+    image = json['image'];
     projectId = json["project"];
     // coins = json["coins"];
   }

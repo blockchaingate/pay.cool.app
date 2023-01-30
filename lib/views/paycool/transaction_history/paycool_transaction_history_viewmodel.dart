@@ -2,24 +2,18 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
-import 'package:paycool/constants/api_routes.dart';
-import 'package:paycool/environments/environment.dart';
 import 'package:paycool/logger.dart';
 import 'package:paycool/service_locator.dart';
+import 'package:paycool/services/coin_service.dart';
+import 'package:paycool/services/db/token_list_database_service.dart';
 import 'package:paycool/services/local_dialog_service.dart';
 import 'package:paycool/services/shared_service.dart';
 import 'package:paycool/services/wallet_service.dart';
-import 'package:paycool/utils/abi_util.dart';
 import 'package:paycool/utils/coin_util.dart';
-import 'package:paycool/utils/kanban.util.dart';
-import 'package:paycool/utils/keypair_util.dart';
 import 'package:paycool/utils/string_util.dart';
 import 'package:paycool/views/paycool/paycool_service.dart';
 import 'package:paycool/views/paycool/transaction_history/paycool_transaction_history_model.dart';
 import 'package:stacked/stacked.dart';
-import 'package:hex/hex.dart';
-import 'dart:typed_data';
-
 import '../../../widgets/pagination/pagination_model.dart';
 
 class PayCoolTransactionHistoryViewModel extends FutureViewModel {
@@ -28,6 +22,7 @@ class PayCoolTransactionHistoryViewModel extends FutureViewModel {
   final sharedService = locator<SharedService>();
   final dialogService = locator<LocalDialogService>();
   WalletService walletService = locator<WalletService>();
+  final tokenService = locator<TokenListDatabaseService>();
   BuildContext context;
   String fabAddress = '';
   List<PayCoolTransactionHistory> transactions = [];
@@ -37,8 +32,12 @@ class PayCoolTransactionHistoryViewModel extends FutureViewModel {
   var apiRes;
   bool isProcessingAction = false;
   int decimalLimit = 8;
-
+  final coinService = locator<CoinService>();
   PaginationModel paginationModel = PaginationModel();
+
+  int pageNumber = 1;
+  int pageSize = 10;
+  int _totalTransactionsCount = 0;
 
   @override
   Future futureToRun() async {
@@ -49,9 +48,30 @@ class PayCoolTransactionHistoryViewModel extends FutureViewModel {
   }
 
   @override
-  void onData(data) {
+  void onData(data) async {
     transactions = data;
     if (transactions.isNotEmpty) log.w('data ${transactions[0].toJson()}');
+    for (var transaction in transactions) {
+      if (transaction.tickerName.isEmpty) {
+        var res = await tokenService.getByCointype(transaction.coinType);
+        transaction.tickerName = res.coinName.toUpperCase();
+        log.w('missing tickername acquired ${transaction.tickerName}');
+      }
+    }
+    _totalTransactionsCount =
+        await payCoolService.getTransactionHistoryCount(fabAddress);
+    paginationModel.totalPages =
+        (_totalTransactionsCount / paginationModel.pageSize).ceil();
+    paginationModel.pages = [];
+    paginationModel.pages.addAll(transactions);
+    log.i('paginationModel ${paginationModel.toString()}');
+    setBusy(false);
+    notifyListeners();
+  }
+
+  Future<String> getCt(int coinType) async {
+    var res = await coinService.getSingleTokenData('', coinType: coinType);
+    return res.coinName;
   }
 
   showRefundButton(String orderId) {
