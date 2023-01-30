@@ -448,24 +448,25 @@ class PayCoolView extends StatelessWidget {
                                                                   MainAxisAlignment
                                                                       .center,
                                                               children: [
-                                                                SizedBox(
-                                                                  width: FlutterI18n.currentLocale(context)
-                                                                              .countryCode ==
-                                                                          'es'
-                                                                      ? 60
-                                                                      : 80,
-                                                                  child: Text(
-                                                                      FlutterI18n.translate(
-                                                                          context,
-                                                                          "scanBarCode"),
-                                                                      maxLines:
-                                                                          2,
-                                                                      textAlign:
-                                                                          TextAlign
-                                                                              .center,
-                                                                      style: headText5.copyWith(
-                                                                          fontWeight:
-                                                                              FontWeight.bold)),
+                                                                Expanded(
+                                                                  child:
+                                                                      SizedBox(
+                                                                    width: FlutterI18n.currentLocale(context).countryCode ==
+                                                                            'es'
+                                                                        ? 60
+                                                                        : 80,
+                                                                    child: Text(
+                                                                        FlutterI18n.translate(
+                                                                            context,
+                                                                            "scanBarCode"),
+                                                                        maxLines:
+                                                                            2,
+                                                                        textAlign:
+                                                                            TextAlign
+                                                                                .center,
+                                                                        style:
+                                                                            headText5),
+                                                                  ),
                                                                 ),
                                                                 IconButton(
                                                                     alignment:

@@ -135,7 +135,7 @@ class WalletSetupViewmodel extends BaseViewModel {
                 ConstrainedBox(
                   constraints: BoxConstraints(
                       maxHeight: MediaQuery.of(context).size.height / 1.4),
-                  child: WebViewWidget(
+                  child: LocalWebViewWidget(
                       paycoolPrivacyUrl,
                       FlutterI18n.translate(context, "askPrivacyConsent"),
                       onProgress),

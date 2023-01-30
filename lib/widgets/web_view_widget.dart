@@ -6,17 +6,17 @@ import 'package:flutter/material.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-class WebViewWidget extends StatefulWidget {
+class LocalWebViewWidget extends StatefulWidget {
   final String url;
   final String title;
   final int Function(int) onCallBack;
-  const WebViewWidget(this.url, this.title, this.onCallBack);
+  const LocalWebViewWidget(this.url, this.title, this.onCallBack);
 
   @override
-  State<WebViewWidget> createState() => _WebViewWidgetState(this.url);
+  State<LocalWebViewWidget> createState() => _LocalWebViewWidgetState(this.url);
 }
 
-class _WebViewWidgetState extends State<WebViewWidget>
+class _LocalWebViewWidgetState extends State<LocalWebViewWidget>
     with TickerProviderStateMixin {
   bool isLoading = true;
   int loadingProgress = 0;
@@ -41,7 +41,7 @@ class _WebViewWidgetState extends State<WebViewWidget>
 
   final String _url;
   final _key = UniqueKey();
-  _WebViewWidgetState(this._url);
+  _LocalWebViewWidgetState(this._url);
   @override
   Widget build(BuildContext context) {
     return SafeArea(

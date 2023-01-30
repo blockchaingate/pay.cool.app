@@ -961,6 +961,7 @@ class PayCoolViewmodel extends FutureViewModel {
         context: context,
         builder: (context) {
           return AlertDialog(
+            backgroundColor: white,
             titleTextStyle: headText3.copyWith(
               color: black,
             ),
