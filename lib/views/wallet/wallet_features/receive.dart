@@ -26,8 +26,8 @@ import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:paycool/constants/colors.dart';
-import 'package:share/share.dart';
 import 'package:paycool/utils/fab_util.dart';
+import 'package:share_plus/share_plus.dart';
 
 class ReceiveWalletScreen extends StatefulWidget {
   final WalletInfo walletInfo;
@@ -172,8 +172,8 @@ class _ReceiveWalletScreenState extends State<ReceiveWalletScreen> {
                                   () {
                                 _capturePng().then((byteData) {
                                   file.writeAsBytes(byteData).then((onFile) {
-                                    Share.shareFiles([onFile.path],
-                                        text: convertedToFabAddress == ''
+                                    Share.share(onFile.path,
+                                        subject: convertedToFabAddress == ''
                                             ? widget.walletInfo.address
                                             : convertedToFabAddress);
                                   });

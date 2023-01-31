@@ -40,7 +40,7 @@ import 'package:paycool/utils/fab_util.dart';
 import 'package:paycool/views/paycool_club/paycool_club_service.dart';
 import 'package:paycool/views/paycool/models/merchant_model.dart';
 import 'package:paycool/views/paycool/paycool_service.dart';
-import 'package:share/share.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:stacked/stacked.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../environments/environment.dart';
@@ -1411,8 +1411,8 @@ class PayCoolViewmodel extends FutureViewModel {
                                       file
                                           .writeAsBytes(byteData)
                                           .then((onFile) {
-                                        Share.shareFiles([onFile.path],
-                                            text: kbAddress);
+                                        Share.share(onFile.path,
+                                            subject: kbAddress);
                                       });
                                     });
                                   });

@@ -64,8 +64,13 @@ class LocalAuthService {
       await _auth
           .authenticate(
         localizedReason: 'Authenticate to access the wallet',
-        useErrorDialogs: true,
-        //  stickyAuth: true,
+        //  authMessages: <AuthMessages>[IOSAuthMessages(), AndroidAuthMessages()],
+        options: const AuthenticationOptions(
+          useErrorDialogs: true,
+          stickyAuth: false,
+          sensitiveTransaction: true,
+          biometricOnly: false,
+        ),
       )
           .then((res) {
         _hasAuthorized = res;

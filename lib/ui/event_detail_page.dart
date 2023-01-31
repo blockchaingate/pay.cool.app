@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_treeview/tree_view.dart';
+import 'package:flutter_treeview/flutter_treeview.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'states.dart';
 
@@ -239,11 +239,9 @@ class _EventDetailState extends State<EventDetail> {
           key,
           node.copyWith(
               expanded: expanded,
-              icon: NodeIcon(
-                codePoint: expanded
-                    ? Icons.folder_open.codePoint
-                    : Icons.folder.codePoint,
-                color: expanded ? "blue600" : "grey700",
+              icon: IconData(
+                expanded ? Icons.folder_open.codePoint : Icons.folder.codePoint,
+                //  color: expanded ? "blue600" : "grey700",
               )),
         );
       } else {

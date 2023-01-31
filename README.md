@@ -9,4 +9,5 @@ flutter pub run flutter_launcher_icons:main
 1. rm -rf ios
 2. flutter create -i swift .
 3. flutter clean
-            
+
+flutter pub upgrade --major-versions

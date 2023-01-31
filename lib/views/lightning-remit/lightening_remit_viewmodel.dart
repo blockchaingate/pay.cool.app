@@ -2,7 +2,6 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter_i18n/flutter_i18n.dart';
-import 'package:majascan/majascan.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/logger.dart';
@@ -24,8 +23,8 @@ import 'package:overlay_support/overlay_support.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:paycool/utils/barcode_util.dart';
-import 'package:share/share.dart';
 import 'package:paycool/services/local_storage_service.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:stacked/stacked.dart';
 import 'package:paycool/models/wallet/transaction_history.dart';
 import 'package:paycool/services/db/token_list_database_service.dart';
@@ -438,8 +437,8 @@ class LightningRemitViewmodel extends FutureViewModel {
                                       file
                                           .writeAsBytes(byteData)
                                           .then((onFile) {
-                                        Share.shareFiles([onFile.path],
-                                            text: kbAddress);
+                                        Share.share(onFile.path,
+                                            subject: kbAddress);
                                       });
                                     });
                                   });
