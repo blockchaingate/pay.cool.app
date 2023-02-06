@@ -25,7 +25,7 @@ class AddGasView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<AddGasViewModel>.reactive(
-        onModelReady: (model) async {
+        onViewModelReady: (model) async {
           model.context = context;
           await model.init();
         },
@@ -260,7 +260,7 @@ class AddGasView extends StatelessWidget {
                               FlutterI18n.translate(context, "confirm"),
                               style: Theme.of(context)
                                   .textTheme
-                                  .button
+                                  .labelLarge!
                                   .copyWith(color: black),
                             ),
                           ),

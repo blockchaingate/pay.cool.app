@@ -12,10 +12,10 @@
 */
 
 import 'package:get_it/get_it.dart';
+import 'package:paycool/services/db/core_wallet_database_service.dart';
 import 'services/api_service.dart';
 import 'services/coin_service.dart';
 import 'services/config_service.dart';
-import 'services/db/core_wallet_database_service.dart';
 import 'services/db/decimal_config_database_service.dart';
 import 'services/db/token_list_database_service.dart';
 import 'services/db/transaction_history_database_service.dart';
@@ -87,7 +87,7 @@ Future serviceLocator() async {
 
   // LocalStorageService Singelton
   var instance = await LocalStorageService.getInstance();
-  locator.registerSingleton<LocalStorageService>(instance);
+  locator.registerSingleton<LocalStorageService>(instance!);
 
   // Factory returns the new instance
 

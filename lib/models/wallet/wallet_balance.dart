@@ -1,29 +1,20 @@
 import '../../utils/number_util.dart';
 
 class UsdValue {
-  double _usd;
+  double? usd;
 
-  UsdValue({double usd}) {
-    _usd = usd ?? 0.0;
-  }
+  UsdValue({this.usd});
 
   factory UsdValue.fromJson(Map<String, dynamic> json) {
     double jsonUsd = json['USD'].toDouble();
-    // if (jsonUsd.isNegative) {
-    //   jsonUsd = 0.0;
-    // }
+
     return UsdValue(usd: jsonUsd);
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = {};
-    data['USD'] = _usd;
+    data['USD'] = usd;
     return data;
-  }
-
-  double get usd => _usd;
-  set usd(double usd) {
-    _usd = usd;
   }
 }
 
@@ -32,27 +23,15 @@ class UsdValue {
 ----------------------------------------------------------------------*/
 
 class DepositErr {
-  int _coinType;
-  String _transactionID;
-  double _amount;
-  String _v;
-  String _r;
-  String _s;
+  int? coinType;
+  String? transactionID;
+  double? amount;
+  String? v;
+  String? r;
+  String? s;
 
   DepositErr(
-      {int coinType,
-      String transactionID,
-      double amount,
-      String v,
-      String r,
-      String s}) {
-    _coinType = coinType;
-    _transactionID = transactionID;
-    _amount = amount ?? 0.0;
-    _v = v;
-    _r = r;
-    _s = s;
-  }
+      {this.coinType, this.transactionID, this.amount, this.v, this.r, this.s});
 
   factory DepositErr.fromJson(Map<String, dynamic> json) {
     return DepositErr(
@@ -68,12 +47,12 @@ class DepositErr {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = {};
-    data['coinType'] = _coinType;
-    data['transactionID'] = _transactionID;
-    data['amount'] = _amount;
-    data['v'] = _v;
-    data['r'] = _r;
-    data['s'] = _s;
+    data['coinType'] = coinType;
+    data['transactionID'] = transactionID;
+    data['amount'] = amount;
+    data['v'] = v;
+    data['r'] = r;
+    data['s'] = s;
     return data;
   }
 }
@@ -83,41 +62,32 @@ class DepositErr {
 ----------------------------------------------------------------------*/
 
 class WalletBalance {
-  String _coin;
-  double _balance;
-  double _unconfirmedBalance;
-  double _lockBalance;
-  UsdValue _usdValue;
-  List<DepositErr> _depositErr;
-  double _unlockedExchangeBalance;
-  double _lockedExchangeBalance;
+  String? coin;
+  double? balance;
+  double? unconfirmedBalance;
+  double? lockBalance;
+  UsdValue? usdValue;
+  List<DepositErr>? depositErr;
+  double? unlockedExchangeBalance;
+  double? lockedExchangeBalance;
 
   WalletBalance(
-      {String coin,
-      double balance,
-      double unconfirmedBalance,
-      double lockBalance,
-      UsdValue usdValue,
-      List<DepositErr> depositErr,
-      double unlockedExchangeBalance,
-      double lockedExchangeBalance}) {
-    _coin = coin;
-    _balance = balance ?? 0.0;
-    _unconfirmedBalance = unconfirmedBalance ?? 0.0;
-    _lockBalance = lockBalance ?? 0.0;
-    _usdValue = usdValue ?? UsdValue(usd: 0.0);
-    _depositErr = depositErr;
-    _unlockedExchangeBalance = unlockedExchangeBalance ?? 0.0;
-    _lockedExchangeBalance = lockedExchangeBalance ?? 0.0;
-  }
+      {this.coin,
+      this.balance,
+      this.unconfirmedBalance,
+      this.lockBalance,
+      this.usdValue,
+      this.depositErr,
+      this.unlockedExchangeBalance,
+      this.lockedExchangeBalance});
 
   factory WalletBalance.fromJson(Map<String, dynamic> json) {
     List<DepositErr> depositErrList = [];
     var depositErrFromJsonAsList = json['depositErr'] as List;
-    if (depositErrFromJsonAsList != null) {
-      depositErrList =
-          depositErrFromJsonAsList.map((e) => DepositErr.fromJson(e)).toList();
-    }
+
+    depositErrList =
+        depositErrFromJsonAsList.map((e) => DepositErr.fromJson(e)).toList();
+
     double ub = NumberUtil().parsedDouble(json['unconfirmedBalance']);
     if (ub.isNegative) {
       ub = 0.0;
@@ -151,65 +121,24 @@ class WalletBalance {
 // To json
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = {};
-    data['coin'] = _coin;
-    data['balance'] = _balance;
-    data['unconfirmedBalance'] = _unconfirmedBalance;
-    data['lockBalance'] = _lockBalance;
-    if (_usdValue != null) {
-      data['usdValue'] = _usdValue.toJson();
-    }
-    if (_depositErr != null) {
-      data['depositErr'] = _depositErr.map((v) => v.toJson()).toList();
-    }
-    data['unlockedExchangeBalance'] = _unlockedExchangeBalance;
-    data['lockedExchangeBalance'] = _lockedExchangeBalance;
+    data['coin'] = coin;
+    data['balance'] = balance;
+    data['unconfirmedBalance'] = unconfirmedBalance;
+    data['lockBalance'] = lockBalance;
+
+    data['usdValue'] = usdValue?.toJson();
+
+    data['depositErr'] = depositErr?.map((v) => v.toJson()).toList();
+
+    data['unlockedExchangeBalance'] = unlockedExchangeBalance;
+    data['lockedExchangeBalance'] = lockedExchangeBalance;
     return data;
-  }
-
-  String get coin => _coin;
-  set coin(String coin) {
-    _coin = coin;
-  }
-
-  double get balance => _balance;
-  set balance(double balance) {
-    _balance = balance;
-  }
-
-  double get unconfirmedBalance => _unconfirmedBalance;
-  set unconfirmedBalance(double unconfirmedBalance) {
-    _unconfirmedBalance = unconfirmedBalance;
-  }
-
-  double get lockBalance => _lockBalance;
-  set lockBalance(double lockBalance) {
-    _lockBalance = lockBalance;
-  }
-
-  UsdValue get usdValue => _usdValue;
-  set usdValue(UsdValue usdValue) {
-    _usdValue = usdValue;
-  }
-
-  List<DepositErr> get depositErr => _depositErr;
-  set depositErr(List<DepositErr> depositErr) {
-    _depositErr = depositErr;
-  }
-
-  double get unlockedExchangeBalance => _unlockedExchangeBalance;
-  set unlockedExchangeBalance(double unlockedExchangeBalance) {
-    _unlockedExchangeBalance = unlockedExchangeBalance;
-  }
-
-  double get lockedExchangeBalance => _lockedExchangeBalance;
-  set lockedExchangeBalance(double lockedExchangeBalance) {
-    _lockedExchangeBalance = lockedExchangeBalance;
   }
 }
 
 class WalletBalanceList {
   final List<WalletBalance> walletBalances;
-  WalletBalanceList({this.walletBalances});
+  WalletBalanceList({required this.walletBalances});
 
   factory WalletBalanceList.fromJson(List<dynamic> parsedJson) {
     List<WalletBalance> balanceList = <WalletBalance>[];

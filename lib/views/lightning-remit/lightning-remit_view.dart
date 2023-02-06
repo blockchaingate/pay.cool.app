@@ -14,14 +14,14 @@ import 'package:paycool/views/lightning-remit/lightening_remit_viewmodel.dart';
 import 'package:paycool/widgets/bottom_nav.dart';
 
 class LightningRemitView extends StatelessWidget {
-  const LightningRemitView({Key key}) : super(key: key);
+  const LightningRemitView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     // PersistentBottomSheetController persistentBottomSheetController;
     return ViewModelBuilder<LightningRemitViewmodel>.reactive(
       viewModelBuilder: () => LightningRemitViewmodel(),
-      onModelReady: (model) {
+      onViewModelReady: (model) {
         model.context = context;
         model.init();
       },
@@ -258,7 +258,8 @@ class LightningRemitView extends StatelessWidget {
                                   ),
                                   value: model.tickerName,
                                   onChanged: (newValue) {
-                                    model.updateSelectedTickername(newValue);
+                                    model.updateSelectedTickername(
+                                        newValue.toString());
                                   },
                                   items: model.exchangeBalances.map(
                                     (coin) {
@@ -489,7 +490,7 @@ class LightningRemitView extends StatelessWidget {
                                           model: model)));
                             }
                           },
-                          child: Row(
+                          Widget: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
@@ -546,7 +547,7 @@ class LightningRemitView extends StatelessWidget {
 }
 
 class CoinListBottomSheetFloatingActionButton extends StatelessWidget {
-  const CoinListBottomSheetFloatingActionButton({Key key, this.model})
+  const CoinListBottomSheetFloatingActionButton({Key? key, required this.model})
       : super(key: key);
   final LightningRemitViewmodel model;
 
@@ -599,8 +600,8 @@ class CoinListBottomSheetFloatingActionButton extends StatelessWidget {
 // transaction history
 
 class TxHistoryView extends StatelessWidget {
-  final List<TransactionHistory> transactionHistory;
-  final LightningRemitViewmodel model;
+  final List<TransactionHistory>? transactionHistory;
+  final LightningRemitViewmodel? model;
   const TxHistoryView({this.transactionHistory, this.model});
   @override
   Widget build(BuildContext context) {
@@ -616,7 +617,7 @@ class TxHistoryView extends StatelessWidget {
             padding: const EdgeInsets.all(4.0),
             child: Column(
               children: <Widget>[
-                for (var transaction in transactionHistory)
+                for (var transaction in transactionHistory!)
                   Card(
                     elevation: 4,
                     child: Container(
@@ -633,7 +634,7 @@ class TxHistoryView extends StatelessWidget {
                               children: [
                                 Padding(
                                   padding: const EdgeInsets.only(bottom: 3.0),
-                                  child: Text(transaction.tickerName,
+                                  child: Text(transaction.tickerName.toString(),
                                       style: subText2),
                                 ),
                                 // icon
@@ -675,25 +676,28 @@ class TxHistoryView extends StatelessWidget {
                                                 color: primaryColor),
                                             recognizer: TapGestureRecognizer()
                                               ..onTap = () {
-                                                model.copyAddress(transaction
-                                                    .tickerChainTxId);
-                                                model.openExplorer(transaction
-                                                    .tickerChainTxId);
+                                                model!.copyAddress(transaction
+                                                    .tickerChainTxId
+                                                    .toString());
+                                                model!.openExplorer(transaction
+                                                    .tickerChainTxId
+                                                    .toString());
                                               }),
                                       ),
                                     ),
                                     IconButton(
                                       icon: const Icon(Icons.copy_outlined,
                                           color: black, size: 16),
-                                      onPressed: () => model.copyAddress(
-                                          transaction.tickerChainTxId),
+                                      onPressed: () => model!.copyAddress(
+                                          transaction.tickerChainTxId
+                                              .toString()),
                                     )
                                   ],
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.only(top: 5.0),
                                   child: Text(
-                                    transaction.date.substring(0, 19),
+                                    transaction.date!.substring(0, 19),
                                     style: headText5.copyWith(
                                         fontWeight: FontWeight.w400),
                                   ),
@@ -710,7 +714,7 @@ class TxHistoryView extends StatelessWidget {
                               Text(FlutterI18n.translate(context, "quantity"),
                                   style: subText2),
                               Text(
-                                transaction.quantity.toStringAsFixed(
+                                transaction.quantity!.toStringAsFixed(
                                     // model
                                     //   .decimalConfig
                                     //   .quantityDecimal

@@ -1,16 +1,16 @@
 import 'package:decimal/decimal.dart';
 
 class PaymentRewardsModel {
-  String orderId;
-  Decimal totalAmount;
-  Decimal totalTax;
-  Decimal totalShipping;
-  int paidCoin;
-  String merchantId;
-  List<TotalRewards> totalRewards = [];
-  List<RewardDetails> rewardDetails;
-  String rewardInfo;
-  List<Params> params;
+  String? orderId;
+  Decimal? totalAmount;
+  Decimal? totalTax;
+  Decimal? totalShipping;
+  int? paidCoin;
+  String? merchantId;
+  List<TotalRewards>? totalRewards = [];
+  List<RewardDetails>? rewardDetails;
+  String? rewardInfo;
+  List<Params>? params;
 
   PaymentRewardsModel(
       {this.orderId,
@@ -33,54 +33,53 @@ class PaymentRewardsModel {
     if (json['totalRewards'] != null) {
       totalRewards = <TotalRewards>[];
       json['totalRewards'].forEach((v) {
-        totalRewards.add(TotalRewards.fromJson(v));
+        totalRewards!.add(TotalRewards.fromJson(v));
       });
     }
     if (json['rewardDetails'] != null) {
       rewardDetails = <RewardDetails>[];
       json['rewardDetails'].forEach((v) {
-        rewardDetails.add(RewardDetails.fromJson(v));
+        rewardDetails!.add(RewardDetails.fromJson(v));
       });
     }
     if (json['params'] != null) {
       params = [];
       json['params'].forEach((v) {
-        params.add(Params.fromJson(v));
+        params!.add(Params.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['orderId'] = this.orderId;
-    data['totalAmount'] = this.totalAmount;
-    data['totalTax'] = this.totalTax;
-    data['totalShipping'] = this.totalShipping;
-    data['paidCoin'] = this.paidCoin;
-    data['merchantId'] = this.merchantId;
-    if (this.totalRewards != null) {
-      data['totalRewards'] = this.totalRewards.map((v) => v.toJson()).toList();
+    data['orderId'] = orderId;
+    data['totalAmount'] = totalAmount;
+    data['totalTax'] = totalTax;
+    data['totalShipping'] = totalShipping;
+    data['paidCoin'] = paidCoin;
+    data['merchantId'] = merchantId;
+    if (totalRewards != null) {
+      data['totalRewards'] = totalRewards!.map((v) => v.toJson()).toList();
     }
-    if (this.rewardDetails != null) {
-      data['rewardDetails'] =
-          this.rewardDetails.map((v) => v.toJson()).toList();
+    if (rewardDetails != null) {
+      data['rewardDetails'] = rewardDetails!.map((v) => v.toJson()).toList();
     }
-    if (this.params != null) {
-      data['params'] = this.params.map((v) => v.toJson()).toList();
+    if (params != null) {
+      data['params'] = params!.map((v) => v.toJson()).toList();
     }
     return data;
   }
 
-  Decimal get getTotalRewards => totalRewards == null || totalRewards.isEmpty
+  Decimal? get getTotalRewards => totalRewards == null || totalRewards!.isEmpty
       ? Decimal.zero
-      : totalRewards
+      : totalRewards!
           .map((e) => e.rewards)
-          .reduce((value, current) => value + current);
+          .reduce((value, current) => value! + current!);
 }
 
 class Params {
-  String to;
-  String data;
+  String? to;
+  String? data;
 
   Params({this.to, this.data});
 
@@ -91,15 +90,15 @@ class Params {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = {};
-    data['to'] = this.to;
+    data['to'] = to;
     data['data'] = this.data;
     return data;
   }
 }
 
 class TotalRewards {
-  int lockedDays;
-  Decimal rewards;
+  int? lockedDays;
+  Decimal? rewards;
 
   TotalRewards({this.lockedDays, this.rewards});
 
@@ -110,17 +109,17 @@ class TotalRewards {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = {};
-    data['lockedDays'] = this.lockedDays;
-    data['rewards'] = this.rewards;
+    data['lockedDays'] = lockedDays;
+    data['rewards'] = rewards;
     return data;
   }
 }
 
 class RewardDetails {
-  int lockedDays;
-  String type;
-  String user;
-  Decimal value;
+  int? lockedDays;
+  String? type;
+  String? user;
+  Decimal? value;
 
   RewardDetails({this.lockedDays, this.type, this.user, this.value});
 
@@ -133,10 +132,10 @@ class RewardDetails {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = Map<String, dynamic>();
-    data['lockedDays'] = this.lockedDays;
-    data['type'] = this.type;
-    data['user'] = this.user;
-    data['value'] = this.value;
+    data['lockedDays'] = lockedDays;
+    data['type'] = type;
+    data['user'] = user;
+    data['value'] = value;
     return data;
   }
 }

@@ -22,14 +22,14 @@ import 'package:stacked/stacked.dart';
 import 'package:flutter_svg/svg.dart';
 
 class WalletSetupView extends StatelessWidget {
-  const WalletSetupView({Key key}) : super(key: key);
+  const WalletSetupView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     bool isTablet = MediaQuery.of(context).size.width >= 768.0;
     return ViewModelBuilder<WalletSetupViewmodel>.reactive(
       viewModelBuilder: () => WalletSetupViewmodel(),
-      onModelReady: (WalletSetupViewmodel model) async {
+      onViewModelReady: (WalletSetupViewmodel model) async {
         model.context = context;
         model.init();
       },
@@ -361,7 +361,7 @@ class WalletSetupView extends StatelessWidget {
                         ),
                         value: model.selectedLanguage,
                         onChanged: (newValue) {
-                          model.changeWalletLanguage(newValue);
+                          model.changeWalletLanguage(newValue.toString());
                         },
                         items: [
                           DropdownMenuItem(

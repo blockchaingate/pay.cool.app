@@ -22,14 +22,15 @@ import 'package:stacked/stacked.dart';
 
 class ConfirmMnemonicView extends StatelessWidget {
   final List<String> randomMnemonicListFromRoute;
-  const ConfirmMnemonicView({Key key, this.randomMnemonicListFromRoute})
+  const ConfirmMnemonicView(
+      {Key? key, required this.randomMnemonicListFromRoute})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<ConfirmMnemonicViewModel>.reactive(
       viewModelBuilder: () => ConfirmMnemonicViewModel(),
-      onModelReady: (model) {
+      onViewModelReady: (model) {
         model.init();
         model.randomMnemonicList.addAll(randomMnemonicListFromRoute);
         randomMnemonicListFromRoute.shuffle();
@@ -44,9 +45,7 @@ class ConfirmMnemonicView extends StatelessWidget {
               iconTheme: const IconThemeData(color: Colors.black),
               centerTitle: true,
               title: Text(
-                FlutterI18n.translate(context, "confirm") +
-                    ' ' +
-                    FlutterI18n.translate(context, "mnemonic"),
+                '${FlutterI18n.translate(context, "confirm")} ${FlutterI18n.translate(context, "mnemonic")}',
                 style: headText3,
               ),
               backgroundColor: secondaryColor),
@@ -131,7 +130,7 @@ class ConfirmMnemonicView extends StatelessWidget {
                                   onPressed: () {
                                     model.clearTappedList();
                                   },
-                                  child: Row(
+                                  Widget: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       const Padding(

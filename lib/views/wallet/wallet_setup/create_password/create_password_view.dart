@@ -22,13 +22,13 @@ import 'package:stacked/stacked.dart';
 
 class CreatePasswordView extends StatelessWidget {
   final args;
-  const CreatePasswordView({Key key, this.args}) : super(key: key);
+  const CreatePasswordView({Key? key, this.args}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<CreatePasswordViewModel>.reactive(
       viewModelBuilder: () => CreatePasswordViewModel(),
-      onModelReady: (model) {
+      onViewModelReady: (model) {
         model.randomMnemonicFromRoute = args['mnemonic'];
         model.context = context;
 

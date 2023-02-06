@@ -12,8 +12,7 @@ import 'package:paycool/views/wallet/wallet_dashboard_viewmodel.dart';
 import 'package:paycool/widgets/wallet/deposit_widget.dart';
 import 'package:stacked/stacked.dart';
 
-class CoinDetailsCardWidget
-    extends ViewModelBuilderWidget<WalletDashboardViewModel> {
+class CoinDetailsCardWidget extends StackedView<WalletDashboardViewModel> {
   final String tickerName;
   final int index;
   final List<WalletBalance> wallets;
@@ -21,21 +20,24 @@ class CoinDetailsCardWidget
   final BuildContext context;
 
   const CoinDetailsCardWidget(
-      {this.tickerName, this.index, this.wallets, this.context});
+      {required this.tickerName,
+      required this.index,
+      required this.wallets,
+      required this.context});
   @override
   WalletDashboardViewModel viewModelBuilder(BuildContext context) =>
       WalletDashboardViewModel();
   @override
   Widget builder(
-      BuildContext context, WalletDashboardViewModel model, Widget child) {
+      BuildContext context, WalletDashboardViewModel model, Widget? child) {
     var walletUtils = WalletUtil();
     String finalTickerName = '';
     String logoTicker = '';
 
     var specialTickerRes =
         walletUtils.updateSpecialTokensTickerNameForTxHistory(tickerName);
-    finalTickerName = specialTickerRes['tickerName'];
-    logoTicker = specialTickerRes['logoTicker'];
+    finalTickerName = specialTickerRes['tickerName']!;
+    logoTicker = specialTickerRes['logoTicker']!;
     if (model.hideSmallAmountCheck(wallets[index])) {
       return Container();
     } else {
@@ -97,12 +99,12 @@ class CoinDetailsCardWidget
                           ),
                           Expanded(
                             child: Text(
-                                wallets[index].balance.isNegative
+                                wallets[index].balance!.isNegative
                                     ? FlutterI18n.translate(
                                         context, "unavailable")
                                     : NumberUtil()
                                         .truncateDoubleWithoutRouding(
-                                            wallets[index].balance,
+                                            wallets[index].balance!,
                                             precision: 6)
                                         .toString(),
                                 style: headText6),
@@ -121,12 +123,12 @@ class CoinDetailsCardWidget
                           ),
                           Expanded(
                             child: Text(
-                                wallets[index].lockBalance.isNegative
+                                wallets[index].lockBalance!.isNegative
                                     ? FlutterI18n.translate(
                                         context, "unavailable")
                                     : NumberUtil()
                                         .truncateDoubleWithoutRouding(
-                                            wallets[index].lockBalance,
+                                            wallets[index].lockBalance!,
                                             precision: 6)
                                         .toString(),
                                 style: headText6.copyWith(color: red)),
@@ -146,14 +148,14 @@ class CoinDetailsCardWidget
                           Expanded(
                             child: Text(
                                 wallets[index]
-                                        .unlockedExchangeBalance
+                                        .unlockedExchangeBalance!
                                         .isNegative
                                     ? FlutterI18n.translate(
                                         context, "unavailable")
                                     : NumberUtil()
                                         .truncateDoubleWithoutRouding(
                                             wallets[index]
-                                                .unlockedExchangeBalance,
+                                                .unlockedExchangeBalance!,
                                             precision: 6)
                                         .toString(),
                                 style: headText6),
@@ -178,15 +180,15 @@ class CoinDetailsCardWidget
                           const Text('\$', style: TextStyle(color: green)),
                           Expanded(
                             child: Text(
-                              wallets[index].usdValue.usd.isNegative
+                              wallets[index].usdValue!.usd!.isNegative
                                   ? FlutterI18n.translate(
                                       context, "unavailable")
                                   : NumberUtil()
                                       .truncateDoubleWithoutRouding(
-                                          (!wallets[index].balance.isNegative
+                                          (!wallets[index].balance!.isNegative
                                                   ? wallets[index].balance
-                                                  : 0.0) *
-                                              wallets[index].usdValue.usd,
+                                                  : 0.0)! *
+                                              wallets[index].usdValue!.usd!,
                                           precision: 2)
                                       .toString(),
                               style: const TextStyle(color: green),
@@ -272,7 +274,7 @@ class CoinDetailsCardWidget
                                           style:
                                               subText2.copyWith(color: yellow)),
                                       Text(
-                                          '${NumberUtil().truncateDoubleWithoutRouding(wallets[index].unconfirmedBalance, precision: 8)}  FAB',
+                                          '${NumberUtil().truncateDoubleWithoutRouding(wallets[index].unconfirmedBalance!, precision: 8)}  FAB',
                                           textAlign: TextAlign.start,
                                           style:
                                               subText2.copyWith(color: yellow)),

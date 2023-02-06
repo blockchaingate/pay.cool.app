@@ -11,8 +11,8 @@ import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/views/paycool_club/club_projects/club_project_model.dart';
 
 class ClubProjectDetailsView extends StatefulWidget {
-  final List<ClubProject> projectDetails;
-  const ClubProjectDetailsView({Key key, this.projectDetails})
+  final List<ClubProject>? projectDetails;
+  const ClubProjectDetailsView({Key? key, this.projectDetails})
       : super(key: key);
 
   @override
@@ -28,14 +28,14 @@ class _ClubProjectDetailsViewState extends State<ClubProjectDetailsView> {
     final storageService = locator<LocalStorageService>();
     final navigationService = locator<NavigationService>();
     //selectedCoin = [];
-    for (var element in widget.projectDetails) {
-      selectedCoin.add(element.coins[0]);
+    for (var element in widget.projectDetails!) {
+      selectedCoin.add(element.coins![0]);
     }
-    if (selectedCoin.length > widget.projectDetails.length) {
+    if (selectedCoin.length > widget.projectDetails!.length) {
       selectedCoin.removeRange(
-          widget.projectDetails.length, selectedCoin.length);
+          widget.projectDetails!.length, selectedCoin.length);
     }
-    debugPrint('projects length ${widget.projectDetails.length}');
+    debugPrint('projects length ${widget.projectDetails!.length}');
     return Scaffold(
       // extendBodyBehindAppBar: true,
       appBar: customAppBarWithTitleNB(
@@ -60,7 +60,7 @@ class _ClubProjectDetailsViewState extends State<ClubProjectDetailsView> {
                 child: ListView.builder(
                     padding: const EdgeInsets.only(top: 10),
                     shrinkWrap: true,
-                    itemCount: widget.projectDetails.length,
+                    itemCount: widget.projectDetails!.length,
                     itemBuilder: (BuildContext context, int index) {
                       return Card(
                         margin: const EdgeInsets.symmetric(
@@ -72,10 +72,10 @@ class _ClubProjectDetailsViewState extends State<ClubProjectDetailsView> {
                           onTap: () => navigationService.navigateTo(
                               clubPackageCheckoutViewRoute,
                               arguments: {
-                                "package": widget.projectDetails[index],
+                                "package": widget.projectDetails![index],
                                 'paymentCoin': selectedCoin[index]
                               }),
-                          leading: widget.projectDetails[index].image == null
+                          leading: widget.projectDetails![index].image == null
                               ? Container(
                                   width: 30,
                                   height: 30,
@@ -92,12 +92,15 @@ class _ClubProjectDetailsViewState extends State<ClubProjectDetailsView> {
                                                 color: primaryColor,
                                               )),
                                       backgroundImage: NetworkImage(
-                                        widget.projectDetails[index].image,
+                                        widget.projectDetails![index].image
+                                            .toString(),
                                       ))),
                           title: Text(
                             storageService.language == 'en'
-                                ? widget.projectDetails[index].name.en
-                                : widget.projectDetails[index].name.sc,
+                                ? widget.projectDetails![index].name!.en
+                                    .toString()
+                                : widget.projectDetails![index].name!.sc
+                                    .toString(),
                             style: headText4.copyWith(
                                 fontWeight: FontWeight.bold, color: black),
                           ),
@@ -110,10 +113,10 @@ class _ClubProjectDetailsViewState extends State<ClubProjectDetailsView> {
                                   overflow: TextOverflow.ellipsis,
                                   text: TextSpan(
                                       text: storageService.language == 'en'
-                                          ? widget.projectDetails[index]
-                                              .description.en
-                                          : widget.projectDetails[index]
-                                              .description.sc,
+                                          ? widget.projectDetails![index]
+                                              .description!.en
+                                          : widget.projectDetails![index]
+                                              .description!.sc,
                                       style: const TextStyle(
                                           fontSize: 12,
                                           decoration: TextDecoration.underline,
@@ -147,15 +150,17 @@ class _ClubProjectDetailsViewState extends State<ClubProjectDetailsView> {
                                                                     .language ==
                                                                 'en'
                                                             ? widget
-                                                                .projectDetails[
+                                                                .projectDetails![
                                                                     index]
-                                                                .description
+                                                                .description!
                                                                 .en
+                                                                .toString()
                                                             : widget
-                                                                .projectDetails[
+                                                                .projectDetails![
                                                                     index]
-                                                                .description
-                                                                .sc,
+                                                                .description!
+                                                                .sc
+                                                                .toString(),
                                                         style: headText3,
                                                       )),
                                                     ));
@@ -177,10 +182,11 @@ class _ClubProjectDetailsViewState extends State<ClubProjectDetailsView> {
                                   value: selectedCoin[index],
                                   onChanged: (newValue) {
                                     setState(() {
-                                      selectedCoin[index] = newValue;
+                                      selectedCoin[index] = newValue.toString();
                                     });
                                   },
-                                  items: widget.projectDetails[index].coins.map(
+                                  items:
+                                      widget.projectDetails![index].coins!.map(
                                     (coin) {
                                       return DropdownMenuItem(
                                         value: coin,

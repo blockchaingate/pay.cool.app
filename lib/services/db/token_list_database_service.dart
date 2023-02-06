@@ -35,18 +35,18 @@ class TokenListDatabaseService {
   final String columnFeeWithdraw = 'feeWithdraw';
 
   static const _databaseVersion = 5;
-  static Future<Database> _database;
+  static Database? _database;
   String path = '';
 
+  Future<Database> get database async => _database ??= await initDb();
   Future<Database> initDb() async {
     //  deleteDb();
-    if (_database != null) return _database;
+    if (_database != null) return database;
     var databasePath = await getDatabasesPath();
     path = join(databasePath, _databaseName);
     log.w('init db $path');
-    _database =
-        openDatabase(path, version: _databaseVersion, onCreate: _onCreate);
-    return _database;
+
+    return openDatabase(path, version: _databaseVersion, onCreate: _onCreate);
   }
 
   void _onCreate(Database db, int version) async {
@@ -68,7 +68,7 @@ class TokenListDatabaseService {
 
   Future<List<TokenModel>> getAll() async {
     await initDb();
-    final Database db = await _database;
+    final Database db = await database;
     log.w('getall $db');
 
     // res is giving me the same output in the log whether i map it or just take var res
@@ -84,7 +84,7 @@ class TokenListDatabaseService {
     await initDb();
     int id;
 
-    final Database db = await _database;
+    final Database db = await database;
     id = await db
         .insert(tableName, passedToken.toJson(),
             conflictAlgorithm: ConflictAlgorithm.replace)
@@ -95,10 +95,10 @@ class TokenListDatabaseService {
   }
 
   // Get Single transaction By Name
-  Future<TokenModel> getByTickerName(String tickerName) async {
+  Future<TokenModel?> getByTickerName(String tickerName) async {
     await initDb();
-    final Database db = await _database;
-    List<Map> res = await db
+    final Database db = await database;
+    List<Map<String, dynamic>> res = await db
         .query(tableName, where: 'tickerName= ?', whereArgs: [tickerName]);
     log.i('Name - $tickerName - res-- $res');
 
@@ -108,10 +108,10 @@ class TokenListDatabaseService {
   }
 
   // Get Single token By Name
-  Future<TokenModel> getByCointype(int coinType) async {
+  Future<TokenModel?> getByCointype(int? coinType) async {
     await initDb();
-    final Database db = await _database;
-    List<Map> res =
+    final Database db = await database;
+    List<Map<String, dynamic>> res =
         await db.query(tableName, where: 'type= ?', whereArgs: [coinType]);
     log.i('coinType - $coinType - res-- $res');
 
@@ -120,10 +120,10 @@ class TokenListDatabaseService {
   }
 
   // Get contract address By coinType
-  Future<String> getContractAddressByCoinType(int coinType) async {
+  Future<String?> getContractAddressByCoinType(int coinType) async {
     await initDb();
-    final Database db = await _database;
-    List<Map> res =
+    final Database db = await database;
+    List<Map<String, dynamic>> res =
         await db.query(tableName, where: 'type= ?', whereArgs: [coinType]);
     log.w('coinType - $coinType - res-- $res');
 
@@ -134,14 +134,14 @@ class TokenListDatabaseService {
   // Get coin type by tickername
   getCoinTypeByTickerName(String tickerName) async {
     await initDb();
-    final Database db = await _database;
-    List<Map> res = await db.query(tableName,
+    final Database db = await database;
+    List<Map<String, dynamic>> res = await db.query(tableName,
         distinct: true,
         where: 'tickerName= ?',
         whereArgs: [tickerName],
         limit: 1);
     log.w('Name - $tickerName - res-- $res');
-    int tt = TokenModel.fromJson(res.first).coinType;
+    int? tt = TokenModel.fromJson(res.first).coinType;
     log.i('token type $tt');
 
     if (res.isNotEmpty) return TokenModel.fromJson(res.first).coinType;
@@ -153,11 +153,11 @@ class TokenListDatabaseService {
   // Get tickername By coin type
   getTickerNameByCoinType(int coinType) async {
     await initDb();
-    final Database db = await _database;
-    List<Map> res = await db.query(tableName,
+    final Database db = await database;
+    List<Map<String, dynamic>> res = await db.query(tableName,
         distinct: true, where: 'type= ?', whereArgs: [coinType], limit: 1);
     log.w('coin type - $coinType - res-- $res');
-    String ticker = TokenModel.fromJson(res.first).tickerName;
+    String? ticker = TokenModel.fromJson(res.first).tickerName;
     log.i('ticker $ticker');
 
     if (res.isNotEmpty) return TokenModel.fromJson(res.first).tickerName;
@@ -168,8 +168,9 @@ class TokenListDatabaseService {
 
   // Get Single transaction By Id
   Future getById(int id) async {
-    final Database db = await _database;
-    List<Map> res = await db.query(tableName, where: 'id= ?', whereArgs: [id]);
+    final Database db = await database;
+    List<Map<String, dynamic>> res =
+        await db.query(tableName, where: 'id= ?', whereArgs: [id]);
     log.w('ID - $id --- $res');
     if (res.isNotEmpty) {
       return TokenModel.fromJson((res.first));
@@ -179,7 +180,7 @@ class TokenListDatabaseService {
 
   // Update database
   Future<void> update(TokenModel token) async {
-    final Database db = await _database;
+    final Database db = await database;
     await db.update(
       tableName,
       token.toJson(),
@@ -191,14 +192,14 @@ class TokenListDatabaseService {
 
   // delete single token
   Future<void> deleteByTickerName(String tickerName) async {
-    final db = await _database;
+    final db = await database;
     await db
         .delete(tableName, where: "tickerName = ?", whereArgs: [tickerName]);
   }
 
   // Close Database
   Future closeDb() async {
-    var db = await _database;
+    var db = await database;
     return db.close();
   }
 

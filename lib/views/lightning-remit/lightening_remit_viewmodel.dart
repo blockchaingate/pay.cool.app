@@ -49,11 +49,11 @@ class LightningRemitViewmodel extends FutureViewModel {
       locator<WalletDatabaseService>();
   WalletService walletService = locator<WalletService>();
   String tickerName = '';
-  BuildContext context;
+  BuildContext? context;
   double quantity = 0.0;
   List<Map<String, dynamic>> coins = [];
   GlobalKey globalKey = GlobalKey();
-  ScrollController scrollController;
+  ScrollController? scrollController;
   bool isExchangeBalanceEmpty = false;
   String barcodeRes = '';
   String barcodeRes2 = '';
@@ -125,8 +125,8 @@ class LightningRemitViewmodel extends FutureViewModel {
         transactionHistory.add(tx);
       });
       log.w('LightningRemit txs ${transactionHistory.length}');
-      transactionHistory.sort(
-          (a, b) => DateTime.parse(b.date).compareTo(DateTime.parse(a.date)));
+      transactionHistory.sort((a, b) => DateTime.parse(b.date.toString())
+          .compareTo(DateTime.parse(a.date.toString())));
     });
     setBusy(false);
   }
@@ -250,7 +250,7 @@ class LightningRemitViewmodel extends FutureViewModel {
       setBusy(true);
       // String barcode = '';
       // barcode = await BarcodeUtils().scanQR(context);
-      var scanResult = await BarcodeUtils().majaScan(context);
+      var scanResult = await BarcodeUtils().majaScan(context!);
 
       addressController.text = scanResult.toString();
 
@@ -259,23 +259,23 @@ class LightningRemitViewmodel extends FutureViewModel {
       if (e.code == "PERMISSION_NOT_GRANTED") {
         setBusy(true);
         sharedService.alertDialog(
-            '', FlutterI18n.translate(context, "userAccessDenied"),
+            '', FlutterI18n.translate(context!, "userAccessDenied"),
             isWarning: false);
         // receiverWalletAddressTextController.text =
         //     FlutterI18n.translate(context, "userAccessDenied");
       } else {
         // setBusy(true);
         sharedService.alertDialog(
-            '', FlutterI18n.translate(context, "unknownError"),
+            '', FlutterI18n.translate(context!, "unknownError"),
             isWarning: false);
       }
     } on FormatException {
       sharedService.alertDialog(
-          '', FlutterI18n.translate(context, "scanCancelled"),
+          '', FlutterI18n.translate(context!, "scanCancelled"),
           isWarning: false);
     } catch (e) {
       sharedService.alertDialog(
-          '', FlutterI18n.translate(context, "unknownError"),
+          '', FlutterI18n.translate(context!, "unknownError"),
           isWarning: false);
     }
     setBusy(false);
@@ -322,7 +322,7 @@ class LightningRemitViewmodel extends FutureViewModel {
     await apiService.getSingleCoinExchangeBalance(tickerName).then((res) {
       exchangeBalances.firstWhere((element) {
         if (element.ticker == tickerName) {
-          element.unlockedAmount = res.unlockedAmount;
+          element.unlockedAmount = res!.unlockedAmount;
         }
         log.w('udpated balance check ${element.unlockedAmount}');
         return true;
@@ -343,7 +343,7 @@ class LightningRemitViewmodel extends FutureViewModel {
       String kbAddress = walletService.toKbPaymentAddress(fabAddress);
       debugPrint('KBADDRESS $kbAddress');
       showDialog(
-        context: context,
+        context: context!,
         builder: (BuildContext context) {
           return Platform.isIOS
               ? CupertinoAlertDialog(
@@ -435,7 +435,7 @@ class LightningRemitViewmodel extends FutureViewModel {
                                         .capturePng(globalKey: globalKey)
                                         .then((byteData) {
                                       file
-                                          .writeAsBytes(byteData)
+                                          .writeAsBytes(byteData!)
                                           .then((onFile) {
                                         Share.share(onFile.path,
                                             subject: kbAddress);
@@ -568,7 +568,7 @@ class LightningRemitViewmodel extends FutureViewModel {
                                               .capturePng(globalKey: globalKey)
                                               .then((byteData) {
                                             file
-                                                .writeAsBytes(byteData)
+                                                .writeAsBytes(byteData!)
                                                 .then((onFile) {
                                               Share.shareFiles([onFile.path],
                                                   text: kbAddress);
@@ -617,8 +617,8 @@ class LightningRemitViewmodel extends FutureViewModel {
     if (walletService.isValidKbAddress(addressController.text)) {
       if (amountController.text == '') {
         sharedService.alertDialog(
-            FlutterI18n.translate(context, "validationError"),
-            FlutterI18n.translate(context, "amountMissing"));
+            FlutterI18n.translate(context!!, "validationError"),
+            FlutterI18n.translate(context!!, "amountMissing"));
         setBusy(false);
         return;
       }
@@ -631,18 +631,18 @@ class LightningRemitViewmodel extends FutureViewModel {
       double selectedCoinBalance = _selectedExchangeBal.unlockedAmount;
       if (selectedCoinBalance <= 0.0 || amount > selectedCoinBalance) {
         sharedService.alertDialog(
-            FlutterI18n.translate(context, "validationError"),
-            FlutterI18n.translate(context, "invalidAmount"));
+            FlutterI18n.translate(context!!, "validationError"),
+            FlutterI18n.translate(context!!, "invalidAmount"));
         setBusy(false);
         log.e('No exchange balance ${_selectedExchangeBal.unlockedAmount}');
         return;
       }
       await dialogService
           .showDialog(
-              title: FlutterI18n.translate(context, "enterPassword"),
+              title: FlutterI18n.translate(context!!, "enterPassword"),
               description: FlutterI18n.translate(
-                  context, "dialogManagerTypeSamePasswordNote"),
-              buttonTitle: FlutterI18n.translate(context, "confirm"))
+                  context!!, "dialogManagerTypeSamePasswordNote"),
+              buttonTitle: FlutterI18n.translate(context!!, "confirm"))
           .then((res) async {
         if (res.confirmed) {
           String mnemonic = res.returnedText;
@@ -656,7 +656,7 @@ class LightningRemitViewmodel extends FutureViewModel {
                 res['transactionHash'] != '') {
               showSimpleNotification(
                   Text(FlutterI18n.translate(
-                      context, "sendTransactionComplete")),
+                      context!, "sendTransactionComplete")),
                   leading: const Icon(Icons.check, color: white),
                   position: NotificationPosition.top,
                   background: primaryColor);
@@ -678,8 +678,8 @@ class LightningRemitViewmodel extends FutureViewModel {
               });
             } else {
               sharedService.alertDialog(
-                  FlutterI18n.translate(context, "transanctionFailed"),
-                  FlutterI18n.translate(context, "pleaseTryAgainLater"));
+                  FlutterI18n.translate(context!, "transanctionFailed"),
+                  FlutterI18n.translate(context!, "pleaseTryAgainLater"));
             }
           });
         } else if (res.returnedText == 'Closed') {
@@ -688,11 +688,12 @@ class LightningRemitViewmodel extends FutureViewModel {
         } else {
           log.e('Wrong pass');
           sharedService.showInfoFlushbar(
-              FlutterI18n.translate(context, "notice"),
-              FlutterI18n.translate(context, "pleaseProvideTheCorrectPassword"),
+              FlutterI18n.translate(context!, "notice"),
+              FlutterI18n.translate(
+                  context!, "pleaseProvideTheCorrectPassword"),
               Icons.cancel,
               red,
-              context);
+              context!);
           setBusy(false);
         }
       }).catchError((error) {
@@ -702,9 +703,9 @@ class LightningRemitViewmodel extends FutureViewModel {
       });
     } else {
       sharedService.alertDialog(
-          FlutterI18n.translate(context, "validationError"),
+          FlutterI18n.translate(context!, "validationError"),
           FlutterI18n.translate(
-              context, "pleaseCorrectTheFormatOfReceiveAddress"));
+              context!, "pleaseCorrectTheFormatOfReceiveAddress"));
       setBusy(false);
     }
     setBusy(false);
@@ -716,14 +717,14 @@ class LightningRemitViewmodel extends FutureViewModel {
 
   Future contentPaste() async {
     await Clipboard.getData('text/plain')
-        .then((res) => addressController.text = res.text);
+        .then((res) => addressController.text = res!.text!);
   }
 
   copyAddress(String txId) {
     Clipboard.setData(ClipboardData(text: txId));
     showSimpleNotification(
         Center(
-            child: Text(FlutterI18n.translate(context, "copiedSuccessfully"),
+            child: Text(FlutterI18n.translate(context!, "copiedSuccessfully"),
                 style: headText5)),
         position: NotificationPosition.bottom,
         background: primaryColor);

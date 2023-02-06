@@ -1,3 +1,4 @@
+import 'package:decimal/decimal.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
@@ -24,9 +25,9 @@ import 'referral/referral_model.dart';
 
 class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   _SliverAppBarDelegate({
-    @required this.minHeight,
-    @required this.maxHeight,
-    @required this.child,
+    required this.minHeight,
+    required this.maxHeight,
+    required this.child,
   });
   final double minHeight;
   final double maxHeight;
@@ -50,7 +51,7 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
 }
 
 class ClubDashboardView extends StatelessWidget {
-  const ClubDashboardView({Key key}) : super(key: key);
+  const ClubDashboardView({Key? key}) : super(key: key);
 
   topPaycoolWidget(context, ClubDashboardViewModel model) {
     return Column(
@@ -163,7 +164,7 @@ class ClubDashboardView extends StatelessWidget {
   Widget build(BuildContext context) {
     return ViewModelBuilder<ClubDashboardViewModel>.reactive(
         viewModelBuilder: () => ClubDashboardViewModel(),
-        onModelReady: (model) async {
+        onViewModelReady: (model) async {
           model.context = context;
           model.init();
         },
@@ -180,19 +181,19 @@ class ClubDashboardView extends StatelessWidget {
                         padding: const EdgeInsets.all(15),
                         child: Column(children: [
                           model.storageService.language == 'en'
-                              ? Text(model.projects[index].name.en)
-                              : Text(model.projects[index].name.sc)
+                              ? Text(model.projects[index].name!.en.toString())
+                              : Text(model.projects[index].name!.sc.toString())
                         ]),
                       );
                     })));
           }
 
           return AnnotatedRegion<SystemUiOverlayStyle>(
-            value: SystemUiOverlayStyle.dark,
-            child: Scaffold(
+            //  value: SystemUiOverlayStyle.dark,
+            Widget: Scaffold(
               extendBodyBehindAppBar: true,
               body: model.isServerDown
-                  ? const Center(child: ServerErrorWidget())
+                  ? Center(child: ServerErrorWidget())
                   : model.isBusy
                       ? model.sharedService.loadingIndicator()
                       : WillPopScope(
@@ -330,12 +331,14 @@ class ClubDashboardView extends StatelessWidget {
                                                                         ? model
                                                                             .projects[model
                                                                                 .projectIndex]
-                                                                            .name
+                                                                            .name!
                                                                             .sc
+                                                                            .toString()
                                                                         : model
                                                                             .projects[model.projectIndex]
-                                                                            .name
-                                                                            .en,
+                                                                            .name!
+                                                                            .en
+                                                                            .toString(),
                                                                     style: headText2.copyWith(
                                                                         fontSize:
                                                                             22,
@@ -362,13 +365,15 @@ class ClubDashboardView extends StatelessWidget {
                                                                       ? model
                                                                           .projects[model
                                                                               .projectIndex]
-                                                                          .description
+                                                                          .description!
                                                                           .sc
+                                                                          .toString()
                                                                       : model
                                                                           .projects[
                                                                               model.projectIndex]
-                                                                          .description
-                                                                          .en,
+                                                                          .description!
+                                                                          .en
+                                                                          .toString(),
                                                                   textAlign:
                                                                       TextAlign
                                                                           .center,
@@ -423,7 +428,8 @@ class ClubDashboardView extends StatelessWidget {
                                                                       model.goToProjectDetails(model
                                                                           .projects[
                                                                               model.projectIndex]
-                                                                          .sId);
+                                                                          .sId
+                                                                          .toString());
                                                                     } else {
                                                                       model
                                                                           .showJoinPaycoolPopup();
@@ -692,7 +698,7 @@ class ClubDashboardView extends StatelessWidget {
                                                               arguments: ClubRewardsArgs(
                                                                   summary: model
                                                                       .dashboardSummary
-                                                                      .summary,
+                                                                      .summary!,
                                                                   rewardTokenPriceMap:
                                                                       model
                                                                           .rewardTokenPriceMap)),
@@ -729,13 +735,7 @@ class ClubDashboardView extends StatelessWidget {
                                                                         .center,
                                                                 children: [
                                                                   Text(
-                                                                      'FAB'
-                                                                              ' ' +
-                                                                          model
-                                                                              .dashboardSummary
-                                                                              .totalFabRewards()[
-                                                                                  'FAB']
-                                                                              .toString(),
+                                                                      'FAB ${model.dashboardSummary.totalFabRewards()['FAB']}',
                                                                       style:
                                                                           headText5),
                                                                   Padding(
@@ -754,12 +754,8 @@ class ClubDashboardView extends StatelessWidget {
                                                                             mainAxisSize:
                                                                                 MainAxisSize.min,
                                                                             children: [
-                                                                              Text(
-                                                                                  'FET'
-                                                                                          ' ' +
-                                                                                      NumberUtil.decimalLimiter(model.dashboardSummary.totalFabRewards()["FET"], decimalPrecision: 8).toString(),
-                                                                                  style: headText5),
-                                                                              Text('  \$${NumberUtil.decimalLimiter(model.dashboardSummary.totalFabRewards()["FET"] * model.rewardTokenPriceMap['FET'])}', maxLines: 2, style: headText5.copyWith(color: green, fontWeight: FontWeight.bold))
+                                                                              Text('FET ${NumberUtil.decimalLimiter(Decimal.parse(model.dashboardSummary.totalFabRewards()["FET"].toString()), decimalPrecision: 8)}', style: headText5),
+                                                                              Text('  \$${NumberUtil.decimalLimiter(Decimal.parse(model.dashboardSummary.totalFabRewards()["FET"]!.toString()) * Decimal.parse(model.rewardTokenPriceMap['FET'].toString()))}', maxLines: 2, style: headText5.copyWith(color: green, fontWeight: FontWeight.bold))
                                                                             ],
                                                                           )
                                                                         : Container(),
@@ -778,12 +774,9 @@ class ClubDashboardView extends StatelessWidget {
                                                                           mainAxisSize:
                                                                               MainAxisSize.min,
                                                                           children: [
-                                                                            Text(
-                                                                                'FETDUSD-LP'
-                                                                                        ' ' +
-                                                                                    NumberUtil.decimalLimiter(model.dashboardSummary.totalFabRewards()["FETLP"], decimalPrecision: 8).toString(),
+                                                                            Text('FETDUSD-LP ${NumberUtil.decimalLimiter(Decimal.parse(model.dashboardSummary.totalFabRewards()["FETLP"]!.toString()), decimalPrecision: 8)}',
                                                                                 style: headText5),
-                                                                            Text('  \$${NumberUtil.decimalLimiter(model.dashboardSummary.totalFabRewards()["FETLP"] * model.rewardTokenPriceMap['FETDUSD-LP'])}',
+                                                                            Text('  \$${NumberUtil.decimalLimiter(model.dashboardSummary.totalFabRewards()["FETLP"]! * Decimal.parse(model.rewardTokenPriceMap['FETDUSD-LP']!.toString()))}',
                                                                                 maxLines: 2,
                                                                                 style: headText5.copyWith(color: green, fontWeight: FontWeight.bold)),
                                                                           ],
@@ -950,9 +943,8 @@ class ClubDashboardView extends StatelessWidget {
                                                       borderRadius:
                                                           BorderRadius.circular(
                                                               25),
-                                                      gradient:
-                                                          const LinearGradient(
-                                                              colors: [
+                                                      gradient: LinearGradient(
+                                                          colors: [
                                                             Color(0xFFcd45ff),
                                                             Color(0xFF7368ff),
                                                           ])),
@@ -972,7 +964,7 @@ class ClubDashboardView extends StatelessWidget {
                                                           .navigateTo(
                                                               PayCoolViewRoute);
                                                     },
-                                                    child: Text(
+                                                    Widget: Text(
                                                         FlutterI18n.translate(
                                                             context,
                                                             "joinPayCoolButton"),

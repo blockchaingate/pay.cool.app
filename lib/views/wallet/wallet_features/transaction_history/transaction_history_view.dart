@@ -10,7 +10,8 @@ import 'package:stacked/stacked.dart';
 
 class TransactionHistoryView extends StatelessWidget {
   final WalletInfo walletInfo;
-  const TransactionHistoryView({Key key, this.walletInfo}) : super(key: key);
+  const TransactionHistoryView({Key? key, required this.walletInfo})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +19,7 @@ class TransactionHistoryView extends StatelessWidget {
     return ViewModelBuilder<TransactionHistoryViewmodel>.reactive(
         viewModelBuilder: () =>
             TransactionHistoryViewmodel(tickerName: walletInfo.tickerName),
-        onModelReady: (model) async {
+        onViewModelReady: (model) async {
           model.context = context;
           model.walletInfo = walletInfo;
         },

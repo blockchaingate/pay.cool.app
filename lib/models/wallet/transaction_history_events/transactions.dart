@@ -5,10 +5,10 @@ class Transactions {
   String status;
 
   Transactions({
-    this.chain,
-    this.transactionId,
-    this.timestamp,
-    this.status,
+    required this.chain,
+    required this.transactionId,
+    required this.timestamp,
+    required this.status,
   });
 
   @override

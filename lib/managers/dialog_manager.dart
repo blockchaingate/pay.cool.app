@@ -30,7 +30,7 @@ import '../services/vault_service.dart';
 
 class DialogManager extends StatefulWidget {
   final Widget child;
-  const DialogManager({Key key, this.child}) : super(key: key);
+  const DialogManager({Key? key, required this.child}) : super(key: key);
 
   @override
   _DialogManagerState createState() => _DialogManagerState();
@@ -72,10 +72,10 @@ class _DialogManagerState extends State<DialogManager> {
             animationType: AnimationType.grow,
             isOverlayTapDismiss: false,
             backgroundColor: walletCardColor,
-            descStyle: Theme.of(context).textTheme.bodyText1,
+            descStyle: Theme.of(context).textTheme.bodyMedium!,
             titleStyle: Theme.of(context)
                 .textTheme
-                .headline3
+                .displaySmall!
                 .copyWith(fontWeight: FontWeight.bold)),
         context: context,
         title: request.title,
@@ -95,29 +95,31 @@ class _DialogManagerState extends State<DialogManager> {
         //   ],
         // ),
         buttons: [
-          if (request.secondaryButton.isNotEmpty)
+          if (request.secondaryButton!.isNotEmpty)
             DialogButton(
               color: red,
               onPressed: () {
-                _dialogService.dialogComplete(DialogResponse(confirmed: false));
+                _dialogService.dialogComplete(
+                    DialogResponse(returnedText: '', confirmed: false));
 
                 Navigator.of(context).pop();
               },
               child: Text(
-                request.secondaryButton,
-                style: Theme.of(context).textTheme.headline4,
+                request.secondaryButton!,
+                style: Theme.of(context).textTheme.headlineMedium,
               ),
             ),
           DialogButton(
             color: primaryColor,
             onPressed: () {
-              _dialogService.dialogComplete(DialogResponse(confirmed: true));
+              _dialogService.dialogComplete(
+                  DialogResponse(returnedText: '', confirmed: true));
 
               Navigator.of(context).pop();
             },
             child: Text(
               request.buttonTitle,
-              style: Theme.of(context).textTheme.headline4,
+              style: Theme.of(context).textTheme.headlineMedium,
             ),
           )
         ]).show();
@@ -144,7 +146,8 @@ class _DialogManagerState extends State<DialogManager> {
           DialogButton(
             color: primaryColor,
             onPressed: () {
-              _dialogService.dialogComplete(DialogResponse(confirmed: true));
+              _dialogService.dialogComplete(
+                  DialogResponse(returnedText: '', confirmed: true));
               Navigator.of(context).pop();
             },
             child: Text(

@@ -1,17 +1,17 @@
 import 'package:paycool/utils/string_util.dart';
 
 class PayCoolRewardsModel {
-  List<int> coinType;
-  List<String> amount;
-  List<String> txids;
-  int status;
-  String sId;
-  String id;
-  String address;
-  String user;
-  int releaseTime;
-  String lockerCreator;
-  String dateCreated;
+  List<int>? coinType;
+  List<String>? amount;
+  List<String>? txids;
+  String? sId;
+  int? status;
+  String? id;
+  String? address;
+  String? user;
+  int? releaseTime;
+  String? lockerCreator;
+  String? dateCreated;
 
   PayCoolRewardsModel(
       {this.coinType,
@@ -57,13 +57,13 @@ class PayCoolRewardsModel {
   }
 
   String releaseDateTimeString() {
-    var date = dateFromMilliseconds(releaseTime);
+    var date = dateFromMilliseconds(releaseTime!);
     return formatStringDateV2(date.toString());
   }
 }
 
 class PayCoolRewardsModelList {
-  final List<PayCoolRewardsModel> rewards;
+  final List<PayCoolRewardsModel>? rewards;
   PayCoolRewardsModelList({this.rewards});
 
   factory PayCoolRewardsModelList.fromJson(List<dynamic> parsedJson) {

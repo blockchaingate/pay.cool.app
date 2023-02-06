@@ -11,8 +11,6 @@
 *----------------------------------------------------------------------
 */
 
-import 'package:flutter/foundation.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:paycool/constants/colors.dart';
@@ -37,7 +35,6 @@ import 'package:paycool/utils/wallet/wallet_util.dart';
 import 'package:paycool/widgets/web_view_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stacked/stacked.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 import '../../../constants/api_routes.dart';
 import '../../../service_locator.dart';
 import 'dart:io' show Platform;
@@ -59,11 +56,11 @@ class WalletSetupViewmodel extends BaseViewModel {
   final authService = locator<LocalAuthService>();
   final userSettingsDatabaseService = locator<UserSettingsDatabaseService>();
 
-  BuildContext context;
+  late BuildContext context;
   bool isWallet = false;
   String errorMessage = '';
 
-  String selectedLanguage;
+  String selectedLanguage = '';
   UserSettings userSettings = UserSettings();
   bool isUserSettingsEmpty = false;
   final Map<String, String> languages = {
@@ -203,7 +200,7 @@ class WalletSetupViewmodel extends BaseViewModel {
       coreWalletDbData = '';
       log.e('importCreateNav importCreateNav CATCH err $err');
     }
-    List walletDatabase;
+    List walletDatabase = [];
     try {
       await walletDatabaseService.initDb();
       walletDatabase = await walletDatabaseService.getAll();
@@ -283,8 +280,8 @@ class WalletSetupViewmodel extends BaseViewModel {
       if (res.confirmed) {
         var walletVerificationRes =
             await walletService.verifyWalletAddresses(res.returnedText);
-        isWalletVerifySuccess = walletVerificationRes['fabAddressCheck'] &&
-            walletVerificationRes['trxAddressCheck'];
+        isWalletVerifySuccess = walletVerificationRes['fabAddressCheck']! &&
+            walletVerificationRes['trxAddressCheck']!;
         // set has wallet verified to true
         storageService.hasWalletVerified = true;
 
@@ -440,7 +437,7 @@ class WalletSetupViewmodel extends BaseViewModel {
       // /// of the dropdownMenuItem's value
 
       if (languages.containsKey(key)) {
-        selectedLanguage = languages[key];
+        selectedLanguage = languages[key].toString();
 
         await FlutterI18n.refresh(context, Locale(key));
       }
@@ -470,7 +467,9 @@ class WalletSetupViewmodel extends BaseViewModel {
       key = updatedLanguageValue;
     }
 // selected language should be English,Chinese or other language selected not its lang code
-    selectedLanguage = key.isEmpty ? updatedLanguageValue : languages[key];
+    selectedLanguage = key.isEmpty
+        ? updatedLanguageValue.toString()
+        : languages[key].toString();
     log.w('selectedLanguage $selectedLanguage');
     if (updatedLanguageValue == 'Chinese' ||
         updatedLanguageValue == 'zh' ||

@@ -5,6 +5,10 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+// Import for Android features.
+import 'package:webview_flutter_android/webview_flutter_android.dart';
+// Import for iOS features.
+import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 
 class LocalWebViewWidget extends StatefulWidget {
   final String url;
@@ -13,17 +17,19 @@ class LocalWebViewWidget extends StatefulWidget {
   const LocalWebViewWidget(this.url, this.title, this.onCallBack);
 
   @override
-  State<LocalWebViewWidget> createState() => _LocalWebViewWidgetState(this.url);
+  State<LocalWebViewWidget> createState() => _LocalWebViewWidgetState(url);
 }
 
 class _LocalWebViewWidgetState extends State<LocalWebViewWidget>
     with TickerProviderStateMixin {
   bool isLoading = true;
   int loadingProgress = 0;
-  AnimationController animationController;
+  AnimationController? animationController;
+  late WebViewController controller;
+  late final PlatformWebViewControllerCreationParams params;
   @override
   void dispose() {
-    animationController.dispose();
+    animationController!.dispose();
     super.dispose();
   }
 
@@ -32,11 +38,42 @@ class _LocalWebViewWidgetState extends State<LocalWebViewWidget>
     super.initState();
     animationController = AnimationController(
         duration: const Duration(milliseconds: 700), vsync: this);
-    animationController.repeat();
-    if (Platform.isAndroid) {
-      WebView.platform = SurfaceAndroidWebView();
+    animationController!.repeat();
+    controller = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setBackgroundColor(secondaryColor)
+      ..setNavigationDelegate(NavigationDelegate(
+        onProgress: ((progress) {
+          widget.onCallBack(progress);
+          setState(() {
+            loadingProgress = progress;
+          });
+          debugPrint('loadingProgress $loadingProgress');
+        }),
+        onPageFinished: (finish) {
+          setState(() {
+            isLoading = false;
+          });
+        },
+      ))
+      ..loadRequest(Uri.parse(_url));
+
+    if (WebViewPlatform.instance is WebKitWebViewPlatform) {
+      params = WebKitWebViewControllerCreationParams(
+        allowsInlineMediaPlayback: true,
+        mediaTypesRequiringUserAction: const <PlaybackMediaTypes>{},
+      );
+    } else {
+      params = const PlatformWebViewControllerCreationParams();
     }
-    if (Platform.isIOS) WebView.platform = CupertinoWebView();
+
+    controller = WebViewController.fromPlatformCreationParams(params);
+// ···
+    if (controller.platform is AndroidWebViewController) {
+      AndroidWebViewController.enableDebugging(true);
+      (controller.platform as AndroidWebViewController)
+          .setMediaPlaybackRequiresUserGesture(false);
+    }
   }
 
   final String _url;
@@ -55,41 +92,26 @@ class _LocalWebViewWidgetState extends State<LocalWebViewWidget>
           // ),
           body: Stack(
         children: [
-          WebView(
-            onProgress: ((progress) {
-              widget.onCallBack(progress);
-              setState(() {
-                loadingProgress = progress;
-              });
-              debugPrint('loadingProgress $loadingProgress');
-            }),
-            onPageFinished: (finish) {
-              setState(() {
-                isLoading = false;
-              });
-            },
-            gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>{
-              Factory<VerticalDragGestureRecognizer>(
-                () => VerticalDragGestureRecognizer(),
-              ),
-            },
+          WebViewWidget(
+            controller: controller,
+
+            // gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>{
+            //   Factory<VerticalDragGestureRecognizer>(
+            //     () => VerticalDragGestureRecognizer(),
+            //   ),
+            // },
             key: _key,
-            javascriptMode: JavascriptMode.unrestricted,
-            initialUrl: _url,
-            //initialUrl: Uri.dataFromString(
-            //   '<p>Web view sample</p>' * 1000,
-            //    ).toString(),
           ),
           Visibility(
+            visible: isLoading,
             child: Center(
                 child: CircularProgressIndicator(
               color: primaryColor,
-              valueColor: animationController
+              valueColor: animationController!
                   .drive(ColorTween(begin: secondaryColor, end: primaryColor)),
               value: double.parse(loadingProgress.toString()) / 100,
               semanticsValue: loadingProgress.toString(),
             )),
-            visible: isLoading,
           )
         ],
       )),

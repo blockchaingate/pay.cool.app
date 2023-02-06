@@ -23,7 +23,6 @@ import 'package:paycool/services/local_storage_service.dart';
 import 'package:paycool/services/navigation_service.dart';
 import 'package:paycool/services/vault_service.dart';
 import 'package:paycool/services/wallet_service.dart';
-import 'package:paycool/utils/string_util.dart';
 import 'package:paycool/utils/string_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
@@ -40,7 +39,7 @@ class CreatePasswordViewModel extends BaseViewModel {
   bool passwordMatch = false;
   bool checkConfirmPasswordConditions = false;
   String randomMnemonicFromRoute = '';
-  BuildContext context;
+  late BuildContext context;
   String password = '';
   String confirmPassword = '';
   bool isError = false;
@@ -97,7 +96,7 @@ class CreatePasswordViewModel extends BaseViewModel {
   bool checkPassword(String pass) {
     setBusy(true);
     password = pass;
-    var res = RegexValidator(pattern).isValid(password);
+    var res = RegexValidator(pattern.toString()).isValid(password);
     checkPasswordConditions = res;
     password == confirmPassword ? passwordMatch = true : passwordMatch = false;
     if (passwordMatch) isError = false;
@@ -109,7 +108,7 @@ class CreatePasswordViewModel extends BaseViewModel {
   bool checkConfirmPassword(String confirmPass) {
     setBusy(true);
     confirmPassword = confirmPass;
-    var res = RegexValidator(pattern).isValid(confirmPass);
+    var res = RegexValidator(pattern.toString()).isValid(confirmPass);
     checkConfirmPasswordConditions = res;
     password == confirmPass ? passwordMatch = true : passwordMatch = false;
     if (passwordMatch) isError = false;
@@ -118,7 +117,7 @@ class CreatePasswordViewModel extends BaseViewModel {
   }
 
   Future validatePassword() async {
-    RegExp regex = RegExp(pattern);
+    RegExp regex = RegExp(pattern.toString());
     String pass = passTextController.text;
     String confirmPass = confirmPassTextController.text;
     if (pass.isEmpty) {

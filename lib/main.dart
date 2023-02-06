@@ -20,9 +20,9 @@ import 'package:flutter_i18n/flutter_i18n.dart';
 
 Future<void> main() async {
   final String defaultLocale = Platform.localeName;
-  debugPrint("defaultLocale: " + defaultLocale);
+  debugPrint("defaultLocale: $defaultLocale");
   final String shortLocale = defaultLocale.substring(0, 2);
-  debugPrint("shortLocale: " + shortLocale);
+  debugPrint("shortLocale: $shortLocale");
 
   //init i18n setting
   FlutterI18nDelegate flutterI18nDelegate = FlutterI18nDelegate(
@@ -87,7 +87,7 @@ class MyApp extends StatelessWidget {
                           child: MediaQuery(
                               data: MediaQuery.of(context)
                                   .copyWith(textScaleFactor: 1.0),
-                              child: widget),
+                              child: widget!),
                         ))),
             Positioned(
                 bottom: 120,
@@ -144,39 +144,40 @@ class MyApp extends StatelessWidget {
           disabledColor: grey.withAlpha(100),
           primaryColor: primaryColor,
 
+          //  colorScheme: ColorScheme(background: secondaryColor,
           backgroundColor: secondaryColor,
           cardColor: walletCardColor,
           canvasColor: secondaryColor,
           //  brightness: Brightness.dark,
-          buttonTheme: const ButtonThemeData(
+          buttonTheme: ButtonThemeData(
               minWidth: double.infinity,
               buttonColor: primaryColor,
-              padding: EdgeInsets.all(15),
+              padding: const EdgeInsets.all(15),
               shape: StadiumBorder(),
               textTheme: ButtonTextTheme.primary),
           fontFamily: 'WorkSans',
           textTheme: const TextTheme(
-              button: TextStyle(fontSize: 14, color: white),
-              headline1: TextStyle(
+              labelLarge: TextStyle(fontSize: 14, color: white),
+              displayLarge: TextStyle(
                   fontSize: 22,
                   color: white,
                   fontWeight: FontWeight.bold,
                   letterSpacing: 1.25),
-              headline2: TextStyle(
+              displayMedium: TextStyle(
                   fontSize: 18, color: white, fontWeight: FontWeight.w300),
-              headline3: TextStyle(fontSize: 16, color: white),
-              headline4: TextStyle(
+              displaySmall: TextStyle(fontSize: 16, color: white),
+              headlineMedium: TextStyle(
                   fontSize: 15, color: white, fontWeight: FontWeight.w300),
-              subtitle1: TextStyle(
+              titleMedium: TextStyle(
                   fontSize: 14, color: white, fontWeight: FontWeight.w300),
-              headline5: TextStyle(
+              headlineSmall: TextStyle(
                   fontSize: 12.5, color: white, fontWeight: FontWeight.w400),
-              subtitle2: TextStyle(
+              titleSmall: TextStyle(
                   fontSize: 10.3, color: grey, fontWeight: FontWeight.w400),
-              bodyText1: TextStyle(
+              bodyLarge: TextStyle(
                   fontSize: 13, color: white, fontWeight: FontWeight.w400),
-              bodyText2: TextStyle(fontSize: 13, color: red),
-              headline6: TextStyle(
+              bodyMedium: TextStyle(fontSize: 13, color: red),
+              titleLarge: TextStyle(
                   fontSize: 10.5, color: white, fontWeight: FontWeight.w500)),
         ),
       ),

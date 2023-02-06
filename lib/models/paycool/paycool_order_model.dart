@@ -1,31 +1,31 @@
 class PaycoolCreateOrderModel {
-  String _walletAdd; // Wallet EXG address
+  String? _walletAdd; // Wallet EXG address
 
-  String _status;
+  String? _status;
   // 0: waiting for payment,
   // 1: payment made,
   // 3: payment confirmed,
   // 4: completed - coins sent,
   // 5: cancelled, 6: suspended
-  int _campaignId;
-  double _amount;
-  String _currency;
-  String _referral;
-  DateTime _dateUpdated;
-  DateTime _dateCreated;
+  int? _campaignId;
+  double? _amount;
+  String? _currency;
+  String? _referral;
+  DateTime? _dateUpdated;
+  DateTime? _dateCreated;
 
   PaycoolCreateOrderModel(
-      {String walletAdd,
-      String status,
-      int campaignId,
-      double amount,
-      String currency,
-      String referral,
-      DateTime dateUpdated,
-      DateTime dateCreated}) {
+      {String? walletAdd,
+      String? status,
+      int? campaignId,
+      double? amount,
+      String? currency,
+      String? referral,
+      DateTime? dateUpdated,
+      DateTime? dateCreated}) {
     _walletAdd = walletAdd;
-    _status = status ?? '';
-    _amount = amount ?? 0.0;
+    _status = status;
+    _amount = amount;
     _currency = currency;
     _dateUpdated = dateUpdated;
     _dateCreated = dateCreated;
@@ -56,42 +56,42 @@ class PaycoolCreateOrderModel {
         dateCreated: json['dateCreated']);
   }
 
-  String get walletAdd => _walletAdd;
+  String get walletAdd => _walletAdd!;
   set walletAdd(String walletAdd) {
     _walletAdd = walletAdd;
   }
 
-  String get status => _status;
+  String get status => _status!;
   set status(String status) {
     _status = status;
   }
 
-  int get campaignId => _campaignId;
+  int get campaignId => _campaignId!;
   set campaignId(int campaignId) {
     _campaignId = campaignId;
   }
 
-  String get currency => _currency;
+  String get currency => _currency!;
   set currency(String currency) {
     _currency = currency;
   }
 
-  String get referral => _referral;
+  String get referral => _referral!;
   set referral(String referral) {
     _referral = referral;
   }
 
-  double get amount => _amount;
+  double get amount => _amount!;
   set amount(double amount) {
     _amount = amount;
   }
 
-  DateTime get dateUpdated => _dateUpdated;
+  DateTime get dateUpdated => _dateUpdated!;
   set dateUpdated(DateTime dateUpdated) {
     _dateUpdated = dateUpdated;
   }
 
-  DateTime get dateCreated => _dateCreated;
+  DateTime get dateCreated => _dateCreated!;
   set dateCreated(DateTime dateCreated) {
     _dateCreated = dateCreated;
   }

@@ -1,24 +1,24 @@
 import 'package:flutter/cupertino.dart';
 
 class NavigationService {
-  final GlobalKey<NavigatorState> navigatorKey =
-      GlobalKey<NavigatorState>();
+  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
   Future<dynamic> navigateTo(String routeName, {dynamic arguments}) async {
-    return navigatorKey.currentState.pushNamed(routeName, arguments: arguments);
+    return navigatorKey.currentState!
+        .pushNamed(routeName, arguments: arguments);
   }
 
   // Enter animation
   Future<dynamic> navigateUsingPushReplacementNamed(String routeName,
       {dynamic arguments}) async {
-    return navigatorKey.currentState
+    return navigatorKey.currentState!
         .pushReplacementNamed(routeName, arguments: arguments);
   }
 
   // Exit animation
   Future<dynamic> navigateUsingpopAndPushedNamed(String routeName,
       {dynamic arguments}) async {
-    return navigatorKey.currentState
+    return navigatorKey.currentState!
         .popAndPushNamed(routeName, arguments: arguments);
   }
 
@@ -26,15 +26,15 @@ class NavigationService {
   Future<dynamic> navigateUsingPushNamedAndRemoveUntil(
     String routeName,
   ) async {
-    return navigatorKey.currentState
+    return navigatorKey.currentState!
         .pushNamedAndRemoveUntil(routeName, (Route<dynamic> route) => false);
   }
 
   goBack() {
-    return navigatorKey.currentState.pop();
+    return navigatorKey.currentState!.pop();
   }
 
   bool isFinalRoute() {
-    return navigatorKey.currentState.canPop();
+    return navigatorKey.currentState!.canPop();
   }
 }

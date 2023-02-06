@@ -46,7 +46,7 @@ generateTrxAddress(String mnemonic) {
   // debugPrint('uncompressedPubKey  length ${uncompressedPubKey.length}');
   // debugPrint('uncompressedPubKey ${StringUtil.uint8ListToHex(uncompressedPubKey)}');
 
-  if (uncompressedPubKey.length == 65) {
+  if (uncompressedPubKey!.length == 65) {
     uncompressedPubKey = uncompressedPubKey.sublist(1);
     //  debugPrint(
     //     'uncompressedPubKey > 65 ${StringUtil.uint8ListToHex(uncompressedPubKey)} -- length ${uncompressedPubKey.length}');

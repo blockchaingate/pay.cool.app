@@ -1,15 +1,15 @@
 class LpLockerModel {
-  String sId;
-  String txid;
+  String? sId;
+  String? txid;
   //type: 0, package,  type 1: monthly fee, type 2: annual fee, type 3: global reward
-  int type;
-  String address;
-  String id;
-  String user;
-  String amount;
-  int timestamp;
-  int status;
-  int iV;
+  int? type;
+  String? address;
+  String? id;
+  String? user;
+  String? amount;
+  int? timestamp;
+  int? status;
+  int? iV;
 
   LpLockerModel(
       {this.sId,

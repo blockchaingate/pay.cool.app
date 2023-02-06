@@ -23,7 +23,7 @@ import 'package:stacked/stacked.dart';
 
 class BottomNavBar extends StatelessWidget {
   final int count;
-  BottomNavBar({Key key, this.count}) : super(key: key);
+  BottomNavBar({Key? key, required this.count}) : super(key: key);
   final storageService = locator<LocalStorageService>();
   final NavigationService navigationService = locator<NavigationService>();
   final SharedService sharedService = locator<SharedService>();
@@ -32,8 +32,8 @@ class BottomNavBar extends StatelessWidget {
     debugPrint("QQQQWWWW init BottomNavBar. Count is $count");
 
     return ViewModelBuilder<BottomNavViewmodel>.reactive(
-        onModelReady: (model) async {
-          debugPrint("QQQQWWWW init BottomNavBar2");
+        onViewModelReady: (model) async {
+          debugPrint("init BottomNavBar2");
           model.context = context;
           await model.init(count);
         },
@@ -61,8 +61,7 @@ class BottomNavBar extends StatelessWidget {
                             sharedService.getCurrentRouteName(context);
                         if (storageService.showPaycool &&
                             storageService.showPaycoolClub) {
-                          debugPrint("nav has Pay.cool and club, id: " +
-                              idx.toString());
+                          debugPrint("nav has Pay.cool and club, id: $idx");
                           switch (idx) {
                             case 0:
                               if (currentRouteName !=
@@ -101,7 +100,9 @@ class BottomNavBar extends StatelessWidget {
                                 navigationService
                                     .navigateUsingpopAndPushedNamed(
                                         SettingViewRoute);
-                              } else if (ModalRoute.of(context).settings.name ==
+                              } else if (ModalRoute.of(context)!
+                                      .settings
+                                      .name ==
                                   'SettingsView') {
                                 return null;
                               }
@@ -110,8 +111,7 @@ class BottomNavBar extends StatelessWidget {
                         } else if (storageService.showPaycool &&
                             !storageService.showPaycoolClub) {
                           debugPrint(
-                              "nav has Pay.cool and no Pay.cool club, id: " +
-                                  idx.toString());
+                              "nav has Pay.cool and no Pay.cool club, id: $idx");
                           switch (idx) {
                             case 0:
                               if (currentRouteName != 'WalletDashboardVieww') {
@@ -142,7 +142,9 @@ class BottomNavBar extends StatelessWidget {
                                 navigationService
                                     .navigateUsingpopAndPushedNamed(
                                         SettingViewRoute);
-                              } else if (ModalRoute.of(context).settings.name ==
+                              } else if (ModalRoute.of(context)!
+                                      .settings
+                                      .name ==
                                   'SettingsView') {
                                 return null;
                               }
@@ -151,8 +153,7 @@ class BottomNavBar extends StatelessWidget {
                         } else if (!storageService.showPaycool &&
                             storageService.showPaycoolClub) {
                           debugPrint(
-                              "nav no Pay.cool and has Pay.cool club, id: " +
-                                  idx.toString());
+                              "nav no Pay.cool and has Pay.cool club, id: $idx");
                           switch (idx) {
                             case 0:
                               if (currentRouteName !=
@@ -183,7 +184,9 @@ class BottomNavBar extends StatelessWidget {
                                 navigationService
                                     .navigateUsingpopAndPushedNamed(
                                         SettingViewRoute);
-                              } else if (ModalRoute.of(context).settings.name ==
+                              } else if (ModalRoute.of(context)!
+                                      .settings
+                                      .name ==
                                   'SettingsView') {
                                 return null;
                               }
@@ -191,8 +194,7 @@ class BottomNavBar extends StatelessWidget {
                           }
                         } else {
                           debugPrint(
-                              "nav no Pay.cool and no Pay.cool club, id: " +
-                                  idx.toString());
+                              "nav no Pay.cool and no Pay.cool club, id: $idx");
                           switch (idx) {
                             case 0:
                               if (currentRouteName != 'WalletDashboardVieww') {
@@ -214,7 +216,9 @@ class BottomNavBar extends StatelessWidget {
                                 navigationService
                                     .navigateUsingpopAndPushedNamed(
                                         SettingViewRoute);
-                              } else if (ModalRoute.of(context).settings.name ==
+                              } else if (ModalRoute.of(context)!
+                                      .settings
+                                      .name ==
                                   'SettingsView') {
                                 return null;
                               }

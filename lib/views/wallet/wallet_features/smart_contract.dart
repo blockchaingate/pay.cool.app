@@ -27,7 +27,7 @@ import 'package:paycool/services/local_dialog_service.dart';
 import 'dart:typed_data';
 
 class SmartContractView extends StatefulWidget {
-  const SmartContractView({Key key}) : super(key: key);
+  const SmartContractView({Key? key}) : super(key: key);
 
   @override
   _SmartContractViewState createState() => _SmartContractViewState();
@@ -36,8 +36,8 @@ class SmartContractView extends StatefulWidget {
 class _SmartContractViewState extends State<SmartContractView> {
   final log = getLogger('SmartContractViewState');
   final ApiService _api = locator<ApiService>();
-  String _currentFunction;
-  String _smartContractName;
+  late String _currentFunction;
+  late String _smartContractName;
   var abis;
   var functionHex;
   var abi;
@@ -52,7 +52,7 @@ class _SmartContractViewState extends State<SmartContractView> {
   TextEditingController smartContractAddressController =
       TextEditingController();
   TextEditingController payableController = TextEditingController();
-  List<DropdownMenuItem<String>> _dropDownMenuItems;
+  late List<DropdownMenuItem<String>> _dropDownMenuItems;
   @override
   void initState() {
     smartContractAddressController.value = TextEditingValue(
@@ -81,7 +81,7 @@ class _SmartContractViewState extends State<SmartContractView> {
     return items;
   }
 
-  void changedDropDownItem(String selectedFunction) {
+  void changedDropDownItem(String? selectedFunction) {
     debugPrint(
         "Selected function $selectedFunction, we are going to refresh the UI");
     var _inputs;
@@ -104,7 +104,7 @@ class _SmartContractViewState extends State<SmartContractView> {
     setState(() {
       payable = _payable;
       inputs = _inputs;
-      _currentFunction = selectedFunction;
+      _currentFunction = selectedFunction!;
     });
   }
 

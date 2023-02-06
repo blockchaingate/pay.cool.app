@@ -12,7 +12,7 @@ class BottomNavViewmodel extends BaseViewModel {
   final storageService = locator<LocalStorageService>();
 
   final double iconSize = 40;
-  BuildContext context;
+  late BuildContext context;
   int selectedIndex = 1;
 
   List<BottomNavigationBarItem> itemsAll = [];

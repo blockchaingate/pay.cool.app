@@ -30,15 +30,12 @@ class VersionService {
 
     debugPrint('My os: $os');
     try {
-      debugPrint("appVersionUrl: " + appVersionUrl);
-      var response = await client.get(appVersionUrl);
+      debugPrint("appVersionUrl: $appVersionUrl");
+      var response = await client.get(Uri.parse(appVersionUrl));
       var json = response.body;
-      if (json != null) {
-        log.w('get version info $json}');
-        return json;
-      } else {
-        return "error";
-      }
+
+      log.w('get version info $json}');
+      return json;
     } catch (err) {
       log.e('get version info CATCH $err');
       // throw Exception(err);
@@ -74,10 +71,10 @@ class VersionService {
           log.i('getAppVersion $versionInfo');
           var versionName = versionInfo['name'];
           var buildNumber = versionInfo['buildNumber'];
-          var localVersion = versionName + '.' + buildNumber;
+          var localVersion = '$versionName.$buildNumber';
           log.i('local version $localVersion');
           Version currentVersion = Version.parse(localVersion);
-          debugPrint("userVersion: " + localVersion);
+          debugPrint("userVersion: $localVersion");
 
           Version latestVersion = Version.parse(appVersionFromApi);
 
@@ -116,7 +113,7 @@ class VersionService {
                     color: secondaryColor,
                     shape: BoxShape.rectangle,
                     borderRadius: BorderRadius.circular(16.0),
-                    boxShadow: const <BoxShadow>[
+                    boxShadow: <BoxShadow>[
                       BoxShadow(
                         color: Colors.black26,
                         blurRadius: 0.0,
@@ -144,12 +141,10 @@ class VersionService {
                       height: 20,
                     ),
                     Text(
-                        "${FlutterI18n.translate(context, "currentVersion")}:  " +
-                            userVersion.toString()),
+                        "${FlutterI18n.translate(context, "currentVersion")}:  $userVersion"),
                     UIHelper.verticalSpaceSmall,
                     Text(
-                      "${FlutterI18n.translate(context, "latestVersion")}:  " +
-                          latestVersion.toString(),
+                      "${FlutterI18n.translate(context, "latestVersion")}:  $latestVersion",
                       style: TextStyle(color: Colors.greenAccent[100]),
                     ),
                     // Text("Force Update: " + latestVersion['forceUpdate'].toString()),
@@ -216,7 +211,7 @@ class VersionService {
                                       backgroundColor:
                                           MaterialStateProperty.all<Color>(
                                               priceColor)),
-                                  child: Row(
+                                  Widget: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: const [
                                       Text(
@@ -268,7 +263,7 @@ class VersionService {
                                       backgroundColor:
                                           MaterialStateProperty.all<Color>(
                                               priceColor)),
-                                  child: Row(
+                                  Widget: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: const [
                                       Text(

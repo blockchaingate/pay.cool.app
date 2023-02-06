@@ -1,25 +1,25 @@
 import 'package:paycool/views/paycool/models/localization_model.dart';
 
 class MerchantModel {
-  String sId;
-  int status;
-  LocalizationModel name;
-  String phone;
-  int version;
-  int lockedDays;
-  String website;
-  String openTime;
-  String closeTime;
-  String coin;
-  int rebateRate;
-  int taxRate;
-  String refAddress;
-  String image;
-  String feeChargerSmartContractAddress;
-  String owner;
-  String id;
-  bool hideOnStore;
-  String rewardCoin;
+  String? sId;
+  int? status;
+  LocalizationModel? name;
+  String? phone;
+  int? version;
+  int? lockedDays;
+  String? website;
+  String? openTime;
+  String? closeTime;
+  String? coin;
+  int? rebateRate;
+  int? taxRate;
+  String? refAddress;
+  String? image;
+  String? feeChargerSmartContractAddress;
+  String? owner;
+  String? id;
+  bool? hideOnStore;
+  String? rewardCoin;
   //Merchant merchant;
 
   MerchantModel(
@@ -75,7 +75,7 @@ class MerchantModel {
     data['_id'] = sId;
     data['status'] = status;
     if (name != null) {
-      data['name'] = name.toJson();
+      data['name'] = name!.toJson();
     }
     data['phone'] = phone;
     data['version'] = version;
@@ -101,18 +101,18 @@ class MerchantModel {
 }
 
 class Merchant {
-  String sId;
-  String owner;
-  LocalizationModel addressLan;
-  LocalizationModel businessContentsLan;
-  String closeTime;
-  LocalizationModel contactNameLan;
-  String email;
-  String fax;
-  LocalizationModel nameLan;
-  String openTime;
-  String phone;
-  String website;
+  String? sId;
+  String? owner;
+  LocalizationModel? addressLan;
+  LocalizationModel? businessContentsLan;
+  String? closeTime;
+  LocalizationModel? contactNameLan;
+  String? email;
+  String? fax;
+  LocalizationModel? nameLan;
+  String? openTime;
+  String? phone;
+  String? website;
 
   Merchant(
       {this.sId,
@@ -156,19 +156,19 @@ class Merchant {
     data['_id'] = sId;
     data['owner'] = owner;
     if (addressLan != null) {
-      data['addressLan'] = addressLan.toJson();
+      data['addressLan'] = addressLan!.toJson();
     }
     if (businessContentsLan != null) {
-      data['businessContentsLan'] = businessContentsLan.toJson();
+      data['businessContentsLan'] = businessContentsLan!.toJson();
     }
     data['closeTime'] = closeTime;
     if (contactNameLan != null) {
-      data['contactNameLan'] = contactNameLan.toJson();
+      data['contactNameLan'] = contactNameLan!.toJson();
     }
     data['email'] = email;
     data['fax'] = fax;
     if (nameLan != null) {
-      data['nameLan'] = nameLan.toJson();
+      data['nameLan'] = nameLan!.toJson();
     }
     data['openTime'] = openTime;
     data['phone'] = phone;

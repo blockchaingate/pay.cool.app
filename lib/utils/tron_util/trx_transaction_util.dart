@@ -15,20 +15,20 @@ import 'package:fixnum/fixnum.dart';
 import 'package:bs58check/bs58check.dart' as bs58check;
 import 'package:paycool/protos_gen/any.pb.dart';
 import 'package:paycool/protos_gen/protos/tron.pb.dart' as Tron;
-import 'package:paycool/utils/coin_util.dart' as CoinUtil;
+import 'package:paycool/utils/coin_util.dart' as coin_util;
 
 import '../custom_http_util.dart';
 
 final client = CustomHttpUtil.createLetsEncryptUpdatedCertClient();
 Future generateTrxTransactionContract(
-    {@required Uint8List privateKey,
-    @required String fromAddr,
-    @required String toAddr,
-    @required double amount,
-    @required bool isTrxUsdt,
-    @required String tickerName,
-    @required bool isBroadcast,
-    @required contractAddressTronUsdt}) async {
+    {required Uint8List privateKey,
+    required String fromAddr,
+    required String toAddr,
+    required double amount,
+    required bool isTrxUsdt,
+    required String tickerName,
+    required bool isBroadcast,
+    required contractAddressTronUsdt}) async {
   // debugPrint(
   //     'tickername $tickerName -- from $fromAddr -- to $toAddr -- amount $amount --  isTrxUsdt $isTrxUsdt -- private key $privateKey');
 
@@ -48,7 +48,8 @@ Future generateTrxTransactionContract(
   GeneratedMessage trans;
   if (isTrxUsdt) {
     var transferAbi = 'a9059cbb';
-    var decodedHexToAddress = StringUtil.uint8ListToHex(toAddress);
+    var decodedHexToAddress =
+        StringUtil.uint8ListToHex(coin_util.uint8ListFromList(toAddress));
 // 4103b01c144f4e41c22b411c2997fbcdfae4fc9c2e
     if (decodedHexToAddress.startsWith('41') ||
         decodedHexToAddress.startsWith('0x')) {
@@ -142,10 +143,10 @@ Future generateTrxTransactionContract(
                   Raw Transaction
 ----------------------------------------------------------------------*/
 _generateTrxRawTransaction(
-    {@required Tron.Transaction_Contract contract,
-    @required Uint8List privateKey,
-    @required bool isTrxUsdt,
-    @required bool isBroadcast}) async {
+    {required Tron.Transaction_Contract contract,
+    required Uint8List privateKey,
+    required bool isTrxUsdt,
+    required bool isBroadcast}) async {
   ApiService _apiService = locator<ApiService>();
 // txRaw.SetRefBlockHash(blkhash)
 // txRaw.SetRefBlockBytes(blk.BlockHeader.Raw.Number)
@@ -153,9 +154,9 @@ _generateTrxRawTransaction(
 // txRaw.SetTimestamp(time.Now().UnixNano() / 1000000)
 
   var refBlockHash;
-  List<int> refBlockBytes;
-  Int64 expiration;
-  Int64 timestamp;
+  List<int> refBlockBytes = [];
+  Int64? expiration;
+  Int64? timestamp;
 
 // block_header: {
 // raw_data: {
@@ -212,7 +213,8 @@ _generateTrxRawTransaction(
 
   // CryptoWeb3.MsgSignature
   var signature = //CryptoWeb3.sign(hashedRawTxBuffer.bytes, privateKey);
-      CoinUtil.signTrxTx(hashedRawTxBuffer.bytes, privateKey);
+      coin_util.signTrxTx(
+          Uint8List.fromList(hashedRawTxBuffer.bytes), privateKey);
   //signTrxTx(keyPair, digest1.bytes);
   // var rsvInList = constructTrxSigntureList(signature);
   // fill transaction object
@@ -247,8 +249,8 @@ Future broadcastTronTransaction(transactionHex) async {
   // debugPrint(
   //    'broadcasrTronTransaction $BroadcasrTronTransactionUrl -- body ${jsonEncode(body)}');
   try {
-    var response =
-        await client.post(BroadcasrTronTransactionUrl, body: jsonEncode(body));
+    var response = await client.post(Uri.parse(BroadcasrTronTransactionUrl),
+        body: jsonEncode(body));
     var json = jsonDecode(response.body);
     if (json != null) {
       debugPrint('broadcastTronTransaction $json}');

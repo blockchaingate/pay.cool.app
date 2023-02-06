@@ -16,7 +16,6 @@ import 'package:paycool/utils/abi_util.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:paycool/utils/barcode_util.dart';
-import 'package:paycool/utils/kanban.util.dart';
 import 'package:paycool/utils/number_util.dart';
 import 'package:paycool/utils/wallet/wallet_util.dart';
 import 'package:paycool/views/paycool_club/join_club/join_club_payment_model.dart';
@@ -35,7 +34,7 @@ class JoinPayCoolClubViewModel extends BaseViewModel {
   final navigationService = locator<NavigationService>();
   final storageService = locator<LocalStorageService>();
 
-  BuildContext context;
+  BuildContext? context;
   bool isDUSD = false;
   int gasPrice = environment["chains"]["FAB"]["gasPrice"];
   int gasLimit = environment["chains"]["FAB"]["gasLimit"];
@@ -60,7 +59,7 @@ class JoinPayCoolClubViewModel extends BaseViewModel {
   double fixedAmountToPay = 10000.0;
   JoinClubPaymentModel scanToPayModel = JoinClubPaymentModel();
   bool isValidReferralAddress = false;
-  String _groupValue;
+  String? _groupValue;
   get groupValue => _groupValue;
 /*--------------------------------------------------------
                     INIT
@@ -78,7 +77,7 @@ class JoinPayCoolClubViewModel extends BaseViewModel {
     if (scanToPayModel != null && scanToPayModel.datAbiHex != null) {
       log.i('in scan to pay if ${scanToPayModel.toJson()}');
       var extractedReferralAddress =
-          extractAddressFromAbihex(scanToPayModel.datAbiHex);
+          extractAddressFromAbihex(scanToPayModel.datAbiHex.toString());
       setBusy(true);
       referralCode.text = extractedReferralAddress['referralAddress'];
       setBusy(false);
@@ -112,7 +111,7 @@ class JoinPayCoolClubViewModel extends BaseViewModel {
 --------------------------------------------------------*/
 
   extractDataFromAbiHex() {
-    String abiHex = scanToPayModel.datAbiHex;
+    String abiHex = scanToPayModel.datAbiHex!;
     String abi = abiHex.substring(0, 10);
     debugPrint(abi.toString());
     // String orderIdHex = abiHex.substring(10, 74);
@@ -129,12 +128,12 @@ class JoinPayCoolClubViewModel extends BaseViewModel {
                       pasteClipBoardData
 --------------------------------------------------------*/
   pasteClipBoardData() async {
-    FocusScope.of(context).requestFocus(FocusNode());
-    ClipboardData data = await Clipboard.getData(Clipboard.kTextPlain);
+    FocusScope.of(context!).requestFocus(FocusNode());
+    ClipboardData? data = await Clipboard.getData(Clipboard.kTextPlain);
     if (data != null) {
       setBusy(true);
       referralCode.text = '';
-      referralCode.text = data.text;
+      referralCode.text = data.text.toString();
       log.i('paste data ${referralCode.text}');
       setBusy(false);
     }
@@ -148,37 +147,37 @@ class JoinPayCoolClubViewModel extends BaseViewModel {
     setBusy(true);
 
     try {
-      FocusScope.of(context).requestFocus(FocusNode());
+      FocusScope.of(context!).requestFocus(FocusNode());
       log.i("Barcode: try");
       String barcode = '';
 
-      var result = await BarcodeUtils().scanQR(context);
+      var result = await BarcodeUtils().scanQR(context!);
       barcode = result;
       log.i("Barcode Res: $result ");
 
       referralCode.text = barcode;
       setBusy(false);
     } on PlatformException catch (e) {
-      FocusScope.of(context).requestFocus(FocusNode());
+      FocusScope.of(context!).requestFocus(FocusNode());
       log.i("Barcode PlatformException : ");
       log.i(e.toString());
       if (e.code == "PERMISSION_NOT_GRANTED") {
         setBusy(false);
         sharedService.alertDialog(
-            '', FlutterI18n.translate(context, "userAccessDenied"),
+            '', FlutterI18n.translate(context!, "userAccessDenied"),
             isWarning: false);
         // receiverWalletAddressTextController.text =
         //     FlutterI18n.translate(context, "userAccessDenied");
       } else {
         setBusy(false);
         sharedService.alertDialog(
-            '', FlutterI18n.translate(context, "unknownError"),
+            '', FlutterI18n.translate(context!, "unknownError"),
             isWarning: false);
         // receiverWalletAddressTextController.text =
         //     '${FlutterI18n.translate(context, "unknownError")}: $e';
       }
     } on FormatException {
-      FocusScope.of(context).requestFocus(FocusNode());
+      FocusScope.of(context!).requestFocus(FocusNode());
       log.i("Barcode FormatException : ");
       // log.i(e.toString());
       setBusy(false);
@@ -190,7 +189,7 @@ class JoinPayCoolClubViewModel extends BaseViewModel {
       log.i(e.toString());
       setBusy(false);
       sharedService.alertDialog(
-          '', FlutterI18n.translate(context, "unknownError"),
+          '', FlutterI18n.translate(context!, "unknownError"),
           isWarning: false);
       // receiverWalletAddressTextController.text =
       //     '${FlutterI18n.translate(context, "unknownError")}: $e';
@@ -212,9 +211,9 @@ class JoinPayCoolClubViewModel extends BaseViewModel {
               WalletBalance(coin: paymentCoins[i]))
           .then((wallet) {
         if (paymentCoins[i] == 'DUSD') {
-          dusdWalletAddress = wallet.address;
+          dusdWalletAddress = wallet.address.toString();
         } else {
-          usdtWalletAddress = wallet.address;
+          usdtWalletAddress = wallet.address.toString();
         }
       });
     }
@@ -228,11 +227,11 @@ class JoinPayCoolClubViewModel extends BaseViewModel {
               paymentCoins[i] == 'USDT' ? usdtWalletAddress : dusdWalletAddress)
           .then((walletBalance) async {
         if (walletBalance != null &&
-            !walletBalance[0].unlockedExchangeBalance.isNegative) {
+            !walletBalance[0].unlockedExchangeBalance!.isNegative) {
           log.w(walletBalance[0].unlockedExchangeBalance);
           paymentCoins[i] == 'USDT'
-              ? usdtExchangeBalance = walletBalance[0].unlockedExchangeBalance
-              : dusdExchangeBalance = walletBalance[0].unlockedExchangeBalance;
+              ? usdtExchangeBalance = walletBalance[0].unlockedExchangeBalance!
+              : dusdExchangeBalance = walletBalance[0].unlockedExchangeBalance!;
         }
         //  else {
         //   String address = await walletService.getExgAddressFromWalletDatabase();
@@ -279,8 +278,8 @@ class JoinPayCoolClubViewModel extends BaseViewModel {
         log.w('Txhash $txHash');
 
         sharedService.alertDialog(
-            FlutterI18n.translate(context, "orderCreatedSuccessfully"),
-            FlutterI18n.translate(context, "goToDashboard"),
+            FlutterI18n.translate(context!, "orderCreatedSuccessfully"),
+            FlutterI18n.translate(context!, "goToDashboard"),
             path: PayCoolClubDashboardViewRoute);
         // PaycoolCreateOrderModel paycoolCreateOrder =
         //     new PaycoolCreateOrderModel(
@@ -291,7 +290,7 @@ class JoinPayCoolClubViewModel extends BaseViewModel {
         //         amount: fixedAmountToPay,
         //         transactionId: txHash);
         // await payCoolClubService
-        //     .createOrder(paycoolCreateOrder)
+        //     .createOrder(paycoolCreateOrder)!
         //     .then((res) {
         //   // if (res != null) {
         //   log.w('create order res $res');
@@ -305,21 +304,21 @@ class JoinPayCoolClubViewModel extends BaseViewModel {
 
       } else {
         sharedService.alertDialog(
-            FlutterI18n.translate(context, "transanctionFailed"),
-            FlutterI18n.translate(context, "pleaseTryAgainLater"));
+            FlutterI18n.translate(context!, "transanctionFailed"),
+            FlutterI18n.translate(context!, "pleaseTryAgainLater"));
       }
       setBusy(false);
     }).timeout(const Duration(seconds: 25), onTimeout: () {
       log.e('In time out');
       setBusy(false);
       sharedService.alertDialog(
-          '', FlutterI18n.translate(context, "pleaseTryAgainLater"),
+          '', FlutterI18n.translate(context!, "pleaseTryAgainLater"),
           isWarning: false);
       return;
     }).catchError((error) {
       log.e('In Catch error - $error');
-      sharedService.alertDialog(FlutterI18n.translate(context, "networkIssue"),
-          FlutterI18n.translate(context, "transanctionFailed"),
+      sharedService.alertDialog(FlutterI18n.translate(context!, "networkIssue"),
+          FlutterI18n.translate(context!, "transanctionFailed"),
           isWarning: false);
 
       setBusy(false);
@@ -345,7 +344,7 @@ class JoinPayCoolClubViewModel extends BaseViewModel {
 
     if (referralCode.text.isEmpty) {
       sharedService.sharedSimpleNotification(
-          FlutterI18n.translate(context, "invalidReferralCode"));
+          FlutterI18n.translate(context!, "invalidReferralCode"));
       setBusy(false);
       return;
     }
@@ -359,7 +358,7 @@ class JoinPayCoolClubViewModel extends BaseViewModel {
     });
     if (!isValidReferralAddress) {
       sharedService.sharedSimpleNotification(
-          FlutterI18n.translate(context, "invalidReferralCode"));
+          FlutterI18n.translate(context!, "invalidReferralCode"));
       setBusy(false);
       return;
     }
@@ -367,8 +366,8 @@ class JoinPayCoolClubViewModel extends BaseViewModel {
     await getGas();
     if (gasAmount == 0.0) {
       sharedService.sharedSimpleNotification(
-          FlutterI18n.translate(context, "notice"),
-          subtitle: FlutterI18n.translate(context, "insufficientGasAmount"));
+          FlutterI18n.translate(context!, "notice"),
+          subtitle: FlutterI18n.translate(context!, "insufficientGasAmount"));
       setBusy(false);
       return;
     }
@@ -386,13 +385,13 @@ class JoinPayCoolClubViewModel extends BaseViewModel {
     await getExchangeBalances();
     if (dusdExchangeBalance < fixedAmountToPay && groupValue == 'DUSD') {
       sharedService.sharedSimpleNotification('DUSD',
-          subtitle: FlutterI18n.translate(context, "insufficientBalance"));
+          subtitle: FlutterI18n.translate(context!, "insufficientBalance"));
       setBusy(false);
       return;
     }
     if (usdtExchangeBalance < fixedAmountToPay && groupValue == 'USDT') {
       sharedService.sharedSimpleNotification('USDT',
-          subtitle: FlutterI18n.translate(context, "insufficientBalance"));
+          subtitle: FlutterI18n.translate(context!, "insufficientBalance"));
       setBusy(false);
       return;
     }
@@ -400,10 +399,10 @@ class JoinPayCoolClubViewModel extends BaseViewModel {
     //var coinPoolAddress = await getCoinPoolAddress();
 
     var dialogResponse = await dialogService.showDialog(
-        title: FlutterI18n.translate(context, "enterPassword"),
-        description:
-            FlutterI18n.translate(context, "dialogManagerTypeSamePasswordNote"),
-        buttonTitle: FlutterI18n.translate(context, "confirm"));
+        title: FlutterI18n.translate(context!, "enterPassword"),
+        description: FlutterI18n.translate(
+            context!, "dialogManagerTypeSamePasswordNote"),
+        buttonTitle: FlutterI18n.translate(context!, "confirm"));
 
     if (dialogResponse.confirmed) {
       errorMessage = '';
@@ -425,11 +424,11 @@ class JoinPayCoolClubViewModel extends BaseViewModel {
           debugPrint('final if res txid $txId');
           String walletAddress =
               extractWalletAddressFromPayCoolClubScannedAbiHex(
-                  scanToPayModel.datAbiHex);
+                  scanToPayModel.datAbiHex.toString());
           await payCoolClubService.saveOrder(walletAddress, txId).then((res) {
             sharedService.alertDialog(
-                FlutterI18n.translate(context, "orderCreatedSuccessfully"),
-                FlutterI18n.translate(context, "paymentProcess"),
+                FlutterI18n.translate(context!, "orderCreatedSuccessfully"),
+                FlutterI18n.translate(context!, "paymentProcess"),
                 path: DashboardViewRoute);
           });
           setBusy(false);
@@ -446,8 +445,8 @@ class JoinPayCoolClubViewModel extends BaseViewModel {
           debugPrint('final else res txid $txId');
           await payCoolClubService.saveOrder(fabAddress, txId).then((res) {
             sharedService.alertDialog(
-                FlutterI18n.translate(context, "orderCreatedSuccessfully"),
-                FlutterI18n.translate(context, "paymentProcess"),
+                FlutterI18n.translate(context!, "orderCreatedSuccessfully"),
+                FlutterI18n.translate(context!, "paymentProcess"),
                 path: PayCoolClubDashboardViewRoute);
           });
           storageService.payCoolClubPaymentReceipt = txId;
@@ -458,7 +457,7 @@ class JoinPayCoolClubViewModel extends BaseViewModel {
         !dialogResponse.confirmed) {
       setBusy(false);
       return errorMessage =
-          FlutterI18n.translate(context, "pleaseProvideTheCorrectPassword");
+          FlutterI18n.translate(context!, "pleaseProvideTheCorrectPassword");
     } else {
       setBusy(false);
     }

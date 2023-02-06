@@ -17,5 +17,5 @@ class DialogResponse {
   final String returnedText;
   final bool confirmed;
 
-  DialogResponse({this.returnedText, this.confirmed});
+  DialogResponse({required this.returnedText, required this.confirmed});
 }

@@ -36,8 +36,8 @@ class StringUtils {
   }
 
   static String showPartialAddress(
-      {String address, int startLimit = 6, int endLimit = 6}) {
-    return '${address.substring(0, startLimit)}...${address.substring(address.length - endLimit)}';
+      {String? address, int startLimit = 6, int endLimit = 6}) {
+    return '${address!.substring(0, startLimit)}...${address!.substring(address.length - endLimit)}';
   }
 }
 

@@ -38,17 +38,19 @@ class TransactionHistoryDatabaseService {
   final String columnChainName = 'chainName';
 
   static const _databaseVersion = 7;
-  static Future<Database> _database;
+
   String path = '';
 
+  static Database? _database;
+
+  Future<Database> get database async => _database ??= await initDb();
+
   Future<Database> initDb() async {
-    if (_database != null) return _database;
+    if (_database != null) return database;
     var databasePath = await getDatabasesPath();
     path = join(databasePath, _databaseName);
     log.w(path);
-    _database =
-        openDatabase(path, version: _databaseVersion, onCreate: _onCreate);
-    return _database;
+    return openDatabase(path, version: _databaseVersion, onCreate: _onCreate);
   }
 
   void _onCreate(Database db, int version) async {
@@ -73,7 +75,7 @@ class TransactionHistoryDatabaseService {
 
   Future<List<TransactionHistory>> getAll() async {
     await initDb();
-    final Database db = await _database;
+    final Database db = await database;
     // res is giving me the same output in the log whether i map it or just take var res
     final List<Map<String, dynamic>> res = await db.query(tableName);
     log.w('get all res $res');
@@ -87,7 +89,7 @@ class TransactionHistoryDatabaseService {
   Future insert(TransactionHistory transactionHistory) async {
     // await deleteDb();
     await initDb();
-    final Database db = await _database;
+    final Database db = await database;
     int id = await db.insert(tableName, transactionHistory.toJson(),
         conflictAlgorithm: ConflictAlgorithm.replace);
     return id;
@@ -96,8 +98,8 @@ class TransactionHistoryDatabaseService {
   // Get Single Wallet By Tag
   Future<List<TransactionHistory>> getByTagName(String tag) async {
     await initDb();
-    final Database db = await _database;
-    List<Map> res =
+    final Database db = await database;
+    List<Map<String, dynamic>> res =
         await db.query(tableName, where: 'tag= ?', whereArgs: [tag]);
     log.w('tagName - $tag --- $res');
 
@@ -111,8 +113,8 @@ class TransactionHistoryDatabaseService {
   // Get Single Wallet By Name
   Future<List<TransactionHistory>> getByName(String name) async {
     await initDb();
-    final Database db = await _database;
-    List<Map> res =
+    final Database db = await database;
+    List<Map<String, dynamic>> res =
         await db.query(tableName, where: 'tickerName= ?', whereArgs: [name]);
     log.w('Name - $name --- $res');
 
@@ -126,8 +128,8 @@ class TransactionHistoryDatabaseService {
   // Get Single Wallet By Name
   Future<List<TransactionHistory>> getByNameOrderByDate(String name) async {
     await initDb();
-    final Database db = await _database;
-    List<Map> res = await db.query(tableName,
+    final Database db = await database;
+    List<Map<String, dynamic>> res = await db.query(tableName,
         where: 'tickerName= ?', orderBy: columnDate, whereArgs: [name]);
     log.w('Name - $name --- $res');
 
@@ -140,8 +142,9 @@ class TransactionHistoryDatabaseService {
 
   // Get Single Wallet By Id
   Future getById(int id) async {
-    final Database db = await _database;
-    List<Map> res = await db.query(tableName, where: 'id= ?', whereArgs: [id]);
+    final Database db = await database;
+    List<Map<String, dynamic>> res =
+        await db.query(tableName, where: 'id= ?', whereArgs: [id]);
     log.w('ID - $id --- $res');
     if (res.isNotEmpty) {
       return TransactionHistory.fromJson((res.first));
@@ -150,9 +153,9 @@ class TransactionHistoryDatabaseService {
   }
 
   // Get Single Wallet By txId
-  Future<TransactionHistory> getByKanbanTxId(String tickerChainTxId) async {
-    final Database db = await _database;
-    List<Map> res = await db.query(tableName,
+  Future<TransactionHistory?> getByKanbanTxId(String tickerChainTxId) async {
+    final Database db = await database;
+    List<Map<String, dynamic>> res = await db.query(tableName,
         where: 'tickerChainTxId= ?', whereArgs: [tickerChainTxId]);
     log.w('tickerChainTxId - $tickerChainTxId --- $res');
     if (res.isNotEmpty) {
@@ -163,7 +166,7 @@ class TransactionHistoryDatabaseService {
 
   // Update database
   Future<void> update(TransactionHistory transactionHistory) async {
-    final Database db = await _database;
+    final Database db = await database;
     await db.update(
       tableName,
       transactionHistory.toJson(),
@@ -175,14 +178,14 @@ class TransactionHistoryDatabaseService {
 
   // Update  status
   Future updateStatus(TransactionHistory transactionHistory) async {
-    final Database db = await _database;
+    final Database db = await database;
     await db.rawUpdate(
         'UPDATE TransactionHistory SET status = ${transactionHistory.tickerChainTxStatus} where kanbanTxId = ${transactionHistory.tickerChainTxId}');
   }
 
   // Close Database
   Future closeDb() async {
-    var db = await _database;
+    var db = await database;
     return db.close();
   }
 

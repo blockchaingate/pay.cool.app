@@ -80,9 +80,9 @@ class WalletDashboardViewModel extends BaseViewModel {
   var versionService = locator<VersionService>();
   var coreWalletDatabaseService = locator<CoreWalletDatabaseService>();
 
-  BuildContext context;
+  late BuildContext context;
 
-  WalletInfo rightWalletInfo;
+  late WalletInfo rightWalletInfo;
 
   final double elevation = 5;
   String totalUsdBalance = '';
@@ -93,7 +93,7 @@ class WalletDashboardViewModel extends BaseViewModel {
   bool isHideSmallAssetsButton = false;
   var refreshController;
   bool isConfirmDeposit = false;
-  WalletInfo confirmDepositCoinWallet;
+  late WalletInfo confirmDepositCoinWallet;
 
   var lang;
 
@@ -111,9 +111,9 @@ class WalletDashboardViewModel extends BaseViewModel {
 
   //vars for announcement
   bool hasApiError = false;
-  List announceList;
-  GlobalKey globalKeyOne;
-  GlobalKey globalKeyTwo;
+  List announceList = [];
+  GlobalKey? globalKeyOne;
+  GlobalKey? globalKeyTwo;
   double totalBalanceContainerWidth = 100.0;
 
   bool _isShowCaseView = false;
@@ -187,7 +187,7 @@ class WalletDashboardViewModel extends BaseViewModel {
 
   routeWithWalletInfoArgs(WalletBalance wallet, String routeName) async {
     // assign address from local DB to walletinfo object
-    context ??= sharedService.context;
+
     if (MediaQuery.of(context).size.width < largeSize) {
       FocusScope.of(context).requestFocus(FocusNode());
       var walletInfo =
@@ -444,7 +444,7 @@ class WalletDashboardViewModel extends BaseViewModel {
                             Navigator.of(context).pop(true);
                             updateWallet();
                           },
-                          child: Text(
+                          Widget: Text(
                               FlutterI18n.translate(context, "updateNow")))),
                   actions: const <Widget>[],
                 ))
@@ -575,7 +575,7 @@ class WalletDashboardViewModel extends BaseViewModel {
 
     debugPrint('length ${walletsCopy.length} -- value $value');
     for (var i = 0; i < walletsCopy.length; i++) {
-      if (walletsCopy[i].coin.toUpperCase() == value.toUpperCase()) {
+      if (walletsCopy[i].coin!.toUpperCase() == value.toUpperCase()) {
         setBusy(true);
         wallets = [];
         // String holder =
@@ -596,9 +596,9 @@ class WalletDashboardViewModel extends BaseViewModel {
 
   bool isFirstCharacterMatched(String value, int index) {
     debugPrint(
-        'value 1st char ${value[0]} == first chracter ${wallets[index].coin[0]}');
-    log.w(value.startsWith(wallets[index].coin[0]));
-    return value.startsWith(wallets[index].coin[0]);
+        'value 1st char ${value[0]} == first chracter ${wallets[index].coin![0]}');
+    log.w(value.startsWith(wallets[index].coin![0]));
+    return value.startsWith(wallets[index].coin![0]);
   }
 
 /*----------------------------------------------------------------------
@@ -619,12 +619,12 @@ class WalletDashboardViewModel extends BaseViewModel {
     }
     await apiService.getApiAppVersion().then((apiAppVersion) {
       if (apiAppVersion != null) {
-        log.e('condition ${localAppVersion['name'].compareTo(apiAppVersion)}');
+        log.e('condition ${localAppVersion['name']!.compareTo(apiAppVersion)}');
 
         log.i(
             'api app version $apiAppVersion -- local version $localAppVersion');
 
-        if (localAppVersion['name'].compareTo(apiAppVersion) == -1) {
+        if (localAppVersion['name']!.compareTo(apiAppVersion) == -1) {
           sharedService.alertDialog(
               FlutterI18n.translate(context, "appUpdateNotice"),
               '${FlutterI18n.translate(context, "pleaseUpdateYourAppFrom")} $localAppVersion ${FlutterI18n.translate(context, "toLatestBuild")} $apiAppVersion ${FlutterI18n.translate(context, "inText")} $store ${FlutterI18n.translate(context, "clickOnWebsiteButton")}',
@@ -856,8 +856,8 @@ class WalletDashboardViewModel extends BaseViewModel {
     bool isSuccess = false;
 
     if (isHideSmallAssetsButton &&
-        (wallet.balance * wallet.usdValue.usd).toInt() < 0.1 &&
-        wallet.balance < 0.1) {
+        (wallet.balance! * wallet.usdValue!.usd!).toInt() < 0.1 &&
+        wallet.balance! < 0.1) {
       isSuccess = true;
     }
     return isSuccess;
@@ -881,17 +881,18 @@ class WalletDashboardViewModel extends BaseViewModel {
     var tlb = 0.0;
     var teb = 0.0;
     for (var i = 0; i < wallets.length; i++) {
-      if (!wallets[i].usdValue.usd.isNegative) {
-        if (!wallets[i].balance.isNegative) {
-          twb += wallets[i].balance * wallets[i].usdValue.usd;
+      if (!wallets[i].usdValue!.usd!.isNegative) {
+        if (!wallets[i].balance!.isNegative) {
+          twb += wallets[i].balance! * wallets[i].usdValue!.usd!;
         }
 
-        if (!wallets[i].lockBalance.isNegative) {
-          tlb += wallets[i].lockBalance * wallets[i].usdValue.usd;
+        if (!wallets[i].lockBalance!.isNegative) {
+          tlb += wallets[i].lockBalance! * wallets[i].usdValue!.usd!;
         }
 
-        if (!wallets[i].unlockedExchangeBalance.isNegative) {
-          teb += wallets[i].unlockedExchangeBalance * wallets[i].usdValue.usd;
+        if (!wallets[i].unlockedExchangeBalance!.isNegative) {
+          teb +=
+              wallets[i].unlockedExchangeBalance! * wallets[i].usdValue!.usd!;
         }
       }
     }
@@ -926,20 +927,20 @@ class WalletDashboardViewModel extends BaseViewModel {
         for (var i = 0; i < result.length; i++) {
           var item = result[i];
           var coinType = item['coinType'];
-          String tickerNameByCointype = newCoinTypeMap[coinType];
+          String tickerNameByCointype = newCoinTypeMap[coinType]!;
           if (tickerNameByCointype == null) {
             await tokenListDatabaseService.getAll().then((tokenList) {
               if (tokenList != null) {
                 tickerNameByCointype = tokenList
                     .firstWhere((element) => element.coinType == coinType)
-                    .tickerName;
+                    .tickerName!;
               }
             });
           }
           log.w('tickerNameByCointype $tickerNameByCointype');
           tickerNameByCointype =
               walletUtil.updateSpecialTokensTickerNameForTxHistory(
-                  tickerNameByCointype)["tickerName"];
+                  tickerNameByCointype)["tickerName"]!;
           log.i(
               'if Special then updated tickerNameByCointype $tickerNameByCointype');
           if (tickerNameByCointype != null &&
@@ -1006,11 +1007,11 @@ class WalletDashboardViewModel extends BaseViewModel {
     String newCoinAddress = '';
 
     //newCoinAddress = assignNewTokenAddress(newToken);
-    double marketPrice = newTokenWalletBalance.usdValue.usd ?? 0.0;
+    double marketPrice = newTokenWalletBalance.usdValue!.usd ?? 0.0;
     double availableBal = newTokenWalletBalance.balance ?? 0.0;
     double lockedBal = newTokenWalletBalance.lockBalance ?? 0.0;
 
-    double usdValue = walletService.calculateCoinUsdBalance(
+    double? usdValue = walletService.calculateCoinUsdBalance(
         marketPrice, availableBal, lockedBal);
     // String holder = NumberUtil.currencyFormat(usdValue, 2);
     // formattedUsdValueList.add(holder);
@@ -1031,7 +1032,7 @@ class WalletDashboardViewModel extends BaseViewModel {
 
   insertToken(TokenModel newToken) async {
     if (newToken.chainName == 'FAB') {
-      newToken.contract = '0x' + newToken.contract;
+      newToken.contract = '0x${newToken.contract}';
     }
     await tokenListDatabaseService.insert(newToken);
   }

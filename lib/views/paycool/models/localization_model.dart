@@ -1,6 +1,6 @@
 class LocalizationModel {
-  String en;
-  String sc;
+  String? en;
+  String? sc;
 
   LocalizationModel({this.en, this.sc});
 

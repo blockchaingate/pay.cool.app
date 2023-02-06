@@ -8,11 +8,11 @@ class TransactionHistoryEvents {
   List<Transactions> transactions;
 
   TransactionHistoryEvents({
-    this.action,
-    this.coin,
-    this.timestamp,
-    this.quantity,
-    this.transactions,
+    required this.action,
+    required this.coin,
+    required this.timestamp,
+    required this.quantity,
+    required this.transactions,
   });
 
   @override
@@ -21,16 +21,16 @@ class TransactionHistoryEvents {
   }
 
   factory TransactionHistoryEvents.fromJson(Map<String, dynamic> json) {
+    var t = json['transactions'] as List<Transactions>;
+    var txs = t.map((e) {
+      Transactions.fromJson(e as Map<String, dynamic>);
+    }).toList();
     return TransactionHistoryEvents(
       action: json['action'] as String,
       coin: json['coin'] as String,
       timestamp: json['timestamp'] as int,
       quantity: json['quantity'] as String,
-      transactions: (json['transactions'] as List<Transactions>)?.map((e) {
-        return e == null
-            ? null
-            : Transactions.fromJson(e as Map<String, dynamic>);
-      })?.toList(),
+      transactions: txs as List<Transactions>,
     );
   }
 
@@ -47,7 +47,7 @@ class TransactionHistoryEvents {
 
 class TransactionHistoryEventsList {
   final List<TransactionHistoryEvents> transactions;
-  TransactionHistoryEventsList({this.transactions});
+  TransactionHistoryEventsList({required this.transactions});
 
   factory TransactionHistoryEventsList.fromJson(List<dynamic> parsedJson) {
     List<TransactionHistoryEvents> transactions = [];

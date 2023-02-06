@@ -1,6 +1,6 @@
 class ClubParams {
-  String to;
-  String data;
+  String? to;
+  String? data;
 
   ClubParams({this.to, this.data});
 

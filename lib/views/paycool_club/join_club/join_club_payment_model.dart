@@ -1,6 +1,6 @@
 class JoinClubPaymentModel {
-  String toAddress;
-  String datAbiHex;
+  String? toAddress;
+  String? datAbiHex;
 
   JoinClubPaymentModel({this.toAddress, this.datAbiHex});
 

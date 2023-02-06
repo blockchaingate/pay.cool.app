@@ -9,9 +9,9 @@ class EventDetail extends StatefulWidget {
 }
 
 class _EventDetailState extends State<EventDetail> {
-  String _selectedNode;
-  List<Node> _nodes;
-  TreeViewController _treeViewController;
+  String? _selectedNode;
+  List<Node>? _nodes;
+  TreeViewController? _treeViewController;
   bool docsOpen = true;
   bool deepExpanded = true;
   final Map<ExpanderPosition, Widget> expansionPositionOptions = const {
@@ -27,7 +27,7 @@ class _EventDetailState extends State<EventDetail> {
     ExpanderType.chevron: Icon(Icons.expand_more),
     ExpanderType.plusMinus: Icon(Icons.add),
   };
-  final Map<ExpanderModifier, Widget> expansionModifierOptions = const {
+  final Map<ExpanderModifier, Widget> expansionModifierOptions = {
     ExpanderModifier.none: ModContainer(ExpanderModifier.none),
     ExpanderModifier.circleFilled: ModContainer(ExpanderModifier.circleFilled),
     ExpanderModifier.circleOutlined:
@@ -47,9 +47,9 @@ class _EventDetailState extends State<EventDetail> {
     _nodes = [];
     _treeViewController = TreeViewController(
       selectedKey: _selectedNode,
-      children: _nodes,
+      children: _nodes!,
     );
-    _treeViewController = _treeViewController.loadJSON(json: US_STATES_JSON);
+    _treeViewController = _treeViewController!.loadJSON(json: US_STATES_JSON);
 
     super.initState();
   }
@@ -182,7 +182,7 @@ class _EventDetailState extends State<EventDetail> {
                             ),
                             padding: const EdgeInsets.all(10),
                             child: TreeView(
-                              controller: _treeViewController,
+                              controller: _treeViewController!,
                               allowParentSelect: _allowParentSelect,
                               supportParentDoubleTap: _supportParentDoubleTap,
                               onExpansionChanged: (key, expanded) =>
@@ -191,7 +191,7 @@ class _EventDetailState extends State<EventDetail> {
                                 debugPrint('Selected: $key');
                                 setState(() {
                                   _selectedNode = key;
-                                  _treeViewController = _treeViewController
+                                  _treeViewController = _treeViewController!
                                       .copyWith(selectedKey: key);
                                 });
                               },
@@ -208,11 +208,11 @@ class _EventDetailState extends State<EventDetail> {
                             padding: const EdgeInsets.only(top: 20),
                             alignment: Alignment.center,
                             child: Text(
-                                _treeViewController.getNode(_selectedNode) ==
+                                _treeViewController!.getNode(_selectedNode!) ==
                                         null
                                     ? ''
-                                    : _treeViewController
-                                        .getNode(_selectedNode)
+                                    : _treeViewController!
+                                        .getNode(_selectedNode!)!
                                         .label),
                           ),
                         )
@@ -231,11 +231,11 @@ class _EventDetailState extends State<EventDetail> {
   _expandNode(String key, bool expanded) {
     String msg = '${expanded ? "Expanded" : "Collapsed"}: $key';
     debugPrint(msg.toString());
-    Node node = _treeViewController.getNode(key);
+    Node? node = _treeViewController!.getNode(key);
     if (node != null) {
       List<Node> updated;
       if (key == 'docs') {
-        updated = _treeViewController.updateNode(
+        updated = _treeViewController!.updateNode(
           key,
           node.copyWith(
               expanded: expanded,
@@ -245,7 +245,7 @@ class _EventDetailState extends State<EventDetail> {
               )),
         );
       } else {
-        updated = _treeViewController.updateNode(
+        updated = _treeViewController!.updateNode(
             key,
             node.copyWith(
               expanded: expanded,
@@ -258,7 +258,7 @@ class _EventDetailState extends State<EventDetail> {
       }
       setState(() {
         if (key == 'docs') docsOpen = expanded;
-        _treeViewController = _treeViewController.copyWith(children: updated);
+        _treeViewController = _treeViewController!.copyWith(children: updated);
       });
     }
   }
@@ -267,7 +267,7 @@ class _EventDetailState extends State<EventDetail> {
 class ModContainer extends StatelessWidget {
   final ExpanderModifier modifier;
 
-  const ModContainer(this.modifier, {Key key}) : super(key: key);
+  const ModContainer(this.modifier, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

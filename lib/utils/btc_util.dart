@@ -20,34 +20,33 @@ final String btcBaseUrl = environment["endpoints"]["btc"];
 
 final client = CustomHttpUtil.createLetsEncryptUpdatedCertClient();
 Future getBtcTransactionStatus(String txid) async {
-  Response response;
-  var url = btcBaseUrl + 'gettransactionjson/' + txid;
+  Response? response;
+  var url = '${btcBaseUrl}gettransactionjson/$txid';
 
   try {
-    response = await client.get(url);
+    response = await client.get(Uri.parse(url));
   } catch (e) {}
 
   return response;
 }
 
 Future getBtcBalanceByAddress(String address) async {
-  var url = btcBaseUrl + 'getbalance/' + address;
+  var url = '${btcBaseUrl}getbalance/$address';
   var btcBalance = 0.0;
   try {
-    var response = await client.get(url);
+    var response = await client.get(Uri.parse(url));
     btcBalance = double.parse(response.body) / 1e8;
   } catch (e) {}
   return {'balance': btcBalance, 'lockbalance': 0.0};
 }
 
-getBtcNode(root, {String tickerName, index = 0}) {
+getBtcNode(root, {String? tickerName, index = 0}) {
   var coinType = environment["CoinType"][tickerName].toString();
-  var node =
-      root.derivePath("m/44'/" + coinType + "'/0'/0/" + index.toString());
+  var node = root.derivePath("m/44'/$coinType'/0'/0/$index");
   return node;
 }
 
-String getBtcAddressForNode(node, {String tickerName}) {
+String? getBtcAddressForNode(node, {String? tickerName}) {
   return P2PKH(
           data: PaymentData(pubkey: node.publicKey),
           //  new P2PKHData(pubkey: node.publicKey),

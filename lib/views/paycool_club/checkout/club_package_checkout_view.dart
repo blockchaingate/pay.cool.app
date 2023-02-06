@@ -9,27 +9,27 @@ import 'package:paycool/views/paycool_club/club_projects/club_project_model.dart
 import 'package:stacked/stacked.dart';
 
 class ClubPackageCheckoutView extends StatelessWidget {
-  final Map<String, dynamic> packageWithPaymentCoin;
-  const ClubPackageCheckoutView({Key key, this.packageWithPaymentCoin})
+  final Map<String, dynamic>? packageWithPaymentCoin;
+  const ClubPackageCheckoutView({Key? key, this.packageWithPaymentCoin})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<ClubPackageCheckoutViewModel>.reactive(
-      onModelReady: (model) {
+      onViewModelReady: (model) {
         model.context = context;
-        model.clubProject = packageWithPaymentCoin['package'];
+        model.clubProject = packageWithPaymentCoin!['package'];
         //model.init();
       },
       viewModelBuilder: () => ClubPackageCheckoutViewModel(
-          packageWithPaymentCoin['package'].sId,
-          packageWithPaymentCoin['paymentCoin']),
+          packageWithPaymentCoin!['package'].sId,
+          packageWithPaymentCoin!['paymentCoin']),
       builder: (
         BuildContext context,
         ClubPackageCheckoutViewModel model,
-        Widget child,
+        Widget? child,
       ) {
-        ClubProject package = packageWithPaymentCoin['package'];
+        ClubProject package = packageWithPaymentCoin!['package'];
         return Scaffold(
           body: Stack(
             children: [
@@ -56,7 +56,7 @@ class ClubPackageCheckoutView extends StatelessWidget {
                   UIHelper.verticalSpaceLarge,
                   model.dataReady &&
                           (model.clubPackageCheckout.clubParams == null ||
-                              model.clubPackageCheckout.clubParams.isEmpty)
+                              model.clubPackageCheckout.clubParams!.isEmpty)
                       ? Center(
                           child: Column(
                           children: [
@@ -78,94 +78,83 @@ class ClubPackageCheckoutView extends StatelessWidget {
                             ),
                           ],
                         ))
-                      : Container(
-                          //  decoration: BoxDecoration(image: blurBackgroundImage()),
-                          child: Center(
-                            child: Container(
-                              // height: 300,
-                              width: 350,
-                              alignment: Alignment.center,
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 20),
-                              // decoration: roundedBoxDecoration(color: primaryColor),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  checkoutFields(
-                                      FlutterI18n.translate(
-                                          context, "exchangeBalance"),
-                                      model.exchangeBalance.toString(),
-                                      context),
-                                  UIHelper.verticalSpaceSmall,
-                                  checkoutFields(
-                                      FlutterI18n.translate(context, "gas") +
-                                          ' ' +
-                                          FlutterI18n.translate(
-                                              context, "balance"),
-                                      NumberUtil.decimalLimiter(
-                                              model.gasBalance,
-                                              decimalPrecision: 12)
-                                          .toString(),
-                                      context),
-                                  UIHelper.verticalSpaceSmall,
-                                  UIHelper.verticalSpaceSmall,
-                                  UIHelper.divider,
-                                  UIHelper.verticalSpaceSmall,
-                                  checkoutFields(
-                                      FlutterI18n.translate(context, "name"),
-                                      model.title,
-                                      context),
+                      : Center(
+                          child: Container(
+                            // height: 300,
+                            width: 350,
+                            alignment: Alignment.center,
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            // decoration: roundedBoxDecoration(color: primaryColor),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                checkoutFields(
+                                    FlutterI18n.translate(
+                                        context, "exchangeBalance"),
+                                    model.exchangeBalance.toString(),
+                                    context),
+                                UIHelper.verticalSpaceSmall,
+                                checkoutFields(
+                                    '${FlutterI18n.translate(context, "gas")} ${FlutterI18n.translate(context, "balance")}',
+                                    NumberUtil.decimalLimiter(model.gasBalance,
+                                            decimalPrecision: 12)
+                                        .toString(),
+                                    context),
+                                UIHelper.verticalSpaceSmall,
+                                UIHelper.verticalSpaceSmall,
+                                UIHelper.divider,
+                                UIHelper.verticalSpaceSmall,
+                                checkoutFields(
+                                    FlutterI18n.translate(context, "name"),
+                                    model.title,
+                                    context),
 
-                                  // checkoutFields(
-                                  //     FlutterI18n.translate(context, "description"),
-                                  //     model.desc.toString(),
-                                  //     context),
-                                  UIHelper.verticalSpaceSmall,
-                                  checkoutFields(
-                                      FlutterI18n.translate(
-                                          context, "packageValue"),
-                                      package.joiningFee.toString() +
-                                          ' ' +
-                                          packageWithPaymentCoin['paymentCoin'],
-                                      context),
-                                  UIHelper.verticalSpaceLarge,
-                                  Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      SizedBox(
-                                        height: 45,
-                                        width: 200,
-                                        child: ElevatedButton(
-                                            style:
-                                                generalButtonStyle1.copyWith(),
-                                            onPressed: () => !model.isBusy
-                                                ? model.buyPackage()
-                                                : model.log.e('model busy'),
-                                            child: Text(
-                                              FlutterI18n.translate(
-                                                  context, "stakeToEarn"),
-                                            )),
-                                      ),
-                                      UIHelper.verticalSpaceSmall,
-                                      SizedBox(
-                                        height: 45,
-                                        width: 200,
-                                        child: OutlinedButton(
-                                            style: outlinedButtonStyles2,
-                                            onPressed: () => !model.isBusy
-                                                ? model.navigationService
-                                                    .goBack()
-                                                : model.log.e('model busy'),
-                                            child: Text(
-                                              FlutterI18n.translate(
-                                                  context, "cancel"),
-                                            )),
-                                      ),
-                                    ],
-                                  )
-                                ],
-                              ),
+                                // checkoutFields(
+                                //     FlutterI18n.translate(context, "description"),
+                                //     model.desc.toString(),
+                                //     context),
+                                UIHelper.verticalSpaceSmall,
+                                checkoutFields(
+                                    FlutterI18n.translate(
+                                        context, "packageValue"),
+                                    '${package.joiningFee} ' +
+                                        packageWithPaymentCoin!['paymentCoin'],
+                                    context),
+                                UIHelper.verticalSpaceLarge,
+                                Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    SizedBox(
+                                      height: 45,
+                                      width: 200,
+                                      child: ElevatedButton(
+                                          style: generalButtonStyle1.copyWith(),
+                                          onPressed: () => !model.isBusy
+                                              ? model.buyPackage()
+                                              : model.log.e('model busy'),
+                                          child: Text(
+                                            FlutterI18n.translate(
+                                                context, "stakeToEarn"),
+                                          )),
+                                    ),
+                                    UIHelper.verticalSpaceSmall,
+                                    SizedBox(
+                                      height: 45,
+                                      width: 200,
+                                      child: OutlinedButton(
+                                          style: outlinedButtonStyles2,
+                                          onPressed: () => !model.isBusy
+                                              ? model.navigationService.goBack()
+                                              : model.log.e('model busy'),
+                                          child: Text(
+                                            FlutterI18n.translate(
+                                                context, "cancel"),
+                                          )),
+                                    ),
+                                  ],
+                                )
+                              ],
                             ),
                           ),
                         ),

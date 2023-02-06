@@ -16,10 +16,10 @@ import 'package:paycool/views/wallet/wallet_features/transaction_history/transac
 class TxHisotryCardWidget extends StatelessWidget {
   final TransactionHistoryViewmodel model;
   const TxHisotryCardWidget({
-    @required this.model,
-    Key key,
-    @required this.transaction,
-    @required this.customFontSize,
+    required this.model,
+    Key? key,
+    required this.transaction,
+    required this.customFontSize,
   }) : super(key: key);
 
   final TransactionHistory transaction;
@@ -139,11 +139,7 @@ class TxHisotryCardWidget extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     AutoSizeText(
-                      transaction.date.split(" ")[0].split("-")[1] +
-                          '-' +
-                          transaction.date.split(" ")[0].split("-")[2] +
-                          '-' +
-                          transaction.date.split(" ")[0].split("-")[0],
+                      '${transaction.date.split(" ")[0].split("-")[1]}-${transaction.date.split(" ")[0].split("-")[2]}-${transaction.date.split(" ")[0].split("-")[0]}',
                       style: headText5.copyWith(fontWeight: FontWeight.w400),
                       minFontSize: 8,
                       maxLines: 1,
@@ -170,7 +166,7 @@ class TxHisotryCardWidget extends StatelessWidget {
                   alignment: Alignment.center,
                   child: AutoSizeText(
                     NumberUtil()
-                        .truncateDoubleWithoutRouding(transaction.quantity,
+                        .truncateDoubleWithoutRouding(transaction.quantity!,
                             precision: model.decimalLimit)
                         .toString(),
                     textAlign: TextAlign.right,
@@ -248,7 +244,7 @@ class TxHisotryCardWidget extends StatelessWidget {
                                 transaction.tickerChainTxStatus ==
                                     model.rejected ||
                                 model.rejected
-                                    .contains(transaction.tickerChainTxStatus))
+                                    .contains(transaction.tickerChainTxStatus!))
                               RichText(
                                 text: TextSpan(
                                     text: FlutterI18n.translate(
@@ -278,7 +274,7 @@ class TxHisotryCardWidget extends StatelessWidget {
                             else if (transaction.tag.toUpperCase() ==
                                     model.withdraw.toUpperCase() &&
                                 transaction.kanbanTxStatus == model.success &&
-                                transaction.tickerChainTxStatus
+                                transaction.tickerChainTxStatus!
                                     .startsWith('sent'))
                               Expanded(
                                 child: AutoSizeText(

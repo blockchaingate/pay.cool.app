@@ -11,7 +11,8 @@ import 'package:shimmer/shimmer.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class TotalBalanceCardWidget extends StatelessWidget {
-  const TotalBalanceCardWidget({Key key, this.model}) : super(key: key);
+  const TotalBalanceCardWidget({Key? key, required this.model})
+      : super(key: key);
   final WalletDashboardViewModel model;
 
   @override
@@ -62,14 +63,14 @@ class TotalBalanceCardWidget extends StatelessWidget {
                                   child: Text(
                                     '${model.totalUsdBalance} USD',
                                     style:
-                                        Theme.of(context).textTheme.subtitle1,
+                                        Theme.of(context).textTheme.titleMedium,
                                   ),
                                 )
                               : Text('${model.totalUsdBalance} USD',
                                   textAlign: TextAlign.center,
                                   style: Theme.of(context)
                                       .textTheme
-                                      .subtitle1
+                                      .titleMedium!
                                       .copyWith(
                                           fontWeight: FontWeight.w400,
                                           color: black)),
@@ -92,7 +93,8 @@ class TotalBalanceCardWidget extends StatelessWidget {
 }
 
 class TotalBalanceCardWidget2 extends StatelessWidget {
-  const TotalBalanceCardWidget2({Key key, this.model}) : super(key: key);
+  const TotalBalanceCardWidget2({Key? key, required this.model})
+      : super(key: key);
   final WalletDashboardViewModel model;
 
   @override
@@ -156,7 +158,7 @@ class TotalBalanceCardWidget2 extends StatelessWidget {
                                     baseColor: primaryColor,
                                     highlightColor: white,
                                     child: Text(
-                                        model.totalExchangeBalance + ' USD',
+                                        '${model.totalExchangeBalance} USD',
                                         style: subText1)),
                               ],
                             )
@@ -171,7 +173,7 @@ class TotalBalanceCardWidget2 extends StatelessWidget {
                                           context, "totalExchangeBalance"),
                                       style: headText4),
                                 ),
-                                Text(model.totalExchangeBalance + ' USD',
+                                Text('${model.totalExchangeBalance} USD',
                                     style: subText1),
                               ],
                             ),
@@ -192,7 +194,7 @@ class TotalBalanceCardWidget2 extends StatelessWidget {
 }
 
 class TotalBalanceCardWidget3 extends StatelessWidget {
-  const TotalBalanceCardWidget3({Key key, @required this.model})
+  const TotalBalanceCardWidget3({Key? key, required this.model})
       : super(key: key);
   final WalletDashboardViewModel model;
 

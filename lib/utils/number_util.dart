@@ -7,13 +7,13 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 class NumberUtil {
-  int maxDecimalDigits;
+  int? maxDecimalDigits;
   final log = getLogger('NumberUtil');
 
-  static Decimal rawStringToDecimal(String raw, {decimalPrecision = 18}) {
+  static Decimal rawStringToDecimal(String raw, {int decimalPrecision = 18}) {
     if (raw.isNotEmpty) {
       Decimal amount = Decimal.parse(raw.toString());
-      var x = Decimal.fromInt(pow(10, decimalPrecision));
+      var x = Decimal.fromInt((pow(10, decimalPrecision)).toInt());
       Decimal result = (amount / x).toDecimal();
 
       return result;
@@ -25,18 +25,18 @@ class NumberUtil {
   /// Breaks at precision 19
   static Decimal decimalLimiter(Decimal input, {int decimalPrecision = 2}) {
     var finalRes = Constants.decimalZero;
-    if (input != null) {
-      input ??= Constants.decimalZero;
-      if (input != Constants.decimalZero) {
-        var p = pow(10, decimalPrecision);
-        var t = Decimal.fromInt(p);
-        var x = input * t;
-        var trunc = x.truncate();
-        var resInRational = trunc / t;
-        finalRes =
-            resInRational.toDecimal(scaleOnInfinitePrecision: decimalPrecision);
-      }
+
+    input = Constants.decimalZero;
+    if (input != Constants.decimalZero) {
+      var p = pow(10, decimalPrecision);
+      var t = Decimal.fromInt(p.toInt());
+      var x = input * t;
+      var trunc = x.truncate();
+      var resInRational = trunc / t;
+      finalRes =
+          resInRational.toDecimal(scaleOnInfinitePrecision: decimalPrecision);
     }
+
     //debugPrint('finalRes $finalRes');
     return finalRes;
   }
@@ -106,10 +106,7 @@ class NumberUtil {
     if (lastDecimalDigit != '0') {
       roundDown = int.parse(lastDecimalDigit) - 1;
     }
-    String res = beforeDecimalBalance +
-        '.' +
-        secondLastDecimalDigit +
-        roundDown.toString();
+    String res = '$beforeDecimalBalance.$secondLastDecimalDigit$roundDown';
     finalBalance = double.parse(res);
 
     log.w('roundDownLastDigit res $finalBalance');
@@ -129,7 +126,7 @@ class NumberUtil {
   }
 
   double truncateDouble(double val, int places) {
-    double mod = pow(10.0, places);
+    num mod = pow(10.0, places);
     return ((val * mod).round().toDouble() / mod);
   }
 
@@ -147,19 +144,18 @@ class NumberUtil {
     var numStringArray = numString.split('.');
     decimalLength ??= 18;
     var val = '';
-    if (numStringArray != null) {
-      val = numStringArray[0];
-      if (numStringArray.length == 2) {
-        var decimalPart = numStringArray[1];
-        if (decimalPart.length > decimalLength) {
-          debugPrint('decimalPart before: $decimalPart');
-          debugPrint('decimalLength: $decimalLength');
-          decimalPart = decimalPart.substring(0, decimalLength);
-          debugPrint('decimalPart after: $decimalPart');
-        }
-        decimalLength -= decimalPart.length;
-        val += decimalPart;
+
+    val = numStringArray[0];
+    if (numStringArray.length == 2) {
+      var decimalPart = numStringArray[1];
+      if (decimalPart.length > decimalLength) {
+        debugPrint('decimalPart before: $decimalPart');
+        debugPrint('decimalLength: $decimalLength');
+        decimalPart = decimalPart.substring(0, decimalLength);
+        debugPrint('decimalPart after: $decimalPart');
       }
+      decimalLength -= decimalPart.length;
+      val += decimalPart;
     }
 
     var valInt = int.parse(val);
@@ -183,21 +179,10 @@ class NumberUtil {
     return holder;
   }
 
-// Check if value is an int
-  static bool checkIfInt(value) {
-    bool result;
-
-    return result;
-  }
-
 // Time Format
   timeFormatted(timeStamp) {
     var time = DateTime.fromMillisecondsSinceEpoch(timeStamp * 1000);
-    return addZeroInFrontForSingleDigit(time.hour.toString()) +
-        ':' +
-        addZeroInFrontForSingleDigit(time.minute.toString()) +
-        ':' +
-        addZeroInFrontForSingleDigit(time.second.toString());
+    return '${addZeroInFrontForSingleDigit(time.hour.toString())}:${addZeroInFrontForSingleDigit(time.minute.toString())}:${addZeroInFrontForSingleDigit(time.second.toString())}';
   }
 
   String addZeroInFrontForSingleDigit(String value) {
@@ -219,7 +204,7 @@ class NumberUtil {
 
 class DecimalTextInputFormatter extends TextInputFormatter {
   final log = getLogger('DecimalTextInputFormatter');
-  DecimalTextInputFormatter({int decimalRange, bool activatedNegativeValues})
+  DecimalTextInputFormatter({int? decimalRange, bool? activatedNegativeValues})
       : assert(decimalRange == null || decimalRange >= 0,
             'DecimalTextInputFormatter declaretion error') {
     String dp = (decimalRange != null && decimalRange > 0)
@@ -227,14 +212,13 @@ class DecimalTextInputFormatter extends TextInputFormatter {
         : "";
     String num = "[0-9]*$dp";
 
-    if (activatedNegativeValues) {
+    if (activatedNegativeValues!) {
       _exp = RegExp("^((((-){0,1})|((-){0,1}[0-9]$num))){0,1}\$");
     } else {
       _exp = RegExp("^($num){0,1}\$");
     }
   }
-
-  RegExp _exp;
+  late RegExp _exp;
 
   @override
   TextEditingValue formatEditUpdate(

@@ -21,11 +21,11 @@ import '../models/dialog/dialog_response.dart';
 class LocalDialogService {
   final GlobalKey<NavigatorState> _dialogNavigationKey =
       GlobalKey<NavigatorState>();
-  Function(DialogRequest) _showDialogListener;
-  Function(DialogRequest) _showOrderUpdateDialogListener;
-  Function(DialogRequest) _showBasicDialogListener;
-  Function(DialogRequest) _showVerifyDialogListener;
-  Completer<DialogResponse> _dialogCompleter;
+  late Function(DialogRequest) _showDialogListener;
+  late Function(DialogRequest) _showOrderUpdateDialogListener;
+  late Function(DialogRequest) _showBasicDialogListener;
+  late Function(DialogRequest) _showVerifyDialogListener;
+  late Completer<DialogResponse> _dialogCompleter;
 
   GlobalKey<NavigatorState> get navigatorKey => _dialogNavigationKey;
 
@@ -39,7 +39,7 @@ class LocalDialogService {
   void dialogComplete(DialogResponse response) {
     //   _dialogNavigationKey.currentState.pop();
     _dialogCompleter.complete(response);
-    _dialogCompleter = null;
+    _dialogCompleter = null!;
   }
 
 /*----------------------------------------------------------------------
@@ -52,11 +52,11 @@ class LocalDialogService {
 
   // Calls the dialog listener and returns a future that will wait for the dialog to complete
   Future<DialogResponse> showDialog(
-      {String title, String description, String buttonTitle}) {
+      {String? title, String? description, String? buttonTitle}) {
     log.w('In show dialog');
     _dialogCompleter = Completer<DialogResponse>();
     _showDialogListener(DialogRequest(
-        title: title, description: description, buttonTitle: buttonTitle));
+        title: title!, description: description!, buttonTitle: buttonTitle!));
     log.i('1');
     return _dialogCompleter.future;
   }
@@ -70,16 +70,16 @@ class LocalDialogService {
 
   // Calls the dialog listener and returns a future that will wait for the dialog to complete
   Future<DialogResponse> showVerifyDialog(
-      {String title,
-      String description,
-      String buttonTitle,
-      String secondaryButton}) {
+      {String? title,
+      String? description,
+      String? buttonTitle,
+      String? secondaryButton}) {
     log.w('In show verify dialog');
     _dialogCompleter = Completer<DialogResponse>();
     _showVerifyDialogListener(DialogRequest(
-        title: title,
-        description: description,
-        buttonTitle: buttonTitle,
+        title: title!,
+        description: description!,
+        buttonTitle: buttonTitle!,
         secondaryButton: secondaryButton));
     return _dialogCompleter.future;
   }
@@ -94,16 +94,16 @@ class LocalDialogService {
   }
 
   Future<DialogResponse> showBasicDialog({
-    String title,
-    String description,
-    String buttonTitle,
+    String? title,
+    String? description,
+    String? buttonTitle,
   }) {
     log.w('In show basic dialog');
     _dialogCompleter = Completer<DialogResponse>();
     _showBasicDialogListener(DialogRequest(
-      title: title,
-      description: description,
-      buttonTitle: buttonTitle,
+      title: title!,
+      description: description!,
+      buttonTitle: buttonTitle!,
     ));
     return _dialogCompleter.future;
   }
@@ -118,16 +118,16 @@ class LocalDialogService {
 
   // Calls the dialog listener and returns a future that will wait for the dialog to complete
   Future<DialogResponse> showOrderUpdateDialog(
-      {String title,
-      String description,
-      String confirmOrder,
-      String cancelOrder}) {
+      {String? title,
+      String? description,
+      String? confirmOrder,
+      String? cancelOrder}) {
     log.w('showOrerUpdateDialog $title');
     _dialogCompleter = Completer<DialogResponse>();
     _showOrderUpdateDialogListener(DialogRequest(
-        title: title,
-        description: description,
-        buttonTitle: confirmOrder,
+        title: title!,
+        description: description!,
+        buttonTitle: confirmOrder!,
         cancelButton: cancelOrder));
     return _dialogCompleter.future;
   }

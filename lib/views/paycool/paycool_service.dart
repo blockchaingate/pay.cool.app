@@ -40,8 +40,8 @@ class PayCoolService with ReactiveServiceMixin {
   PayCoolService() {
     listenToReactiveValues([_pageNumber, _hasUpdatedPageNumber]);
   }
-  updatePage({bool isNext}) {
-    _pageNumber.value = isNext ? _pageNumber.value + 1 : _pageNumber.value - 1;
+  updatePage({bool? isNext}) {
+    _pageNumber.value = isNext! ? _pageNumber.value + 1 : _pageNumber.value - 1;
     log.w('updatePage ${_pageNumber.value}');
     notifyListeners();
     hasUpdatedPageNumberFunc(true);
@@ -53,17 +53,19 @@ class PayCoolService with ReactiveServiceMixin {
         'hasUpdatedPageNumberFunc : _hasUpdatedPageNumber ${_hasUpdatedPageNumber.value}');
   }
 
-  Future<String> createTemplateById(String id) async {
+  Future<String?> createTemplateById(String id) async {
     String orderIdResult = '';
-    String url = paycoolBaseUrl + 'userpay/createOrderFromTemplate';
+    String url = '${paycoolBaseUrl}userpay/createOrderFromTemplate';
     var body = {"id": id};
     log.i('createTemplateById url $url -- body ${jsonEncode(body)}');
 
     try {
-      var response = await client.post(url, body: jsonEncode(body), headers: {
-        'Content-type': 'application/json',
-        'Accept': 'application/json'
-      });
+      var response = await client.post(Uri.parse(url),
+          body: jsonEncode(body),
+          headers: {
+            'Content-type': 'application/json',
+            'Accept': 'application/json'
+          });
       if (response.statusCode == 200 || response.statusCode == 201) {
         var json = jsonDecode(response.body);
         log.w('createTemplateById json $json');
@@ -81,11 +83,8 @@ class PayCoolService with ReactiveServiceMixin {
   }
 
   Future<String> createStoreMerchantOrder(Map<String, dynamic> body) async {
-    String url = baseBlockchainGateV2Url +
-        ordersTextApiRoute +
-        paycoolTextApiRoute +
-        '/' +
-        'create';
+    String url =
+        '$baseBlockchainGateV2Url$ordersTextApiRoute$paycoolTextApiRoute/create';
 
     //    const body = {
     //     currency: currency,
@@ -106,10 +105,12 @@ class PayCoolService with ReactiveServiceMixin {
     log.i('createStoreMerchantOrder url $url -- body ${jsonEncode(body)}');
 
     try {
-      var response = await client.post(url, body: jsonEncode(body), headers: {
-        'Content-type': 'application/json',
-        'Accept': 'application/json'
-      });
+      var response = await client.post(Uri.parse(url),
+          body: jsonEncode(body),
+          headers: {
+            'Content-type': 'application/json',
+            'Accept': 'application/json'
+          });
 
       var json = jsonDecode(response.body)['_body'];
 
@@ -122,11 +123,11 @@ class PayCoolService with ReactiveServiceMixin {
     }
   }
 
-  Future<MerchantModel> getMerchantInfo(String id) async {
-    String url = paycoolBaseUrl + 'merchantreferral/v2/' + id;
+  Future<MerchantModel?> getMerchantInfo(String id) async {
+    String url = '${paycoolBaseUrl}merchantreferral/v2/$id';
     log.i('getMerchantInfo url $url');
     try {
-      var response = await client.get(url);
+      var response = await client.get(Uri.parse(url));
 
       var json = jsonDecode(response.body)['_body'];
       MerchantModel merchantModel = MerchantModel();
@@ -142,21 +143,16 @@ class PayCoolService with ReactiveServiceMixin {
     }
   }
 
-  Future<PaymentRewardsModel> getPayOrderInfoWithRewards(String id) async {
+  Future<PaymentRewardsModel?> getPayOrderInfoWithRewards(String id) async {
     String fabAddress =
         await coreWalletDatabaseService.getWalletAddressByTickerName('FAB');
     //https:fabtest.info/api/userpay/v2/order/635ab250f8ba77d673a32474
-    String url = paycoolBaseUrl +
-        'userpay/v2/order/' +
-        id +
-        '/' +
-        fabAddress +
-        '/rewardInfo';
+    String url = '${paycoolBaseUrl}userpay/v2/order/$id/$fabAddress/rewardInfo';
 
     log.i('getPayOrderInfoWithRewards url $url');
-    PaymentRewardsModel rewardInfoModel;
+    PaymentRewardsModel? rewardInfoModel;
     try {
-      var response = await client.get(url);
+      var response = await client.get(Uri.parse(url));
       if (response.statusCode == 200 || response.statusCode == 201) {
         var json = jsonDecode(response.body)['_body'];
         var isDataCorrect = jsonDecode(response.body)['success'];
@@ -181,14 +177,14 @@ class PayCoolService with ReactiveServiceMixin {
     }
   }
 
-  Future<PayOrder> getPayOrderInfo(String id) async {
+  Future<PayOrder?> getPayOrderInfo(String id) async {
     //  https: //fabtest.info/api/userpay/v2/order/635ab250f8ba77d673a32474
-    String url = paycoolBaseUrl + 'userpay/v2/order/' + id;
+    String url = '${paycoolBaseUrl}userpay/v2/order/$id';
 
     log.i('getPayOrderInfo url $url');
-    PayOrder payOrder;
+    PayOrder? payOrder;
     try {
-      var response = await client.get(url);
+      var response = await client.get(Uri.parse(url));
       if (response.statusCode == 200 || response.statusCode == 201) {
         var isDataCorrect = jsonDecode(response.body)['success'];
 
@@ -212,7 +208,7 @@ class PayCoolService with ReactiveServiceMixin {
     String url = regionalAgentStarPayUrl + smartContractAddress;
     log.i('getRegionalAgent url $url');
     try {
-      var response = await client.get(url);
+      var response = await client.get(Uri.parse(url));
       if (response.statusCode == 200 || response.statusCode == 201) {
         var json = jsonDecode(response.body)['_body'] as List;
         List<String> agents = [];
@@ -226,7 +222,7 @@ class PayCoolService with ReactiveServiceMixin {
           return [];
         }
       } else {
-        log.e("getParentAddress error: " + response.body);
+        log.e("getParentAddress error: ${response.body}");
         return [];
       }
     } catch (err) {
@@ -243,7 +239,7 @@ class PayCoolService with ReactiveServiceMixin {
     String url = paycoolParentAddressUrl + address;
     log.i('getParentAddress url $url');
     try {
-      var response = await client.get(url);
+      var response = await client.get(Uri.parse(url));
       if (response.statusCode == 200 || response.statusCode == 201) {
         var json = jsonDecode(response.body) as List;
         List<String> res = [];
@@ -257,7 +253,7 @@ class PayCoolService with ReactiveServiceMixin {
           return [];
         }
       } else {
-        log.e("getParentAddress error: " + response.body);
+        log.e("getParentAddress error: ${response.body}");
         return [];
       }
     } catch (err) {
@@ -268,16 +264,16 @@ class PayCoolService with ReactiveServiceMixin {
 
   Future applyRefund(
       String orderId, String randomId, MsgSignature signature) async {
-    String url = paycoolBaseUrl + 'charge/requestrefund/' + orderId;
+    String url = '${paycoolBaseUrl}charge/requestrefund/$orderId';
 
     var body = {
       "refundAll": true,
       "items": [],
       "requestRefundId":
           "0x89d7e2530fc14714db77bc40b53c65ec27e4c39544278c90f4355a1e10dd8376",
-      "r": '0x' + signature.r.toString(),
-      "s": '0x' + signature.s.toString(),
-      "v": '0x' + signature.v.toRadixString(16),
+      "r": '0x${signature.r}',
+      "s": '0x${signature.s}',
+      "v": '0x${signature.v.toRadixString(16)}',
     };
     log.i('getRefund url $url -- body ${jsonEncode(body)}');
     // try {
@@ -299,11 +295,11 @@ class PayCoolService with ReactiveServiceMixin {
   // Get Transaction History
 
   Future<int> getTransactionHistoryCount(String fabAddress) async {
-    String url = paymentTransactionHistoryUrl + fabAddress + '/totalCount';
+    String url = '$paymentTransactionHistoryUrl$fabAddress/totalCount';
     int totalCount = 0;
     log.i('getTransactionHistoryCount url $url');
     try {
-      var response = await client.get(url);
+      var response = await client.get(Uri.parse(url));
       if (response.statusCode == 200 || response.statusCode == 201) {
         var json = jsonDecode(response.body);
         if (json["success"]) {
@@ -314,7 +310,7 @@ class PayCoolService with ReactiveServiceMixin {
           return 0;
         }
       } else {
-        log.e("getTransactionHistoryCount error: " + response.body);
+        log.e("getTransactionHistoryCount error: ${response.body}");
         return 0;
       }
     } catch (err) {
@@ -323,7 +319,7 @@ class PayCoolService with ReactiveServiceMixin {
     }
   }
 
-  Future<List<PayCoolTransactionHistory>> getTransactionHistory(String address,
+  Future<List<PayCoolTransactionHistory>?> getTransactionHistory(String address,
       {int pageSize = 10, int pageNumber = 0}) async {
     String url = paymentTransactionHistoryUrl + address;
 
@@ -331,11 +327,11 @@ class PayCoolService with ReactiveServiceMixin {
     if (pageNumber != 0) {
       pageNumber = pageNumber - 1;
     }
-    url = url + '/$pageSize/$pageNumber';
+    url = '$url/$pageSize/$pageNumber';
     log.i('getTransactionHistory url $url');
 
     try {
-      var response = await client.get(url);
+      var response = await client.get(Uri.parse(url));
       if (response.statusCode == 200 || response.statusCode == 201) {
         var json = jsonDecode(response.body)['_body'] as List;
 
@@ -345,13 +341,13 @@ class PayCoolService with ReactiveServiceMixin {
           PayCoolTransactionHistoryModelList transactionList =
               PayCoolTransactionHistoryModelList.fromJson(json);
           log.w(
-              'getTransactionHistory func:  transactions length -- ${transactionList.transactions.length}');
+              'getTransactionHistory func:  transactions length -- ${transactionList!.transactions!.length}');
           return transactionList.transactions;
         } else {
           return [];
         }
       } else {
-        log.e("getTransactionHistory error: " + response.body);
+        log.e("getTransactionHistory error: ${response.body}");
         return [];
       }
     } catch (err) {
@@ -395,16 +391,18 @@ class PayCoolService with ReactiveServiceMixin {
     };
     log.w('encodeAbiHex url $url --  body $body');
     try {
-      final res = await client.post(url, body: jsonEncode(body), headers: {
-        'Content-type': 'application/json',
-        'Accept': 'application/json'
-      });
+      final res = await client.post(Uri.parse(url),
+          body: jsonEncode(body),
+          headers: {
+            'Content-type': 'application/json',
+            'Accept': 'application/json'
+          });
       log.w('encodeAbiHex json ${res.body}');
       var json = jsonDecode(res.body)['encodedParams'];
       if (res.statusCode == 200 || res.statusCode == 201) {
         return json.toString();
       } else {
-        log.e("error: " + res.body);
+        log.e("error: ${res.body}");
         return res.body;
       }
     } catch (e) {
@@ -432,10 +430,12 @@ class PayCoolService with ReactiveServiceMixin {
     };
     log.w('decodeScannedAbiHex url $url --  body $body');
     try {
-      final res = await client.post(url, body: jsonEncode(body), headers: {
-        'Content-type': 'application/json',
-        'Accept': 'application/json'
-      });
+      final res = await client.post(Uri.parse(url),
+          body: jsonEncode(body),
+          headers: {
+            'Content-type': 'application/json',
+            'Accept': 'application/json'
+          });
       List<String> finalRes = [];
       var json = jsonDecode(res.body)['decodedParams'] as List;
       log.w('decodeScannedAbiHex json $json');
@@ -448,7 +448,7 @@ class PayCoolService with ReactiveServiceMixin {
         return finalRes;
       } else {
         List<String> err = [];
-        log.e("error: " + res.body);
+        log.e("error: ${res.body}");
         err.add(res.body.toString());
         return err;
       }
@@ -463,11 +463,11 @@ class PayCoolService with ReactiveServiceMixin {
                             Get Rewards
 ----------------------------------------------------------------------*/
   Future<int> getPaymentRewardCount(String fabAddress) async {
-    String url = paymentRewardUrl + fabAddress + '/totalCount';
+    String url = '$paymentRewardUrl$fabAddress/totalCount';
     int referralCount = 0;
     log.i('getPaymentRewardTotalCount url $url');
     try {
-      var response = await client.get(url);
+      var response = await client.get(Uri.parse(url));
       if (response.statusCode == 200 || response.statusCode == 201) {
         var json = jsonDecode(response.body);
 
@@ -480,7 +480,7 @@ class PayCoolService with ReactiveServiceMixin {
           return 0;
         }
       } else {
-        log.e("getPaymentRewardTotalCount error: " + response.body);
+        log.e("getPaymentRewardTotalCount error: ${response.body}");
         return 0;
       }
     } catch (err) {
@@ -489,17 +489,17 @@ class PayCoolService with ReactiveServiceMixin {
     }
   }
 
-  Future<List<PaymentReward>> getPaymentRewards(String address,
+  Future<List<PaymentReward>?> getPaymentRewards(String address,
       {int pageSize = 10, int pageNumber = 0}) async {
     String url = paymentRewardUrl + address;
     // page number - 1 because page number start from 0 in the api but in front end its from 1
     if (pageNumber != 0) {
       pageNumber = pageNumber - 1;
     }
-    url = url + '/$pageSize/$pageNumber';
+    url = '$url/$pageSize/$pageNumber';
     log.i('getPaymentRewards url $url');
     try {
-      var response = await client.get(url);
+      var response = await client.get(Uri.parse(url));
       if (response.statusCode == 200 || response.statusCode == 201) {
         var json = jsonDecode(response.body)['_body'] as List;
 
@@ -508,13 +508,13 @@ class PayCoolService with ReactiveServiceMixin {
           PaymentRewards paymentRewardList = PaymentRewards.fromJson(json);
 
           log.e(
-              'getPaymentRewards length ${paymentRewardList.paymentRewards.length}');
+              'getPaymentRewards length ${paymentRewardList!.paymentRewards!.length}');
           return paymentRewardList.paymentRewards;
         } else {
           return [];
         }
       } else {
-        log.e("getPaymentRewards error: " + response.body);
+        log.e("getPaymentRewards error: ${response.body}");
         return [];
       }
     } catch (err) {

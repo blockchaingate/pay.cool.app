@@ -25,7 +25,7 @@ class ChooseWalletLanguageView extends StatelessWidget {
     var orientation = MediaQuery.of(context).orientation;
     return ViewModelBuilder<ChooseWalletLanguageViewModel>.reactive(
       viewModelBuilder: () => ChooseWalletLanguageViewModel(),
-      onModelReady: (model) async {
+      onViewModelReady: (model) async {
         model.context = context;
         await model.walletService.checkLanguage(context);
         //  await model.checkLanguage();
@@ -55,7 +55,7 @@ class ChooseWalletLanguageView extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 5),
               child: Row(
                 children: <Widget>[
-                  const Expanded(
+                  Expanded(
                     flex: 1,
                     child: Icon(
                       Icons.language,

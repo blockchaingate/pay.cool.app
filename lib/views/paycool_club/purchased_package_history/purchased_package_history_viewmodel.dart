@@ -20,7 +20,7 @@ class PurchasedPackageViewmodel extends FutureViewModel {
   SharedService sharedService = locator<SharedService>();
 
   PayCoolClubService payCoolClubService = locator<PayCoolClubService>();
-  BuildContext context;
+  BuildContext? context;
   String fabAddress = '';
 
   List<PurchasedPackageHistory> purchasedPackages = [];

@@ -1,20 +1,20 @@
 class PaycoolReferral {
-  String _id; //wallet FAB or EXG address as _id, unique
-  String _parentId; // Referral wallet EXG address
-  DateTime _dateUpdated;
-  DateTime _dateCreated;
-  String _memberType;
-  String _referralCode;
-  int _campaignId;
+  String? _id; //wallet FAB or EXG address as _id, unique
+  String? _parentId; // Referral wallet EXG address
+  DateTime? _dateUpdated;
+  DateTime? _dateCreated;
+  String? _memberType;
+  String? _referralCode;
+  int? _campaignId;
 
   PaycoolReferral({
-    String id,
-    String parentId,
-    DateTime dateUpdated,
-    DateTime dateCreated,
-    String memberType,
-    String referralCode,
-    int campaignId,
+    String? id,
+    String? parentId,
+    DateTime? dateUpdated,
+    DateTime? dateCreated,
+    String? memberType,
+    String? referralCode,
+    int? campaignId,
   }) {
     _id = id;
     _parentId = parentId;
@@ -49,41 +49,41 @@ class PaycoolReferral {
     return data;
   }
 
-  String get id => _id;
+  String get id => _id!;
 
   set id(String id) {
     _id = id;
   }
 
-  String get parentId => _parentId;
+  String get parentId => _parentId!;
 
   set parentId(String parentId) {
     _parentId = parentId;
   }
 
-  DateTime get dateUpdated => _dateUpdated;
+  DateTime get dateUpdated => _dateUpdated!;
   set dateUpdated(DateTime dateUpdated) {
     _dateUpdated = dateUpdated;
   }
 
-  DateTime get dateCreated => _dateCreated;
+  DateTime get dateCreated => _dateCreated!;
   set dateCreated(DateTime dateCreated) {
     _dateCreated = dateCreated;
   }
 
-  String get memberType => _memberType;
+  String get memberType => _memberType!;
 
   set memberType(String memberType) {
     _memberType = memberType;
   }
 
-  String get referralCode => _referralCode;
+  String get referralCode => _referralCode!;
 
   set referralCode(String referralCode) {
     _referralCode = referralCode;
   }
 
-  int get campaignId => _campaignId;
+  int get campaignId => _campaignId!;
 
   set campaignId(int campaignId) {
     _campaignId = campaignId;
@@ -92,7 +92,7 @@ class PaycoolReferral {
 
 class StarReferralList {
   final List<PaycoolReferral> starReferralsList;
-  StarReferralList({this.starReferralsList});
+  StarReferralList({required this.starReferralsList});
 
   factory StarReferralList.fromJson(List<dynamic> parsedJson) {
     List<PaycoolReferral> starReferralsListFromApi = [];

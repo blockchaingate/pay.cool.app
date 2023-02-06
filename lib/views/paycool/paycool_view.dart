@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:auto_size_text/auto_size_text.dart';
+
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
@@ -10,7 +10,6 @@ import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/constants/route_names.dart';
 import 'package:paycool/constants/ui_var.dart';
 import 'package:paycool/shared/ui_helpers.dart';
-import 'package:paycool/utils/number_util.dart';
 import 'package:paycool/views/paycool/paycool_viewmodel.dart';
 import 'package:paycool/widgets/bottom_nav.dart';
 import 'package:paycool/widgets/server_error_widget.dart';
@@ -81,13 +80,13 @@ class PayCoolView extends StatelessWidget {
                       ],
                     )),
                     model.isServerDown
-                        ? const ServerErrorWidget()
+                        ? ServerErrorWidget()
                         : model.isBusy && !model.isPaying
                             ? Padding(
                                 padding: const EdgeInsets.only(top: 30.0),
                                 child: model.sharedService.loadingIndicator(),
                               )
-                            : !model.isMember
+                            : !model.isMember!
                                 ? Container(
                                     decoration:
                                         roundedTopLeftRightBoxDecoration(
@@ -172,11 +171,11 @@ class PayCoolView extends StatelessWidget {
                                                 // color: Color(mainColor),
                                                 borderRadius:
                                                     BorderRadius.circular(25),
-                                                gradient: const LinearGradient(
-                                                    colors: [
-                                                      Color(0xFFcd45ff),
-                                                      Color(0xFF7368ff),
-                                                    ])),
+                                                gradient:
+                                                    LinearGradient(colors: [
+                                                  Color(0xFFcd45ff),
+                                                  Color(0xFF7368ff),
+                                                ])),
                                             margin: const EdgeInsetsDirectional
                                                 .only(top: 10.0),
                                             child: TextButton(
@@ -191,7 +190,7 @@ class PayCoolView extends StatelessWidget {
                                                     ? debugPrint('busy')
                                                     : model.createAccount();
                                               },
-                                              child: Text(
+                                              Widget: Text(
                                                   FlutterI18n.translate(
                                                       context, "joinNow"),
                                                   style: headText4.copyWith(
@@ -329,7 +328,7 @@ class PayCoolView extends StatelessWidget {
                                                                           ),
                                                                           title: Text(
                                                                               FlutterI18n.translate(context, "noCoinBalance"),
-                                                                              style: Theme.of(context).textTheme.bodyText2),
+                                                                              style: Theme.of(context).textTheme.bodyMedium),
                                                                           subtitle: Text(FlutterI18n.translate(context, "transferFundsToExchangeUsingDepositButton"), style: subText2.copyWith(color: white)))
                                                                       : Center(
                                                                           child:
@@ -349,13 +348,16 @@ class PayCoolView extends StatelessWidget {
                                                               onChanged:
                                                                   (newValue) {
                                                                 model.updateSelectedTickername(
-                                                                    newValue);
+                                                                    newValue
+                                                                        .toString());
                                                               },
                                                               items: model
                                                                   .exchangeBalances
                                                                   .map(
                                                                 (coin) {
                                                                   return DropdownMenuItem(
+                                                                    value: coin
+                                                                        .ticker,
                                                                     child:
                                                                         Container(
                                                                       height:
@@ -396,8 +398,6 @@ class PayCoolView extends StatelessWidget {
                                                                         ),
                                                                       ),
                                                                     ),
-                                                                    value: coin
-                                                                        .ticker,
                                                                   );
                                                                 },
                                                               ).toList()),
@@ -451,7 +451,7 @@ class PayCoolView extends StatelessWidget {
                                                                 Expanded(
                                                                   child:
                                                                       SizedBox(
-                                                                    width: FlutterI18n.currentLocale(context).countryCode ==
+                                                                    width: FlutterI18n.currentLocale(context)!.countryCode ==
                                                                             'es'
                                                                         ? 60
                                                                         : 80,
@@ -520,7 +520,7 @@ class PayCoolView extends StatelessWidget {
                                                                       .center,
                                                               children: [
                                                                 SizedBox(
-                                                                  width: FlutterI18n.currentLocale(context)
+                                                                  width: FlutterI18n.currentLocale(context)!
                                                                               .countryCode ==
                                                                           'es'
                                                                       ? 60
@@ -612,7 +612,7 @@ class PayCoolView extends StatelessWidget {
                                                         // merchant name
                                                         model.merchantModel !=
                                                                     null &&
-                                                                model.merchantModel
+                                                                model.merchantModel!
                                                                         .name !=
                                                                     null
                                                             ? Container(
@@ -646,15 +646,15 @@ class PayCoolView extends StatelessWidget {
                                                                           mainAxisAlignment:
                                                                               MainAxisAlignment.end,
                                                                           children: [
-                                                                            model.merchantModel.image != null
+                                                                            model.merchantModel!.image != null
                                                                                 ? Image.network(
-                                                                                    model.merchantModel.image,
+                                                                                    model.merchantModel!.image.toString(),
                                                                                     width: 20,
                                                                                     height: 20,
                                                                                   )
                                                                                 : Container(),
                                                                             UIHelper.horizontalSpaceSmall,
-                                                                            Text(model.storageService.language == "en" ? model.merchantModel.name.en : model.merchantModel.name.sc,
+                                                                            Text(model.storageService.language == "en" ? model.merchantModel!.name!.en.toString() : model.merchantModel!.name!.sc.toString(),
                                                                                 textAlign: TextAlign.right,
                                                                                 style: headText5.copyWith(fontWeight: FontWeight.bold)),
                                                                             // TextButton(
@@ -760,7 +760,7 @@ class PayCoolView extends StatelessWidget {
                                                                           mainAxisAlignment:
                                                                               MainAxisAlignment.end,
                                                                           children: [
-                                                                            Text(model.payOrder.title,
+                                                                            Text(model.payOrder.title.toString(),
                                                                                 maxLines: 2,
                                                                                 textAlign: TextAlign.right,
                                                                                 style: headText5.copyWith(fontWeight: FontWeight.bold)),
@@ -768,7 +768,7 @@ class PayCoolView extends StatelessWidget {
                                                                                 onPressed: () {
                                                                                   model.showOrderDetails();
                                                                                 },
-                                                                                child: Text(
+                                                                                Widget: Text(
                                                                                   FlutterI18n.translate(context, "details"),
                                                                                   style: const TextStyle(fontSize: 12),
                                                                                 ))
@@ -918,7 +918,7 @@ class PayCoolView extends StatelessWidget {
                                                                 Expanded(
                                                                   flex: 2,
                                                                   child: Text(
-                                                                      '${model.rewardInfoModel.getTotalRewards.toString()} ${model.merchantModel.rewardCoin}',
+                                                                      '${model.rewardInfoModel!.getTotalRewards.toString()} ${model.merchantModel!.rewardCoin}',
                                                                       textAlign:
                                                                           TextAlign
                                                                               .right,
@@ -960,7 +960,7 @@ class PayCoolView extends StatelessWidget {
                                                           ))),
                                                       onPressed: () {
                                                         if (model.isBusy ||
-                                                            model.rewardInfoModel
+                                                            model.rewardInfoModel!
                                                                     .params ==
                                                                 null) {
                                                           debugPrint(
@@ -1215,9 +1215,9 @@ class PayCoolView extends StatelessWidget {
 }
 
 class CoinListBottomSheetFloatingActionButton extends StatelessWidget {
-  const CoinListBottomSheetFloatingActionButton({Key key, this.model})
+  const CoinListBottomSheetFloatingActionButton({Key? key, this.model})
       : super(key: key);
-  final PayCoolViewmodel model;
+  final PayCoolViewmodel? model;
 
   @override
   Widget build(BuildContext context) {
@@ -1238,23 +1238,23 @@ class CoinListBottomSheetFloatingActionButton extends StatelessWidget {
             child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               Padding(
                 padding: const EdgeInsets.only(right: 5.0),
-                child: model.exchangeBalances.isEmpty
+                child: model!.exchangeBalances.isEmpty
                     ? Text(FlutterI18n.translate(context, "noCoinBalance"))
                     : Text(
                         //model.tickerName == ''
                         // ? FlutterI18n.translate(context, "selectCoin")
                         // :
-                        model.tickerName),
+                        model!.tickerName),
               ),
-              Text(model.quantity == 0.0 ? '' : model.quantity.toString()),
-              model.exchangeBalances.isNotEmpty
+              Text(model!.quantity == 0.0 ? '' : model!.quantity.toString()),
+              model!.exchangeBalances.isNotEmpty
                   ? const Icon(Icons.arrow_drop_down)
                   : Container()
             ]),
           ),
           onPressed: () {
-            if (model.exchangeBalances.isNotEmpty) {
-              model.coinListBottomSheet(context);
+            if (model!.exchangeBalances.isNotEmpty) {
+              model!.coinListBottomSheet(context);
             }
           }),
     );

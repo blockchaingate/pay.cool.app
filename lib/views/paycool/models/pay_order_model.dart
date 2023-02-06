@@ -1,12 +1,12 @@
 import 'package:decimal/decimal.dart';
 
 class PayOrder {
-  String orderId;
-  Decimal qty;
-  Decimal tax;
-  Decimal price;
-  String title;
-  Decimal rebateRate;
+  String? orderId;
+  Decimal? qty;
+  Decimal? tax;
+  Decimal? price;
+  String? title;
+  Decimal? rebateRate;
 
   // {
   // 			"title": "b2-order",

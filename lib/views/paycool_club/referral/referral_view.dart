@@ -13,19 +13,19 @@ import '../../../constants/colors.dart';
 
 class ReferralView extends StatelessWidget {
   final List<Project> projects;
-  const ReferralView({Key key, this.projects}) : super(key: key);
+  const ReferralView({Key? key, required this.projects}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<ReferralViewmodel>.reactive(
       viewModelBuilder: () => ReferralViewmodel(),
-      onModelReady: (model) {
+      onViewModelReady: (model) {
         model.projects = projects;
         model.init();
       },
       builder: (
         BuildContext context,
         ReferralViewmodel model,
-        Widget child,
+        Widget? child,
       ) {
         return Scaffold(
           extendBodyBehindAppBar: true,
@@ -74,7 +74,7 @@ class ReferralView extends StatelessWidget {
                                                     projects[index].id]),
                                           ),
                                       title: Text(
-                                        projects[index].en,
+                                        projects[index].en!,
                                         style: headText4,
                                       ),
                                       trailing: Row(

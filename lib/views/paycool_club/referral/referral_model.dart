@@ -95,18 +95,18 @@
 import 'package:paycool/views/paycool_club/club_dashboard_model.dart';
 
 class ReferalRoute {
-  Project project;
-  String address;
-  List<PaycoolReferral> referrals;
+  Project? project;
+  String? address;
+  List<PaycoolReferral>? referrals;
 
   ReferalRoute({this.project, this.address, this.referrals});
 }
 
 class PaycoolReferral {
-  String count;
-  String userAddress;
-  String referralParent;
-  int status;
+  String? count;
+  String? userAddress;
+  String? referralParent;
+  int? status;
 
   PaycoolReferral(
       {this.count, this.userAddress, this.referralParent, this.status});
@@ -130,7 +130,7 @@ class PaycoolReferral {
 }
 
 class PaycoolReferralList {
-  final List<PaycoolReferral> paycoolReferralList;
+  final List<PaycoolReferral>? paycoolReferralList;
   PaycoolReferralList({this.paycoolReferralList});
 
   factory PaycoolReferralList.fromJson(List<dynamic> parsedJson) {

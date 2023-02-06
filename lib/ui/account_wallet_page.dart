@@ -21,62 +21,63 @@ class _AccountWalletState extends State<AccountWallet> {
               style: TextStyle(color: Color(0xff333333), fontSize: 18))),
       body: Container(
           color: const Color(0xfff0f3f6),
-          child:
-              ListView(padding: const EdgeInsets.fromLTRB(20, 20, 20, 10), children: [
-            Container(
-              decoration: const BoxDecoration(color: Colors.white),
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(
-                        top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
-                    child: TextField(
-                      focusNode: myFocusNodeWallet,
-                      controller: signupWalletController,
-                      keyboardType: TextInputType.text,
-                      textCapitalization: TextCapitalization.words,
-                      style: const TextStyle(
-                          fontFamily: "WorkSansSemiBold",
-                          fontSize: 16.0,
-                          color: Colors.black),
-                      decoration: const InputDecoration(
-                        border: InputBorder.none,
-                        icon: Icon(
-                          FontAwesomeIcons.wallet,
-                          color: Colors.black,
+          child: ListView(
+              padding: const EdgeInsets.fromLTRB(20, 20, 20, 10),
+              children: [
+                Container(
+                  decoration: const BoxDecoration(color: Colors.white),
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
+                        child: TextField(
+                          focusNode: myFocusNodeWallet,
+                          controller: signupWalletController,
+                          keyboardType: TextInputType.text,
+                          textCapitalization: TextCapitalization.words,
+                          style: const TextStyle(
+                              fontFamily: "WorkSansSemiBold",
+                              fontSize: 16.0,
+                              color: Colors.black),
+                          decoration: const InputDecoration(
+                            border: InputBorder.none,
+                            icon: Icon(
+                              FontAwesomeIcons.wallet,
+                              color: Colors.black,
+                            ),
+                            hintText: "亿币钱包地址",
+                            hintStyle: TextStyle(
+                                fontFamily: "WorkSansSemiBold", fontSize: 16.0),
+                          ),
                         ),
-                        hintText: "亿币钱包地址",
-                        hintStyle: TextStyle(
-                            fontFamily: "WorkSansSemiBold", fontSize: 16.0),
                       ),
-                    ),
+                    ],
                   ),
-                ],
-              ),
-            ),
-            const SizedBox(
-              height: 30,
-            ),
-            Container(
-                height: 40,
-                // width: MediaQuery.of(context).size.width * 0.66,
-                margin: const EdgeInsets.fromLTRB(0, 0, 0, 30),
-                decoration: BoxDecoration(
-                    // color: Color(mainColor),
-                    borderRadius: BorderRadius.circular(10),
-                    gradient: const LinearGradient(colors: [
-                      Color(0xFFcd45ff),
-                      Color(0xFF7368ff),
-                    ])),
-                child: const Center(
-                    child: Text(
-                  "修改钱包地址",
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold),
-                ))),
-          ])),
+                ),
+                const SizedBox(
+                  height: 30,
+                ),
+                Container(
+                    height: 40,
+                    // width: MediaQuery.of(context).size.width * 0.66,
+                    margin: const EdgeInsets.fromLTRB(0, 0, 0, 30),
+                    decoration: BoxDecoration(
+                        // color: Color(mainColor),
+                        borderRadius: BorderRadius.circular(10),
+                        gradient: LinearGradient(colors: [
+                          Color(0xFFcd45ff),
+                          Color(0xFF7368ff),
+                        ])),
+                    child: const Center(
+                        child: Text(
+                      "修改钱包地址",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold),
+                    ))),
+              ])),
     );
   }
 }

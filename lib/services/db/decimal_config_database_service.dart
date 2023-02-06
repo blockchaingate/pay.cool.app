@@ -29,17 +29,19 @@ class DecimalConfigDatabaseService {
   final String columnQtyDecimal = 'qtyDecimal';
 
   static const _databaseVersion = 5;
-  static Future<Database> _database;
   String path = '';
 
+  static Database? _database;
+
+  Future<Database> get database async => _database ??= await initDb();
+
   Future<Database> initDb() async {
-    if (_database != null) return _database;
+    if (_database != null) return database;
     var databasePath = await getDatabasesPath();
     path = join(databasePath, _databaseName);
     log.w(path);
-    _database =
-        openDatabase(path, version: _databaseVersion, onCreate: _onCreate);
-    return _database;
+
+    return openDatabase(path, version: _databaseVersion, onCreate: _onCreate);
   }
 
   void _onCreate(Database db, int version) async {
@@ -55,7 +57,7 @@ class DecimalConfigDatabaseService {
 
   Future<List<PairDecimalConfig>> getAll() async {
     await initDb();
-    final Database db = await _database;
+    final Database db = await database;
     log.w('getall $db');
 
     // res is giving me the same output in the log whether i map it or just take var res
@@ -70,7 +72,7 @@ class DecimalConfigDatabaseService {
 // Insert Data In The Database
   Future insert(PairDecimalConfig decimalConfig) async {
     await initDb();
-    final Database db = await _database;
+    final Database db = await database;
     int id = await db.insert(tableName, decimalConfig.toJson(),
         conflictAlgorithm: ConflictAlgorithm.replace);
     return id;
@@ -79,8 +81,8 @@ class DecimalConfigDatabaseService {
   // Get Single Setting By Name
   Future<PairDecimalConfig> getByName(String name) async {
     await initDb();
-    final Database db = await _database;
-    List<Map> res =
+    final Database db = await database;
+    List<Map<String, dynamic>> res =
         await db.query(tableName, where: 'name= ?', whereArgs: [name]);
     log.w('Name - $name --- $res');
 
@@ -93,7 +95,7 @@ class DecimalConfigDatabaseService {
 
   // Close Database
   Future closeDb() async {
-    var db = await _database;
+    var db = await database;
     return db.close();
   }
 

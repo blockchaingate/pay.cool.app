@@ -2,7 +2,7 @@
 //  Generated code. Do not modify.
 //  source: protos/tron.proto
 //
-// @dart = 2.7
+// @dart = 2.9
 // ignore_for_file: annotate_overrides,camel_case_types,unnecessary_const,non_constant_identifier_names,library_prefixes,unused_import,unused_shown_name,return_of_invalid_type,unnecessary_this,prefer_final_fields
 
 import 'dart:core' as $core;
@@ -283,9 +283,16 @@ class TriggerSmartContract extends $pb.GeneratedMessage {
             ? ''
             : 'data',
         $pb.PbFieldType.OY)
-    ..aInt64(5,
-        const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'callTokenValue')
-    ..aInt64(6, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'tokenId')
+    ..aInt64(
+        5,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'callTokenValue')
+    ..aInt64(
+        6,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'tokenId')
     ..hasRequiredFields = false;
 
   TriggerSmartContract._() : super();
@@ -847,14 +854,31 @@ class Transaction_Contract extends $pb.GeneratedMessage {
         valueOf: Transaction_Contract_ContractType.valueOf,
         enumValues: Transaction_Contract_ContractType.values)
     ..aOM<$0.Any>(
-        2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'parameter',
+        2,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'parameter',
         subBuilder: $0.Any.create)
     ..a<$core.List<$core.int>>(
         3,
-        const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'provider',
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'provider',
         $pb.PbFieldType.OY)
-    ..a<$core.List<$core.int>>(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'ContractName', $pb.PbFieldType.OY, protoName: 'ContractName')
-    ..a<$core.int>(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'PermissionId', $pb.PbFieldType.O3, protoName: 'Permission_id')
+    ..a<$core.List<$core.int>>(
+        4,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'ContractName',
+        $pb.PbFieldType.OY,
+        protoName: 'ContractName')
+    ..a<$core.int>(
+        5,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'PermissionId',
+        $pb.PbFieldType.O3,
+        protoName: 'Permission_id')
     ..hasRequiredFields = false;
 
   Transaction_Contract._() : super();
@@ -1092,14 +1116,40 @@ class Transaction_raw extends $pb.GeneratedMessage {
             : 'expiration')
     ..pc<acuthrity>(
         9,
-        const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'auths',
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'auths',
         $pb.PbFieldType.PM,
         subBuilder: acuthrity.create)
-    ..a<$core.List<$core.int>>(10, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'data', $pb.PbFieldType.OY)
-    ..pc<Transaction_Contract>(11, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'contract', $pb.PbFieldType.PM, subBuilder: Transaction_Contract.create)
-    ..a<$core.List<$core.int>>(12, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'scripts', $pb.PbFieldType.OY)
-    ..aInt64(14, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'timestamp')
-    ..aInt64(18, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'feeLimit')
+    ..a<$core.List<$core.int>>(
+        10,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'data',
+        $pb.PbFieldType.OY)
+    ..pc<Transaction_Contract>(
+        11,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'contract',
+        $pb.PbFieldType.PM,
+        subBuilder: Transaction_Contract.create)
+    ..a<$core.List<$core.int>>(
+        12,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'scripts',
+        $pb.PbFieldType.OY)
+    ..aInt64(
+        14,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'timestamp')
+    ..aInt64(
+        18,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'feeLimit')
     ..hasRequiredFields = false;
 
   Transaction_raw._() : super();
@@ -1298,7 +1348,9 @@ class Transaction extends $pb.GeneratedMessage {
         $pb.PbFieldType.PY)
     ..pc<Transaction_Result>(
         5,
-        const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'ret',
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'ret',
         $pb.PbFieldType.PM,
         subBuilder: Transaction_Result.create)
     ..hasRequiredFields = false;
@@ -1449,9 +1501,22 @@ class BlockHeader_raw extends $pb.GeneratedMessage {
             : 'parentHash',
         $pb.PbFieldType.OY,
         protoName: 'parentHash')
-    ..aInt64(7, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'number')
-    ..aInt64(8, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'witnessId')
-    ..a<$core.List<$core.int>>(9, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'witnessAddress', $pb.PbFieldType.OY)
+    ..aInt64(
+        7,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'number')
+    ..aInt64(
+        8,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'witnessId')
+    ..a<$core.List<$core.int>>(
+        9,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'witnessAddress',
+        $pb.PbFieldType.OY)
     ..hasRequiredFields = false;
 
   BlockHeader_raw._() : super();

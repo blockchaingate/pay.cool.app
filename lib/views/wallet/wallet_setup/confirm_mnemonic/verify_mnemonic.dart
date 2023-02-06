@@ -17,12 +17,12 @@ import 'package:paycool/constants/colors.dart';
 
 class VerifyMnemonicWalletView extends StatelessWidget {
   final List<TextEditingController> mnemonicTextController;
-  final String validationMessage;
-  final int count;
+  final String? validationMessage;
+  final int? count;
 
   // ignore: use_key_in_widget_constructors
   const VerifyMnemonicWalletView(
-      {@required this.mnemonicTextController,
+      {required this.mnemonicTextController,
       this.validationMessage,
       this.count});
 
@@ -43,7 +43,7 @@ class VerifyMnemonicWalletView extends StatelessWidget {
                   crossAxisSpacing: 10,
                   shrinkWrap: true,
                   childAspectRatio: 2,
-                  children: _buildTextGrid(count, mnemonicTextController))),
+                  children: _buildTextGrid(count!, mnemonicTextController))),
         ],
       ),
     );

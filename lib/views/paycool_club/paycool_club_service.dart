@@ -14,7 +14,6 @@ import 'package:paycool/views/paycool_club/club_projects/club_package_checkout_m
 import 'package:paycool/views/paycool_club/club_projects/club_project_model.dart';
 import 'package:paycool/views/paycool_club/purchased_package_history/purchased_package_history_model.dart';
 import 'package:paycool/views/paycool_club/referral/referral_model.dart';
-import 'package:paycool/views/paycool_club/paycool_dashboard_model_old.dart';
 
 import '../../models/paycool/paycool_order_model.dart';
 
@@ -32,13 +31,12 @@ class PayCoolClubService {
 
 // status 1 means success, 0 means failure
   Future<bool> txReceipt(String txId) async {
-    String url = configService.getKanbanBaseUrl() +
-        'kanban/getTransactionReceipt/' +
-        txId;
+    String url =
+        '${configService.getKanbanBaseUrl()}kanban/getTransactionReceipt/$txId';
     log.i('txReceipt url $url');
     bool res = false;
     try {
-      var response = await client.get(url);
+      var response = await client.get(Uri.parse(url));
       var json = jsonDecode(response.body);
       if (response.statusCode == 200 || response.statusCode == 201) {
         if (json != null) {
@@ -69,7 +67,7 @@ class PayCoolClubService {
     log.i('isValidMember url $url');
     bool res = false;
     try {
-      var response = await client.get(url);
+      var response = await client.get(Uri.parse(url));
       var json = jsonDecode(response.body);
       if (response.statusCode == 200 || response.statusCode == 201) {
         log.w('isValidMember json $json');
@@ -91,44 +89,11 @@ class PayCoolClubService {
   }
 
 /*----------------------------------------------------------------------
-                     Check if paycool club member
-----------------------------------------------------------------------*/
-//memberType: 0-should be unknown; 1-keyNode, 2-Consumer, 3-Merchant
-  Future<bool> isMember(String fabAddress) async {
-    String url = payCoolClubrRefUrl + fabAddress;
-    log.i('isMember url $url');
-    bool res = false;
-    try {
-      var response = await client.get(url);
-      var json = jsonDecode(response.body);
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        log.w('isMember json $json');
-
-        var mt = json['id'];
-        if (mt != null) {
-          log.e('jsonmember $mt');
-          if (json['memberType'] == 0) {
-            res = false;
-          } else {
-            res = true;
-          }
-        }
-        return res;
-      } else {
-        log.e("isMember error: " + json);
-        return false;
-      }
-    } catch (e) {
-      log.e('isMember func: failed to load the data from the API $e');
-      return false;
-    }
-  }
-/*----------------------------------------------------------------------
                             Pay.cool Club Details
 ----------------------------------------------------------------------*/
 
   // https://fabtest.info/api/project/v2/10/0
-  Future<List<ClubProject>> getClubProjects(
+  Future<List<ClubProject>?> getClubProjects(
       {int pageSize = 20, int pageNumber = 0}) async {
     String url = clubProjectsUrl;
 
@@ -136,20 +101,20 @@ class PayCoolClubService {
       pageNumber = pageNumber - 1;
     }
     // page number - 1 because page number start from 0 in the api but in front end its from 1
-    url = url + '$pageSize/$pageNumber';
+    url = '$url$pageSize/$pageNumber';
     log.i('getClubProjects url $url');
 
     try {
-      var response = await client.get(url);
+      var response = await client.get(Uri.parse(url));
       var json = jsonDecode(response.body)['_body'] as List;
       log.w('getClubProjects json $json');
       if (response.statusCode == 200 || response.statusCode == 201) {
         ClubProjectList clubProjectList = ClubProjectList.fromJson(json);
         log.i(
-            "getClubProjects clubProjectList: ${clubProjectList.clubProjects[0].toJson()}");
+            "getClubProjects clubProjectList: ${clubProjectList.clubProjects![0].toJson()}");
         return clubProjectList.clubProjects;
       } else {
-        log.e("getClubProjects error: " + response.body);
+        log.e("getClubProjects error: ${response.body}");
         return [];
       }
     } catch (e) {
@@ -160,7 +125,7 @@ class PayCoolClubService {
 
 // https://fabtest.info/api/projectpackage/v2/project/635d62c88e64d290833fa321/10/0
 // https://fabtest.info/api/projectpackage/v2/project/635d62c88e64d290833fa321/100/0/forUser/mvRFpsWcoQBSgDYtqqbhGYJp3BgKHTH6wg -- Updated Endpoint
-  Future<List<ClubProject>> getProjectDetails(
+  Future<List<ClubProject>?> getProjectDetails(
       String projectId, String walletAddress,
       {int pageSize = 20, int pageNumber = 0}) async {
     String url = clubProjectDetailsUrl + projectId;
@@ -169,20 +134,20 @@ class PayCoolClubService {
       pageNumber = pageNumber - 1;
     }
     // page number - 1 because page number start from 0 in the api but in front end its from 1
-    url = url + '/$pageSize/$pageNumber' + '/forUser/' + walletAddress;
+    url = '$url/$pageSize/$pageNumber/forUser/$walletAddress';
     log.i('getProjectDetails url $url');
 
     try {
-      var response = await client.get(url);
+      var response = await client.get(Uri.parse(url));
       var json = jsonDecode(response.body)['_body'] as List;
       log.w('getProjectDetails json $json');
       if (response.statusCode == 200 || response.statusCode == 201) {
         ClubProjectList clubProjectList = ClubProjectList.fromJson(json);
         log.i(
-            "getProjectDetails clubProjectList: ${clubProjectList.clubProjects[0].toJson()}");
+            "getProjectDetails clubProjectList: ${clubProjectList.clubProjects![0].toJson()}");
         return clubProjectList.clubProjects;
       } else {
-        log.e("getProjectDetails error: " + response.body);
+        log.e("getProjectDetails error: ${response.body}");
         return [];
       }
     } catch (e) {
@@ -192,14 +157,13 @@ class PayCoolClubService {
   }
 
 // https://fabtest.info/api/projectpackage/v2/635d9597b3e4d42b56b1f327/params/muMdVtayH2se3qK361vEz7mjDJuY7owzVK/DUSD
-  Future<ClubPackageCheckout> getPackageCheckoutDetails(
+  Future<ClubPackageCheckout?> getPackageCheckoutDetails(
       String id, String ticker) async {
     String address = await sharedService.getFabAddressFromCoreWalletDatabase();
-    String url =
-        baseProjectPackageUrl + id + '/params/' + address + '/' + ticker;
+    String url = '$baseProjectPackageUrl$id/params/$address/$ticker';
     log.i('getPackageCheckoutDetails url $url');
     try {
-      var response = await client.get(url);
+      var response = await client.get(Uri.parse(url));
       if (response.statusCode == 200 || response.statusCode == 201) {
         var json = jsonDecode(response.body)['_body'];
 
@@ -212,7 +176,7 @@ class PayCoolClubService {
           return ClubPackageCheckout(clubParams: [], rewardDetails: []);
         }
       } else {
-        log.e("getPackageCheckoutDetails error: " + response.body);
+        log.e("getPackageCheckoutDetails error: ${response.body}");
         return null;
       }
     } catch (err) {
@@ -258,7 +222,8 @@ class PayCoolClubService {
     };
     log.i('createOrder club $payCoolClubCreateOrderUrl -- body $body');
     try {
-      var response = await client.post(payCoolClubCreateOrderUrl, body: body);
+      var response =
+          await client.post(Uri.parse(payCoolClubCreateOrderUrl), body: body);
       var json = jsonDecode(response.body)['_body'];
       log.w('createOrder try response $json');
       return json;
@@ -275,7 +240,8 @@ class PayCoolClubService {
     Map<String, dynamic> body = {"txid": txId, "address": walletAddress};
     log.i('createOrder club $payCoolClubSaveOrderUrl -- body $body');
     try {
-      var response = await client.post(payCoolClubSaveOrderUrl, body: body);
+      var response =
+          await client.post(Uri.parse(payCoolClubSaveOrderUrl), body: body);
       var json = jsonDecode(response.body);
       log.w('save Order try response $json');
       return json;
@@ -284,33 +250,14 @@ class PayCoolClubService {
     }
   }
 
-  Future<PaycoolReferral> getReferralParentByAddress(String address) async {
-    try {
-      var response = await client.get(payCoolClubrRefUrl + address);
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        var json = jsonDecode(response.body);
-
-        log.w('getReferralParentByAddress $json');
-        PaycoolReferral paycoolReferralList = PaycoolReferral.fromJson(json);
-        return paycoolReferralList;
-      } else {
-        log.e("getReferralParentByAddress error: " + response.body);
-        return null;
-      }
-    } catch (err) {
-      log.e('In getReferralParentByAddress catch $err');
-      return null;
-    }
-  }
-
   Future<int> getPurchasedPackageCount(
     String address,
   ) async {
-    String url = paycoolBaseUrl + 'buy/v2/user/' + address + '/totalCount';
+    String url = '${paycoolBaseUrl}buy/v2/user/$address/totalCount';
     int referralCount = 0;
     log.i('getPurchasedPackageCount url $url');
     try {
-      var response = await client.get(url);
+      var response = await client.get(Uri.parse(url));
 
       var json = jsonDecode(response.body)["_body"];
 
@@ -320,7 +267,7 @@ class PayCoolClubService {
         log.i('getPurchasedPackageCount count $referralCount');
         return referralCount;
       } else {
-        log.e("getPurchasedPackageCount error: " + response.body);
+        log.e("getPurchasedPackageCount error: ${response.body}");
         return 0;
       }
     } catch (err) {
@@ -329,19 +276,19 @@ class PayCoolClubService {
     }
   }
 
-  Future<List<PurchasedPackageHistory>> getPurchasedPackageHistory(
+  Future<List<PurchasedPackageHistory>?> getPurchasedPackageHistory(
       String address,
       {int pageSize = 20,
       int pageNumber = 0}) async {
-    String url = paycoolBaseUrl + 'buy/v2/user/' + address;
+    String url = '${paycoolBaseUrl}buy/v2/user/$address';
     if (pageNumber != 0) {
       pageNumber = pageNumber - 1;
     }
     // page number - 1 because page number start from 0 in the api but in front end its from 1
-    url = url + '/$pageSize/$pageNumber';
+    url = '$url/$pageSize/$pageNumber';
     log.i('getPurchasedPackageHistory url $url');
     try {
-      var response = await client.get(url);
+      var response = await client.get(Uri.parse(url));
       if (response.statusCode == 200 || response.statusCode == 201) {
         var json = jsonDecode(response.body)["_body"] as List;
 
@@ -350,13 +297,13 @@ class PayCoolClubService {
           PurchasedPackageHistoryList historyList =
               PurchasedPackageHistoryList.fromJson(json);
           log.i(
-              'getPurchasedPackageHistory first childeren obj ${historyList.purchasedPackageHistoryList[0].toJson()}');
+              'getPurchasedPackageHistory first childeren obj ${historyList.purchasedPackageHistoryList![0].toJson()}');
           return historyList.purchasedPackageHistoryList;
         } else {
           return [];
         }
       } else {
-        log.e("getPurchasedPackageHistory error: " + response.body);
+        log.e("getPurchasedPackageHistory error: ${response.body}");
         return [];
       }
     } catch (err) {
@@ -368,11 +315,11 @@ class PayCoolClubService {
   Future<Decimal> getPriceOfRewardToken(
     String ticker,
   ) async {
-    String url = paycoolBaseUrl + 'common/v2/price/' + ticker;
+    String url = '${paycoolBaseUrl}common/v2/price/$ticker';
 
     log.i('getPriceOfRewardToken url $url');
     try {
-      var response = await client.get(url);
+      var response = await client.get(Uri.parse(url));
 
       var json = jsonDecode(response.body);
 
@@ -381,7 +328,7 @@ class PayCoolClubService {
         log.i('getPriceOfRewardToken price ${json['_body']}');
         return Decimal.parse(json['_body']['price'].toString());
       } else {
-        log.e("getReferralCount error: " + response.body);
+        log.e("getReferralCount error: ${response.body}");
         return Constants.decimalZero;
       }
     } catch (err) {
@@ -394,15 +341,12 @@ class PayCoolClubService {
   Future<int> getUserReferralCount(String address,
       {bool isProject = false, int projectId = 0}) async {
     String url = isProject
-        ? paycoolBaseUrl +
-            'projectuser/project/$projectId/user/' +
-            address +
-            '/totalCount'
-        : paycoolBaseUrl + 'userreferral/user/' + address + '/totalCount';
+        ? '${paycoolBaseUrl}projectuser/project/$projectId/user/$address/totalCount'
+        : '${paycoolBaseUrl}userreferral/user/$address/totalCount';
     int referralCount = 0;
     log.i('getReferralCount url $url');
     try {
-      var response = await client.get(url);
+      var response = await client.get(Uri.parse(url));
 
       var json = jsonDecode(response.body);
 
@@ -412,7 +356,7 @@ class PayCoolClubService {
         log.i('referral count $referralCount');
         return referralCount;
       } else {
-        log.e("getReferralCount error: " + response.body);
+        log.e("getReferralCount error: ${response.body}");
         return 0;
       }
     } catch (err) {
@@ -428,17 +372,17 @@ class PayCoolClubService {
       bool isProject = false,
       int projectId = 0}) async {
     String url = isProject
-        ? paycoolBaseUrl + 'projectuser/project/$projectId/user/' + address
-        : paycoolBaseUrl + 'userreferral/user/' + address;
+        ? '${paycoolBaseUrl}projectuser/project/$projectId/user/$address'
+        : '${paycoolBaseUrl}userreferral/user/$address';
 
     if (pageNumber != 0) {
       pageNumber = pageNumber - 1;
     }
     // page number - 1 because page number start from 0 in the api but in front end its from 1
-    url = url + '/$pageSize/$pageNumber';
+    url = '$url/$pageSize/$pageNumber';
     log.i('getReferrals url $url');
     try {
-      var response = await client.get(url);
+      var response = await client.get(Uri.parse(url));
       if (response.statusCode == 200 || response.statusCode == 201) {
         var json = jsonDecode(response.body) as List;
 
@@ -447,13 +391,13 @@ class PayCoolClubService {
           PaycoolReferralList paycoolReferralList =
               PaycoolReferralList.fromJson(json);
           log.w(
-              'getReferrals first childeren obj ${paycoolReferralList.paycoolReferralList[0].toJson()}');
-          return paycoolReferralList.paycoolReferralList;
+              'getReferrals first childeren obj ${paycoolReferralList.paycoolReferralList![0].toJson()}');
+          return paycoolReferralList.paycoolReferralList!;
         } else {
           return [];
         }
       } else {
-        log.e("getReferrals error: " + response.body);
+        log.e("getReferrals error: ${response.body}");
         return [];
       }
     } catch (err) {
@@ -466,11 +410,11 @@ class PayCoolClubService {
                             Get Dashboard details
 -------------------------------------------------------------------------------------*/
 //https://fabtest.info/api/userreferral/v2/user/myqZGzmy1fArKKx1RcgAxQTd4v1KutZgzY/summary
-  Future<ClubDashboard> getDashboardSummary(String address) async {
-    String url = clubDashboardUrl + address + '/summary';
+  Future<ClubDashboard?> getDashboardSummary(String address) async {
+    String url = '$clubDashboardUrl$address/summary';
     log.i('getDashboardSummary url $url');
     try {
-      var response = await client.get(url);
+      var response = await client.get(Uri.parse(url));
       if (response.statusCode == 200 || response.statusCode == 201) {
         var json = jsonDecode(response.body)['_body'];
 
@@ -481,34 +425,11 @@ class PayCoolClubService {
 
         return dashboard;
       } else {
-        log.e("getDashboardSummary error: " + response.body);
+        log.e("getDashboardSummary error: ${response.body}");
         return null;
       }
     } catch (err) {
       log.e('In getDashboardSummary catch $err');
-      return null;
-    }
-  }
-
-  Future<PaycoolDashboard> getDashboardDataByAddress(String address) async {
-    String url = payCoolClubrRefUrl + 'dashboard/' + address;
-    log.i('getDashboardDetailsByAddress url $url');
-    try {
-      var response = await client.get(url);
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        var json = jsonDecode(response.body);
-
-        log.w('getDashboardDetailsByAddress json $json');
-        PaycoolDashboard dashboard = PaycoolDashboard.fromJson(json);
-        log.e(dashboard.toJson());
-
-        return dashboard;
-      } else {
-        log.e("getDashboardDetailsByAddress error: " + response.body);
-        return null;
-      }
-    } catch (err) {
-      log.e('In getDashboardDetailsByAddress catch $err');
       return null;
     }
   }
