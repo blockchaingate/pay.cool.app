@@ -14,11 +14,8 @@ import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/views/paycool_club/purchased_package_history/purchased_package_history_view.dart';
 import 'package:paycool/widgets/bottom_nav.dart';
 import 'package:flutter/material.dart';
-import 'package:paycool/widgets/club/club_rewards_view.dart';
 import 'package:paycool/widgets/server_error_widget.dart';
 import 'package:stacked/stacked.dart';
-
-import '../../constants/colors.dart';
 import 'dart:math' as math;
 
 import 'referral/referral_model.dart';
@@ -58,7 +55,7 @@ class ClubDashboardView extends StatelessWidget {
       children: [
         // SizedBox(height: 30),
         //join button conatiner
-        Container(
+        SizedBox(
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.width < largeSize
               ? MediaQuery.of(context).size.width * 0.6
@@ -189,11 +186,11 @@ class ClubDashboardView extends StatelessWidget {
           }
 
           return AnnotatedRegion<SystemUiOverlayStyle>(
-            //  value: SystemUiOverlayStyle.dark,
-            Widget: Scaffold(
+            value: SystemUiOverlayStyle.dark,
+            child: Scaffold(
               extendBodyBehindAppBar: true,
               body: model.isServerDown
-                  ? Center(child: ServerErrorWidget())
+                  ? const Center(child: ServerErrorWidget())
                   : model.isBusy
                       ? model.sharedService.loadingIndicator()
                       : WillPopScope(
@@ -943,8 +940,9 @@ class ClubDashboardView extends StatelessWidget {
                                                       borderRadius:
                                                           BorderRadius.circular(
                                                               25),
-                                                      gradient: LinearGradient(
-                                                          colors: [
+                                                      gradient:
+                                                          const LinearGradient(
+                                                              colors: [
                                                             Color(0xFFcd45ff),
                                                             Color(0xFF7368ff),
                                                           ])),
@@ -964,7 +962,7 @@ class ClubDashboardView extends StatelessWidget {
                                                           .navigateTo(
                                                               PayCoolViewRoute);
                                                     },
-                                                    Widget: Text(
+                                                    child: Text(
                                                         FlutterI18n.translate(
                                                             context,
                                                             "joinPayCoolButton"),

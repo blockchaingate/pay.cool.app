@@ -8,7 +8,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:majascan/majascan.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:qr_code_tools/qr_code_tools.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:paycool/constants/api_routes.dart';
 import 'package:paycool/constants/colors.dart';
@@ -211,7 +210,8 @@ class PayCoolViewmodel extends FutureViewModel {
       log.w(_qrcodeFile);
     }
     try {
-      var barcodeScanData = await QrCodeToolsPlugin.decodeFrom(_qrcodeFile);
+      var barcodeScanData;
+      //await QrCodeToolsPlugin.decodeFrom(_qrcodeFile);
       log.i(barcodeScanData);
       orderDetails(barcodeScanData: barcodeScanData);
     } catch (err) {

@@ -170,13 +170,14 @@ class _DialogManagerState extends State<DialogManager> {
         title: request.title,
         desc: request.description,
         closeFunction: () {
+          Navigator.of(context).pop();
+          controller.text = '';
           FocusScope.of(context).requestFocus(FocusNode());
           _dialogService.dialogComplete(
               DialogResponse(returnedText: 'Closed', confirmed: false));
           controller.text = '';
           debugPrint('popping');
           //if (!Platform.isIOS)
-          Navigator.of(context).pop();
           debugPrint('popped');
         },
         content: Column(
@@ -207,8 +208,8 @@ class _DialogManagerState extends State<DialogManager> {
           DialogButton(
             color: grey,
             onPressed: () {
-              controller.text = '';
               Navigator.of(context).pop();
+              controller.text = '';
               _dialogService.dialogComplete(
                   DialogResponse(returnedText: 'Closed', confirmed: false));
             },
@@ -234,12 +235,12 @@ class _DialogManagerState extends State<DialogManager> {
 
                   encryptedMnemonic =
                       await coreWalletDatabaseService.getEncryptedMnemonic();
-                  try {
-                    encryptedMnemonic ??= '';
-                  } catch (err) {
-                    log.e(
-                        'failed to assign empty string to null encrypted mnemonic variable');
-                  }
+                  // try {
+                  //   encryptedMnemonic ??= '';
+                  // } catch (err) {
+                  //   log.e(
+                  //       'failed to assign empty string to null encrypted mnemonic variable');
+                  // }
                   if (encryptedMnemonic.isEmpty) {
                     // if there is no encrypted mnemonic saved in the new core wallet db
                     // then get the unencrypted mnemonic from the file
@@ -253,20 +254,20 @@ class _DialogManagerState extends State<DialogManager> {
                       finalRes = data;
                     });
                   }
-                  if (finalRes != '' && finalRes != null) {
+                  if (finalRes != '') {
+                    Navigator.of(context).pop();
+                    controller.text = '';
                     _dialogService.dialogComplete(DialogResponse(
                       returnedText: finalRes,
                       confirmed: true,
                     ));
-                    controller.text = '';
-                    Navigator.of(context).pop();
                   } else {
+                    Navigator.of(context).pop();
+                    controller.text = '';
                     _dialogService.dialogComplete(DialogResponse(
                       confirmed: false,
                       returnedText: 'wrong password',
                     ));
-                    controller.text = '';
-                    Navigator.of(context).pop();
                   }
                 } catch (err) {
                   log.e('Getting mnemonic failed -- $err');

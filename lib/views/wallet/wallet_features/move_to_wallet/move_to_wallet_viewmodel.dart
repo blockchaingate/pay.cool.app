@@ -710,7 +710,7 @@ class MoveToWalletViewmodel extends BaseViewModel {
                                     Navigator.of(context).pop();
                                     updateIsAlert(false);
                                   },
-                                  Widget: Text(
+                                  child: Text(
                                     FlutterI18n.translate(context, "close"),
                                     textAlign: TextAlign.center,
                                     style: const TextStyle(color: red),
@@ -746,7 +746,7 @@ class MoveToWalletViewmodel extends BaseViewModel {
                                     Navigator.of(context).pop();
                                     updateIsAlert(false);
                                   },
-                                  Widget: Text(
+                                  child: Text(
                                     FlutterI18n.translate(context, "close"),
                                     style: const TextStyle(color: red),
                                   ),

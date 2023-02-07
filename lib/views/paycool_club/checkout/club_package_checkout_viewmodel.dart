@@ -159,7 +159,7 @@ class ClubPackageCheckoutViewModel extends FutureViewModel {
     )
         .then((res) {
       if (res.confirmed) {
-        navigationService.navigateTo(PayCoolClubDashboardViewRoute);
+        navigationService.navigateTo(clubDashboardViewRoute);
       }
     });
   }

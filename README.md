@@ -15,3 +15,6 @@ flutter pub upgrade --major-versions
 dart pub get
 dart analyze
 dart migrate --apply-changes
+
+
+flutter pub cache repair

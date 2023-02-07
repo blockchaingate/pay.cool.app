@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +22,7 @@ class _LocalWebViewWidgetState extends State<LocalWebViewWidget>
     with TickerProviderStateMixin {
   bool isLoading = true;
   int loadingProgress = 0;
-  AnimationController? animationController;
+  late AnimationController animationController;
   late WebViewController controller;
   late final PlatformWebViewControllerCreationParams params;
   @override
@@ -38,7 +36,7 @@ class _LocalWebViewWidgetState extends State<LocalWebViewWidget>
     super.initState();
     animationController = AnimationController(
         duration: const Duration(milliseconds: 700), vsync: this);
-    animationController!.repeat();
+    animationController.repeat();
     controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setBackgroundColor(secondaryColor)
@@ -58,22 +56,22 @@ class _LocalWebViewWidgetState extends State<LocalWebViewWidget>
       ))
       ..loadRequest(Uri.parse(_url));
 
-    if (WebViewPlatform.instance is WebKitWebViewPlatform) {
-      params = WebKitWebViewControllerCreationParams(
-        allowsInlineMediaPlayback: true,
-        mediaTypesRequiringUserAction: const <PlaybackMediaTypes>{},
-      );
-    } else {
-      params = const PlatformWebViewControllerCreationParams();
-    }
+//     if (WebViewPlatform.instance is WebKitWebViewPlatform) {
+//       params = WebKitWebViewControllerCreationParams(
+//         allowsInlineMediaPlayback: true,
+//         mediaTypesRequiringUserAction: const <PlaybackMediaTypes>{},
+//       );
+//     } else {
+//       params = const PlatformWebViewControllerCreationParams();
+//     }
 
-    controller = WebViewController.fromPlatformCreationParams(params);
-// ···
-    if (controller.platform is AndroidWebViewController) {
-      AndroidWebViewController.enableDebugging(true);
-      (controller.platform as AndroidWebViewController)
-          .setMediaPlaybackRequiresUserGesture(false);
-    }
+//     controller = WebViewController.fromPlatformCreationParams(params);
+// // ···
+//     if (controller.platform is AndroidWebViewController) {
+//       AndroidWebViewController.enableDebugging(true);
+//       (controller.platform as AndroidWebViewController)
+//           .setMediaPlaybackRequiresUserGesture(false);
+//     }
   }
 
   final String _url;
@@ -94,12 +92,11 @@ class _LocalWebViewWidgetState extends State<LocalWebViewWidget>
         children: [
           WebViewWidget(
             controller: controller,
-
-            // gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>{
-            //   Factory<VerticalDragGestureRecognizer>(
-            //     () => VerticalDragGestureRecognizer(),
-            //   ),
-            // },
+            gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>{
+              Factory<VerticalDragGestureRecognizer>(
+                () => VerticalDragGestureRecognizer(),
+              ),
+            },
             key: _key,
           ),
           Visibility(

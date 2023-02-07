@@ -489,7 +489,7 @@ class TransactionHistoryViewmodel extends FutureViewModel {
                           isDialogUp = false;
                           setBusy(false);
                         },
-                        Widget: Text(
+                        child: Text(
                           FlutterI18n.translate(context, "close"),
                           style: const TextStyle(color: red),
                         ),

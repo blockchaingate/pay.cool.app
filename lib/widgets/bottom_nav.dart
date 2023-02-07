@@ -64,16 +64,15 @@ class BottomNavBar extends StatelessWidget {
                           debugPrint("nav has Pay.cool and club, id: $idx");
                           switch (idx) {
                             case 0:
-                              if (currentRouteName !=
-                                  'PayCoolClubDashboardView') {
+                              if (currentRouteName != 'clubDashboardView') {
                                 navigationService
                                     .navigateUsingpopAndPushedNamed(
-                                        PayCoolClubDashboardViewRoute);
+                                        clubDashboardViewRoute);
                               }
                               break;
 
                             case 1:
-                              if (currentRouteName != 'WalletDashboardVieww') {
+                              if (currentRouteName != 'WalletDashboardView') {
                                 navigationService
                                     .navigateUsingpopAndPushedNamed(
                                         DashboardViewRoute);
@@ -114,7 +113,7 @@ class BottomNavBar extends StatelessWidget {
                               "nav has Pay.cool and no Pay.cool club, id: $idx");
                           switch (idx) {
                             case 0:
-                              if (currentRouteName != 'WalletDashboardVieww') {
+                              if (currentRouteName != 'WalletDashboardView') {
                                 navigationService
                                     .navigateUsingpopAndPushedNamed(
                                         DashboardViewRoute);
@@ -156,15 +155,14 @@ class BottomNavBar extends StatelessWidget {
                               "nav no Pay.cool and has Pay.cool club, id: $idx");
                           switch (idx) {
                             case 0:
-                              if (currentRouteName !=
-                                  'PayCoolClubDashboardView') {
+                              if (currentRouteName != 'clubDashboardView') {
                                 navigationService
                                     .navigateUsingpopAndPushedNamed(
-                                        PayCoolClubDashboardViewRoute);
+                                        clubDashboardViewRoute);
                               }
                               break;
                             case 1:
-                              if (currentRouteName != 'WalletDashboardVieww') {
+                              if (currentRouteName != 'WalletDashboardView') {
                                 navigationService
                                     .navigateUsingpopAndPushedNamed(
                                         DashboardViewRoute);
@@ -197,7 +195,7 @@ class BottomNavBar extends StatelessWidget {
                               "nav no Pay.cool and no Pay.cool club, id: $idx");
                           switch (idx) {
                             case 0:
-                              if (currentRouteName != 'WalletDashboardVieww') {
+                              if (currentRouteName != 'WalletDashboardView') {
                                 navigationService
                                     .navigateUsingpopAndPushedNamed(
                                         DashboardViewRoute);

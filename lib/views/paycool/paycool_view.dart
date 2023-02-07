@@ -16,11 +16,12 @@ import 'package:paycool/widgets/server_error_widget.dart';
 import 'package:stacked/stacked.dart';
 
 class PayCoolView extends StatelessWidget {
+  const PayCoolView({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<PayCoolViewmodel>.reactive(
       viewModelBuilder: () => PayCoolViewmodel(),
-      onModelReady: (model) {
+      onViewModelReady: (model) {
         model.context = context;
         model.init();
       },
@@ -190,7 +191,7 @@ class PayCoolView extends StatelessWidget {
                                                     ? debugPrint('busy')
                                                     : model.createAccount();
                                               },
-                                              Widget: Text(
+                                              child: Text(
                                                   FlutterI18n.translate(
                                                       context, "joinNow"),
                                                   style: headText4.copyWith(
@@ -768,7 +769,7 @@ class PayCoolView extends StatelessWidget {
                                                                                 onPressed: () {
                                                                                   model.showOrderDetails();
                                                                                 },
-                                                                                Widget: Text(
+                                                                                child: Text(
                                                                                   FlutterI18n.translate(context, "details"),
                                                                                   style: const TextStyle(fontSize: 12),
                                                                                 ))

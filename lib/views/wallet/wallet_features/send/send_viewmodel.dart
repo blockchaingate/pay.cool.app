@@ -285,7 +285,7 @@ class SendViewModel extends BaseViewModel {
               .getByTickerName(tickerName)
               .then((token) {
             contractAddr = token!.contract!;
-            decimal = token!.decimal!;
+            decimal = token.decimal!;
           });
         }
         options = {
@@ -620,7 +620,7 @@ class SendViewModel extends BaseViewModel {
               child: Column(
             children: [
               Text(FlutterI18n.translate(context, "notice"),
-                  style: Theme.of(context).textTheme.bodyText2),
+                  style: Theme.of(context).textTheme.bodyMedium),
               Text(FlutterI18n.translate(context, "insufficientGasAmount"),
                   style: headText6),
             ],

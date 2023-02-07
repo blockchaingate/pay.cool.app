@@ -274,13 +274,13 @@ class JoinPayCoolClubViewModel extends BaseViewModel {
       log.w('Result $res');
       txHash = res['transactionHash'];
 
-      if (txHash != null || txHash.isNotEmpty) {
+      if (txHash.isNotEmpty) {
         log.w('Txhash $txHash');
 
         sharedService.alertDialog(
             FlutterI18n.translate(context!, "orderCreatedSuccessfully"),
             FlutterI18n.translate(context!, "goToDashboard"),
-            path: PayCoolClubDashboardViewRoute);
+            path: clubDashboardViewRoute);
         // PaycoolCreateOrderModel paycoolCreateOrder =
         //     new PaycoolCreateOrderModel(
         //         walletAddress: fabAddress,
@@ -301,7 +301,6 @@ class JoinPayCoolClubViewModel extends BaseViewModel {
         //   //       PayCoolClubDashboardViewRoute);
         //   // }
         // });
-
       } else {
         sharedService.alertDialog(
             FlutterI18n.translate(context!, "transanctionFailed"),
@@ -447,7 +446,7 @@ class JoinPayCoolClubViewModel extends BaseViewModel {
             sharedService.alertDialog(
                 FlutterI18n.translate(context!, "orderCreatedSuccessfully"),
                 FlutterI18n.translate(context!, "paymentProcess"),
-                path: PayCoolClubDashboardViewRoute);
+                path: clubDashboardViewRoute);
           });
           storageService.payCoolClubPaymentReceipt = txId;
           setBusy(false);

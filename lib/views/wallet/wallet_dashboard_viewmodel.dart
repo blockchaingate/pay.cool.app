@@ -40,7 +40,7 @@ import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/utils/fab_util.dart';
 import 'package:paycool/utils/number_util.dart';
 import 'package:paycool/utils/tron_util/trx_generate_address_util.dart'
-    as TronAddressUtil;
+    as tron_address_util;
 import 'package:flutter/cupertino.dart';
 
 import 'package:flutter/material.dart';
@@ -80,7 +80,7 @@ class WalletDashboardViewModel extends BaseViewModel {
   var versionService = locator<VersionService>();
   var coreWalletDatabaseService = locator<CoreWalletDatabaseService>();
 
-  late BuildContext context;
+  BuildContext? context;
 
   late WalletInfo rightWalletInfo;
 
@@ -147,6 +147,7 @@ class WalletDashboardViewModel extends BaseViewModel {
     setBusy(true);
 
     sharedService.context = context;
+
     await refreshBalancesV2();
 
     showDialogWarning();
@@ -188,8 +189,8 @@ class WalletDashboardViewModel extends BaseViewModel {
   routeWithWalletInfoArgs(WalletBalance wallet, String routeName) async {
     // assign address from local DB to walletinfo object
 
-    if (MediaQuery.of(context).size.width < largeSize) {
-      FocusScope.of(context).requestFocus(FocusNode());
+    if (MediaQuery.of(context!).size.width < largeSize) {
+      FocusScope.of(context!).requestFocus(FocusNode());
       var walletInfo =
           await walletUtil.getWalletInfoObjFromWalletBalance(wallet);
 
@@ -422,7 +423,7 @@ class WalletDashboardViewModel extends BaseViewModel {
 
   showUpdateWalletDialog() {
     showDialog(
-      context: context,
+      context: context!,
       barrierDismissible: false,
       builder: (BuildContext context) {
         return Platform.isIOS
@@ -444,7 +445,7 @@ class WalletDashboardViewModel extends BaseViewModel {
                             Navigator.of(context).pop(true);
                             updateWallet();
                           },
-                          Widget: Text(
+                          child: Text(
                               FlutterI18n.translate(context, "updateNow")))),
                   actions: const <Widget>[],
                 ))
@@ -497,14 +498,14 @@ class WalletDashboardViewModel extends BaseViewModel {
     String mnemonic = '';
     await dialogService
         .showDialog(
-            title: FlutterI18n.translate(context, "enterPassword"),
+            title: FlutterI18n.translate(context!, "enterPassword"),
             description: FlutterI18n.translate(
-                context, "dialogManagerTypeSamePasswordNote"),
-            buttonTitle: FlutterI18n.translate(context, "confirm"))
+                context!, "dialogManagerTypeSamePasswordNote"),
+            buttonTitle: FlutterI18n.translate(context!, "confirm"))
         .then((res) async {
       if (res.confirmed) {
         mnemonic = res.returnedText;
-        var address = TronAddressUtil.generateTrxAddress(mnemonic);
+        var address = tron_address_util.generateTrxAddress(mnemonic);
         WalletInfo wi = WalletInfo(
             id: null,
             tickerName: 'TRX',
@@ -554,9 +555,9 @@ class WalletDashboardViewModel extends BaseViewModel {
 ----------------------------------------------------------------------*/
 
   onSingleCoinCardClick(index) async {
-    if (MediaQuery.of(context).size.width < largeSize) {
-      FocusScope.of(context).requestFocus(FocusNode());
-      navigationService.navigateTo(WalletFeaturesViewRoute,
+    if (MediaQuery.of(context!).size.width < largeSize) {
+      FocusScope.of(context!).requestFocus(FocusNode());
+      navigationService.navigateTo(walletFeaturesViewRoute,
           arguments: wallets[index]);
       searchCoinTextController.clear();
     } else {
@@ -626,8 +627,8 @@ class WalletDashboardViewModel extends BaseViewModel {
 
         if (localAppVersion['name']!.compareTo(apiAppVersion) == -1) {
           sharedService.alertDialog(
-              FlutterI18n.translate(context, "appUpdateNotice"),
-              '${FlutterI18n.translate(context, "pleaseUpdateYourAppFrom")} $localAppVersion ${FlutterI18n.translate(context, "toLatestBuild")} $apiAppVersion ${FlutterI18n.translate(context, "inText")} $store ${FlutterI18n.translate(context, "clickOnWebsiteButton")}',
+              FlutterI18n.translate(context!, "appUpdateNotice"),
+              '${FlutterI18n.translate(context!, "pleaseUpdateYourAppFrom")} $localAppVersion ${FlutterI18n.translate(context!, "toLatestBuild")} $apiAppVersion ${FlutterI18n.translate(context!, "inText")} $store ${FlutterI18n.translate(context!, "clickOnWebsiteButton")}',
               isUpdate: true,
               isLater: true,
               isWebsite: true,
@@ -653,7 +654,7 @@ class WalletDashboardViewModel extends BaseViewModel {
           isFreeFabNotUsed = res['ok'];
           debugPrint(res['_body']['question'].toString());
           showDialog(
-              context: context,
+              context: context!,
               builder: (context) {
                 return Center(
                   child: SizedBox(
@@ -836,11 +837,11 @@ class WalletDashboardViewModel extends BaseViewModel {
           debugPrint(isFreeFabNotUsed.toString());
 
           walletService.showInfoFlushbar(
-              FlutterI18n.translate(context, "notice"),
-              FlutterI18n.translate(context, "freeFabUsedAlready"),
+              FlutterI18n.translate(context!, "notice"),
+              FlutterI18n.translate(context!, "freeFabUsedAlready"),
               Icons.notification_important,
               yellow,
-              context);
+              context!);
         }
       }
     });
@@ -954,7 +955,8 @@ class WalletDashboardViewModel extends BaseViewModel {
         String f = holder.substring(1, holder.length - 1);
         if (pendingDepositCoins.isNotEmpty) {
           showSimpleNotification(
-              Text('${FlutterI18n.translate(context, "requireRedeposit")}: $f'),
+              Text(
+                  '${FlutterI18n.translate(context!, "requireRedeposit")}: $f'),
               position: NotificationPosition.bottom,
               background: primaryColor);
         }
@@ -971,13 +973,13 @@ class WalletDashboardViewModel extends BaseViewModel {
     log.w('in showDialogWarning isConfirmDeposit $isConfirmDeposit');
     if (gasAmount == 0.0) {
       sharedService.alertDialog(
-          FlutterI18n.translate(context, "insufficientGasAmount"),
-          FlutterI18n.translate(context, "pleaseAddGasToTrade"));
+          FlutterI18n.translate(context!, "insufficientGasAmount"),
+          FlutterI18n.translate(context!, "pleaseAddGasToTrade"));
     }
     if (isConfirmDeposit) {
       sharedService.alertDialog(
-          FlutterI18n.translate(context, "pendingConfirmDeposit"),
-          '${FlutterI18n.translate(context, "pleaseConfirmYour")} ${confirmDepositCoinWallet.tickerName} ${FlutterI18n.translate(context, "deposit")}',
+          FlutterI18n.translate(context!, "pendingConfirmDeposit"),
+          '${FlutterI18n.translate(context!, "pleaseConfirmYour")} ${confirmDepositCoinWallet.tickerName} ${FlutterI18n.translate(context!, "deposit")}',
           path: '/walletFeatures',
           arguments: confirmDepositCoinWallet,
           isWarning: true);
@@ -1124,8 +1126,8 @@ class WalletDashboardViewModel extends BaseViewModel {
   debugVersionPopup() async {
     // await _showNotification();
 
-    sharedService.alertDialog(FlutterI18n.translate(context, "notice"),
-        FlutterI18n.translate(context, "testVersion"),
+    sharedService.alertDialog(FlutterI18n.translate(context!, "notice"),
+        FlutterI18n.translate(context!, "testVersion"),
         isWarning: false);
   }
 

@@ -490,7 +490,7 @@ class LightningRemitView extends StatelessWidget {
                                           model: model)));
                             }
                           },
-                          Widget: Row(
+                          child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(

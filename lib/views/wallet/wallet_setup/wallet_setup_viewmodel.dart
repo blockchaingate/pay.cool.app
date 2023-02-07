@@ -419,9 +419,10 @@ class WalletSetupViewmodel extends BaseViewModel {
 
   Future<String> selectDefaultWalletLanguage() async {
     setBusy(true);
-    if (selectedLanguage == '' || selectedLanguage == null) {
+    if (selectedLanguage == '') {
       String key = '';
-      if (storageService.language == null || storageService.language.isEmpty) {
+      log.e('storageService.language  ${storageService.language}');
+      if (storageService.language.isEmpty) {
         storageService.language = 'en';
       } else {
         key = storageService.language;

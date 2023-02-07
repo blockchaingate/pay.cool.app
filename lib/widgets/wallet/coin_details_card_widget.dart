@@ -9,7 +9,6 @@ import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/utils/number_util.dart';
 import 'package:paycool/utils/wallet/wallet_util.dart';
 import 'package:paycool/views/wallet/wallet_dashboard_viewmodel.dart';
-import 'package:paycool/widgets/wallet/deposit_widget.dart';
 import 'package:stacked/stacked.dart';
 
 class CoinDetailsCardWidget extends StackedView<WalletDashboardViewModel> {
@@ -49,7 +48,7 @@ class CoinDetailsCardWidget extends StackedView<WalletDashboardViewModel> {
           onDoubleTap: () => FocusScope.of(context).requestFocus(FocusNode()),
           onTap: () {
             model.routeWithWalletInfoArgs(
-                wallets[index], WalletFeaturesViewRoute);
+                wallets[index], walletFeaturesViewRoute);
           },
           child: Container(
             padding: const EdgeInsets.symmetric(vertical: 8),

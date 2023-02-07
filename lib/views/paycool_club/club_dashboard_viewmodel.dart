@@ -49,8 +49,8 @@ class ClubDashboardViewModel extends BaseViewModel {
   bool isDialogUp = false;
   BuildContext? context;
   bool isDUSD = false;
-  int gasPrice = environment["chains"]["FAB"]["gasPrice"];
-  int gasLimit = environment["chains"]["FAB"]["gasLimitToken"];
+  int gasPrice = environment["chains"]["FAB"]["gasPrice"] as int;
+  int gasLimit = environment["chains"]["FAB"]["gasLimitToken"] as int;
   double fee = 0.0;
 
   String usdtOfficialAddress = '';
@@ -364,7 +364,7 @@ class ClubDashboardViewModel extends BaseViewModel {
                                       OutlinedButton(
                                           style: ButtonStyle(
                                               shape: MaterialStateProperty.all(
-                                                  RoundedRectangleBorder(
+                                                  const RoundedRectangleBorder(
                                                       borderRadius:
                                                           BorderRadius.all(
                                                               Radius.circular(
@@ -389,12 +389,12 @@ class ClubDashboardViewModel extends BaseViewModel {
                                       TextButton(
                                           style: ButtonStyle(
                                               shape: MaterialStateProperty.all(
-                                                  RoundedRectangleBorder(
+                                                  const RoundedRectangleBorder(
                                                       borderRadius:
                                                           BorderRadius.all(
                                                               Radius.circular(
                                                                   15))))),
-                                          Widget: Center(
+                                          child: Center(
                                             child: Text(
                                               FlutterI18n.translate(
                                                   context, "confirm"),
@@ -1141,7 +1141,7 @@ class ClubDashboardViewModel extends BaseViewModel {
                       height: 250,
                       child: Center(
                         child: Container(
-                          margin: EdgeInsets.all(30),
+                          margin: const EdgeInsets.all(30),
                           child: RepaintBoundary(
                             key: globalKey,
                             child: QrImage(
@@ -1170,8 +1170,8 @@ class ClubDashboardViewModel extends BaseViewModel {
                       children: [
                         OutlinedButton(
                           style: ButtonStyle(
-                              minimumSize:
-                                  MaterialStateProperty.all(Size(80.0, 30)),
+                              minimumSize: MaterialStateProperty.all(
+                                  const Size(80.0, 30)),
                               shape: shapeRoundBorder,
                               textStyle: MaterialStateProperty.all(
                                   const TextStyle(color: Colors.white))),
@@ -1187,10 +1187,11 @@ class ClubDashboardViewModel extends BaseViewModel {
                           padding: const EdgeInsets.all(10.0),
                           child: ElevatedButton(
                               style: ButtonStyle(
-                                  minimumSize:
-                                      MaterialStateProperty.all(Size(80.0, 30)),
+                                  minimumSize: MaterialStateProperty.all(
+                                      const Size(80.0, 30)),
                                   padding: MaterialStateProperty.all(
-                                      EdgeInsets.symmetric(horizontal: 5)),
+                                      const EdgeInsets.symmetric(
+                                          horizontal: 5)),
                                   shape: shapeRoundBorder,
                                   backgroundColor:
                                       MaterialStateProperty.all(primaryColor),

@@ -365,6 +365,7 @@ class WalletSetupView extends StatelessWidget {
                         },
                         items: [
                           DropdownMenuItem(
+                            value: model.languages['en'],
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -380,9 +381,9 @@ class WalletSetupView extends StatelessWidget {
                                     style: headText6),
                               ],
                             ),
-                            value: model.languages['en'],
                           ),
                           DropdownMenuItem(
+                            value: model.languages['zh'],
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -399,9 +400,9 @@ class WalletSetupView extends StatelessWidget {
                                     style: headText6),
                               ],
                             ),
-                            value: model.languages['zh'],
                           ),
                           DropdownMenuItem(
+                            value: model.languages['es'],
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -418,7 +419,6 @@ class WalletSetupView extends StatelessWidget {
                                     style: headText6),
                               ],
                             ),
-                            value: model.languages['es'],
                           ),
                         ]),
                   ),

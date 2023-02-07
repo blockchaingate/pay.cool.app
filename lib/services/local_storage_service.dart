@@ -167,7 +167,7 @@ class LocalStorageService {
 /*----------------------------------------------------------------------
                   Languages getter/setter
 ----------------------------------------------------------------------*/
-  String get language => _getFromDisk(AppLanguagesKey);
+  String get language => _getFromDisk(AppLanguagesKey) ?? '';
   set language(String appLanguage) => _saveToDisk(AppLanguagesKey, appLanguage);
 
 /*----------------------------------------------------------------------

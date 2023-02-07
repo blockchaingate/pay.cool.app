@@ -42,7 +42,7 @@ class PaginationWidget extends StatelessWidget {
                 //  model.updatePage(false);
                 //  getPaginationRewards();
               },
-              Widget: const Icon(
+              child: const Icon(
                 Icons.arrow_back_ios_outlined,
                 color: white,
                 size: 18,
@@ -80,7 +80,7 @@ class PaginationWidget extends StatelessWidget {
                   pageCallback(paginationModel.pageNumber + 1);
                 }
               },
-              Widget: const Icon(
+              child: const Icon(
                 Icons.arrow_forward_ios_outlined,
                 color: white,
                 size: 18,

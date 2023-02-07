@@ -86,7 +86,7 @@ class RouteGenerator {
 
       case DashboardViewRoute:
         return MaterialPageRoute(
-            settings: const RouteSettings(name: 'WalletDashboardVieww'),
+            settings: const RouteSettings(name: 'WalletDashboardView'),
             builder: (_) => const WalletDashboardView());
 
       case AddGasViewRoute:
@@ -107,7 +107,7 @@ class RouteGenerator {
         return MaterialPageRoute(
             builder: (_) => MoveToWalletView(walletInfo: args));
 
-      case WalletFeaturesViewRoute:
+      case walletFeaturesViewRoute:
         return MaterialPageRoute(
             builder: (_) => WalletFeaturesView(walletInfo: args));
 
@@ -132,9 +132,9 @@ class RouteGenerator {
 /*----------------------------------------------------------------------
                           Pay.cool Club Routes
 ----------------------------------------------------------------------*/
-      case PayCoolClubDashboardViewRoute:
+      case clubDashboardViewRoute:
         return MaterialPageRoute(
-            settings: const RouteSettings(name: 'PayCoolClubDashboardView'),
+            settings: const RouteSettings(name: 'clubDashboardView'),
             builder: (_) => const ClubDashboardView());
 
       case referralViewRoute:
@@ -176,7 +176,7 @@ class RouteGenerator {
       case PayCoolViewRoute:
         return MaterialPageRoute(
             settings: const RouteSettings(name: 'PayCoolView'),
-            builder: (_) => PayCoolView());
+            builder: (_) => const PayCoolView());
 
       case PayCoolRewardsViewRoute:
         return MaterialPageRoute(

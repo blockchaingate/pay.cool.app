@@ -7,6 +7,3 @@ linter:
         avoid_renaming_method_parameters: false
         use_build_context_synchronously: false
 
-analyzer:
-  enable-experiment:
-    - non-nullable

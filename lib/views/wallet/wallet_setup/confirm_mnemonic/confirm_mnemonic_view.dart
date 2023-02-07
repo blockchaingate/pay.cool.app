@@ -130,7 +130,7 @@ class ConfirmMnemonicView extends StatelessWidget {
                                   onPressed: () {
                                     model.clearTappedList();
                                   },
-                                  Widget: Row(
+                                  child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       const Padding(

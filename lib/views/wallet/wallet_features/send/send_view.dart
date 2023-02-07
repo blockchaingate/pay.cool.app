@@ -164,7 +164,7 @@ class SendWalletView extends StatelessWidget {
                                   onPressed: () {
                                     model.scan();
                                   },
-                                  Widget: Row(
+                                  child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[
                                       const Padding(

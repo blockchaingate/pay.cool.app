@@ -521,7 +521,7 @@ class SharedService {
                                     // launchURL(stringData);
                                     Navigator.of(context).pop(false);
                                   },
-                                  Widget: Center(
+                                  child: Center(
                                     child: Text(
                                       FlutterI18n.translate(context, "website"),
                                       style: const TextStyle(
@@ -539,7 +539,7 @@ class SharedService {
                                     padding: MaterialStateProperty.all(
                                         const EdgeInsets.all(5)),
                                   ),
-                                  Widget: Center(
+                                  child: Center(
                                     child: Text(
                                       FlutterI18n.translate(
                                           context, "updateNow"),

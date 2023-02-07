@@ -12,7 +12,7 @@
 */
 
 import 'package:flutter_i18n/flutter_i18n.dart';
-import 'package:flutter_swiper/flutter_swiper.dart';
+
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/constants/ui_var.dart';
@@ -43,10 +43,10 @@ class WalletDashboardView extends StatelessWidget {
     return ViewModelBuilder<WalletDashboardViewModel>.reactive(
         viewModelBuilder: () => WalletDashboardViewModel(),
         onViewModelReady: (model) async {
-          model.context = context;
           // model.globalKeyOne = _one;
           // model.globalKeyTwo = _two;
           // model.refreshController = _refreshController;
+          model.context = context;
           await model.init();
         },
         // onDispose: () {
@@ -200,33 +200,33 @@ class WalletDashboardView extends StatelessWidget {
           ),
         ),
 
-        Container(
-            child: Swiper(
-          itemBuilder: (BuildContext context, int index) {
-            if (index == 0) {
-              return TotalBalanceCardWidget(model: model);
-            } else {
-              return TotalBalanceCardWidget2(model: model);
-            }
+        // Container(
+        //     child: Swiper(
+        //   itemBuilder: (BuildContext context, int index) {
+        //     if (index == 0) {
+        //       return TotalBalanceCardWidget(model: model);
+        //     } else {
+        //       return TotalBalanceCardWidget2(model: model);
+        //     }
 
-            // return TotalBalanceCardWidget(
-            //   logo: logoWidget,
-            //   title: titleWidget,
-            // );
-          },
-          itemCount: 2,
-          itemWidth: 500,
-          itemHeight: 180.0,
-          layout: SwiperLayout.TINDER,
-          pagination: const SwiperPagination(
-            margin: EdgeInsets.fromLTRB(5, 10, 5, 0),
-            builder: DotSwiperPaginationBuilder(
-              color: Color(0xccffffff),
-            ),
-          ),
-          autoplay: true,
-          autoplayDelay: 7000,
-        )),
+        //     // return TotalBalanceCardWidget(
+        //     //   logo: logoWidget,
+        //     //   title: titleWidget,
+        //     // );
+        //   },
+        //   itemCount: 2,
+        //   itemWidth: 500,
+        //   itemHeight: 180.0,
+        //   layout: SwiperLayout.TINDER,
+        //   pagination: const SwiperPagination(
+        //     margin: EdgeInsets.fromLTRB(5, 10, 5, 0),
+        //     builder: DotSwiperPaginationBuilder(
+        //       color: Color(0xccffffff),
+        //     ),
+        //   ),
+        //   autoplay: true,
+        //   autoplayDelay: 7000,
+        // )),
 
         //Refresh BalancesV2
         Positioned(
@@ -399,7 +399,7 @@ class WalletDashboardView extends StatelessWidget {
         model.isUpdateWallet
             ? Container(
                 child: TextButton(
-                Widget: Text(FlutterI18n.translate(context, "updateWallet")),
+                child: Text(FlutterI18n.translate(context, "updateWallet")),
                 onPressed: () => model.updateWallet(),
               ))
             : Container(),
@@ -528,12 +528,6 @@ class WalletDashboardView extends StatelessWidget {
         return Visibility(
           // Default visible widget will be visible when usdVal is greater than equals to 0 and isHideSmallAmountAssets is false
           visible: usdBalance >= 0 && !model.isHideSmallAssetsButton,
-          child: CoinDetailsCardWidget(
-            tickerName: tickerName,
-            index: index,
-            wallets: model.wallets,
-            context: context,
-          ),
           // Secondary visible widget will be visible when usdVal is not equals to 0 and isHideSmallAmountAssets is true
           replacement: Visibility(
               visible: model.isHideSmallAssetsButton && usdBalance != 0,
@@ -543,6 +537,12 @@ class WalletDashboardView extends StatelessWidget {
                 wallets: model.wallets,
                 context: context,
               )),
+          child: CoinDetailsCardWidget(
+            tickerName: tickerName,
+            index: index,
+            wallets: model.wallets,
+            context: context,
+          ),
         );
       },
     );
@@ -613,8 +613,8 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
     return Container(
-      child: _tabBar,
       color: secondaryColor,
+      child: _tabBar,
     );
   }
 

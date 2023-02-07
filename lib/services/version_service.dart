@@ -211,7 +211,7 @@ class VersionService {
                                       backgroundColor:
                                           MaterialStateProperty.all<Color>(
                                               priceColor)),
-                                  Widget: Row(
+                                  child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: const [
                                       Text(
@@ -263,7 +263,7 @@ class VersionService {
                                       backgroundColor:
                                           MaterialStateProperty.all<Color>(
                                               priceColor)),
-                                  Widget: Row(
+                                  child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: const [
                                       Text(
