@@ -1529,8 +1529,8 @@ class PayCoolViewmodel extends FutureViewModel {
                                     .capturePng(globalKey: globalKey)
                                     .then((byteData) {
                                   file.writeAsBytes(byteData).then((onFile) {
-                                    Share.shareFiles(onFile.readAsLinesSync(),
-                                        text: kbAddress);
+                                    Share.share(onFile.readAsStringSync(),
+                                        subject: kbAddress);
                                   });
                                 });
                               });

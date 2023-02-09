@@ -12,6 +12,7 @@
 */
 
 import 'dart:async';
+import 'dart:typed_data';
 // import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:decimal/decimal.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';

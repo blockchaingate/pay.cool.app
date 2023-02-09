@@ -27,8 +27,8 @@ import 'package:paycool/utils/barcode_util.dart';
 import 'package:paycool/views/paycool_club/referral/referral_model.dart';
 import 'package:paycool/views/paycool_club/paycool_club_service.dart';
 import 'package:paycool/views/paycool_club/join_club/join_club_payment_model.dart';
-
 import 'package:share_plus/share_plus.dart';
+
 import 'package:stacked/stacked.dart';
 import 'package:paycool/services/db/wallet_database_service.dart';
 import 'package:paycool/services/local_dialog_service.dart';
@@ -600,8 +600,8 @@ class ClubDashboardViewModel extends BaseViewModel {
                                       file
                                           .writeAsBytes(byteData)
                                           .then((onFile) {
-                                        Share.shareFiles([onFile.path],
-                                            text: kbAddress);
+                                        Share.share(onFile.path,
+                                            subject: kbAddress);
                                       });
                                     });
                                   });
@@ -1216,8 +1216,8 @@ class ClubDashboardViewModel extends BaseViewModel {
                                       file
                                           .writeAsBytes(byteData)
                                           .then((onFile) {
-                                        Share.shareFiles([onFile.path],
-                                            text: fabAddress);
+                                        Share.share(onFile.path,
+                                            subject: fabAddress);
                                       });
                                     });
                                   });

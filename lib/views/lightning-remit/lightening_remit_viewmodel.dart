@@ -570,8 +570,8 @@ class LightningRemitViewmodel extends FutureViewModel {
                                             file
                                                 .writeAsBytes(byteData)
                                                 .then((onFile) {
-                                              Share.shareFiles([onFile.path],
-                                                  text: kbAddress);
+                                              Share.share(onFile.path,
+                                                  subject: kbAddress);
                                             });
                                           });
                                         });
