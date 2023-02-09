@@ -15,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:paycool/constants/colors.dart';
+import 'package:paycool/constants/constants.dart';
 import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/models/wallet/wallet.dart';
 import 'package:paycool/shared/ui_helpers.dart';
@@ -58,7 +59,11 @@ class MoveToExchangeView extends StatelessWidget {
                       activatedNegativeValues: false)
                 ],
                 onChanged: (String amount) {
-                  model.updateTransFee();
+                  if (!model.isTrx()) {
+                    model.updateTransFee();
+                  } else {
+                    model.amountAfterFee();
+                  }
                 },
                 decoration: InputDecoration(
                   // suffix: RichText(
@@ -91,8 +96,7 @@ class MoveToExchangeView extends StatelessWidget {
               Row(
                 children: <Widget>[
                   Text(
-                      FlutterI18n.translate(context, "walletbalance") +
-                          '  ${NumberUtil().truncateDoubleWithoutRouding(model.walletInfo.availableBalance, precision: model.decimalLimit).toString()}',
+                      '${FlutterI18n.translate(context, "walletbalance")}  ${NumberUtil().truncateDoubleWithoutRouding(model.walletInfo.availableBalance, precision: model.decimalLimit).toString()}',
                       style: subText2),
                   Padding(
                     padding: const EdgeInsets.symmetric(
@@ -115,11 +119,11 @@ class MoveToExchangeView extends StatelessWidget {
                             alignment: Alignment.topLeft,
                             child: walletInfo.tickerName == 'TRX'
                                 ? Text(
-                                    '${FlutterI18n.translate(context, "gasFee")}: 1 TRX',
+                                    '${FlutterI18n.translate(context, "gasFee")}: ${model.trxGasValueTextController.text} TRX',
                                     textAlign: TextAlign.left,
                                     style: headText6)
                                 : Text(
-                                    '${FlutterI18n.translate(context, "gasFee")}: 15 TRX',
+                                    '${FlutterI18n.translate(context, "gasFee")}: ${model.trxGasValueTextController.text} TRX',
                                     textAlign: TextAlign.left,
                                     style: headText6),
                           )
@@ -176,67 +180,193 @@ class MoveToExchangeView extends StatelessWidget {
                 ],
               ),
               // Transaction Fee Advance
-              Visibility(
-                  visible: model.transFeeAdvance,
-                  child: Column(
-                    children: <Widget>[
-                      Visibility(
-                          visible: (model.coinName == 'ETH' ||
-                              model.tokenType == 'ETH' ||
-                              model.tokenType == 'FAB'),
-                          child: Row(
-                            children: <Widget>[
-                              Expanded(
-                                flex: 3,
-                                child: Text(
-                                    FlutterI18n.translate(context, "gasPrice"),
-                                    style: headText5.copyWith(
-                                        fontWeight: FontWeight.w300)),
-                              ),
-                              Expanded(
-                                  flex: 5,
-                                  child: TextField(
-                                      controller: model.gasPriceTextController,
-                                      onChanged: (String amount) {
-                                        model.updateTransFee();
-                                      },
-                                      keyboardType:
-                                          const TextInputType.numberWithOptions(
+
+              model.isTrx()
+                  ? Visibility(
+                      visible: model.transFeeAdvance,
+                      child: Row(
+                        children: <Widget>[
+                          Expanded(
+                              flex: 3,
+                              child: Text(
+                                'TRX ${FlutterI18n.translate(context, "gasFee")}',
+                                style: headText5.copyWith(
+                                    fontWeight: FontWeight.w300),
+                              )),
+                          Expanded(
+                              flex: 5,
+                              child: TextField(
+                                  controller: model.trxGasValueTextController,
+                                  onChanged: (String amount) {
+                                    if (amount.isNotEmpty) {
+                                      model.trxGasValueTextController.text =
+                                          amount.toString();
+                                      model.notifyListeners();
+                                    }
+                                  },
+                                  keyboardType:
+                                      const TextInputType.numberWithOptions(
+                                          decimal: true), // numnber keyboard
+                                  decoration: InputDecoration(
+                                      focusedBorder: const UnderlineInputBorder(
+                                          borderSide:
+                                              BorderSide(color: primaryColor)),
+                                      enabledBorder: const UnderlineInputBorder(
+                                          borderSide: BorderSide(color: grey)),
+                                      hintText: '0.00000',
+                                      hintStyle: headText5.copyWith(
+                                          fontWeight: FontWeight.w300)),
+                                  style: headText5.copyWith(
+                                      fontWeight: FontWeight.w300)))
+                        ],
+                      ),
+                    )
+                  : Visibility(
+                      visible: model.transFeeAdvance,
+                      child: Column(
+                        children: <Widget>[
+                          Visibility(
+                              visible: (model.coinName == 'ETH' ||
+                                  model.tokenType == 'ETH' ||
+                                  model.tokenType == 'FAB'),
+                              child: Row(
+                                children: <Widget>[
+                                  Expanded(
+                                    flex: 3,
+                                    child: Text(
+                                        FlutterI18n.translate(
+                                            context, "gasPrice"),
+                                        style: headText5.copyWith(
+                                            fontWeight: FontWeight.w300)),
+                                  ),
+                                  Expanded(
+                                      flex: 5,
+                                      child: TextField(
+                                          controller:
+                                              model.gasPriceTextController,
+                                          onChanged: (String amount) {
+                                            model.updateTransFee();
+                                          },
+                                          keyboardType: const TextInputType
+                                                  .numberWithOptions(
                                               decimal:
                                                   true), // numnber keyboard
-                                      decoration: InputDecoration(
-                                          focusedBorder:
-                                              const UnderlineInputBorder(
-                                                  borderSide: BorderSide(
-                                                      color: primaryColor)),
-                                          enabledBorder:
-                                              const UnderlineInputBorder(
-                                                  borderSide:
-                                                      BorderSide(color: grey)),
-                                          hintText: '0.00000',
-                                          hintStyle: headText5.copyWith(
-                                              fontWeight: FontWeight.w300)),
+                                          decoration: InputDecoration(
+                                              focusedBorder:
+                                                  const UnderlineInputBorder(
+                                                      borderSide: BorderSide(
+                                                          color: primaryColor)),
+                                              enabledBorder:
+                                                  const UnderlineInputBorder(
+                                                      borderSide: BorderSide(
+                                                          color: grey)),
+                                              hintText: '0.00000',
+                                              hintStyle: headText5.copyWith(
+                                                  fontWeight: FontWeight.w300)),
+                                          style: headText5.copyWith(
+                                              fontWeight: FontWeight.w300)))
+                                ],
+                              )),
+                          Visibility(
+                              visible: (model.coinName == 'ETH' ||
+                                  model.tokenType == 'ETH' ||
+                                  model.tokenType == 'FAB'),
+                              child: Row(
+                                children: <Widget>[
+                                  Expanded(
+                                      flex: 3,
+                                      child: Text(
+                                        FlutterI18n.translate(
+                                            context, "gasLimit"),
+                                        style: headText5.copyWith(
+                                            fontWeight: FontWeight.w300),
+                                      )),
+                                  Expanded(
+                                      flex: 5,
+                                      child: TextField(
+                                          controller:
+                                              model.gasLimitTextController,
+                                          onChanged: (String amount) {
+                                            model.updateTransFee();
+                                          },
+                                          keyboardType: const TextInputType
+                                                  .numberWithOptions(
+                                              decimal:
+                                                  true), // numnber keyboard
+                                          decoration: InputDecoration(
+                                              focusedBorder:
+                                                  const UnderlineInputBorder(
+                                                      borderSide: BorderSide(
+                                                          color: primaryColor)),
+                                              enabledBorder:
+                                                  const UnderlineInputBorder(
+                                                      borderSide: BorderSide(
+                                                          color: grey)),
+                                              hintText: '0.00000',
+                                              hintStyle: headText5.copyWith(
+                                                  fontWeight: FontWeight.w300)),
+                                          style: headText5.copyWith(
+                                              fontWeight: FontWeight.w300)))
+                                ],
+                              )),
+                          Visibility(
+                              visible: (model.coinName == 'BTC' ||
+                                  model.coinName == 'FAB' ||
+                                  model.tokenType == 'FAB'),
+                              child: Row(
+                                children: <Widget>[
+                                  Expanded(
+                                    flex: 3,
+                                    child: Text(
+                                      FlutterI18n.translate(
+                                          context, "satoshisPerByte"),
                                       style: headText5.copyWith(
-                                          fontWeight: FontWeight.w300)))
-                            ],
-                          )),
-                      Visibility(
-                          visible: (model.coinName == 'ETH' ||
-                              model.tokenType == 'ETH' ||
-                              model.tokenType == 'FAB'),
-                          child: Row(
+                                          fontWeight: FontWeight.w300),
+                                    ),
+                                  ),
+                                  Expanded(
+                                      flex: 5,
+                                      child: TextField(
+                                        controller:
+                                            model.satoshisPerByteTextController,
+                                        onChanged: (String amount) {
+                                          model.updateTransFee();
+                                        },
+                                        keyboardType: const TextInputType
+                                                .numberWithOptions(
+                                            decimal: true), // numnber keyboard
+                                        decoration: InputDecoration(
+                                            focusedBorder:
+                                                const UnderlineInputBorder(
+                                                    borderSide: BorderSide(
+                                                        color: primaryColor)),
+                                            enabledBorder:
+                                                const UnderlineInputBorder(
+                                                    borderSide: BorderSide(
+                                                        color: grey)),
+                                            hintText: '0.00000',
+                                            hintStyle: headText5.copyWith(
+                                                fontWeight: FontWeight.w300)),
+                                        style: const TextStyle(
+                                            color: grey, fontSize: 16),
+                                      ))
+                                ],
+                              )),
+                          Row(
                             children: <Widget>[
                               Expanded(
                                   flex: 3,
                                   child: Text(
-                                    FlutterI18n.translate(context, "gasLimit"),
+                                    FlutterI18n.translate(
+                                        context, "kanbanGasPrice"),
                                     style: headText5.copyWith(
                                         fontWeight: FontWeight.w300),
                                   )),
                               Expanded(
                                   flex: 5,
                                   child: TextField(
-                                      controller: model.gasLimitTextController,
+                                      controller: model
+                                          .kanbanGasPriceTextController,
                                       onChanged: (String amount) {
                                         model.updateTransFee();
                                       },
@@ -259,27 +389,22 @@ class MoveToExchangeView extends StatelessWidget {
                                       style: headText5.copyWith(
                                           fontWeight: FontWeight.w300)))
                             ],
-                          )),
-                      Visibility(
-                          visible: (model.coinName == 'BTC' ||
-                              model.coinName == 'FAB' ||
-                              model.tokenType == 'FAB'),
-                          child: Row(
+                          ),
+                          Row(
                             children: <Widget>[
                               Expanded(
                                 flex: 3,
                                 child: Text(
-                                  FlutterI18n.translate(
-                                      context, "satoshisPerByte"),
-                                  style: headText5.copyWith(
-                                      fontWeight: FontWeight.w300),
-                                ),
+                                    FlutterI18n.translate(
+                                        context, "kanbanGasLimit"),
+                                    style: headText5.copyWith(
+                                        fontWeight: FontWeight.w300)),
                               ),
                               Expanded(
                                   flex: 5,
                                   child: TextField(
                                     controller:
-                                        model.satoshisPerByteTextController,
+                                        model.kanbanGasLimitTextController,
                                     onChanged: (String amount) {
                                       model.updateTransFee();
                                     },
@@ -298,81 +423,13 @@ class MoveToExchangeView extends StatelessWidget {
                                         hintText: '0.00000',
                                         hintStyle: headText5.copyWith(
                                             fontWeight: FontWeight.w300)),
-                                    style: const TextStyle(
-                                        color: grey, fontSize: 16),
+                                    style: headText5.copyWith(
+                                        fontWeight: FontWeight.w300),
                                   ))
                             ],
-                          )),
-                      Row(
-                        children: <Widget>[
-                          Expanded(
-                              flex: 3,
-                              child: Text(
-                                FlutterI18n.translate(
-                                    context, "kanbanGasPrice"),
-                                style: headText5.copyWith(
-                                    fontWeight: FontWeight.w300),
-                              )),
-                          Expanded(
-                              flex: 5,
-                              child: TextField(
-                                  controller:
-                                      model.kanbanGasPriceTextController,
-                                  onChanged: (String amount) {
-                                    model.updateTransFee();
-                                  },
-                                  keyboardType:
-                                      const TextInputType.numberWithOptions(
-                                          decimal: true), // numnber keyboard
-                                  decoration: InputDecoration(
-                                      focusedBorder: const UnderlineInputBorder(
-                                          borderSide:
-                                              BorderSide(color: primaryColor)),
-                                      enabledBorder: const UnderlineInputBorder(
-                                          borderSide: BorderSide(color: grey)),
-                                      hintText: '0.00000',
-                                      hintStyle: headText5.copyWith(
-                                          fontWeight: FontWeight.w300)),
-                                  style: headText5.copyWith(
-                                      fontWeight: FontWeight.w300)))
+                          )
                         ],
-                      ),
-                      Row(
-                        children: <Widget>[
-                          Expanded(
-                            flex: 3,
-                            child: Text(
-                                FlutterI18n.translate(
-                                    context, "kanbanGasLimit"),
-                                style: headText5.copyWith(
-                                    fontWeight: FontWeight.w300)),
-                          ),
-                          Expanded(
-                              flex: 5,
-                              child: TextField(
-                                controller: model.kanbanGasLimitTextController,
-                                onChanged: (String amount) {
-                                  model.updateTransFee();
-                                },
-                                keyboardType:
-                                    const TextInputType.numberWithOptions(
-                                        decimal: true), // numnber keyboard
-                                decoration: InputDecoration(
-                                    focusedBorder: const UnderlineInputBorder(
-                                        borderSide:
-                                            BorderSide(color: primaryColor)),
-                                    enabledBorder: const UnderlineInputBorder(
-                                        borderSide: BorderSide(color: grey)),
-                                    hintText: '0.00000',
-                                    hintStyle: headText5.copyWith(
-                                        fontWeight: FontWeight.w300)),
-                                style: headText5.copyWith(
-                                    fontWeight: FontWeight.w300),
-                              ))
-                        ],
-                      )
-                    ],
-                  )),
+                      )),
               UIHelper.verticalSpaceSmall,
               // Success/Error container
               Container(

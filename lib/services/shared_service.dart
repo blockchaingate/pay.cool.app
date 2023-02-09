@@ -534,9 +534,13 @@ class SharedService {
                               : Container(),
                           UIHelper.horizontalSpaceSmall,
                           isUpdate
-                              ? FlatButton(
-                                  color: green,
-                                  padding: const EdgeInsets.all(5),
+                              ? TextButton(
+                                  style: ButtonStyle(
+                                    backgroundColor:
+                                        MaterialStateProperty.all<Color>(green),
+                                    padding: MaterialStateProperty.all(
+                                        const EdgeInsets.all(5)),
+                                  ),
                                   child: Center(
                                     child: Text(
                                       FlutterI18n.translate(

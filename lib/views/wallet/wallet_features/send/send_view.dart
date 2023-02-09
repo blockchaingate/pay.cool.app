@@ -16,6 +16,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:paycool/constants/colors.dart';
+import 'package:paycool/constants/constants.dart';
 import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/models/wallet/wallet.dart';
 import 'package:paycool/shared/ui_helpers.dart';
@@ -121,11 +122,8 @@ class SendWalletView extends StatelessWidget {
                                               ],
                                             ),
                                           ),
-                                          labelText: FlutterI18n.translate(
-                                                  context,
-                                                  "receiverWalletAddress") +
-                                              ', ' +
-                                              'DNS',
+                                          labelText:
+                                              '${FlutterI18n.translate(context, "receiverWalletAddress")}, DNS',
                                           labelStyle: headText6),
                                       style: headText6,
                                     ),
@@ -246,9 +244,7 @@ class SendWalletView extends StatelessWidget {
                                       Row(
                                         children: <Widget>[
                                           Text(
-                                            FlutterI18n.translate(
-                                                    context, "walletbalance") +
-                                                '  ${NumberUtil().truncateDoubleWithoutRouding(model.walletInfo.availableBalance, precision: model.singlePairDecimalConfig.qtyDecimal)} ',
+                                            '${FlutterI18n.translate(context, "walletbalance")}  ${NumberUtil().truncateDoubleWithoutRouding(model.walletInfo.availableBalance, precision: model.singlePairDecimalConfig.qtyDecimal)} ',
                                             style: headText6.copyWith(
                                                 fontWeight: FontWeight.w400),
                                           ),
@@ -284,25 +280,25 @@ class SendWalletView extends StatelessWidget {
 --------------------------------------------------------------------------------------------------------------------------------------------------------------*/
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 10),
-                          child: walletInfo.tickerName == 'TRX' ||
-                                  walletInfo.tickerName == 'USDTX'
-                              ? Container(
-                                  padding:
-                                      const EdgeInsets.only(top: 10, bottom: 0),
-                                  alignment: Alignment.topLeft,
-                                  child: walletInfo.tickerName == 'TRX'
-                                      ? Text(
-                                          '${FlutterI18n.translate(context, "gasFee")}: 1 TRX',
-                                          textAlign: TextAlign.left,
-                                          style: headText6)
-                                      : Text(
-                                          '${FlutterI18n.translate(context, "gasFee")}: 15 TRX',
-                                          textAlign: TextAlign.left,
-                                          style: headText6),
-                                )
-                              : Column(
-                                  children: <Widget>[
-                                    Padding(
+                          child: Column(
+                            children: <Widget>[
+                              walletInfo.tickerName == 'TRX' ||
+                                      walletInfo.tickerName == 'USDTX'
+                                  ? Container(
+                                      padding: const EdgeInsets.only(
+                                          top: 10, bottom: 0),
+                                      alignment: Alignment.topLeft,
+                                      child: walletInfo.tickerName == 'TRX'
+                                          ? Text(
+                                              '${FlutterI18n.translate(context, "gasFee")}: ${model.trxGasValueTextController.text} TRX',
+                                              textAlign: TextAlign.left,
+                                              style: headText6)
+                                          : Text(
+                                              '${FlutterI18n.translate(context, "gasFee")}:  ${model.trxGasValueTextController.text} TRX',
+                                              textAlign: TextAlign.left,
+                                              style: headText6),
+                                    )
+                                  : Padding(
                                       padding: const EdgeInsets.only(
                                           top: 15, bottom: 10),
                                       child: Row(
@@ -338,208 +334,256 @@ class SendWalletView extends StatelessWidget {
                                         ],
                                       ),
                                     ),
-                                    // Switch Row Advance
-                                    Row(
-                                      children: <Widget>[
-                                        Text(
-                                          FlutterI18n.translate(
-                                              context, "advance"),
-                                          style: headText5.copyWith(
-                                              fontWeight: FontWeight.w400),
-                                        ),
-                                        Switch(
-                                          value: model.transFeeAdvance,
-                                          inactiveTrackColor: grey,
-                                          dragStartBehavior:
-                                              DragStartBehavior.start,
-                                          activeColor: primaryColor,
-                                          onChanged: (bool isOn) {
-                                            model.setBusy(true);
-                                            model.transFeeAdvance = isOn;
-                                            model.setBusy(false);
-                                          },
-                                        )
-                                      ],
-                                    ),
-                                    Visibility(
-                                        visible: model.transFeeAdvance,
-                                        child: Column(
-                                          children: <Widget>[
-                                            Visibility(
-                                                visible: (tickerName == 'ETH' ||
-                                                    tokenType == 'ETH' ||
-                                                    tokenType == 'FAB'),
-                                                child: Row(
-                                                  children: <Widget>[
-                                                    Expanded(
-                                                      flex: 3,
-                                                      child: Text(
-                                                          FlutterI18n.translate(
-                                                              context,
-                                                              "gasPrice"),
-                                                          style: headText6
-                                                              .copyWith(
+                              // Switch Row Advance
+                              Row(
+                                children: <Widget>[
+                                  Text(
+                                    FlutterI18n.translate(context, "advance"),
+                                    style: headText5.copyWith(
+                                        fontWeight: FontWeight.w400),
+                                  ),
+                                  Switch(
+                                    value: model.transFeeAdvance,
+                                    inactiveTrackColor: grey,
+                                    dragStartBehavior: DragStartBehavior.start,
+                                    activeColor: primaryColor,
+                                    onChanged: (bool value) {
+                                      model.transFeeAdvance = value;
+                                      model.notifyListeners();
+                                    },
+                                  )
+                                ],
+                              ),
+
+                              model.isTrx()
+                                  ? Visibility(
+                                      visible: model.transFeeAdvance,
+                                      child: Row(
+                                        children: <Widget>[
+                                          Expanded(
+                                              flex: 3,
+                                              child: Text(
+                                                'TRX ${FlutterI18n.translate(context, "gasFee")}',
+                                                style: headText5.copyWith(
+                                                    fontWeight:
+                                                        FontWeight.w300),
+                                              )),
+                                          Expanded(
+                                              flex: 5,
+                                              child: TextField(
+                                                  controller: model
+                                                      .trxGasValueTextController,
+                                                  onChanged: (String amount) {
+                                                    if (amount.isNotEmpty) {
+                                                      model.trxGasValueTextController
+                                                              .text =
+                                                          amount.toString();
+                                                      model.notifyListeners();
+                                                    }
+                                                  },
+                                                  keyboardType: const TextInputType
+                                                          .numberWithOptions(
+                                                      decimal:
+                                                          true), // numnber keyboard
+                                                  decoration: InputDecoration(
+                                                      focusedBorder:
+                                                          const UnderlineInputBorder(
+                                                              borderSide: BorderSide(
+                                                                  color:
+                                                                      primaryColor)),
+                                                      enabledBorder:
+                                                          const UnderlineInputBorder(
+                                                              borderSide: BorderSide(
+                                                                  color: grey)),
+                                                      hintText: '0.00000',
+                                                      hintStyle: headText5.copyWith(
+                                                          fontWeight:
+                                                              FontWeight.w300)),
+                                                  style: headText5.copyWith(
+                                                      fontWeight:
+                                                          FontWeight.w300)))
+                                        ],
+                                      ),
+                                    )
+                                  : Visibility(
+                                      visible: model.transFeeAdvance,
+                                      child: Column(
+                                        children: <Widget>[
+                                          Visibility(
+                                              visible: (tickerName == 'ETH' ||
+                                                  tokenType == 'ETH' ||
+                                                  tokenType == 'FAB'),
+                                              child: Row(
+                                                children: <Widget>[
+                                                  Expanded(
+                                                    flex: 3,
+                                                    child: Text(
+                                                        FlutterI18n.translate(
+                                                            context,
+                                                            "gasPrice"),
+                                                        style:
+                                                            headText6.copyWith(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w400)),
+                                                  ),
+                                                  Expanded(
+                                                      flex: 6,
+                                                      child: TextField(
+                                                          controller: model
+                                                              .gasPriceTextController,
+                                                          onChanged:
+                                                              (String amount) {
+                                                            model
+                                                                .updateTransFee();
+                                                          },
+                                                          keyboardType:
+                                                              const TextInputType.numberWithOptions(
+                                                                  decimal:
+                                                                      true),
+                                                          decoration: InputDecoration(
+                                                              focusedBorder: const UnderlineInputBorder(
+                                                                  borderSide:
+                                                                      BorderSide(
+                                                                          color:
+                                                                              primaryColor)),
+                                                              enabledBorder: const UnderlineInputBorder(
+                                                                  borderSide: BorderSide(
+                                                                      width:
+                                                                          0.5,
+                                                                      color:
+                                                                          grey)),
+                                                              hintText:
+                                                                  '0.00000',
+                                                              hintStyle: headText6.copyWith(
                                                                   fontWeight:
                                                                       FontWeight
                                                                           .w400)),
-                                                    ),
-                                                    Expanded(
-                                                        flex: 6,
-                                                        child: TextField(
-                                                            controller: model
-                                                                .gasPriceTextController,
-                                                            onChanged: (String
-                                                                amount) {
-                                                              model
-                                                                  .updateTransFee();
-                                                            },
-                                                            keyboardType:
-                                                                const TextInputType.numberWithOptions(
-                                                                    decimal:
-                                                                        true),
-                                                            decoration: InputDecoration(
-                                                                focusedBorder: const UnderlineInputBorder(
-                                                                    borderSide: BorderSide(
-                                                                        color:
-                                                                            primaryColor)),
-                                                                enabledBorder: const UnderlineInputBorder(
-                                                                    borderSide: BorderSide(
+                                                          style: headText6.copyWith(
+                                                              fontWeight:
+                                                                  FontWeight.w400)))
+                                                ],
+                                              )),
+                                          Visibility(
+                                              visible: (tickerName == 'ETH' ||
+                                                  tokenType == 'ETH' ||
+                                                  tokenType == 'FAB'),
+                                              child: Row(
+                                                children: <Widget>[
+                                                  Expanded(
+                                                    flex: 3,
+                                                    child: Text(
+                                                        FlutterI18n.translate(
+                                                            context,
+                                                            "gasLimit"),
+                                                        style:
+                                                            headText6.copyWith(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w400)),
+                                                  ),
+                                                  Expanded(
+                                                      flex: 6,
+                                                      child: TextField(
+                                                        controller: model
+                                                            .gasLimitTextController,
+                                                        onChanged:
+                                                            (String amount) {
+                                                          model
+                                                              .updateTransFee();
+                                                        },
+                                                        keyboardType:
+                                                            const TextInputType
+                                                                    .numberWithOptions(
+                                                                decimal: true),
+                                                        decoration: InputDecoration(
+                                                            focusedBorder:
+                                                                const UnderlineInputBorder(
+                                                                    borderSide:
+                                                                        BorderSide(
+                                                                            color:
+                                                                                primaryColor)),
+                                                            enabledBorder: const UnderlineInputBorder(
+                                                                borderSide:
+                                                                    BorderSide(
                                                                         width:
                                                                             0.5,
                                                                         color:
                                                                             grey)),
-                                                                hintText:
-                                                                    '0.00000',
-                                                                hintStyle: headText6.copyWith(
+                                                            hintText: '0.00000',
+                                                            hintStyle: headText6
+                                                                .copyWith(
                                                                     fontWeight:
                                                                         FontWeight
                                                                             .w400)),
-                                                            style: headText6.copyWith(
+                                                        style:
+                                                            headText6.copyWith(
                                                                 fontWeight:
-                                                                    FontWeight.w400)))
-                                                  ],
-                                                )),
-                                            Visibility(
-                                                visible: (tickerName == 'ETH' ||
-                                                    tokenType == 'ETH' ||
-                                                    tokenType == 'FAB'),
-                                                child: Row(
-                                                  children: <Widget>[
-                                                    Expanded(
-                                                      flex: 3,
-                                                      child: Text(
-                                                          FlutterI18n.translate(
-                                                              context,
-                                                              "gasLimit"),
-                                                          style: headText6
-                                                              .copyWith(
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w400)),
-                                                    ),
-                                                    Expanded(
-                                                        flex: 6,
-                                                        child: TextField(
-                                                          controller: model
-                                                              .gasLimitTextController,
-                                                          onChanged:
-                                                              (String amount) {
-                                                            model
-                                                                .updateTransFee();
-                                                          },
-                                                          keyboardType:
-                                                              const TextInputType
-                                                                      .numberWithOptions(
-                                                                  decimal:
-                                                                      true),
-                                                          decoration: InputDecoration(
-                                                              focusedBorder: const UnderlineInputBorder(
-                                                                  borderSide:
-                                                                      BorderSide(
-                                                                          color:
-                                                                              primaryColor)),
-                                                              enabledBorder: const UnderlineInputBorder(
-                                                                  borderSide:
-                                                                      BorderSide(
-                                                                          width:
-                                                                              0.5,
-                                                                          color:
-                                                                              grey)),
-                                                              hintText:
-                                                                  '0.00000',
-                                                              hintStyle: headText6
-                                                                  .copyWith(
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w400)),
-                                                          style: headText6
-                                                              .copyWith(
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w400),
-                                                        ))
-                                                  ],
-                                                )),
-                                            Visibility(
-                                                visible: (tickerName == 'BTC' ||
-                                                    tickerName == 'FAB' ||
-                                                    tokenType == 'FAB'),
-                                                child: Row(
-                                                  children: <Widget>[
-                                                    Expanded(
-                                                      flex: 3,
-                                                      child: Text(
-                                                          FlutterI18n.translate(
-                                                              context,
-                                                              "satoshisPerByte"),
-                                                          style: headText6),
-                                                    ),
-                                                    //  UIHelper.horizontalSpaceLarge,
-                                                    Expanded(
-                                                        flex: 6,
-                                                        child: TextField(
-                                                          controller: model
-                                                              .satoshisPerByteTextController,
-                                                          onChanged:
-                                                              (String amount) {
-                                                            model
-                                                                .updateTransFee();
-                                                          },
-                                                          keyboardType:
-                                                              const TextInputType
-                                                                      .numberWithOptions(
-                                                                  decimal:
-                                                                      true),
-                                                          decoration: InputDecoration(
-                                                              focusedBorder: const UnderlineInputBorder(
-                                                                  borderSide:
-                                                                      BorderSide(
-                                                                          color:
-                                                                              primaryColor)),
-                                                              enabledBorder: const UnderlineInputBorder(
-                                                                  borderSide:
-                                                                      BorderSide(
-                                                                          color:
-                                                                              grey)),
-                                                              hintText:
-                                                                  '0.00000',
-                                                              hintStyle: headText6
-                                                                  .copyWith(
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w400)),
-                                                          style: headText6
-                                                              .copyWith(
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w300),
-                                                        ))
-                                                  ],
-                                                ))
-                                          ],
-                                        ))
-                                  ],
-                                ),
+                                                                    FontWeight
+                                                                        .w400),
+                                                      ))
+                                                ],
+                                              )),
+                                          Visibility(
+                                              visible: (tickerName == 'BTC' ||
+                                                  tickerName == 'FAB' ||
+                                                  tokenType == 'FAB'),
+                                              child: Row(
+                                                children: <Widget>[
+                                                  Expanded(
+                                                    flex: 3,
+                                                    child: Text(
+                                                        FlutterI18n.translate(
+                                                            context,
+                                                            "satoshisPerByte"),
+                                                        style: headText6),
+                                                  ),
+                                                  //  UIHelper.horizontalSpaceLarge,
+                                                  Expanded(
+                                                      flex: 6,
+                                                      child: TextField(
+                                                        controller: model
+                                                            .satoshisPerByteTextController,
+                                                        onChanged:
+                                                            (String amount) {
+                                                          model
+                                                              .updateTransFee();
+                                                        },
+                                                        keyboardType:
+                                                            const TextInputType
+                                                                    .numberWithOptions(
+                                                                decimal: true),
+                                                        decoration: InputDecoration(
+                                                            focusedBorder:
+                                                                const UnderlineInputBorder(
+                                                                    borderSide:
+                                                                        BorderSide(
+                                                                            color:
+                                                                                primaryColor)),
+                                                            enabledBorder:
+                                                                const UnderlineInputBorder(
+                                                                    borderSide:
+                                                                        BorderSide(
+                                                                            color:
+                                                                                grey)),
+                                                            hintText: '0.00000',
+                                                            hintStyle: headText6
+                                                                .copyWith(
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w400)),
+                                                        style:
+                                                            headText6.copyWith(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w300),
+                                                      ))
+                                                ],
+                                              ))
+                                        ],
+                                      ))
+                            ],
+                          ),
                         ),
 
                         UIHelper.verticalSpaceSmall,

@@ -67,34 +67,26 @@ class TxHisotryCardWidget extends StatelessWidget {
                       ),
 
                       // icon
-                      transaction.tag.toUpperCase() ==
-                              model.deposit.toUpperCase()
+                      transaction.tag.toUpperCase() == model.send.toUpperCase()
                           ? const Padding(
-                              padding: EdgeInsets.only(left: 10.0),
+                              padding: EdgeInsets.only(left: 13.0),
+                              child: Icon(
+                                FontAwesomeIcons.arrowRight,
+                                size: 11,
+                                color: sellPrice,
+                              ),
+                            )
+                          : Padding(
+                              padding: const EdgeInsets.only(left: 10.0),
                               child: Icon(
                                 Icons.arrow_downward,
                                 size: 16,
-                                color: buyPrice,
+                                color: transaction.tag.toUpperCase() ==
+                                        model.deposit.toUpperCase()
+                                    ? buyPrice
+                                    : sellPrice,
                               ),
-                            )
-                          : transaction.tag.toUpperCase() ==
-                                  model.send.toUpperCase()
-                              ? const Padding(
-                                  padding: EdgeInsets.only(left: 13.0),
-                                  child: Icon(
-                                    FontAwesomeIcons.arrowRight,
-                                    size: 11,
-                                    color: sellPrice,
-                                  ),
-                                )
-                              : const Padding(
-                                  padding: EdgeInsets.only(left: 10.0),
-                                  child: Icon(
-                                    Icons.arrow_upward,
-                                    size: 16,
-                                    color: sellPrice,
-                                  ),
-                                ),
+                            ),
 
                       if (transaction.tag.toUpperCase() ==
                           model.withdraw.toUpperCase())
@@ -139,11 +131,7 @@ class TxHisotryCardWidget extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     AutoSizeText(
-                      transaction.date.split(" ")[0].split("-")[1] +
-                          '-' +
-                          transaction.date.split(" ")[0].split("-")[2] +
-                          '-' +
-                          transaction.date.split(" ")[0].split("-")[0],
+                      '${transaction.date.split(" ")[0].split("-")[1]}-${transaction.date.split(" ")[0].split("-")[2]}-${transaction.date.split(" ")[0].split("-")[0]}',
                       style: headText5.copyWith(fontWeight: FontWeight.w400),
                       minFontSize: 8,
                       maxLines: 1,

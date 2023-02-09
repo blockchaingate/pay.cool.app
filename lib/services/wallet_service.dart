@@ -1043,7 +1043,6 @@ class WalletService {
           // await transactionHistoryDatabaseService
           //     .updateStatus(transactionHistoryByTxId);
           // await transactionHistoryDatabaseService.getByTxId(transaction.txId);
-
         } else if (res['code'] == -1) {
           transactionHistory = TransactionHistory(
               id: transactionByTxId.id,
@@ -1485,7 +1484,7 @@ class WalletService {
       bool isBroadcast,
       @required options}) async {
     log.i(
-        'menmonic $mnemonic -- amount $amount -- istrxusdt $isTrxUsdt -- isBroadcast $isBroadcast');
+        ' amount $amount -- istrxusdt $isTrxUsdt -- isBroadcast $isBroadcast');
     int kanbanGasPrice = options['kanbanGasPrice'];
     int kanbanGasLimit = options['kanbanGasLimit'];
 
@@ -1512,6 +1511,7 @@ class WalletService {
         isTrxUsdt: isTrxUsdt,
         tickerName: walletInfo.tickerName,
         isBroadcast: isBroadcast,
+        gasLimit: options['gasLimit'],
         contractAddressTronUsdt: options['contractAddress']);
 
     log.w('depositTron signed raw tx $rawTxRes');

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:paycool/constants/colors.dart';
+import 'package:paycool/constants/constants.dart';
 import 'package:paycool/environments/environment.dart';
 import 'package:paycool/models/wallet/token_model.dart';
 import 'package:paycool/models/wallet/wallet.dart';
@@ -40,6 +41,7 @@ class MoveToExchangeViewModel extends BaseViewModel {
   final satoshisPerByteTextController = TextEditingController();
   final kanbanGasPriceTextController = TextEditingController();
   final kanbanGasLimitTextController = TextEditingController();
+  final trxGasValueTextController = TextEditingController();
   double transFee = 0.0;
   double kanbanTransFee = 0.0;
   bool transFeeAdvance = false;
@@ -148,6 +150,10 @@ class MoveToExchangeViewModel extends BaseViewModel {
     } else if (coinName == 'FAB') {
       satoshisPerByteTextController.text =
           environment["chains"]["FAB"]["satoshisPerBytes"].toString();
+    } else if (coinName == 'USDTX') {
+      trxGasValueTextController.text = Constants.tronUsdtFee.toString();
+    } else if (coinName == 'TRX') {
+      trxGasValueTextController.text = Constants.tronFee.toString();
     } else if (tokenType == 'FAB') {
       satoshisPerByteTextController.text =
           environment["chains"]["FAB"]["satoshisPerBytes"].toString();
@@ -211,11 +217,11 @@ class MoveToExchangeViewModel extends BaseViewModel {
 
     double finalAmount = 0.0;
     // update if transfee is 0
-    await updateTransFee();
+
     // if tron coins then assign fee accordingly
     if (isTrx()) {
       if (walletInfo.tickerName == 'USDTX') {
-        transFee = 15;
+        transFee = double.parse(trxGasValueTextController.text);
         finalAmount = amount;
         finalAmount <= walletInfo.availableBalance
             ? isValidAmount = true
@@ -223,10 +229,11 @@ class MoveToExchangeViewModel extends BaseViewModel {
       }
 
       if (walletInfo.tickerName == 'TRX') {
-        transFee = 1.0;
+        transFee = double.parse(trxGasValueTextController.text);
         finalAmount = isMaxAmount ? amount - transFee : amount + transFee;
       }
     } else {
+      await updateTransFee();
       // in any token transfer, gas fee is paid in native tokens so
       // in case of non-native tokens, need to check the balance of native tokens
       // so that there is fee to pay when transffering non-native tokens
@@ -293,7 +300,7 @@ class MoveToExchangeViewModel extends BaseViewModel {
     if (transFee > checkTransFeeAgainst &&
         walletInfo.tickerName != 'TRX' &&
         walletInfo.tickerName != 'USDTX' &&
-        walletInfo.tickerName != 'TRX') {
+        walletInfo.tokenType != 'TRX') {
       sharedService.showInfoFlushbar(
           FlutterI18n.translate(context, "notice"),
           FlutterI18n.translate(context, "insufficientBalance"),
@@ -305,10 +312,9 @@ class MoveToExchangeViewModel extends BaseViewModel {
     }
     var amount = double.tryParse(amountController.text);
     await refreshBalance();
-    var finalAmount;
-    if (!isTrx()) {
-      finalAmount = await amountAfterFee();
-    }
+    var finalAmount = 0.0;
+    finalAmount = await amountAfterFee();
+
     if (amount == null ||
         finalAmount > walletInfo.availableBalance ||
         amount == 0 ||
@@ -325,7 +331,8 @@ class MoveToExchangeViewModel extends BaseViewModel {
       log.e('amount $amount --- wallet bal: ${walletInfo.availableBalance}');
       bool isCorrectAmount = true;
       await walletService
-          .checkCoinWalletBalance(15, 'TRX')
+          .checkCoinWalletBalance(
+              double.parse(Constants.tronUsdtFee.toString()), 'TRX')
           .then((res) => isCorrectAmount = res);
 
       if (amount > walletInfo.availableBalance) {
@@ -349,7 +356,10 @@ class MoveToExchangeViewModel extends BaseViewModel {
     if (walletInfo.tickerName == 'TRX') {
       log.e('amount $amount --- wallet bal: ${walletInfo.availableBalance}');
       bool isCorrectAmount = true;
-      if (amount + 1 > walletInfo.availableBalance) isCorrectAmount = false;
+      var totalAmount = amount + Constants.tronFee;
+      if (totalAmount > walletInfo.availableBalance) {
+        isCorrectAmount = false;
+      }
       if (!isCorrectAmount) {
         sharedService.alertDialog(
             '${FlutterI18n.translate(context, "fee")} ${FlutterI18n.translate(context, "notice")}',
@@ -394,7 +404,9 @@ class MoveToExchangeViewModel extends BaseViewModel {
       // }
 
       var gasPrice = int.tryParse(gasPriceTextController.text);
-      var gasLimit = int.tryParse(gasLimitTextController.text);
+      var gasLimit = isTrx()
+          ? int.tryParse(trxGasValueTextController.text)
+          : int.tryParse(gasLimitTextController.text);
       var satoshisPerBytes = int.tryParse(satoshisPerByteTextController.text);
       var kanbanGasPrice = int.tryParse(kanbanGasPriceTextController.text);
       var kanbanGasLimit = int.tryParse(kanbanGasLimitTextController.text);
@@ -663,9 +675,10 @@ class MoveToExchangeViewModel extends BaseViewModel {
         kanbanTransFee = kanbanTransFeeDouble;
         setBusy(false);
       }
-      if (walletInfo.tickerName != 'TRX' &&
-          walletInfo.tickerName != 'USDTX') if (transFee == 0.0) {
-        isValidAmount = false;
+      if (walletInfo.tickerName != 'TRX' && walletInfo.tickerName != 'USDTX') {
+        if (transFee == 0.0) {
+          isValidAmount = false;
+        }
       }
       //  log.e('total amount with fee ${amount + kanbanTransFee + transFee}');
       log.i('availableBalance ${walletInfo.availableBalance}');

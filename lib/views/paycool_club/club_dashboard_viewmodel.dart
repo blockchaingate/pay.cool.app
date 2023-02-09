@@ -704,7 +704,7 @@ class ClubDashboardViewModel extends BaseViewModel {
 
                     Container(
                       padding: const EdgeInsets.all(10.0),
-                      child: RaisedButton(
+                      child: ElevatedButton(
                           child: Text(FlutterI18n.translate(context, "share"),
                               style: headText6),
                           onPressed: () {
@@ -720,8 +720,8 @@ class ClubDashboardViewModel extends BaseViewModel {
                                     .capturePng(globalKey: globalKey)
                                     .then((byteData) {
                                   file.writeAsBytes(byteData).then((onFile) {
-                                    Share.shareFiles([onFile.path],
-                                        text: kbAddress);
+                                    Share.share(onFile.path,
+                                        subject: kbAddress);
                                   });
                                 });
                               });

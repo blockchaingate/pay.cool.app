@@ -12,7 +12,6 @@
 */
 
 import 'dart:async';
-import 'dart:typed_data';
 // import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:decimal/decimal.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
@@ -84,6 +83,7 @@ class SendViewModel extends BaseViewModel {
   final gasPriceTextController = TextEditingController();
   final gasLimitTextController = TextEditingController();
   final satoshisPerByteTextController = TextEditingController();
+  final trxGasValueTextController = TextEditingController();
   double transFee = 0.0;
   bool transFeeAdvance = false;
   PairDecimalConfig singlePairDecimalConfig = PairDecimalConfig();
@@ -119,6 +119,10 @@ class SendViewModel extends BaseViewModel {
       satoshisPerByteTextController.text =
           environment["chains"]["FAB"]["satoshisPerBytes"].toString();
       feeUnit = 'FAB';
+    } else if (coinName == 'USDTX') {
+      trxGasValueTextController.text = Constants.tronUsdtFee.toString();
+    } else if (coinName == 'TRX') {
+      trxGasValueTextController.text = Constants.tronFee.toString();
     } else if (tokenType == 'FAB') {
       satoshisPerByteTextController.text =
           environment["chains"]["FAB"]["satoshisPerBytes"].toString();
@@ -345,6 +349,7 @@ class SendViewModel extends BaseViewModel {
                 contractAddressTronUsdt: ca,
                 privateKey: privateKey,
                 fromAddr: walletInfo.address,
+                gasLimit: int.parse(trxGasValueTextController.text),
                 toAddr: toAddress,
                 amount: amount.toDouble(),
                 isTrxUsdt: walletInfo.tickerName == 'USDTX' ? true : false,
@@ -685,7 +690,9 @@ class SendViewModel extends BaseViewModel {
           checkSendAmount = false;
         }
       } else if (walletInfo.tickerName == 'TRX') {
-        if (amount.toDouble() + 1 <= walletInfo.availableBalance) {
+        var total =
+            amount.toDouble() + double.parse(trxGasValueTextController.text);
+        if (total <= walletInfo.availableBalance) {
           checkSendAmount = true;
         } else {
           checkSendAmount = false;
@@ -696,11 +703,11 @@ class SendViewModel extends BaseViewModel {
         trxBalance = await getTrxBalance();
         log.w('checkAmount trx bal $trxBalance');
         if (amount.toDouble() <= walletInfo.availableBalance &&
-            trxBalance >= 15) {
+            trxBalance >= double.parse(trxGasValueTextController.text)) {
           checkSendAmount = true;
         } else {
           checkSendAmount = false;
-          if (trxBalance < 15) {
+          if (trxBalance < double.parse(trxGasValueTextController.text)) {
             showSimpleNotification(
                 Center(
                   child: Text(
