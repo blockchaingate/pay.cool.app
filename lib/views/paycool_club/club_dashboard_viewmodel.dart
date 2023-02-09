@@ -47,7 +47,7 @@ class ClubDashboardViewModel extends BaseViewModel {
   final storageService = locator<LocalStorageService>();
   List<ClubProject> projects = [];
   bool isDialogUp = false;
-  BuildContext? context;
+  late BuildContext context;
   bool isDUSD = false;
   int gasPrice = environment["chains"]["FAB"]["gasPrice"] as int;
   int gasLimit = environment["chains"]["FAB"]["gasLimitToken"] as int;

@@ -91,14 +91,14 @@ class PayCoolClubModel {
 }
 
 class PayCoolClubModelList {
-  final List<PayCoolClubModel>? payCoolClubModeList;
-  PayCoolClubModelList({this.payCoolClubModeList});
+  final List<PayCoolClubModel>? payCoolClubModelList;
+  PayCoolClubModelList({this.payCoolClubModelList});
 
   factory PayCoolClubModelList.fromJson(List<dynamic> parsedJson) {
     List<PayCoolClubModel> payCoolClubModeList = [];
     payCoolClubModeList =
         parsedJson.map((i) => PayCoolClubModel.fromJson(i)).toList();
-    return PayCoolClubModelList(payCoolClubModeList: payCoolClubModeList);
+    return PayCoolClubModelList(payCoolClubModelList: payCoolClubModeList);
   }
 }
 

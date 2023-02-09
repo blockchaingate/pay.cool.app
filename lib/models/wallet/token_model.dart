@@ -43,8 +43,8 @@ class TokenModel {
     return TokenModel(
         decimal: json['decimal'] as int,
         tickerName: json['tickerName'] as String,
-        coinName: json['coinName'] as String,
-        chainName: json['chainName'] as String,
+        coinName: json['coinName'] ?? '',
+        chainName: json['chainName'] ?? '',
         coinType: json['type'] as int,
         contract: json['contract'] as String,
         minWithdraw: minWithdraw,

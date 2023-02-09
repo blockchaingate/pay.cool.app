@@ -39,7 +39,7 @@ class LocalDialogService {
   void dialogComplete(DialogResponse response) {
     //   _dialogNavigationKey.currentState.pop();
     _dialogCompleter.complete(response);
-    _dialogCompleter = null!;
+    //_dialogCompleter = null!;
   }
 
 /*----------------------------------------------------------------------

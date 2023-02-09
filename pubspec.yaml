@@ -1,6 +1,6 @@
 name: paycool
 description: Crypto payment application
-version: 2.2.87+134
+version: 2.3.87+134
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `pub publish`. This is preferred for private packages.
@@ -10,7 +10,7 @@ environment:
   sdk: ">=2.19.0 <3.0.0"
 
 dependency_overrides:
-  intl: any
+  #intl: any
   convert: ^3.1.0  
   bs58check: ^1.0.1
   hex: ^0.2.0
@@ -74,7 +74,7 @@ dev_dependencies:
   flutter_lints: 
   flutter_test:
     sdk: flutter
-  intl: ^0.17.0
+  intl: ^0.17.0-nullsafety.2
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

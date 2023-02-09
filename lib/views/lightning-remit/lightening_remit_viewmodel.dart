@@ -74,7 +74,7 @@ class LightningRemitViewmodel extends FutureViewModel {
 ----------------------------------------------------------------------*/
 
   init() {
-    sharedService.context = context;
+    sharedService.context = context!;
   }
 
 /*----------------------------------------------------------------------

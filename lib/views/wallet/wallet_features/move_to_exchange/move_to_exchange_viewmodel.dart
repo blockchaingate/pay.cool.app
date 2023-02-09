@@ -1,6 +1,5 @@
 import 'dart:typed_data';
 import 'package:decimal/decimal.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:overlay_support/overlay_support.dart';
@@ -640,9 +639,9 @@ class MoveToExchangeViewModel extends BaseViewModel {
     if (kanbanGasLimit != null && kanbanPrice != null) {
       var kanbanPriceBig = BigInt.from(kanbanPrice);
       var kanbanGasLimitBig = BigInt.from(kanbanGasLimit);
-      kanbanTransFeeDouble = NumberUtil.rawStringToDecimal(
-              (kanbanPriceBig * kanbanGasLimitBig).toString())
-          .toDouble();
+      var f = NumberUtil.rawStringToDecimal(
+          (kanbanPriceBig * kanbanGasLimitBig).toString());
+      kanbanTransFeeDouble = f.toDouble();
       //  kanbanTransFee = kanbanTransFeeDouble;
       log.w('fee $kanbanPrice $kanbanGasLimit $kanbanTransFeeDouble');
     }

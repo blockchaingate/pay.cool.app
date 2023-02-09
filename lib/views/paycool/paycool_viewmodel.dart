@@ -70,7 +70,7 @@ class PayCoolViewmodel extends FutureViewModel {
   final payCoolClubService = locator<PayCoolClubService>();
   final userSettingsDatabaseService = locator<UserSettingsDatabaseService>();
   String tickerName = '';
-  BuildContext? context;
+  late BuildContext context;
   double quantity = 0.0;
   GlobalKey globalKey = GlobalKey();
   ScrollController? scrollController;
@@ -128,16 +128,14 @@ class PayCoolViewmodel extends FutureViewModel {
   init() async {
     sharedService.context = context;
 
-    storageService.autoStartPaycoolScan == null
-        ? isAutoStartPaycoolScan = false
-        : isAutoStartPaycoolScan = storageService.autoStartPaycoolScan;
+    isAutoStartPaycoolScan = storageService.autoStartPaycoolScan;
     // await userSettingsDatabaseService.getById(1).then((res) {
     //   if (res != null) {
     //     lang = res.language ?? "en";
     //     log.i('user settings db not null');
     //   }
     // });
-    if (lang == null || lang.isEmpty) {
+    if (lang.isEmpty) {
       lang = "en";
     }
   }
@@ -154,17 +152,17 @@ class PayCoolViewmodel extends FutureViewModel {
     data.forEach((ExchangeBalanceModel wallet) async {
       log.w('onData func - ${wallet.toJson().toString()}');
       if (wallet.ticker.isEmpty) {
-        await coinService
-            .getSingleTokenData('', coinType: wallet.coinType)
-            .then((token) {
-          //storageService.tokenList.forEach((newToken){
-          debugPrint(token!.toJson().toString());
-          // var json = jsonDecode(newToken);
-          // Token token = Token.fromJson(json);
-          // if (token.tokenType == element.coinType){ debugPrint(token.tickerName);
+        var res =
+            await coinService.getSingleTokenData('', coinType: wallet.coinType);
 
-          wallet.ticker = token.tickerName.toString(); //}
-        });
+        //storageService.tokenList.forEach((newToken){
+
+        // var json = jsonDecode(newToken);
+        // Token token = Token.fromJson(json);
+        // if (token.tokenType == element.coinType){ debugPrint(token.tickerName);
+
+        wallet.ticker = res!.tickerName.toString(); //}
+
 //element.ticker =tradeService.setTickerNameByType(element.coinType);
         debugPrint('exchanageBalanceModel tickerName ${wallet.ticker}');
       }
@@ -175,7 +173,7 @@ class PayCoolViewmodel extends FutureViewModel {
     setBusyForObject(exchangeBalances, false);
     setBusyForObject(tickerName, true);
 
-    if (exchangeBalances != null && exchangeBalances.isNotEmpty) {
+    if (exchangeBalances.isNotEmpty) {
       tickerName = exchangeBalances[0].ticker;
 
       quantity = exchangeBalances[0].unlockedAmount;

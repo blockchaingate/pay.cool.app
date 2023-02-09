@@ -75,7 +75,7 @@ class TransactionHistoryViewmodel extends FutureViewModel {
     List<TransactionHistory> txHistoryFromDb = [];
     List<TransactionHistory> txHistoryEvents = [];
     txHistoryFromDb = data;
-    txHistoryEvents = await getWithdrawDepositTxHistoryEvents();
+    txHistoryEvents = await apiService.getTransactionHistoryEvents();
 
     for (var element in txHistoryEvents) {
       if (element.tickerName == tickerName) {
@@ -99,13 +99,12 @@ class TransactionHistoryViewmodel extends FutureViewModel {
       }
     }
 
-    if (txHistoryFromDb != null) {
-      for (var t in txHistoryFromDb) {
-        if (t.tag == 'send' && t.tickerName == tickerName) {
-          transactionHistoryToShowInView.add(t);
-        }
+    for (var t in txHistoryFromDb) {
+      if (t.tag == 'send' && t.tickerName == tickerName) {
+        transactionHistoryToShowInView.add(t);
       }
     }
+
     transactionHistoryToShowInView.sort(
         (a, b) => DateTime.parse(b.date).compareTo(DateTime.parse(a.date)));
 
@@ -119,7 +118,7 @@ class TransactionHistoryViewmodel extends FutureViewModel {
     decimalLimit = await coinService
         .getSingleTokenData(tickerName!)
         .then((res) => res!.decimal!);
-    if (decimalLimit == null || decimalLimit == 0) decimalLimit = 8;
+    if (decimalLimit == 0) decimalLimit = 8;
     setBusy(false);
     // debugPrint(transactionHistoryToShowInView.first.toJson());
   }
@@ -132,10 +131,6 @@ class TransactionHistoryViewmodel extends FutureViewModel {
 
   clearLists() {
     transactionHistoryToShowInView = [];
-  }
-
-  getWithdrawDepositTxHistoryEvents() async {
-    return await apiService.getTransactionHistoryEvents();
   }
 
 /*----------------------------------------------------------------------

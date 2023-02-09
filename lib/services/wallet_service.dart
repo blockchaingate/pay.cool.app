@@ -1625,7 +1625,7 @@ class WalletService {
       return errRes;
     }
     var subString = amountInLinkString.substring(amountInTxString.length);
-    if (subString != null && subString != '') {
+    if (subString != '') {
       var zero = int.parse(subString);
       if (zero != 0) {
         errRes['data'] = 'unequal amount for two transactions';
@@ -1797,7 +1797,7 @@ class WalletService {
     var bytesPerInput = environment["chains"]["FAB"]["bytesPerInput"];
     var feePerInput = bytesPerInput * satoshisPerBytes as int;
 
-    for (var i = 0; i < addressIndexList.length; i++) {
+    for (int i = 0; i < addressIndexList.length; i++) {
       var index = addressIndexList[i];
       var fabCoinChild = root
           .derivePath("m/44'/${environment["CoinType"]["FAB"]}'/0'/0/$index");
@@ -1858,20 +1858,21 @@ class WalletService {
         return {
           'txHex': '',
           'errMsg': 'not enough fab coin to make the transaction.',
-          'transFee': transFeeDouble,
+          'transFee': NumberUtil()
+              .truncateDoubleWithoutRouding(transFeeDouble, precision: 8),
           'amountInTx': amountInTx
         };
       }
 
       var transFee = (receivePrivateKeyArr.length) * feePerInput +
-          (2 * 34 + 10) * satoshisPerBytes as double;
+          (2 * 34 + 10) * satoshisPerBytes;
 
       var output1 = (totalInput -
               BigInt.parse(NumberUtil.toBigInt(amount + extraTransactionFee, 8))
                   .toInt() -
               transFee)
           .round();
-      transFee = (Decimal.parse(extraTransactionFee.toString()) +
+      transFeeDouble = (Decimal.parse(extraTransactionFee.toString()) +
               (Decimal.parse(transFee.toString()) / Decimal.parse('1e8'))
                   .toDecimal())
           .toDouble();
@@ -1879,8 +1880,8 @@ class WalletService {
         return {
           'txHex': '',
           'errMsg': '',
-          'transFee':
-              NumberUtil().truncateDoubleWithoutRouding(transFee, precision: 8),
+          'transFee': NumberUtil()
+              .truncateDoubleWithoutRouding(transFeeDouble, precision: 8),
         };
       }
       var output2 = BigInt.parse(NumberUtil.toBigInt(amount, 8)).toInt();
@@ -1912,7 +1913,8 @@ class WalletService {
       return {
         'txHex': txHex,
         'errMsg': '',
-        'transFee': transFeeDouble,
+        'transFee': NumberUtil()
+            .truncateDoubleWithoutRouding(transFeeDouble, precision: 8),
         'amountInTx': amountInTx,
         'txids': allTxids
       };

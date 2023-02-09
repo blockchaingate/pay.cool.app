@@ -17,15 +17,16 @@ class ExchangeBalanceModel {
 
   factory ExchangeBalanceModel.fromJson(Map<String, dynamic> json) {
     var type = json['coinType'];
-    String tickerName = '';
+    String? tickerName;
     if (type != null) {
-      tickerName = coin_list.newCoinTypeMap[type]!;
+      tickerName = coin_list.newCoinTypeMap[type];
+      tickerName ??= '';
       debugPrint(
           'Ticker Name -- $tickerName --- coin type ${json['coinType']}');
     }
 
     return ExchangeBalanceModel(
-        ticker: tickerName,
+        ticker: tickerName!,
         coinType: json['coinType'],
         unlockedAmount:
             NumberUtil.rawStringToDecimal(json['unlockedAmount'].toString())

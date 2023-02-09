@@ -14,6 +14,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:paycool/models/wallet/wallet_transaction_history_model.dart';
 
 import '../constants/api_routes.dart';
 import '../logger.dart';
@@ -159,13 +160,47 @@ class ApiService {
     }
   }
 
+  Future<List<WalletTransactionHistory>> getWalletTransactionHistory() async {
+    String fabAddress = '';
+
+    List<WalletTransactionHistory> transactionHistory = [];
+
+    fabAddress = await sharedService.getFabAddressFromCoreWalletDatabase();
+
+    String url =
+        configService.getKanbanBaseUrl() + WithDrawDepositTxHistoryApiRoute;
+    Map<String, dynamic> body = {"fabAddress": fabAddress};
+
+    log.i('getWalletTransactionHistory url $url -- body $body');
+
+    try {
+      var response = await client.post(Uri.parse(url), body: body);
+
+      var json = jsonDecode(response.body);
+      if (json != null) {
+        log.w('getWalletTransactionHistory json $json}');
+        if (json['success']) {
+          //  log.e('getTransactionHistoryEvents json ${json['data']}');
+          var data = json['data'] as List;
+
+          transactionHistory =
+              WalletTransactionHistoryList.fromJson(data).walletTransactions;
+        }
+      }
+      return transactionHistory;
+    } catch (err) {
+      log.e('getWalletTransactionHistory CATCH $err');
+
+      throw Exception(err);
+    }
+  }
+
   Future<List<TransactionHistory>> getTransactionHistoryEvents() async {
     String fabAddress = '';
 
     List<TransactionHistory> transactionHistory = [];
-    await coreWalletDatabaseService
-        .getWalletAddressByTickerName('FAB')
-        .then((address) => fabAddress = address);
+
+    fabAddress = await sharedService.getFabAddressFromCoreWalletDatabase();
 
     String url =
         configService.getKanbanBaseUrl() + WithDrawDepositTxHistoryApiRoute;
@@ -188,10 +223,10 @@ class ApiService {
             var tag = element['action'] as String;
             var ticker = element['coin'] as String;
             var timestamp = element['timestamp'];
-            var tickerChainTxStatus;
-            var kanbanTxStatus;
-            var kanbanTxId;
-            var tickerTxId;
+            var tickerChainTxStatus = '';
+            var kanbanTxStatus = '';
+            var kanbanTxId = '';
+            var tickerTxId = '';
             String chainName = '';
             List transactionsInside = element['transactions'] as List;
             // It has only 2 objects inside

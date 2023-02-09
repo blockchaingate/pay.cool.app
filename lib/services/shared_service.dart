@@ -39,7 +39,7 @@ import 'local_storage_service.dart';
 import 'navigation_service.dart';
 
 class SharedService {
-  BuildContext? context;
+  late BuildContext context;
   final log = getLogger('SharedService');
   final storageService = locator<LocalStorageService>();
   NavigationService navigationService = locator<NavigationService>();
