@@ -223,9 +223,6 @@ class MoveToExchangeViewModel extends BaseViewModel {
       if (walletInfo.tickerName == 'USDTX') {
         transFee = double.parse(trxGasValueTextController.text);
         finalAmount = amount;
-        finalAmount <= walletInfo.availableBalance
-            ? isValidAmount = true
-            : isValidAmount = false;
       }
 
       if (walletInfo.tickerName == 'TRX') {
@@ -332,7 +329,7 @@ class MoveToExchangeViewModel extends BaseViewModel {
       bool isCorrectAmount = true;
       await walletService
           .checkCoinWalletBalance(
-              double.parse(Constants.tronUsdtFee.toString()), 'TRX')
+              double.parse(trxGasValueTextController.text), 'TRX')
           .then((res) => isCorrectAmount = res);
 
       if (amount > walletInfo.availableBalance) {
@@ -356,7 +353,7 @@ class MoveToExchangeViewModel extends BaseViewModel {
     if (walletInfo.tickerName == 'TRX') {
       log.e('amount $amount --- wallet bal: ${walletInfo.availableBalance}');
       bool isCorrectAmount = true;
-      var totalAmount = amount + Constants.tronFee;
+      var totalAmount = amount + double.parse(trxGasValueTextController.text);
       if (totalAmount > walletInfo.availableBalance) {
         isCorrectAmount = false;
       }

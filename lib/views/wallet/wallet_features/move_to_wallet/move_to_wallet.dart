@@ -176,6 +176,7 @@ class MoveToWalletView extends StatelessWidget {
                       children: <Widget>[
                         Text(
                             FlutterI18n.translate(context, "withdraw") +
+                                ' ' +
                                 FlutterI18n.translate(context, "fee"),
                             style: headText6),
                         UIHelper.horizontalSpaceSmall,

@@ -197,10 +197,11 @@ class MoveToExchangeView extends StatelessWidget {
                               flex: 5,
                               child: TextField(
                                   controller: model.trxGasValueTextController,
-                                  onChanged: (String amount) {
-                                    if (amount.isNotEmpty) {
+                                  onChanged: (String fee) {
+                                    if (fee.isNotEmpty) {
                                       model.trxGasValueTextController.text =
-                                          amount.toString();
+                                          fee.toString();
+                                      model.transFee = double.parse(fee);
                                       model.notifyListeners();
                                     }
                                   },
