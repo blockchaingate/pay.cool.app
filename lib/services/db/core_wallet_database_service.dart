@@ -154,7 +154,6 @@ class CoreWalletDatabaseService {
   // getWalletAddressByTickerName
   Future<String> getWalletAddressByTickerName(String tickerName) async {
     final Database? db = await database;
-    ;
 
     var fabUtils = FabUtils();
     String address = '';

@@ -47,10 +47,9 @@ class ClubDashboardViewModel extends BaseViewModel {
   final storageService = locator<LocalStorageService>();
   List<ClubProject> projects = [];
   bool isDialogUp = false;
-  late BuildContext context;
   bool isDUSD = false;
-  int gasPrice = environment["chains"]["FAB"]["gasPrice"] as int;
-  int gasLimit = environment["chains"]["FAB"]["gasLimitToken"] as int;
+  int gasPrice = environment["chains"]["FAB"]["gasPrice"] ?? 0;
+  int gasLimit = environment["chains"]["FAB"]["gasLimitToken"] ?? 0;
   double fee = 0.0;
 
   String usdtOfficialAddress = '';
@@ -91,7 +90,6 @@ class ClubDashboardViewModel extends BaseViewModel {
 
   void init() async {
     setBusy(true);
-    sharedService.context = context;
     fabAddress = await sharedService.getFabAddressFromCoreWalletDatabase();
 
     await getProjects();
@@ -132,7 +130,7 @@ class ClubDashboardViewModel extends BaseViewModel {
 
   showJoinedProjectsPopup() {
     showDialog(
-        context: context!,
+        context: sharedService.context,
         builder: (context) {
           return AlertDialog(
             elevation: 10,
@@ -203,7 +201,7 @@ class ClubDashboardViewModel extends BaseViewModel {
 
   showJoinPaycoolPopup() {
     showDialog(
-        context: context!,
+        context: sharedService.context,
         builder: (context) {
           return AlertDialog(
             titleTextStyle: headText3.copyWith(color: black),
@@ -282,7 +280,7 @@ class ClubDashboardViewModel extends BaseViewModel {
           isFreeFabAvailable = res['ok'];
 
           showDialog(
-              context: context!,
+              context: sharedService.context,
               builder: (context) {
                 return Center(
                   child: SizedBox(
@@ -487,11 +485,12 @@ class ClubDashboardViewModel extends BaseViewModel {
           debugPrint(isFreeFabAvailable.toString());
 
           walletService.showInfoFlushbar(
-              FlutterI18n.translate(context!, "notice"),
-              FlutterI18n.translate(context!, "freeFabUsedAlready"),
+              FlutterI18n.translate(sharedService.context, "notice"),
+              FlutterI18n.translate(
+                  sharedService.context, "freeFabUsedAlready"),
               Icons.notification_important,
               yellow,
-              context!);
+              sharedService.context);
         }
       }
     });
@@ -505,7 +504,7 @@ class ClubDashboardViewModel extends BaseViewModel {
       String kbAddress = walletService.toKbPaymentAddress(coin!.address!);
       debugPrint('KBADDRESS $kbAddress');
       showDialog(
-        context: context!,
+        context: sharedService.context,
         builder: (BuildContext context) {
           return Platform.isIOS
               ? CupertinoAlertDialog(
@@ -783,24 +782,24 @@ class ClubDashboardViewModel extends BaseViewModel {
     } on PlatformException catch (e) {
       if (e.code == "PERMISSION_NOT_GRANTED") {
         setBusy(true);
-        sharedService.alertDialog(
-            '', FlutterI18n.translate(context!, "userAccessDenied"),
+        sharedService.alertDialog('',
+            FlutterI18n.translate(sharedService.context, "userAccessDenied"),
             isWarning: false);
         // receiverWalletAddressTextController.text =
         //     FlutterI18n.translate(context, "userAccessDenied");
       } else {
         // setBusy(true);
         sharedService.alertDialog(
-            '', FlutterI18n.translate(context!, "unknownError"),
+            '', FlutterI18n.translate(sharedService.context, "unknownError"),
             isWarning: false);
       }
     } on FormatException {
       sharedService.alertDialog(
-          '', FlutterI18n.translate(context!, "scanCancelled"),
+          '', FlutterI18n.translate(sharedService.context, "scanCancelled"),
           isWarning: false);
     } catch (e) {
       sharedService.alertDialog(
-          '', FlutterI18n.translate(context!, "unknownError"),
+          '', FlutterI18n.translate(sharedService.context, "unknownError"),
           isWarning: false);
     }
     setBusy(false);
@@ -866,17 +865,17 @@ class ClubDashboardViewModel extends BaseViewModel {
   String assignMemberType({int? status}) {
     var condition = status ?? dashboardSummary.status;
     if (condition == 0) {
-      return FlutterI18n.translate(context!, "noPartner");
+      return FlutterI18n.translate(sharedService.context, "noPartner");
     } else if (condition == 1) {
-      return FlutterI18n.translate(context!, "basicPartner");
+      return FlutterI18n.translate(sharedService.context, "basicPartner");
     } else if (condition == 2) {
-      return FlutterI18n.translate(context!, "juniorPartner");
+      return FlutterI18n.translate(sharedService.context, "juniorPartner");
     } else if (condition == 3) {
-      return FlutterI18n.translate(context!, "seniorPartner");
+      return FlutterI18n.translate(sharedService.context, "seniorPartner");
     } else if (condition == 4) {
-      return FlutterI18n.translate(context!, "executivePartner");
+      return FlutterI18n.translate(sharedService.context, "executivePartner");
     } else {
-      return FlutterI18n.translate(context!, "noPartner");
+      return FlutterI18n.translate(sharedService.context, "noPartner");
     }
   }
 
@@ -1021,7 +1020,7 @@ class ClubDashboardViewModel extends BaseViewModel {
     setBusy(true);
 
     showDialog(
-        context: context!,
+        context: sharedService.context,
         builder: (BuildContext context) {
           return Platform.isIOS
               ? CupertinoAlertDialog(
@@ -1240,7 +1239,7 @@ class ClubDashboardViewModel extends BaseViewModel {
     try {
       log.i("Barcode: try");
 
-      result = await BarcodeUtils().scanQR(context!);
+      result = await BarcodeUtils().scanQR(sharedService.context);
 
       log.i("Barcode Res: $result ");
       scanToPayModel = JoinClubPaymentModel.fromJson(jsonDecode(result));
@@ -1252,15 +1251,15 @@ class ClubDashboardViewModel extends BaseViewModel {
       log.i(e.toString());
       if (e.code == "PERMISSION_NOT_GRANTED") {
         setBusy(false);
-        sharedService.alertDialog(
-            '', FlutterI18n.translate(context!, "userAccessDenied"),
+        sharedService.alertDialog('',
+            FlutterI18n.translate(sharedService.context, "userAccessDenied"),
             isWarning: false);
         // receiverWalletAddressTextController.text =
         //     FlutterI18n.translate(context, "userAccessDenied");
       } else {
         setBusy(false);
         sharedService.alertDialog(
-            '', FlutterI18n.translate(context!, "unknownError"),
+            '', FlutterI18n.translate(sharedService.context, "unknownError"),
             isWarning: false);
         // receiverWalletAddressTextController.text =
         //     '${FlutterI18n.translate(context, "unknownError")}: $e';
@@ -1273,8 +1272,8 @@ class ClubDashboardViewModel extends BaseViewModel {
       // navigationService.navigateTo(PayCoolClubDashboardViewRoute);
       if (result != null && result != '') {
         sharedService.alertDialog(
-            FlutterI18n.translate(context!, "scanCancelled"),
-            FlutterI18n.translate(context!, "invalidReferralCode"),
+            FlutterI18n.translate(sharedService.context, "scanCancelled"),
+            FlutterI18n.translate(sharedService.context, "invalidReferralCode"),
             isWarning: false);
       }
     } catch (e) {
@@ -1282,7 +1281,7 @@ class ClubDashboardViewModel extends BaseViewModel {
       log.i(e.toString());
       setBusy(false);
       sharedService.alertDialog(
-          '', FlutterI18n.translate(context!, "unknownError"),
+          '', FlutterI18n.translate(sharedService.context, "unknownError"),
           isWarning: false);
       // receiverWalletAddressTextController.text =
       //     '${FlutterI18n.translate(context, "unknownError")}: $e';

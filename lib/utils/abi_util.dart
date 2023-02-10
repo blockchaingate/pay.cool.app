@@ -95,7 +95,7 @@ extractWalletAddressFromPayCoolClubScannedAbiHex(String abiHex) {
       'removeZerosFromHex $removeZerosFromHex -- length ${removeZerosFromHex.length}');
   String walletAddress = '';
   if (removeZerosFromHex.length == 40) {
-    walletAddress = fabUtils.exgToFabAddress('0x' + removeZerosFromHex);
+    walletAddress = fabUtils.exgToFabAddress('0x$removeZerosFromHex');
   }
   debugPrint('wallet address $walletAddress');
 
@@ -117,7 +117,7 @@ extractAddressFromAbihex(String abiHex) {
       'removeZerosFromHex $removeZerosFromHex -- length ${removeZerosFromHex.length}');
   String referralAddress = '';
   if (removeZerosFromHex.length == 40) {
-    referralAddress = fabUtils.exgToFabAddress('0x' + removeZerosFromHex);
+    referralAddress = fabUtils.exgToFabAddress('0x$removeZerosFromHex');
   }
   debugPrint('referral address $referralAddress');
 
@@ -392,12 +392,11 @@ Future signAbiHexWithPrivateKey(String abiHex, String privateKey,
   var transactionList = _encodeToRlp(transaction, innerSignature!);
   final encoded = uint8ListFromList(rlp.encode(transactionList));
 
-  final signature =
-      await credentials.signToSignature(encoded, chainId: chainId);
+  final signature = credentials.signToEcSignature(encoded, chainId: chainId);
 
   var encodeList =
       uint8ListFromList(rlp.encode(_encodeToRlp(transaction, signature)));
-  var finalString = '0x' + HEX.encode(encodeList);
+  var finalString = '0x${HEX.encode(encodeList)}';
   // debugPrint('finalString===' + finalString);
   return finalString;
   /*

@@ -2518,7 +2518,7 @@ class WalletService {
 
       Credentials credentials = EthPrivateKey.fromHex(privateKey);
 
-      final address = await credentials.extractAddress();
+      final address = credentials.address;
       final addressHex = address.hex;
       final nonce = await _api.getEthNonce(addressHex);
 
@@ -2533,9 +2533,9 @@ class WalletService {
           Transaction(
             nonce: nonce,
             to: EthereumAddress.fromHex(toAddress),
-            gasPrice: EtherAmount.fromUnitAndValue(EtherUnit.gwei, gasPrice),
+            gasPrice: EtherAmount.fromInt(EtherUnit.gwei, gasPrice),
             maxGas: gasLimit,
-            value: EtherAmount.fromUnitAndValue(EtherUnit.wei, amountSentInt),
+            value: EtherAmount.fromBigInt(EtherUnit.wei, amountSentInt),
           ),
           chainId: chainId,
           fetchChainIdFromNetworkId: false);

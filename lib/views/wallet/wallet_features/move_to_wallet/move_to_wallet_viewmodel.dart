@@ -86,8 +86,8 @@ class MoveToWalletViewmodel extends BaseViewModel {
   void initState() async {
     setBusy(true);
     sharedService.context = context;
-    var gasPrice = environment["chains"]["KANBAN"]["gasPrice"];
-    var gasLimit = environment["chains"]["KANBAN"]["gasLimit"];
+    var gasPrice = environment["chains"]["KANBAN"]["gasPrice"] ?? 0;
+    var gasLimit = environment["chains"]["KANBAN"]["gasLimit"] ?? 0;
     kanbanGasPriceTextController.text = gasPrice.toString();
     kanbanGasLimitTextController.text = gasLimit.toString();
     tokenType = walletInfo.tokenType;
@@ -818,7 +818,12 @@ class MoveToWalletViewmodel extends BaseViewModel {
 --------------------------------------------------- */
 
   checkGasBalance() async {
-    String address = await sharedService.getExgAddressFromCoreWalletDatabase();
+    String address = '';
+    try {
+      address = await sharedService.getExgAddressFromCoreWalletDatabase();
+    } catch (err) {
+      log.e('catch: fetching fab address from db');
+    }
     await walletService.gasBalance(address).then((data) {
       gasAmount = data;
       log.i('gas balance $gasAmount');
@@ -1291,21 +1296,23 @@ class MoveToWalletViewmodel extends BaseViewModel {
               message = txId;
             } else {
               serverError = ret['data'];
-              if (serverError == null || serverError == '') {
+              if (serverError == '') {
                 var errMsg = FlutterI18n.translate(context, "serverError");
                 error(errMsg);
                 isShowErrorDetailsButton = true;
                 isSubmittingTx = false;
               }
             }
-            sharedService.alertDialog(
+            sharedService.sharedSimpleNotification(
                 success && ret['transactionHash'] != null
                     ? FlutterI18n.translate(
                         context, "withdrawTransactionSuccessful")
                     : FlutterI18n.translate(
                         context, "withdrawTransactionFailed"),
-                success ? "" : FlutterI18n.translate(context, "serverError"),
-                isWarning: false);
+                subtitle: success
+                    ? ""
+                    : FlutterI18n.translate(context, "serverError"),
+                isError: !success ? true : false);
           }).catchError((err) {
             log.e('Withdraw catch $err');
             isShowErrorDetailsButton = true;

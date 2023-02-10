@@ -579,8 +579,8 @@ class SendViewModel extends BaseViewModel {
     amount = NumberUtil.convertStringToDecimal(sendAmountTextController.text);
     toAddress = receiverWalletAddressTextController.text;
     if (!isTrx()) {
-      gasPrice = int.tryParse(gasPriceTextController.text)!;
-      gasLimit = int.tryParse(gasLimitTextController.text)!;
+      gasPrice = int.tryParse(gasPriceTextController.text) ?? 0;
+      gasLimit = int.tryParse(gasLimitTextController.text) ?? 0;
     }
     satoshisPerBytes = int.tryParse(satoshisPerByteTextController.text)!;
     //await refreshBalance();

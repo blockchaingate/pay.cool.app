@@ -617,8 +617,8 @@ class LightningRemitViewmodel extends FutureViewModel {
     if (walletService.isValidKbAddress(addressController.text)) {
       if (amountController.text == '') {
         sharedService.alertDialog(
-            FlutterI18n.translate(context!!, "validationError"),
-            FlutterI18n.translate(context!!, "amountMissing"));
+            FlutterI18n.translate(context!, "validationError"),
+            FlutterI18n.translate(context!, "amountMissing"));
         setBusy(false);
         return;
       }

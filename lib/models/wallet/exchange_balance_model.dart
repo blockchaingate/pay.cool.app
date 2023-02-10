@@ -13,12 +13,13 @@ class ExchangeBalanceModel {
       {required this.ticker,
       required this.coinType,
       required this.unlockedAmount,
-      required this.lockedAmount}) {}
+      required this.lockedAmount});
 
   factory ExchangeBalanceModel.fromJson(Map<String, dynamic> json) {
-    var type = json['coinType'];
+    int type = json['coinType'] ?? 0;
+
     String? tickerName;
-    if (type != null) {
+    if (type != 0) {
       tickerName = coin_list.newCoinTypeMap[type];
       tickerName ??= '';
       debugPrint(
@@ -26,8 +27,8 @@ class ExchangeBalanceModel {
     }
 
     return ExchangeBalanceModel(
-        ticker: tickerName!,
-        coinType: json['coinType'],
+        ticker: tickerName ?? '',
+        coinType: type,
         unlockedAmount:
             NumberUtil.rawStringToDecimal(json['unlockedAmount'].toString())
                 .toDouble(),

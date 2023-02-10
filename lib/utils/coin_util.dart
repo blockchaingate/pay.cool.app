@@ -12,6 +12,7 @@
 */
 
 import 'package:bip32/bip32.dart' as bip_32;
+import 'package:bitbox/bitbox.dart' as bitbox;
 import 'package:bitcoin_flutter/bitcoin_flutter.dart';
 import 'package:flutter/widgets.dart';
 import 'package:paycool/constants/constants.dart';
@@ -20,6 +21,7 @@ import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/db/token_list_database_service.dart';
 import 'package:paycool/utils/fab_util.dart';
 import 'package:paycool/utils/ltc_util.dart';
+import 'package:paycool/utils/number_util.dart';
 import 'package:paycool/utils/wallet_coin_address_utils/doge_util.dart';
 import './eth_util.dart';
 
@@ -41,7 +43,7 @@ import 'varuint.dart';
 import '../environments/coins.dart' as coin_list;
 import 'package:paycool/utils/tron_util/trx_generate_address_util.dart'
     as tron_address_util;
-import 'package:web3dart/crypto.dart' as crypto_web3;
+import 'package:web3dart/crypto.dart' as web3_dart;
 
 final ECDomainParameters _params = ECCurve_secp256k1();
 final BigInt _halfCurveOrder = _params.n >> 1;
@@ -52,7 +54,7 @@ hashKanbanMessage(String message) {
   List<int> messagePrefix = utf8.encode('\u0017Kanban Signed Message:\n');
   log.w('magicHashForKanban prefix=== $messagePrefix');
 
-  var messageHexToBytes = crypto_web3.hexToBytes(message);
+  var messageHexToBytes = web3_dart.hexToBytes(message);
   debugPrint('messageHexToBytes $messageHexToBytes');
 
   var messageBuffer = Uint8List(messageHexToBytes.length);
@@ -68,7 +70,7 @@ hashKanbanMessage(String message) {
   preambleBuffer.setRange(bufferStart, bufferEnd, messageHexToBytes);
 
   log.w('magicHashForKanban buffer $preambleBuffer');
-  return crypto_web3.keccak256(preambleBuffer);
+  return web3_dart.keccak256(preambleBuffer);
 }
 
 Future signHashKanbanMessage(Uint8List seed, Uint8List hash) async {
@@ -90,14 +92,14 @@ Future signHashKanbanMessage(Uint8List seed, Uint8List hash) async {
 
   final chainIdV = signature.v + 27;
   debugPrint('chainIdV=$chainIdV');
-  signature = crypto_web3.MsgSignature(signature.r, signature.s, chainIdV);
+  signature = web3_dart.MsgSignature(signature.r, signature.s, chainIdV);
 
-  final r = _padTo32(crypto_web3.intToBytes(signature.r));
-  final s = _padTo32(crypto_web3.intToBytes(signature.s));
-  final v = crypto_web3.intToBytes(BigInt.from(signature.v));
-  final hexr = crypto_web3.bytesToHex(r.toList(), include0x: true);
-  final hexs = crypto_web3.bytesToHex(s.toList(), include0x: true);
-  final hexv = crypto_web3.bytesToHex(v, include0x: true);
+  final r = _padTo32(web3_dart.intToBytes(signature.r));
+  final s = _padTo32(web3_dart.intToBytes(signature.s));
+  final v = web3_dart.intToBytes(BigInt.from(signature.v));
+  final hexr = web3_dart.bytesToHex(r.toList(), include0x: true);
+  final hexs = web3_dart.bytesToHex(s.toList(), include0x: true);
+  final hexv = web3_dart.bytesToHex(v, include0x: true);
   var rsv = {"r": hexr, "s": hexs, "v": hexv};
   return rsv;
 }
@@ -146,7 +148,7 @@ magicHashForKanban(message, network) {
   //   y++;
   // });
   log.w('magicHashForKanban buffer $buffer');
-  return crypto_web3.keccak256(buffer);
+  return web3_dart.keccak256(buffer);
 }
 
 /*----------------------------------------------------------------------
@@ -177,11 +179,11 @@ Future<Uint8List> signKanbanMessage(
 
   final chainIdV = signature.v + 27;
   debugPrint('chainIdV=$chainIdV');
-  signature = crypto_web3.MsgSignature(signature.r, signature.s, chainIdV);
+  signature = web3_dart.MsgSignature(signature.r, signature.s, chainIdV);
 
-  final r = _padTo32(crypto_web3.intToBytes(signature.r));
-  final s = _padTo32(crypto_web3.intToBytes(signature.s));
-  final v = crypto_web3.intToBytes(BigInt.from(signature.v));
+  final r = _padTo32(web3_dart.intToBytes(signature.r));
+  final s = _padTo32(web3_dart.intToBytes(signature.s));
+  final v = web3_dart.intToBytes(BigInt.from(signature.v));
 
   return uint8ListFromList(r + s + v);
   // return credential.sign(concat, chainId: chainId);
@@ -209,11 +211,11 @@ signTrxMessage(
   const messagePrefix = '\u0015TRON Signed Message:\n';
   final prefixBytes = ascii.encode(messagePrefix);
   debugPrint(
-      'part2PrefixBytes ascii bytes to hex-- ${crypto_web3.bytesToHex(prefixBytes)}');
+      'part2PrefixBytes ascii bytes to hex-- ${web3_dart.bytesToHex(prefixBytes)}');
 
   //final prefixBytes = part1PrefixBytes + part2PrefixBytes;
   debugPrint(
-      'final prefixBytes bytes ascii bytes to hex-- ${crypto_web3.bytesToHex(prefixBytes)}');
+      'final prefixBytes bytes ascii bytes to hex-- ${web3_dart.bytesToHex(prefixBytes)}');
 
   debugPrint('hash $originalMessage --  hash length ${originalMessage.length}');
 
@@ -221,13 +223,13 @@ signTrxMessage(
       //CryptoWeb3.hexToBytes(originalMessage));
       ascii.encode(originalMessage));
   debugPrint(
-      'originalMessageWithPrefix ${crypto_web3.bytesToHex(originalMessageWithPrefix)}');
+      'originalMessageWithPrefix ${web3_dart.bytesToHex(originalMessageWithPrefix)}');
 
   var hashedOriginalMessageWithPrefix =
-      crypto_web3.keccak256(originalMessageWithPrefix);
+      web3_dart.keccak256(originalMessageWithPrefix);
 
   debugPrint(
-      'hashedOriginalMessageWithPrefix ${crypto_web3.bytesToHex(hashedOriginalMessageWithPrefix)}');
+      'hashedOriginalMessageWithPrefix ${web3_dart.bytesToHex(hashedOriginalMessageWithPrefix)}');
 
   var signature = sign(hashedOriginalMessageWithPrefix, privateKey);
 
@@ -237,11 +239,11 @@ signTrxMessage(
 
   debugPrint('chainIdV $chainIdV');
 
-  signature = crypto_web3.MsgSignature(signature.r, signature.s, chainIdV);
+  signature = web3_dart.MsgSignature(signature.r, signature.s, chainIdV);
 
-  final r = _padTo32(crypto_web3.intToBytes(signature.r));
-  final s = _padTo32(crypto_web3.intToBytes(signature.s));
-  var v = crypto_web3.intToBytes(BigInt.from(signature.v));
+  final r = _padTo32(web3_dart.intToBytes(signature.r));
+  final s = _padTo32(web3_dart.intToBytes(signature.s));
+  var v = web3_dart.intToBytes(BigInt.from(signature.v));
 
   var rsv = r + s + v;
   debugPrint('rsv  $rsv');
@@ -268,14 +270,14 @@ List<Uint8List> signTrxTx(
 
   debugPrint('chainIdV $chainIdV');
   //final chainIdV = signature.v;
-  signature = crypto_web3.MsgSignature(signature.r, signature.s, chainIdV);
+  signature = web3_dart.MsgSignature(signature.r, signature.s, chainIdV);
 
   //debugPrint('chainIdVchainIdVchainIdV==' + chainIdV.toString());
   //debugPrint('signature.v====');
   //debugPrint(signature.v);
-  final r = _padTo32(crypto_web3.intToBytes(signature.r));
-  final s = _padTo32(crypto_web3.intToBytes(signature.s));
-  var v = crypto_web3.intToBytes(BigInt.from(signature.v));
+  final r = _padTo32(web3_dart.intToBytes(signature.r));
+  final s = _padTo32(web3_dart.intToBytes(signature.s));
+  var v = web3_dart.intToBytes(BigInt.from(signature.v));
 
   if (signature.v == 0) {
     v = Uint8List.fromList([0].toList());
@@ -353,10 +355,10 @@ Future signedBitcoinMessage(String originalMessage, String wif) async {
 }
 */
 
-crypto_web3.MsgSignature sign(Uint8List messageHash, Uint8List privateKey) {
+web3_dart.MsgSignature sign(Uint8List messageHash, Uint8List privateKey) {
   final digest = SHA256Digest();
   final signer = ECDSASigner(null, HMac(digest, 64));
-  final key = ECPrivateKey(crypto_web3.bytesToInt(privateKey), _params);
+  final key = ECPrivateKey(NumberUtil.decodeBigIntV1(privateKey), _params);
 
   signer.init(true, PrivateKeyParameter(key));
   var sig = signer.generateSignature(messageHash) as ECSignature;
@@ -379,7 +381,7 @@ crypto_web3.MsgSignature sign(Uint8List messageHash, Uint8List privateKey) {
   }
 
   final publicKey =
-      crypto_web3.bytesToInt(crypto_web3.privateKeyBytesToPublic(privateKey));
+      NumberUtil.decodeBigIntV1(web3_dart.privateKeyBytesToPublic(privateKey));
   debugPrint("publicKey: $publicKey");
 
   //Implementation for calculating v naively taken from there, I don't understand
@@ -400,7 +402,7 @@ crypto_web3.MsgSignature sign(Uint8List messageHash, Uint8List privateKey) {
         'Could not construct a recoverable key. This should never happen');
   }
 
-  return crypto_web3.MsgSignature(sig.r, sig.s, recId);
+  return web3_dart.MsgSignature(sig.r, sig.s, recId);
 }
 
 BigInt? _recoverFromSignature(
@@ -418,7 +420,7 @@ BigInt? _recoverFromSignature(
   final R = _decompressKey(x, (recId & 1) == 1, params.curve);
   if (!(R! * n)!.isInfinity) return null;
 
-  final e = crypto_web3.bytesToInt(msg);
+  final e = NumberUtil.decodeBigIntV1(msg);
 
   final eInv = (BigInt.zero - e) % n;
   final rInv = sig.r.modInverse(n);
@@ -428,7 +430,7 @@ BigInt? _recoverFromSignature(
   final q = (params.G * eInvrInv)! + (R * srInv);
 
   final bytes = q!.getEncoded(false);
-  return crypto_web3.bytesToInt(bytes.sublist(1));
+  return NumberUtil.decodeBigIntV1(bytes.sublist(1));
 }
 
 Uint8List uint8ListFromList(List<int> data) {
@@ -440,7 +442,7 @@ Uint8List uint8ListFromList(List<int> data) {
 ECPoint? _decompressKey(BigInt xBN, bool yBit, ECCurve c) {
   List<int> x9IntegerToBytes(BigInt s, int qLength) {
     //https://github.com/bcgit/bc-java/blob/master/core/src/main/java/org/bouncycastle/asn1/x9/X9IntegerConverter.java#L45
-    final bytes = crypto_web3.intToBytes(s);
+    final bytes = web3_dart.intToBytes(s);
 
     if (qLength < bytes.length) {
       return bytes.sublist(0, bytes.length - qLength);
@@ -464,8 +466,8 @@ ECPoint? _decompressKey(BigInt xBN, bool yBit, ECCurve c) {
 }
 
 Uint8List _padTo32(Uint8List data) {
-  assert(data.length <= 32);
   if (data.length == 32) return data;
+  assert(data.length <= 32);
 
   // todo there must be a faster way to do this?
   return Uint8List(32)..setRange(32 - data.length, 32, data);
@@ -492,14 +494,14 @@ Future<Uint8List> signBtcMessageWith(originalMessage, Uint8List privateKey,
 
   //debugPrint('signature.vsignature.vsignature.v=' + signature.v.toString());
   final chainIdV = signature.v;
-  signature = crypto_web3.MsgSignature(signature.r, signature.s, chainIdV);
+  signature = web3_dart.MsgSignature(signature.r, signature.s, chainIdV);
 
   //debugPrint('chainIdVchainIdVchainIdV==' + chainIdV.toString());
   //debugPrint('signature.v====');
   //debugPrint(signature.v);
-  final r = _padTo32(crypto_web3.intToBytes(signature.r));
-  final s = _padTo32(crypto_web3.intToBytes(signature.s));
-  var v = crypto_web3.intToBytes(BigInt.from(signature.v));
+  final r = _padTo32(web3_dart.intToBytes(signature.r));
+  final s = _padTo32(web3_dart.intToBytes(signature.s));
+  var v = web3_dart.intToBytes(BigInt.from(signature.v));
 
   if (signature.v == 0) {
     v = Uint8List.fromList([0].toList());
@@ -531,14 +533,14 @@ Future<Uint8List> signDogeMessageWith(originalMessage, Uint8List privateKey,
 
   //debugPrint('signature.vsignature.vsignature.v=' + signature.v.toString());
   final chainIdV = signature.v;
-  signature = crypto_web3.MsgSignature(signature.r, signature.s, chainIdV);
+  signature = web3_dart.MsgSignature(signature.r, signature.s, chainIdV);
 
   //debugPrint('chainIdVchainIdVchainIdV==' + chainIdV.toString());
   //debugPrint('signature.v====');
   //debugPrint(signature.v);
-  final r = _padTo32(crypto_web3.intToBytes(signature.r));
-  final s = _padTo32(crypto_web3.intToBytes(signature.s));
-  var v = crypto_web3.intToBytes(BigInt.from(signature.v));
+  final r = _padTo32(web3_dart.intToBytes(signature.r));
+  final s = _padTo32(web3_dart.intToBytes(signature.s));
+  var v = web3_dart.intToBytes(BigInt.from(signature.v));
 
   if (signature.v == 0) {
     v = Uint8List.fromList([0].toList());
@@ -560,7 +562,7 @@ Future<Uint8List> signPersonalMessageWith(
 
   //final signature = await credential.signToSignature(concat, chainId: chainId);
 
-  var signature = sign(crypto_web3.keccak256(concat), privateKey);
+  var signature = sign(web3_dart.keccak256(concat), privateKey);
 
   // https://github.com/ethereumjs/ethereumjs-util/blob/8ffe697fafb33cefc7b7ec01c11e3a7da787fe0e/src/signature.ts#L26
   // be aware that signature.v already is recovery + 27
@@ -574,11 +576,11 @@ Future<Uint8List> signPersonalMessageWith(
    */
   final chainIdV = signature.v + 27;
   debugPrint('chainIdV=$chainIdV');
-  signature = crypto_web3.MsgSignature(signature.r, signature.s, chainIdV);
+  signature = web3_dart.MsgSignature(signature.r, signature.s, chainIdV);
 
-  final r = _padTo32(crypto_web3.intToBytes(signature.r));
-  final s = _padTo32(crypto_web3.intToBytes(signature.s));
-  final v = crypto_web3.intToBytes(BigInt.from(signature.v));
+  final r = _padTo32(web3_dart.intToBytes(signature.r));
+  final s = _padTo32(web3_dart.intToBytes(signature.s));
+  final v = web3_dart.intToBytes(BigInt.from(signature.v));
 
   // https://github.com/ethereumjs/ethereumjs-util/blob/8ffe697fafb33cefc7b7ec01c11e3a7da787fe0e/src/signature.ts#L63
   return uint8ListFromList(r + s + v);

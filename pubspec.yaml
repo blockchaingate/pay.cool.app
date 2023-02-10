@@ -1,6 +1,6 @@
 name: paycool
 description: Crypto payment application
-version: 2.3.87+134
+version: 2.3.0+1
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `pub publish`. This is preferred for private packages.
@@ -14,6 +14,7 @@ dependency_overrides:
   convert: ^3.1.0  
   bs58check: ^1.0.1
   hex: ^0.2.0
+  #web3dart: 2.3.5
 
 dependencies:
   flutter:
@@ -39,7 +40,7 @@ dependencies:
   #flutter_swiper: ^1.1.6 # don't support null safety
   flutter_treeview: ^1.0.7+1
   font_awesome_flutter: ^10.2.1
-  image_picker:
+  image_picker: ^0.8.6+1
   intl_translation: ^0.18.0
 
   launch_review: ^3.0.1
@@ -64,7 +65,7 @@ dependencies:
   tree_view: ^0.0.5 #discontinued
   url_launcher: ^6.0.10
   version: ^3.0.2
-  web3dart: null
+  web3dart:
   webview_flutter: ^4.0.2
   flutter_dotenv: 
   flutter_svg: ^2.0.0+1

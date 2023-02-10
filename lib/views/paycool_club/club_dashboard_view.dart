@@ -162,7 +162,7 @@ class ClubDashboardView extends StatelessWidget {
     return ViewModelBuilder<ClubDashboardViewModel>.reactive(
         viewModelBuilder: () => ClubDashboardViewModel(),
         onViewModelReady: (model) async {
-          model.context = context;
+          model.sharedService.context = context;
           model.init();
         },
         builder: (context, ClubDashboardViewModel model, child) {

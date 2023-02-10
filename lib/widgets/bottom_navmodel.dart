@@ -49,31 +49,31 @@ class BottomNavViewmodel extends BaseViewModel {
     });
   }
 
-  Future<int> countItemNum(_selectedIndex) async {
+  Future<int> countItemNum(selectedIndex) async {
     if (storageService.showPaycool && storageService.showPaycoolClub) {
-      return _selectedIndex;
+      return selectedIndex;
     } else if (storageService.showPaycool && !storageService.showPaycoolClub) {
-      return _selectedIndex - 1;
+      return selectedIndex - 1;
     } else if (!storageService.showPaycool && storageService.showPaycoolClub) {
-      return _selectedIndex <= 1 ? _selectedIndex : _selectedIndex - 1;
+      return selectedIndex <= 1 ? selectedIndex : selectedIndex - 1;
     } else {
-      return _selectedIndex <= 1 ? _selectedIndex - 1 : _selectedIndex - 2;
+      return selectedIndex <= 1 ? selectedIndex - 1 : selectedIndex - 2;
     }
     // return _selectedIndex;
   }
 
   Future<List<BottomNavigationBarItem>> setNavItems() async {
-    checkImageColor(num) {
+    checkImageColor(val) {
       if (storageService.showPaycool && storageService.showPaycoolClub) {
-        return num;
+        return val;
       } else if (storageService.showPaycool &&
           !storageService.showPaycoolClub) {
-        return num - 1;
+        return val - 1;
       } else if (!storageService.showPaycool &&
           storageService.showPaycoolClub) {
-        return num <= 1 ? num : num - 1;
+        return val <= 1 ? val : val - 1;
       } else {
-        return num <= 1 ? num - 1 : num - 2;
+        return val <= 1 ? val - 1 : val - 2;
       }
     }
 
