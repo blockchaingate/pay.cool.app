@@ -44,6 +44,11 @@ android {
     //     jvmTarget = '1.8'
     // }
 
+    // lintOptions{
+        //Execution failed for task ':app:lintVitalRelease'
+    //     checkReleaseBuilds false
+    // }
+
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
     }
