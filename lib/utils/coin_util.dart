@@ -12,8 +12,8 @@
 */
 
 import 'package:bip32/bip32.dart' as bip_32;
-import '../../os_packages/bitbox_flutter/lib/bitbox.dart' as bitbox;
-import '../../os_packages/bitcoin_flutter/lib/bitcoin_flutter.dart';
+import 'package:bitbox/bitbox.dart' as bitbox;
+import 'package:bitcoin_flutter/bitcoin_flutter.dart';
 import 'package:flutter/widgets.dart';
 import 'package:paycool/constants/constants.dart';
 import 'package:paycool/logger.dart';

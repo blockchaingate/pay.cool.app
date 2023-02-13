@@ -17,7 +17,7 @@ import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/coin_service.dart';
 import 'package:paycool/utils/number_util.dart';
 import 'package:paycool/utils/string_util.dart';
-import '../../os_packages/keccak/lib/keccak.dart';
+import 'package:keccak/keccak.dart';
 import 'package:hex/hex.dart';
 import 'dart:typed_data';
 import '../environments/environment.dart';

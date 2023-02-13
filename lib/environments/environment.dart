@@ -1,5 +1,4 @@
-import '../../os_packages/bitcoin_flutter/lib/bitcoin_flutter.dart'
-    as bitcoin_flutter;
+import 'package:bitcoin_flutter/bitcoin_flutter.dart' as bitcoin_flutter;
 import 'package:paycool/environments/environment_type.dart';
 import 'package:paycool/utils/ltc_util.dart';
 import 'package:paycool/utils/wallet_coin_address_utils/doge_util.dart';

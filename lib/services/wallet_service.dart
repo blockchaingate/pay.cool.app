@@ -1,6 +1,5 @@
 import 'dart:convert';
-
-import '../../os_packages/bitbox_flutter/lib/bitbox.dart' as bitbox;
+import 'package:bitbox/bitbox.dart' as bitbox;
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:flutter/material.dart';
 import 'package:overlay_support/overlay_support.dart';
@@ -37,11 +36,12 @@ import '../utils/eth_util.dart';
 import '../utils/fab_util.dart';
 import '../utils/coin_util.dart' as coin_util;
 
-import '../../os_packages/bitcoin_flutter/lib/src/utils/script.dart' as script;
+import 'package:bitcoin_flutter/src/utils/script.dart' as script;
 import '../environments/environment.dart';
 import 'package:bs58check/bs58check.dart' as bs58check;
 import 'package:decimal/decimal.dart';
-import '../../os_packages/bitcoin_flutter/lib/bitcoin_flutter.dart' as BitcoinFlutter;
+
+import 'package:bitcoin_flutter/bitcoin_flutter.dart' as bitcoin_flutter;
 import '../utils/wallet_coin_address_utils/doge_util.dart';
 import 'api_service.dart';
 import 'coin_service.dart';
@@ -522,7 +522,7 @@ class WalletService {
     //  var pubKey = node.publicKey;
     //  log.w('pub key $pubKey -- length ${pubKey.length}');
     var uncompressedPubKey =
-        BitcoinFlutter.ECPair.fromPrivateKey(privKey!, compressed: false)
+        bitcoin_flutter.ECPair.fromPrivateKey(privKey!, compressed: false)
             .publicKey;
 
     if (uncompressedPubKey!.length == 65) {
@@ -621,8 +621,9 @@ class WalletService {
     //  log.w('coin type $coinType');
     var node = root.derivePath("m/44'/3'/0'/0/$index");
 
-    String? address1 = BitcoinFlutter.P2PKH(
-            data: BitcoinFlutter.PaymentData(pubkey: node.publicKey),
+    String? address1 = bitcoin_flutter
+        .P2PKH(
+            data: bitcoin_flutter.PaymentData(pubkey: node.publicKey),
             network: dogeCoinMainnetNetwork)
         .data
         .address;
@@ -1507,6 +1508,7 @@ class WalletService {
         isTrxUsdt: isTrxUsdt!,
         tickerName: walletInfo.tickerName!,
         isBroadcast: isBroadcast!,
+        gasLimit: options['gasLimit'],
         contractAddressTronUsdt: options['contractAddress']);
 
     log.w('depositTron signed raw tx $rawTxRes');
@@ -1778,7 +1780,7 @@ class WalletService {
       int satoshisPerBytes,
       addressList,
       getTransFeeOnly) async {
-    final txb = BitcoinFlutter.TransactionBuilder(
+    final txb = bitcoin_flutter.TransactionBuilder(
         network: environment["chains"]["BTC"]["network"]);
     final root = bip32.BIP32.fromSeed(seed);
     var totalInput = 0;
@@ -1902,7 +1904,7 @@ class WalletService {
 
       for (var i = 0; i < receivePrivateKeyArr.length; i++) {
         var privateKey = receivePrivateKeyArr[i];
-        var alice = BitcoinFlutter.ECPair.fromPrivateKey(privateKey,
+        var alice = bitcoin_flutter.ECPair.fromPrivateKey(privateKey,
             compressed: true, network: environment["chains"]["BTC"]["network"]);
 
         txb.sign(vin: i, keyPair: alice);
@@ -2073,7 +2075,7 @@ class WalletService {
       }
       var amountNum = BigInt.parse(NumberUtil.toBigInt(amount, 8)).toInt();
       amountNum += (2 * 34 + 10) * satoshisPerBytes;
-      final txb = BitcoinFlutter.TransactionBuilder(
+      final txb = bitcoin_flutter.TransactionBuilder(
           network: environment["chains"]["BTC"]["network"]);
       // txb.setVersion(1);
 
@@ -2158,7 +2160,7 @@ class WalletService {
       txb.addOutput(toAddress, output2);
       for (var i = 0; i < receivePrivateKeyArr.length; i++) {
         var privateKey = receivePrivateKeyArr[i];
-        var alice = BitcoinFlutter.ECPair.fromPrivateKey(privateKey,
+        var alice = bitcoin_flutter.ECPair.fromPrivateKey(privateKey,
             compressed: true, network: environment["chains"]["BTC"]["network"]);
         txb.sign(vin: i, keyPair: alice);
       }
@@ -2286,7 +2288,7 @@ class WalletService {
       }
       var amountNum = BigInt.parse(NumberUtil.toBigInt(amount, 8)).toInt();
       amountNum += (2 * 34 + 10) * satoshisPerBytes;
-      final txb = BitcoinFlutter.TransactionBuilder(
+      final txb = bitcoin_flutter.TransactionBuilder(
           network: environment["chains"]["LTC"]["network"]);
 
       for (var i = 0; i < addressIndexList.length; i++) {
@@ -2360,7 +2362,7 @@ class WalletService {
       txb.addOutput(toAddress, output2);
       for (var i = 0; i < receivePrivateKeyArr.length; i++) {
         var privateKey = receivePrivateKeyArr[i];
-        var alice = BitcoinFlutter.ECPair.fromPrivateKey(privateKey,
+        var alice = bitcoin_flutter.ECPair.fromPrivateKey(privateKey,
             compressed: true, network: environment["chains"]["LTC"]["network"]);
         txb.sign(vin: i, keyPair: alice);
       }
@@ -2387,7 +2389,7 @@ class WalletService {
       }
       var amountNum = BigInt.parse(NumberUtil.toBigInt(amount, 8)).toInt();
       amountNum += (2 * 34 + 10) * satoshisPerBytes;
-      final txb = BitcoinFlutter.TransactionBuilder(
+      final txb = bitcoin_flutter.TransactionBuilder(
           network: environment["chains"]["DOGE"]["network"]);
 
       for (var i = 0; i < addressIndexList.length; i++) {
@@ -2467,7 +2469,7 @@ class WalletService {
 
       for (var i = 0; i < receivePrivateKeyArr.length; i++) {
         var privateKey = receivePrivateKeyArr[i];
-        var alice = BitcoinFlutter.ECPair.fromPrivateKey(privateKey,
+        var alice = bitcoin_flutter.ECPair.fromPrivateKey(privateKey,
             compressed: true,
             network: environment["chains"]["DOGE"]["network"]);
         txb.sign(vin: i, keyPair: alice);
@@ -2582,7 +2584,7 @@ class WalletService {
           txHash = res['txHash'];
           errMsg = res['errMsg'];
         } else {
-          var tx = BitcoinFlutter.Transaction.fromHex(txHex);
+          var tx = bitcoin_flutter.Transaction.fromHex(txHex);
           txHash = '0x${tx.getId()}';
         }
       }
@@ -2661,7 +2663,7 @@ class WalletService {
           txHash = res['txHash'];
           errMsg = res['errMsg'];
         } else {
-          var tx = BitcoinFlutter.Transaction.fromHex(txHex);
+          var tx = bitcoin_flutter.Transaction.fromHex(txHex);
           txHash = '0x${tx.getId()}';
         }
       }

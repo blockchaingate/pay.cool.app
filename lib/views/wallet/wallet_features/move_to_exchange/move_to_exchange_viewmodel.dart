@@ -317,7 +317,7 @@ class MoveToExchangeViewModel extends BaseViewModel {
     finalAmount = await amountAfterFee();
 
     if (amount == null ||
-        finalAmount > walletInfo.availableBalance ||
+        finalAmount > walletInfo.availableBalance! ||
         amount == 0 ||
         amount.isNegative) {
       log.e('amount $amount --- wallet bal: ${walletInfo.availableBalance}');
@@ -358,7 +358,7 @@ class MoveToExchangeViewModel extends BaseViewModel {
       log.e('amount $amount --- wallet bal: ${walletInfo.availableBalance}');
       bool isCorrectAmount = true;
       var totalAmount = amount + double.parse(trxGasValueTextController.text);
-      if (totalAmount > walletInfo.availableBalance) {
+      if (totalAmount > walletInfo.availableBalance!) {
         isCorrectAmount = false;
       }
       if (!isCorrectAmount) {

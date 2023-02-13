@@ -4,7 +4,7 @@ import 'package:bs58check/bs58check.dart' as bs58check;
 // import 'package:bip32/src/utils/ecurve.dart' as ecc;
 // import 'package:pointycastle/src/utils.dart';
 import 'package:bip32/bip32.dart' as bip32;
-import '../../../os_packages/bitcoin_flutter/lib/bitcoin_flutter.dart' as BitcoinFlutter;
+import 'package:bitcoin_flutter/bitcoin_flutter.dart' as BitcoinFlutter;
 import 'package:web3dart/crypto.dart' as CryptoWeb3;
 
 import '../../service_locator.dart';
@@ -16,7 +16,7 @@ generateTrxPrivKey(String mnemonic) {
   var root = walletService.generateBip32Root(seed);
 
   String ct = '195';
-  bip32.BIP32 node = root.derivePath("m/44'/" + ct + "'/0'/0/" + 0.toString());
+  bip32.BIP32 node = root.derivePath("m/44'/$ct'/0'/0/${0}");
 
   var privKey = node.privateKey;
   return privKey;
@@ -27,7 +27,7 @@ generateTrxPrivKeyBySeed(seed) {
   var root = walletService.generateBip32Root(seed);
 
   String ct = '195';
-  bip32.BIP32 node = root.derivePath("m/44'/" + ct + "'/0'/0/" + 0.toString());
+  bip32.BIP32 node = root.derivePath("m/44'/$ct'/0'/0/${0}");
 
   var privKey = node.privateKey;
   return privKey;

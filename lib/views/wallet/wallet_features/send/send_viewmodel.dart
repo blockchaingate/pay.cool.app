@@ -345,7 +345,7 @@ class SendViewModel extends BaseViewModel {
             .generateTrxTransactionContract(
                 contractAddressTronUsdt: ca,
                 privateKey: privateKey,
-                fromAddr: walletInfo.address,
+                fromAddr: walletInfo.address!,
                 gasLimit: int.parse(trxGasValueTextController.text),
                 toAddr: toAddress,
                 amount: amount.toDouble(),
@@ -689,7 +689,7 @@ class SendViewModel extends BaseViewModel {
       } else if (walletInfo.tickerName == 'TRX') {
         var total =
             amount.toDouble() + double.parse(trxGasValueTextController.text);
-        if (total <= walletInfo.availableBalance) {
+        if (total <= walletInfo.availableBalance!) {
           checkSendAmount = true;
         } else {
           checkSendAmount = false;
@@ -699,7 +699,7 @@ class SendViewModel extends BaseViewModel {
 
         trxBalance = await getTrxBalance();
         log.w('checkAmount trx bal $trxBalance');
-        if (amount.toDouble() <= walletInfo.availableBalance &&
+        if (amount.toDouble() <= walletInfo.availableBalance! &&
             trxBalance >= double.parse(trxGasValueTextController.text)) {
           checkSendAmount = true;
         } else {

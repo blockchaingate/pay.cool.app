@@ -11,7 +11,7 @@
 *----------------------------------------------------------------------
 */
 
-import '../../os_packages/bitcoin_flutter/lib/bitcoin_flutter.dart';
+import 'package:bitcoin_flutter/bitcoin_flutter.dart';
 import 'package:http/src/response.dart';
 import '../environments/environment.dart';
 import 'custom_http_util.dart';

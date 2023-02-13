@@ -17,7 +17,7 @@ import 'package:paycool/constants/constants.dart';
 import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/config_service.dart';
 import 'dart:convert';
-import '../../os_packages/bitcoin_flutter/lib/bitcoin_flutter.dart' as BitcoinFlutter;
+import 'package:bitcoin_flutter/bitcoin_flutter.dart' as BitcoinFlutter;
 import 'package:paycool/services/shared_service.dart';
 import 'package:paycool/utils/custom_http_util.dart';
 

@@ -558,7 +558,7 @@ class CoinListBottomSheetFloatingActionButton extends StatelessWidget {
           decoration: roundedBoxDecoration(color: secondaryColor),
           //  width: 400,
           //  height: 45,
-          padding: EdgeInsets.all(15),
+          padding: const EdgeInsets.all(15),
           child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
             Padding(
               padding: const EdgeInsets.only(right: 5.0),
