@@ -44,9 +44,9 @@ class RedepositView extends StatelessWidget {
             '${FlutterI18n.translate(context, "redeposit")}  ${walletInfo.tickerName}  ${FlutterI18n.translate(context, "toExchange")}',
             style: headText4,
           ),
-          backgroundColor: const Color(0XFF1f2233),
+          // backgroundColor: const Color(0XFF1f2233),
         ),
-        backgroundColor: const Color(0xFF1F2233),
+        //  backgroundColor: const Color(0xFF1F2233),
         body: Container(
           padding: const EdgeInsets.all(20.0),
           child: ListView(

@@ -49,7 +49,6 @@ class NumberUtil {
   static Decimal decimalLimiter(Decimal input, {int decimalPrecision = 2}) {
     var finalRes = Constants.decimalZero;
 
-    input = Constants.decimalZero;
     if (input != Constants.decimalZero) {
       var p = pow(10, decimalPrecision);
       var t = Decimal.fromInt(p.toInt());

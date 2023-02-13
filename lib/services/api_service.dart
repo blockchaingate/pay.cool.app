@@ -180,7 +180,7 @@ class ApiService {
       if (json != null) {
         log.w('getWalletTransactionHistory json $json}');
         if (json['success']) {
-          //  log.e('getTransactionHistoryEvents json ${json['data']}');
+          //  log.e('getWalletTransactionHistory json ${json['data']}');
           var data = json['data'] as List;
 
           transactionHistory =
@@ -231,7 +231,7 @@ class ApiService {
             List transactionsInside = element['transactions'] as List;
             // It has only 2 objects inside
             for (var element in transactionsInside) {
-              String chain = element['chain'];
+              String chain = element['chain'] ?? '';
               if (chain == 'KANBAN') {
                 kanbanTxStatus = element['status'];
                 if (element['transactionId'] != null) {
@@ -247,7 +247,7 @@ class ApiService {
               //     ticker == 'FAB' ||
               //     ticker == 'BCH')
               else {
-                tickerChainTxStatus = element['status'];
+                tickerChainTxStatus = element['status'] ?? '';
                 chainName = chain;
                 if (element['transactionId'] != null) {
                   tickerTxId = element['transactionId'];

@@ -86,7 +86,8 @@ class ClubPackageCheckoutViewModel extends FutureViewModel {
     var walletUtil = WalletUtil();
     String walletAddress = '';
     await walletUtil
-        .getWalletInfoObjFromWalletBalance(WalletBalance(coin: ticker))
+        .getWalletInfoObjFromWalletBalance(WalletBalance(coin: ticker),
+            requiredAddressOnly: true)
         .then((wallet) {
       walletAddress = wallet.address.toString();
     });
@@ -132,7 +133,7 @@ class ClubPackageCheckoutViewModel extends FutureViewModel {
 
     var res;
     var seed = await walletService.getSeedDialog(context!);
-    if (seed == null) {
+    if (seed.isEmpty) {
       setBusy(false);
       return;
     }

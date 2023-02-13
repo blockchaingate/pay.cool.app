@@ -272,15 +272,12 @@ class SendViewModel extends BaseViewModel {
         tokenType = 'FAB';
       }
 
-      if ((tickerName != null) &&
-          (tickerName != '') &&
-          (tokenType != null) &&
-          (tokenType != '')) {
+      if ((tickerName.isNotEmpty) && (tokenType.isNotEmpty)) {
         int decimal = 0;
         String contractAddr =
             environment["addresses"]["smartContract"][tickerName];
 
-        if (contractAddr == null) {
+        if (contractAddr.isNotEmpty) {
           await tokenListDatabaseService
               .getByTickerName(tickerName)
               .then((token) {

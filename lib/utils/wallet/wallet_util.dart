@@ -64,8 +64,8 @@ class WalletUtil {
   };
 
   // get wallet info object with address using single wallet balance
-  Future<WalletInfo> getWalletInfoObjFromWalletBalance(
-      WalletBalance wallet) async {
+  Future<WalletInfo> getWalletInfoObjFromWalletBalance(WalletBalance wallet,
+      {bool requiredAddressOnly = false}) async {
     //FocusScope.of(context).requestFocus(FocusNode());
 
     // take the tickername and then get the coin type
@@ -109,17 +109,23 @@ class WalletUtil {
       }
       break;
     }
+    var walletInfo = WalletInfo();
+    if (requiredAddressOnly) {
+      walletInfo = WalletInfo(address: walletAddress);
+    } else {
+      wallet.balance ??= 0.0;
+      wallet.usdValue ??= UsdValue(usd: 0.0);
 
-    // assign address from local DB to walletinfo object
-    var walletInfo = WalletInfo(
-        tickerName: wallet.coin,
-        availableBalance: wallet.balance,
-        tokenType: tokenType,
-        usdValue: wallet.balance! * wallet.usdValue!.usd!.toDouble(),
-        inExchange: wallet.unlockedExchangeBalance,
-        address: walletAddress,
-        name: coinName);
-
+      // assign address from local DB to walletinfo object
+      walletInfo = WalletInfo(
+          tickerName: wallet.coin,
+          availableBalance: wallet.balance,
+          tokenType: tokenType,
+          usdValue: wallet.balance! * wallet.usdValue!.usd!.toDouble(),
+          inExchange: wallet.unlockedExchangeBalance,
+          address: walletAddress,
+          name: coinName);
+    }
     log.w('routeWithWalletInfoArgs walletInfo ${walletInfo.toJson()}');
     return walletInfo;
   }
