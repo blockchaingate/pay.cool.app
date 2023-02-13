@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:majascan/majascan.dart';
+import 'package:qr_code_utils/qr_code_utils.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
@@ -208,8 +208,7 @@ class PayCoolViewmodel extends FutureViewModel {
       log.w(_qrcodeFile);
     }
     try {
-      var barcodeScanData;
-      //await QrCodeToolsPlugin.decodeFrom(_qrcodeFile);
+      var barcodeScanData = await QrCodeUtils.decodeFrom(_qrcodeFile);
       log.i(barcodeScanData);
       orderDetails(barcodeScanData: barcodeScanData);
     } catch (err) {
@@ -355,7 +354,7 @@ class PayCoolViewmodel extends FutureViewModel {
     }
     //displayAbiHexinReadableFormat(scanToPayModel.datAbiHex);
     try {
-      var seed = await walletService.getSeedDialog(context!);
+      var seed = await walletService.getSeedDialog(context);
       var res;
       for (var param in rewardInfoModel!.params!) {
         res = await paycoolService.signSendTx(seed, param.data!, param.to!);
@@ -1123,10 +1122,10 @@ class PayCoolViewmodel extends FutureViewModel {
 
       String? barcodeScanData = '';
       payOrder = PayOrder();
-      barcodeScanData = await BarcodeUtils().majaScan(context!);
+      barcodeScanData = await BarcodeUtils().majaScan(context);
 
       if (addressType == Constants.ReferralAddressText) {
-        debugPrint('in 1st if-- barcode res-- ${barcodeScanData}');
+        debugPrint('in 1st if-- barcode res-- $barcodeScanData');
 
         referralController.text = barcodeScanData!;
       }
@@ -1137,7 +1136,7 @@ class PayCoolViewmodel extends FutureViewModel {
           log.w('setbusy 1.3 $isBusy');
         } else if (barcodeScanData == '-1') {
           sharedService.sharedSimpleNotification(
-            FlutterI18n.translate(context!, "scanCancelled"),
+            FlutterI18n.translate(context, "scanCancelled"),
           );
           setBusy(false);
           return;
@@ -1160,11 +1159,11 @@ class PayCoolViewmodel extends FutureViewModel {
     } on FormatException {
       log.e('scan barcode func: FormatException');
       sharedService.sharedSimpleNotification(
-        FlutterI18n.translate(context!, "scanCancelled"),
+        FlutterI18n.translate(context, "scanCancelled"),
       );
     } catch (e) {
       sharedService.sharedSimpleNotification(
-          FlutterI18n.translate(context!, "unknownError"),
+          FlutterI18n.translate(context, "unknownError"),
           isError: true);
       log.e('barcode scan catch $e');
     }

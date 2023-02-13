@@ -11,6 +11,7 @@
 *----------------------------------------------------------------------
 */
 
+import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 
 import 'package:paycool/constants/colors.dart';
@@ -200,33 +201,33 @@ class WalletDashboardView extends StatelessWidget {
           ),
         ),
 
-        // Container(
-        //     child: Swiper(
-        //   itemBuilder: (BuildContext context, int index) {
-        //     if (index == 0) {
-        //       return TotalBalanceCardWidget(model: model);
-        //     } else {
-        //       return TotalBalanceCardWidget2(model: model);
-        //     }
+        Container(
+            child: Swiper(
+          itemBuilder: (BuildContext context, int index) {
+            if (index == 0) {
+              return TotalBalanceCardWidget(model: model);
+            } else {
+              return TotalBalanceCardWidget2(model: model);
+            }
 
-        //     // return TotalBalanceCardWidget(
-        //     //   logo: logoWidget,
-        //     //   title: titleWidget,
-        //     // );
-        //   },
-        //   itemCount: 2,
-        //   itemWidth: 500,
-        //   itemHeight: 180.0,
-        //   layout: SwiperLayout.TINDER,
-        //   pagination: const SwiperPagination(
-        //     margin: EdgeInsets.fromLTRB(5, 10, 5, 0),
-        //     builder: DotSwiperPaginationBuilder(
-        //       color: Color(0xccffffff),
-        //     ),
-        //   ),
-        //   autoplay: true,
-        //   autoplayDelay: 7000,
-        // )),
+            // return TotalBalanceCardWidget(
+            //   logo: logoWidget,
+            //   title: titleWidget,
+            // );
+          },
+          itemCount: 2,
+          itemWidth: 500,
+          itemHeight: 180.0,
+          layout: SwiperLayout.TINDER,
+          pagination: const SwiperPagination(
+            margin: EdgeInsets.fromLTRB(5, 10, 5, 0),
+            builder: DotSwiperPaginationBuilder(
+              color: Color(0xccffffff),
+            ),
+          ),
+          autoplay: true,
+          autoplayDelay: 7000,
+        )),
 
         //Refresh BalancesV2
         Positioned(
