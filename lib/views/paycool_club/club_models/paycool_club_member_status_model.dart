@@ -1,12 +1,12 @@
 class PayCoolClubMemberStatusModel {
-  String id;
-  String walletAdd;
-  int amount;
-  String currency;
-  String dateCreated;
-  int status;
-  int v;
-  int campaginId;
+  String? id;
+  String? walletAdd;
+  int? amount;
+  String? currency;
+  String? dateCreated;
+  int? status;
+  int? v;
+  int? campaginId;
 
   PayCoolClubMemberStatusModel(
       {this.id,

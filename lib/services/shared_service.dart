@@ -11,7 +11,6 @@
 *----------------------------------------------------------------------
 */
 import 'dart:io';
-import 'dart:typed_data';
 import 'dart:ui';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:overlay_support/overlay_support.dart';
@@ -40,7 +39,7 @@ import 'local_storage_service.dart';
 import 'navigation_service.dart';
 
 class SharedService {
-  BuildContext context;
+  late BuildContext context;
   final log = getLogger('SharedService');
   final storageService = locator<LocalStorageService>();
   NavigationService navigationService = locator<NavigationService>();
@@ -172,8 +171,8 @@ class SharedService {
 --------------------------------------------------- */
 
   Decoration circularGradientBoxDecoration() {
-    return const BoxDecoration(
-      borderRadius: BorderRadius.all(Radius.circular(25)),
+    return BoxDecoration(
+      borderRadius: const BorderRadius.all(Radius.circular(25)),
       gradient: LinearGradient(
         colors: [Colors.redAccent, Colors.yellow],
         begin: FractionalOffset.topLeft,
@@ -183,7 +182,7 @@ class SharedService {
   }
 
   Decoration rectangularGradientBoxDecoration() {
-    return const BoxDecoration(
+    return BoxDecoration(
       // borderRadius: BorderRadius.all(Radius.circular(25)),
       gradient: LinearGradient(
         colors: [Colors.redAccent, Colors.yellow],
@@ -211,8 +210,8 @@ class SharedService {
 
   Widget stackFullScreenLoadingIndicator() {
     return Container(
-        height: UIHelper.getScreenFullHeight(context),
-        width: UIHelper.getScreenFullWidth(context),
+        height: UIHelper.getScreenFullHeight(context!),
+        width: UIHelper.getScreenFullWidth(context!),
         color: Colors.transparent,
         child: loadingIndicator());
   }
@@ -283,7 +282,7 @@ class SharedService {
 
   String getCurrentRouteName(BuildContext context) {
     String routeName = '';
-    routeName = ModalRoute.of(context).settings.name;
+    routeName = ModalRoute.of(context)!.settings.name!;
     debugPrint('$routeName in bottom Nav');
     return routeName;
   }
@@ -305,64 +304,63 @@ class SharedService {
     }
   }
 
-  Future<bool> closeApp() async {
+  Future<bool?> closeApp() async {
     return showDialog(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                elevation: 20,
-                backgroundColor: walletCardColor.withOpacity(0.85),
-                titleTextStyle: headText5.copyWith(fontWeight: FontWeight.bold),
-                contentTextStyle: const TextStyle(color: white),
-                content: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    // add here cupertino widget to check in these small widgets first then the entire app
-                    '${FlutterI18n.translate(context, "closeTheApp")}?',
-                    style: const TextStyle(fontSize: 14),
-                    textAlign: TextAlign.center,
+        context: context!,
+        builder: (context) {
+          return AlertDialog(
+            elevation: 20,
+            backgroundColor: walletCardColor.withOpacity(0.85),
+            titleTextStyle: headText5.copyWith(fontWeight: FontWeight.bold),
+            contentTextStyle: const TextStyle(color: white),
+            content: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                // add here cupertino widget to check in these small widgets first then the entire app
+                '${FlutterI18n.translate(context, "closeTheApp")}?',
+                style: const TextStyle(fontSize: 14),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            actions: <Widget>[
+              UIHelper.verticalSpaceSmall,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    style: ButtonStyle(
+                        elevation: MaterialStateProperty.all(5.0),
+                        backgroundColor:
+                            MaterialStateProperty.all(secondaryColor),
+                        shape: buttonRoundShape(secondaryColor)),
+                    child: Text(
+                      FlutterI18n.translate(context, "no"),
+                      style: headText5,
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop(false);
+                    },
                   ),
-                ),
-                actions: <Widget>[
+                  UIHelper.horizontalSpaceMedium,
+                  ElevatedButton(
+                    style: ButtonStyle(
+                        elevation: MaterialStateProperty.all(5.0),
+                        backgroundColor:
+                            MaterialStateProperty.all(primaryColor),
+                        shape: buttonRoundShape(primaryColor)),
+                    child: Text(FlutterI18n.translate(context, "yes"),
+                        style: const TextStyle(color: white, fontSize: 12)),
+                    onPressed: () {
+                      SystemChannels.platform
+                          .invokeMethod('SystemNavigator.pop');
+                    },
+                  ),
                   UIHelper.verticalSpaceSmall,
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      ElevatedButton(
-                        style: ButtonStyle(
-                            elevation: MaterialStateProperty.all(5.0),
-                            backgroundColor:
-                                MaterialStateProperty.all(secondaryColor),
-                            shape: buttonRoundShape(secondaryColor)),
-                        child: Text(
-                          FlutterI18n.translate(context, "no"),
-                          style: headText5,
-                        ),
-                        onPressed: () {
-                          Navigator.of(context).pop(false);
-                        },
-                      ),
-                      UIHelper.horizontalSpaceMedium,
-                      ElevatedButton(
-                        style: ButtonStyle(
-                            elevation: MaterialStateProperty.all(5.0),
-                            backgroundColor:
-                                MaterialStateProperty.all(primaryColor),
-                            shape: buttonRoundShape(primaryColor)),
-                        child: Text(FlutterI18n.translate(context, "yes"),
-                            style: const TextStyle(color: white, fontSize: 12)),
-                        onPressed: () {
-                          SystemChannels.platform
-                              .invokeMethod('SystemNavigator.pop');
-                        },
-                      ),
-                      UIHelper.verticalSpaceSmall,
-                    ],
-                  ),
                 ],
-              );
-            }) ??
-        false;
+              ),
+            ],
+          );
+        });
   }
 
 /*-------------------------------------------------------------------------------------
@@ -370,18 +368,18 @@ class SharedService {
 -------------------------------------------------------------------------------------*/
   alertDialog(String title, String message,
       {bool isWarning = false,
-      String path,
+      String? path,
       dynamic arguments,
       bool isCopyTxId = false,
       bool isDismissible = true,
       bool isUpdate = false,
       bool isLater = false,
       bool isWebsite = false,
-      String stringData}) async {
+      String? stringData}) async {
     bool checkBoxValue = false;
     showDialog(
         barrierDismissible: isDismissible,
-        context: context,
+        context: context!,
         builder: (context) {
           return AlertDialog(
             titlePadding: const EdgeInsets.all(0),
@@ -420,7 +418,7 @@ class SharedService {
                     ),
                     // Do not show checkbox and text does not require to show on all dialogs
                     Visibility(
-                      visible: isWarning ?? true,
+                      visible: isWarning,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
@@ -429,8 +427,8 @@ class SharedService {
                                   MaterialTapTargetSize.shrinkWrap,
                               value: checkBoxValue,
                               activeColor: primaryColor,
-                              onChanged: (bool value) async {
-                                setState(() => checkBoxValue = value);
+                              onChanged: (bool? value) async {
+                                setState(() => checkBoxValue = value!);
 
                                 /// user click on do not show which is negative means false
                                 /// so to make it work it needs to be opposite of the orginal value
@@ -519,6 +517,10 @@ class SharedService {
                                     padding: MaterialStateProperty.all(
                                         const EdgeInsets.all(5)),
                                   ),
+                                  onPressed: () {
+                                    // launchURL(stringData);
+                                    Navigator.of(context).pop(false);
+                                  },
                                   child: Center(
                                     child: Text(
                                       FlutterI18n.translate(context, "website"),
@@ -526,10 +528,6 @@ class SharedService {
                                           color: Colors.white, fontSize: 12),
                                     ),
                                   ),
-                                  onPressed: () {
-                                    // launchURL(stringData);
-                                    Navigator.of(context).pop(false);
-                                  },
                                 )
                               : Container(),
                           UIHelper.horizontalSpaceSmall,
@@ -537,7 +535,7 @@ class SharedService {
                               ? TextButton(
                                   style: ButtonStyle(
                                     backgroundColor:
-                                        MaterialStateProperty.all<Color>(green),
+                                        MaterialStateProperty.all(green),
                                     padding: MaterialStateProperty.all(
                                         const EdgeInsets.all(5)),
                                   ),
@@ -572,10 +570,10 @@ class SharedService {
     String lang = '';
 
     lang = storageService.language;
-    if (lang == null || lang == '') {
+    if (lang == '') {
       debugPrint('language empty');
     } else {
-      Navigator.pushNamed(context, '/walletSetup');
+      Navigator.pushNamed(context!, '/walletSetup');
     }
   }
 
@@ -620,13 +618,13 @@ class SharedService {
                   Save and Share PNG
   --------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
-  Future<Uint8List> capturePng({GlobalKey globalKey}) async {
+  Future<Uint8List?> capturePng({GlobalKey? globalKey}) async {
     try {
-      RenderRepaintBoundary boundary =
-          globalKey.currentContext.findRenderObject();
+      RenderRepaintBoundary boundary = globalKey!.currentContext!
+          .findRenderObject() as RenderRepaintBoundary;
       var image = await boundary.toImage(pixelRatio: 3.0);
-      ByteData byteData = await image.toByteData(format: ImageByteFormat.png);
-      Uint8List pngBytes = byteData.buffer.asUint8List();
+      ByteData? byteData = await image.toByteData(format: ImageByteFormat.png);
+      Uint8List pngBytes = byteData!.buffer.asUint8List();
       return pngBytes;
     } catch (e) {
       return null;

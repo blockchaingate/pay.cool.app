@@ -1,15 +1,14 @@
 class PaginationModel {
   int pageNumber;
-  final int pageSize = 10;
+  int pageSize;
   int totalPages;
   List pages;
 
-  PaginationModel({int pageNumber, int pageSize, int totalPages, List pages}) {
-    this.pageNumber = pageNumber ?? 1;
-
-    this.totalPages = totalPages ?? 0;
-    this.pages = pages ?? [];
-  }
+  PaginationModel(
+      {this.pageNumber = 1,
+      this.pageSize = 10,
+      this.totalPages = 0,
+      this.pages = const []});
 
   @override
   String toString() {

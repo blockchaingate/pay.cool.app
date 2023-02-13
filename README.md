@@ -11,3 +11,10 @@ flutter pub run flutter_launcher_icons:main
 3. flutter clean
 
 flutter pub upgrade --major-versions
+
+dart pub get
+dart analyze
+dart migrate --apply-changes
+
+
+flutter pub cache repair

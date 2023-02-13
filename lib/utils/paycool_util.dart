@@ -7,9 +7,9 @@ class PaycoolUtil {
     final storageService = locator<LocalStorageService>();
 
     if (storageService.language == 'en') {
-      return project.en;
+      return project.en!;
     } else {
-      return project.sc;
+      return project.sc!;
     }
   }
 }

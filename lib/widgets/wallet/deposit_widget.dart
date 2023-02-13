@@ -7,7 +7,11 @@ import 'package:paycool/views/wallet/wallet_dashboard_viewmodel.dart';
 //import 'package:showcaseview/showcaseview.dart';
 
 class DepositWidget extends StatelessWidget {
-  const DepositWidget({Key key, this.model, this.index, this.tickerName})
+  const DepositWidget(
+      {Key? key,
+      required this.model,
+      required this.index,
+      required this.tickerName})
       : super(key: key);
 
   final WalletDashboardViewModel model;

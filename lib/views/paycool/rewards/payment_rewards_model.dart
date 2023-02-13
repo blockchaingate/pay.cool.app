@@ -1,14 +1,14 @@
 import 'package:decimal/decimal.dart';
 
 class PaymentReward {
-  String sId;
-  String txid;
-  String category;
-  int lockedDays;
-  String rewardCoin;
-  Decimal rewardAmount;
-  String type;
-  String dateCreated;
+  String? sId;
+  String? txid;
+  String? category;
+  int? lockedDays;
+  String? rewardCoin;
+  Decimal? rewardAmount;
+  String? type;
+  String? dateCreated;
 
   PaymentReward(
       {this.sId,
@@ -47,7 +47,7 @@ class PaymentReward {
 }
 
 class PaymentRewards {
-  final List<PaymentReward> paymentRewards;
+  final List<PaymentReward>? paymentRewards;
   PaymentRewards({this.paymentRewards});
 
   factory PaymentRewards.fromJson(List<dynamic> parsedJson) {

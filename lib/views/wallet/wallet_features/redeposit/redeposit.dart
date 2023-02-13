@@ -27,12 +27,12 @@ import 'package:stacked/stacked.dart';
 class RedepositView extends StatelessWidget {
   final WalletInfo walletInfo;
 
-  const RedepositView({Key key, this.walletInfo}) : super(key: key);
+  const RedepositView({Key? key, required this.walletInfo}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<RedepositViewModel>.reactive(
-      onModelReady: (model) {
+      onViewModelReady: (model) {
         model.context = context;
         model.walletInfo = walletInfo;
       },
@@ -44,9 +44,9 @@ class RedepositView extends StatelessWidget {
             '${FlutterI18n.translate(context, "redeposit")}  ${walletInfo.tickerName}  ${FlutterI18n.translate(context, "toExchange")}',
             style: headText4,
           ),
-          backgroundColor: const Color(0XFF1f2233),
+          // backgroundColor: const Color(0XFF1f2233),
         ),
-        backgroundColor: const Color(0xFF1F2233),
+        //  backgroundColor: const Color(0xFF1F2233),
         body: Container(
           padding: const EdgeInsets.all(20.0),
           child: ListView(
@@ -75,13 +75,14 @@ class RedepositView extends StatelessWidget {
                                       ),
                                     ],
                                   ),
-                                  value: data['transactionID'],
+                                  value: data['transactionID'].toString(),
                                   groupValue: model.errDepositTransactionID,
                                   onChanged: (val) {
                                     model.setBusy(true);
-                                    model.errDepositTransactionID = val;
-                                    debugPrint('valllll=' +
-                                        model.errDepositTransactionID);
+                                    model.errDepositTransactionID =
+                                        val.toString();
+                                    debugPrint(
+                                        'valllll=${model.errDepositTransactionID}');
                                     model.setBusy(false);
                                   },
                                 ))
@@ -96,8 +97,7 @@ class RedepositView extends StatelessWidget {
                     Row(
                       children: <Widget>[
                         Text(
-                          FlutterI18n.translate(context, "walletbalance") +
-                              ' ${walletInfo.availableBalance}',
+                          '${FlutterI18n.translate(context, "walletbalance")} ${walletInfo.availableBalance}',
                           style: headText5,
                         ),
                         Padding(
@@ -105,7 +105,7 @@ class RedepositView extends StatelessWidget {
                             horizontal: 10,
                           ),
                           child: Text(
-                            walletInfo.tickerName.toUpperCase(),
+                            walletInfo.tickerName!.toUpperCase(),
                             style: headText5,
                           ),
                         )

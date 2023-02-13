@@ -5,15 +5,15 @@ import 'package:paycool/utils/string_util.dart';
 import 'package:paycool/views/paycool_club/club_projects/club_project_model.dart';
 
 class PurchasedPackageHistory {
-  String id;
-  String smartContractAddress;
-  String userAddress;
-  String txid;
-  int coinType;
-  int status;
-  Decimal amount;
-  ClubProject project;
-  String date;
+  String? id;
+  String? smartContractAddress;
+  String? userAddress;
+  String? txid;
+  int? coinType;
+  int? status;
+  Decimal? amount;
+  ClubProject? project;
+  String? date;
 
   PurchasedPackageHistory(
       {this.id,
@@ -55,11 +55,11 @@ class PurchasedPackageHistory {
     return data;
   }
 
-  String get paidCoinTicker => newCoinTypeMap[coinType];
+  String? get paidCoinTicker => newCoinTypeMap[coinType];
 }
 
 class PurchasedPackageHistoryList {
-  final List<PurchasedPackageHistory> purchasedPackageHistoryList;
+  final List<PurchasedPackageHistory>? purchasedPackageHistoryList;
   PurchasedPackageHistoryList({this.purchasedPackageHistoryList});
 
   factory PurchasedPackageHistoryList.fromJson(List<dynamic> parsedJson) {

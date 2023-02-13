@@ -1,38 +1,34 @@
 import 'package:flutter/widgets.dart';
 import 'package:paycool/utils/number_util.dart';
 
-import '../../environments/coins.dart' as coinList;
-import '../../utils/string_util.dart';
+import '../../environments/coins.dart' as coin_list;
 
 class ExchangeBalanceModel {
-  String _ticker;
-  int _coinType;
-  double _unlockedAmount;
-  double _lockedAmount;
+  String ticker;
+  int coinType;
+  double unlockedAmount;
+  double lockedAmount;
 
   ExchangeBalanceModel(
-      {String ticker,
-      int coinType,
-      double unlockedAmount,
-      double lockedAmount}) {
-    _ticker = ticker ?? '';
-    _coinType = coinType ?? 0;
-    _unlockedAmount = unlockedAmount ?? 0.0;
-    _lockedAmount = lockedAmount ?? 0.0;
-  }
+      {required this.ticker,
+      required this.coinType,
+      required this.unlockedAmount,
+      required this.lockedAmount});
 
   factory ExchangeBalanceModel.fromJson(Map<String, dynamic> json) {
-    var type = json['coinType'];
-    String tickerName = '';
-    if (type != null) {
-      tickerName = coinList.newCoinTypeMap[type];
+    int type = json['coinType'] ?? 0;
+
+    String? tickerName;
+    if (type != 0) {
+      tickerName = coin_list.newCoinTypeMap[type];
+      tickerName ??= '';
       debugPrint(
           'Ticker Name -- $tickerName --- coin type ${json['coinType']}');
     }
 
     return ExchangeBalanceModel(
-        ticker: tickerName,
-        coinType: json['coinType'],
+        ticker: tickerName ?? '',
+        coinType: type,
         unlockedAmount:
             NumberUtil.rawStringToDecimal(json['unlockedAmount'].toString())
                 .toDouble(),
@@ -50,31 +46,11 @@ class ExchangeBalanceModel {
 
     return data;
   }
-
-  String get ticker => _ticker;
-  set ticker(String ticker) {
-    _ticker = ticker;
-  }
-
-  int get coinType => _coinType;
-  set coinType(int coinType) {
-    _coinType = coinType;
-  }
-
-  double get unlockedAmount => _unlockedAmount;
-  set unlockedAmount(double unlockedAmount) {
-    _unlockedAmount = unlockedAmount;
-  }
-
-  double get lockedAmount => _lockedAmount;
-  set lockedAmount(double lockedAmount) {
-    _lockedAmount = lockedAmount;
-  }
 }
 
 class ExchangeBalanceModelList {
   final List<ExchangeBalanceModel> balances;
-  ExchangeBalanceModelList({this.balances});
+  ExchangeBalanceModelList({required this.balances});
 
   factory ExchangeBalanceModelList.fromJson(List<dynamic> parsedJson) {
     List<ExchangeBalanceModel> balances = [];

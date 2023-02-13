@@ -1,18 +1,18 @@
 import 'package:decimal/decimal.dart';
 
 class ClubProject {
-  Name name;
-  Name description;
-  String sId;
-  String owner;
-  String id;
-  int status;
-  String dateCreated;
-  String address;
-  String image;
-  List<String> coins;
-  String projectId;
-  Decimal joiningFee;
+  Name? name;
+  Name? description;
+  String? sId;
+  String? owner;
+  String? id;
+  int? status;
+  String? dateCreated;
+  String? address;
+  String? image;
+  List<String>? coins;
+  String? projectId;
+  Decimal? joiningFee;
 
   ClubProject(
       {this.name,
@@ -34,7 +34,7 @@ class ClubProject {
       if (c != null) {
         coins = [];
         for (var v in c) {
-          coins.add(v);
+          coins!.add(v);
         }
       }
     }
@@ -58,10 +58,10 @@ class ClubProject {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     if (name != null) {
-      data['name'] = name.toJson();
+      data['name'] = name!.toJson();
     }
     if (description != null) {
-      data['description'] = description.toJson();
+      data['description'] = description!.toJson();
     }
     data['_id'] = sId;
     data['owner'] = owner;
@@ -78,8 +78,8 @@ class ClubProject {
 }
 
 class Name {
-  String en;
-  String sc;
+  String? en;
+  String? sc;
 
   Name({this.en, this.sc});
 
@@ -97,7 +97,7 @@ class Name {
 }
 
 class ClubProjectList {
-  final List<ClubProject> clubProjects;
+  final List<ClubProject>? clubProjects;
   ClubProjectList({this.clubProjects});
 
   factory ClubProjectList.fromJson(List<dynamic> parsedJson) {

@@ -31,7 +31,6 @@ import 'package:paycool/services/shared_service.dart';
 import 'package:paycool/services/stoppable_service.dart';
 import 'package:paycool/services/vault_service.dart';
 import 'package:paycool/services/wallet_service.dart';
-import 'package:paycool/views/settings/settings_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 //import 'package:showcaseview/showcaseview.dart';
 
@@ -69,33 +68,33 @@ class SettingsViewmodel extends BaseViewModel with StoppableService {
     'zh': '简体中文',
     'es': 'Español'
   }; //,'fr':'français','ja':'日本語'};
-  String selectedLanguage;
+  String? selectedLanguage;
   // bool result = false;
   String errorMessage = '';
-  DialogResponse dialogResponse;
-  BuildContext context;
+  DialogResponse? dialogResponse;
+  BuildContext? context;
   String versionName = '';
   String buildNumber = '';
   static int initialLanguageValue = 0;
   final FixedExtentScrollController fixedScrollController =
       FixedExtentScrollController(initialItem: initialLanguageValue);
   bool isDialogDisplay = false;
-  ScrollController scrollController;
+  ScrollController? scrollController;
   bool isDeleting = false;
-  GlobalKey one;
-  GlobalKey two;
-  bool isShowCaseOnce;
-  bool isShowPaycool;
-  bool isShowPaycoolClub;
-  bool isAutoStartPaycoolScan;
-  String baseServerUrl;
+  GlobalKey? one;
+  GlobalKey? two;
+  bool isShowCaseOnce = false;
+  bool? isShowPaycool;
+  bool isShowPaycoolClub = false;
+  bool isAutoStartPaycoolScan = false;
+  String? baseServerUrl;
   ConfigService configService = locator<ConfigService>();
-  bool isHKServer;
-  Map<String, String> versionInfo;
+  bool? isHKServer;
+  Map<String, String>? versionInfo;
   UserSettings userSettings = UserSettings();
   bool isUserSettingsEmpty = false;
 
-  Locale currentLang;
+  Locale? currentLang;
   bool _isBiometricAuth = false;
   get isBiometricAuth => _isBiometricAuth;
   final t = TextEditingController();
@@ -131,7 +130,7 @@ class SettingsViewmodel extends BaseViewModel with StoppableService {
     setBusy(true);
 
     Future.delayed(Duration.zero, () async {
-      currentLang = FlutterI18n.currentLocale(context);
+      currentLang = FlutterI18n.currentLocale(context!);
     });
 
     storageService.isShowCaseView == null
@@ -193,15 +192,15 @@ class SettingsViewmodel extends BaseViewModel with StoppableService {
     } else if (!hasAuthorized) {
       if (authService.isLockedOut) {
         sharedService.sharedSimpleNotification(
-            FlutterI18n.translate(context, "lockedOutTemp"));
+            FlutterI18n.translate(context!, "lockedOutTemp"));
       } else if (authService.isLockedOutPerm) {
         sharedService.sharedSimpleNotification(
-            FlutterI18n.translate(context, "lockedOutPerm"));
+            FlutterI18n.translate(context!, "lockedOutPerm"));
       }
 
       if (!storageService.hasPhoneProtectionEnabled) {
         sharedService.sharedSimpleNotification(
-            FlutterI18n.translate(context, "pleaseSetupDeviceSecurity"));
+            FlutterI18n.translate(context!, "pleaseSetupDeviceSecurity"));
         storageService.hasCancelledBiometricAuth = false;
         storageService.hasInAppBiometricAuthEnabled = false;
       }
@@ -229,7 +228,7 @@ class SettingsViewmodel extends BaseViewModel with StoppableService {
     setBusy(false);
   }
 
-  Future<String> selectDefaultWalletLanguage() async {
+  Future<String?> selectDefaultWalletLanguage() async {
     setBusy(true);
     if (selectedLanguage == '' || selectedLanguage == null) {
       String key = '';
@@ -250,7 +249,7 @@ class SettingsViewmodel extends BaseViewModel with StoppableService {
       if (languages.containsKey(key)) {
         selectedLanguage = languages[key];
         currentLang = Locale(key);
-        await FlutterI18n.refresh(context, currentLang);
+        await FlutterI18n.refresh(context!, currentLang);
       }
       // else if (languages.containsValue(key)) {
       //   String keyIsValue = key;
@@ -366,10 +365,10 @@ class SettingsViewmodel extends BaseViewModel with StoppableService {
     log.i('model busy $busy');
     await dialogService
         .showDialog(
-            title: FlutterI18n.translate(context, "enterPassword"),
+            title: FlutterI18n.translate(context!, "enterPassword"),
             description: FlutterI18n.translate(
-                context, "dialogManagerTypeSamePasswordNote"),
-            buttonTitle: FlutterI18n.translate(context, "confirm"))
+                context!, "dialogManagerTypeSamePasswordNote"),
+            buttonTitle: FlutterI18n.translate(context!, "confirm"))
         .then((res) async {
       if (res.confirmed) {
         isDeleting = true;
@@ -425,7 +424,7 @@ class SettingsViewmodel extends BaseViewModel with StoppableService {
           log.e('delete cache dir err $err');
         }
 
-        Navigator.pushNamed(context, '/');
+        Navigator.pushNamed(context!, '/');
       } else if (res.returnedText == 'Closed' && !res.confirmed) {
         log.e('Dialog Closed By User');
         isDeleting = false;
@@ -436,7 +435,7 @@ class SettingsViewmodel extends BaseViewModel with StoppableService {
         setBusy(false);
         isDeleting = false;
         return errorMessage =
-            FlutterI18n.translate(context, "pleaseProvideTheCorrectPassword");
+            FlutterI18n.translate(context!, "pleaseProvideTheCorrectPassword");
       }
     }).catchError((error) {
       log.e(error);
@@ -475,10 +474,10 @@ class SettingsViewmodel extends BaseViewModel with StoppableService {
     } else {
       await dialogService
           .showDialog(
-              title: FlutterI18n.translate(context, "enterPassword"),
+              title: FlutterI18n.translate(context!, "enterPassword"),
               description: FlutterI18n.translate(
-                  context, "dialogManagerTypeSamePasswordNote"),
-              buttonTitle: FlutterI18n.translate(context, "confirm"))
+                  context!, "dialogManagerTypeSamePasswordNote"),
+              buttonTitle: FlutterI18n.translate(context!, "confirm"))
           .then((res) async {
         if (res.confirmed) {
           setBusy(true);
@@ -494,8 +493,8 @@ class SettingsViewmodel extends BaseViewModel with StoppableService {
         } else {
           log.e('Wrong pass');
           setBusy(false);
-          return errorMessage =
-              FlutterI18n.translate(context, "pleaseProvideTheCorrectPassword");
+          return errorMessage = FlutterI18n.translate(
+              context!, "pleaseProvideTheCorrectPassword");
         }
       }).catchError((error) {
         log.e(error);
@@ -532,7 +531,7 @@ class SettingsViewmodel extends BaseViewModel with StoppableService {
       log.e('in zh');
 
       currentLang = const Locale('zh');
-      await FlutterI18n.refresh(context, currentLang);
+      await FlutterI18n.refresh(context!, currentLang);
       storageService.language = 'zh';
     } else if (updatedLanguageValue == 'English' ||
         updatedLanguageValue == 'en' ||
@@ -540,7 +539,7 @@ class SettingsViewmodel extends BaseViewModel with StoppableService {
       log.e('in en');
 
       currentLang = const Locale('en');
-      await FlutterI18n.refresh(context, currentLang);
+      await FlutterI18n.refresh(context!, currentLang);
       storageService.language = 'en';
     } else if (updatedLanguageValue == 'Spanish' ||
         updatedLanguageValue == 'es' ||
@@ -548,7 +547,7 @@ class SettingsViewmodel extends BaseViewModel with StoppableService {
       log.e('in es');
 
       currentLang = const Locale('es');
-      await FlutterI18n.refresh(context, currentLang);
+      await FlutterI18n.refresh(context!, currentLang);
       storageService.language = 'es';
     }
     navigationService.navigateUsingpopAndPushedNamed(SettingViewRoute);
@@ -569,8 +568,8 @@ class SettingsViewmodel extends BaseViewModel with StoppableService {
     log.w('in app getappver');
     versionInfo = await sharedService.getLocalAppVersion();
     log.i('getAppVersion $versionInfo');
-    versionName = versionInfo['name'];
-    buildNumber = versionInfo['buildNumber'];
+    versionName = versionInfo!['name'].toString();
+    buildNumber = versionInfo!['buildNumber'].toString();
     log.i('getAppVersion name $versionName');
 
     setBusy(false);
@@ -585,11 +584,11 @@ class SettingsViewmodel extends BaseViewModel with StoppableService {
 }
 
 class SlideRightRoute extends PageRouteBuilder {
-  final Widget widget;
+  final Widget? widget;
   SlideRightRoute({this.widget})
       : super(pageBuilder: (BuildContext context, Animation<double> animation,
             Animation<double> secondaryAnimation) {
-          return widget;
+          return widget!;
         }, transitionsBuilder: (BuildContext context,
             Animation<double> animation,
             Animation<double> secondaryAnimation,
@@ -599,11 +598,11 @@ class SlideRightRoute extends PageRouteBuilder {
 }
 
 class FadeRoute extends PageRouteBuilder {
-  final Widget widget;
+  final Widget? widget;
   FadeRoute({this.widget})
       : super(pageBuilder: (BuildContext context, Animation<double> animation,
             Animation<double> secondaryAnimation) {
-          return widget;
+          return widget!;
         }, transitionsBuilder: (BuildContext context,
             Animation<double> animation,
             Animation<double> secondaryAnimation,

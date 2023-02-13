@@ -12,7 +12,6 @@
 */
 
 import 'dart:io';
-import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:flutter_i18n/flutter_i18n.dart';
@@ -31,7 +30,8 @@ import 'package:share_plus/share_plus.dart';
 
 class ReceiveWalletScreen extends StatefulWidget {
   final WalletInfo walletInfo;
-  const ReceiveWalletScreen({Key key, this.walletInfo}) : super(key: key);
+  const ReceiveWalletScreen({Key? key, required this.walletInfo})
+      : super(key: key);
 
   @override
   _ReceiveWalletScreenState createState() => _ReceiveWalletScreenState();
@@ -79,9 +79,9 @@ class _ReceiveWalletScreenState extends State<ReceiveWalletScreen> {
                   children: <Widget>[
                     Text(
                         convertedToFabAddress == ''
-                            ? widget.walletInfo.address
+                            ? widget.walletInfo.address!
                             : convertedToFabAddress,
-                        style: Theme.of(context).textTheme.bodyText2),
+                        style: Theme.of(context).textTheme.bodyMedium),
                     SizedBox(
                       width: 200,
                       child: OutlinedButton(
@@ -135,7 +135,7 @@ class _ReceiveWalletScreenState extends State<ReceiveWalletScreen> {
                               child: QrImage(
                                   backgroundColor: white,
                                   data: convertedToFabAddress == ''
-                                      ? widget.walletInfo.address
+                                      ? widget.walletInfo.address!
                                       : convertedToFabAddress,
                                   version: QrVersions.auto,
                                   size: 300,
@@ -171,7 +171,7 @@ class _ReceiveWalletScreenState extends State<ReceiveWalletScreen> {
                               Future.delayed(const Duration(milliseconds: 30),
                                   () {
                                 _capturePng().then((byteData) {
-                                  file.writeAsBytes(byteData).then((onFile) {
+                                  file.writeAsBytes(byteData!).then((onFile) {
                                     Share.share(onFile.path,
                                         subject: convertedToFabAddress == ''
                                             ? widget.walletInfo.address
@@ -200,7 +200,7 @@ class _ReceiveWalletScreenState extends State<ReceiveWalletScreen> {
 
   copyAddress(BuildContext context) {
     String address = convertedToFabAddress == ''
-        ? widget.walletInfo.address
+        ? widget.walletInfo.address!
         : convertedToFabAddress;
     log.w(address);
     Clipboard.setData(ClipboardData(text: address));
@@ -219,13 +219,13 @@ class _ReceiveWalletScreenState extends State<ReceiveWalletScreen> {
 
   --------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
-  Future<Uint8List> _capturePng() async {
+  Future<Uint8List?> _capturePng() async {
     try {
-      RenderRepaintBoundary boundary =
-          _globalKey.currentContext.findRenderObject();
+      RenderRepaintBoundary boundary = _globalKey.currentContext!
+          .findRenderObject() as RenderRepaintBoundary;
       var image = await boundary.toImage(pixelRatio: 3.0);
-      ByteData byteData = await image.toByteData(format: ImageByteFormat.png);
-      Uint8List pngBytes = byteData.buffer.asUint8List();
+      ByteData? byteData = await image.toByteData(format: ImageByteFormat.png);
+      Uint8List pngBytes = byteData!.buffer.asUint8List();
       return pngBytes;
     } catch (e) {
       return null;

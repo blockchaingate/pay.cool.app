@@ -30,7 +30,7 @@ import '../services/vault_service.dart';
 
 class DialogManager extends StatefulWidget {
   final Widget child;
-  const DialogManager({Key key, this.child}) : super(key: key);
+  const DialogManager({Key? key, required this.child}) : super(key: key);
 
   @override
   _DialogManagerState createState() => _DialogManagerState();
@@ -72,10 +72,10 @@ class _DialogManagerState extends State<DialogManager> {
             animationType: AnimationType.grow,
             isOverlayTapDismiss: false,
             backgroundColor: walletCardColor,
-            descStyle: Theme.of(context).textTheme.bodyText1,
+            descStyle: Theme.of(context).textTheme.bodyMedium!,
             titleStyle: Theme.of(context)
                 .textTheme
-                .headline3
+                .displaySmall!
                 .copyWith(fontWeight: FontWeight.bold)),
         context: context,
         title: request.title,
@@ -95,29 +95,31 @@ class _DialogManagerState extends State<DialogManager> {
         //   ],
         // ),
         buttons: [
-          if (request.secondaryButton.isNotEmpty)
+          if (request.secondaryButton!.isNotEmpty)
             DialogButton(
               color: red,
               onPressed: () {
-                _dialogService.dialogComplete(DialogResponse(confirmed: false));
+                _dialogService.dialogComplete(
+                    DialogResponse(returnedText: '', confirmed: false));
 
                 Navigator.of(context).pop();
               },
               child: Text(
-                request.secondaryButton,
-                style: Theme.of(context).textTheme.headline4,
+                request.secondaryButton!,
+                style: Theme.of(context).textTheme.headlineMedium,
               ),
             ),
           DialogButton(
             color: primaryColor,
             onPressed: () {
-              _dialogService.dialogComplete(DialogResponse(confirmed: true));
+              _dialogService.dialogComplete(
+                  DialogResponse(returnedText: '', confirmed: true));
 
               Navigator.of(context).pop();
             },
             child: Text(
               request.buttonTitle,
-              style: Theme.of(context).textTheme.headline4,
+              style: Theme.of(context).textTheme.headlineMedium,
             ),
           )
         ]).show();
@@ -144,7 +146,8 @@ class _DialogManagerState extends State<DialogManager> {
           DialogButton(
             color: primaryColor,
             onPressed: () {
-              _dialogService.dialogComplete(DialogResponse(confirmed: true));
+              _dialogService.dialogComplete(
+                  DialogResponse(returnedText: '', confirmed: true));
               Navigator.of(context).pop();
             },
             child: Text(
@@ -167,13 +170,14 @@ class _DialogManagerState extends State<DialogManager> {
         title: request.title,
         desc: request.description,
         closeFunction: () {
+          Navigator.of(context).pop();
+          controller.text = '';
           FocusScope.of(context).requestFocus(FocusNode());
           _dialogService.dialogComplete(
               DialogResponse(returnedText: 'Closed', confirmed: false));
           controller.text = '';
           debugPrint('popping');
           //if (!Platform.isIOS)
-          Navigator.of(context).pop();
           debugPrint('popped');
         },
         content: Column(
@@ -204,8 +208,8 @@ class _DialogManagerState extends State<DialogManager> {
           DialogButton(
             color: grey,
             onPressed: () {
-              controller.text = '';
               Navigator.of(context).pop();
+              controller.text = '';
               _dialogService.dialogComplete(
                   DialogResponse(returnedText: 'Closed', confirmed: false));
             },
@@ -231,12 +235,12 @@ class _DialogManagerState extends State<DialogManager> {
 
                   encryptedMnemonic =
                       await coreWalletDatabaseService.getEncryptedMnemonic();
-                  try {
-                    encryptedMnemonic ??= '';
-                  } catch (err) {
-                    log.e(
-                        'failed to assign empty string to null encrypted mnemonic variable');
-                  }
+                  // try {
+                  //   encryptedMnemonic ??= '';
+                  // } catch (err) {
+                  //   log.e(
+                  //       'failed to assign empty string to null encrypted mnemonic variable');
+                  // }
                   if (encryptedMnemonic.isEmpty) {
                     // if there is no encrypted mnemonic saved in the new core wallet db
                     // then get the unencrypted mnemonic from the file
@@ -250,20 +254,20 @@ class _DialogManagerState extends State<DialogManager> {
                       finalRes = data;
                     });
                   }
-                  if (finalRes != '' && finalRes != null) {
+                  if (finalRes != '') {
+                    Navigator.of(context).pop();
+                    controller.text = '';
                     _dialogService.dialogComplete(DialogResponse(
                       returnedText: finalRes,
                       confirmed: true,
                     ));
-                    controller.text = '';
-                    Navigator.of(context).pop();
                   } else {
+                    Navigator.of(context).pop();
+                    controller.text = '';
                     _dialogService.dialogComplete(DialogResponse(
                       confirmed: false,
                       returnedText: 'wrong password',
                     ));
-                    controller.text = '';
-                    Navigator.of(context).pop();
                   }
                 } catch (err) {
                   log.e('Getting mnemonic failed -- $err');

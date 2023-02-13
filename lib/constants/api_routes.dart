@@ -36,25 +36,24 @@ const String clubProjectsUrl = "${paycoolBaseUrl}project/v2/";
 const String clubProjectDetailsUrl = "${baseProjectPackageUrl}project/";
 
 const String paycoolRef = '7star-ref';
-const String campaignListUrl = baseBlockchainGateV2Url + 'campaigns';
+const String campaignListUrl = '${baseBlockchainGateV2Url}campaigns';
 const String campaignEntryStatusUrl =
-    baseBlockchainGateV2Url + '7star-order/address-campaign/';
+    '${baseBlockchainGateV2Url}7star-order/address-campaign/';
 
-const String payCoolClubrRefUrl = baseBlockchainGateV2Url + paycoolRef + '/';
 const String payCoolClubCreateOrderUrl =
-    baseBlockchainGateV2Url + '7star-order/' + 'create';
+    '${baseBlockchainGateV2Url}7star-order/create';
 
 const String payCoolClubSaveOrderUrl =
-    baseBlockchainGateV2Url + paycoolRef + '/' + 'savePayment';
+    '$baseBlockchainGateV2Url$paycoolRef/savePayment';
 const String isValidPaidReferralCodeUrl =
-    baseBlockchainGateV2Url + paycoolRef + '/' + 'isValid/';
+    '$baseBlockchainGateV2Url$paycoolRef/isValid/';
 
 /*----------------------------------------------------------------------
                         Pay.cool Pay
 ----------------------------------------------------------------------*/
 
 // valid Referralcode
-String isValidPaycoolMemberUrl = paycoolBaseUrl + 'userreferral/isValid/';
+String isValidPaycoolMemberUrl = '${paycoolBaseUrl}userreferral/isValid/';
 // https://fabtest.info/api/userreferral/user/myVKCpWKSpMDvpZZRS69re3KmSta29ZFnK
 const String isValidPaycoolReferralRoute = "userreferral/user/";
 
@@ -65,17 +64,17 @@ const String isValidPaycoolReferralRoute = "userreferral/user/";
 // https://fabtest.info/api/userreferral/user/myVKCpWKSpMDvpZZRS69re3KmSta29ZFnK/totalCount
 const String totalCountRoute = "/totalCount";
 
-const String paymentRewardUrl = paycoolBaseUrl + 'payreward/v2/project/0/user/';
-const String paymentTransactionHistoryUrl = paycoolBaseUrl + 'charge/v2/user/';
+const String paymentRewardUrl = '${paycoolBaseUrl}payreward/v2/project/0/user/';
+const String paymentTransactionHistoryUrl = '${paycoolBaseUrl}charge/v2/user/';
 
 // ** https://api.blockchaingate.com/v2/stores/feeChargerSmartContractAddress/0x1e89b7d555fe1b68c048b68eb28724950e1051f2
 const String storeInfoPayCoolUrl =
-    baseBlockchainGateV2Url + 'stores/feeChargerSmartContractAddress/';
+    '${baseBlockchainGateV2Url}stores/feeChargerSmartContractAddress/';
 
 // https://test.blockchaingate.com/v2/7star-agent/smartContractAdd/0xb0dbab271cd9b9e53adc4cbe4e333aa3e06d2a9e09ea6b376dfa04f7b3989202
 
 const String regionalAgentStarPayUrl =
-    baseBlockchainGateV2Url + '7star-agent/smartContractAdd/';
+    '${baseBlockchainGateV2Url}7star-agent/smartContractAdd/';
 
 // old
 // const String isValidPaycoolMemberUrl =
@@ -85,21 +84,21 @@ const String paycoolTextApiRoute = "7starpay";
 const String chargeTextApiRoute = "charge";
 const String ordersTextApiRoute = "orders/";
 
-const String payOrderApiRoute = ordersTextApiRoute + "code/";
+const String payOrderApiRoute = "${ordersTextApiRoute}code/";
 
-const String payCoolApiRoute = kanbanApiRoute + 'coders/encodeFunctionCall';
+const String payCoolApiRoute = '${kanbanApiRoute}coders/encodeFunctionCall';
 
 const String payCoolCreateReferralUrl =
-    baseBlockchainGateV2Url + paycoolRef + '/create';
+    '$baseBlockchainGateV2Url$paycoolRef/create';
 
 const String payCoolDecodeAbiUrl =
-    baseKanbanUrl + kanbanApiRoute + 'coders/decodeParams';
+    '$baseKanbanUrl${kanbanApiRoute}coders/decodeParams';
 
 const String payCoolEncodeAbiUrl =
-    baseKanbanUrl + kanbanApiRoute + 'coders/encodeParams';
+    '$baseKanbanUrl${kanbanApiRoute}coders/encodeParams';
 
 const String paycoolParentAddressUrl =
-    baseBlockchainGateV2Url + paycoolRef + '/parents/';
+    '$baseBlockchainGateV2Url$paycoolRef/parents/';
 
 /*----------------------------------------------------------------------
                         Wallet
@@ -115,8 +114,8 @@ const String DepositerrApiRoute = 'depositerr/';
 const String SubmitDepositApiRoute = 'submitDeposit';
 
 const String TronUsdtAccountBalanceUrl =
-    tronBaseApiUrl + "wallet/triggerconstantcontract";
-const String TronGetAccountUrl = tronBaseApiUrl + "wallet/getaccount";
+    "${tronBaseApiUrl}wallet/triggerconstantcontract";
+const String TronGetAccountUrl = "${tronBaseApiUrl}wallet/getaccount";
 //  const requestURL = `${TRON_API_ENDPOINT}/wallet/getaccount`;
 // const requestBody = {
 //   address,
@@ -124,8 +123,8 @@ const String TronGetAccountUrl = tronBaseApiUrl + "wallet/getaccount";
 // };
 
 const String BroadcasrTronTransactionUrl =
-    tronBaseApiUrl + "wallet/broadcasthex";
-const String GetTronLatestBlockUrl = tronBaseApiUrl + 'wallet/getnowblock';
+    "${tronBaseApiUrl}wallet/broadcasthex";
+const String GetTronLatestBlockUrl = '${tronBaseApiUrl}wallet/getnowblock';
 
 const String WalletBalancesApiRoute = 'walletBalances';
 const String SingleWalletBalanceApiRoute = 'singleCoinWalletBalance';
@@ -145,9 +144,9 @@ const String TronExplorerUrl = "https://tronscan.org/#/transaction/";
 
 // Free Fab
 const String getFreeFabUrl =
-    baseBlockchainGateV2Url + 'airdrop/getQuestionair/';
+    '${baseBlockchainGateV2Url}airdrop/getQuestionair/';
 const String postFreeFabUrl =
-    baseBlockchainGateV2Url + 'airdrop/answerQuestionair/';
+    '${baseBlockchainGateV2Url}airdrop/answerQuestionair/';
 
 // USD Coin Price
 const String GetUsdCoinPriceUrl =

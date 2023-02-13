@@ -27,14 +27,14 @@ import 'package:stacked/stacked.dart';
 
 class WalletFeaturesView extends StatelessWidget {
   final WalletInfo walletInfo;
-  WalletFeaturesView({Key key, this.walletInfo}) : super(key: key);
+  WalletFeaturesView({Key? key, required this.walletInfo}) : super(key: key);
   final log = getLogger('WalletFeatures');
 
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<WalletFeaturesViewModel>.reactive(
       viewModelBuilder: () => WalletFeaturesViewModel(),
-      onModelReady: (model) {
+      onViewModelReady: (model) {
         model.walletInfo = walletInfo;
         model.context = context;
         model.init();
@@ -108,7 +108,7 @@ class WalletFeaturesView extends StatelessWidget {
                                           color: white, size: 22),
                                   onPressed: () =>
                                       model.updateFavWalletCoinsList(
-                                          model.walletInfo.tickerName),
+                                          model.walletInfo.tickerName!),
                                 ),
                               ),
                               Positioned(
@@ -224,7 +224,7 @@ class WalletFeaturesView extends StatelessWidget {
                                         BoxShadow(
                                             color: model.features[6].shadowColor
                                                 .withOpacity(0.2),
-                                            offset: const Offset(0, 2),
+                                            offset: Offset(0, 2),
                                             blurRadius: 10,
                                             spreadRadius: 3)
                                       ]),
@@ -349,7 +349,7 @@ class WalletFeaturesView extends StatelessWidget {
                     Expanded(
                       flex: 4,
                       child: Text(
-                        '${NumberUtil().truncateDoubleWithoutRouding(model.walletInfo.usdValue).toString()} USD',
+                        '${NumberUtil().truncateDoubleWithoutRouding(model.walletInfo.usdValue!).toString()} USD',
                         textAlign: TextAlign.right,
                         style: subText1.copyWith(color: buyPrice),
                       ),
@@ -371,7 +371,7 @@ class WalletFeaturesView extends StatelessWidget {
                         FlutterI18n.translate(context, "walletbalance"),
                         style: subText1),
                     Text(
-                        '${NumberUtil().truncateDoubleWithoutRouding(model.walletInfo.availableBalance, precision: model.decimalLimit).toString()} ${model.specialTicker}',
+                        '${NumberUtil().truncateDoubleWithoutRouding(model.walletInfo.availableBalance!, precision: model.decimalLimit).toString()} ${model.specialTicker}',
                         style: headText5),
                   ],
                 ),
@@ -406,7 +406,7 @@ class WalletFeaturesView extends StatelessWidget {
                     Expanded(
                       flex: 4,
                       child: Text(
-                          '${FlutterI18n.translate(context, "inExchange")} ${model.specialTicker.contains('(') ? '\n' + message + ' ' + nativeTicker : ''}',
+                          '${FlutterI18n.translate(context, "inExchange")} ${model.specialTicker.contains('(') ? '\n$message $nativeTicker' : ''}',
                           style: subText1),
                     ),
                     Expanded(
@@ -414,7 +414,7 @@ class WalletFeaturesView extends StatelessWidget {
                         child: Text(
                             NumberUtil()
                                 .truncateDoubleWithoutRouding(
-                                    model.walletInfo.inExchange,
+                                    model.walletInfo.inExchange!,
                                     precision: model.decimalLimit)
                                 .toString(),
                             textAlign: TextAlign.right,
@@ -459,13 +459,13 @@ class WalletFeaturesView extends StatelessWidget {
                           BoxShadow(
                               color: model.features[index].shadowColor
                                   .withOpacity(0.2),
-                              offset: const Offset(0, 9),
+                              offset: Offset(0, 9),
                               blurRadius: 10,
                               spreadRadius: 3)
                         ]),
                     child: Center(
                       child: Image.asset(
-                        "assets/images/paycool/" + model.iconImg[index],
+                        "assets/images/paycool/${model.iconImg[index]}",
                         width: 40,
                         height: 40,
                       ),

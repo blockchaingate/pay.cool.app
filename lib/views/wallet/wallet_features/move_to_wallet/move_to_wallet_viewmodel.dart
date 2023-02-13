@@ -39,8 +39,8 @@ class MoveToWalletViewmodel extends BaseViewModel {
       locator<WalletDatabaseService>();
   final coinService = locator<CoinService>();
 
-  WalletInfo walletInfo;
-  BuildContext context;
+  late WalletInfo walletInfo;
+  late BuildContext context;
 
   String gasFeeUnit = '';
   String feeMeasurement = '';
@@ -60,7 +60,7 @@ class MoveToWalletViewmodel extends BaseViewModel {
   var fabChainBalance;
   var trxTsWalletBalance;
   bool isWithdrawChoice = false;
-  String _groupValue;
+  String _groupValue = '';
   get groupValue => _groupValue;
   bool isShowFabChainBalance = false;
   bool isShowTrxTsWalletBalance = false;
@@ -86,8 +86,8 @@ class MoveToWalletViewmodel extends BaseViewModel {
   void initState() async {
     setBusy(true);
     sharedService.context = context;
-    var gasPrice = environment["chains"]["KANBAN"]["gasPrice"];
-    var gasLimit = environment["chains"]["KANBAN"]["gasLimit"];
+    var gasPrice = environment["chains"]["KANBAN"]["gasPrice"] ?? 0;
+    var gasLimit = environment["chains"]["KANBAN"]["gasLimit"] ?? 0;
     kanbanGasPriceTextController.text = gasPrice.toString();
     kanbanGasLimitTextController.text = gasLimit.toString();
     tokenType = walletInfo.tokenType;
@@ -117,7 +117,7 @@ class MoveToWalletViewmodel extends BaseViewModel {
       setWithdrawLimit("BTC");
     }
     specialTicker = walletService.updateSpecialTokensTickerNameForTxHistory(
-        walletInfo.tickerName)['tickerName'];
+        walletInfo.tickerName!)['tickerName'];
     await checkGasBalance();
     await getSingleCoinExchangeBal();
 
@@ -232,7 +232,8 @@ class MoveToWalletViewmodel extends BaseViewModel {
                                                 activeColor: primaryColor,
                                                 onChanged: (value) {
                                                   setState(() {
-                                                    _groupValue = value;
+                                                    _groupValue =
+                                                        value.toString();
 
                                                     radioButtonSelection(value);
                                                   });
@@ -256,7 +257,8 @@ class MoveToWalletViewmodel extends BaseViewModel {
                                                 activeColor: primaryColor,
                                                 onChanged: (value) {
                                                   setState(() {
-                                                    _groupValue = value;
+                                                    _groupValue =
+                                                        value.toString();
                                                     if (value == 'FAB') {
                                                       isShowFabChainBalance =
                                                           true;
@@ -275,12 +277,13 @@ class MoveToWalletViewmodel extends BaseViewModel {
                                                             '';
                                                       }
                                                       updateTickerForErc =
-                                                          walletInfo.tickerName;
+                                                          walletInfo
+                                                              .tickerName!;
                                                       log.i(
                                                           'chain type ${walletInfo.tokenType}');
                                                       setWithdrawLimit(
                                                           walletInfo
-                                                              .tickerName);
+                                                              .tickerName!);
                                                     } else if (value == 'TRX') {
                                                       isShowTrxTsWalletBalance =
                                                           true;
@@ -346,7 +349,7 @@ class MoveToWalletViewmodel extends BaseViewModel {
                                                       } else {
                                                         setWithdrawLimit(
                                                             walletInfo
-                                                                .tickerName);
+                                                                .tickerName!);
                                                       }
                                                       setBusy(false);
                                                     }
@@ -372,7 +375,7 @@ class MoveToWalletViewmodel extends BaseViewModel {
                                           activeColor: primaryColor,
                                           onChanged: (value) {
                                             setState(() {
-                                              _groupValue = value;
+                                              _groupValue = value.toString();
                                               //   if (value == 'FAB') {
                                               //     isShowFabChainBalance =
                                               //         true;
@@ -815,7 +818,12 @@ class MoveToWalletViewmodel extends BaseViewModel {
 --------------------------------------------------- */
 
   checkGasBalance() async {
-    String address = await sharedService.getExgAddressFromCoreWalletDatabase();
+    String address = '';
+    try {
+      address = await sharedService.getExgAddressFromCoreWalletDatabase();
+    } catch (err) {
+      log.e('catch: fetching fab address from db');
+    }
     await walletService.gasBalance(address).then((data) {
       gasAmount = data;
       log.i('gas balance $gasAmount');
@@ -862,12 +870,12 @@ class MoveToWalletViewmodel extends BaseViewModel {
     //   isShowTrxTsWalletBalance = true;
     // }
     else {
-      tickerName = walletInfo.tickerName;
+      tickerName = walletInfo.tickerName!;
     }
     String fabAddress =
         await sharedService.getFabAddressFromCoreWalletDatabase();
     await apiService
-        .getSingleWalletBalance(fabAddress, tickerName, walletInfo.address)
+        .getSingleWalletBalance(fabAddress, tickerName, walletInfo.address!)
         .then((res) {
       walletInfo.inExchange = res[0].unlockedExchangeBalance;
       log.w('single coin exchange balance check ${walletInfo.inExchange}');
@@ -917,7 +925,7 @@ class MoveToWalletViewmodel extends BaseViewModel {
     await apiService.getTokenListUpdates().then((tokens) {
       for (var tokenRes in tokens) {
         if (tokenRes.tickerName == 'USDTX') {
-          smartContractAddress = tokenRes.contract;
+          smartContractAddress = tokenRes.contract!;
         }
       }
     });
@@ -950,7 +958,7 @@ class MoveToWalletViewmodel extends BaseViewModel {
     setBusy(true);
     var address = sharedService.getEXGOfficialAddress();
 
-    String smartContractAddress;
+    String smartContractAddress = '';
     await coinService
         .getSmartContractAddressByTickerName(tickerName)
         .then((value) => smartContractAddress = value);
@@ -962,11 +970,11 @@ class MoveToWalletViewmodel extends BaseViewModel {
       'data': balanceInfoABI + fixLength(trimHexPrefix(address), 64)
     };
     var tokenBalance;
-    var url = fabUtils.fabBaseUrl + 'callcontract';
+    var url = '${fabUtils.fabBaseUrl}callcontract';
     debugPrint(
         'Fab_util -- address $address getFabTokenBalanceForABI balance by address url -- $url -- body $body');
 
-    var response = await client.post(url, body: body);
+    var response = await client.post(Uri.parse(url), body: body);
     var json = jsonDecode(response.body);
     var unlockBalance = json['executionResult']['output'];
     // if (unlockBalance == null || unlockBalance == '') {
@@ -1009,7 +1017,7 @@ class MoveToWalletViewmodel extends BaseViewModel {
     } else if (walletInfo.tickerName == 'USDTX') {
       updateTickerForErc = 'USDT';
     } else {
-      updateTickerForErc = walletInfo.tickerName;
+      updateTickerForErc = walletInfo.tickerName!;
     }
     ercSmartContractAddress = await coinService
         .getSmartContractAddressByTickerName(updateTickerForErc);
@@ -1056,7 +1064,7 @@ class MoveToWalletViewmodel extends BaseViewModel {
       } else if (walletInfo.tickerName == 'EXGE' && isShowFabChainBalance) {
         await setWithdrawLimit('EXG');
       } else {
-        await setWithdrawLimit(walletInfo.tickerName);
+        await setWithdrawLimit(walletInfo.tickerName!);
       }
     } else if (value == 'TRX') {
       isShowTrxTsWalletBalance = true;
@@ -1087,7 +1095,7 @@ class MoveToWalletViewmodel extends BaseViewModel {
           !isShowTrxTsWalletBalance) {
         await setWithdrawLimit('USDT');
       } else {
-        await setWithdrawLimit(walletInfo.tickerName);
+        await setWithdrawLimit(walletInfo.tickerName!);
       }
       setBusy(false);
     }
@@ -1122,7 +1130,7 @@ class MoveToWalletViewmodel extends BaseViewModel {
       }
 
       var amount = double.tryParse(amountController.text);
-      if (amount < double.parse(token.minWithdraw)) {
+      if (amount! < double.parse(token.minWithdraw!)) {
         sharedService.sharedSimpleNotification(
           FlutterI18n.translate(context, "minimumAmountError"),
           subtitle: FlutterI18n.translate(
@@ -1134,7 +1142,7 @@ class MoveToWalletViewmodel extends BaseViewModel {
       await getSingleCoinExchangeBal();
 
       if (amount == null ||
-          amount > walletInfo.inExchange ||
+          amount > walletInfo.inExchange! ||
           amount == 0 ||
           amount.isNegative) {
         sharedService.alertDialog(
@@ -1146,14 +1154,8 @@ class MoveToWalletViewmodel extends BaseViewModel {
       }
 
       if (groupValue == 'FAB' && amount > fabChainBalance) {
-        sharedService.alertDialog(
-            FlutterI18n.translate(context, "notice"),
-            FlutterI18n.translate(context, "lowTsWalletBalanceErrorFirstPart") +
-                ' ' +
-                fabChainBalance.toString() +
-                '. ' +
-                FlutterI18n.translate(
-                    context, "lowTsWalletBalanceErrorSecondPart"),
+        sharedService.alertDialog(FlutterI18n.translate(context, "notice"),
+            '${FlutterI18n.translate(context, "lowTsWalletBalanceErrorFirstPart")} $fabChainBalance. ${FlutterI18n.translate(context, "lowTsWalletBalanceErrorSecondPart")}',
             isWarning: false);
 
         setBusy(false);
@@ -1163,28 +1165,16 @@ class MoveToWalletViewmodel extends BaseViewModel {
       /// show warning like amount should be less than ts wallet balance
       /// instead of displaying the generic error
       if (groupValue == 'ETH' && amount > ethChainBalance) {
-        sharedService.alertDialog(
-            FlutterI18n.translate(context, "notice"),
-            FlutterI18n.translate(context, "lowTsWalletBalanceErrorFirstPart") +
-                ' ' +
-                ethChainBalance.toString() +
-                '. ' +
-                FlutterI18n.translate(
-                    context, "lowTsWalletBalanceErrorSecondPart"),
+        sharedService.alertDialog(FlutterI18n.translate(context, "notice"),
+            '${FlutterI18n.translate(context, "lowTsWalletBalanceErrorFirstPart")} $ethChainBalance. ${FlutterI18n.translate(context, "lowTsWalletBalanceErrorSecondPart")}',
             isWarning: false);
 
         setBusy(false);
         return;
       }
       if (groupValue == 'TRX' && amount > trxTsWalletBalance) {
-        sharedService.alertDialog(
-            FlutterI18n.translate(context, "notice"),
-            FlutterI18n.translate(context, "lowTsWalletBalanceErrorFirstPart") +
-                ' ' +
-                trxTsWalletBalance.toString() +
-                '. ' +
-                FlutterI18n.translate(
-                    context, "lowTsWalletBalanceErrorSecondPart"),
+        sharedService.alertDialog(FlutterI18n.translate(context, "notice"),
+            '${FlutterI18n.translate(context, "lowTsWalletBalanceErrorFirstPart")} $trxTsWalletBalance. ${FlutterI18n.translate(context, "lowTsWalletBalanceErrorSecondPart")}',
             isWarning: false);
         setBusy(false);
         return;
@@ -1216,15 +1206,15 @@ class MoveToWalletViewmodel extends BaseViewModel {
         else if (coinName == 'FAB' && !isShowFabChainBalance) {
           await walletDataBaseService
               .getWalletBytickerName('ETH')
-              .then((wallet) => coinAddress = wallet.address);
+              .then((wallet) => coinAddress = wallet!.address!);
           log.i('coin address is ETH address');
         } else if (coinName == 'USDT' && isShowTrxTsWalletBalance) {
           await walletDataBaseService
               .getWalletBytickerName('TRX')
-              .then((wallet) => coinAddress = wallet.address);
+              .then((wallet) => coinAddress = wallet!.address!);
           log.i('coin address is TRX address');
         } else {
-          coinAddress = walletInfo.address;
+          coinAddress = walletInfo.address!;
           log.i('coin address is its own wallet info address');
         }
         // if (!isShowFabChainBalance) {
@@ -1254,7 +1244,7 @@ class MoveToWalletViewmodel extends BaseViewModel {
           int kanbanGasPrice = environment['chains']['KANBAN']['gasPrice'];
           int kanbanGasLimit = environment['chains']['KANBAN']['gasLimit'];
           await walletService
-              .withdrawTron(seed, coinName, coinAddress, tokenType, amount,
+              .withdrawTron(seed, coinName!, coinAddress, tokenType, amount,
                   kanbanPrice, kanbanGasLimit)
               .then((ret) {
             log.w(ret);
@@ -1292,7 +1282,7 @@ class MoveToWalletViewmodel extends BaseViewModel {
         } else {
           // withdraw function
           await walletService
-              .withdrawDo(seed, coinName, coinAddress, tokenType, amount,
+              .withdrawDo(seed, coinName!, coinAddress, tokenType, amount,
                   kanbanPrice, kanbanGasLimit, isSpeicalTronTokenWithdraw)
               .then((ret) {
             log.w(ret);
@@ -1306,21 +1296,23 @@ class MoveToWalletViewmodel extends BaseViewModel {
               message = txId;
             } else {
               serverError = ret['data'];
-              if (serverError == null || serverError == '') {
+              if (serverError == '') {
                 var errMsg = FlutterI18n.translate(context, "serverError");
                 error(errMsg);
                 isShowErrorDetailsButton = true;
                 isSubmittingTx = false;
               }
             }
-            sharedService.alertDialog(
+            sharedService.sharedSimpleNotification(
                 success && ret['transactionHash'] != null
                     ? FlutterI18n.translate(
                         context, "withdrawTransactionSuccessful")
                     : FlutterI18n.translate(
                         context, "withdrawTransactionFailed"),
-                success ? "" : FlutterI18n.translate(context, "serverError"),
-                isWarning: false);
+                subtitle: success
+                    ? ""
+                    : FlutterI18n.translate(context, "serverError"),
+                isError: !success ? true : false);
           }).catchError((err) {
             log.e('Withdraw catch $err');
             isShowErrorDetailsButton = true;
@@ -1366,8 +1358,8 @@ class MoveToWalletViewmodel extends BaseViewModel {
     var kanbanPrice = int.tryParse(kanbanGasPriceTextController.text);
     var kanbanGasLimit = int.tryParse(kanbanGasLimitTextController.text);
 
-    var kanbanPriceBig = BigInt.from(kanbanPrice);
-    var kanbanGasLimitBig = BigInt.from(kanbanGasLimit);
+    var kanbanPriceBig = BigInt.from(kanbanPrice!);
+    var kanbanGasLimitBig = BigInt.from(kanbanGasLimit!);
     var kanbanTransFeeDouble = NumberUtil.rawStringToDecimal(
             (kanbanPriceBig * kanbanGasLimitBig).toString())
         .toDouble();

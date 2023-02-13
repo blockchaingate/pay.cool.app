@@ -11,7 +11,8 @@ import '../../services/local_storage_service.dart';
 
 class ClubRewardsView extends StatelessWidget {
   final ClubRewardsArgs clubRewardsArgs;
-  const ClubRewardsView({Key key, this.clubRewardsArgs}) : super(key: key);
+  const ClubRewardsView({Key? key, required this.clubRewardsArgs})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -113,9 +114,9 @@ class ClubRewardsView extends StatelessWidget {
                                   title: Text(
                                     storageService.language == "en"
                                         ? clubRewardsArgs
-                                            .summary[index].project.en
+                                            .summary[index].project!.en!
                                         : clubRewardsArgs
-                                            .summary[index].project.sc,
+                                            .summary[index].project!.sc!,
                                     style: headText4,
                                   ),
                                   subtitle: Container(
@@ -125,26 +126,26 @@ class ClubRewardsView extends StatelessWidget {
                                     height: 70,
                                     child:
                                         clubRewardsArgs.summary[index]
-                                                .totalReward.isEmpty
+                                                .totalReward!.isEmpty
                                             ? Container(
                                                 child: Text('0.0'),
                                               )
                                             : ListView.builder(
                                                 itemCount: clubRewardsArgs
                                                     .summary[index]
-                                                    .totalReward
+                                                    .totalReward!
                                                     .length,
                                                 itemBuilder: ((context, j) {
                                                   var selectedPrice =
                                                       clubRewardsArgs
-                                                              .rewardTokenPriceMap[
+                                                              .rewardTokenPriceMap![
                                                           clubRewardsArgs
                                                               .summary[index]
-                                                              .totalReward[j]
+                                                              .totalReward![j]
                                                               .coin];
                                                   return clubRewardsArgs
                                                               .summary[index]
-                                                              .totalReward[j]
+                                                              .totalReward![j]
                                                               .coin ==
                                                           null
                                                       ? Container()
@@ -160,9 +161,9 @@ class ClubRewardsView extends StatelessWidget {
                                                                 clubRewardsArgs
                                                                     .summary[
                                                                         index]
-                                                                    .totalReward[
+                                                                    .totalReward![
                                                                         j]
-                                                                    .coin,
+                                                                    .coin!,
                                                                 style:
                                                                     headText6,
                                                               ),
@@ -184,13 +185,13 @@ class ClubRewardsView extends StatelessWidget {
                                                                   clubRewardsArgs
                                                                           .summary[
                                                                               index]
-                                                                          .totalReward[
+                                                                          .totalReward![
                                                                               j]
-                                                                          .coin
+                                                                          .coin!
                                                                           .contains(
                                                                               '-')
                                                                       ? Text(
-                                                                          '${NumberUtil.rawStringToDecimal(clubRewardsArgs.summary[index].totalReward[j].amount.toString())}',
+                                                                          '${NumberUtil.rawStringToDecimal(clubRewardsArgs.summary[index].totalReward![j].amount.toString())}',
                                                                           maxLines:
                                                                               2,
                                                                           style: headText6.copyWith(
@@ -198,7 +199,7 @@ class ClubRewardsView extends StatelessWidget {
                                                                               fontWeight: FontWeight.bold),
                                                                         )
                                                                       : Text(
-                                                                          NumberUtil.decimalLimiter(clubRewardsArgs.summary[index].totalReward[j].amount, decimalPrecision: 18)
+                                                                          NumberUtil.decimalLimiter(clubRewardsArgs.summary[index].totalReward![j].amount!, decimalPrecision: 18)
                                                                               .toString(),
                                                                           style: headText6.copyWith(
                                                                               color: green,
@@ -208,13 +209,13 @@ class ClubRewardsView extends StatelessWidget {
                                                                   clubRewardsArgs
                                                                           .summary[
                                                                               index]
-                                                                          .totalReward[
+                                                                          .totalReward![
                                                                               j]
-                                                                          .coin
+                                                                          .coin!
                                                                           .contains(
                                                                               '-')
                                                                       ? Text(
-                                                                          '\$${NumberUtil.decimalLimiter(NumberUtil.rawStringToDecimal(clubRewardsArgs.summary[index].totalReward[j].amount.toString()) * selectedPrice)}',
+                                                                          '\$${NumberUtil.decimalLimiter(NumberUtil.rawStringToDecimal(clubRewardsArgs.summary[index].totalReward![j].amount.toString()) * selectedPrice!)}',
                                                                           maxLines:
                                                                               2,
                                                                           overflow:
@@ -224,7 +225,7 @@ class ClubRewardsView extends StatelessWidget {
                                                                               fontWeight: FontWeight.bold),
                                                                         )
                                                                       : Text(
-                                                                          '\$${NumberUtil.decimalLimiter(clubRewardsArgs.summary[index].totalReward[j].amount * selectedPrice)}',
+                                                                          '\$${NumberUtil.decimalLimiter((clubRewardsArgs.summary[index].totalReward![j].amount)! * selectedPrice!)}',
                                                                           maxLines:
                                                                               2,
                                                                           style: headText6.copyWith(
@@ -240,7 +241,7 @@ class ClubRewardsView extends StatelessWidget {
                                                   .rewardDistribution ==
                                               null ||
                                           clubRewardsArgs.summary[index]
-                                              .totalReward.isEmpty
+                                              .totalReward!.isEmpty
                                       ? Row(
                                           mainAxisSize: MainAxisSize.min,
                                           children: const [])
@@ -327,7 +328,7 @@ class ClubRewardsView extends StatelessWidget {
                                     ),
                                     UIHelper.horizontalSpaceSmall,
                                     Expanded(
-                                      child: rewards[m].coin.contains('-')
+                                      child: rewards[m].coin!.contains('-')
                                           ? Text(
                                               '\$${NumberUtil.decimalLimiter(NumberUtil.rawStringToDecimal(rewards[m].amount.toString()))}',
                                               textAlign: TextAlign.right,
@@ -356,71 +357,72 @@ class ClubRewardsView extends StatelessWidget {
                 margin: const EdgeInsets.all(15),
                 child: ListView(children: [
                   UIHelper.verticalSpaceMedium,
-                  clubRewardsArgs.summary[index].rewardDistribution.gap == null
+                  clubRewardsArgs.summary[index].rewardDistribution!.gap == null
                       ? rewardsCoinWithAmount(
                           FlutterI18n.translate(context, "gap"), [])
                       : rewardsCoinWithAmount(
                           FlutterI18n.translate(context, "gap"),
                           clubRewardsArgs
-                              .summary[index].rewardDistribution.gap),
+                              .summary[index].rewardDistribution!.gap!),
 
                   // Leadership
                   UIHelper.verticalSpaceSmall,
                   UIHelper.divider,
                   UIHelper.verticalSpaceSmall,
                   clubRewardsArgs
-                              .summary[index].rewardDistribution.leadership ==
+                              .summary[index].rewardDistribution!.leadership ==
                           null
                       ? rewardsCoinWithAmount(
                           FlutterI18n.translate(context, "leadership"), [])
                       : rewardsCoinWithAmount(
                           FlutterI18n.translate(context, "leadership"),
                           clubRewardsArgs
-                              .summary[index].rewardDistribution.leadership),
+                              .summary[index].rewardDistribution!.leadership!),
 
                   // Marketing
                   UIHelper.verticalSpaceSmall,
                   UIHelper.divider,
                   UIHelper.verticalSpaceSmall,
-                  clubRewardsArgs.summary[index].rewardDistribution.marketing ==
+                  clubRewardsArgs
+                              .summary[index].rewardDistribution!.marketing ==
                           null
                       ? rewardsCoinWithAmount(
                           FlutterI18n.translate(context, "marketing"), [])
                       : rewardsCoinWithAmount(
                           FlutterI18n.translate(context, "marketing"),
                           clubRewardsArgs
-                              .summary[index].rewardDistribution.marketing),
+                              .summary[index].rewardDistribution!.marketing!),
                   // Global
                   UIHelper.verticalSpaceSmall,
                   UIHelper.divider,
                   UIHelper.verticalSpaceSmall,
-                  clubRewardsArgs.summary[index].rewardDistribution.global ==
+                  clubRewardsArgs.summary[index].rewardDistribution!.global ==
                           null
                       ? rewardsCoinWithAmount(
                           FlutterI18n.translate(context, "global"), [])
                       : rewardsCoinWithAmount(
                           FlutterI18n.translate(context, "global"),
                           clubRewardsArgs
-                              .summary[index].rewardDistribution.global),
+                              .summary[index].rewardDistribution!.global!),
 
                   // Merchant
                   UIHelper.verticalSpaceSmall,
                   UIHelper.divider,
                   UIHelper.verticalSpaceSmall,
-                  clubRewardsArgs.summary[index].rewardDistribution.merchant ==
+                  clubRewardsArgs.summary[index].rewardDistribution!.merchant ==
                           null
                       ? rewardsCoinWithAmount(
                           FlutterI18n.translate(context, "merchant"), [])
                       : rewardsCoinWithAmount(
                           FlutterI18n.translate(context, "merchant"),
                           clubRewardsArgs
-                              .summary[index].rewardDistribution.merchant),
+                              .summary[index].rewardDistribution!.merchant!),
 
                   // Merchant Referral
                   UIHelper.verticalSpaceSmall,
                   UIHelper.divider,
                   UIHelper.verticalSpaceSmall,
-                  clubRewardsArgs.summary[index].rewardDistribution
+                  clubRewardsArgs.summary[index].rewardDistribution!
                               .merchantReferral ==
                           null
                       ? rewardsCoinWithAmount(
@@ -428,22 +430,22 @@ class ClubRewardsView extends StatelessWidget {
                           [])
                       : rewardsCoinWithAmount(
                           FlutterI18n.translate(context, "merchantReferral"),
-                          clubRewardsArgs.summary[index].rewardDistribution
-                              .merchantReferral),
+                          clubRewardsArgs.summary[index].rewardDistribution!
+                              .merchantReferral!),
 
                   // Merchant Node
                   UIHelper.verticalSpaceSmall,
                   UIHelper.divider,
                   UIHelper.verticalSpaceSmall,
-                  clubRewardsArgs
-                              .summary[index].rewardDistribution.merchantNode ==
+                  clubRewardsArgs.summary[index].rewardDistribution!
+                              .merchantNode ==
                           null
                       ? rewardsCoinWithAmount(
                           FlutterI18n.translate(context, "merchantNode"), [])
                       : rewardsCoinWithAmount(
                           FlutterI18n.translate(context, "merchantNode"),
-                          clubRewardsArgs
-                              .summary[index].rewardDistribution.merchantNode),
+                          clubRewardsArgs.summary[index].rewardDistribution!
+                              .merchantNode!),
                 ]),
               ));
         });

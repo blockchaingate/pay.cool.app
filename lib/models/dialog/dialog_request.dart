@@ -12,20 +12,19 @@
 * Author: barry-ruprai@exchangily.com
 *----------------------------------------------------------------------
 */
-import 'package:flutter/cupertino.dart';
 
 class DialogRequest {
   final String title;
   final String description;
   final String buttonTitle;
-  final String cancelButton;
-  final String secondaryButton;
-  final bool isSpecialReq;
+  final String? cancelButton;
+  final String? secondaryButton;
+  final bool? isSpecialReq;
 
   DialogRequest({
-    @required this.title,
-    this.description,
-    @required this.buttonTitle,
+    required this.title,
+    required this.description,
+    required this.buttonTitle,
     this.cancelButton,
     this.secondaryButton,
     this.isSpecialReq,

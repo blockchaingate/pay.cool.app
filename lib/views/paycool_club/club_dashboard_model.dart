@@ -5,20 +5,20 @@ import 'package:paycool/utils/string_util.dart';
 
 class ClubRewardsArgs {
   List<Summary> summary;
-  Map<String, Decimal> rewardTokenPriceMap;
-  ClubRewardsArgs({this.summary, this.rewardTokenPriceMap});
+  Map<String, Decimal>? rewardTokenPriceMap;
+  ClubRewardsArgs({required this.summary, this.rewardTokenPriceMap});
 }
 
 class ClubDashboard {
-  List<Summary> summary;
-  String user;
-  String referral; // parentId
-  int status;
+  List<Summary>? summary;
+  String? user;
+  String? referral; // parentId
+  int? status;
 
   ClubDashboard({this.summary, this.user, this.referral, this.status});
 
   ClubDashboard.fromJson(Map<String, dynamic> json) {
-    int intStatus;
+    int? intStatus;
     if (json['status'] != null) {
       var st = json['status'].toString();
       if (st.toString().contains('.')) {
@@ -30,7 +30,7 @@ class ClubDashboard {
     if (s != null) {
       summary = <Summary>[];
       for (var v in s) {
-        summary.add(Summary.fromJson(v));
+        summary!.add(Summary.fromJson(v));
       }
     }
     user = json['user'];
@@ -41,7 +41,7 @@ class ClubDashboard {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     if (summary != null) {
-      data['summary'] = summary.map((v) => v.toJson()).toList();
+      data['summary'] = summary!.map((v) => v.toJson()).toList();
     }
     data['user'] = user;
     data['referral'] = referral;
@@ -54,14 +54,14 @@ class ClubDashboard {
     var totalFabRewards = Decimal.zero;
     var totalFetRewards = Decimal.zero;
     var totalFetLpRewards = Decimal.zero;
-    for (var project in summary) {
+    for (var project in summary!) {
       if (project.totalReward != null) {
-        for (var reward in project.totalReward) {
+        for (var reward in project.totalReward!) {
           if (reward.coin == 'FAB') {
-            totalFabRewards += reward.amount;
+            totalFabRewards += reward.amount!;
           }
           if (reward.coin == 'FET') {
-            totalFetRewards += reward.amount;
+            totalFetRewards += reward.amount!;
           }
           if (reward.coin == 'FETDUSD-LP') {
             if (reward.amount != null) {
@@ -83,12 +83,12 @@ class ClubDashboard {
 }
 
 class Summary {
-  Project project;
-  Rewards rewardDistribution;
-  List<SummaryReward> totalReward;
-  String referral; // parentId
-  int status;
-  String expiredAt;
+  Project? project;
+  Rewards? rewardDistribution;
+  List<SummaryReward>? totalReward;
+  String? referral; // parentId
+  int? status;
+  String? expiredAt;
 
   Summary(
       {this.project,
@@ -124,7 +124,7 @@ class Summary {
     //   ea = formatStringDateV3("2023-01-20T16:44:40.663Z");
     // }
 
-    int intStatus;
+    int? intStatus;
     if (json['status'] != null) {
       var st = json['status'].toString();
       if (st.toString().contains('.')) {
@@ -137,9 +137,7 @@ class Summary {
     rewardDistribution =
         json['rewards'] != null ? Rewards.fromJson(json['rewards']) : null;
     totalReward = json['total'] != null
-        ? (json['total'] as List)
-            .map((e) => e == null ? null : SummaryReward.fromJson(e))
-            .toList()
+        ? (json['total'] as List).map((e) => SummaryReward.fromJson(e)).toList()
         : null;
     referral = json['referral'];
     status = intStatus;
@@ -149,13 +147,13 @@ class Summary {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     if (project != null) {
-      data['project'] = project.toJson();
+      data['project'] = project!.toJson();
     }
     if (rewardDistribution != null) {
-      data['rewards'] = rewardDistribution.toJson();
+      data['rewards'] = rewardDistribution!.toJson();
     }
     if (totalReward != null) {
-      data['total'] = totalReward.map((e) => e.toJson()).toList();
+      data['total'] = totalReward!.map((e) => e.toJson()).toList();
     }
     data['referral'] = referral;
     data['status'] = status;
@@ -165,9 +163,9 @@ class Summary {
 }
 
 class Project {
-  int id;
-  String en;
-  String sc;
+  int? id;
+  String? en;
+  String? sc;
 
   Project({this.en, this.sc, this.id});
 
@@ -187,13 +185,13 @@ class Project {
 }
 
 class Rewards {
-  List<SummaryReward> marketing;
-  List<SummaryReward> gap;
-  List<SummaryReward> leadership;
-  List<SummaryReward> global;
-  List<SummaryReward> merchant;
-  List<SummaryReward> merchantReferral;
-  List<SummaryReward> merchantNode;
+  List<SummaryReward>? marketing;
+  List<SummaryReward>? gap;
+  List<SummaryReward>? leadership;
+  List<SummaryReward>? global;
+  List<SummaryReward>? merchant;
+  List<SummaryReward>? merchantReferral;
+  List<SummaryReward>? merchantNode;
 
   Rewards(
       {this.marketing,
@@ -208,43 +206,43 @@ class Rewards {
     if (json['marketing'] != null) {
       marketing = <SummaryReward>[];
       json['marketing'].forEach((v) {
-        marketing.add(SummaryReward.fromJson(v));
+        marketing!.add(SummaryReward.fromJson(v));
       });
     }
     if (json['gap'] != null) {
       gap = [];
       json['gap'].forEach((v) {
-        gap.add(SummaryReward.fromJson(v));
+        gap!.add(SummaryReward.fromJson(v));
       });
     }
     if (json['leadership'] != null) {
       leadership = [];
       json['leadership'].forEach((v) {
-        leadership.add(SummaryReward.fromJson(v));
+        leadership!.add(SummaryReward.fromJson(v));
       });
     }
     if (json['global'] != null) {
       global = [];
       json['global'].forEach((v) {
-        global.add(SummaryReward.fromJson(v));
+        global!.add(SummaryReward.fromJson(v));
       });
     }
     if (json['merchant'] != null) {
       merchant = [];
       json['merchant'].forEach((v) {
-        merchant.add(SummaryReward.fromJson(v));
+        merchant!.add(SummaryReward.fromJson(v));
       });
     }
     if (json['merchantReferral'] != null) {
       merchantReferral = [];
       json['merchantReferral'].forEach((v) {
-        merchantReferral.add(SummaryReward.fromJson(v));
+        merchantReferral!.add(SummaryReward.fromJson(v));
       });
     }
     if (json['merchantNode'] != null) {
       merchantNode = [];
       json['merchantNode'].forEach((v) {
-        merchantNode.add(SummaryReward.fromJson(v));
+        merchantNode!.add(SummaryReward.fromJson(v));
       });
     }
   }
@@ -252,26 +250,26 @@ class Rewards {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     if (marketing != null) {
-      data['marketing'] = marketing.map((v) => v.toJson()).toList();
+      data['marketing'] = marketing!.map((v) => v.toJson()).toList();
     }
     if (gap != null) {
-      data['gap'] = gap.map((v) => v.toJson()).toList();
+      data['gap'] = gap!.map((v) => v.toJson()).toList();
     }
     if (leadership != null) {
-      data['leadership'] = leadership.map((v) => v.toJson()).toList();
+      data['leadership'] = leadership!.map((v) => v.toJson()).toList();
     }
     if (global != null) {
-      data['global'] = global.map((v) => v.toJson()).toList();
+      data['global'] = global!.map((v) => v.toJson()).toList();
     }
     if (merchant != null) {
-      data['merchant'] = merchant.map((v) => v.toJson()).toList();
+      data['merchant'] = merchant!.map((v) => v.toJson()).toList();
     }
     if (merchantReferral != null) {
       data['merchantReferral'] =
-          merchantReferral.map((v) => v.toJson()).toList();
+          merchantReferral!.map((v) => v.toJson()).toList();
     }
     if (merchantNode != null) {
-      data['merchantNode'] = merchantNode.map((v) => v.toJson()).toList();
+      data['merchantNode'] = merchantNode!.map((v) => v.toJson()).toList();
     }
 
     return data;
@@ -279,8 +277,8 @@ class Rewards {
 }
 
 class SummaryReward {
-  String coin;
-  Decimal amount;
+  String? coin;
+  Decimal? amount;
 
   SummaryReward({this.coin, this.amount});
 

@@ -31,7 +31,7 @@ import 'package:paycool/constants/route_names.dart';
 class WalletFeaturesViewModel extends BaseViewModel {
   final log = getLogger('WalletFeaturesViewModel');
 
-  WalletInfo walletInfo;
+  late WalletInfo walletInfo;
   WalletService walletService = locator<WalletService>();
   final storageService = locator<LocalStorageService>();
   ApiService apiService = locator<ApiService>();
@@ -42,8 +42,8 @@ class WalletFeaturesViewModel extends BaseViewModel {
   final double elevation = 5;
   double containerWidth = 150;
   double containerHeight = 115;
-  double walletBalance;
-  BuildContext context;
+  late double walletBalance;
+  late BuildContext context;
   var errDepositItem;
   String specialTicker = '';
   List<WalletFeatureName> features = [];
@@ -62,13 +62,13 @@ class WalletFeaturesViewModel extends BaseViewModel {
     getWalletFeatures();
     getErrDeposit();
     specialTicker = walletService.updateSpecialTokensTickerNameForTxHistory(
-        walletInfo.tickerName)["tickerName"];
+        walletInfo.tickerName!)["tickerName"];
     log.i('wi object to check name ${walletInfo.toJson()}');
     refreshBalance();
     checkIfCoinIsFavorite();
     decimalLimit = await coinService
-        .getSingleTokenData(walletInfo.tickerName)
-        .then((res) => res.decimal);
+        .getSingleTokenData(walletInfo.tickerName!)
+        .then((res) => res!.decimal!);
     if (decimalLimit == null || decimalLimit == 0) decimalLimit = 8;
   }
 
@@ -145,13 +145,13 @@ class WalletFeaturesViewModel extends BaseViewModel {
         for (var i = 0; i < result.length; i++) {
           var item = result[i];
           var coinType = item['coinType'];
-          String tickerNameByCointype = newCoinTypeMap[coinType];
+          String tickerNameByCointype = newCoinTypeMap[coinType]!;
           if (tickerNameByCointype == null) {
             await tokenListDatabaseService.getAll().then((tokenList) {
               if (tokenList != null) {
                 tickerNameByCointype = tokenList
                     .firstWhere((element) => element.coinType == coinType)
-                    .tickerName;
+                    .tickerName!;
               }
             });
           }
@@ -178,25 +178,25 @@ class WalletFeaturesViewModel extends BaseViewModel {
     //  await getExchangeBal();
     await apiService
         .getSingleWalletBalance(
-            fabAddress, walletInfo.tickerName, walletInfo.address)
+            fabAddress, walletInfo.tickerName!, walletInfo.address!)
         .then((walletBalance) async {
       var availableBalance = walletBalance[0].balance;
       walletInfo.availableBalance = availableBalance;
       var lockedBalance = walletBalance[0].lockBalance;
       walletInfo.lockedBalance = lockedBalance;
-      unconfirmedBalance = walletBalance[0].unconfirmedBalance;
+      unconfirmedBalance = walletBalance[0].unconfirmedBalance!;
       if (!specialTicker.contains('(')) {
         walletInfo.inExchange = walletBalance[0].unlockedExchangeBalance;
       } else {
         await getExchangeBalForSpecialTokens();
       }
-      double currentUsdValue = walletBalance[0].usdValue.usd;
+      double currentUsdValue = walletBalance[0].usdValue!.usd!;
       log.e(
           'market price $currentUsdValue -- available bal $availableBalance -- inExchange ${walletInfo.inExchange} -- locked bal $lockedBalance');
       walletInfo.usdValue = walletService.calculateCoinUsdBalance(
-          currentUsdValue, availableBalance, lockedBalance);
+          currentUsdValue, availableBalance!, lockedBalance!);
       log.w(walletInfo.toJson());
-      unconfirmedBalance = walletBalance[0].unconfirmedBalance;
+      unconfirmedBalance = walletBalance[0].unconfirmedBalance!;
     })
         // await walletService
         //     .coinBalanceByAddress(
@@ -242,7 +242,7 @@ class WalletFeaturesViewModel extends BaseViewModel {
         walletInfo.tickerName == 'USDTX') {
       tickerName = 'USDT';
     } else {
-      tickerName = walletInfo.tickerName;
+      tickerName = walletInfo.tickerName!;
     }
     await apiService.getSingleCoinExchangeBalance(tickerName).then((res) {
       if (res != null) {

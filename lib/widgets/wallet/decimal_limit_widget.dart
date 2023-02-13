@@ -4,7 +4,8 @@ import 'package:paycool/constants/custom_styles.dart';
 
 class DecimalLimitWidget extends StatelessWidget {
   final int decimalLimit;
-  const DecimalLimitWidget({Key key, this.decimalLimit}) : super(key: key);
+  const DecimalLimitWidget({Key? key, required this.decimalLimit})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +14,7 @@ class DecimalLimitWidget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(FlutterI18n.translate(context, "decimalLimit") + ': ',
+          Text('${FlutterI18n.translate(context, "decimalLimit")}: ',
               style: headText6),
           Text(decimalLimit.toString(), style: headText6),
         ],

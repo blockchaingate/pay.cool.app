@@ -26,13 +26,14 @@ import 'package:flutter/gestures.dart';
 
 class MoveToWalletView extends StatelessWidget {
   final WalletInfo walletInfo;
-  const MoveToWalletView({Key key, this.walletInfo}) : super(key: key);
+  const MoveToWalletView({Key? key, required this.walletInfo})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<MoveToWalletViewmodel>.reactive(
       viewModelBuilder: () => MoveToWalletViewmodel(),
-      onModelReady: (model) {
+      onViewModelReady: (model) {
         model.context = context;
         model.walletInfo = walletInfo;
         model.initState();
@@ -79,9 +80,7 @@ class MoveToWalletView extends StatelessWidget {
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Text(
-                                        FlutterI18n.translate(
-                                                context, "minimumAmount") +
-                                            ': ',
+                                        '${FlutterI18n.translate(context, "minimumAmount")}: ',
                                         style: headText6),
                                     Text(
                                         model.token.minWithdraw == null
@@ -93,7 +92,7 @@ class MoveToWalletView extends StatelessWidget {
                                   ],
                                 ),
                                 DecimalLimitWidget(
-                                    decimalLimit: model.token.decimal)
+                                    decimalLimit: model.token.decimal!)
                               ],
                             ),
                             focusedBorder: const OutlineInputBorder(
@@ -113,8 +112,7 @@ class MoveToWalletView extends StatelessWidget {
                     Row(
                       children: <Widget>[
                         Text(
-                            FlutterI18n.translate(context, "inExchange") +
-                                ' ${NumberUtil().truncateDoubleWithoutRouding(model.walletInfo.inExchange, precision: 6).toString()}',
+                            '${FlutterI18n.translate(context, "inExchange")} ${NumberUtil().truncateDoubleWithoutRouding(model.walletInfo.inExchange!, precision: 6).toString()}',
                             style: subText2),
                         Padding(
                           padding: const EdgeInsets.symmetric(
@@ -462,7 +460,7 @@ class MoveToWalletView extends StatelessWidget {
                                   text: TextSpan(
                                       style: Theme.of(context)
                                           .textTheme
-                                          .bodyText2
+                                          .bodyMedium!
                                           .copyWith(
                                               decoration:
                                                   TextDecoration.underline),

@@ -37,13 +37,13 @@ class RedepositViewModel extends FutureViewModel {
   double kanbanTransFee = 0.0;
   bool transFeeAdvance = false;
 
-  String errDepositTransactionID;
+  String errDepositTransactionID = '';
   List errDepositList = [];
   TransactionHistoryDatabaseService transactionHistoryDatabaseService =
       locator<TransactionHistoryDatabaseService>();
 
-  WalletInfo walletInfo;
-  BuildContext context;
+  late WalletInfo walletInfo;
+  late BuildContext context;
   String errorMessage = '';
   @override
   Future futureToRun() => getErrDeposit();
@@ -64,14 +64,14 @@ class RedepositViewModel extends FutureViewModel {
         var item = errDepositData[i];
         log.w('errDepositData count $i $item');
         var coinType = item['coinType'];
-        String tickerNameByCointype = newCoinTypeMap[coinType];
+        String tickerNameByCointype = newCoinTypeMap[coinType]!;
         debugPrint('tickerNameByCointype $tickerNameByCointype');
         if (tickerNameByCointype == null) {
           await tokenListDatabaseService.getAll().then((tokenList) {
             if (tokenList != null) {
               tickerNameByCointype = tokenList
                   .firstWhere((element) => element.coinType == coinType)
-                  .tickerName;
+                  .tickerName!;
               if (tickerNameByCointype == walletInfo.tickerName) {
                 errDepositList.add(item);
               }
@@ -166,7 +166,7 @@ class RedepositViewModel extends FutureViewModel {
 
       var resRedeposit = await submitredeposit(amountInBigInt, keyPairKanban,
           nonce, coinType, transactionID, signedMess,
-          chainType: walletInfo.tokenType);
+          chainType: walletInfo.tokenType!);
 
       if ((resRedeposit != null) && (resRedeposit['success'])) {
         log.w('resRedeposit $resRedeposit');
@@ -207,8 +207,8 @@ class RedepositViewModel extends FutureViewModel {
     //var signedMess = {'r': r, 's': s, 'v': v};
     String coinName = '';
     bool isSpecial = false;
-    int specialCoinType;
-    coinName = newCoinTypeMap[coinType];
+    late int specialCoinType;
+    coinName = newCoinTypeMap[coinType]!;
     if (coinName == null) {
       await tokenListDatabaseService
           .getTickerNameByCoinType(coinType)
@@ -236,8 +236,8 @@ class RedepositViewModel extends FutureViewModel {
         HEX.encode(keyPairKanban["privateKey"]),
         coinPoolAddress,
         nonce,
-        kanbanPrice,
-        kanbanGasLimit);
+        kanbanPrice!,
+        kanbanGasLimit!);
 
     var res = await submitReDeposit(txKanbanHex);
     return res;
@@ -255,9 +255,9 @@ class RedepositViewModel extends FutureViewModel {
   updateTransFee() async {
     var kanbanPrice = int.tryParse(kanbanGasPriceTextController.text);
     var kanbanGasLimit = int.tryParse(kanbanGasLimitTextController.text);
-    var kanbanTransFeeDouble =
-        NumberUtil.rawStringToDecimal((kanbanPrice * kanbanGasLimit).toString())
-            .toDouble();
+    var kanbanTransFeeDouble = NumberUtil.rawStringToDecimal(
+            (kanbanPrice! * kanbanGasLimit!).toString())
+        .toDouble();
 
     kanbanTransFee = kanbanTransFeeDouble;
   }

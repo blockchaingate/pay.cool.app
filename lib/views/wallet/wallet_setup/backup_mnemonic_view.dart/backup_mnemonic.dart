@@ -25,9 +25,9 @@ class BackupMnemonicWalletView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<BackupMnemonicViewModel>.reactive(
-        createNewModelOnInsert: true,
+        createNewViewModelOnInsert: true,
         viewModelBuilder: () => BackupMnemonicViewModel(),
-        onModelReady: (model) async {
+        onViewModelReady: (model) async {
           //   model.context = context;
           model.init();
         },

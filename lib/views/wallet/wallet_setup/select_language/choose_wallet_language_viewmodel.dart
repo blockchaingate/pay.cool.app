@@ -24,7 +24,7 @@ import 'package:stacked/stacked.dart';
 
 class ChooseWalletLanguageViewModel extends BaseViewModel {
   final log = getLogger('ChooseWalletLanguageScreenState');
-  BuildContext context;
+  late BuildContext context;
 
   UserSettingsDatabaseService userSettingsDatabaseService =
       locator<UserSettingsDatabaseService>();
@@ -41,7 +41,7 @@ class ChooseWalletLanguageViewModel extends BaseViewModel {
     //  SharedPreferences prefs = await SharedPreferences.getInstance();
     lang = await userSettingsDatabaseService
         .getById(1)
-        .then((res) => res.language);
+        .then((res) => res!.language!);
     if (lang == null || lang == '') {
       log.e('language empty');
     } else {

@@ -30,17 +30,18 @@ class UserSettingsDatabaseService {
   final String columnWalletBalancesBody = 'walletBalancesBody';
 
   static const _databaseVersion = 3;
-  static Future<Database> _database;
+
   String path = '';
 
+  static Database? _database;
+
+  Future<Database> get database async => _database ??= await initDb();
   Future<Database> initDb() async {
-    if (_database != null) return _database;
     var databasePath = await getDatabasesPath();
     path = join(databasePath, _databaseName);
     log.w(path);
-    _database =
-        openDatabase(path, version: _databaseVersion, onCreate: _onCreate);
-    return _database;
+
+    return openDatabase(path, version: _databaseVersion, onCreate: _onCreate);
   }
 
   void _onCreate(Database db, int version) async {
@@ -57,7 +58,7 @@ class UserSettingsDatabaseService {
 
   Future<List<UserSettings>> getAll() async {
     await initDb();
-    final Database db = await _database;
+    final Database db = await database!;
     log.w('getall $db');
 
     // res is giving me the same output in the log whether i map it or just take var res
@@ -71,16 +72,17 @@ class UserSettingsDatabaseService {
 // Insert Data In The Database
   Future insert(UserSettings userSettings) async {
     await initDb();
-    final Database db = await _database;
+    final Database db = await database!;
     int id = await db.insert(tableName, userSettings.toJson(),
         conflictAlgorithm: ConflictAlgorithm.replace);
     return id;
   }
 
   // Get Single Wallet By Id
-  Future<UserSettings> getById(int id) async {
-    final Database db = await _database;
-    List<Map> res = await db.query(tableName, where: 'id= ?', whereArgs: [id]);
+  Future<UserSettings?> getById(int id) async {
+    final Database db = await database;
+    List<Map<String, dynamic>> res =
+        await db.query(tableName, where: 'id= ?', whereArgs: [id]);
     log.w('ID - $id --- $res');
     if (res.isNotEmpty) {
       return UserSettings.fromJson((res.first));
@@ -89,9 +91,9 @@ class UserSettingsDatabaseService {
   }
 
   // Get Single Wallet By Id
-  Future<String> getLanguage() async {
-    final Database db = await _database;
-    List<Map> res = await db.query(tableName);
+  Future<String?> getLanguage() async {
+    final Database db = await database;
+    List<Map<String, dynamic>> res = await db.query(tableName);
     log.w('res --- $res');
     if (res.isNotEmpty) {
       return UserSettings.fromJson((res.first)).language;
@@ -101,13 +103,13 @@ class UserSettingsDatabaseService {
 
   // Delete Single Object From Database By Id
   Future<void> delete(int id) async {
-    final db = await _database;
+    final db = await database;
     await db.delete(tableName, where: "id = ?", whereArgs: [id]);
   }
 
   // Update database
   Future<void> update(UserSettings userSettings) async {
-    final Database db = await _database;
+    final Database db = await database;
     await db.update(
       tableName,
       userSettings.toJson(),
@@ -119,7 +121,7 @@ class UserSettingsDatabaseService {
 
   // Close Database
   Future closeDb() async {
-    var db = await _database;
+    var db = await database;
     return db.close();
   }
 

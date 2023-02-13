@@ -1,21 +1,21 @@
 class PayCoolClubModel {
-  List<dynamic> levelRewardRate;
-  List<dynamic> rules;
-  List<dynamic> jurisdictions;
-  int id;
-  int status;
-  String lastUpdated;
-  String dateCreated;
-  List<LocalizeText> sloganLan;
-  List<LocalizeText> descLan;
-  String avatarUrl;
-  String imageUrl;
-  String name;
-  List<LocalizeText> titleLan;
-  List<dynamic> subTitleLan;
-  List<dynamic> grade;
-  bool hasJoined;
-  bool keyNodeAvailable;
+  List<dynamic>? levelRewardRate;
+  List<dynamic>? rules;
+  List<dynamic>? jurisdictions;
+  int? id;
+  int? status;
+  String? lastUpdated;
+  String? dateCreated;
+  List<LocalizeText>? sloganLan;
+  List<LocalizeText>? descLan;
+  String? avatarUrl;
+  String? imageUrl;
+  String? name;
+  List<LocalizeText>? titleLan;
+  List<dynamic>? subTitleLan;
+  List<dynamic>? grade;
+  bool? hasJoined;
+  bool? keyNodeAvailable;
 
   PayCoolClubModel(
       {this.levelRewardRate,
@@ -54,13 +54,13 @@ class PayCoolClubModel {
         dateCreated: json['dateCreated'] as String,
         sloganLan: sloganLanTextList,
         descLan: (json['descLan'] as List)
-            .map((e) => e == null ? null : LocalizeText.fromJson(e))
+            .map((e) => LocalizeText.fromJson(e))
             .toList(),
         avatarUrl: json['avatarUrl'] as String,
         imageUrl: json['imageUrl'] as String,
         name: json['name'] as String,
         titleLan: (json['titleLan'] as List<dynamic>)
-            ?.map((e) => e == null ? null : LocalizeText.fromJson(e))
+            ?.map((e) => LocalizeText.fromJson(e))
             ?.toList(),
         subTitleLan: json['subTitleLan'] as List<dynamic>,
         grade: json['grade'] as List<dynamic>,
@@ -91,20 +91,20 @@ class PayCoolClubModel {
 }
 
 class PayCoolClubModelList {
-  final List<PayCoolClubModel> payCoolClubModeList;
-  PayCoolClubModelList({this.payCoolClubModeList});
+  final List<PayCoolClubModel>? payCoolClubModelList;
+  PayCoolClubModelList({this.payCoolClubModelList});
 
   factory PayCoolClubModelList.fromJson(List<dynamic> parsedJson) {
     List<PayCoolClubModel> payCoolClubModeList = [];
     payCoolClubModeList =
         parsedJson.map((i) => PayCoolClubModel.fromJson(i)).toList();
-    return PayCoolClubModelList(payCoolClubModeList: payCoolClubModeList);
+    return PayCoolClubModelList(payCoolClubModelList: payCoolClubModeList);
   }
 }
 
 class LocalizeText {
-  String lan;
-  String text;
+  String? lan;
+  String? text;
 
   LocalizeText({this.lan, this.text});
 

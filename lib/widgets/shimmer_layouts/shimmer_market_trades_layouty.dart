@@ -3,7 +3,7 @@ import 'package:paycool/constants/colors.dart';
 import 'package:paycool/shared/ui_helpers.dart';
 
 class ShimmerMarketTradesLayout extends StatelessWidget {
-  const ShimmerMarketTradesLayout({Key key}) : super(key: key);
+  const ShimmerMarketTradesLayout({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

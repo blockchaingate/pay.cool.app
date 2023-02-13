@@ -8,12 +8,12 @@ import 'package:paycool/views/settings/settings_viewmodel.dart';
 import 'package:stacked/stacked.dart';
 
 class SettingsPortableView extends StatelessWidget {
-  const SettingsPortableView({Key key}) : super(key: key);
+  const SettingsPortableView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<SettingsViewmodel>.reactive(
-      onModelReady: (model) async {
+      onViewModelReady: (model) async {
         model.context = context;
         await model.init();
       },
@@ -31,8 +31,8 @@ class SettingsPortableView extends StatelessWidget {
 }
 
 class SettingsPortableContainer extends StatelessWidget {
-  const SettingsPortableContainer({Key key, this.model}) : super(key: key);
-  final SettingsViewmodel model;
+  const SettingsPortableContainer({Key? key, this.model}) : super(key: key);
+  final SettingsViewmodel? model;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -171,9 +171,9 @@ class SettingsPortableContainer extends StatelessWidget {
                           activeTrackColor: white,
                           activeColor: primaryColor,
                           inactiveTrackColor: white,
-                          value: model.isDialogDisplay,
+                          value: model!.isDialogDisplay,
                           onChanged: (value) {
-                            model.setIsDialogWarningValue(value);
+                            model!.setIsDialogWarningValue(value);
                           }),
                     ),
                   ),
@@ -207,15 +207,15 @@ class SettingsPortableContainer extends StatelessWidget {
                           activeTrackColor: white,
                           activeColor: primaryColor,
                           inactiveTrackColor: white,
-                          value: !model.isShowCaseOnce,
+                          value: !model!.isShowCaseOnce,
                           onChanged: (value) {
-                            model.storageService.isShowCaseView = !value;
+                            model!.storageService.isShowCaseView = !value;
 
-                            model.setBusy(true);
+                            model!.setBusy(true);
                             // get new value and assign it to the viewmodel variable
-                            model.isShowCaseOnce =
-                                model.storageService.isShowCaseView;
-                            model.setBusy(false);
+                            model!.isShowCaseOnce =
+                                model!.storageService.isShowCaseView;
+                            model!.setBusy(false);
                           }),
                     ),
                   ),

@@ -19,7 +19,7 @@ import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 
 class AddGasViewModel extends FutureViewModel {
-  BuildContext context;
+  late BuildContext context;
   final log = getLogger('AddGasVM');
   final walletService = locator<WalletService>();
   final walletDataBaseService = locator<WalletDatabaseService>();
@@ -42,7 +42,7 @@ class AddGasViewModel extends FutureViewModel {
   var scarContractAddress;
   var contractInfo;
   var utxos;
-  double extraAmount;
+  double extraAmount = 0.0;
   int satoshisPerBytes = 14;
   var bytesPerInput;
   var feePerInput;
@@ -123,7 +123,7 @@ class AddGasViewModel extends FutureViewModel {
         .then((walletBalance) {
       if (walletBalance != null) {
         fabBalance = NumberUtil().truncateDoubleWithoutRouding(
-            walletBalance[0].balance,
+            walletBalance[0].balance!,
             precision: 6);
       }
     });

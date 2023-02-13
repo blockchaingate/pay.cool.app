@@ -27,39 +27,27 @@ class WalletFeatureName {
 // Wallet Model
 
 class WalletInfo {
-  int _id;
-  String _name;
-  String _tickerName;
-  String _tokenType;
-  String _address;
-  double _lockedBalance;
-  double _availableBalance;
-  double _usdValue;
-  double _inExchange;
+  int? id;
+  String? name;
+  String? tickerName;
+  String? tokenType;
+  String? address;
+  double? lockedBalance;
+  double? availableBalance;
+  double? usdValue;
+  double? inExchange;
 
   WalletInfo({
-    int id,
-    String tickerName,
-    String tokenType,
-    String address,
-    double lockedBalance,
-    double availableBalance,
-    double usdValue,
-    String name,
-    double inExchange,
-    //PairDecimalConfig pairDecimalConfig
-  }) {
-    _id = id;
-    _tickerName = tickerName;
-    _tokenType = tokenType;
-    _address = address;
-    _lockedBalance = lockedBalance ?? 0.0;
-    _availableBalance = availableBalance ?? 0.0;
-    _usdValue = usdValue ?? 0.0;
-    _name = name;
-    _inExchange = inExchange ?? 0.0;
-    // this._pairDecimalConfig = pairDecimalConfig ?? new PairDecimalConfig();
-  }
+    this.id,
+    this.tickerName,
+    this.tokenType,
+    this.address,
+    this.lockedBalance,
+    this.availableBalance,
+    this.usdValue,
+    this.name,
+    this.inExchange,
+  });
 
   factory WalletInfo.fromJson(Map<String, dynamic> json) {
     return WalletInfo(
@@ -79,82 +67,22 @@ class WalletInfo {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['id'] = _id;
-    data['tickerName'] = _tickerName;
-    data['tokenType'] = _tokenType;
-    data['address'] = _address;
-    data['lockedBalance'] = _lockedBalance;
-    data['availableBalance'] = _availableBalance;
-    data['usdValue'] = _usdValue;
-    data['name'] = _name;
-    data['inExchange'] = _inExchange;
+    data['id'] = id;
+    data['tickerName'] = tickerName;
+    data['tokenType'] = tokenType;
+    data['address'] = address;
+    data['lockedBalance'] = lockedBalance;
+    data['availableBalance'] = availableBalance;
+    data['usdValue'] = usdValue;
+    data['name'] = name;
+    data['inExchange'] = inExchange;
     return data;
-  }
-
-  int get id => _id;
-
-  set id(int id) {
-    _id = id;
-  }
-
-  String get tickerName => _tickerName;
-
-  set tickerName(String tickerName) {
-    _tickerName = tickerName;
-  }
-
-  String get tokenType => _tokenType;
-
-  set tokenType(String tokenType) {
-    _tokenType = tokenType;
-  }
-
-  String get address => _address;
-
-  set address(String address) {
-    _address = address;
-  }
-
-  double get lockedBalance => _lockedBalance;
-  set lockedBalance(double lockedBalance) {
-    _lockedBalance = lockedBalance;
-  }
-
-  double get availableBalance => _availableBalance;
-
-  set availableBalance(double availableBalance) {
-    if (availableBalance.isNegative) {
-      _availableBalance = 0.0;
-    } else {
-      _availableBalance = availableBalance;
-    }
-  }
-
-  double get usdValue => _usdValue;
-
-  set usdValue(double usdValue) {
-    if (usdValue.isNegative) {
-      _usdValue = 0.0;
-    } else {
-      _usdValue = usdValue;
-    }
-  }
-
-  String get name => _name;
-
-  set name(String name) {
-    _name = name;
-  }
-
-  double get inExchange => _inExchange;
-  set inExchange(double inExchange) {
-    _inExchange = inExchange;
   }
 }
 
 class WalletInfoList {
   final List<WalletInfo> wallets;
-  WalletInfoList({this.wallets});
+  WalletInfoList({required this.wallets});
 
   factory WalletInfoList.fromJson(List<dynamic> parsedJson) {
     List<WalletInfo> wallets = [];

@@ -12,13 +12,13 @@ import 'package:stacked/stacked.dart';
 import 'package:paycool/views/paycool/rewards/paycool_rewards_viewmodel.dart';
 
 class PayCoolRewardsView extends StatelessWidget {
-  const PayCoolRewardsView({Key key}) : super(key: key);
+  const PayCoolRewardsView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<PayCoolRewardsViewModel>.reactive(
       viewModelBuilder: () => PayCoolRewardsViewModel(),
-      onModelReady: (model) async {
+      onViewModelReady: (model) async {
         model.context = context;
       },
       builder: (BuildContext context, PayCoolRewardsViewModel model, child) =>
@@ -78,7 +78,8 @@ class PayCoolRewardsView extends StatelessWidget {
                                                 Text(
                                                   formatStringDateV2(model
                                                           .paymentRewards[index]
-                                                          .dateCreated)
+                                                          .dateCreated
+                                                          .toString())
                                                       .split(' ')[0],
                                                   style: headText5.copyWith(
                                                       fontWeight:
@@ -87,7 +88,8 @@ class PayCoolRewardsView extends StatelessWidget {
                                                 Text(
                                                   formatStringDateV2(model
                                                           .paymentRewards[index]
-                                                          .dateCreated)
+                                                          .dateCreated
+                                                          .toString())
                                                       .split(' ')[1],
                                                   style: headText5,
                                                 ),
@@ -98,9 +100,7 @@ class PayCoolRewardsView extends StatelessWidget {
                                             mainAxisSize: MainAxisSize.min,
                                             children: [
                                               Text(
-                                                model.paymentRewards[index]
-                                                        .rewardCoin +
-                                                    ' ',
+                                                '${model.paymentRewards[index].rewardCoin} ',
                                                 style: headText5,
                                               ),
                                               Text(
@@ -108,7 +108,7 @@ class PayCoolRewardsView extends StatelessWidget {
                                                         model
                                                             .paymentRewards[
                                                                 index]
-                                                            .rewardAmount,
+                                                            .rewardAmount!,
                                                         decimalPrecision: 6)
                                                     .toString(),
                                                 style: const TextStyle(
@@ -147,7 +147,8 @@ class PayCoolRewardsView extends StatelessWidget {
                                                         model
                                                             .paymentRewards[
                                                                 index]
-                                                            .txid,
+                                                            .txid
+                                                            .toString(),
                                                         maxLines: 1,
                                                         overflow: TextOverflow
                                                             .ellipsis,
@@ -162,8 +163,8 @@ class PayCoolRewardsView extends StatelessWidget {
                                             ],
                                           ),
                                           trailing: CopyClipboardTextWidget(
-                                              model
-                                                  .paymentRewards[index].txid)),
+                                              model.paymentRewards[index].txid
+                                                  .toString())),
                                     );
                                   }))
                         ],

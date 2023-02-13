@@ -29,13 +29,14 @@ import 'package:stacked/stacked.dart';
 // {"success":true,"data":{"transactionID":"7f9d1b3fad00afa85076d28d46fd3457f66300989086b95c73ed84e9b3906de8"}}
 class MoveToExchangeView extends StatelessWidget {
   final WalletInfo walletInfo;
-  const MoveToExchangeView({Key key, this.walletInfo}) : super(key: key);
+  const MoveToExchangeView({Key? key, required this.walletInfo})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<MoveToExchangeViewModel>.reactive(
       viewModelBuilder: () => MoveToExchangeViewModel(),
-      onModelReady: (model) {
+      onViewModelReady: (model) {
         model.context = context;
         model.walletInfo = walletInfo;
         model.initState();
@@ -96,7 +97,7 @@ class MoveToExchangeView extends StatelessWidget {
               Row(
                 children: <Widget>[
                   Text(
-                      '${FlutterI18n.translate(context, "walletbalance")}  ${NumberUtil().truncateDoubleWithoutRouding(model.walletInfo.availableBalance, precision: model.decimalLimit).toString()}',
+                      '${FlutterI18n.translate(context, "walletbalance")}  ${NumberUtil().truncateDoubleWithoutRouding(model.walletInfo.availableBalance!, precision: model.decimalLimit).toString()}',
                       style: subText2),
                   Padding(
                     padding: const EdgeInsets.symmetric(
@@ -471,7 +472,7 @@ class MoveToExchangeView extends StatelessWidget {
                             text: TextSpan(
                                 style: Theme.of(context)
                                     .textTheme
-                                    .bodyText2
+                                    .bodyMedium!
                                     .copyWith(
                                         decoration: TextDecoration.underline,
                                         fontWeight: FontWeight.w400),

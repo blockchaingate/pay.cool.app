@@ -19,7 +19,7 @@ const String RedepositViewRoute = '/redeposit';
 const String WithdrawViewRoute = '/withdraw';
 
 // Wallet Features
-const String WalletFeaturesViewRoute = '/walletFeatures';
+const String walletFeaturesViewRoute = '/walletFeatures';
 const String SendViewRoute = '/send';
 const String ReceiveViewRoute = '/receive';
 const String TransactionHistoryViewRoute = '/transactionHistory';
@@ -34,24 +34,23 @@ const String clubProjectDetailsViewRoute = '/clubProjectDetails';
 const String clubPackageCheckoutViewRoute = '/clubPackageCheckout';
 const String referralViewRoute = '/referral';
 // Pay.cool Routes
-const String PayCoolViewRoute = '/paycool';
+
 const String PayCoolRewardsViewRoute = '/payCoolRewards';
 const String PayCoolTransactionHistoryViewRoute = '/paycoolTransactionHistory';
 
 /*----------------------------------------------------------------------
                         Navigation Routes
 ----------------------------------------------------------------------*/
+const String clubDashboardViewRoute = '/clubDashboard';
 const String DashboardViewRoute = '/dashboard';
-const String MarketsViewRoute = '/markets';
+
 const String lightningRemitViewRoute = '/lightningRemit';
 const String InstructionsViewRoute = '/campaignInstructions';
 const String SettingViewRoute = '/settings';
-
+const String PayCoolViewRoute = '/paycool';
 /*----------------------------------------------------------------------
                       Campaign Routes
 ----------------------------------------------------------------------*/
-
-const String PayCoolClubDashboardViewRoute = '/campaignListDashboard';
 
 const String LoginViewRoute = '/login';
 const String PaymentViewRoute = '/payment';

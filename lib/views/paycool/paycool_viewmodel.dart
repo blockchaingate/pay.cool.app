@@ -5,10 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:majascan/majascan.dart';
+import 'package:qr_code_utils/qr_code_utils.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:qr_code_tools/qr_code_tools.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:paycool/constants/api_routes.dart';
 import 'package:paycool/constants/colors.dart';
@@ -71,10 +70,10 @@ class PayCoolViewmodel extends FutureViewModel {
   final payCoolClubService = locator<PayCoolClubService>();
   final userSettingsDatabaseService = locator<UserSettingsDatabaseService>();
   String tickerName = '';
-  BuildContext context;
+  late BuildContext context;
   double quantity = 0.0;
   GlobalKey globalKey = GlobalKey();
-  ScrollController scrollController;
+  ScrollController? scrollController;
   String loadingStatus = '';
 
   // var barcodeRes = [];
@@ -83,10 +82,10 @@ class PayCoolViewmodel extends FutureViewModel {
   // bool isShowBottomSheet = false;
 
   List<TransactionHistory> transactionHistory = [];
-  String abiHex;
+  String? abiHex;
   var seed = [];
-  bool isMember = false;
-  bool isAutoStartPaycoolScan;
+  bool? isMember = false;
+  bool? isAutoStartPaycoolScan;
   Decimal amountPayable = Decimal.zero;
   Decimal taxAmount = Decimal.zero;
   String coinPayable = '';
@@ -107,10 +106,10 @@ class PayCoolViewmodel extends FutureViewModel {
   // final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   int decimalLimit = 8;
   var fabUtils = FabUtils();
-  PaymentRewardsModel rewardInfoModel = PaymentRewardsModel();
+  PaymentRewardsModel? rewardInfoModel = PaymentRewardsModel();
   String orderId = '';
-  MerchantModel merchantModel = MerchantModel();
-  String orderIdFromCreateStoreOrder = '';
+  MerchantModel? merchantModel = MerchantModel();
+  String? orderIdFromCreateStoreOrder = '';
   bool isScanningImage = false;
   bool isServerDown = false;
   Decimal gasBalance = Constants.decimalZero;
@@ -129,16 +128,14 @@ class PayCoolViewmodel extends FutureViewModel {
   init() async {
     sharedService.context = context;
 
-    storageService.autoStartPaycoolScan == null
-        ? isAutoStartPaycoolScan = false
-        : isAutoStartPaycoolScan = storageService.autoStartPaycoolScan;
+    isAutoStartPaycoolScan = storageService.autoStartPaycoolScan;
     // await userSettingsDatabaseService.getById(1).then((res) {
     //   if (res != null) {
     //     lang = res.language ?? "en";
     //     log.i('user settings db not null');
     //   }
     // });
-    if (lang == null || lang.isEmpty) {
+    if (lang.isEmpty) {
       lang = "en";
     }
   }
@@ -155,17 +152,17 @@ class PayCoolViewmodel extends FutureViewModel {
     data.forEach((ExchangeBalanceModel wallet) async {
       log.w('onData func - ${wallet.toJson().toString()}');
       if (wallet.ticker.isEmpty) {
-        await coinService
-            .getSingleTokenData('', coinType: wallet.coinType)
-            .then((token) {
-          //storageService.tokenList.forEach((newToken){
-          debugPrint(token.toJson().toString());
-          // var json = jsonDecode(newToken);
-          // Token token = Token.fromJson(json);
-          // if (token.tokenType == element.coinType){ debugPrint(token.tickerName);
+        var res =
+            await coinService.getSingleTokenData('', coinType: wallet.coinType);
 
-          wallet.ticker = token.tickerName; //}
-        });
+        //storageService.tokenList.forEach((newToken){
+
+        // var json = jsonDecode(newToken);
+        // Token token = Token.fromJson(json);
+        // if (token.tokenType == element.coinType){ debugPrint(token.tickerName);
+
+        wallet.ticker = res!.tickerName.toString(); //}
+
 //element.ticker =tradeService.setTickerNameByType(element.coinType);
         debugPrint('exchanageBalanceModel tickerName ${wallet.ticker}');
       }
@@ -176,7 +173,7 @@ class PayCoolViewmodel extends FutureViewModel {
     setBusyForObject(exchangeBalances, false);
     setBusyForObject(tickerName, true);
 
-    if (exchangeBalances != null && exchangeBalances.isNotEmpty) {
+    if (exchangeBalances.isNotEmpty) {
       tickerName = exchangeBalances[0].ticker;
 
       quantity = exchangeBalances[0].unlockedAmount;
@@ -205,18 +202,18 @@ class PayCoolViewmodel extends FutureViewModel {
     // Pick an image
     setBusyForObject(isScanningImage, true);
     String _qrcodeFile = '';
-    final File image = await ImagePicker.pickImage(source: ImageSource.gallery);
+    final image = await ImagePicker().pickImage(source: ImageSource.gallery);
     if (image != null) {
       _qrcodeFile = image.path;
       log.w(_qrcodeFile);
     }
     try {
-      var barcodeScanData = await QrCodeToolsPlugin.decodeFrom(_qrcodeFile);
+      var barcodeScanData = await QrCodeUtils.decodeFrom(_qrcodeFile);
       log.i(barcodeScanData);
       orderDetails(barcodeScanData: barcodeScanData);
     } catch (err) {
       sharedService.sharedSimpleNotification(
-          FlutterI18n.translate(context, "validationError"));
+          FlutterI18n.translate(context!, "validationError"));
       log.e('QrCodeToolsPlugin Catch $err');
     }
     setBusyForObject(isScanningImage, false);
@@ -232,7 +229,7 @@ class PayCoolViewmodel extends FutureViewModel {
       await payCoolClubService.isValidMember(fabAddress).then((value) {
         isMember = value;
 
-        if (isMember && isAutoStartPaycoolScan) {
+        if (isMember! && isAutoStartPaycoolScan!) {
           debugPrint("This user is member!");
           debugPrint(
               "isAutoStartPaycoolScan: " + isAutoStartPaycoolScan.toString());
@@ -254,7 +251,7 @@ class PayCoolViewmodel extends FutureViewModel {
     bool isValidReferralAddress = false;
     if (referralController.text.isEmpty) {
       sharedService.sharedSimpleNotification(
-          FlutterI18n.translate(context, "invalidReferralCode"));
+          FlutterI18n.translate(context!, "invalidReferralCode"));
       setBusy(false);
       return;
     }
@@ -262,8 +259,8 @@ class PayCoolViewmodel extends FutureViewModel {
     await getGas();
     if (gasBalance == Constants.decimalZero) {
       sharedService.sharedSimpleNotification(
-          FlutterI18n.translate(context, "notice"),
-          subtitle: FlutterI18n.translate(context, "insufficientGasAmount"));
+          FlutterI18n.translate(context!, "notice"),
+          subtitle: FlutterI18n.translate(context!, "insufficientGasAmount"));
       setBusy(false);
       return;
     }
@@ -278,12 +275,12 @@ class PayCoolViewmodel extends FutureViewModel {
     });
     if (!isValidReferralAddress) {
       sharedService.sharedSimpleNotification(
-          FlutterI18n.translate(context, "invalidReferralCode"));
+          FlutterI18n.translate(context!, "invalidReferralCode"));
       setBusy(false);
       return;
     }
 
-    var seed = await walletService.getSeedDialog(context);
+    var seed = await walletService.getSeedDialog(context!);
 
     try {
       var paycoolReferralAddress =
@@ -297,16 +294,16 @@ class PayCoolViewmodel extends FutureViewModel {
       if (res != null && res != '') {
         if (res == '0x1') {
           sharedService.alertDialog(
-              FlutterI18n.translate(context, "newAccountCreated"),
-              '${FlutterI18n.translate(context, "newAccountNote")} ${FlutterI18n.translate(context, "waitForNewAccountSetUp")}',
+              FlutterI18n.translate(context!, "newAccountCreated"),
+              '${FlutterI18n.translate(context!, "newAccountNote")} ${FlutterI18n.translate(context!, "waitForNewAccountSetUp")}',
               path: PayCoolViewRoute);
         } else if (res == '0x0') {
           sharedService.sharedSimpleNotification(
-              FlutterI18n.translate(context, "failed"));
+              FlutterI18n.translate(context!, "failed"));
         }
       } else {
-        sharedService
-            .sharedSimpleNotification(FlutterI18n.translate(context, "failed"));
+        sharedService.sharedSimpleNotification(
+            FlutterI18n.translate(context!, "failed"));
         apiRes = apiRes["message"] ?? '';
       }
     } catch (err) {
@@ -320,9 +317,9 @@ class PayCoolViewmodel extends FutureViewModel {
   makePayment() async {
     setBusy(true);
     isPaying = true;
-    if (merchantModel.status == 0) {
+    if (merchantModel!.status == 0) {
       sharedService.sharedSimpleNotification(
-          FlutterI18n.translate(context, "storeNotApproved"));
+          FlutterI18n.translate(context!, "storeNotApproved"));
       isPaying = false;
       setBusy(false);
       return;
@@ -332,13 +329,13 @@ class PayCoolViewmodel extends FutureViewModel {
     var gasAmount = await walletService.gasBalance(exgAddress);
     if (gasAmount == 0.0) {
       sharedService.sharedSimpleNotification(
-          FlutterI18n.translate(context, "insufficientGasAmount"));
+          FlutterI18n.translate(context!, "insufficientGasAmount"));
       setBusy(false);
       return;
     }
     String selectedCoinAddress =
         await coinService.getCoinWalletAddress(tickerName, tokenType: 'ETH');
-    List<WalletBalance> walletBalanceRes;
+    List<WalletBalance>? walletBalanceRes;
     await apiService
         .getSingleWalletBalance(fabAddress, tickerName, selectedCoinAddress)
         .then((walletBalance) {
@@ -347,10 +344,10 @@ class PayCoolViewmodel extends FutureViewModel {
       }
     });
 
-    if (walletBalanceRes[0].unlockedExchangeBalance <
+    if (walletBalanceRes![0].unlockedExchangeBalance! <
         (amountPayable + taxAmount).toDouble()) {
       sharedService.sharedSimpleNotification(
-          FlutterI18n.translate(context, "insufficientBalance"),
+          FlutterI18n.translate(context!, "insufficientBalance"),
           isError: true);
       setBusy(false);
       return;
@@ -359,14 +356,14 @@ class PayCoolViewmodel extends FutureViewModel {
     try {
       var seed = await walletService.getSeedDialog(context);
       var res;
-      for (var param in rewardInfoModel.params) {
-        res = await paycoolService.signSendTx(seed, param.data, param.to);
+      for (var param in rewardInfoModel!.params!) {
+        res = await paycoolService.signSendTx(seed, param.data!, param.to!);
       }
       if (res == '0x1') {
         payOrderConfirmationPopup();
       } else if (res == '0x0') {
         sharedService.sharedSimpleNotification(
-            FlutterI18n.translate(context, "failed"),
+            FlutterI18n.translate(context!, "failed"),
             isError: true);
       }
     } catch (err) {
@@ -380,8 +377,8 @@ class PayCoolViewmodel extends FutureViewModel {
   payOrderConfirmationPopup() async {
     await dialogService
         .showBasicDialog(
-      title: FlutterI18n.translate(context, "placeOrderTransactionSuccessful"),
-      buttonTitle: FlutterI18n.translate(context, "checkRewards"),
+      title: FlutterI18n.translate(context!, "placeOrderTransactionSuccessful"),
+      buttonTitle: FlutterI18n.translate(context!, "checkRewards"),
     )
         .then((res) {
       if (res.confirmed) {
@@ -402,8 +399,8 @@ class PayCoolViewmodel extends FutureViewModel {
         transactionHistory.add(tx);
       });
       log.w('LightningRemit txs ${transactionHistory.length}');
-      transactionHistory.sort(
-          (a, b) => DateTime.parse(b.date).compareTo(DateTime.parse(a.date)));
+      transactionHistory.sort((a, b) => DateTime.parse(b.date.toString())
+          .compareTo(DateTime.parse(a.date.toString())));
     });
     setBusy(false);
   }
@@ -601,7 +598,7 @@ class PayCoolViewmodel extends FutureViewModel {
                                             context, "noCoinBalance"),
                                         style: Theme.of(context)
                                             .textTheme
-                                            .bodyText2),
+                                            .bodyMedium),
                                     subtitle: Text(
                                         FlutterI18n.translate(context,
                                             "transferFundsToExchangeUsingDepositButton"),
@@ -616,7 +613,7 @@ class PayCoolViewmodel extends FutureViewModel {
                           value: storeOrderCurrencytickerName,
                           onChanged: (newValue) {
                             setState(() {});
-                            storeOrderCurrencytickerName = newValue;
+                            storeOrderCurrencytickerName = newValue.toString();
                           },
                           items: exchangeBalances.map(
                             (coin) {
@@ -682,7 +679,7 @@ class PayCoolViewmodel extends FutureViewModel {
                         style: headText5.copyWith(fontWeight: FontWeight.bold)),
                     UIHelper.verticalSpaceSmall,
                     // disply further payment instructions by showing the order id
-                    orderIdFromCreateStoreOrder.isNotEmpty
+                    orderIdFromCreateStoreOrder!.isNotEmpty
                         ? Container(
                             padding: const EdgeInsets.all(8),
                             child: Column(
@@ -720,10 +717,10 @@ class PayCoolViewmodel extends FutureViewModel {
                             ),
                             onPressed: () {
                               if (!isCreatingOrder) {
-                                if (orderIdFromCreateStoreOrder.isNotEmpty) {
+                                if (orderIdFromCreateStoreOrder!.isNotEmpty) {
                                   Navigator.of(context).pop(false);
                                   getOrderDetailsById(
-                                      orderIdFromCreateStoreOrder);
+                                      orderIdFromCreateStoreOrder!);
                                 } else {
                                   Navigator.of(context).pop(false);
                                 }
@@ -731,7 +728,7 @@ class PayCoolViewmodel extends FutureViewModel {
                             },
                           ),
                           UIHelper.horizontalSpaceSmall,
-                          orderIdFromCreateStoreOrder.isEmpty
+                          orderIdFromCreateStoreOrder!.isEmpty
                               ? OutlinedButton(
                                   style: ButtonStyle(
                                     backgroundColor:
@@ -756,7 +753,7 @@ class PayCoolViewmodel extends FutureViewModel {
                                         isCreatingOrder = true;
                                       });
                                       // set state locally
-                                      var body = {};
+                                      Map<String, dynamic> body = {};
                                       try {
                                         body = createStoreOrderBody(
                                             memoController.text,
@@ -806,14 +803,14 @@ class PayCoolViewmodel extends FutureViewModel {
       "items": [
         {
           "title": memo,
-          "rebateRate": merchantModel.rebateRate,
+          "rebateRate": merchantModel!.rebateRate,
           "taxRate": 0,
-          "lockedDays": merchantModel.lockedDays,
+          "lockedDays": merchantModel!.lockedDays,
           "price": amount,
           "quantity": 1
         }
       ],
-      "merchantId": merchantModel.sId,
+      "merchantId": merchantModel!.sId,
     };
 
     return body;
@@ -821,7 +818,7 @@ class PayCoolViewmodel extends FutureViewModel {
 
   showMerchantDetails() {
     showDialog(
-        context: context,
+        context: context!,
         builder: (context) {
           return AlertDialog(
             titleTextStyle: headText3.copyWith(
@@ -850,7 +847,7 @@ class PayCoolViewmodel extends FutureViewModel {
                     Expanded(
                         flex: 1,
                         child: Text(
-                          payOrder.title,
+                          payOrder.title.toString(),
                           style: headText5,
                         ))
                   ],
@@ -958,7 +955,7 @@ class PayCoolViewmodel extends FutureViewModel {
 
   showOrderDetails() {
     showDialog(
-        context: context,
+        context: context!,
         builder: (context) {
           return AlertDialog(
             backgroundColor: white,
@@ -988,7 +985,7 @@ class PayCoolViewmodel extends FutureViewModel {
                     Expanded(
                         flex: 1,
                         child: Text(
-                          payOrder.title,
+                          payOrder.title.toString(),
                           style: headText5,
                         ))
                   ],
@@ -1094,13 +1091,13 @@ class PayCoolViewmodel extends FutureViewModel {
         });
   }
 
-  orderDetails({String barcodeScanData}) async {
+  orderDetails({String? barcodeScanData}) async {
     String scannedOrderId = '';
 
     String scannedTemplateId = '';
-    String charToCompare = barcodeScanData[0];
+    String charToCompare = barcodeScanData![0];
     debugPrint('charToCompare $charToCompare');
-    loadingStatus = FlutterI18n.translate(context, "gettingOrderDetails");
+    loadingStatus = FlutterI18n.translate(context!, "gettingOrderDetails");
     if (charToCompare == "i") {
       scannedOrderId = extractId(barcodeScanData);
       log.i('scanRes $scannedOrderId');
@@ -1108,8 +1105,8 @@ class PayCoolViewmodel extends FutureViewModel {
     } else if (charToCompare == "t") {
       scannedTemplateId = extractId(barcodeScanData);
       orderIdFromCreateStoreOrder =
-          await paycoolService.createTemplateById(scannedTemplateId);
-      getOrderDetailsById(orderIdFromCreateStoreOrder);
+          await paycoolService.createTemplateById(scannedTemplateId.toString());
+      getOrderDetailsById(orderIdFromCreateStoreOrder!);
     } else {
       sharedService.sharedSimpleNotification('Incorrect data format');
     }
@@ -1123,14 +1120,14 @@ class PayCoolViewmodel extends FutureViewModel {
       setBusy(true);
       log.w('setbusy 1 $isBusy');
 
-      String barcodeScanData = '';
+      String? barcodeScanData = '';
       payOrder = PayOrder();
       barcodeScanData = await BarcodeUtils().majaScan(context);
 
       if (addressType == Constants.ReferralAddressText) {
-        debugPrint('in 1st if-- barcode res-- ${barcodeScanData}');
+        debugPrint('in 1st if-- barcode res-- $barcodeScanData');
 
-        referralController.text = barcodeScanData;
+        referralController.text = barcodeScanData!;
       }
       if (addressType == Constants.MerchantAddressText) {
         if (barcodeScanData != null) {
@@ -1149,14 +1146,14 @@ class PayCoolViewmodel extends FutureViewModel {
       if (e.code == "PERMISSION_NOT_GRANTED") {
         setBusy(false);
         sharedService.sharedSimpleNotification(
-          FlutterI18n.translate(context, "userAccessDenied"),
+          FlutterI18n.translate(context!, "userAccessDenied"),
         );
         // receiverWalletAddressTextController.text =
         //     FlutterI18n.translate(context, "userAccessDenied");
       } else {
         // setBusy(true);
         sharedService.sharedSimpleNotification(
-          FlutterI18n.translate(context, "unknownError $e"),
+          FlutterI18n.translate(context!, "unknownError $e"),
         );
       }
     } on FormatException {
@@ -1189,7 +1186,7 @@ class PayCoolViewmodel extends FutureViewModel {
     try {
       await paycoolService
           .getPayOrderInfo(scanRes)
-          .then((order) => payOrder = order);
+          .then((order) => payOrder = order!);
     } catch (err) {
       invalidScanData(err);
       return;
@@ -1201,13 +1198,13 @@ class PayCoolViewmodel extends FutureViewModel {
       invalidScanData(err);
     });
 
-    merchantModel =
-        await paycoolService.getMerchantInfo(rewardInfoModel.merchantId);
-    coinPayable = newCoinTypeMap[rewardInfoModel.paidCoin];
+    merchantModel = await paycoolService
+        .getMerchantInfo(rewardInfoModel!.merchantId.toString());
+    coinPayable = newCoinTypeMap[rewardInfoModel!.paidCoin].toString();
     if (coinPayable == null) {
       var nullToken = await coinService.getSingleTokenData('',
-          coinType: rewardInfoModel.paidCoin);
-      coinPayable = nullToken.tickerName;
+          coinType: rewardInfoModel!.paidCoin!);
+      coinPayable = nullToken!.tickerName!;
     }
     // ignore: iterable_contains_unrelated_type
     final v =
@@ -1215,28 +1212,28 @@ class PayCoolViewmodel extends FutureViewModel {
     if (v.isNegative) {
       dialogService.showBasicDialog(
           title:
-              "$coinPayable ${FlutterI18n.translate(context, "insufficientBalanceForPayment")}",
+              "$coinPayable ${FlutterI18n.translate(context!, "insufficientBalanceForPayment")}",
           description:
-              FlutterI18n.translate(context, "PaycoolInsufficientBalanceDesc"),
-          buttonTitle: FlutterI18n.translate(context, "close"));
+              FlutterI18n.translate(context!, "PaycoolInsufficientBalanceDesc"),
+          buttonTitle: FlutterI18n.translate(context!, "close"));
       resetVariables();
       setBusy(false);
       return;
     }
     try {
       await coinService
-          .getSingleTokenData(coinPayable, coinType: rewardInfoModel.paidCoin)
+          .getSingleTokenData(coinPayable, coinType: rewardInfoModel!.paidCoin!)
           .then((t) {
-        decimalLimit = t.decimal;
+        decimalLimit = t!.decimal!;
         log.i('decimalLimit $decimalLimit');
       });
     } catch (err) {
       if (decimalLimit == null || decimalLimit == 0) decimalLimit = 8;
       log.e('Decimal limit CATCH in barcode scan: $err');
     }
-    amountPayable = rewardInfoModel.totalAmount;
+    amountPayable = rewardInfoModel!.totalAmount!;
 
-    taxAmount = rewardInfoModel.totalTax;
+    taxAmount = rewardInfoModel!.totalTax!;
 
     if (Platform.isIOS) {
       updateSelectedTickernameIOS(
@@ -1299,7 +1296,7 @@ class PayCoolViewmodel extends FutureViewModel {
     await apiService.getSingleCoinExchangeBalance(tickerName).then((res) {
       exchangeBalances.firstWhere((element) {
         if (element.ticker == tickerName) {
-          element.unlockedAmount = res.unlockedAmount;
+          element.unlockedAmount = res!.unlockedAmount;
         }
         log.w('udpated balance check ${element.unlockedAmount}');
         return true;
@@ -1315,10 +1312,11 @@ class PayCoolViewmodel extends FutureViewModel {
   showBarcode() {
     setBusy(true);
     walletDataBaseService.getWalletBytickerName('FAB').then((coin) {
-      String kbAddress = walletService.toKbPaymentAddress(coin.address);
+      String kbAddress =
+          walletService.toKbPaymentAddress(coin!.address.toString());
       debugPrint('KBADDRESS $kbAddress');
       showDialog(
-        context: context,
+        context: context!,
         builder: (BuildContext context) {
           return Platform.isIOS
               ? CupertinoAlertDialog(
@@ -1409,7 +1407,7 @@ class PayCoolViewmodel extends FutureViewModel {
                                         .capturePng(globalKey: globalKey)
                                         .then((byteData) {
                                       file
-                                          .writeAsBytes(byteData)
+                                          .writeAsBytes(byteData!.toList())
                                           .then((onFile) {
                                         Share.share(onFile.path,
                                             subject: kbAddress);
@@ -1528,9 +1526,11 @@ class PayCoolViewmodel extends FutureViewModel {
                                 sharedService
                                     .capturePng(globalKey: globalKey)
                                     .then((byteData) {
-                                  file.writeAsBytes(byteData).then((onFile) {
-                                    Share.share(onFile.readAsStringSync(),
-                                        subject: kbAddress);
+                                  file
+                                      .writeAsBytes(byteData!.toList())
+                                      .then((onFile) {
+                                    Share.shareFiles(onFile.readAsLinesSync(),
+                                        text: kbAddress);
                                   });
                                 });
                               });
@@ -1573,16 +1573,16 @@ class PayCoolViewmodel extends FutureViewModel {
               Content Paste Button in receiver address textfield
 ----------------------------------------------------------------------*/
 
-  Future contentPaste({String addressType}) async {
+  Future contentPaste({String? addressType}) async {
     setBusy(true);
     await Clipboard.getData('text/plain').then((res) {
       pasteRes = res;
       if (addressType == Constants.ReferralAddressText) {
         referralController.text = '';
-        referralController.text = res.text;
+        referralController.text = res!.text.toString();
       }
       if (addressType == Constants.MerchantAddressText) {
-        addressController.text = res.text;
+        addressController.text = res!.text.toString();
       }
     });
     setBusy(false);
@@ -1592,7 +1592,7 @@ class PayCoolViewmodel extends FutureViewModel {
     Clipboard.setData(ClipboardData(text: txId));
     showSimpleNotification(
         Center(
-            child: Text(FlutterI18n.translate(context, "copiedSuccessfully"),
+            child: Text(FlutterI18n.translate(context!, "copiedSuccessfully"),
                 style: headText5)),
         position: NotificationPosition.bottom,
         background: primaryColor);

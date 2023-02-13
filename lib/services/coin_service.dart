@@ -78,12 +78,12 @@ class CoinService {
                       Get Token data
 ----------------------------------------------------------------------*/
 
-  Future<TokenModel> getSingleTokenData(String tickerName,
+  Future<TokenModel?> getSingleTokenData(String tickerName,
       {int coinType = 0}) async {
-    TokenModel tokenResult;
+    TokenModel? tokenResult;
 
 // first look coin in the local storage
-// TODO uncomment code below once save decimaldata in local storage works in wallet service
+// TODO: uncomment code below once save decimaldata in local storage works in wallet service
     // List<Map<String, int>> decimalDataFromStorage =
     //     jsonEncode(storageService.walletDecimalList) as List;
     // decimalDataFromStorage.forEach((decimalDataList) {
@@ -98,34 +98,35 @@ class CoinService {
     //  if (res == null || res == 0) {
     try {
       log.i('res $tokenResult -- coin type $coinType -- ticker $tickerName');
-      await apiService.getTokenList().then((tokens) {
-        for (var i = 0; i < tokens.length; i++) {
-          if (tokens[i].coinType == coinType) {
-            tokenResult = tokens[i];
-            log.i(
-                'getSingleTokenData old tokens list:  res ${tokenResult.toJson()}');
-            break;
-          }
+      var tokens = await apiService.getTokenList();
+      for (var i = 0; i < tokens.length; i++) {
+        if (tokens[i].coinType == coinType) {
+          tokenResult = tokens[i];
+          log.w('old tokens list api:  res ${tokenResult.toJson()}');
+          break;
         }
-      });
+      }
+
       //   }
     } catch (err) {
-      log.e('getSingleTokenData old token Catch 1 : $err');
+      log.e('getSingleTokenData old token Catch : $err');
     }
     // if res not found in local storage then call new token list api
     if (tokenResult == null) {
       debugPrint(
           'res $tokenResult -- coin type $coinType -- ticker $tickerName');
-      await apiService.getTokenListUpdates().then((newTokens) {
+      try {
+        var newTokens = await apiService.getTokenListUpdates();
         for (var j = 0; j < newTokens.length; j++) {
           if (newTokens[j].tickerName == tickerName) {
             tokenResult = newTokens[j];
-            log.i(
-                'getSingleTokenData new tokens list:  res ${tokenResult.toJson()}');
+            log.w(' new tokens list:  res ${tokenResult!.toJson()}');
             break;
           }
         }
-      });
+      } catch (err) {
+        log.e('getSingleTokenData new token Catch : $err');
+      }
     }
 
     return tokenResult;
@@ -180,7 +181,7 @@ class CoinService {
 
   Future<int> getCoinTypeByTickerName(String tickerName) async {
     int coinType = 0;
-    MapEntry<int, String> hardCodedCoinList;
+    MapEntry<int, String>? hardCodedCoinList;
     bool isOldToken = newCoinTypeMap.containsValue(tickerName);
     debugPrint('is old token value $isOldToken');
     if (isOldToken) {
@@ -194,7 +195,7 @@ class CoinService {
     } else {
       await apiService.getTokenListUpdates().then((tokens) {
         for (var token in tokens) {
-          if (token.tickerName == tickerName) coinType = token.coinType;
+          if (token.tickerName == tickerName) coinType = token.coinType!;
         }
       });
     }

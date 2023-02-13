@@ -120,10 +120,10 @@ var outlinedButtonStyles2 = OutlinedButton.styleFrom(
 );
 
 Decoration circularGradientBoxDecoration() {
-  return const BoxDecoration(
-    borderRadius: BorderRadius.all(Radius.circular(25)),
+  return BoxDecoration(
+    borderRadius: const BorderRadius.all(const Radius.circular(25)),
     gradient: LinearGradient(
-      colors: [Colors.redAccent, Colors.yellow],
+      colors: const [Colors.redAccent, Colors.yellow],
       begin: FractionalOffset.topLeft,
       end: FractionalOffset.bottomRight,
     ),

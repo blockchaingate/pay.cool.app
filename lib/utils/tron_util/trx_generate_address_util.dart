@@ -4,7 +4,7 @@ import 'package:bs58check/bs58check.dart' as bs58check;
 // import 'package:bip32/src/utils/ecurve.dart' as ecc;
 // import 'package:pointycastle/src/utils.dart';
 import 'package:bip32/bip32.dart' as bip32;
-import 'package:bitcoin_flutter/bitcoin_flutter.dart' as BitcoinFlutter;
+import '../../../os_packages/bitcoin_flutter/lib/bitcoin_flutter.dart' as BitcoinFlutter;
 import 'package:web3dart/crypto.dart' as CryptoWeb3;
 
 import '../../service_locator.dart';
@@ -46,7 +46,7 @@ generateTrxAddress(String mnemonic) {
   // debugPrint('uncompressedPubKey  length ${uncompressedPubKey.length}');
   // debugPrint('uncompressedPubKey ${StringUtil.uint8ListToHex(uncompressedPubKey)}');
 
-  if (uncompressedPubKey.length == 65) {
+  if (uncompressedPubKey!.length == 65) {
     uncompressedPubKey = uncompressedPubKey.sublist(1);
     //  debugPrint(
     //     'uncompressedPubKey > 65 ${StringUtil.uint8ListToHex(uncompressedPubKey)} -- length ${uncompressedPubKey.length}');

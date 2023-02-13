@@ -9,20 +9,19 @@ import 'package:paycool/views/paycool_club/join_club/join_club_payment_model.dar
 import 'package:stacked/stacked.dart';
 import 'package:paycool/views/paycool_club/join_club/join_paycool_club_viewmodel.dart';
 
-class JoinPayCoolClubView
-    extends ViewModelBuilderWidget<JoinPayCoolClubViewModel> {
-  final JoinClubPaymentModel scanToPayModel;
+class JoinPayCoolClubView extends StackedView<JoinPayCoolClubViewModel> {
+  final JoinClubPaymentModel? scanToPayModel;
 
   const JoinPayCoolClubView({this.scanToPayModel});
   @override
   void onViewModelReady(JoinPayCoolClubViewModel model) async {
-    model.scanToPayModel = scanToPayModel;
+    model.scanToPayModel = scanToPayModel!;
     model.init();
   }
 
   @override
   Widget builder(
-      BuildContext context, JoinPayCoolClubViewModel model, Widget child) {
+      BuildContext context, JoinPayCoolClubViewModel model, Widget? child) {
     model.context = context;
     model.sharedService.context = context;
     return Scaffold(
@@ -79,7 +78,7 @@ class JoinPayCoolClubView
                                 FlutterI18n.translate(context, "amount"),
                                 style: Theme.of(context)
                                     .textTheme
-                                    .bodyText1
+                                    .bodyLarge!
                                     .copyWith(color: Colors.blue),
                               ),
                             ),
@@ -89,7 +88,7 @@ class JoinPayCoolClubView
                                 '${model.fixedAmountToPay} USD',
                                 style: Theme.of(context)
                                     .textTheme
-                                    .bodyText1
+                                    .bodyLarge!
                                     .copyWith(color: Colors.blue),
                               ),
                             ),
@@ -164,7 +163,7 @@ class JoinPayCoolClubView
                                 '${FlutterI18n.translate(context, "inExchange")} ${FlutterI18n.translate(context, "balance")}:',
                                 style: Theme.of(context)
                                     .textTheme
-                                    .bodyText1
+                                    .bodyLarge!
                                     .copyWith(color: Colors.blue),
                               ),
                             ),
@@ -184,7 +183,7 @@ class JoinPayCoolClubView
                                         .toString(),
                                 style: Theme.of(context)
                                     .textTheme
-                                    .bodyText1
+                                    .bodyLarge!
                                     .copyWith(color: Colors.blue),
                               ),
                             ),
@@ -203,7 +202,7 @@ class JoinPayCoolClubView
                                 '${FlutterI18n.translate(context, "gas")} ${FlutterI18n.translate(context, "balance")}:',
                                 style: Theme.of(context)
                                     .textTheme
-                                    .bodyText1
+                                    .bodyLarge!
                                     .copyWith(color: Colors.blue),
                               ),
                             ),
@@ -213,7 +212,7 @@ class JoinPayCoolClubView
                                 model.gasAmount.toString(),
                                 style: Theme.of(context)
                                     .textTheme
-                                    .bodyText1
+                                    .bodyLarge!
                                     .copyWith(color: Colors.blue),
                               ),
                             ),

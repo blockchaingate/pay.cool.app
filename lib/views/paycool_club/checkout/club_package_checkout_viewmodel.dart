@@ -39,7 +39,7 @@ class ClubPackageCheckoutViewModel extends FutureViewModel {
   Decimal exchangeBalance = Decimal.zero;
   Decimal gasBalance = Constants.decimalZero;
 
-  BuildContext context;
+  BuildContext? context;
   String title = '';
   String desc = '';
 
@@ -51,16 +51,16 @@ class ClubPackageCheckoutViewModel extends FutureViewModel {
   void onData(data) async {
     clubPackageCheckout = data;
     if (clubPackageCheckout.clubParams == null ||
-        clubPackageCheckout.clubParams.isEmpty) {
+        clubPackageCheckout.clubParams!.isEmpty) {
       setBusy(false);
       return;
     }
     title = storageService.language == 'en'
-        ? clubProject.name.en
-        : clubProject.name.sc;
+        ? clubProject.name!.en.toString()
+        : clubProject.name!.sc.toString();
     desc = storageService.language == 'en'
-        ? clubProject.description.en
-        : clubProject.description.sc;
+        ? clubProject.description!.en.toString()
+        : clubProject.description!.sc.toString();
     await getExchangeBalance();
   }
 
@@ -72,8 +72,8 @@ class ClubPackageCheckoutViewModel extends FutureViewModel {
   }
 
   showCheckoutDialog(ClubProject selectedPackage) async {
-    clubPackageCheckout = await clubService.getPackageCheckoutDetails(
-        selectedPackage.sId, selectedTicker);
+    clubPackageCheckout = (await clubService.getPackageCheckoutDetails(
+        selectedPackage.sId.toString(), selectedTicker))!;
 
     dialogService.showBasicDialog(
         title: title, description: desc, buttonTitle: 'Pay');
@@ -86,9 +86,10 @@ class ClubPackageCheckoutViewModel extends FutureViewModel {
     var walletUtil = WalletUtil();
     String walletAddress = '';
     await walletUtil
-        .getWalletInfoObjFromWalletBalance(WalletBalance(coin: ticker))
+        .getWalletInfoObjFromWalletBalance(WalletBalance(coin: ticker),
+            requiredAddressOnly: true)
         .then((wallet) {
-      walletAddress = wallet.address;
+      walletAddress = wallet.address.toString();
     });
 
     log.i('selected ticker walletAddress $walletAddress');
@@ -98,7 +99,7 @@ class ClubPackageCheckoutViewModel extends FutureViewModel {
     await apiService
         .getSingleWalletBalance(fabAddress, ticker, walletAddress)
         .then((res) async {
-      if (res != null && !res[0].unlockedExchangeBalance.isNegative) {
+      if (res != null && !res[0].unlockedExchangeBalance!.isNegative) {
         log.w(res[0].unlockedExchangeBalance);
         //  walletBalance[0].unlockedExchangeBalance;
         exchangeBalance =
@@ -116,14 +117,14 @@ class ClubPackageCheckoutViewModel extends FutureViewModel {
   buyPackage() async {
     if (gasBalance == Decimal.zero) {
       sharedService.sharedSimpleNotification(
-          FlutterI18n.translate(context, "insufficientGasAmount"));
+          FlutterI18n.translate(context!, "insufficientGasAmount"));
       setBusy(false);
       return;
     }
     await getExchangeBalance();
-    if (clubProject.joiningFee > exchangeBalance) {
+    if (clubProject.joiningFee! > exchangeBalance) {
       sharedService.sharedSimpleNotification(ticker,
-          subtitle: FlutterI18n.translate(context, "insufficientBalance"));
+          subtitle: FlutterI18n.translate(context!, "insufficientBalance"));
       setBusy(false);
       return;
     }
@@ -131,20 +132,20 @@ class ClubPackageCheckoutViewModel extends FutureViewModel {
     setBusy(true);
 
     var res;
-    var seed = await walletService.getSeedDialog(context);
-    if (seed == null) {
+    var seed = await walletService.getSeedDialog(context!);
+    if (seed.isEmpty) {
       setBusy(false);
       return;
     }
-    for (var param in clubPackageCheckout.clubParams) {
-      res = await paycoolService.signSendTx(seed, param.data, param.to);
+    for (var param in clubPackageCheckout.clubParams!) {
+      res = await paycoolService.signSendTx(seed, param.data!, param.to!);
     }
 
     if (res == '0x1') {
       payOrderConfirmationPopup();
     } else if (res == '0x0') {
       sharedService.sharedSimpleNotification(
-          FlutterI18n.translate(context, "failed"),
+          FlutterI18n.translate(context!, "failed"),
           isError: true);
     }
 
@@ -154,12 +155,12 @@ class ClubPackageCheckoutViewModel extends FutureViewModel {
   payOrderConfirmationPopup() async {
     await dialogService
         .showBasicDialog(
-      title: FlutterI18n.translate(context, "placeOrderTransactionSuccessful"),
-      buttonTitle: FlutterI18n.translate(context, "visitDashboard"),
+      title: FlutterI18n.translate(context!, "placeOrderTransactionSuccessful"),
+      buttonTitle: FlutterI18n.translate(context!, "visitDashboard"),
     )
         .then((res) {
       if (res.confirmed) {
-        navigationService.navigateTo(PayCoolClubDashboardViewRoute);
+        navigationService.navigateTo(clubDashboardViewRoute);
       }
     });
   }

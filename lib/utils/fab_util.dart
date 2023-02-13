@@ -11,6 +11,7 @@
 *----------------------------------------------------------------------
 */
 
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:paycool/logger.dart';
 import 'package:paycool/service_locator.dart';
@@ -36,19 +37,17 @@ class FabUtils {
   final client = CustomHttpUtil.createLetsEncryptUpdatedCertClient();
 
   Future getFabTransactionStatus(String txid) async {
-    var url = fabBaseUrl + 'gettransactionjson/' + txid;
+    var url = '${fabBaseUrl}gettransactionjson/$txid';
 
-    var response = await client.get(url);
+    var response = await client.get(Uri.parse(url));
     debugPrint(url);
     log.w(response.body);
     return response.body;
   }
 
   getFabNode(root, {index = 0}) {
-    var node = root.derivePath("m/44'/" +
-        environment["CoinType"]["FAB"].toString() +
-        "'/0'/0/" +
-        index.toString());
+    var node =
+        root.derivePath("m/44'/${environment["CoinType"]["FAB"]}'/0'/0/$index");
     return node;
   }
 
@@ -62,9 +61,9 @@ class FabUtils {
       'data': trimHexPrefix(getLockedInfoABI),
       'sender': address
     };
-    var url = fabBaseUrl + 'callcontract';
+    var url = '${fabBaseUrl}callcontract';
     try {
-      var response = await client.post(url, body: data);
+      var response = await client.post(Uri.parse(url), body: data);
       var json = jsonDecode(response.body);
       if (json != null &&
           json['executionResult'] != null &&
@@ -209,10 +208,10 @@ class FabUtils {
   }
 
   Future getFabBalanceByAddress(String address) async {
-    var url = fabBaseUrl + 'getbalance/' + address;
+    var url = '${fabBaseUrl}getbalance/$address';
     var fabBalance = 0.0;
     try {
-      var response = await client.get(url);
+      var response = await client.get(Uri.parse(url));
       fabBalance = double.parse(response.body) / 1e8;
     } catch (e) {
       log.e(e);
@@ -242,8 +241,8 @@ class FabUtils {
   debugPrint('address before encode=' + address);
 
    */
-    address = bs58check.encode(HEX.decode(address));
-    log.w('address after encode=' + address);
+    address = bs58check.encode(Uint8List.fromList(HEX.decode(address)));
+    log.w('address after encode=$address');
 
     /*
   var decoded = bs58check.decode('mvLuZXGYMxpRM65kgzbfoKqs3FPcisM6ri');
@@ -258,7 +257,7 @@ class FabUtils {
     var decoded = bs58check.decode(address);
     address = HEX.encode(decoded);
     address = address.substring(2);
-    address = '0x' + address;
+    address = '0x$address';
     log.w('in fabToExgAddress $address');
     return address;
   }
@@ -286,17 +285,17 @@ class FabUtils {
 
   Future getFabTokenBalanceForABI(
       String balanceInfoABI, String smartContractAddress, String address,
-      [int decimal]) async {
+      [int? decimal]) async {
     var body = {
       'address': trimHexPrefix(smartContractAddress),
       'data': balanceInfoABI + fixLength(trimHexPrefix(address), 64)
     };
     var tokenBalance = 0.0;
-    var url = fabBaseUrl + 'callcontract';
+    var url = '${fabBaseUrl}callcontract';
     debugPrint(
         'Fab_util -- address $address getFabTokenBalanceForABI balance by address url -- $url -- body $body');
     try {
-      var response = await client.post(url, body: body);
+      var response = await client.post(Uri.parse(url), body: body);
       var json = jsonDecode(response.body);
       var unlockBalance = json['executionResult']['output'];
 
@@ -322,8 +321,8 @@ class FabUtils {
   }
 
   Future getSmartContractABI(String smartContractAddress) async {
-    var url = fabBaseUrl + 'getabiforcontract/' + smartContractAddress;
-    var response = await client.get(url);
+    var url = '${fabBaseUrl}getabiforcontract/$smartContractAddress';
+    var response = await client.get(Uri.parse(url));
     Map<String, dynamic> resJson = jsonDecode(response.body);
     return resJson;
   }

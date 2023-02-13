@@ -31,7 +31,7 @@ import 'package:paycool/services/db/user_settings_database_service.dart';
 import 'package:overlay_support/overlay_support.dart';
 
 class TransactionHistoryViewmodel extends FutureViewModel {
-  final String tickerName;
+  final String? tickerName;
   final String success = 'success';
   final String lightningRemit = 'Lightning Remit';
   final String send = 'send';
@@ -42,7 +42,7 @@ class TransactionHistoryViewmodel extends FutureViewModel {
 
   TransactionHistoryViewmodel({this.tickerName});
   final log = getLogger('TransactionHistoryViewmodel');
-  BuildContext context;
+  late BuildContext context;
   List<TransactionHistory> transactionHistoryToShowInView = [];
   TransactionHistoryDatabaseService transactionHistoryDatabaseService =
       locator<TransactionHistoryDatabaseService>();
@@ -63,7 +63,7 @@ class TransactionHistoryViewmodel extends FutureViewModel {
   @override
   Future futureToRun() async =>
       // tickerName.isEmpty ?
-      await transactionHistoryDatabaseService.getByName(tickerName);
+      await transactionHistoryDatabaseService.getByName(tickerName!);
 
 /*----------------------------------------------------------------------
                   After Future Data is ready
@@ -75,7 +75,7 @@ class TransactionHistoryViewmodel extends FutureViewModel {
     List<TransactionHistory> txHistoryFromDb = [];
     List<TransactionHistory> txHistoryEvents = [];
     txHistoryFromDb = data;
-    txHistoryEvents = await getWithdrawDepositTxHistoryEvents();
+    txHistoryEvents = await apiService.getTransactionHistoryEvents();
 
     for (var element in txHistoryEvents) {
       if (element.tickerName == tickerName) {
@@ -99,13 +99,12 @@ class TransactionHistoryViewmodel extends FutureViewModel {
       }
     }
 
-    if (txHistoryFromDb != null) {
-      for (var t in txHistoryFromDb) {
-        if (t.tag == 'send' && t.tickerName == tickerName) {
-          transactionHistoryToShowInView.add(t);
-        }
+    for (var t in txHistoryFromDb) {
+      if (t.tag == 'send' && t.tickerName == tickerName) {
+        transactionHistoryToShowInView.add(t);
       }
     }
+
     transactionHistoryToShowInView.sort(
         (a, b) => DateTime.parse(b.date).compareTo(DateTime.parse(a.date)));
 
@@ -117,9 +116,9 @@ class TransactionHistoryViewmodel extends FutureViewModel {
       log.e('CATCH failed to get lang from user settings db');
     }
     decimalLimit = await coinService
-        .getSingleTokenData(tickerName)
-        .then((res) => res.decimal);
-    if (decimalLimit == null || decimalLimit == 0) decimalLimit = 8;
+        .getSingleTokenData(tickerName!)
+        .then((res) => res!.decimal!);
+    if (decimalLimit == 0) decimalLimit = 8;
     setBusy(false);
     // debugPrint(transactionHistoryToShowInView.first.toJson());
   }
@@ -132,10 +131,6 @@ class TransactionHistoryViewmodel extends FutureViewModel {
 
   clearLists() {
     transactionHistoryToShowInView = [];
-  }
-
-  getWithdrawDepositTxHistoryEvents() async {
-    return await apiService.getTransactionHistoryEvents();
   }
 
 /*----------------------------------------------------------------------
@@ -199,11 +194,11 @@ class TransactionHistoryViewmodel extends FutureViewModel {
     isDialogUp = true;
     log.i('showTxDetailDialog isDialogUp $isDialogUp');
     setBusy(false);
-    if (transactionHistory.chainName.isEmpty ||
+    if (transactionHistory.chainName!.isEmpty ||
         transactionHistory.chainName == null) {
-      transactionHistory.chainName = walletInfo.tokenType.isEmpty
+      transactionHistory.chainName = (walletInfo.tokenType!.isEmpty
           ? walletInfo.tickerName
-          : walletInfo.tokenType;
+          : walletInfo.tokenType)!;
       log.i(
           'transactionHistory.chainName empty so showing wallet token type ${walletInfo.tokenType}');
     }
@@ -253,9 +248,9 @@ class TransactionHistoryViewmodel extends FutureViewModel {
                                                     true);
                                               },
                                             text: transactionHistory
-                                                    .kanbanTxId.isEmpty
+                                                    .kanbanTxId!.isEmpty
                                                 ? transactionHistory
-                                                        .kanbanTxStatus.isEmpty
+                                                        .kanbanTxStatus!.isEmpty
                                                     ? FlutterI18n.translate(
                                                         context, "inProgress")
                                                     : firstCharToUppercase(
@@ -265,7 +260,7 @@ class TransactionHistoryViewmodel extends FutureViewModel {
                                                     .toString(),
                                             style: Theme.of(context)
                                                 .textTheme
-                                                .bodyText1
+                                                .bodyLarge!
                                                 .copyWith(color: Colors.blue),
                                           ),
                                         ),
@@ -288,7 +283,7 @@ class TransactionHistoryViewmodel extends FutureViewModel {
                           Text(
                             //FlutterI18n.translate(context, "quantity"),FlutterI18n.translate(context, "quantity")
                             '${transactionHistory.chainName} ${FlutterI18n.translate(context, "chain")} ${FlutterI18n.translate(context, "transactionId")}',
-                            style: Theme.of(context).textTheme.bodyText1,
+                            style: Theme.of(context).textTheme.bodyLarge,
                           ),
                           Row(
                             mainAxisSize: MainAxisSize.max,
@@ -302,14 +297,14 @@ class TransactionHistoryViewmodel extends FutureViewModel {
                                         ..onTap = () {
                                           launchUrl(
                                               transactionHistory
-                                                  .tickerChainTxId,
+                                                  .tickerChainTxId!,
                                               transactionHistory.chainName,
                                               false);
                                         },
                                       text: transactionHistory
-                                              .tickerChainTxId.isEmpty
+                                              .tickerChainTxId!.isEmpty
                                           ? transactionHistory
-                                                  .tickerChainTxStatus.isEmpty
+                                                  .tickerChainTxStatus!.isEmpty
                                               ? FlutterI18n.translate(
                                                   context, "inProgress")
                                               : transactionHistory
@@ -318,19 +313,19 @@ class TransactionHistoryViewmodel extends FutureViewModel {
                                               .toString(),
                                       style: Theme.of(context)
                                           .textTheme
-                                          .bodyText1
+                                          .bodyLarge!
                                           .copyWith(color: Colors.blue),
                                     ),
                                   ),
                                 ),
                               ),
-                              transactionHistory.tickerChainTxId.isEmpty
+                              transactionHistory.tickerChainTxId!.isEmpty
                                   ? Container()
                                   : CupertinoButton(
                                       child: const Icon(FontAwesomeIcons.copy,
                                           color: black, size: 16),
                                       onPressed: () => copyAddress(
-                                          transactionHistory.tickerChainTxId),
+                                          transactionHistory.tickerChainTxId!),
                                     )
                             ],
                           ),
@@ -416,7 +411,7 @@ class TransactionHistoryViewmodel extends FutureViewModel {
                                                 .toString(),
                                         style: Theme.of(context)
                                             .textTheme
-                                            .bodyText1
+                                            .bodyLarge!
                                             .copyWith(color: Colors.blue),
                                       ),
                                     ),
@@ -451,23 +446,23 @@ class TransactionHistoryViewmodel extends FutureViewModel {
                                   recognizer: TapGestureRecognizer()
                                     ..onTap = () {
                                       launchUrl(
-                                          transactionHistory.tickerChainTxId,
+                                          transactionHistory.tickerChainTxId!,
                                           transactionHistory.chainName,
                                           false);
                                     },
-                                  text:
-                                      transactionHistory.tickerChainTxId.isEmpty
-                                          ? transactionHistory
-                                                  .tickerChainTxStatus.isEmpty
-                                              ? FlutterI18n.translate(
-                                                  context, "inProgress")
-                                              : transactionHistory
-                                                  .tickerChainTxStatus
-                                          : transactionHistory.tickerChainTxId
-                                              .toString(),
+                                  text: transactionHistory
+                                          .tickerChainTxId!.isEmpty
+                                      ? transactionHistory
+                                              .tickerChainTxStatus!.isEmpty
+                                          ? FlutterI18n.translate(
+                                              context, "inProgress")
+                                          : transactionHistory
+                                              .tickerChainTxStatus
+                                      : transactionHistory.tickerChainTxId
+                                          .toString(),
                                   style: Theme.of(context)
                                       .textTheme
-                                      .bodyText1
+                                      .bodyLarge!
                                       .copyWith(color: Colors.blue),
                                 ),
                               ),
@@ -476,8 +471,8 @@ class TransactionHistoryViewmodel extends FutureViewModel {
                           IconButton(
                             icon: const Icon(Icons.copy_outlined,
                                 color: black, size: 16),
-                            onPressed: () =>
-                                copyAddress(transactionHistory.tickerChainTxId),
+                            onPressed: () => copyAddress(
+                                transactionHistory.tickerChainTxId!),
                           )
                         ],
                       ),

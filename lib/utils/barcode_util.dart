@@ -21,7 +21,7 @@ class BarcodeUtils {
   //   return scanResult;
   // }
 
-  Future<String> majaScan(BuildContext context) async {
+  Future<String?> majaScan(BuildContext context) async {
     var t = await MajaScan.startScan(
         title: "QRcode scanner",
         titleColor: Colors.amberAccent[700],
@@ -49,7 +49,7 @@ class BarcodeUtils {
   }
 
   Future scanQR(BuildContext context) async {
-    String barcodeScanRes;
+    String? barcodeScanRes;
     // try {
     //   barcodeScanRes = await FlutterBarcodeScanner.scanBarcode('#ff6666',
     //       FlutterI18n.translate(context, "cancel"), true, ScanMode.BARCODE);

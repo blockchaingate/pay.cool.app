@@ -13,14 +13,14 @@ import 'package:stacked/stacked.dart';
 
 class PurchasedPackageView extends StatelessWidget {
   const PurchasedPackageView({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<PurchasedPackageViewmodel>.reactive(
       viewModelBuilder: () => PurchasedPackageViewmodel(),
-      onModelReady: (PurchasedPackageViewmodel model) {
+      onViewModelReady: (PurchasedPackageViewmodel model) {
         model.context = context;
         model.init();
       },
@@ -74,7 +74,8 @@ class PurchasedPackageView extends StatelessWidget {
                                       child: Column(
                                         children: [
                                           Text(
-                                            model.purchasedPackages[index].date,
+                                            model.purchasedPackages[index].date
+                                                .toString(),
                                             style: headText5.copyWith(
                                                 fontWeight: FontWeight.bold),
                                           ),
@@ -139,7 +140,7 @@ class PurchasedPackageView extends StatelessWidget {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          model.purchasedPackages[index].txid
+                                          model.purchasedPackages[index].txid!
                                                   .isNotEmpty
                                               ? Container(
                                                   padding: const EdgeInsets
@@ -153,15 +154,17 @@ class PurchasedPackageView extends StatelessWidget {
                                                             ? model
                                                                 .purchasedPackages[
                                                                     index]
-                                                                .project
-                                                                .name
+                                                                .project!
+                                                                .name!
                                                                 .en
+                                                                .toString()
                                                             : model
                                                                 .purchasedPackages[
                                                                     index]
-                                                                .project
-                                                                .name
-                                                                .sc,
+                                                                .project!
+                                                                .name!
+                                                                .sc
+                                                                .toString(),
                                                         style: headText4,
                                                       ),
                                                     ],
@@ -186,7 +189,8 @@ class PurchasedPackageView extends StatelessWidget {
                                               Flexible(
                                                 child: Text(
                                                   model.purchasedPackages[index]
-                                                      .txid,
+                                                      .txid
+                                                      .toString(),
                                                   style: headText5.copyWith(
                                                       color: grey),
                                                   overflow:
@@ -213,7 +217,8 @@ class PurchasedPackageView extends StatelessWidget {
                                             ),
                                             Text(
                                               model.purchasedPackages[index]
-                                                  .paidCoinTicker,
+                                                  .paidCoinTicker
+                                                  .toString(),
                                               style: headText6,
                                             )
                                           ],

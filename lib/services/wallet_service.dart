@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:bitbox/bitbox.dart' as Bitbox;
+import '../../os_packages/bitbox_flutter/lib/bitbox.dart' as bitbox;
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:flutter/material.dart';
 import 'package:overlay_support/overlay_support.dart';
@@ -15,7 +15,7 @@ import 'dart:typed_data';
 import 'package:web3dart/web3dart.dart';
 import '../constants/colors.dart';
 import '../constants/constants.dart';
-import '../environments/coins.dart' as coinList;
+import '../environments/coins.dart' as coin_list;
 import '../logger.dart';
 import '../models/wallet/core_wallet_model.dart';
 import '../models/wallet/token_model.dart';
@@ -30,18 +30,18 @@ import '../utils/custom_http_util.dart';
 import '../utils/exaddr.dart';
 import '../utils/ltc_util.dart';
 import '../utils/number_util.dart';
-import '../utils/string_util.dart' as stringUtils;
+import '../utils/string_util.dart' as string_utils;
 import '../utils/kanban.util.dart';
 import '../utils/keypair_util.dart';
 import '../utils/eth_util.dart';
 import '../utils/fab_util.dart';
-import '../utils/coin_util.dart' as coinUtil;
+import '../utils/coin_util.dart' as coin_util;
 
-import 'package:bitcoin_flutter/src/utils/script.dart' as script;
+import '../../os_packages/bitcoin_flutter/lib/src/utils/script.dart' as script;
 import '../environments/environment.dart';
 import 'package:bs58check/bs58check.dart' as bs58check;
 import 'package:decimal/decimal.dart';
-import 'package:bitcoin_flutter/bitcoin_flutter.dart' as BitcoinFlutter;
+import '../../os_packages/bitcoin_flutter/lib/bitcoin_flutter.dart' as BitcoinFlutter;
 import '../utils/wallet_coin_address_utils/doge_util.dart';
 import 'api_service.dart';
 import 'coin_service.dart';
@@ -79,12 +79,12 @@ class WalletService {
   final coinService = locator<CoinService>();
 
   final coreWalletDatabaseService = locator<CoreWalletDatabaseService>();
-  double currentTickerUsdValue;
+  double? currentTickerUsdValue;
   var txids = [];
   ConfigService configService = locator<ConfigService>();
   final dialogService = locator<LocalDialogService>();
 
-  double coinUsdBalance;
+  double? coinUsdBalance;
   List<String> coinTickers = [
     'BTC',
     'ETH',
@@ -270,9 +270,8 @@ class WalletService {
     await _apiService
         .getTokenListUpdates()
         .then((newTokenListFromTokenUpdateApi) async {
-      if (newTokenListFromTokenUpdateApi != null &&
-          newTokenListFromTokenUpdateApi.isNotEmpty) {
-        existingTokensInTokenDatabase ??= [];
+      if (newTokenListFromTokenUpdateApi.isNotEmpty) {
+        // existingTokensInTokenDatabase = [];
         if (existingTokensInTokenDatabase.length !=
             newTokenListFromTokenUpdateApi.length) {
           await tokenListDatabaseService.deleteDb().whenComplete(() => log.e(
@@ -306,13 +305,11 @@ class WalletService {
     await _apiService
         .getSingleWalletBalance(fabAddress, tickerName, thirdPartyAddress)
         .then((walletBalance) {
-      if (walletBalance != null) {
-        log.w(walletBalance[0].balance);
-        if (walletBalance[0].balance < amount) {
-          isCorrectAmount = false;
-        } else {
-          isCorrectAmount = true;
-        }
+      log.w(walletBalance[0].balance);
+      if (walletBalance[0].balance! < amount) {
+        isCorrectAmount = false;
+      } else {
+        isCorrectAmount = true;
       }
     }).catchError((err) {
       log.e(err);
@@ -403,13 +400,13 @@ class WalletService {
     //lang = storageService.language;
 
     await userSettingsDatabaseService.getAll().then((res) async {
-      if (res == null || res == [] || res.isEmpty) {
+      if (res == [] || res.isEmpty) {
         log.e('language empty- setting english');
         storageService.language = "en";
         // AppLocalizations.load(Locale('en', 'EN'));
         await FlutterI18n.refresh(context, const Locale('en', 'EN'));
       } else {
-        String languageFromDb = res[0].language;
+        String languageFromDb = res[0].language!;
         // AppLocalizations.load(
         //     Locale(languageFromDb, languageFromDb.toUpperCase()));
         await FlutterI18n.refresh(
@@ -505,7 +502,7 @@ class WalletService {
     var digest1 = CryptoHash.sha256.convert(bytes);
     var digest2 = CryptoHash.sha256.convert(digest1.bytes);
     //SHA256(addressHex);
-    debugPrint('digest2  -- ${digest2.toString()}');
+    log.w('digest2  -- ${digest2.toString()}');
     return digest2;
   }
 
@@ -518,18 +515,17 @@ class WalletService {
     var root = generateBip32Root(seed);
     debugPrint('root ${root.toString()}');
     String ct = '195';
-    bip32.BIP32 node =
-        root.derivePath("m/44'/" + ct + "'/0'/0/" + 0.toString());
+    bip32.BIP32 node = root.derivePath("m/44'/$ct'/0'/0/${0}");
     debugPrint('node ${node.toString()}');
     var privKey = node.privateKey;
 
     //  var pubKey = node.publicKey;
     //  log.w('pub key $pubKey -- length ${pubKey.length}');
     var uncompressedPubKey =
-        BitcoinFlutter.ECPair.fromPrivateKey(privKey, compressed: false)
+        BitcoinFlutter.ECPair.fromPrivateKey(privKey!, compressed: false)
             .publicKey;
 
-    if (uncompressedPubKey.length == 65) {
+    if (uncompressedPubKey!.length == 65) {
       uncompressedPubKey = uncompressedPubKey.sublist(1);
     }
 
@@ -588,12 +584,12 @@ class WalletService {
                Generate BCH address
 ----------------------------------------------------------------------*/
 
-  Future<String> generateBchAddress(String mnemonic) async {
+  Future<String> generateBchAddress(seed) async {
     String tickerName = 'BCH';
-    var bchSeed = generateSeed(mnemonic);
-    final masterNode = Bitbox.HDNode.fromSeed(bchSeed);
+
+    final masterNode = bitbox.HDNode.fromSeed(seed);
     var coinType = environment["CoinType"][tickerName].toString();
-    final accountDerivationPath = "m/44'/" + coinType + "'/0'/0";
+    final accountDerivationPath = "m/44'/$coinType'/0'/0";
     final accountNode = masterNode.derivePath(accountDerivationPath);
     final accountXPriv = accountNode.toXPriv();
     final childNode = accountNode.derive(0);
@@ -610,7 +606,7 @@ class WalletService {
 
   // get BCH address details
   Future getBchAddressDetails(String bchAddress) async {
-    final addressDetails = await Bitbox.Address.details(bchAddress);
+    final addressDetails = await bitbox.Address.details(bchAddress);
     log.e('Address $bchAddress -- address details $addressDetails');
     return addressDetails;
   }
@@ -623,9 +619,9 @@ class WalletService {
     var root = generateBip32Root(seed);
     // var coinType = environment["CoinType"]["$tickerName"].toString();
     //  log.w('coin type $coinType');
-    var node = root.derivePath("m/44'/3'/0'/0/" + index.toString());
+    var node = root.derivePath("m/44'/3'/0'/0/$index");
 
-    String address1 = BitcoinFlutter.P2PKH(
+    String? address1 = BitcoinFlutter.P2PKH(
             data: BitcoinFlutter.PaymentData(pubkey: node.publicKey),
             network: dogeCoinMainnetNetwork)
         .data
@@ -654,7 +650,7 @@ class WalletService {
     var root = bip32.BIP32.fromSeed(seed);
     for (int i = 0; i < coinTickers.length; i++) {
       var tickerName = coinTickers[i];
-      var addr = await coinUtil.getAddressForCoin(root, tickerName,
+      var addr = await coin_util.getAddressForCoin(root, tickerName,
           tokenType: tokenType[i]);
       log.w('name $tickerName - address $addr');
       return addr;
@@ -667,7 +663,7 @@ class WalletService {
   Future coinBalanceByAddress(
       String name, String address, String tokenType) async {
     log.w(' coinBalanceByAddress $name $address $tokenType');
-    var bal = await coinUtil.getCoinBalanceByAddress(name, address,
+    var bal = await coin_util.getCoinBalanceByAddress(name, address,
         tokenType: tokenType);
     log.w('coinBalanceByAddress $name - $bal');
 
@@ -712,7 +708,7 @@ class WalletService {
                 Get Current Market Price For The Coin By Name
 ----------------------------------------------------------------------*/
 
-  Future<double> getCoinMarketPriceByTickerName(String tickerName) async {
+  Future<double?> getCoinMarketPriceByTickerName(String tickerName) async {
     currentTickerUsdValue = 0;
     if (tickerName == 'DUSD') {
       return currentTickerUsdValue = 1.0;
@@ -741,7 +737,7 @@ class WalletService {
   Future<CoreWalletModel> createOfflineWalletsV1(
       String mnemonic, String userPassword,
       {isVerifying = false}) async {
-    CoreWalletModel walletCoreModel = CoreWalletModel();
+    CoreWalletModel walletCoreModel = CoreWalletModel(walletBalancesBody: '');
     var vaultService = locator<VaultService>();
     Map<String, dynamic> wbb = {
       'btcAddress': '',
@@ -774,7 +770,7 @@ class WalletService {
     log.i('generated root');
     // BCH address
     log.e('generating bch address');
-    String bchAddress = await generateBchAddress(mnemonic);
+    String bchAddress = await generateBchAddress(seed);
     debugPrint(extractTimeFromDate(DateTime.now().toString()));
     log.e('generated bch adddress');
 
@@ -793,7 +789,7 @@ class WalletService {
         } else if (tickerName == 'TRX') {
           address = trxAddress;
         } else {
-          address = await coinUtil.getAddressForCoin(root, tickerName,
+          address = await coin_util.getAddressForCoin(root, tickerName,
               tokenType: token);
         }
         if (tickerName == 'BTC') {
@@ -882,7 +878,7 @@ class WalletService {
         } else if (tickerName == 'TRX') {
           addr = trxAddress;
         } else {
-          addr = await coinUtil.getAddressForCoin(root, tickerName,
+          addr = await coin_util.getAddressForCoin(root, tickerName,
               tokenType: token);
         }
         WalletInfo wi = WalletInfo(
@@ -921,7 +917,7 @@ class WalletService {
   checkWithdrawTxStatus(TransactionHistory transaction) async {
     int baseTime = 30;
     List result = [];
-    String kanbanTxId = transaction.kanbanTxId;
+    String? kanbanTxId = transaction.kanbanTxId;
     TransactionHistory transactionByTxid = TransactionHistory();
     Timer.periodic(Duration(seconds: baseTime), (Timer t) async {
       log.w('Base time $baseTime -- local t.id $kanbanTxId');
@@ -949,12 +945,12 @@ class WalletService {
                 t.cancel();
 
                 var storedTx = await transactionHistoryDatabaseService
-                    .getByKanbanTxId(transaction.kanbanTxId);
+                    .getByKanbanTxId(transaction.kanbanTxId!);
                 showSimpleNotification(
                     Row(
                       children: [
                         Text('${singleTx['coinName']} '),
-                        Text(transaction.tag),
+                        Text(transaction.tag!),
                         UIHelper.horizontalSpaceSmall,
                         const Icon(Icons.check)
                         //  Text(FlutterI18n.translate(context, "completed")),
@@ -964,7 +960,7 @@ class WalletService {
                     background: primaryColor);
                 String date = DateTime.now().toString();
                 transactionByTxid = TransactionHistory(
-                    id: storedTx.id,
+                    id: storedTx!.id,
                     tickerName: storedTx.tickerName,
                     address: '',
                     amount: 0.0,
@@ -989,8 +985,8 @@ class WalletService {
     String result = '';
     Timer.periodic(const Duration(minutes: 1), (Timer t) async {
       TransactionHistory transactionHistory = TransactionHistory();
-      TransactionHistory transactionByTxId = TransactionHistory();
-      var res = await _apiService.getTransactionStatus(transaction.kanbanTxId);
+      TransactionHistory? transactionByTxId = TransactionHistory();
+      var res = await _apiService.getTransactionStatus(transaction.kanbanTxId!);
 
       log.w('checkDepositTransactionStatus $res');
 // 0 is confirmed
@@ -1012,14 +1008,14 @@ class WalletService {
 
         if (transaction != null) {
           transactionByTxId = await transactionHistoryDatabaseService
-              .getByKanbanTxId(transaction.kanbanTxId);
+              .getByKanbanTxId(transaction.kanbanTxId!);
           showSimpleNotification(
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Text('${transactionByTxId.tickerName} '),
-                  Text(transactionByTxId.tag),
-                  Text(stringUtils.firstCharToUppercase(result.toString())),
+                  Text('${transactionByTxId!.tickerName} '),
+                  Text(transactionByTxId.tag!),
+                  Text(string_utils.firstCharToUppercase(result.toString())),
                 ],
               ),
               position: NotificationPosition.bottom,
@@ -1086,7 +1082,7 @@ class WalletService {
       }
       await transactionHistoryDatabaseService.update(transactionHistory);
       await transactionHistoryDatabaseService
-          .getByKanbanTxId(transaction.kanbanTxId);
+          .getByKanbanTxId(transaction.kanbanTxId!);
     });
     return result;
     //  return _completer.future;
@@ -1114,10 +1110,10 @@ class WalletService {
         String name = coinNames[i];
         String token = tokenType[i];
         var coinMarketPrice = await getCoinMarketPriceByTickerName(name);
-        coinUsdMarketPrice.add(coinMarketPrice);
-        String addr = await coinUtil.getAddressForCoin(root, tickerName,
+        coinUsdMarketPrice.add(coinMarketPrice!);
+        String addr = await coin_util.getAddressForCoin(root, tickerName,
             tokenType: token);
-        var bal = await coinUtil.getCoinBalanceByAddress(tickerName, addr,
+        var bal = await coin_util.getCoinBalanceByAddress(tickerName, addr,
             tokenType: token);
         log.w('bal in wallet service $bal');
         double walletBal = bal['balance'];
@@ -1147,7 +1143,7 @@ class WalletService {
           // Second For Loop To check WalletInfo TickerName According to its length and
           // compare it with the same coin tickername from asset balance result until the match or loop ends
           for (var j = 0; j < _walletInfo.length; j++) {
-            String tickerName = _walletInfo[j].tickerName;
+            String tickerName = _walletInfo[j].tickerName!;
             if (coin == tickerName) {
               _walletInfo[j].inExchange = res[i]['amount'];
               // _walletInfo[j].lockedBalance = res[i]['lockedAmount'];
@@ -1169,7 +1165,7 @@ class WalletService {
       return _walletInfo;
     } catch (e) {
       log.e(e);
-      _walletInfo = null;
+      _walletInfo = [];
       log.e('Catch GetAll Wallets Failed $e');
       return _walletInfo;
     }
@@ -1233,13 +1229,13 @@ class WalletService {
       List<Map<String, dynamic>> bal = [];
       var res = await _api.getAssetsBalance(exgAddress);
       log.w('assetsBalance exchange $res');
-      for (var i = 0; i < res.length; i++) {
+      for (var i = 0; i < res!.length; i++) {
         var tempBal = res[i];
         var coinType = res[i].coinType;
         var unlockedAmount = res[i].unlockedAmount;
         var lockedAmount = res[i].lockedAmount;
         var finalBal = {
-          'coin': coinList.newCoinTypeMap[coinType],
+          'coin': coin_list.newCoinTypeMap[coinType],
           'amount': unlockedAmount,
           'lockedAmount': lockedAmount
         };
@@ -1265,7 +1261,7 @@ class WalletService {
                 Calculate Only Usd Balance For Individual Coin
 ----------------------------------------------------------------------*/
 
-  double calculateCoinUsdBalance(
+  double? calculateCoinUsdBalance(
       double marketPrice, double actualWalletBalance, double lockedBalance) {
     if (marketPrice != null) {
       log.w(
@@ -1291,11 +1287,11 @@ class WalletService {
   getOriginalMessage(
       int coinType, String txHash, BigInt amount, String address) {
     var buf = '';
-    buf += stringUtils.fixLength(coinType.toRadixString(16), 8);
-    buf += stringUtils.fixLength(txHash, 64);
+    buf += string_utils.fixLength(coinType.toRadixString(16), 8);
+    buf += string_utils.fixLength(txHash, 64);
     var hexString = amount.toRadixString(16);
-    buf += stringUtils.fixLength(hexString, 64);
-    buf += stringUtils.fixLength(address, 64);
+    buf += string_utils.fixLength(hexString, 64);
+    buf += string_utils.fixLength(address, 64);
 
     return buf;
   }
@@ -1343,7 +1339,7 @@ class WalletService {
       addressInWallet = fabUtils.exgToFabAddress(addressInWallet);
       addressInWallet = fabUtils.btcToBase58Address(addressInWallet);
     }
-    int coinType;
+    int? coinType;
     await coinService
         .getCoinTypeByTickerName(coinName)
         .then((value) => coinType = value);
@@ -1431,7 +1427,7 @@ class WalletService {
     var addressInWallet = coinAddress;
     addressInWallet = fabUtils.btcToBase58Address(addressInWallet);
 
-    int coinType;
+    int? coinType;
     await coinService
         .getCoinTypeByTickerName(coinName)
         .then((value) => coinType = value);
@@ -1477,41 +1473,40 @@ class WalletService {
                     Tron Deposit
 ----------------------------------------------------------------------*/
   Future depositTron(
-      {String mnemonic,
-      WalletInfo walletInfo,
-      double amount,
-      bool isTrxUsdt,
-      bool isBroadcast,
+      {String? mnemonic,
+      WalletInfo? walletInfo,
+      double? amount,
+      bool? isTrxUsdt,
+      bool? isBroadcast,
       @required options}) async {
     log.i(
-        ' amount $amount -- istrxusdt $isTrxUsdt -- isBroadcast $isBroadcast');
+        'menmonic $mnemonic -- amount $amount -- istrxusdt $isTrxUsdt -- isBroadcast $isBroadcast');
     int kanbanGasPrice = options['kanbanGasPrice'];
     int kanbanGasLimit = options['kanbanGasLimit'];
 
     debugPrint('kanbanGasPrice $kanbanGasPrice');
     debugPrint('kanbanGasLimit $kanbanGasLimit');
     var officalAddress = coinService.getCoinOfficalAddress(
-        walletInfo.tickerName,
-        tokenType: walletInfo.tokenType);
+        walletInfo!.tickerName!,
+        tokenType: walletInfo.tokenType!);
     debugPrint('official address in wallet service deposit do $officalAddress');
     if (officalAddress == null) {
       //errRes['data'] = 'no official address';
       return;
     }
-    var privateKey = TronAddressUtil.generateTrxPrivKey(mnemonic);
+    var privateKey = TronAddressUtil.generateTrxPrivKey(mnemonic!);
 
     /// get signed raw transaction hash(txid) and hashed raw tx before sign(txhash)
     /// use that to submit deposit
     ///
     var rawTxRes = await TronTransactionUtil.generateTrxTransactionContract(
         privateKey: privateKey,
-        fromAddr: walletInfo.address,
+        fromAddr: walletInfo.address!,
         toAddr: officalAddress,
-        amount: amount,
-        isTrxUsdt: isTrxUsdt,
-        tickerName: walletInfo.tickerName,
-        isBroadcast: isBroadcast,
-        gasLimit: options['gasLimit'],
+        amount: amount!,
+        isTrxUsdt: isTrxUsdt!,
+        tickerName: walletInfo.tickerName!,
+        isBroadcast: isBroadcast!,
         contractAddressTronUsdt: options['contractAddress']);
 
     log.w('depositTron signed raw tx $rawTxRes');
@@ -1524,7 +1519,7 @@ class WalletService {
 // code  from depositDo
 
     var coinType =
-        await coinService.getCoinTypeByTickerName(walletInfo.tickerName);
+        await coinService.getCoinTypeByTickerName(walletInfo.tickerName!);
     log.i('coin type $coinType');
 
     var amountInLink = BigInt.parse(NumberUtil.toBigInt(amount));
@@ -1535,12 +1530,12 @@ class WalletService {
 
     var originalMessage = getOriginalMessage(
         coinType,
-        stringUtils.trimHexPrefix(txHash),
+        string_utils.trimHexPrefix(txHash),
         amountInLink,
-        stringUtils.trimHexPrefix(addressInKanban));
+        string_utils.trimHexPrefix(addressInKanban));
     log.w('Original message $originalMessage');
 
-    var signedMess = await coinUtil.signedMessage(
+    var signedMess = await coin_util.signedMessage(
         originalMessage, seed, walletInfo.tickerName, walletInfo.tokenType);
     log.e('Signed message $signedMess');
     var coinPoolAddress = await getCoinPoolAddress();
@@ -1554,14 +1549,14 @@ class WalletService {
       sepcialcoinType = await coinService.getCoinTypeByTickerName('USDT');
       abiHex = getDepositFuncABI(
           sepcialcoinType, txHash, amountInLink, addressInKanban, signedMess,
-          chain: walletInfo.tokenType, isSpecialDeposit: true);
+          chain: walletInfo.tokenType!, isSpecialDeposit: true);
 
       log.e('cointype $coinType -- abihex $abiHex');
     } else {
       debugPrint('in else');
       abiHex = getDepositFuncABI(
           coinType, txHash, amountInLink, addressInKanban, signedMess,
-          chain: walletInfo.tokenType);
+          chain: walletInfo.tokenType!);
       log.i('cointype $coinType -- abihex $abiHex');
     }
     var nonce = await getNonce(addressInKanban);
@@ -1623,14 +1618,14 @@ class WalletService {
     var amountInTxString = amountInTx.toString();
     var amountInLinkString = amountInLink.toString();
 
-    debugPrint('amountInTxString===' + amountInTxString);
-    debugPrint('amountInLinkString===' + amountInLinkString);
+    debugPrint('amountInTxString===$amountInTxString');
+    debugPrint('amountInLinkString===$amountInLinkString');
     if (!amountInLinkString.contains(amountInTxString)) {
       errRes['data'] = 'incorrect amount for two transactions';
       return errRes;
     }
     var subString = amountInLinkString.substring(amountInTxString.length);
-    if (subString != null && subString != '') {
+    if (subString != '') {
       var zero = int.parse(subString);
       if (zero != 0) {
         errRes['data'] = 'unequal amount for two transactions';
@@ -1641,7 +1636,7 @@ class WalletService {
     var coinType = await coinService.getCoinTypeByTickerName(coinName);
     log.i('coin type $coinType');
     if (coinType == 0) {
-      errRes['data'] = 'invalid coinType for ' + coinName;
+      errRes['data'] = 'invalid coinType for $coinName';
       return errRes;
     }
 
@@ -1650,11 +1645,11 @@ class WalletService {
     debugPrint('txHash=' + txHash);
     var originalMessage = getOriginalMessage(
         coinType,
-        stringUtils.trimHexPrefix(txHash),
+        string_utils.trimHexPrefix(txHash),
         amountInLink,
-        stringUtils.trimHexPrefix(addressInKanban));
+        string_utils.trimHexPrefix(addressInKanban));
 
-    var signedMess = await coinUtil.signedMessage(
+    var signedMess = await coin_util.signedMessage(
         originalMessage, seed, coinName, tokenType);
     log.e('Signed message $signedMess');
     debugPrint('coin type $coinType');
@@ -1663,7 +1658,7 @@ class WalletService {
 
     /// assinging coin type accoringly
     /// If special deposits then take the coin type of the respective chain coin
-    int specialCoinType;
+    int? specialCoinType;
     var abiHex;
     bool isSpecial = false;
     for (var specialTokenTicker in Constants.specialTokens) {
@@ -1676,7 +1671,7 @@ class WalletService {
 
     var coinTypeUsed = isSpecial ? specialCoinType : coinType;
     abiHex = getDepositFuncABI(
-        coinTypeUsed, txHash, amountInLink, addressInKanban, signedMess,
+        coinTypeUsed!, txHash, amountInLink, addressInKanban, signedMess,
         chain: tokenType, isSpecialDeposit: isSpecial);
     log.i('coinTypeUsed $coinTypeUsed -- abihex $abiHex');
 
@@ -1726,7 +1721,7 @@ class WalletService {
   Future<Map<String, dynamic>> addGasDo(seed, double amount, {options}) async {
     var satoshisPerBytes = 14;
     var scarContractAddress = await getScarAddress();
-    scarContractAddress = stringUtils.trimHexPrefix(scarContractAddress);
+    scarContractAddress = string_utils.trimHexPrefix(scarContractAddress);
 
     var fxnDepositCallHex = '4a58db19';
     var contractInfo = await getFabSmartContract(scarContractAddress,
@@ -1800,29 +1795,27 @@ class WalletService {
 
     var transFeeDouble = 0.0;
     var bytesPerInput = environment["chains"]["FAB"]["bytesPerInput"];
-    var feePerInput = bytesPerInput * satoshisPerBytes;
+    var feePerInput = bytesPerInput * satoshisPerBytes as int;
 
-    for (var i = 0; i < addressIndexList.length; i++) {
+    for (int i = 0; i < addressIndexList.length; i++) {
       var index = addressIndexList[i];
-      var fabCoinChild = root.derivePath("m/44'/" +
-          environment["CoinType"]["FAB"].toString() +
-          "'/0'/0/" +
-          index.toString());
+      var fabCoinChild = root
+          .derivePath("m/44'/${environment["CoinType"]["FAB"]}'/0'/0/$index");
       var fromAddress = getBtcAddressForNode(fabCoinChild);
       if (addressList != null && addressList.length > 0) {
         fromAddress = addressList[i];
       }
       if (i == 0) {
-        changeAddress = fromAddress;
+        changeAddress = fromAddress!;
       }
       final privateKey = fabCoinChild.privateKey;
-      var utxos = await _api.getFabUtxos(fromAddress);
+      var utxos = await _api.getFabUtxos(fromAddress!);
       if ((utxos != null) && (utxos.length > 0)) {
         for (var j = 0; j < utxos.length; j++) {
           var utxo = utxos[j];
           var idx = utxo['idx'];
           var txid = utxo['txid'];
-          var value = utxo['value'];
+          var value = utxo['value'] as int;
           /*
           var isLocked = await isFabTransactionLocked(txid, idx);
           if (isLocked) {
@@ -1865,7 +1858,8 @@ class WalletService {
         return {
           'txHex': '',
           'errMsg': 'not enough fab coin to make the transaction.',
-          'transFee': transFeeDouble,
+          'transFee': NumberUtil()
+              .truncateDoubleWithoutRouding(transFeeDouble, precision: 8),
           'amountInTx': amountInTx
         };
       }
@@ -1878,7 +1872,7 @@ class WalletService {
                   .toInt() -
               transFee)
           .round();
-      transFee = (Decimal.parse(extraTransactionFee.toString()) +
+      transFeeDouble = (Decimal.parse(extraTransactionFee.toString()) +
               (Decimal.parse(transFee.toString()) / Decimal.parse('1e8'))
                   .toDecimal())
           .toDouble();
@@ -1886,8 +1880,8 @@ class WalletService {
         return {
           'txHex': '',
           'errMsg': '',
-          'transFee':
-              NumberUtil().truncateDoubleWithoutRouding(transFee, precision: 8),
+          'transFee': NumberUtil()
+              .truncateDoubleWithoutRouding(transFeeDouble, precision: 8),
         };
       }
       var output2 = BigInt.parse(NumberUtil.toBigInt(amount, 8)).toInt();
@@ -1919,7 +1913,8 @@ class WalletService {
       return {
         'txHex': txHex,
         'errMsg': '',
-        'transFee': transFeeDouble,
+        'transFee': NumberUtil()
+            .truncateDoubleWithoutRouding(transFeeDouble, precision: 8),
         'amountInTx': amountInTx,
         'txids': allTxids
       };
@@ -2084,19 +2079,17 @@ class WalletService {
 
       for (var i = 0; i < addressIndexList.length; i++) {
         var index = addressIndexList[i];
-        var bitCoinChild = root.derivePath("m/44'/" +
-            environment["CoinType"]["BTC"].toString() +
-            "'/0'/0/" +
-            index.toString());
+        var bitCoinChild = root
+            .derivePath("m/44'/${environment["CoinType"]["BTC"]}'/0'/0/$index");
         var fromAddress = getBtcAddressForNode(bitCoinChild);
         if (addressList.isNotEmpty) {
           fromAddress = addressList[i];
         }
         if (i == 0) {
-          changeAddress = fromAddress;
+          changeAddress = fromAddress!;
         }
         final privateKey = bitCoinChild.privateKey;
-        var utxos = await _api.getBtcUtxos(fromAddress);
+        var utxos = await _api.getBtcUtxos(fromAddress!);
         //debugPrint('utxos=');
         //debugPrint(utxos);
         if ((utxos == null) || (utxos.length == 0)) {
@@ -2108,9 +2101,9 @@ class WalletService {
             continue;
           }
           txb.addInput(tx['txid'], tx['idx']);
-          amountNum -= tx['value'];
+          amountNum -= tx['value'] as int;
           amountNum += bytesPerInput * satoshisPerBytes;
-          totalInput += tx['value'];
+          totalInput += tx['value'] as int;
           receivePrivateKeyArr.add(privateKey);
           if (amountNum <= 0) {
             finished = true;
@@ -2178,7 +2171,7 @@ class WalletService {
         errMsg = res['errMsg'];
         return {'txHash': txHash, 'errMsg': errMsg, 'amountInTx': amountInTx};
       } else {
-        txHash = '0x' + tx.getId();
+        txHash = '0x${tx.getId()}';
       }
     }
 
@@ -2193,12 +2186,11 @@ class WalletService {
       var amountNum = BigInt.parse(NumberUtil.toBigInt(amount, 8)).toInt();
       amountNum += (2 * 34 + 10) * satoshisPerBytes;
 
-      final txb = Bitbox.Bitbox.transactionBuilder(
+      final txb = bitbox.Bitbox.transactionBuilder(
           testnet: environment["chains"]["BCH"]["testnet"]);
       final masterNode =
-          Bitbox.HDNode.fromSeed(seed, environment["chains"]["BCH"]["testnet"]);
-      final childNode =
-          "m/44'/" + environment["CoinType"]["BCH"].toString() + "'/0'/0/0";
+          bitbox.HDNode.fromSeed(seed, environment["chains"]["BCH"]["testnet"]);
+      final childNode = "m/44'/${environment["CoinType"]["BCH"]}'/0'/0/0";
       final accountNode = masterNode.derivePath(childNode);
       final address = accountNode.toCashAddress();
 
@@ -2229,9 +2221,9 @@ class WalletService {
           "original_amount": tx['value']
         });
 
-        amountNum -= tx['value'];
+        amountNum -= tx['value'] as int;
         amountNum += bytesPerInput * satoshisPerBytes;
-        totalInput += tx['value'];
+        totalInput += tx['value'] as int;
         if (amountNum <= 0) {
           finished = true;
           break;
@@ -2280,7 +2272,7 @@ class WalletService {
         errMsg = res['errMsg'];
         return {'txHash': txHash, 'errMsg': errMsg, 'amountInTx': amountInTx};
       } else {
-        txHash = '0x' + tx.getId();
+        txHash = '0x${tx.getId()}';
       }
     }
 
@@ -2299,19 +2291,17 @@ class WalletService {
 
       for (var i = 0; i < addressIndexList.length; i++) {
         var index = addressIndexList[i];
-        var node = root.derivePath("m/44'/" +
-            environment["CoinType"]["LTC"].toString() +
-            "'/0'/0/" +
-            index.toString());
+        var node = root
+            .derivePath("m/44'/${environment["CoinType"]["LTC"]}'/0'/0/$index");
         var fromAddress = getLtcAddressForNode(node);
         if (addressList.isNotEmpty) {
           fromAddress = addressList[i];
         }
         if (i == 0) {
-          changeAddress = fromAddress;
+          changeAddress = fromAddress!;
         }
         final privateKey = node.privateKey;
-        var utxos = await _api.getLtcUtxos(fromAddress);
+        var utxos = await _api.getLtcUtxos(fromAddress!);
 
         if ((utxos == null) || (utxos.length == 0)) {
           continue;
@@ -2322,9 +2312,9 @@ class WalletService {
             continue;
           }
           txb.addInput(tx['txid'], tx['idx']);
-          amountNum -= tx['value'];
+          amountNum -= tx['value'] as int;
           amountNum += bytesPerInput * satoshisPerBytes;
-          totalInput += tx['value'];
+          totalInput += tx['value'] as int;
           receivePrivateKeyArr.add(privateKey);
           if (amountNum <= 0) {
             finished = true;
@@ -2383,7 +2373,7 @@ class WalletService {
         errMsg = res['errMsg'];
         return {'txHash': txHash, 'errMsg': errMsg, 'amountInTx': amountInTx};
       } else {
-        txHash = '0x' + tx.getId();
+        txHash = '0x${tx.getId()}';
       }
     }
 
@@ -2402,21 +2392,19 @@ class WalletService {
 
       for (var i = 0; i < addressIndexList.length; i++) {
         var index = addressIndexList[i];
-        var node = root.derivePath("m/44'/" +
-            environment["CoinType"]["DOGE"].toString() +
-            "'/0'/0/" +
-            index.toString());
+        var node = root.derivePath(
+            "m/44'/${environment["CoinType"]["DOGE"]}'/0'/0/$index");
         var fromAddress = getDogeAddressForNode(node);
-        debugPrint('fromAddress==' + fromAddress);
+        debugPrint('fromAddress==$fromAddress');
         if (addressList.isNotEmpty) {
           fromAddress = addressList[i];
         }
         if (i == 0) {
-          changeAddress = fromAddress;
+          changeAddress = fromAddress!;
         }
 
         final privateKey = node.privateKey;
-        var utxos = await _api.getDogeUtxos(fromAddress);
+        var utxos = await _api.getDogeUtxos(fromAddress!);
         //debugPrint('utxos=');
         //debugPrint(utxos);
         if ((utxos == null) || (utxos.length == 0)) {
@@ -2428,9 +2416,9 @@ class WalletService {
             continue;
           }
           txb.addInput(tx['txid'], tx['idx']);
-          amountNum -= tx['value'];
+          amountNum -= tx['value'] as int;
           amountNum += bytesPerInput * satoshisPerBytes;
-          totalInput += tx['value'];
+          totalInput += tx['value'] as int;
           receivePrivateKeyArr.add(privateKey);
           if (amountNum <= 0) {
             finished = true;
@@ -2492,7 +2480,7 @@ class WalletService {
         errMsg = res['errMsg'];
         return {'txHash': txHash, 'errMsg': errMsg, 'amountInTx': amountInTx};
       } else {
-        txHash = '0x' + tx.getId();
+        txHash = '0x${tx.getId()}';
       }
     }
 
@@ -2523,14 +2511,14 @@ class WalletService {
       }
 
       final chainId = environment["chains"]["ETH"]["chainId"];
-      final ethCoinChild = root.derivePath(
-          "m/44'/" + environment["CoinType"]["ETH"].toString() + "'/0'/0/0");
-      final privateKey = HEX.encode(ethCoinChild.privateKey);
+      final ethCoinChild =
+          root.derivePath("m/44'/${environment["CoinType"]["ETH"]}'/0'/0/0");
+      final privateKey = HEX.encode(ethCoinChild.privateKey!.toList());
       var amountSentInt = BigInt.parse(NumberUtil.toBigInt(amount, 18));
 
       Credentials credentials = EthPrivateKey.fromHex(privateKey);
 
-      final address = await credentials.extractAddress();
+      final address = credentials.address;
       final addressHex = address.hex;
       final nonce = await _api.getEthNonce(addressHex);
 
@@ -2545,16 +2533,16 @@ class WalletService {
           Transaction(
             nonce: nonce,
             to: EthereumAddress.fromHex(toAddress),
-            gasPrice: EtherAmount.fromUnitAndValue(EtherUnit.gwei, gasPrice),
+            gasPrice: EtherAmount.fromInt(EtherUnit.gwei, gasPrice),
             maxGas: gasLimit,
-            value: EtherAmount.fromUnitAndValue(EtherUnit.wei, amountSentInt),
+            value: EtherAmount.fromBigInt(EtherUnit.wei, amountSentInt),
           ),
           chainId: chainId,
           fetchChainIdFromNetworkId: false);
 
-      txHex = '0x' + HEX.encode(signed);
+      txHex = '0x${HEX.encode(signed)}';
 
-      debugPrint('txHex in ETH=' + txHex);
+      debugPrint('txHex in ETH=$txHex');
       if (doSubmit) {
         var res = await _api.postEthTx(txHex);
         txHash = res['txHash'];
@@ -2595,7 +2583,7 @@ class WalletService {
           errMsg = res['errMsg'];
         } else {
           var tx = BitcoinFlutter.Transaction.fromHex(txHex);
-          txHash = '0x' + tx.getId();
+          txHash = '0x${tx.getId()}';
         }
       }
     }
@@ -2626,10 +2614,10 @@ class WalletService {
       var amountSentHex = amountSentInt.toRadixString(16);
 
       var fxnCallHex = transferAbi +
-          stringUtils.fixLength(stringUtils.trimHexPrefix(toAddress), 64) +
-          stringUtils.fixLength(stringUtils.trimHexPrefix(amountSentHex), 64);
+          string_utils.fixLength(string_utils.trimHexPrefix(toAddress), 64) +
+          string_utils.fixLength(string_utils.trimHexPrefix(amountSentHex), 64);
 
-      contractAddress = stringUtils.trimHexPrefix(contractAddress);
+      contractAddress = string_utils.trimHexPrefix(contractAddress);
 
       var contractInfo = await getFabSmartContract(
           contractAddress, fxnCallHex, gasLimit, gasPrice);
@@ -2674,7 +2662,7 @@ class WalletService {
           errMsg = res['errMsg'];
         } else {
           var tx = BitcoinFlutter.Transaction.fromHex(txHex);
-          txHash = '0x' + tx.getId();
+          txHash = '0x${tx.getId()}';
         }
       }
     }
@@ -2690,7 +2678,7 @@ class WalletService {
               BigInt.parse(gasLimit.toString()) /
               BigInt.parse('1000000000'))
           .toDouble();
-      log.i('transFeeDouble===' + transFeeDouble.toString());
+      log.i('transFeeDouble===$transFeeDouble');
       if (getTransFeeOnly) {
         return {
           'txHex': '',
@@ -2702,12 +2690,12 @@ class WalletService {
       }
 
       final chainId = environment["chains"]["ETH"]["chainId"];
-      final ethCoinChild = root.derivePath(
-          "m/44'/" + environment["CoinType"]["ETH"].toString() + "'/0'/0/0");
-      final privateKey = HEX.encode(ethCoinChild.privateKey);
+      final ethCoinChild =
+          root.derivePath("m/44'/${environment["CoinType"]["ETH"]}'/0'/0/0");
+      final privateKey = HEX.encode(ethCoinChild.privateKey!.toList());
       Credentials credentials = EthPrivateKey.fromHex(privateKey);
 
-      final address = await credentials.extractAddress();
+      final address = credentials.address;
       final addressHex = address.hex;
       final nonce = await _api.getEthNonce(addressHex);
 
@@ -2746,9 +2734,9 @@ class WalletService {
       amountInTx = convertedDecimalAmount;
       var transferAbi = 'a9059cbb';
       var fxnCallHex = transferAbi +
-          stringUtils.fixLength(stringUtils.trimHexPrefix(toAddress), 64) +
-          stringUtils.fixLength(
-              stringUtils
+          string_utils.fixLength(string_utils.trimHexPrefix(toAddress), 64) +
+          string_utils.fixLength(
+              string_utils
                   .trimHexPrefix(convertedDecimalAmount.toRadixString(16)),
               64);
       var apiUrl =
@@ -2762,14 +2750,14 @@ class WalletService {
           Transaction(
               nonce: nonce,
               to: EthereumAddress.fromHex(contractAddress),
-              gasPrice: EtherAmount.fromUnitAndValue(EtherUnit.gwei, gasPrice),
+              gasPrice: EtherAmount.fromInt(EtherUnit.gwei, gasPrice),
               maxGas: gasLimit,
-              value: EtherAmount.fromUnitAndValue(EtherUnit.wei, 0),
-              data: Uint8List.fromList(stringUtils.hex2Buffer(fxnCallHex))),
+              value: EtherAmount.fromInt(EtherUnit.wei, 0),
+              data: Uint8List.fromList(string_utils.hex2Buffer(fxnCallHex))),
           chainId: chainId,
           fetchChainIdFromNetworkId: false);
       log.w('signed=');
-      txHex = '0x' + HEX.encode(signed);
+      txHex = '0x${HEX.encode(signed)}';
 
       if (doSubmit) {
         var res = await _api.postEthTx(txHex);
@@ -2795,8 +2783,8 @@ class WalletService {
 ----------------------------------------------------------------------*/
   getFabSmartContract(
       String contractAddress, String fxnCallHex, gasLimit, gasPrice) async {
-    contractAddress = stringUtils.trimHexPrefix(contractAddress);
-    fxnCallHex = stringUtils.trimHexPrefix(fxnCallHex);
+    contractAddress = string_utils.trimHexPrefix(contractAddress);
+    fxnCallHex = string_utils.trimHexPrefix(fxnCallHex);
 
     var totalAmount = (Decimal.parse(gasLimit.toString()) *
             Decimal.parse(gasPrice.toString()) /
@@ -2809,13 +2797,13 @@ class WalletService {
     log.w('Smart contract Address $contractAddress');
     chunks.add(84);
 
-    chunks.add(Uint8List.fromList(stringUtils.number2Buffer(gasLimit)));
+    chunks.add(Uint8List.fromList(string_utils.number2Buffer(gasLimit)));
 
-    chunks.add(Uint8List.fromList(stringUtils.number2Buffer(gasPrice)));
+    chunks.add(Uint8List.fromList(string_utils.number2Buffer(gasPrice)));
 
-    chunks.add(Uint8List.fromList(stringUtils.hex2Buffer(fxnCallHex)));
+    chunks.add(Uint8List.fromList(string_utils.hex2Buffer(fxnCallHex)));
 
-    chunks.add(Uint8List.fromList(stringUtils.hex2Buffer(contractAddress)));
+    chunks.add(Uint8List.fromList(string_utils.hex2Buffer(contractAddress)));
 
     chunks.add(194);
 

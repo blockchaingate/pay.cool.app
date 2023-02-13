@@ -17,7 +17,6 @@ import 'package:paycool/logger.dart';
 import 'package:paycool/utils/exaddr.dart';
 import 'package:paycool/utils/fab_util.dart';
 import 'package:paycool/utils/number_util.dart';
-import 'package:paycool/views/paycool/models/payment_rewards_model.dart';
 import './string_util.dart';
 import 'package:web3dart/web3dart.dart';
 import 'package:hex/hex.dart';
@@ -96,7 +95,7 @@ extractWalletAddressFromPayCoolClubScannedAbiHex(String abiHex) {
       'removeZerosFromHex $removeZerosFromHex -- length ${removeZerosFromHex.length}');
   String walletAddress = '';
   if (removeZerosFromHex.length == 40) {
-    walletAddress = fabUtils.exgToFabAddress('0x' + removeZerosFromHex);
+    walletAddress = fabUtils.exgToFabAddress('0x$removeZerosFromHex');
   }
   debugPrint('wallet address $walletAddress');
 
@@ -118,7 +117,7 @@ extractAddressFromAbihex(String abiHex) {
       'removeZerosFromHex $removeZerosFromHex -- length ${removeZerosFromHex.length}');
   String referralAddress = '';
   if (removeZerosFromHex.length == 40) {
-    referralAddress = fabUtils.exgToFabAddress('0x' + removeZerosFromHex);
+    referralAddress = fabUtils.exgToFabAddress('0x$removeZerosFromHex');
   }
   debugPrint('referral address $referralAddress');
 
@@ -339,17 +338,17 @@ getCreateOrderFuncABI(
 List<dynamic> _encodeToRlp(Transaction transaction, MsgSignature signature) {
   final list = [
     transaction.nonce,
-    transaction.gasPrice.getInWei,
+    transaction.gasPrice!.getInWei,
     transaction.maxGas,
   ];
 
   if (transaction.to != null) {
-    list.add(transaction.to.addressBytes);
+    list.add(transaction.to!.addressBytes);
   } else {
     list.add('');
   }
 
-  list.add(transaction.value.getInWei);
+  list.add(transaction.value!.getInWei);
   // list.add('');
   list.add(transaction.data);
 
@@ -382,23 +381,22 @@ Future signAbiHexWithPrivateKey(String abiHex, String privateKey,
 
   var transaction = Transaction(
       to: EthereumAddress.fromHex(coinPoolAddress),
-      gasPrice: EtherAmount.fromUnitAndValue(EtherUnit.wei, gasPrice),
+      gasPrice: EtherAmount.fromInt(EtherUnit.wei, gasPrice),
       maxGas: gasLimit,
       nonce: nonce,
-      value: EtherAmount.fromUnitAndValue(EtherUnit.wei, 0),
-      data: HEX.decode(abiHex));
+      value: EtherAmount.fromInt(EtherUnit.wei, 0),
+      data: Uint8List.fromList(HEX.decode(abiHex)));
   final innerSignature =
       chainId == null ? null : MsgSignature(BigInt.zero, BigInt.zero, chainId);
 
-  var transactionList = _encodeToRlp(transaction, innerSignature);
+  var transactionList = _encodeToRlp(transaction, innerSignature!);
   final encoded = uint8ListFromList(rlp.encode(transactionList));
 
-  final signature =
-      await credentials.signToSignature(encoded, chainId: chainId);
+  final signature = credentials.signToEcSignature(encoded, chainId: chainId);
 
   var encodeList =
       uint8ListFromList(rlp.encode(_encodeToRlp(transaction, signature)));
-  var finalString = '0x' + HEX.encode(encodeList);
+  var finalString = '0x${HEX.encode(encodeList)}';
   // debugPrint('finalString===' + finalString);
   return finalString;
   /*

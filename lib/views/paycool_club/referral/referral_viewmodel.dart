@@ -20,7 +20,7 @@ class ReferralViewmodel extends BaseViewModel {
   SharedService sharedService = locator<SharedService>();
 
   PayCoolClubService payCoolClubService = locator<PayCoolClubService>();
-  BuildContext context;
+  late BuildContext context;
   String fabAddress = '';
   PaycoolReferral parent = PaycoolReferral();
 
@@ -44,24 +44,24 @@ class ReferralViewmodel extends BaseViewModel {
     setBusy(true);
     var fabAddress = await sharedService.getFabAddressFromCoreWalletDatabase();
     String addressUsed =
-        referalRoute.address != null && referalRoute.address.isNotEmpty
-            ? referalRoute.address
+        referalRoute.address != null && referalRoute.address!.isNotEmpty
+            ? referalRoute.address!
             : fabAddress;
 
     if (projects.isEmpty || projects == null) {
-      if (referalRoute.project.id == 0 &&
-          referalRoute.project.en == 'Paycool') {
+      if (referalRoute.project!.id == 0 &&
+          referalRoute.project!.en == 'Paycool') {
         var refs = await payCoolClubService.getReferrals(addressUsed,
             pageSize: paginationModel.pageSize,
             pageNumber: paginationModel.pageNumber);
-        idReferralsMap.addAll({referalRoute.project.id: refs});
+        idReferralsMap.addAll({referalRoute.project!.id!: refs});
       } else {
         var refs = await payCoolClubService.getReferrals(addressUsed,
             isProject: true,
-            projectId: referalRoute.project.id,
+            projectId: referalRoute.project!.id!,
             pageSize: paginationModel.pageSize,
             pageNumber: paginationModel.pageNumber);
-        idReferralsMap.addAll({referalRoute.project.id: refs});
+        idReferralsMap.addAll({referalRoute.project!.id!: refs});
       }
     } else {
       for (var p in projects) {
@@ -69,39 +69,39 @@ class ReferralViewmodel extends BaseViewModel {
           var refs = await payCoolClubService.getReferrals(addressUsed,
               pageSize: paginationModel.pageSize,
               pageNumber: paginationModel.pageNumber);
-          idReferralsMap.addAll({p.id: refs});
+          idReferralsMap.addAll({p.id!: refs});
           var refCount =
               await payCoolClubService.getUserReferralCount(addressUsed);
-          idReferralCountMap.addAll({p.id: refCount});
+          idReferralCountMap.addAll({p.id!: refCount});
         } else {
           var refs = await payCoolClubService.getReferrals(addressUsed,
               isProject: true,
-              projectId: p.id,
+              projectId: p.id!,
               pageSize: paginationModel.pageSize,
               pageNumber: paginationModel.pageNumber);
-          idReferralsMap.addAll({p.id: refs});
+          idReferralsMap.addAll({p.id!: refs});
           var refCount = await payCoolClubService.getUserReferralCount(
               addressUsed,
               isProject: true,
-              projectId: p.id);
-          idReferralCountMap.addAll({p.id: refCount});
+              projectId: p.id!);
+          idReferralCountMap.addAll({p.id!: refCount});
         }
       }
     }
     debugPrint('idReferralsMap $idReferralsMap');
 
     if (referalRoute.address != null ||
-        (referalRoute.project != null && referalRoute.project.id == 0)) {
-      _totalReferrals = referalRoute.project.id != 0
+        (referalRoute.project != null && referalRoute.project!.id! == 0)) {
+      _totalReferrals = referalRoute.project!.id != 0
           ? await payCoolClubService.getUserReferralCount(addressUsed,
-              isProject: true, projectId: referalRoute.project.id)
+              isProject: true, projectId: referalRoute.project!.id!)
           : await payCoolClubService.getUserReferralCount(addressUsed);
       paginationModel.totalPages =
           (_totalReferrals / paginationModel.pageSize).ceil();
       paginationModel.pages = [];
-      referalRoute.referrals = idReferralsMap[referalRoute.project.id];
+      referalRoute.referrals = idReferralsMap[referalRoute.project!.id];
       if (referalRoute.referrals != null) {
-        paginationModel.pages.addAll(referalRoute.referrals);
+        paginationModel.pages.addAll(referalRoute.referrals!);
       }
       notifyListeners();
       log.i('paginationModel ${paginationModel.toString()}');

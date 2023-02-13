@@ -1,7 +1,5 @@
 import 'package:decimal/decimal.dart';
 import 'package:paycool/constants/constants.dart';
-import 'package:paycool/service_locator.dart';
-import 'package:paycool/services/coin_service.dart';
 import 'package:paycool/utils/number_util.dart';
 import '../../../environments/coins.dart' as coin_list;
 
@@ -11,22 +9,22 @@ class PayCoolTransactionHistory {
   // when he cancel his request, the status will be changed back to 1,
   // when merchant approve the request, status will be changed  to 0
   //int status;
-  String id;
-  String from;
-  String address;
-  String merchantRecipient;
-  String exchangilyRecipient;
-  String txid;
-  String orderId;
-  int coinType;
-  int rate;
-  Decimal merchantGet;
-  Decimal feePayment;
-  Decimal rewardAmount;
-  Decimal tax;
-  String dateCreated;
-  Decimal totalTransactionAmount;
-  String tickerName;
+  String? id;
+  String? from;
+  String? address;
+  String? merchantRecipient;
+  String? exchangilyRecipient;
+  String? txid;
+  String? orderId;
+  int? coinType;
+  int? rate;
+  Decimal? merchantGet;
+  Decimal? feePayment;
+  Decimal? rewardAmount;
+  Decimal? tax;
+  String? dateCreated;
+  Decimal? totalTransactionAmount;
+  String? tickerName;
 
   PayCoolTransactionHistory(
       { //this.status,
@@ -72,7 +70,7 @@ class PayCoolTransactionHistory {
       total = merchantAmount + exchangilyAmount + taxAmount + rewardAmount;
     }
 
-    String ticker = coin_list.newCoinTypeMap[json['paidCoin']];
+    String? ticker = coin_list.newCoinTypeMap![json['paidCoin']];
 
     return PayCoolTransactionHistory(
         // status: json['status'],
@@ -117,7 +115,7 @@ class PayCoolTransactionHistory {
 }
 
 class PayCoolTransactionHistoryModelList {
-  final List<PayCoolTransactionHistory> transactions;
+  final List<PayCoolTransactionHistory>? transactions;
   PayCoolTransactionHistoryModelList({this.transactions});
 
   factory PayCoolTransactionHistoryModelList.fromJson(

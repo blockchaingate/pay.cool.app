@@ -13,7 +13,7 @@ class PayCoolRewardsViewModel extends FutureViewModel
   final payCoolService = locator<PayCoolService>();
   final sharedService = locator<SharedService>();
   String fabAddress = '';
-  BuildContext context;
+  BuildContext? context;
   List<PaymentReward> paymentRewards = [];
 
   PaginationModel paginationModel = PaginationModel();

@@ -27,18 +27,18 @@ import 'package:stacked/stacked.dart';
 
 class SendWalletView extends StatelessWidget {
   final WalletInfo walletInfo;
-  const SendWalletView({Key key, this.walletInfo}) : super(key: key);
+  const SendWalletView({Key? key, required this.walletInfo}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     String tickerName = '';
     walletInfo.tickerName == 'USDTX'
         ? tickerName = 'USDT(TRC20)'
-        : tickerName = walletInfo.tickerName;
-    String tokenType = walletInfo.tokenType;
+        : tickerName = walletInfo.tickerName!;
+    String tokenType = walletInfo.tokenType!;
     return ViewModelBuilder<SendViewModel>.reactive(
         viewModelBuilder: () => SendViewModel(),
-        onModelReady: (model) {
+        onViewModelReady: (model) {
           model.context = context;
           model.walletInfo = walletInfo;
           model.initState();
@@ -228,7 +228,7 @@ class SendWalletView extends StatelessWidget {
                                           fontSize: 14, color: grey)),
                                   style: model.checkSendAmount &&
                                           model.amount.toDouble() <=
-                                              walletInfo.availableBalance
+                                              walletInfo.availableBalance!
                                       ? const TextStyle(
                                           color: grey, fontSize: 14)
                                       : const TextStyle(
@@ -244,7 +244,7 @@ class SendWalletView extends StatelessWidget {
                                       Row(
                                         children: <Widget>[
                                           Text(
-                                            '${FlutterI18n.translate(context, "walletbalance")}  ${NumberUtil().truncateDoubleWithoutRouding(model.walletInfo.availableBalance, precision: model.singlePairDecimalConfig.qtyDecimal)} ',
+                                            '${FlutterI18n.translate(context, "walletbalance")}  ${NumberUtil().truncateDoubleWithoutRouding(model.walletInfo.availableBalance!, precision: model.singlePairDecimalConfig.qtyDecimal)} ',
                                             style: headText6.copyWith(
                                                 fontWeight: FontWeight.w400),
                                           ),
@@ -615,7 +615,7 @@ class SendWalletView extends StatelessWidget {
                                         model.txHash,
                                         style: Theme.of(context)
                                             .textTheme
-                                            .bodyText2,
+                                            .bodyMedium,
                                       ),
                                     ],
                                   )
@@ -635,7 +635,7 @@ class SendWalletView extends StatelessWidget {
                                       text: TextSpan(
                                           style: Theme.of(context)
                                               .textTheme
-                                              .bodyText2
+                                              .bodyMedium!
                                               .copyWith(
                                                   decoration:
                                                       TextDecoration.underline),

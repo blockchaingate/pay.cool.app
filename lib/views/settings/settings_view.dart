@@ -23,12 +23,12 @@ import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 
 class SettingsView extends StatelessWidget {
-  const SettingsView({Key key}) : super(key: key);
+  const SettingsView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<SettingsViewmodel>.reactive(
-      onModelReady: (model) async {
+      onViewModelReady: (model) async {
         model.context = context;
         await model.init();
       },
@@ -78,8 +78,8 @@ class SettingsView extends StatelessWidget {
 class SettingsWidget extends StatelessWidget {
   final SettingsViewmodel model;
   const SettingsWidget({
-    Key key,
-    this.model,
+    Key? key,
+    required this.model,
   }) : super(key: key);
 
   @override
@@ -99,7 +99,7 @@ class SettingsWidget extends StatelessWidget {
 }
 
 class SettingsContainer extends StatelessWidget {
-  const SettingsContainer({Key key, this.model}) : super(key: key);
+  const SettingsContainer({Key? key, required this.model}) : super(key: key);
 
   final SettingsViewmodel model;
 
@@ -184,7 +184,7 @@ class SettingsContainer extends StatelessWidget {
                     ),
                     value: model.selectedLanguage,
                     onChanged: (newValue) {
-                      model.changeWalletLanguage(newValue);
+                      model.changeWalletLanguage(newValue.toString());
                     },
                     items: [
                       DropdownMenuItem(
@@ -503,7 +503,7 @@ class SettingsContainer extends StatelessWidget {
                 child: Text(model.errorMessage,
                     style: Theme.of(context)
                         .textTheme
-                        .bodyText2
+                        .bodyMedium!
                         .copyWith(color: Colors.red)),
               ),
             ),
@@ -517,7 +517,7 @@ class SettingsContainer extends StatelessWidget {
                           .launchInBrowser(Uri.parse(paycoolPrivacyUrl));
                     },
                   text: FlutterI18n.translate(context, "privacyPolicy"),
-                  style: Theme.of(context).textTheme.bodyText1.copyWith(
+                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                         color: Colors.blue,
                         decoration: TextDecoration.underline,
                       ),

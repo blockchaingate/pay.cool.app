@@ -2,7 +2,7 @@
 //  Generated code. Do not modify.
 //  source: protos/tron.proto
 //
-// @dart = 2.7
+
 // ignore_for_file: annotate_overrides,camel_case_types,unnecessary_const,non_constant_identifier_names,library_prefixes,unused_import,unused_shown_name,return_of_invalid_type,unnecessary_this,prefer_final_fields
 
 import 'dart:core' as $core;
@@ -43,9 +43,9 @@ class TransferContract extends $pb.GeneratedMessage {
 
   TransferContract._() : super();
   factory TransferContract({
-    $core.List<$core.int> ownerAddress,
-    $core.List<$core.int> toAddress,
-    $fixnum.Int64 amount,
+    $core.List<$core.int>? ownerAddress,
+    $core.List<$core.int>? toAddress,
+    $fixnum.Int64? amount,
   }) {
     final _result = create();
     if (ownerAddress != null) {
@@ -84,7 +84,7 @@ class TransferContract extends $pb.GeneratedMessage {
   @$core.pragma('dart2js:noInline')
   static TransferContract getDefault() => _defaultInstance ??=
       $pb.GeneratedMessage.$_defaultFor<TransferContract>(create);
-  static TransferContract _defaultInstance;
+  static TransferContract? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.List<$core.int> get ownerAddress => $_getN(0);
@@ -156,10 +156,10 @@ class TransferAssetContract extends $pb.GeneratedMessage {
 
   TransferAssetContract._() : super();
   factory TransferAssetContract({
-    $core.List<$core.int> assetName,
-    $core.List<$core.int> ownerAddress,
-    $core.List<$core.int> toAddress,
-    $fixnum.Int64 amount,
+    $core.List<$core.int>? assetName,
+    $core.List<$core.int>? ownerAddress,
+    $core.List<$core.int>? toAddress,
+    $fixnum.Int64? amount,
   }) {
     final _result = create();
     if (assetName != null) {
@@ -203,7 +203,7 @@ class TransferAssetContract extends $pb.GeneratedMessage {
   @$core.pragma('dart2js:noInline')
   static TransferAssetContract getDefault() => _defaultInstance ??=
       $pb.GeneratedMessage.$_defaultFor<TransferAssetContract>(create);
-  static TransferAssetContract _defaultInstance;
+  static TransferAssetContract? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.List<$core.int> get assetName => $_getN(0);
@@ -283,19 +283,26 @@ class TriggerSmartContract extends $pb.GeneratedMessage {
             ? ''
             : 'data',
         $pb.PbFieldType.OY)
-    ..aInt64(5,
-        const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'callTokenValue')
-    ..aInt64(6, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'tokenId')
+    ..aInt64(
+        5,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'callTokenValue')
+    ..aInt64(
+        6,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'tokenId')
     ..hasRequiredFields = false;
 
   TriggerSmartContract._() : super();
   factory TriggerSmartContract({
-    $core.List<$core.int> ownerAddress,
-    $core.List<$core.int> contractAddress,
-    $fixnum.Int64 callValue,
-    $core.List<$core.int> data,
-    $fixnum.Int64 callTokenValue,
-    $fixnum.Int64 tokenId,
+    $core.List<$core.int>? ownerAddress,
+    $core.List<$core.int>? contractAddress,
+    $fixnum.Int64? callValue,
+    $core.List<$core.int>? data,
+    $fixnum.Int64? callTokenValue,
+    $fixnum.Int64? tokenId,
   }) {
     final _result = create();
     if (ownerAddress != null) {
@@ -344,7 +351,7 @@ class TriggerSmartContract extends $pb.GeneratedMessage {
   @$core.pragma('dart2js:noInline')
   static TriggerSmartContract getDefault() => _defaultInstance ??=
       $pb.GeneratedMessage.$_defaultFor<TriggerSmartContract>(create);
-  static TriggerSmartContract _defaultInstance;
+  static TriggerSmartContract? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.List<$core.int> get ownerAddress => $_getN(0);
@@ -445,9 +452,9 @@ class FreezeBalanceContract extends $pb.GeneratedMessage {
 
   FreezeBalanceContract._() : super();
   factory FreezeBalanceContract({
-    $core.List<$core.int> ownerAddress,
-    $fixnum.Int64 frozenBalance,
-    $fixnum.Int64 frozenDuration,
+    $core.List<$core.int>? ownerAddress,
+    $fixnum.Int64? frozenBalance,
+    $fixnum.Int64? frozenDuration,
   }) {
     final _result = create();
     if (ownerAddress != null) {
@@ -488,7 +495,7 @@ class FreezeBalanceContract extends $pb.GeneratedMessage {
   @$core.pragma('dart2js:noInline')
   static FreezeBalanceContract getDefault() => _defaultInstance ??=
       $pb.GeneratedMessage.$_defaultFor<FreezeBalanceContract>(create);
-  static FreezeBalanceContract _defaultInstance;
+  static FreezeBalanceContract? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.List<$core.int> get ownerAddress => $_getN(0);
@@ -543,7 +550,7 @@ class UnfreezeBalanceContract extends $pb.GeneratedMessage {
 
   UnfreezeBalanceContract._() : super();
   factory UnfreezeBalanceContract({
-    $core.List<$core.int> ownerAddress,
+    $core.List<$core.int>? ownerAddress,
   }) {
     final _result = create();
     if (ownerAddress != null) {
@@ -578,7 +585,7 @@ class UnfreezeBalanceContract extends $pb.GeneratedMessage {
   @$core.pragma('dart2js:noInline')
   static UnfreezeBalanceContract getDefault() => _defaultInstance ??=
       $pb.GeneratedMessage.$_defaultFor<UnfreezeBalanceContract>(create);
-  static UnfreezeBalanceContract _defaultInstance;
+  static UnfreezeBalanceContract? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.List<$core.int> get ownerAddress => $_getN(0);
@@ -609,7 +616,7 @@ class UnfreezeAssetContract extends $pb.GeneratedMessage {
 
   UnfreezeAssetContract._() : super();
   factory UnfreezeAssetContract({
-    $core.List<$core.int> ownerAddress,
+    $core.List<$core.int>? ownerAddress,
   }) {
     final _result = create();
     if (ownerAddress != null) {
@@ -644,7 +651,7 @@ class UnfreezeAssetContract extends $pb.GeneratedMessage {
   @$core.pragma('dart2js:noInline')
   static UnfreezeAssetContract getDefault() => _defaultInstance ??=
       $pb.GeneratedMessage.$_defaultFor<UnfreezeAssetContract>(create);
-  static UnfreezeAssetContract _defaultInstance;
+  static UnfreezeAssetContract? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.List<$core.int> get ownerAddress => $_getN(0);
@@ -681,8 +688,8 @@ class AccountId extends $pb.GeneratedMessage {
 
   AccountId._() : super();
   factory AccountId({
-    $core.List<$core.int> name,
-    $core.List<$core.int> address,
+    $core.List<$core.int>? name,
+    $core.List<$core.int>? address,
   }) {
     final _result = create();
     if (name != null) {
@@ -717,7 +724,7 @@ class AccountId extends $pb.GeneratedMessage {
   @$core.pragma('dart2js:noInline')
   static AccountId getDefault() =>
       _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<AccountId>(create);
-  static AccountId _defaultInstance;
+  static AccountId? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.List<$core.int> get name => $_getN(0);
@@ -766,8 +773,8 @@ class acuthrity extends $pb.GeneratedMessage {
 
   acuthrity._() : super();
   factory acuthrity({
-    AccountId account,
-    $core.List<$core.int> permissionName,
+    AccountId? account,
+    $core.List<$core.int>? permissionName,
   }) {
     final _result = create();
     if (account != null) {
@@ -802,7 +809,7 @@ class acuthrity extends $pb.GeneratedMessage {
   @$core.pragma('dart2js:noInline')
   static acuthrity getDefault() =>
       _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<acuthrity>(create);
-  static acuthrity _defaultInstance;
+  static acuthrity? _defaultInstance;
 
   @$pb.TagNumber(1)
   AccountId get account => $_getN(0);
@@ -847,23 +854,40 @@ class Transaction_Contract extends $pb.GeneratedMessage {
         valueOf: Transaction_Contract_ContractType.valueOf,
         enumValues: Transaction_Contract_ContractType.values)
     ..aOM<$0.Any>(
-        2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'parameter',
+        2,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'parameter',
         subBuilder: $0.Any.create)
     ..a<$core.List<$core.int>>(
         3,
-        const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'provider',
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'provider',
         $pb.PbFieldType.OY)
-    ..a<$core.List<$core.int>>(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'ContractName', $pb.PbFieldType.OY, protoName: 'ContractName')
-    ..a<$core.int>(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'PermissionId', $pb.PbFieldType.O3, protoName: 'Permission_id')
+    ..a<$core.List<$core.int>>(
+        4,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'ContractName',
+        $pb.PbFieldType.OY,
+        protoName: 'ContractName')
+    ..a<$core.int>(
+        5,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'PermissionId',
+        $pb.PbFieldType.O3,
+        protoName: 'Permission_id')
     ..hasRequiredFields = false;
 
   Transaction_Contract._() : super();
   factory Transaction_Contract({
-    Transaction_Contract_ContractType type,
-    $0.Any parameter,
-    $core.List<$core.int> provider,
-    $core.List<$core.int> contractName,
-    $core.int permissionId,
+    Transaction_Contract_ContractType? type,
+    $0.Any? parameter,
+    $core.List<$core.int>? provider,
+    $core.List<$core.int>? contractName,
+    $core.int? permissionId,
   }) {
     final _result = create();
     if (type != null) {
@@ -909,7 +933,7 @@ class Transaction_Contract extends $pb.GeneratedMessage {
   @$core.pragma('dart2js:noInline')
   static Transaction_Contract getDefault() => _defaultInstance ??=
       $pb.GeneratedMessage.$_defaultFor<Transaction_Contract>(create);
-  static Transaction_Contract _defaultInstance;
+  static Transaction_Contract? _defaultInstance;
 
   @$pb.TagNumber(1)
   Transaction_Contract_ContractType get type => $_getN(0);
@@ -998,8 +1022,8 @@ class Transaction_Result extends $pb.GeneratedMessage {
 
   Transaction_Result._() : super();
   factory Transaction_Result({
-    $fixnum.Int64 fee,
-    Transaction_Result_code ret,
+    $fixnum.Int64? fee,
+    Transaction_Result_code? ret,
   }) {
     final _result = create();
     if (fee != null) {
@@ -1035,7 +1059,7 @@ class Transaction_Result extends $pb.GeneratedMessage {
   @$core.pragma('dart2js:noInline')
   static Transaction_Result getDefault() => _defaultInstance ??=
       $pb.GeneratedMessage.$_defaultFor<Transaction_Result>(create);
-  static Transaction_Result _defaultInstance;
+  static Transaction_Result? _defaultInstance;
 
   @$pb.TagNumber(1)
   $fixnum.Int64 get fee => $_getI64(0);
@@ -1092,28 +1116,54 @@ class Transaction_raw extends $pb.GeneratedMessage {
             : 'expiration')
     ..pc<acuthrity>(
         9,
-        const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'auths',
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'auths',
         $pb.PbFieldType.PM,
         subBuilder: acuthrity.create)
-    ..a<$core.List<$core.int>>(10, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'data', $pb.PbFieldType.OY)
-    ..pc<Transaction_Contract>(11, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'contract', $pb.PbFieldType.PM, subBuilder: Transaction_Contract.create)
-    ..a<$core.List<$core.int>>(12, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'scripts', $pb.PbFieldType.OY)
-    ..aInt64(14, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'timestamp')
-    ..aInt64(18, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'feeLimit')
+    ..a<$core.List<$core.int>>(
+        10,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'data',
+        $pb.PbFieldType.OY)
+    ..pc<Transaction_Contract>(
+        11,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'contract',
+        $pb.PbFieldType.PM,
+        subBuilder: Transaction_Contract.create)
+    ..a<$core.List<$core.int>>(
+        12,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'scripts',
+        $pb.PbFieldType.OY)
+    ..aInt64(
+        14,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'timestamp')
+    ..aInt64(
+        18,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'feeLimit')
     ..hasRequiredFields = false;
 
   Transaction_raw._() : super();
   factory Transaction_raw({
-    $core.List<$core.int> refBlockBytes,
-    $fixnum.Int64 refBlockNum,
-    $core.List<$core.int> refBlockHash,
-    $fixnum.Int64 expiration,
-    $core.Iterable<acuthrity> auths,
-    $core.List<$core.int> data,
-    $core.Iterable<Transaction_Contract> contract,
-    $core.List<$core.int> scripts,
-    $fixnum.Int64 timestamp,
-    $fixnum.Int64 feeLimit,
+    $core.List<$core.int>? refBlockBytes,
+    $fixnum.Int64? refBlockNum,
+    $core.List<$core.int>? refBlockHash,
+    $fixnum.Int64? expiration,
+    $core.Iterable<acuthrity>? auths,
+    $core.List<$core.int>? data,
+    $core.Iterable<Transaction_Contract>? contract,
+    $core.List<$core.int>? scripts,
+    $fixnum.Int64? timestamp,
+    $fixnum.Int64? feeLimit,
   }) {
     final _result = create();
     if (refBlockBytes != null) {
@@ -1173,7 +1223,7 @@ class Transaction_raw extends $pb.GeneratedMessage {
   @$core.pragma('dart2js:noInline')
   static Transaction_raw getDefault() => _defaultInstance ??=
       $pb.GeneratedMessage.$_defaultFor<Transaction_raw>(create);
-  static Transaction_raw _defaultInstance;
+  static Transaction_raw? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.List<$core.int> get refBlockBytes => $_getN(0);
@@ -1298,16 +1348,18 @@ class Transaction extends $pb.GeneratedMessage {
         $pb.PbFieldType.PY)
     ..pc<Transaction_Result>(
         5,
-        const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'ret',
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'ret',
         $pb.PbFieldType.PM,
         subBuilder: Transaction_Result.create)
     ..hasRequiredFields = false;
 
   Transaction._() : super();
   factory Transaction({
-    Transaction_raw rawData,
-    $core.Iterable<$core.List<$core.int>> signature,
-    $core.Iterable<Transaction_Result> ret,
+    Transaction_raw? rawData,
+    $core.Iterable<$core.List<$core.int>>? signature,
+    $core.Iterable<Transaction_Result>? ret,
   }) {
     final _result = create();
     if (rawData != null) {
@@ -1345,7 +1397,7 @@ class Transaction extends $pb.GeneratedMessage {
   @$core.pragma('dart2js:noInline')
   static Transaction getDefault() => _defaultInstance ??=
       $pb.GeneratedMessage.$_defaultFor<Transaction>(create);
-  static Transaction _defaultInstance;
+  static Transaction? _defaultInstance;
 
   @$pb.TagNumber(1)
   Transaction_raw get rawData => $_getN(0);
@@ -1385,7 +1437,7 @@ class Transactions extends $pb.GeneratedMessage {
 
   Transactions._() : super();
   factory Transactions({
-    $core.Iterable<Transaction> transactions,
+    $core.Iterable<Transaction>? transactions,
   }) {
     final _result = create();
     if (transactions != null) {
@@ -1418,7 +1470,7 @@ class Transactions extends $pb.GeneratedMessage {
   @$core.pragma('dart2js:noInline')
   static Transactions getDefault() => _defaultInstance ??=
       $pb.GeneratedMessage.$_defaultFor<Transactions>(create);
-  static Transactions _defaultInstance;
+  static Transactions? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.List<Transaction> get transactions => $_getList(0);
@@ -1449,19 +1501,32 @@ class BlockHeader_raw extends $pb.GeneratedMessage {
             : 'parentHash',
         $pb.PbFieldType.OY,
         protoName: 'parentHash')
-    ..aInt64(7, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'number')
-    ..aInt64(8, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'witnessId')
-    ..a<$core.List<$core.int>>(9, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'witnessAddress', $pb.PbFieldType.OY)
+    ..aInt64(
+        7,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'number')
+    ..aInt64(
+        8,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'witnessId')
+    ..a<$core.List<$core.int>>(
+        9,
+        const $core.bool.fromEnvironment('protobuf.omit_field_names')
+            ? ''
+            : 'witnessAddress',
+        $pb.PbFieldType.OY)
     ..hasRequiredFields = false;
 
   BlockHeader_raw._() : super();
   factory BlockHeader_raw({
-    $fixnum.Int64 timestamp,
-    $core.List<$core.int> txTrieRoot,
-    $core.List<$core.int> parentHash,
-    $fixnum.Int64 number,
-    $fixnum.Int64 witnessId,
-    $core.List<$core.int> witnessAddress,
+    $fixnum.Int64? timestamp,
+    $core.List<$core.int>? txTrieRoot,
+    $core.List<$core.int>? parentHash,
+    $fixnum.Int64? number,
+    $fixnum.Int64? witnessId,
+    $core.List<$core.int>? witnessAddress,
   }) {
     final _result = create();
     if (timestamp != null) {
@@ -1509,7 +1574,7 @@ class BlockHeader_raw extends $pb.GeneratedMessage {
   @$core.pragma('dart2js:noInline')
   static BlockHeader_raw getDefault() => _defaultInstance ??=
       $pb.GeneratedMessage.$_defaultFor<BlockHeader_raw>(create);
-  static BlockHeader_raw _defaultInstance;
+  static BlockHeader_raw? _defaultInstance;
 
   @$pb.TagNumber(1)
   $fixnum.Int64 get timestamp => $_getI64(0);
@@ -1606,8 +1671,8 @@ class BlockHeader extends $pb.GeneratedMessage {
 
   BlockHeader._() : super();
   factory BlockHeader({
-    BlockHeader_raw rawData,
-    $core.List<$core.int> witnessSignature,
+    BlockHeader_raw? rawData,
+    $core.List<$core.int>? witnessSignature,
   }) {
     final _result = create();
     if (rawData != null) {
@@ -1642,7 +1707,7 @@ class BlockHeader extends $pb.GeneratedMessage {
   @$core.pragma('dart2js:noInline')
   static BlockHeader getDefault() => _defaultInstance ??=
       $pb.GeneratedMessage.$_defaultFor<BlockHeader>(create);
-  static BlockHeader _defaultInstance;
+  static BlockHeader? _defaultInstance;
 
   @$pb.TagNumber(1)
   BlockHeader_raw get rawData => $_getN(0);

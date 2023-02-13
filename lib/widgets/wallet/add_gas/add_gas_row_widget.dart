@@ -4,11 +4,12 @@ import 'package:paycool/widgets/wallet/add_gas/gas_balance_and_add_gas_button_wi
 //import 'package:showcaseview/showcaseview.dart';
 
 class AddGasWithShowcaseWidget extends StatelessWidget {
-  const AddGasWithShowcaseWidget({Key key, this.model}) : super(key: key);
+  const AddGasWithShowcaseWidget({Key? key, required this.model})
+      : super(key: key);
   final WalletDashboardViewModel model;
   @override
   Widget build(BuildContext context) {
-    var begin = const Offset(0.0, 1.0);
+    var begin = Offset(0.0, 1.0);
     var end = Offset.zero;
     var tween = Tween(begin: begin, end: end);
     //  if (model.isShowCaseView && model.gasAmount < 0.0001 && !model.isBusy) {

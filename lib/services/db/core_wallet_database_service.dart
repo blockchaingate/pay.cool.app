@@ -32,35 +32,29 @@ class CoreWalletDatabaseService {
   final String columnWalletBalancesBody = "walletBalancesBody";
 
   static const _databaseVersion = 1;
-  static Future<Database> _database;
   String path = '';
 
-  Future<Database> initDb() async {
-    // try {
-    //   await _database.then((res) {
-    //     debugPrint(res.isOpen);
-    //     debugPrint(res);
-    //   });
-    //   return _database;
-    // } catch (err) {
-    //   log.e('initDb - corrupted db - deleting ');
-    //   await deleteDb();
-    // }
-    if (_database != null) {
-      log.i('init db -- ${_database.toString()}');
+  // CoreWalletDatabaseService._privateConstructor();
+  // static final CoreWalletDatabaseService instance =
+  //     CoreWalletDatabaseService._privateConstructor();
 
+  static Database? _database;
+
+  Future<Database?> get database async {
+    if (_database != null) {
       return _database;
     }
-    var databasePath = await getDatabasesPath();
-    path = join(databasePath, _databaseName);
-    log.w('initDB $path');
-    _database =
-        openDatabase(path, version: _databaseVersion, onCreate: _onCreate);
+    _database = await initDb();
     return _database;
   }
 
-  openDB() {
-    openDatabase(path, version: _databaseVersion, onCreate: _onCreate);
+  initDb() async {
+    var databasePath = await getDatabasesPath();
+    path = join(databasePath, _databaseName);
+    log.w('initDB $path');
+
+    return await openDatabase(path,
+        version: _databaseVersion, onCreate: _onCreate);
   }
 
   void _onCreate(Database db, int version) async {
@@ -76,14 +70,14 @@ class CoreWalletDatabaseService {
 
   Future<CoreWalletModel> getAll() async {
     await initDb();
-    final Database db = await _database;
+    final Database? db = await database;
     log.w('getall $db');
 
     // res is giving me the same output in the log whether i map it or just take var res
-    final List<Map<String, dynamic>> res = await db.query(tableName);
+    final List<Map<String, dynamic>> res = await db!.query(tableName);
     log.w('res $res');
 
-    CoreWalletModel walletCore = CoreWalletModel();
+    CoreWalletModel walletCore = CoreWalletModel(walletBalancesBody: '');
     if (res.isNotEmpty) {
       walletCore = CoreWalletModel.fromJson(res.first);
       log.w('get all walletcoremodel ${walletCore.toJson()}');
@@ -93,8 +87,8 @@ class CoreWalletDatabaseService {
 
   // Update database
   Future<void> update(CoreWalletModel coreWalletModel) async {
-    final Database db = await _database;
-    await db.update(
+    final Database? db = await database;
+    await db!.update(
       tableName,
       coreWalletModel.toJson(),
       where: "id = ?",
@@ -105,9 +99,10 @@ class CoreWalletDatabaseService {
 
 // Insert Data In The Database
   Future insert(CoreWalletModel walletCoreModel) async {
-    final Database db = await _database;
+    final Database? db = await database;
+    ;
     var dataToInsert = walletCoreModel.toJson();
-    await db
+    await db!
         .insert(tableName, dataToInsert,
             conflictAlgorithm: ConflictAlgorithm.replace)
         .then((resId) {
@@ -123,11 +118,11 @@ class CoreWalletDatabaseService {
   // Get encrypted mnemonic
   Future<String> getEncryptedMnemonic() async {
     await initDb();
-    final Database db = await _database;
+    final Database? db = await database;
     //  if (db == null) await initDb();
     String encryptedMnemonic = '';
-    List<Map> res = await db.query(tableName, columns: [columnMnemonic]);
-    if (res == null || res.isEmpty) {
+    List<Map> res = await db!.query(tableName, columns: [columnMnemonic]);
+    if (res.isEmpty) {
       return encryptedMnemonic = '';
     }
     if (res[0]['mnemonic'] != null) {
@@ -139,12 +134,13 @@ class CoreWalletDatabaseService {
   }
 
   // Get wallet balance body
-  Future<Map<dynamic, dynamic>> getWalletBalancesBody() async {
+  Future<Map<dynamic, dynamic>?> getWalletBalancesBody() async {
     await initDb();
-    final Database db = await _database;
-    Map finalRes;
-    List<Map> res =
-        await db.query(tableName, columns: [columnWalletBalancesBody]);
+    final Database? db = await database;
+    ;
+    Map? finalRes;
+    List<Map>? res =
+        await db!.query(tableName, columns: [columnWalletBalancesBody]);
     try {
       log.i('wallet balances body --- ${res.first}');
       finalRes = res.first;
@@ -157,7 +153,7 @@ class CoreWalletDatabaseService {
 
   // getWalletAddressByTickerName
   Future<String> getWalletAddressByTickerName(String tickerName) async {
-    final Database db = await _database;
+    final Database? db = await database;
 
     var fabUtils = FabUtils();
     String address = '';
@@ -166,7 +162,7 @@ class CoreWalletDatabaseService {
 
     String finalRes = '';
     try {
-      res = await db.query(tableName, columns: [columnWalletBalancesBody]);
+      res = await db!.query(tableName, columns: [columnWalletBalancesBody]);
       if (tickerName == 'EXG') {
         passedTicker = tickerName;
         tickerName = 'FAB';
@@ -190,8 +186,8 @@ class CoreWalletDatabaseService {
 
   // Close Database
   Future closeDb() async {
-    var db = await _database;
-    return db.close();
+    var db = await database;
+    return db!.close();
   }
 
   // Delete Database

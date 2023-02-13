@@ -3,13 +3,13 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 class TabIndicationPainter extends CustomPainter {
-  Paint painter;
+  Paint? painter;
   final double dxTarget;
   final double dxEntry;
   final double radius;
   final double dy;
 
-  final PageController pageController;
+  final PageController? pageController;
 
   TabIndicationPainter(
       {this.dxTarget = 125.0,
@@ -25,7 +25,7 @@ class TabIndicationPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final pos = pageController.position;
+    final pos = pageController!.position;
     double fullExtent =
         (pos.maxScrollExtent - pos.minScrollExtent + pos.viewportDimension);
 
@@ -38,14 +38,13 @@ class TabIndicationPainter extends CustomPainter {
     Path path = Path();
     path.addArc(
         Rect.fromCircle(center: entry, radius: radius), 0.5 * pi, 1 * pi);
-    path.addRect(
-        Rect.fromLTRB(entry.dx, dy - radius, target.dx, dy + radius));
+    path.addRect(Rect.fromLTRB(entry.dx, dy - radius, target.dx, dy + radius));
     path.addArc(
         Rect.fromCircle(center: target, radius: radius), 1.5 * pi, 1 * pi);
 
     canvas.translate(size.width * pageOffset, 0.0);
     canvas.drawShadow(path, const Color(0xFFfbab66), 3.0, true);
-    canvas.drawPath(path, painter);
+    canvas.drawPath(path, painter!);
   }
 
   @override

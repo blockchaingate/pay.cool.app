@@ -14,11 +14,9 @@ import 'package:paycool/services/db/token_list_database_service.dart';
 import 'package:paycool/services/db/transaction_history_database_service.dart';
 import 'package:paycool/services/db/user_settings_database_service.dart';
 import 'package:paycool/services/db/wallet_database_service.dart';
-import 'package:paycool/services/local_dialog_service.dart';
 import 'package:paycool/services/local_storage_service.dart';
 import 'package:paycool/services/vault_service.dart';
 import 'package:paycool/services/version_service.dart';
-import 'package:paycool/services/wallet_service.dart';
 import 'package:paycool/utils/abi_util.dart' as abi_util;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -66,14 +64,14 @@ class WalletUtil {
   };
 
   // get wallet info object with address using single wallet balance
-  Future<WalletInfo> getWalletInfoObjFromWalletBalance(
-      WalletBalance wallet) async {
+  Future<WalletInfo> getWalletInfoObjFromWalletBalance(WalletBalance wallet,
+      {bool requiredAddressOnly = false}) async {
     //FocusScope.of(context).requestFocus(FocusNode());
 
     // take the tickername and then get the coin type
     // either from token or token updates api/local storage
 
-    String tickerName = wallet.coin.toUpperCase();
+    String tickerName = wallet.coin!.toUpperCase();
     String walletAddress = '';
     var alltokens = await tokenListDatabaseService.getAll();
     debugPrint(alltokens.length.toString());
@@ -104,24 +102,30 @@ class WalletUtil {
       walletAddress = await coreWalletDatabaseService
           .getWalletAddressByTickerName(tickerName);
     }
-    String coinName = '';
+    String? coinName = '';
     for (var i = 0; i < coinTickerAndNameList.length; i++) {
       if (coinTickerAndNameList.containsKey(wallet.coin)) {
         coinName = coinTickerAndNameList[wallet.coin];
       }
       break;
     }
+    var walletInfo = WalletInfo();
+    if (requiredAddressOnly) {
+      walletInfo = WalletInfo(address: walletAddress);
+    } else {
+      wallet.balance ??= 0.0;
+      wallet.usdValue ??= UsdValue(usd: 0.0);
 
-    // assign address from local DB to walletinfo object
-    var walletInfo = WalletInfo(
-        tickerName: wallet.coin,
-        availableBalance: wallet.balance,
-        tokenType: tokenType,
-        usdValue: wallet.balance * wallet.usdValue.usd,
-        inExchange: wallet.unlockedExchangeBalance,
-        address: walletAddress,
-        name: coinName);
-
+      // assign address from local DB to walletinfo object
+      walletInfo = WalletInfo(
+          tickerName: wallet.coin,
+          availableBalance: wallet.balance,
+          tokenType: tokenType,
+          usdValue: wallet.balance! * wallet.usdValue!.usd!.toDouble(),
+          inExchange: wallet.unlockedExchangeBalance,
+          address: walletAddress,
+          name: coinName);
+    }
     log.w('routeWithWalletInfoArgs walletInfo ${walletInfo.toJson()}');
     return walletInfo;
   }
@@ -234,7 +238,7 @@ class WalletUtil {
 
   Future<int> getCoinTypeIdByName(String coinName) async {
     int coinType = 0;
-    MapEntry<int, String> hardCodedCoinList;
+    MapEntry<int, String>? hardCodedCoinList;
     bool isOldToken = coin_list.newCoinTypeMap.containsValue(coinName);
     debugPrint('is old token value $isOldToken');
     if (isOldToken) {

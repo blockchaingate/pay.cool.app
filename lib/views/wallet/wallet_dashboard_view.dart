@@ -11,8 +11,9 @@
 *----------------------------------------------------------------------
 */
 
+import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
-import 'package:flutter_swiper/flutter_swiper.dart';
+
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/constants/ui_var.dart';
@@ -30,7 +31,7 @@ import 'package:paycool/widgets/wallet/total_balance_card_widget.dart';
 import 'package:stacked/stacked.dart';
 
 class WalletDashboardView extends StatelessWidget {
-  const WalletDashboardView({Key key}) : super(key: key);
+  const WalletDashboardView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -42,12 +43,12 @@ class WalletDashboardView extends StatelessWidget {
     //     RefreshController(initialRefresh: false);
     return ViewModelBuilder<WalletDashboardViewModel>.reactive(
         viewModelBuilder: () => WalletDashboardViewModel(),
-        onModelReady: (model) async {
-          model.context = context;
+        onViewModelReady: (model) async {
           // model.globalKeyOne = _one;
           // model.globalKeyTwo = _two;
           // model.refreshController = _refreshController;
-          await model.init();
+          model.sharedService.context = context;
+          model.init();
         },
         // onDispose: () {
         //   _refreshController.dispose();
@@ -499,7 +500,7 @@ class WalletDashboardView extends StatelessWidget {
             children: [
               // All coins tab
               model.isBusy || model.busy(model.isHideSmallAssetsButton)
-                  ? const ShimmerLayout(
+                  ? ShimmerLayout(
                       layoutType: 'walletDashboard',
                       count: 9,
                     )
@@ -520,20 +521,14 @@ class WalletDashboardView extends StatelessWidget {
       shrinkWrap: true,
       itemCount: model.wallets.length,
       itemBuilder: (BuildContext context, int index) {
-        var tickerName = model.wallets[index].coin.toLowerCase();
-        var usdBalance = (!model.wallets[index].balance.isNegative
+        var tickerName = model.wallets[index].coin!.toLowerCase();
+        var usdBalance = (!model.wallets[index].balance!.isNegative
                 ? model.wallets[index].balance
-                : 0.0) *
-            model.wallets[index].usdValue.usd;
+                : 0.0)! *
+            model.wallets[index].usdValue!.usd!;
         return Visibility(
           // Default visible widget will be visible when usdVal is greater than equals to 0 and isHideSmallAmountAssets is false
           visible: usdBalance >= 0 && !model.isHideSmallAssetsButton,
-          child: CoinDetailsCardWidget(
-            tickerName: tickerName,
-            index: index,
-            wallets: model.wallets,
-            context: context,
-          ),
           // Secondary visible widget will be visible when usdVal is not equals to 0 and isHideSmallAmountAssets is true
           replacement: Visibility(
               visible: model.isHideSmallAssetsButton && usdBalance != 0,
@@ -543,6 +538,12 @@ class WalletDashboardView extends StatelessWidget {
                 wallets: model.wallets,
                 context: context,
               )),
+          child: CoinDetailsCardWidget(
+            tickerName: tickerName,
+            index: index,
+            wallets: model.wallets,
+            context: context,
+          ),
         );
       },
     );
@@ -550,7 +551,7 @@ class WalletDashboardView extends StatelessWidget {
 }
 // FAB TAB
 
-class FavTab extends ViewModelBuilderWidget<WalletDashboardViewModel> {
+class FavTab extends StackedView<WalletDashboardViewModel> {
   @override
   void onViewModelReady(WalletDashboardViewModel model) async {
     await model.buildFavCoinListV1();
@@ -558,7 +559,7 @@ class FavTab extends ViewModelBuilderWidget<WalletDashboardViewModel> {
 
   @override
   Widget builder(
-      BuildContext context, WalletDashboardViewModel model, Widget child) {
+      BuildContext context, WalletDashboardViewModel model, Widget? child) {
     debugPrint('fav list length before');
     debugPrint(model.favWallets.length.toString());
     return model.busy(model.favWallets)
@@ -583,7 +584,7 @@ class FavTab extends ViewModelBuilderWidget<WalletDashboardViewModel> {
                     itemCount: model.favWallets.length,
                     itemBuilder: (BuildContext context, int index) {
                       var tickerName =
-                          model.favWallets[index].coin.toLowerCase();
+                          model.favWallets[index].coin!.toLowerCase();
                       return CoinDetailsCardWidget(
                         tickerName: tickerName,
                         index: index,
@@ -613,8 +614,8 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
     return Container(
-      child: _tabBar,
       color: secondaryColor,
+      child: _tabBar,
     );
   }
 

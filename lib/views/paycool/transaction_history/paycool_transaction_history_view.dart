@@ -14,7 +14,7 @@ class PayCoolTransactionHistoryView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<PayCoolTransactionHistoryViewModel>.reactive(
-      onModelReady: (model) async {
+      onViewModelReady: (model) async {
         model.context = context;
       },
       viewModelBuilder: () => PayCoolTransactionHistoryViewModel(),
@@ -86,8 +86,9 @@ class PayCoolTransactionHistoryView extends StatelessWidget {
                                 itemCount: model.transactions.length,
                                 itemBuilder: (BuildContext context, int index) {
                                   return GestureDetector(
-                                    onTap: () => model.showRefundButton(
-                                        model.transactions[index].id),
+                                    onTap: () => model.showRefundButton(model
+                                        .transactions[index].id
+                                        .toString()),
                                     child: Container(
                                       margin: const EdgeInsets.all(5.0),
                                       padding: const EdgeInsets.all(10.0),
@@ -106,7 +107,8 @@ class PayCoolTransactionHistoryView extends StatelessWidget {
                                                 Text(
                                                   formatStringDateV2(model
                                                           .transactions[index]
-                                                          .dateCreated)
+                                                          .dateCreated
+                                                          .toString())
                                                       .split(' ')[0],
                                                   style: headText5.copyWith(
                                                       fontWeight:
@@ -115,7 +117,8 @@ class PayCoolTransactionHistoryView extends StatelessWidget {
                                                 Text(
                                                   formatStringDateV2(model
                                                           .transactions[index]
-                                                          .dateCreated)
+                                                          .dateCreated
+                                                          .toString())
                                                       .split(' ')[1],
                                                   style: headText5,
                                                 ),
@@ -126,16 +129,14 @@ class PayCoolTransactionHistoryView extends StatelessWidget {
                                             mainAxisSize: MainAxisSize.min,
                                             children: [
                                               Text(
-                                                model.transactions[index]
-                                                        .tickerName +
-                                                    ' ',
+                                                '${model.transactions[index].tickerName} ',
                                                 style: headText5,
                                               ),
                                               Text(
                                                 NumberUtil.decimalLimiter(
                                                         model
                                                             .transactions[index]
-                                                            .totalTransactionAmount,
+                                                            .totalTransactionAmount!,
                                                         decimalPrecision: 6)
                                                     .toString(),
                                                 style: const TextStyle(
@@ -176,7 +177,8 @@ class PayCoolTransactionHistoryView extends StatelessWidget {
                                                           model
                                                               .transactions[
                                                                   index]
-                                                              .id,
+                                                              .id
+                                                              .toString(),
                                                           maxLines: 1,
                                                           overflow: TextOverflow
                                                               .ellipsis,
@@ -198,18 +200,21 @@ class PayCoolTransactionHistoryView extends StatelessWidget {
                                                                 model
                                                                     .transactions[
                                                                         index]
-                                                                    .id,
+                                                                    .id
+                                                                    .toString(),
                                                                 model
                                                                     .transactions[
                                                                         index]
-                                                                    .address),
+                                                                    .address
+                                                                    .toString()),
                                                         child: Text('Refund'))
                                                     : Container()
                                               ],
                                             ),
                                           ),
                                           trailing: CopyClipboardTextWidget(
-                                              model.transactions[index].id)),
+                                              model.transactions[index].id
+                                                  .toString())),
                                     ),
                                   );
                                 }),

@@ -23,7 +23,7 @@ class PayCoolTransactionHistoryViewModel extends FutureViewModel {
   final dialogService = locator<LocalDialogService>();
   WalletService walletService = locator<WalletService>();
   final tokenService = locator<TokenListDatabaseService>();
-  BuildContext context;
+  BuildContext? context;
   String fabAddress = '';
   List<PayCoolTransactionHistory> transactions = [];
   bool _isShowRefundButton = false;
@@ -52,9 +52,9 @@ class PayCoolTransactionHistoryViewModel extends FutureViewModel {
     transactions = data;
     if (transactions.isNotEmpty) log.w('data ${transactions[0].toJson()}');
     for (var transaction in transactions) {
-      if (transaction.tickerName.isEmpty) {
+      if (transaction.tickerName!.isEmpty) {
         var res = await tokenService.getByCointype(transaction.coinType);
-        transaction.tickerName = res.coinName.toUpperCase();
+        transaction.tickerName = res!.coinName!.toUpperCase();
         log.w('missing tickername acquired ${transaction.tickerName}');
       }
     }
@@ -69,9 +69,9 @@ class PayCoolTransactionHistoryViewModel extends FutureViewModel {
     notifyListeners();
   }
 
-  Future<String> getCt(int coinType) async {
+  Future<String?> getCt(int coinType) async {
     var res = await coinService.getSingleTokenData('', coinType: coinType);
-    return res.coinName;
+    return res!.coinName;
   }
 
   showRefundButton(String orderId) {
@@ -109,10 +109,10 @@ class PayCoolTransactionHistoryViewModel extends FutureViewModel {
     log.i('hashForSign $hashForSign');
     await dialogService
         .showDialog(
-            title: FlutterI18n.translate(context, "enterPassword"),
+            title: FlutterI18n.translate(context!, "enterPassword"),
             description: FlutterI18n.translate(
-                context, "dialogManagerTypeSamePasswordNote"),
-            buttonTitle: FlutterI18n.translate(context, "confirm"))
+                context!, "dialogManagerTypeSamePasswordNote"),
+            buttonTitle: FlutterI18n.translate(context!, "confirm"))
         .then((passRes) async {
       if (passRes.confirmed) {
         String mnemonic = passRes.returnedText;
@@ -182,7 +182,7 @@ class PayCoolTransactionHistoryViewModel extends FutureViewModel {
         setBusy(false);
 
         sharedService.sharedSimpleNotification(
-            FlutterI18n.translate(context, "pleaseProvideTheCorrectPassword"),
+            FlutterI18n.translate(context!, "pleaseProvideTheCorrectPassword"),
             isError: true);
       }
     });

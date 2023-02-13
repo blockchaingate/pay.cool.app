@@ -16,30 +16,30 @@ import 'package:paycool/views/paycool_club/referral/referral_viewmodel.dart';
 
 class PaycoolReferralDetailsView extends StatelessWidget {
   final ReferalRoute referalRoute;
-  const PaycoolReferralDetailsView({Key key, this.referalRoute})
+  const PaycoolReferralDetailsView({Key? key, required this.referalRoute})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<ReferralViewmodel>.reactive(
       viewModelBuilder: () => ReferralViewmodel(),
-      onModelReady: (ReferralViewmodel model) {
+      onViewModelReady: (ReferralViewmodel model) {
         model.context = context;
         model.referalRoute = referalRoute;
         model.init();
       },
       builder: (context, model, _) => Scaffold(
           appBar: customAppBarWithTitleNB(
-              '${model.referalRoute.address != null ? StringUtils.showPartialAddress(address: model.referalRoute.address) : PaycoolUtil.localizedProjectData(model.referalRoute.project)} - ${FlutterI18n.translate(context, "referrals")}',
+              '${model.referalRoute.address != null ? StringUtils.showPartialAddress(address: model.referalRoute.address) : PaycoolUtil.localizedProjectData(model.referalRoute.project!)} - ${FlutterI18n.translate(context, "referrals")}',
               subTitle: referalRoute.address == null
                   ? ''
-                  : PaycoolUtil.localizedProjectData(referalRoute.project)),
+                  : PaycoolUtil.localizedProjectData(referalRoute.project!)),
           body: model.isBusy
               ? SizedBox(
                   height: 500,
                   child: Center(child: model.sharedService.loadingIndicator()))
               : model.referalRoute.referrals == null ||
-                      model.referalRoute.referrals.isEmpty
+                      model.referalRoute.referrals!.isEmpty
                   ? SizedBox(
                       height: 400,
                       child: Center(
@@ -74,7 +74,7 @@ class PaycoolReferralDetailsView extends StatelessWidget {
           Expanded(
             child: ListView.builder(
               shrinkWrap: true,
-              itemCount: model.referalRoute.referrals.length,
+              itemCount: model.referalRoute.referrals!.length,
               itemBuilder: (BuildContext context, int index) {
                 int i = index + 1;
                 return Container(
@@ -89,14 +89,14 @@ class PaycoolReferralDetailsView extends StatelessWidget {
                           arguments: ReferalRoute(
                               project: model.referalRoute.project,
                               address: model
-                                  .referalRoute.referrals[index].userAddress));
+                                  .referalRoute.referrals![index].userAddress));
                     },
                     leading: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
                         model.paginationModel.pageNumber > 1
                             ? '${model.paginationModel.pageNumber - 1}${i.toString()}'
-                            : i.toString() + ' ',
+                            : '$i ',
                         style: headText5.copyWith(
                             color: black, fontWeight: FontWeight.bold),
                       ),
@@ -107,12 +107,12 @@ class PaycoolReferralDetailsView extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          model.referalRoute.referrals[index].count.isNotEmpty
+                          model.referalRoute.referrals![index].count!.isNotEmpty
                               ? Container(
                                   color: primaryColor.withAlpha(120),
                                   padding: const EdgeInsets.all(4.0),
                                   child: Column(children: [
-                                    if (model.referalRoute.referrals[index]
+                                    if (model.referalRoute.referrals![index]
                                             .status ==
                                         -1) ...[
                                       Text(
@@ -121,7 +121,7 @@ class PaycoolReferralDetailsView extends StatelessWidget {
                                               fontWeight: FontWeight.bold,
                                               color: white)),
                                     ] else if (model.referalRoute
-                                            .referrals[index].status ==
+                                            .referrals![index].status ==
                                         0) ...[
                                       Text(
                                           ' ${FlutterI18n.translate(context, "noPartner")}',
@@ -129,7 +129,7 @@ class PaycoolReferralDetailsView extends StatelessWidget {
                                               fontWeight: FontWeight.bold,
                                               color: white)),
                                     ] else if (model.referalRoute
-                                            .referrals[index].status ==
+                                            .referrals![index].status ==
                                         1) ...[
                                       Text(
                                           ' ${FlutterI18n.translate(context, "basicPartner")}',
@@ -137,7 +137,7 @@ class PaycoolReferralDetailsView extends StatelessWidget {
                                               fontWeight: FontWeight.bold,
                                               color: white)),
                                     ] else if (model.referalRoute
-                                            .referrals[index].status ==
+                                            .referrals![index].status ==
                                         2) ...[
                                       Text(
                                           ' ${FlutterI18n.translate(context, "juniorPartner")}',
@@ -145,7 +145,7 @@ class PaycoolReferralDetailsView extends StatelessWidget {
                                               fontWeight: FontWeight.bold,
                                               color: white)),
                                     ] else if (model.referalRoute
-                                            .referrals[index].status ==
+                                            .referrals![index].status ==
                                         3) ...[
                                       Text(
                                           ' ${FlutterI18n.translate(context, "seniorPartner")}',
@@ -153,7 +153,7 @@ class PaycoolReferralDetailsView extends StatelessWidget {
                                               fontWeight: FontWeight.bold,
                                               color: white)),
                                     ] else if (model.referalRoute
-                                            .referrals[index].status ==
+                                            .referrals![index].status ==
                                         4) ...[
                                       Text(
                                           ' ${FlutterI18n.translate(context, "executivePartner")}',
@@ -184,8 +184,8 @@ class PaycoolReferralDetailsView extends StatelessWidget {
                                   padding:
                                       const EdgeInsets.symmetric(vertical: 4),
                                   child: Text(
-                                    model.referalRoute.referrals[index]
-                                        .userAddress,
+                                    model.referalRoute.referrals![index]
+                                        .userAddress!,
                                     style: headText5.copyWith(
                                       decoration: TextDecoration.underline,
                                       color: primaryColor,
@@ -199,10 +199,7 @@ class PaycoolReferralDetailsView extends StatelessWidget {
                           ),
 
                           Text(
-                              FlutterI18n.translate(context, "referralCount") +
-                                  ' ' +
-                                  model.referalRoute.referrals[index].count
-                                      .toString(),
+                              '${FlutterI18n.translate(context, "referralCount")} ${model.referalRoute.referrals![index].count}',
                               style: headText5.copyWith(color: black)),
                         ],
                       ),
@@ -221,7 +218,7 @@ class PaycoolReferralDetailsView extends StatelessWidget {
                             onPressed: () {
                               model.sharedService.copyAddress(
                                   context,
-                                  model.referalRoute.referrals[index]
+                                  model.referalRoute.referrals![index]
                                       .userAddress)();
                             }),
                         CupertinoButton(
@@ -237,8 +234,8 @@ class PaycoolReferralDetailsView extends StatelessWidget {
                                   MaterialPageRoute(
                                       builder: (context) => DisplayQrCode(model
                                           .referalRoute
-                                          .referrals[index]
-                                          .userAddress)));
+                                          .referrals![index]
+                                          .userAddress!)));
                             }),
                       ],
                     )),
@@ -264,7 +261,7 @@ class DisplayQrCode extends StatelessWidget {
       appBar: AppBar(
         title: Row(
           children: [
-            Text(FlutterI18n.translate(context, "id") + ': ',
+            Text('${FlutterI18n.translate(context, "id")}: ',
                 style: headText5.copyWith(
                     fontWeight: FontWeight.bold, color: secondaryColor)),
             Flexible(

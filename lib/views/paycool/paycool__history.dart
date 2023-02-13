@@ -1,10 +1,10 @@
 class PayCoolHistory {
-  String type;
-  int time;
-  String coin;
-  double amount;
-  int status;
-  String txid;
+  String? type;
+  int? time;
+  String? coin;
+  double? amount;
+  int? status;
+  String? txid;
 
   PayCoolHistory({
     this.type,

@@ -47,12 +47,12 @@ import 'views/wallet/wallet_setup/wallet_setup_view.dart';
 final log = getLogger('Routes');
 
 class RouteGenerator {
-  static Route<dynamic> generateRoute(RouteSettings settings) {
+  static Route<dynamic> generateRoute(RouteSettings routeSettings) {
     log.w(
-        'generateRoute | name: ${settings.name} arguments:${settings.arguments}');
-    final args = settings.arguments;
+        'generateRoute | name: ${routeSettings.name} arguments:${routeSettings.arguments}');
+    final dynamic args = routeSettings.arguments;
 
-    switch (settings.name) {
+    switch (routeSettings.name) {
       case '/':
         return MaterialPageRoute(builder: (_) => const WalletSetupView());
 
@@ -86,7 +86,7 @@ class RouteGenerator {
 
       case DashboardViewRoute:
         return MaterialPageRoute(
-            settings: const RouteSettings(name: 'WalletDashboardVieww'),
+            settings: const RouteSettings(name: 'WalletDashboardView'),
             builder: (_) => const WalletDashboardView());
 
       case AddGasViewRoute:
@@ -107,7 +107,7 @@ class RouteGenerator {
         return MaterialPageRoute(
             builder: (_) => MoveToWalletView(walletInfo: args));
 
-      case WalletFeaturesViewRoute:
+      case walletFeaturesViewRoute:
         return MaterialPageRoute(
             builder: (_) => WalletFeaturesView(walletInfo: args));
 
@@ -132,9 +132,9 @@ class RouteGenerator {
 /*----------------------------------------------------------------------
                           Pay.cool Club Routes
 ----------------------------------------------------------------------*/
-      case PayCoolClubDashboardViewRoute:
+      case clubDashboardViewRoute:
         return MaterialPageRoute(
-            settings: const RouteSettings(name: 'PayCoolClubDashboardView'),
+            settings: const RouteSettings(name: 'clubDashboardView'),
             builder: (_) => const ClubDashboardView());
 
       case referralViewRoute:
@@ -176,7 +176,7 @@ class RouteGenerator {
       case PayCoolViewRoute:
         return MaterialPageRoute(
             settings: const RouteSettings(name: 'PayCoolView'),
-            builder: (_) => PayCoolView());
+            builder: (_) => const PayCoolView());
 
       case PayCoolRewardsViewRoute:
         return MaterialPageRoute(
@@ -205,22 +205,21 @@ class RouteGenerator {
             builder: (_) => const SettingsView());
 
       default:
-        return _errorRoute(settings);
+        return _errorRoute(routeSettings);
     }
   }
 
   static Route _errorRoute(settings) {
-    BuildContext context;
+    BuildContext? context;
     return MaterialPageRoute(builder: (_) {
       return Scaffold(
         appBar: AppBar(
-          title: Text(FlutterI18n.translate(context, "error"),
+          title: Text(FlutterI18n.translate(context!, "error"),
               style: const TextStyle(color: Colors.white)),
         ),
         body: Center(
           child: Text(
-              FlutterI18n.translate(context, "noRouteDefined") +
-                  ' ${settings.name}',
+              '${FlutterI18n.translate(context, "noRouteDefined")} ${settings.name}',
               style: const TextStyle(color: Colors.white)),
         ),
       );
