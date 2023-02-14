@@ -70,7 +70,6 @@ class PayCoolViewmodel extends FutureViewModel {
   final payCoolClubService = locator<PayCoolClubService>();
   final userSettingsDatabaseService = locator<UserSettingsDatabaseService>();
   String tickerName = '';
-  late BuildContext context;
   double quantity = 0.0;
   GlobalKey globalKey = GlobalKey();
   ScrollController? scrollController;
@@ -126,8 +125,6 @@ class PayCoolViewmodel extends FutureViewModel {
 ----------------------------------------------------------------------*/
 
   init() async {
-    sharedService.context = context;
-
     isAutoStartPaycoolScan = storageService.autoStartPaycoolScan;
     // await userSettingsDatabaseService.getById(1).then((res) {
     //   if (res != null) {
@@ -213,7 +210,7 @@ class PayCoolViewmodel extends FutureViewModel {
       orderDetails(barcodeScanData: barcodeScanData);
     } catch (err) {
       sharedService.sharedSimpleNotification(
-          FlutterI18n.translate(context!, "validationError"));
+          FlutterI18n.translate(sharedService.context, "validationError"));
       log.e('QrCodeToolsPlugin Catch $err');
     }
     setBusyForObject(isScanningImage, false);
@@ -251,7 +248,7 @@ class PayCoolViewmodel extends FutureViewModel {
     bool isValidReferralAddress = false;
     if (referralController.text.isEmpty) {
       sharedService.sharedSimpleNotification(
-          FlutterI18n.translate(context!, "invalidReferralCode"));
+          FlutterI18n.translate(sharedService.context, "invalidReferralCode"));
       setBusy(false);
       return;
     }
@@ -259,8 +256,9 @@ class PayCoolViewmodel extends FutureViewModel {
     await getGas();
     if (gasBalance == Constants.decimalZero) {
       sharedService.sharedSimpleNotification(
-          FlutterI18n.translate(context!, "notice"),
-          subtitle: FlutterI18n.translate(context!, "insufficientGasAmount"));
+          FlutterI18n.translate(sharedService.context, "notice"),
+          subtitle: FlutterI18n.translate(
+              sharedService.context, "insufficientGasAmount"));
       setBusy(false);
       return;
     }
@@ -275,12 +273,12 @@ class PayCoolViewmodel extends FutureViewModel {
     });
     if (!isValidReferralAddress) {
       sharedService.sharedSimpleNotification(
-          FlutterI18n.translate(context!, "invalidReferralCode"));
+          FlutterI18n.translate(sharedService.context, "invalidReferralCode"));
       setBusy(false);
       return;
     }
 
-    var seed = await walletService.getSeedDialog(context!);
+    var seed = await walletService.getSeedDialog(sharedService.context);
 
     try {
       var paycoolReferralAddress =
@@ -294,16 +292,16 @@ class PayCoolViewmodel extends FutureViewModel {
       if (res != null && res != '') {
         if (res == '0x1') {
           sharedService.alertDialog(
-              FlutterI18n.translate(context!, "newAccountCreated"),
-              '${FlutterI18n.translate(context!, "newAccountNote")} ${FlutterI18n.translate(context!, "waitForNewAccountSetUp")}',
+              FlutterI18n.translate(sharedService.context, "newAccountCreated"),
+              '${FlutterI18n.translate(sharedService.context, "newAccountNote")} ${FlutterI18n.translate(sharedService.context, "waitForNewAccountSetUp")}',
               path: PayCoolViewRoute);
         } else if (res == '0x0') {
           sharedService.sharedSimpleNotification(
-              FlutterI18n.translate(context!, "failed"));
+              FlutterI18n.translate(sharedService.context, "failed"));
         }
       } else {
         sharedService.sharedSimpleNotification(
-            FlutterI18n.translate(context!, "failed"));
+            FlutterI18n.translate(sharedService.context, "failed"));
         apiRes = apiRes["message"] ?? '';
       }
     } catch (err) {
@@ -319,7 +317,7 @@ class PayCoolViewmodel extends FutureViewModel {
     isPaying = true;
     if (merchantModel!.status == 0) {
       sharedService.sharedSimpleNotification(
-          FlutterI18n.translate(context!, "storeNotApproved"));
+          FlutterI18n.translate(sharedService.context, "storeNotApproved"));
       isPaying = false;
       setBusy(false);
       return;
@@ -328,8 +326,8 @@ class PayCoolViewmodel extends FutureViewModel {
         await sharedService.getExgAddressFromCoreWalletDatabase();
     var gasAmount = await walletService.gasBalance(exgAddress);
     if (gasAmount == 0.0) {
-      sharedService.sharedSimpleNotification(
-          FlutterI18n.translate(context!, "insufficientGasAmount"));
+      sharedService.sharedSimpleNotification(FlutterI18n.translate(
+          sharedService.context, "insufficientGasAmount"));
       setBusy(false);
       return;
     }
@@ -347,14 +345,14 @@ class PayCoolViewmodel extends FutureViewModel {
     if (walletBalanceRes![0].unlockedExchangeBalance! <
         (amountPayable + taxAmount).toDouble()) {
       sharedService.sharedSimpleNotification(
-          FlutterI18n.translate(context!, "insufficientBalance"),
+          FlutterI18n.translate(sharedService.context, "insufficientBalance"),
           isError: true);
       setBusy(false);
       return;
     }
     //displayAbiHexinReadableFormat(scanToPayModel.datAbiHex);
     try {
-      var seed = await walletService.getSeedDialog(context);
+      var seed = await walletService.getSeedDialog(sharedService.context);
       var res;
       for (var param in rewardInfoModel!.params!) {
         res = await paycoolService.signSendTx(seed, param.data!, param.to!);
@@ -363,7 +361,7 @@ class PayCoolViewmodel extends FutureViewModel {
         payOrderConfirmationPopup();
       } else if (res == '0x0') {
         sharedService.sharedSimpleNotification(
-            FlutterI18n.translate(context!, "failed"),
+            FlutterI18n.translate(sharedService.context, "failed"),
             isError: true);
       }
     } catch (err) {
@@ -377,8 +375,9 @@ class PayCoolViewmodel extends FutureViewModel {
   payOrderConfirmationPopup() async {
     await dialogService
         .showBasicDialog(
-      title: FlutterI18n.translate(context!, "placeOrderTransactionSuccessful"),
-      buttonTitle: FlutterI18n.translate(context!, "checkRewards"),
+      title: FlutterI18n.translate(
+          sharedService.context, "placeOrderTransactionSuccessful"),
+      buttonTitle: FlutterI18n.translate(sharedService.context, "checkRewards"),
     )
         .then((res) {
       if (res.confirmed) {
@@ -618,6 +617,7 @@ class PayCoolViewmodel extends FutureViewModel {
                           items: exchangeBalances.map(
                             (coin) {
                               return DropdownMenuItem(
+                                value: coin.ticker,
                                 child: Container(
                                   height: 40,
                                   color: primaryColor,
@@ -637,7 +637,6 @@ class PayCoolViewmodel extends FutureViewModel {
                                     ],
                                   ),
                                 ),
-                                value: coin.ticker,
                               );
                             },
                           ).toList()),
@@ -818,7 +817,7 @@ class PayCoolViewmodel extends FutureViewModel {
 
   showMerchantDetails() {
     showDialog(
-        context: context!,
+        context: sharedService.context,
         builder: (context) {
           return AlertDialog(
             titleTextStyle: headText3.copyWith(
@@ -955,7 +954,7 @@ class PayCoolViewmodel extends FutureViewModel {
 
   showOrderDetails() {
     showDialog(
-        context: context!,
+        context: sharedService.context,
         builder: (context) {
           return AlertDialog(
             backgroundColor: white,
@@ -1097,7 +1096,8 @@ class PayCoolViewmodel extends FutureViewModel {
     String scannedTemplateId = '';
     String charToCompare = barcodeScanData![0];
     debugPrint('charToCompare $charToCompare');
-    loadingStatus = FlutterI18n.translate(context!, "gettingOrderDetails");
+    loadingStatus =
+        FlutterI18n.translate(sharedService.context, "gettingOrderDetails");
     if (charToCompare == "i") {
       scannedOrderId = extractId(barcodeScanData);
       log.i('scanRes $scannedOrderId');
@@ -1122,7 +1122,7 @@ class PayCoolViewmodel extends FutureViewModel {
 
       String? barcodeScanData = '';
       payOrder = PayOrder();
-      barcodeScanData = await BarcodeUtils().majaScan(context);
+      barcodeScanData = await BarcodeUtils().majaScan(sharedService.context);
 
       if (addressType == Constants.ReferralAddressText) {
         debugPrint('in 1st if-- barcode res-- $barcodeScanData');
@@ -1136,7 +1136,7 @@ class PayCoolViewmodel extends FutureViewModel {
           log.w('setbusy 1.3 $isBusy');
         } else if (barcodeScanData == '-1') {
           sharedService.sharedSimpleNotification(
-            FlutterI18n.translate(context, "scanCancelled"),
+            FlutterI18n.translate(sharedService.context, "scanCancelled"),
           );
           setBusy(false);
           return;
@@ -1146,24 +1146,24 @@ class PayCoolViewmodel extends FutureViewModel {
       if (e.code == "PERMISSION_NOT_GRANTED") {
         setBusy(false);
         sharedService.sharedSimpleNotification(
-          FlutterI18n.translate(context!, "userAccessDenied"),
+          FlutterI18n.translate(sharedService.context, "userAccessDenied"),
         );
         // receiverWalletAddressTextController.text =
         //     FlutterI18n.translate(context, "userAccessDenied");
       } else {
         // setBusy(true);
         sharedService.sharedSimpleNotification(
-          FlutterI18n.translate(context!, "unknownError $e"),
+          FlutterI18n.translate(sharedService.context, "unknownError $e"),
         );
       }
     } on FormatException {
       log.e('scan barcode func: FormatException');
       sharedService.sharedSimpleNotification(
-        FlutterI18n.translate(context, "scanCancelled"),
+        FlutterI18n.translate(sharedService.context, "scanCancelled"),
       );
     } catch (e) {
       sharedService.sharedSimpleNotification(
-          FlutterI18n.translate(context, "unknownError"),
+          FlutterI18n.translate(sharedService.context, "unknownError"),
           isError: true);
       log.e('barcode scan catch $e');
     }
@@ -1212,10 +1212,10 @@ class PayCoolViewmodel extends FutureViewModel {
     if (v.isNegative) {
       dialogService.showBasicDialog(
           title:
-              "$coinPayable ${FlutterI18n.translate(context!, "insufficientBalanceForPayment")}",
-          description:
-              FlutterI18n.translate(context!, "PaycoolInsufficientBalanceDesc"),
-          buttonTitle: FlutterI18n.translate(context!, "close"));
+              "$coinPayable ${FlutterI18n.translate(sharedService.context, "insufficientBalanceForPayment")}",
+          description: FlutterI18n.translate(
+              sharedService.context, "PaycoolInsufficientBalanceDesc"),
+          buttonTitle: FlutterI18n.translate(sharedService.context, "close"));
       resetVariables();
       setBusy(false);
       return;
@@ -1316,7 +1316,7 @@ class PayCoolViewmodel extends FutureViewModel {
           walletService.toKbPaymentAddress(coin!.address.toString());
       debugPrint('KBADDRESS $kbAddress');
       showDialog(
-        context: context!,
+        context: sharedService.context,
         builder: (BuildContext context) {
           return Platform.isIOS
               ? CupertinoAlertDialog(
@@ -1592,7 +1592,9 @@ class PayCoolViewmodel extends FutureViewModel {
     Clipboard.setData(ClipboardData(text: txId));
     showSimpleNotification(
         Center(
-            child: Text(FlutterI18n.translate(context!, "copiedSuccessfully"),
+            child: Text(
+                FlutterI18n.translate(
+                    sharedService.context, "copiedSuccessfully"),
                 style: headText5)),
         position: NotificationPosition.bottom,
         background: primaryColor);

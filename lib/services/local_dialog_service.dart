@@ -102,7 +102,7 @@ class LocalDialogService {
     _dialogCompleter = Completer<DialogResponse>();
     _showBasicDialogListener(DialogRequest(
       title: title!,
-      description: description!,
+      description: description ?? '',
       buttonTitle: buttonTitle!,
     ));
     return _dialogCompleter.future;

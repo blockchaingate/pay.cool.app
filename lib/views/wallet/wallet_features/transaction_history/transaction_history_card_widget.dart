@@ -230,13 +230,12 @@ class TxHisotryCardWidget extends StatelessWidget {
                                   style: TextStyle(
                                       fontSize: customFontSize, color: black))
                             else if (transaction.tag.toUpperCase() ==
-                                        model.deposit.toUpperCase() &&
-                                    transaction.kanbanTxStatus ==
+                                    model.deposit.toUpperCase() &&
+                                (transaction.kanbanTxStatus == model.rejected ||
+                                    transaction.tickerChainTxStatus ==
                                         model.rejected ||
-                                transaction.tickerChainTxStatus ==
-                                    model.rejected ||
-                                model.rejected
-                                    .contains(transaction.tickerChainTxStatus!))
+                                    model.rejected.contains(
+                                        transaction.tickerChainTxStatus!)))
                               RichText(
                                 text: TextSpan(
                                     text: FlutterI18n.translate(

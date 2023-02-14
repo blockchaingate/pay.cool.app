@@ -91,8 +91,10 @@ class MoveToWalletView extends StatelessWidget {
                                         style: headText6),
                                   ],
                                 ),
-                                DecimalLimitWidget(
-                                    decimalLimit: model.token.decimal!)
+                                model.token.minWithdraw == null
+                                    ? Container()
+                                    : DecimalLimitWidget(
+                                        decimalLimit: model.token.decimal!)
                               ],
                             ),
                             focusedBorder: const OutlineInputBorder(
