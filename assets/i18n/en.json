@@ -494,6 +494,17 @@
     "stakeToEarn": "Stake to Earn",
     "joinedProjects":"Joined Projects",
     "metaforce": "Meta force",
-    "stackedPackages": "Stacked Packages"
+    "stackedPackages": "Stacked Packages",
+    "paycoolClubDesc": "Spend once, earn twice!",
+    "totalRewards": "Total Rewards",
+    "myReferralTree": "My Referrals Tree",
+    "projects": "Projects",
+    "programDetails":"Program Details",
+    "stackingPackageJoined":"Staking Package Joined",
+    "packageDetails":"Package Details",
+    "otherPrograms":"Other Programs",
+    "selectPackage": "Select Package",
+    "override": "Override",
+    "sales": "Sales"
 
 }

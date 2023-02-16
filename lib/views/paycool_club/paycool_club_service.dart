@@ -10,8 +10,8 @@ import 'package:paycool/services/config_service.dart';
 import 'package:paycool/services/shared_service.dart';
 import 'package:paycool/utils/custom_http_util.dart';
 import 'package:paycool/views/paycool_club/club_dashboard_model.dart';
-import 'package:paycool/views/paycool_club/club_projects/club_package_checkout_model.dart';
-import 'package:paycool/views/paycool_club/club_projects/club_project_model.dart';
+import 'package:paycool/views/paycool_club/club_projects/models/club_package_checkout_model.dart';
+import 'package:paycool/views/paycool_club/club_projects/models/club_project_model.dart';
 import 'package:paycool/views/paycool_club/purchased_package_history/purchased_package_history_model.dart';
 import 'package:paycool/views/paycool_club/referral/referral_model.dart';
 

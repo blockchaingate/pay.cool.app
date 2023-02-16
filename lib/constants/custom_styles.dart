@@ -20,11 +20,13 @@ TextStyle subText2 =
     const TextStyle(fontSize: 10.3, color: grey, fontWeight: FontWeight.w400);
 TextStyle headText5 =
     const TextStyle(fontSize: 12.5, color: black, fontWeight: FontWeight.w400);
-TextStyle bodyText1 =
-    const TextStyle(fontSize: 13, color: black, fontWeight: FontWeight.w400);
+const TextStyle bodyText1 =
+    TextStyle(fontSize: 13, color: black, fontWeight: FontWeight.w400);
 TextStyle bodyText2 = const TextStyle(fontSize: 13, color: red);
 TextStyle headText6 =
     const TextStyle(fontSize: 10.5, color: black, fontWeight: FontWeight.w500);
+
+// appbar
 AppBar customAppBar({Color color = primaryColor}) => AppBar(
       automaticallyImplyLeading: false,
       backgroundColor: color,
@@ -63,6 +65,7 @@ AppBar customAppBarWithTitleNB(String title, {String subTitle = ''}) => AppBar(
       centerTitle: true,
       elevation: 0,
     );
+
 buttonRoundShape(Color color) {
   var shapeRoundBorder = MaterialStateProperty.all<RoundedRectangleBorder>(
       RoundedRectangleBorder(
@@ -84,6 +87,13 @@ DecorationImage blurBackgroundImage() {
   return const DecorationImage(
       fit: BoxFit.cover,
       image: AssetImage("assets/images/shared/blur-background.png"));
+}
+
+DecorationImage imageBackground(String path) {
+  if (path.isEmpty) {
+    path = "assets/images/shared/blur-background.png";
+  }
+  return DecorationImage(fit: BoxFit.cover, image: AssetImage(path));
 }
 
 var shapeRoundBorder = MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -119,11 +129,54 @@ var outlinedButtonStyles2 = OutlinedButton.styleFrom(
       side: const BorderSide(color: primaryColor)),
 );
 
+Text customText(
+    {required String text,
+    double size = 12,
+    bool isCustomFont = false,
+    TextStyle style = bodyText1,
+    double letterSpace = 0.0,
+    FontWeight weight = FontWeight.normal,
+    bool isUnderline = false,
+    TextAlign textAlign = TextAlign.start,
+    Color color = black}) {
+  return Text(
+    text,
+    textAlign: textAlign,
+    style: style.copyWith(
+        color: color,
+        fontSize: isCustomFont ? size : style.fontSize,
+        fontWeight: weight,
+        letterSpacing: letterSpace,
+        decoration:
+            isUnderline ? TextDecoration.underline : TextDecoration.none),
+  );
+}
+
+ButtonStyle outlinedButtonStyle(
+    {Color sideColor = primaryColor,
+    double radius = 25.0,
+    double vPadding = 8,
+    Color backgroundColor = white,
+    Color textColor = black,
+    double elevation = 8,
+    double hPadding = 8}) {
+  return OutlinedButton.styleFrom(
+    backgroundColor: backgroundColor,
+    elevation: elevation,
+    padding: EdgeInsets.symmetric(vertical: vPadding, horizontal: hPadding),
+    side: BorderSide(color: sideColor, width: 0.5),
+    textStyle: TextStyle(color: textColor),
+    shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(radius),
+        side: BorderSide(color: sideColor)),
+  );
+}
+
 Decoration circularGradientBoxDecoration() {
-  return BoxDecoration(
-    borderRadius: const BorderRadius.all(const Radius.circular(25)),
+  return const BoxDecoration(
+    borderRadius: BorderRadius.all(Radius.circular(25)),
     gradient: LinearGradient(
-      colors: const [Colors.redAccent, Colors.yellow],
+      colors: [Colors.redAccent, Colors.yellow],
       begin: FractionalOffset.topLeft,
       end: FractionalOffset.bottomRight,
     ),
@@ -151,10 +204,11 @@ Decoration roundedBoxDecoration(
       ));
 }
 
-Decoration roundedTopLeftRightBoxDecoration({Color color = primaryColor}) {
+Decoration roundedTopLeftRightBoxDecoration(
+    {Color color = primaryColor, double radius = 15}) {
   return BoxDecoration(
     color: color,
-    borderRadius: const BorderRadius.only(
-        topLeft: Radius.circular(15), topRight: Radius.circular(15)),
+    borderRadius: BorderRadius.only(
+        topLeft: Radius.circular(radius), topRight: Radius.circular(radius)),
   );
 }

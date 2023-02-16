@@ -3,7 +3,7 @@ import 'package:decimal/decimal.dart';
 class ClubProject {
   Name? name;
   Name? description;
-  String? sId;
+
   String? owner;
   String? id;
   int? status;
@@ -17,7 +17,6 @@ class ClubProject {
   ClubProject(
       {this.name,
       this.description,
-      this.sId,
       this.owner,
       this.id,
       this.status,
@@ -31,7 +30,7 @@ class ClubProject {
   ClubProject.fromJson(Map<String, dynamic> json) {
     if (json['coins'] != null) {
       var c = json['coins'] as List;
-      if (c != null) {
+      if (c.isNotEmpty) {
         coins = [];
         for (var v in c) {
           coins!.add(v);
@@ -44,14 +43,14 @@ class ClubProject {
     name = json['name'] != null ? Name.fromJson(json['name']) : null;
     description =
         json['description'] != null ? Name.fromJson(json['description']) : null;
-    sId = json['_id'];
+
     owner = json['owner'];
     id = json['id'];
     status = json['status'];
     dateCreated = json['dateCreated'];
     address = json['address'];
     image = json['image'];
-    projectId = json["project"];
+    projectId = json["_id"];
     // coins = json["coins"];
   }
 
@@ -63,7 +62,7 @@ class ClubProject {
     if (description != null) {
       data['description'] = description!.toJson();
     }
-    data['_id'] = sId;
+
     data['owner'] = owner;
     data['id'] = id;
     data['status'] = status;

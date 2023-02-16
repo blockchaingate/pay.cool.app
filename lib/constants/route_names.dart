@@ -31,6 +31,7 @@ const String JoinPayCoolClubViewRoute = '/joinPayCoolClub';
 const String referralDetailsViewRoute = '/payCoolClubReferral';
 const String clubRewardsViewRoute = '/clubRewards';
 const String clubProjectDetailsViewRoute = '/clubProjectDetails';
+const String clubPackageDetailsViewRoute = '/clubPackageDetails';
 const String clubPackageCheckoutViewRoute = '/clubPackageCheckout';
 const String referralViewRoute = '/referral';
 // Pay.cool Routes

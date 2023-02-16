@@ -6,7 +6,11 @@ import 'package:paycool/utils/string_util.dart';
 class ClubRewardsArgs {
   List<Summary> summary;
   Map<String, Decimal>? rewardTokenPriceMap;
-  ClubRewardsArgs({required this.summary, this.rewardTokenPriceMap});
+  Decimal totalRewardsDollarValue;
+  ClubRewardsArgs(
+      {required this.summary,
+      this.rewardTokenPriceMap,
+      required this.totalRewardsDollarValue});
 }
 
 class ClubDashboard {
@@ -27,7 +31,7 @@ class ClubDashboard {
       intStatus = int.parse(st.toString());
     }
     var s = json['summary'] as List;
-    if (s != null) {
+    if (s.isNotEmpty) {
       summary = <Summary>[];
       for (var v in s) {
         summary!.add(Summary.fromJson(v));
@@ -47,6 +51,24 @@ class ClubDashboard {
     data['referral'] = referral;
     data['status'] = status;
     return data;
+  }
+
+  Map<String, Decimal> totalFabRewardsV2() {
+    Map<String, Decimal> result = {};
+
+    for (var project in summary!) {
+      if (project.totalReward != null) {
+        for (var reward in project.totalReward!) {
+          if (reward.coin == "FETDUSD-LP" || reward.coin == "UnknownCoin") {
+            reward.amount =
+                NumberUtil.rawStringToDecimal(reward.amount.toString());
+          }
+          result.addAll({reward.coin!: reward.amount!});
+        }
+      }
+    }
+    debugPrint('Club dashboard model: totalFabRewards-func -- $result');
+    return result;
   }
 
   Map<String, Decimal> totalFabRewards() {

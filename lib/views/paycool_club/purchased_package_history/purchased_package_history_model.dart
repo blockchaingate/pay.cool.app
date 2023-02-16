@@ -2,7 +2,7 @@ import 'package:decimal/decimal.dart';
 import 'package:paycool/environments/coins.dart';
 import 'package:paycool/utils/number_util.dart';
 import 'package:paycool/utils/string_util.dart';
-import 'package:paycool/views/paycool_club/club_projects/club_project_model.dart';
+import 'package:paycool/views/paycool_club/club_projects/models/club_project_model.dart';
 
 class PurchasedPackageHistory {
   String? id;

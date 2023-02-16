@@ -19,7 +19,7 @@ class ClubRewardsView extends StatelessWidget {
     var storageService = locator<LocalStorageService>();
 
     return Scaffold(
-      extendBodyBehindAppBar: true,
+      // extendBodyBehindAppBar: true,
       appBar: AppBar(
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.black),
@@ -50,6 +50,23 @@ class ClubRewardsView extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               UIHelper.verticalSpaceSmall,
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    customText(
+                        text: FlutterI18n.translate(context, "totalRewards"),
+                        style: headText2,
+                        color: green),
+                    UIHelper.horizontalSpaceSmall,
+                    customText(
+                        text: '\$${clubRewardsArgs.totalRewardsDollarValue}',
+                        style: headText2)
+                  ],
+                ),
+              ),
+              UIHelper.verticalSpaceMedium,
               Expanded(
                   child: ListView.separated(
                       shrinkWrap: true,
@@ -182,56 +199,63 @@ class ClubRewardsView extends StatelessWidget {
                                                                         .start,
                                                                 children: [
                                                                   // AMOUNT
-                                                                  clubRewardsArgs
-                                                                          .summary[
-                                                                              index]
-                                                                          .totalReward![
-                                                                              j]
-                                                                          .coin!
-                                                                          .contains(
-                                                                              '-')
-                                                                      ? Text(
-                                                                          '${NumberUtil.rawStringToDecimal(clubRewardsArgs.summary[index].totalReward![j].amount.toString())}',
-                                                                          maxLines:
-                                                                              2,
-                                                                          style: headText6.copyWith(
-                                                                              color: green,
-                                                                              fontWeight: FontWeight.bold),
-                                                                        )
-                                                                      : Text(
-                                                                          NumberUtil.decimalLimiter(clubRewardsArgs.summary[index].totalReward![j].amount!, decimalPrecision: 18)
-                                                                              .toString(),
-                                                                          style: headText6.copyWith(
-                                                                              color: green,
-                                                                              fontWeight: FontWeight.bold),
-                                                                        ),
+                                                                  // clubRewardsArgs
+                                                                  //         .summary[
+                                                                  //             index]
+                                                                  //         .totalReward![
+                                                                  //             j]
+                                                                  //         .coin!
+                                                                  //         .contains(
+                                                                  //             '-')
+                                                                  //     ? Text(
+                                                                  //         '${NumberUtil.rawStringToDecimal(clubRewardsArgs.summary[index].totalReward![j].amount.toString())}',
+                                                                  //         maxLines:
+                                                                  //             2,
+                                                                  //         style: headText6.copyWith(
+                                                                  //             color: green,
+                                                                  //             fontWeight: FontWeight.bold),
+                                                                  //       )
+                                                                  //     :
+                                                                  Text(
+                                                                    NumberUtil.decimalLimiter(
+                                                                            clubRewardsArgs.summary[index].totalReward![j].amount!,
+                                                                            decimalPrecision: 18)
+                                                                        .toString(),
+                                                                    style: headText6.copyWith(
+                                                                        color:
+                                                                            green,
+                                                                        fontWeight:
+                                                                            FontWeight.bold),
+                                                                  ),
                                                                   // USD VALUE
-                                                                  clubRewardsArgs
-                                                                          .summary[
-                                                                              index]
-                                                                          .totalReward![
-                                                                              j]
-                                                                          .coin!
-                                                                          .contains(
-                                                                              '-')
-                                                                      ? Text(
-                                                                          '\$${NumberUtil.decimalLimiter(NumberUtil.rawStringToDecimal(clubRewardsArgs.summary[index].totalReward![j].amount.toString()) * selectedPrice!)}',
-                                                                          maxLines:
-                                                                              2,
-                                                                          overflow:
-                                                                              TextOverflow.ellipsis,
-                                                                          style: headText6.copyWith(
-                                                                              color: green,
-                                                                              fontWeight: FontWeight.bold),
-                                                                        )
-                                                                      : Text(
-                                                                          '\$${NumberUtil.decimalLimiter((clubRewardsArgs.summary[index].totalReward![j].amount)! * selectedPrice!)}',
-                                                                          maxLines:
-                                                                              2,
-                                                                          style: headText6.copyWith(
-                                                                              color: green,
-                                                                              fontWeight: FontWeight.bold),
-                                                                        ),
+                                                                  // clubRewardsArgs
+                                                                  //         .summary[
+                                                                  //             index]
+                                                                  //         .totalReward![
+                                                                  //             j]
+                                                                  //         .coin!
+                                                                  //         .contains(
+                                                                  //             '-')
+                                                                  //     ? Text(
+                                                                  //         '\$${NumberUtil.decimalLimiter(NumberUtil.rawStringToDecimal(clubRewardsArgs.summary[index].totalReward![j].amount.toString()) * selectedPrice!)}',
+                                                                  //         maxLines:
+                                                                  //             2,
+                                                                  //         overflow:
+                                                                  //             TextOverflow.ellipsis,
+                                                                  //         style: headText6.copyWith(
+                                                                  //             color: green,
+                                                                  //             fontWeight: FontWeight.bold),
+                                                                  //       )
+                                                                  //     :
+                                                                  Text(
+                                                                    '\$${NumberUtil.decimalLimiter((clubRewardsArgs.summary[index].totalReward![j].amount)! * selectedPrice!)}',
+                                                                    maxLines: 2,
+                                                                    style: headText6.copyWith(
+                                                                        color:
+                                                                            green,
+                                                                        fontWeight:
+                                                                            FontWeight.bold),
+                                                                  ),
                                                                 ])
                                                           ],
                                                         );
@@ -359,9 +383,9 @@ class ClubRewardsView extends StatelessWidget {
                   UIHelper.verticalSpaceMedium,
                   clubRewardsArgs.summary[index].rewardDistribution!.gap == null
                       ? rewardsCoinWithAmount(
-                          FlutterI18n.translate(context, "gap"), [])
+                          FlutterI18n.translate(context, "override"), [])
                       : rewardsCoinWithAmount(
-                          FlutterI18n.translate(context, "gap"),
+                          FlutterI18n.translate(context, "override"),
                           clubRewardsArgs
                               .summary[index].rewardDistribution!.gap!),
 
@@ -387,9 +411,9 @@ class ClubRewardsView extends StatelessWidget {
                               .summary[index].rewardDistribution!.marketing ==
                           null
                       ? rewardsCoinWithAmount(
-                          FlutterI18n.translate(context, "marketing"), [])
+                          FlutterI18n.translate(context, "sales"), [])
                       : rewardsCoinWithAmount(
-                          FlutterI18n.translate(context, "marketing"),
+                          FlutterI18n.translate(context, "sales"),
                           clubRewardsArgs
                               .summary[index].rewardDistribution!.marketing!),
                   // Global

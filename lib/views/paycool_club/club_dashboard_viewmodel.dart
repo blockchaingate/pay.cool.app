@@ -6,8 +6,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:paycool/constants/constants.dart';
+import 'package:paycool/utils/number_util.dart';
 import 'package:paycool/views/paycool_club/club_dashboard_model.dart';
-import 'package:paycool/views/paycool_club/club_projects/club_project_model.dart';
+import 'package:paycool/views/paycool_club/club_projects/models/club_project_model.dart';
 
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:paycool/constants/colors.dart';
@@ -46,6 +48,7 @@ class ClubDashboardViewModel extends BaseViewModel {
   final navigationService = locator<NavigationService>();
   final storageService = locator<LocalStorageService>();
   List<ClubProject> projects = [];
+  BuildContext? context;
   bool isDialogUp = false;
   bool isDUSD = false;
   int gasPrice = environment["chains"]["FAB"]["gasPrice"] ?? 0;
@@ -84,15 +87,15 @@ class ClubDashboardViewModel extends BaseViewModel {
   bool isServerDown = false;
   bool isAcceptingMembers = false;
   int projectIndex = 0;
-  int purchasedPackagesCount = 0;
+
   List<Project> joinedProjects = [];
   Map<String, Decimal> rewardTokenPriceMap = {};
+  Decimal totatRewardDollarVal = Constants.decimalZero;
+  Decimal totalPaycoolRewardDollarVal = Constants.decimalZero;
 
   void init() async {
     setBusy(true);
     fabAddress = await sharedService.getFabAddressFromCoreWalletDatabase();
-
-    await getProjects();
 
     await memberValidation();
     log.e('isClubMember : $isValidMember');
@@ -104,17 +107,30 @@ class ClubDashboardViewModel extends BaseViewModel {
         log.e('catch during dashboard details or get children $err');
       }
     }
-    purchasedPackagesCount =
-        await clubService.getPurchasedPackageCount(fabAddress);
+
     await checkGas();
 
     if (gasAmount == 0.0) await checkFreeFabForNewWallet();
-    for (var project in dashboardSummary.summary!) {
-      for (var reward in project.totalReward!) {
+
+    // total rewards calc
+    for (var summary in dashboardSummary.summary!) {
+      for (var reward in summary.totalReward!) {
         if (reward.coin != null) {
           try {
             // reward token price
             var rtp = await clubService.getPriceOfRewardToken(reward.coin!);
+            if (summary.project!.en == 'Paycool') {
+              totalPaycoolRewardDollarVal = NumberUtil.decimalLimiter(
+                  reward.amount! * rtp,
+                  decimalPrecision: 8);
+            }
+            if (reward.coin == "FETDUSD-LP" || reward.coin == "UnknownCoin") {
+              reward.amount =
+                  NumberUtil.rawStringToDecimal(reward.amount.toString());
+            }
+            totatRewardDollarVal += NumberUtil.decimalLimiter(
+                reward.amount! * rtp,
+                decimalPrecision: 8);
             rewardTokenPriceMap.addAll({reward.coin!: rtp});
           } catch (err) {
             log.e(
@@ -123,23 +139,34 @@ class ClubDashboardViewModel extends BaseViewModel {
         }
       }
     }
-    log.e('rewardTokenPriceMap ${rewardTokenPriceMap}');
+    log.e(
+        'rewardTokenPriceMap ${rewardTokenPriceMap} --totatRewardDollarVal $totatRewardDollarVal ');
 
     setBusy(false);
   } // init ends
 
-  showJoinedProjectsPopup() {
+  showProjectList() {
     showDialog(
-        context: sharedService.context,
+        context: context!,
         builder: (context) {
           return AlertDialog(
             elevation: 10,
             backgroundColor: white,
             titleTextStyle: headText3.copyWith(color: black),
-            title: Text(
-              FlutterI18n.translate(context, "joinedProjects"),
-              textAlign: TextAlign.center,
-              style: headText3.copyWith(color: black),
+            title: Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    padding: EdgeInsets.all(5),
+                    color: grey.withAlpha(125),
+                    child: customText(
+                      textAlign: TextAlign.center,
+                      text: FlutterI18n.translate(context, "projects"),
+                      style: headText3.copyWith(color: black),
+                    ),
+                  ),
+                ),
+              ],
             ),
             contentTextStyle: const TextStyle(color: grey),
             content: SizedBox(
@@ -149,7 +176,7 @@ class ClubDashboardViewModel extends BaseViewModel {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       for (var i = 0; i < dashboardSummary.summary!.length; i++)
-                        dashboardSummary.summary![i].status != 0
+                        dashboardSummary.summary![i].status == 0
                             ? Padding(
                                 padding: const EdgeInsets.all(4.0),
                                 child: Row(
@@ -160,16 +187,34 @@ class ClubDashboardViewModel extends BaseViewModel {
                                       style: headText5.copyWith(
                                           fontWeight: FontWeight.w500),
                                     ),
-                                    Flexible(
-                                      child: Text(
-                                        assignMemberType(
-                                            status: dashboardSummary
-                                                .summary![i].status!
-                                                .toInt()),
-                                        textAlign: TextAlign.end,
-                                        style: headText5.copyWith(color: green),
-                                      ),
-                                    ),
+                                    // Flexible(
+                                    //   child: Text(
+                                    //     assignMemberType(
+                                    //         status: dashboardSummary
+                                    //             .summary![i].status!
+                                    //             .toInt()),
+                                    //     textAlign: TextAlign.end,
+                                    //     style: headText5.copyWith(color: green),
+                                    //   ),
+                                    // ),
+                                    UIHelper.horizontalSpaceLarge,
+                                    TextButton(
+                                        // style: ButtonStyle(
+                                        //     shape: shapeRoundBorder,
+                                        //     backgroundColor:
+                                        //         MaterialStateProperty.all(
+                                        //             secondaryColor)),
+                                        onPressed: () {
+                                          navigationService.navigateTo(
+                                              clubProjectDetailsViewRoute,
+                                              arguments:
+                                                  dashboardSummary.summary![i]);
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: customText(
+                                            text: FlutterI18n.translate(
+                                                context, "details"),
+                                            isUnderline: true))
                                   ],
                                 ),
                               )
@@ -201,7 +246,7 @@ class ClubDashboardViewModel extends BaseViewModel {
 
   showJoinPaycoolPopup() {
     showDialog(
-        context: sharedService.context,
+        context: context!,
         builder: (context) {
           return AlertDialog(
             titleTextStyle: headText3.copyWith(color: black),
@@ -280,7 +325,7 @@ class ClubDashboardViewModel extends BaseViewModel {
           isFreeFabAvailable = res['ok'];
 
           showDialog(
-              context: sharedService.context,
+              context: context!,
               builder: (context) {
                 return Center(
                   child: SizedBox(
@@ -485,12 +530,11 @@ class ClubDashboardViewModel extends BaseViewModel {
           debugPrint(isFreeFabAvailable.toString());
 
           walletService.showInfoFlushbar(
-              FlutterI18n.translate(sharedService.context, "notice"),
-              FlutterI18n.translate(
-                  sharedService.context, "freeFabUsedAlready"),
+              FlutterI18n.translate(context!, "notice"),
+              FlutterI18n.translate(context!, "freeFabUsedAlready"),
               Icons.notification_important,
               yellow,
-              sharedService.context);
+              context!);
         }
       }
     });
@@ -504,7 +548,7 @@ class ClubDashboardViewModel extends BaseViewModel {
       String kbAddress = walletService.toKbPaymentAddress(coin!.address!);
       debugPrint('KBADDRESS $kbAddress');
       showDialog(
-        context: sharedService.context,
+        context: context!,
         builder: (BuildContext context) {
           return Platform.isIOS
               ? CupertinoAlertDialog(
@@ -782,24 +826,24 @@ class ClubDashboardViewModel extends BaseViewModel {
     } on PlatformException catch (e) {
       if (e.code == "PERMISSION_NOT_GRANTED") {
         setBusy(true);
-        sharedService.alertDialog('',
-            FlutterI18n.translate(sharedService.context, "userAccessDenied"),
+        sharedService.alertDialog(
+            '', FlutterI18n.translate(context!, "userAccessDenied"),
             isWarning: false);
         // receiverWalletAddressTextController.text =
         //     FlutterI18n.translate(context, "userAccessDenied");
       } else {
         // setBusy(true);
         sharedService.alertDialog(
-            '', FlutterI18n.translate(sharedService.context, "unknownError"),
+            '', FlutterI18n.translate(context!, "unknownError"),
             isWarning: false);
       }
     } on FormatException {
       sharedService.alertDialog(
-          '', FlutterI18n.translate(sharedService.context, "scanCancelled"),
+          '', FlutterI18n.translate(context!, "scanCancelled"),
           isWarning: false);
     } catch (e) {
       sharedService.alertDialog(
-          '', FlutterI18n.translate(sharedService.context, "unknownError"),
+          '', FlutterI18n.translate(context!, "unknownError"),
           isWarning: false);
     }
     setBusy(false);
@@ -821,27 +865,18 @@ class ClubDashboardViewModel extends BaseViewModel {
     setBusy(false);
   }
 
-  goToProjectDetails(String projectId) async {
-    var projectDetails =
-        await clubService.getProjectDetails(projectId, fabAddress);
-    navigationService.navigateTo(clubProjectDetailsViewRoute,
-        arguments: projectDetails);
-  }
-
-  getProjects() async {
-    setBusy(true);
-    isServerDown = false;
-    try {
-      await clubService.getClubProjects().then((data) {
-        if (data != null && data.isNotEmpty) projects = data;
-        //   isAcceptingMembers = projects[0].keyNodeAvailable;
-      });
-    } catch (err) {
-      log.e('getProjects CATCH $err');
-      isServerDown = true;
-      return;
+  goToProjectDetails(Project project) async {
+    String? passedProjectId = '';
+    for (var p in projects) {
+      if (p.id == project.id.toString()) {
+        passedProjectId = p.projectId;
+      }
     }
-    setBusy(false);
+
+    var projectDetails =
+        await clubService.getProjectDetails(passedProjectId!, fabAddress);
+    navigationService.navigateTo(clubProjectDetailsViewRoute,
+        arguments: project);
   }
 
   getReferralCount() async {
@@ -865,17 +900,17 @@ class ClubDashboardViewModel extends BaseViewModel {
   String assignMemberType({int? status}) {
     var condition = status ?? dashboardSummary.status;
     if (condition == 0) {
-      return FlutterI18n.translate(sharedService.context, "noPartner");
+      return FlutterI18n.translate(context!, "noPartner");
     } else if (condition == 1) {
-      return FlutterI18n.translate(sharedService.context, "basicPartner");
+      return FlutterI18n.translate(context!, "basicPartner");
     } else if (condition == 2) {
-      return FlutterI18n.translate(sharedService.context, "juniorPartner");
+      return FlutterI18n.translate(context!, "juniorPartner");
     } else if (condition == 3) {
-      return FlutterI18n.translate(sharedService.context, "seniorPartner");
+      return FlutterI18n.translate(context!, "seniorPartner");
     } else if (condition == 4) {
-      return FlutterI18n.translate(sharedService.context, "executivePartner");
+      return FlutterI18n.translate(context!, "executivePartner");
     } else {
-      return FlutterI18n.translate(sharedService.context, "noPartner");
+      return FlutterI18n.translate(context!, "noPartner");
     }
   }
 
@@ -1020,7 +1055,7 @@ class ClubDashboardViewModel extends BaseViewModel {
     setBusy(true);
 
     showDialog(
-        context: sharedService.context,
+        context: context!,
         builder: (BuildContext context) {
           return Platform.isIOS
               ? CupertinoAlertDialog(
@@ -1239,7 +1274,7 @@ class ClubDashboardViewModel extends BaseViewModel {
     try {
       log.i("Barcode: try");
 
-      result = await BarcodeUtils().scanQR(sharedService.context);
+      result = await BarcodeUtils().scanQR(context!);
 
       log.i("Barcode Res: $result ");
       scanToPayModel = JoinClubPaymentModel.fromJson(jsonDecode(result));
@@ -1251,15 +1286,15 @@ class ClubDashboardViewModel extends BaseViewModel {
       log.i(e.toString());
       if (e.code == "PERMISSION_NOT_GRANTED") {
         setBusy(false);
-        sharedService.alertDialog('',
-            FlutterI18n.translate(sharedService.context, "userAccessDenied"),
+        sharedService.alertDialog(
+            '', FlutterI18n.translate(context!, "userAccessDenied"),
             isWarning: false);
         // receiverWalletAddressTextController.text =
         //     FlutterI18n.translate(context, "userAccessDenied");
       } else {
         setBusy(false);
         sharedService.alertDialog(
-            '', FlutterI18n.translate(sharedService.context, "unknownError"),
+            '', FlutterI18n.translate(context!, "unknownError"),
             isWarning: false);
         // receiverWalletAddressTextController.text =
         //     '${FlutterI18n.translate(context, "unknownError")}: $e';
@@ -1272,8 +1307,8 @@ class ClubDashboardViewModel extends BaseViewModel {
       // navigationService.navigateTo(PayCoolClubDashboardViewRoute);
       if (result != null && result != '') {
         sharedService.alertDialog(
-            FlutterI18n.translate(sharedService.context, "scanCancelled"),
-            FlutterI18n.translate(sharedService.context, "invalidReferralCode"),
+            FlutterI18n.translate(context!, "scanCancelled"),
+            FlutterI18n.translate(context!, "invalidReferralCode"),
             isWarning: false);
       }
     } catch (e) {
@@ -1281,7 +1316,7 @@ class ClubDashboardViewModel extends BaseViewModel {
       log.i(e.toString());
       setBusy(false);
       sharedService.alertDialog(
-          '', FlutterI18n.translate(sharedService.context, "unknownError"),
+          '', FlutterI18n.translate(context!, "unknownError"),
           isWarning: false);
       // receiverWalletAddressTextController.text =
       //     '${FlutterI18n.translate(context, "unknownError")}: $e';

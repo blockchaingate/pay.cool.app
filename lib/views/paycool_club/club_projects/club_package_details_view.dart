@@ -8,18 +8,18 @@ import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/local_storage_service.dart';
 import 'package:paycool/services/navigation_service.dart';
 import 'package:paycool/shared/ui_helpers.dart';
-import 'package:paycool/views/paycool_club/club_projects/club_project_model.dart';
+import 'package:paycool/views/paycool_club/club_projects/models/club_project_model.dart';
 
-class ClubProjectDetailsView extends StatefulWidget {
+class ClubPackageDetailsView extends StatefulWidget {
   final List<ClubProject>? projectDetails;
-  const ClubProjectDetailsView({Key? key, this.projectDetails})
+  const ClubPackageDetailsView({Key? key, this.projectDetails})
       : super(key: key);
 
   @override
-  State<ClubProjectDetailsView> createState() => _ClubProjectDetailsViewState();
+  State<ClubPackageDetailsView> createState() => _ClubPackageDetailsViewState();
 }
 
-class _ClubProjectDetailsViewState extends State<ClubProjectDetailsView> {
+class _ClubPackageDetailsViewState extends State<ClubPackageDetailsView> {
   //String selectedCoin = 'DUSD';
   List<String> selectedCoin = [];
 
@@ -127,6 +127,8 @@ class _ClubProjectDetailsViewState extends State<ClubProjectDetailsView> {
                                               context: context,
                                               builder: (context) {
                                                 return AlertDialog(
+                                                    backgroundColor:
+                                                        secondaryColor,
                                                     titleTextStyle: headText3
                                                         .copyWith(color: black),
                                                     title: Text(

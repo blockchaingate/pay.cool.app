@@ -11,8 +11,8 @@ import 'package:paycool/services/local_storage_service.dart';
 import 'package:paycool/services/wallet_service.dart';
 import 'package:paycool/utils/wallet/wallet_util.dart';
 import 'package:paycool/views/paycool/paycool_service.dart';
-import 'package:paycool/views/paycool_club/club_projects/club_package_checkout_model.dart';
-import 'package:paycool/views/paycool_club/club_projects/club_project_model.dart';
+import 'package:paycool/views/paycool_club/club_projects/models/club_package_checkout_model.dart';
+import 'package:paycool/views/paycool_club/club_projects/models/club_project_model.dart';
 import 'package:stacked/stacked.dart';
 import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/navigation_service.dart';
@@ -73,7 +73,7 @@ class ClubPackageCheckoutViewModel extends FutureViewModel {
 
   showCheckoutDialog(ClubProject selectedPackage) async {
     clubPackageCheckout = (await clubService.getPackageCheckoutDetails(
-        selectedPackage.sId.toString(), selectedTicker))!;
+        selectedPackage.projectId.toString(), selectedTicker))!;
 
     dialogService.showBasicDialog(
         title: title, description: desc, buttonTitle: 'Pay');

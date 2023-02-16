@@ -15,10 +15,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:paycool/logger.dart';
 import 'package:paycool/views/paycool_club/checkout/club_package_checkout_view.dart';
-import 'package:paycool/views/paycool_club/club_projects/club_project_details_view.dart';
+import 'package:paycool/views/paycool_club/club_projects/club_project_details/club_project_details_view.dart';
 import 'package:paycool/widgets/club/club_rewards_view.dart';
 import 'constants/route_names.dart';
 import 'views/lightning-remit/lightning-remit_view.dart';
+import 'views/paycool_club/club_projects/club_package_details_view.dart';
 import 'views/paycool_club/referral/referral_view.dart';
 import 'views/settings/settings_view.dart';
 import 'views/paycool_club/join_club/join_paycool_club_view.dart';
@@ -156,9 +157,13 @@ class RouteGenerator {
       case clubProjectDetailsViewRoute:
         return MaterialPageRoute(
             builder: (_) => ClubProjectDetailsView(
+                  summary: args,
+                ));
+      case clubPackageDetailsViewRoute:
+        return MaterialPageRoute(
+            builder: (_) => ClubPackageDetailsView(
                   projectDetails: args,
                 ));
-
       case clubPackageCheckoutViewRoute:
         return MaterialPageRoute(
             builder: (_) => ClubPackageCheckoutView(

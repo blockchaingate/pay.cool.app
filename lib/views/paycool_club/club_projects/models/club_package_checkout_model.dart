@@ -1,6 +1,6 @@
 import 'package:decimal/decimal.dart';
 
-import '../club_models/club_params_model.dart';
+import '../../club_models/club_params_model.dart';
 
 class ClubPackageCheckout {
   List<RewardDetails>? rewardDetails;

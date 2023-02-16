@@ -491,6 +491,18 @@
     "rebateRate": "回扣率",
     "stakeToEarn": "质押获取收益",
     "joinedProjects": "我已加入的项目",
-    "metaforce": "原力计划"
+    "metaforce": "原力计划",
+    "paycoolClubDesc": "次消费，双倍获利!",
+    "totalRewards": "总奖励",
+    "myReferralTree": "我的邀请详情",
+    "projects": "项目",
+    "programDetails":"项目详情",
+    "stackingPackageJoined":"已加入的项目",
+    "packageDetails":"套装详情",
+    "otherPrograms":"其他项目",
+    "selectPackage": "选择套装",
+    "override": "覆盖",
+    "sales": "销售额"
+
 
 }
