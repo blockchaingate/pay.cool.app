@@ -44,7 +44,8 @@ class _ClubPackageDetailsViewState extends State<ClubPackageDetailsView> {
       body: Container(
         alignment: Alignment.center,
         decoration: BoxDecoration(
-            image: imageBackground('assets/images/club/background-1.png')),
+            image:
+                imageBackground(path: 'assets/images/club/background-1.png')),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -73,12 +74,6 @@ class _ClubPackageDetailsViewState extends State<ClubPackageDetailsView> {
                         elevation: 10,
                         child: ListTile(
                           minVerticalPadding: 15,
-                          onTap: () => navigationService.navigateTo(
-                              clubPackageCheckoutViewRoute,
-                              arguments: {
-                                "package": widget.projectDetails![index],
-                                'paymentCoin': selectedCoin[index]
-                              }),
                           leading: Container(
                               decoration: roundedBoxDecoration(
                                   color: primaryColor.withAlpha(55)),
@@ -228,12 +223,22 @@ class _ClubPackageDetailsViewState extends State<ClubPackageDetailsView> {
                                   ],
                                 ),
                                 UIHelper.horizontalSpaceMedium,
-                                const Padding(
+                                Padding(
                                   padding: EdgeInsets.only(top: 8.0),
-                                  child: Icon(
-                                    Icons.arrow_forward_ios,
-                                    color: black,
-                                    size: 16,
+                                  child: IconButton(
+                                    onPressed: () => navigationService
+                                        .navigateTo(
+                                            clubPackageCheckoutViewRoute,
+                                            arguments: {
+                                          "package":
+                                              widget.projectDetails![index],
+                                          'paymentCoin': selectedCoin[index]
+                                        }),
+                                    icon: Icon(
+                                      Icons.arrow_forward_ios,
+                                      color: black,
+                                      size: 16,
+                                    ),
                                   ),
                                 ),
                               ],

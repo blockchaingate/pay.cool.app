@@ -48,7 +48,7 @@ class ReferralViewmodel extends BaseViewModel {
             ? referalRoute.address!
             : fabAddress;
 
-    if (projects.isEmpty || projects == null) {
+    if (projects.isEmpty) {
       if (referalRoute.project!.id == 0 &&
           referalRoute.project!.en == 'Paycool') {
         var refs = await payCoolClubService.getReferrals(addressUsed,
@@ -90,8 +90,7 @@ class ReferralViewmodel extends BaseViewModel {
     }
     debugPrint('idReferralsMap $idReferralsMap');
 
-    if (referalRoute.address != null ||
-        (referalRoute.project != null && referalRoute.project!.id! == 0)) {
+    if (referalRoute.address != null || (referalRoute.project != null)) {
       _totalReferrals = referalRoute.project!.id != 0
           ? await payCoolClubService.getUserReferralCount(addressUsed,
               isProject: true, projectId: referalRoute.project!.id!)

@@ -109,57 +109,76 @@ class PaycoolReferralDetailsView extends StatelessWidget {
                         children: [
                           model.referalRoute.referrals![index].count!.isNotEmpty
                               ? Container(
-                                  color: primaryColor.withAlpha(120),
-                                  padding: const EdgeInsets.all(4.0),
+                                  //  color: primaryColor.withAlpha(120),
+                                  padding: const EdgeInsets.all(2.0),
                                   child: Column(children: [
-                                    if (model.referalRoute.referrals![index]
-                                            .status ==
-                                        -1) ...[
-                                      Text(
-                                          ' ${FlutterI18n.translate(context, "noPartner")}',
-                                          style: headText6.copyWith(
-                                              fontWeight: FontWeight.bold,
-                                              color: white)),
-                                    ] else if (model.referalRoute
-                                            .referrals![index].status ==
-                                        0) ...[
-                                      Text(
-                                          ' ${FlutterI18n.translate(context, "noPartner")}',
-                                          style: headText6.copyWith(
-                                              fontWeight: FontWeight.bold,
-                                              color: white)),
-                                    ] else if (model.referalRoute
-                                            .referrals![index].status ==
-                                        1) ...[
-                                      Text(
-                                          ' ${FlutterI18n.translate(context, "basicPartner")}',
-                                          style: headText6.copyWith(
-                                              fontWeight: FontWeight.bold,
-                                              color: white)),
-                                    ] else if (model.referalRoute
-                                            .referrals![index].status ==
-                                        2) ...[
-                                      Text(
-                                          ' ${FlutterI18n.translate(context, "juniorPartner")}',
-                                          style: headText6.copyWith(
-                                              fontWeight: FontWeight.bold,
-                                              color: white)),
-                                    ] else if (model.referalRoute
-                                            .referrals![index].status ==
-                                        3) ...[
-                                      Text(
-                                          ' ${FlutterI18n.translate(context, "seniorPartner")}',
-                                          style: headText6.copyWith(
-                                              fontWeight: FontWeight.bold,
-                                              color: white)),
-                                    ] else if (model.referalRoute
-                                            .referrals![index].status ==
-                                        4) ...[
-                                      Text(
-                                          ' ${FlutterI18n.translate(context, "executivePartner")}',
-                                          style: headText6.copyWith(
-                                              fontWeight: FontWeight.bold,
-                                              color: white)),
+                                    if (model.referalRoute.project!.en ==
+                                        'Paycool') ...[
+                                      if (model.referalRoute.referrals![index]
+                                              .status ==
+                                          1) ...[
+                                        Text(
+                                            ' ${FlutterI18n.translate(context, "member")}',
+                                            style: headText6.copyWith(
+                                                fontWeight: FontWeight.bold,
+                                                color: black)),
+                                      ] else ...[
+                                        Text(
+                                            ' ${FlutterI18n.translate(context, "vipMember")}',
+                                            style: headText6.copyWith(
+                                                fontWeight: FontWeight.bold,
+                                                color: black)),
+                                      ]
+                                    ] else ...[
+                                      if (model.referalRoute.referrals![index]
+                                              .status ==
+                                          -1) ...[
+                                        Text(
+                                            ' ${FlutterI18n.translate(context, "noPartner")}',
+                                            style: headText6.copyWith(
+                                                fontWeight: FontWeight.bold,
+                                                color: black)),
+                                      ] else if (model.referalRoute
+                                              .referrals![index].status ==
+                                          0) ...[
+                                        Text(
+                                            ' ${FlutterI18n.translate(context, "noPartner")}',
+                                            style: headText6.copyWith(
+                                                fontWeight: FontWeight.bold,
+                                                color: black)),
+                                      ] else if (model.referalRoute
+                                              .referrals![index].status ==
+                                          1) ...[
+                                        Text(
+                                            ' ${FlutterI18n.translate(context, "basicPartner")}',
+                                            style: headText6.copyWith(
+                                                fontWeight: FontWeight.bold,
+                                                color: black)),
+                                      ] else if (model.referalRoute
+                                              .referrals![index].status ==
+                                          2) ...[
+                                        Text(
+                                            ' ${FlutterI18n.translate(context, "juniorPartner")}',
+                                            style: headText6.copyWith(
+                                                fontWeight: FontWeight.bold,
+                                                color: black)),
+                                      ] else if (model.referalRoute
+                                              .referrals![index].status ==
+                                          3) ...[
+                                        Text(
+                                            ' ${FlutterI18n.translate(context, "seniorPartner")}',
+                                            style: headText6.copyWith(
+                                                fontWeight: FontWeight.bold,
+                                                color: black)),
+                                      ] else if (model.referalRoute
+                                              .referrals![index].status ==
+                                          4) ...[
+                                        Text(
+                                            ' ${FlutterI18n.translate(context, "executivePartner")}',
+                                            style: headText6.copyWith(
+                                                fontWeight: FontWeight.bold,
+                                                color: black)),
+                                      ]
                                     ],
                                   ]),
                                 )
@@ -181,8 +200,8 @@ class PaycoolReferralDetailsView extends StatelessWidget {
                               // ),
                               Flexible(
                                 child: Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 4),
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 4, horizontal: 3.0),
                                   child: Text(
                                     model.referalRoute.referrals![index]
                                         .userAddress!,

@@ -132,7 +132,8 @@ class ClubDashboardViewModel extends BaseViewModel {
             }
             totatRewardDollarVal += NumberUtil.decimalLimiter(
                 reward.amount! * rtp,
-                decimalPrecision: 8);
+                decimalPrecision: 2);
+
             rewardTokenPriceMap.addAll({reward.coin!: rtp});
           } catch (err) {
             log.e(
@@ -154,11 +155,12 @@ class ClubDashboardViewModel extends BaseViewModel {
     return diff.inDays;
   }
 
-// 2025-01-20T16:44:40.663Z
+// "2023-02-20T16:44:40.663Z"
   bool showExpiredProjectWarning(String date) {
     bool res = false;
+    int days = expiredProjectInDays(date);
     if (date.isNotEmpty) {
-      if (expiredProjectInDays(date) < 30) {
+      if (days < 30 && !days.isNegative && days != 0) {
         res = true;
         isShowExpiredWarning = true;
       } else {
@@ -192,31 +194,33 @@ class ClubDashboardViewModel extends BaseViewModel {
     showDialog(
         context: context!,
         builder: (context) {
-          return AlertDialog(
-            elevation: 10,
-            backgroundColor: white,
-            titleTextStyle: headText3.copyWith(color: black),
-            title: Row(
-              children: [
-                Expanded(
-                  child: Container(
-                    padding: const EdgeInsets.all(5),
-                    // color: grey.withAlpha(125),
-                    child: customText(
-                      textAlign: TextAlign.center,
-                      text: numberOfProjectNotJoined().isNotEmpty
-                          ? FlutterI18n.translate(context, "lisOfPrograms")
-                          : FlutterI18n.translate(
-                              context, "currentlyNoOtherPrograms"),
-                      style: headText3.copyWith(color: black),
+          return Container(
+            child: AlertDialog(
+              elevation: 10,
+              backgroundColor: white,
+              titleTextStyle: headText3.copyWith(color: black),
+              title: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Expanded(
+                    child: Container(
+                      padding: const EdgeInsets.all(5),
+                      // color: grey.withAlpha(125),
+                      child: Text(
+                        numberOfProjectNotJoined().isNotEmpty
+                            ? FlutterI18n.translate(context, "lisOfPrograms")
+                            : FlutterI18n.translate(
+                                context, "currentlyNoOtherPrograms"),
+                        textAlign: TextAlign.center,
+                        style: headText3.copyWith(color: black),
+                      ),
                     ),
                   ),
-                ),
-              ],
-            ),
-            contentTextStyle: const TextStyle(color: grey),
-            content: SizedBox(
-              child: SingleChildScrollView(
+                ],
+              ),
+              contentTextStyle: const TextStyle(color: grey),
+              content: SizedBox(
+                // height: 200,
                 child: Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -228,6 +232,7 @@ class ClubDashboardViewModel extends BaseViewModel {
                             ? Padding(
                                 padding: const EdgeInsets.all(4.0),
                                 child: Row(
+                                  mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Text(
                                       '${storageService.language == "en" ? dashboardSummary.summary![i].project!.en : dashboardSummary.summary![i].project!.sc}  ',
@@ -260,35 +265,38 @@ class ClubDashboardViewModel extends BaseViewModel {
                                                   dashboardSummary.summary![i]);
                                           Navigator.of(context).pop();
                                         },
-                                        child: customText(
-                                            text: FlutterI18n.translate(
-                                                context, "details"),
-                                            isUnderline: true))
+                                        child: Text(
+                                          FlutterI18n.translate(
+                                              context, "details"),
+                                          style: TextStyle(
+                                              decoration:
+                                                  TextDecoration.underline),
+                                        ))
                                   ],
                                 ),
                               )
                             : Container(),
                     ]),
               ),
-            ),
-            actions: [
-              Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ElevatedButton(
-                    style: generalButtonStyle(primaryColor),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: Text(
-                      FlutterI18n.translate(context, "close"),
-                      style: headText5.copyWith(color: white),
+              actions: [
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ElevatedButton(
+                      style: generalButtonStyle(primaryColor),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text(
+                        FlutterI18n.translate(context, "close"),
+                        style: headText5.copyWith(color: white),
+                      ),
                     ),
                   ),
                 ),
-              ),
-              UIHelper.verticalSpaceSmall
-            ],
+                UIHelper.verticalSpaceSmall
+              ],
+            ),
           );
         });
   }
@@ -951,7 +959,7 @@ class ClubDashboardViewModel extends BaseViewModel {
     if (condition == 0) {
       return FlutterI18n.translate(context!, "noPartner");
     } else if (condition == 1) {
-      return FlutterI18n.translate(context!, "basicMember");
+      return FlutterI18n.translate(context!, "member");
     } else {
       return FlutterI18n.translate(context!, "vipMember");
     }

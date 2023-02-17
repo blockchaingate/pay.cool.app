@@ -1,6 +1,13 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
 import 'colors.dart';
+
+TextStyle largeText1 = const TextStyle(
+    fontSize: 26,
+    color: black,
+    fontWeight: FontWeight.bold,
+    letterSpacing: 1.5);
 
 TextStyle headText1 = const TextStyle(
     fontSize: 22,
@@ -74,10 +81,11 @@ buttonRoundShape(Color color) {
   return shapeRoundBorder;
 }
 
-ButtonStyle generalButtonStyle(Color color, {double horizontalPadding = 15}) {
+ButtonStyle generalButtonStyle(Color color,
+    {double horizontalPadding = 15, double vPadding = 5}) {
   return ButtonStyle(
-      padding: MaterialStateProperty.all(
-          EdgeInsets.symmetric(horizontal: horizontalPadding, vertical: 5)),
+      padding: MaterialStateProperty.all(EdgeInsets.symmetric(
+          horizontal: horizontalPadding, vertical: vPadding)),
       backgroundColor: MaterialStateProperty.all(color),
       elevation: MaterialStateProperty.all(10),
       shape: buttonRoundShape(color));
@@ -87,13 +95,6 @@ DecorationImage blurBackgroundImage() {
   return const DecorationImage(
       fit: BoxFit.cover,
       image: AssetImage("assets/images/shared/blur-background.png"));
-}
-
-DecorationImage imageBackground(String path) {
-  if (path.isEmpty) {
-    path = "assets/images/shared/blur-background.png";
-  }
-  return DecorationImage(fit: BoxFit.cover, image: AssetImage(path));
 }
 
 var shapeRoundBorder = MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -129,7 +130,7 @@ var outlinedButtonStyles2 = OutlinedButton.styleFrom(
       side: const BorderSide(color: primaryColor)),
 );
 
-Text customText(
+AutoSizeText customText(
     {required String text,
     double size = 12,
     bool isCustomFont = false,
@@ -139,15 +140,17 @@ Text customText(
     bool isBold = false,
     bool isUnderline = false,
     TextAlign textAlign = TextAlign.start,
+    TextOverflow overflow = TextOverflow.visible,
     Color color = black}) {
-  return Text(
+  return AutoSizeText(
     text,
     textAlign: textAlign,
     style: style.copyWith(
         color: color,
         fontSize: isCustomFont ? size : style.fontSize,
-        fontWeight: isBold ? FontWeight.bold : weight,
+        fontWeight: isBold ? FontWeight.bold : style.fontWeight,
         letterSpacing: letterSpace,
+        overflow: overflow,
         decoration:
             isUnderline ? TextDecoration.underline : TextDecoration.none),
   );
@@ -203,6 +206,46 @@ Decoration roundedBoxDecoration(
       borderRadius: BorderRadius.all(
         Radius.circular(radius),
       ));
+}
+
+Decoration customContainerDecoration(
+    {Color bgColor = primaryColor,
+    Color borderColor = Colors.transparent,
+    double radius = 25.0,
+    String path = '',
+    double bgOpacity = 1,
+    BlendMode blendMode = BlendMode.color,
+    BorderStyle borderStyle = BorderStyle.solid,
+    double borderWidth = 0.5,
+    Color colorOne = Colors.redAccent,
+    Color colorTwo = Colors.yellow,
+    bool isGradient = false,
+    BoxFit fit = BoxFit.cover}) {
+  return BoxDecoration(
+      // gradient: LinearGradient(
+      //   colors: isGradient
+      //       ? [colorOne, colorTwo]
+      //       : [white.withOpacity(0), white.withOpacity(0)],
+      //   begin: FractionalOffset.topLeft,
+      //   end: FractionalOffset.bottomRight,
+      // ),
+      color: bgColor.withOpacity(bgOpacity),
+      backgroundBlendMode: blendMode,
+      image: path.isEmpty
+          ? null
+          : DecorationImage(fit: fit, image: AssetImage(path)),
+      border: Border.all(
+          color: borderColor, style: borderStyle, width: borderWidth),
+      borderRadius: BorderRadius.all(
+        Radius.circular(radius),
+      ));
+}
+
+DecorationImage imageBackground({String path = '', BoxFit fit = BoxFit.cover}) {
+  if (path.isEmpty) {
+    path = "assets/images/shared/blur-background.png";
+  }
+  return DecorationImage(fit: fit, image: AssetImage(path));
 }
 
 Decoration roundedTopLeftRightBoxDecoration(

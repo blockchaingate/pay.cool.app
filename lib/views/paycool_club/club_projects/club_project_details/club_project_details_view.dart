@@ -33,119 +33,130 @@ class ClubProjectDetailsView extends StatelessWidget {
         body: Container(
           alignment: Alignment.center,
           color: const Color.fromRGBO(159, 157, 241, 1),
-          child: Column(
+          child: Stack(
             children: [
               // UIHelper.verticalSpaceMedium,
-              Align(
-                alignment: Alignment.topLeft,
-                child: Container(
-                  margin: const EdgeInsets.only(top: 90, left: 20),
-                  decoration:
-                      roundedBoxDecoration(radius: 50, color: secondaryColor),
-                  child: IconButton(
-                    icon: const Icon(
-                      Icons.arrow_back,
-                      color: black,
-                    ),
-                    onPressed: () => viewmodel.navigationService.goBack(),
-                  ),
-                ),
-              ),
-              Align(
-                alignment: Alignment.topLeft,
-                child: Container(
-                  margin: const EdgeInsets.only(top: 20, left: 25),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        viewmodel.storageService.language == 'zh'
-                            ? summary.project!.sc.toString()
-                            : summary.project!.en.toString(),
-                        style: headText1,
+              Column(
+                children: [
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: Container(
+                      margin: const EdgeInsets.only(top: 90, left: 20),
+                      decoration: roundedBoxDecoration(
+                          radius: 50, color: secondaryColor),
+                      child: IconButton(
+                        icon: const Icon(
+                          Icons.arrow_back,
+                          color: black,
+                        ),
+                        onPressed: () => viewmodel.navigationService.goBack(),
                       ),
-                      viewmodel
-                                  .selectedProject(
-                                      summary.project!.id.toString())!
-                                  .description ==
-                              null
-                          ? Container()
-                          : Text(
-                              viewmodel.storageService.language == 'zh'
-                                  ? viewmodel
-                                      .selectedProject(
-                                          summary.project!.id.toString())!
-                                      .description!
-                                      .sc
-                                      .toString()
-                                  : viewmodel
-                                      .selectedProject(
-                                          summary.project!.id.toString())!
-                                      .description!
-                                      .en
-                                      .toString(),
-                              style: headText2.copyWith(
-                                  color: secondaryColor, letterSpacing: 1.5),
-                            ),
-                    ],
+                    ),
                   ),
-                ),
-              ),
-              UIHelper.verticalSpaceMedium,
-              Container(
-                margin: const EdgeInsets.only(top: 20, left: 25),
-                alignment: Alignment.topLeft,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
+
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: Container(
+                      margin: const EdgeInsets.only(top: 20, left: 25),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            viewmodel.storageService.language == 'zh'
+                                ? summary.project!.sc.toString()
+                                : summary.project!.en.toString(),
+                            style: headText1,
+                          ),
+                          viewmodel
+                                      .selectedProject(
+                                          summary.project!.id.toString())!
+                                      .description ==
+                                  null
+                              ? Container()
+                              : Text(
+                                  viewmodel.storageService.language == 'zh'
+                                      ? viewmodel
+                                          .selectedProject(
+                                              summary.project!.id.toString())!
+                                          .description!
+                                          .sc
+                                          .toString()
+                                      : viewmodel
+                                          .selectedProject(
+                                              summary.project!.id.toString())!
+                                          .description!
+                                          .en
+                                          .toString(),
+                                  style: headText2.copyWith(
+                                      color: secondaryColor,
+                                      letterSpacing: 1.5),
+                                ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  //UIHelper.verticalSpaceMedium,
+                  Container(
+                    margin: const EdgeInsets.only(top: 20, left: 25),
+                    alignment: Alignment.topLeft,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        UIHelper.verticalSpaceMedium,
-                        customText(
-                            text: FlutterI18n.translate(
-                                context, "packageDetails"),
-                            color: const Color(0xffFFCC7E),
-                            style: headText3,
-                            isCustomFont: true,
-                            size: 17,
-                            letterSpace: 0.75),
-                        OutlinedButton(
-                            style: outlinedButtonStyle(
-                                vPadding: 0,
-                                hPadding: 15,
-                                sideColor: secondaryColor,
-                                backgroundColor: secondaryColor),
-                            onPressed: () =>
-                                viewmodel.goToProjectPackages(summary.project!),
-                            child: customText(
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            UIHelper.verticalSpaceMedium,
+                            customText(
                                 text: FlutterI18n.translate(
-                                    context, "selectPackage"),
-                                style: headText5,
-                                letterSpace: 0.75))
+                                    context, "packageDetails"),
+                                color: const Color(0xffFFCC7E),
+                                style: headText3,
+                                isCustomFont: true,
+                                size: 17,
+                                letterSpace: 0.75),
+                            OutlinedButton(
+                                style: outlinedButtonStyle(
+                                    vPadding: 0,
+                                    hPadding: 15,
+                                    sideColor: secondaryColor,
+                                    backgroundColor: secondaryColor),
+                                onPressed: () => viewmodel
+                                    .goToProjectPackages(summary.project!),
+                                child: customText(
+                                    text: FlutterI18n.translate(
+                                        context, "selectPackage"),
+                                    style: headText5,
+                                    letterSpace: 0.75))
+                          ],
+                        ),
+                        UIHelper.horizontalSpaceSmall,
+                        Expanded(
+                          child: Image.asset(
+                            'assets/images/club/fab-graphics.png',
+                            fit: BoxFit.contain,
+                          ),
+                        )
                       ],
                     ),
-                    UIHelper.horizontalSpaceSmall,
-                    Expanded(
-                      child: Image.asset(
-                        'assets/images/club/fab-graphics.png',
-                        fit: BoxFit.contain,
-                      ),
-                    )
-                  ],
-                ),
+                  ),
+                ],
               ),
               //  UIHelper.verticalSpaceMedium,
-              Expanded(
+              Positioned(
+                top: 392,
+                bottom: 0,
+                right: 0,
+                left: 0,
                 child: Container(
                   decoration: roundedTopLeftRightBoxDecoration(
-                      color: secondaryColor, radius: 25),
-                  padding: const EdgeInsets.only(top: 20, left: 20),
+                      color: secondaryColor, radius: 30),
+                  padding: const EdgeInsets.only(top: 10, left: 20),
                   alignment: Alignment.topLeft,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Row(
                         children: [

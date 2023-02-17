@@ -1,5 +1,5 @@
-import 'package:decimal/decimal.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:intl/intl.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:flutter_svg/svg.dart';
@@ -7,8 +7,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/constants/route_names.dart';
-import 'package:paycool/constants/ui_var.dart';
-import 'package:paycool/utils/number_util.dart';
 import 'package:paycool/utils/string_util.dart';
 import 'package:paycool/views/paycool_club/club_dashboard_model.dart';
 import 'package:paycool/views/paycool_club/club_dashboard_viewmodel.dart';
@@ -49,11 +47,9 @@ class ClubDashboardView extends StatelessWidget {
                             return Future(() => false);
                           },
                           child: Container(
-                            decoration: const BoxDecoration(
-                                image: DecorationImage(
-                                    fit: BoxFit.cover,
-                                    image: AssetImage(
-                                        "assets/images/club/background.png"))),
+                            decoration: BoxDecoration(
+                                image: imageBackground(
+                                    path: 'assets/images/club/background.png')),
                             child: CustomScrollView(
                               slivers: [
                                 const SliverToBoxAdapter(
@@ -88,18 +84,18 @@ class ClubDashboardView extends StatelessWidget {
                                             CrossAxisAlignment.start,
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
-                                          Text(
-                                            FlutterI18n.translate(
-                                                context, "payCoolClub"),
-                                            style: headText1.copyWith(
-                                                color: black, letterSpacing: 2),
-                                          ),
+                                          customText(
+                                              text: FlutterI18n.translate(
+                                                  context, "payCoolClub"),
+                                              style: largeText1,
+                                              letterSpace: 1.6),
                                           UIHelper.verticalSpaceMedium,
-                                          Text(
-                                            FlutterI18n.translate(
+                                          UIHelper.verticalSpaceSmall,
+                                          customText(
+                                            text: FlutterI18n.translate(
                                                 context, "paycoolClubDesc"),
                                             style: headText2.copyWith(
-                                                fontWeight: FontWeight.w400,
+                                                fontWeight: FontWeight.w500,
                                                 letterSpacing: 1.2),
                                           )
                                         ]),
@@ -119,9 +115,13 @@ class ClubDashboardView extends StatelessWidget {
                                               //display myReferralCode when this user is a basic or VIP member
                                               Container(
                                                 decoration:
-                                                    roundedBoxDecoration(
-                                                        color: secondaryColor
-                                                            .withOpacity(0.66)),
+                                                    customContainerDecoration(
+                                                  bgOpacity: 0.35,
+                                                  bgColor: secondaryColor,
+                                                  blendMode:
+                                                      BlendMode.hardLight,
+                                                  borderWidth: 0.2,
+                                                ),
                                                 padding:
                                                     const EdgeInsets.symmetric(
                                                         vertical: 10,
@@ -149,22 +149,27 @@ class ClubDashboardView extends StatelessWidget {
                                                                 CrossAxisAlignment
                                                                     .start,
                                                             children: [
-                                                              Text(
-                                                                FlutterI18n
+                                                              customText(
+                                                                text: FlutterI18n
                                                                     .translate(
                                                                         context,
                                                                         "totalRewards"),
-                                                                style: headText4.copyWith(
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold,
-                                                                    color:
-                                                                        grey),
+                                                                color: grey,
+                                                                style: headText5
+                                                                    .copyWith(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                ),
                                                               ),
                                                               UIHelper
                                                                   .verticalSpaceSmall,
                                                               Text(
-                                                                '\$${model.totatRewardDollarVal}',
+                                                                NumberFormat
+                                                                        .simpleCurrency()
+                                                                    .format(model
+                                                                        .totatRewardDollarVal
+                                                                        .toDouble()),
                                                                 style: headText1
                                                                     .copyWith(
                                                                         color:
@@ -176,17 +181,16 @@ class ClubDashboardView extends StatelessWidget {
                                                       ),
                                                     ), // member type tile
                                                     Container(
+                                                      // width: 200,
                                                       margin: const EdgeInsets
                                                               .symmetric(
-                                                          vertical: 2),
+                                                          vertical: 2,
+                                                          horizontal: 10),
                                                       decoration:
-                                                          rectangularGradientBoxDecoration(
-                                                              colorOne:
-                                                                  primaryColor,
-                                                              colorTwo:
-                                                                  primaryColor
-                                                                      .withAlpha(
-                                                                          100)),
+                                                          customContainerDecoration(
+                                                              bgColor:
+                                                                  secondaryColor,
+                                                              bgOpacity: 0.2),
                                                       child: ListTile(
                                                         // onTap: (() => model
                                                         //     .showJoinedProjectsPopup()),
@@ -198,7 +202,7 @@ class ClubDashboardView extends StatelessWidget {
                                                                     1
                                                                 ? Image.asset(
                                                                     'assets/images/club/crown.png',
-                                                                    width: 26,
+                                                                    width: 32,
                                                                   )
                                                                 : Image.asset(
                                                                     'assets/images/club/crown-vip-member.png',
@@ -214,125 +218,160 @@ class ClubDashboardView extends StatelessWidget {
                                                                       .user,
                                                                   color:
                                                                       primaryColor,
-                                                                  size: 18,
+                                                                  size: 22,
                                                                 ),
                                                               ),
-                                                        title: Column(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
-                                                          mainAxisSize:
-                                                              MainAxisSize.min,
-                                                          children: [
-                                                            Text(
-                                                              FlutterI18n
-                                                                  .translate(
-                                                                      context,
-                                                                      "appTitle"),
-                                                              style: headText6.copyWith(
-                                                                  color:
-                                                                      secondaryColor,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold),
-                                                            ),
-                                                            Text(
-                                                              model
-                                                                  .assignPaycoolMemberType(),
-                                                              style: headText4.copyWith(
-                                                                  color:
-                                                                      secondaryColor,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    Visibility(
-                                                      visible:
-                                                          model.isValidMember,
-                                                      child: ListTile(
-                                                        horizontalTitleGap: 0,
-                                                        leading: Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .only(
-                                                                  top: 4.0),
-                                                          child:
-                                                              Transform.rotate(
-                                                            angle: 12.0,
-                                                            child: const Icon(
-                                                              Icons
-                                                                  .link_outlined,
-                                                              size: 26,
-                                                              color: red,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        //  Image.asset(
-                                                        //   'assets/images/club/user.png',
-                                                        //   width: 30,
-                                                        // ),
                                                         title: Padding(
                                                           padding:
                                                               const EdgeInsets
-                                                                      .symmetric(
-                                                                  vertical: 4),
-                                                          child: Text(
-                                                            FlutterI18n.translate(
-                                                                context,
-                                                                "myReferralCode"),
-                                                            style: headText6
-                                                                .copyWith(
+                                                                      .only(
+                                                                  left: 8.0),
+                                                          child: Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
+                                                            mainAxisSize:
+                                                                MainAxisSize
+                                                                    .min,
+                                                            children: [
+                                                              customText(
+                                                                text: FlutterI18n
+                                                                    .translate(
+                                                                        context,
+                                                                        "appTitle"),
+                                                                style: headText6.copyWith(
+                                                                    color:
+                                                                        black,
                                                                     fontWeight:
                                                                         FontWeight
                                                                             .bold),
+                                                              ),
+                                                              Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                            .only(
+                                                                        top:
+                                                                            2.0),
+                                                                child: customText(
+                                                                    text: model
+                                                                        .assignPaycoolMemberType(),
+                                                                    style:
+                                                                        headText6,
+                                                                    color:
+                                                                        grey),
+                                                              ),
+                                                            ],
                                                           ),
                                                         ),
-                                                        subtitle: Text(
-                                                          StringUtils
-                                                              .showPartialAddress(
-                                                                  startLimit:
-                                                                      10,
-                                                                  address: model
-                                                                      .fabAddress),
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
-                                                          style: bodyText1
-                                                              .copyWith(
-                                                                  color: grey),
-                                                        ),
-                                                        trailing: Row(
-                                                          mainAxisSize:
-                                                              MainAxisSize.min,
-                                                          children: [
-                                                            IconButton(
-                                                              icon: const Icon(
-                                                                Icons.copy,
-                                                                size: 19,
-                                                                color: black,
-                                                              ),
-                                                              onPressed: () => model
-                                                                  .sharedService
-                                                                  .copyAddress(
-                                                                      context,
-                                                                      model
-                                                                          .fabAddress),
-                                                            ),
-                                                            IconButton(
-                                                              icon: const Icon(
+                                                      ),
+                                                    ),
+                                                    Container(
+                                                      // width: 200,
+                                                      margin: const EdgeInsets
+                                                              .symmetric(
+                                                          vertical: 2,
+                                                          horizontal: 10),
+                                                      decoration:
+                                                          customContainerDecoration(
+                                                              bgColor:
+                                                                  secondaryColor,
+                                                              bgOpacity: 0.2),
+                                                      child: Visibility(
+                                                        visible:
+                                                            model.isValidMember,
+                                                        child: ListTile(
+                                                          horizontalTitleGap: 0,
+                                                          leading: Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                        .only(
+                                                                    top: 4.0),
+                                                            child: Transform
+                                                                .rotate(
+                                                              angle: 12.0,
+                                                              child: const Icon(
                                                                 Icons
-                                                                    .share_outlined,
-                                                                size: 19,
-                                                                color:
-                                                                    primaryColor,
+                                                                    .link_outlined,
+                                                                size: 26,
+                                                                color: red,
                                                               ),
-                                                              onPressed: () => model
-                                                                  .showBarcode(),
                                                             ),
-                                                          ],
+                                                          ),
+                                                          //  Image.asset(
+                                                          //   'assets/images/club/user.png',
+                                                          //   width: 30,
+                                                          // ),
+                                                          title: Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                        .only(
+                                                                    left: 8.0),
+                                                            child: Column(
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .start,
+                                                              children: [
+                                                                Text(
+                                                                  FlutterI18n
+                                                                      .translate(
+                                                                          context,
+                                                                          "myReferralCode"),
+                                                                  style: headText6.copyWith(
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold),
+                                                                ),
+                                                                customText(
+                                                                  text: StringUtils.showPartialAddress(
+                                                                      startLimit:
+                                                                          10,
+                                                                      address: model
+                                                                          .fabAddress),
+                                                                  overflow:
+                                                                      TextOverflow
+                                                                          .ellipsis,
+                                                                  style:
+                                                                      headText6,
+                                                                  color: grey,
+                                                                )
+                                                              ],
+                                                            ),
+                                                          ),
+
+                                                          trailing: Row(
+                                                            mainAxisSize:
+                                                                MainAxisSize
+                                                                    .min,
+                                                            children: [
+                                                              IconButton(
+                                                                icon:
+                                                                    const Icon(
+                                                                  Icons.copy,
+                                                                  size: 19,
+                                                                  color: black,
+                                                                ),
+                                                                onPressed: () => model
+                                                                    .sharedService
+                                                                    .copyAddress(
+                                                                        context,
+                                                                        model
+                                                                            .fabAddress),
+                                                              ),
+                                                              IconButton(
+                                                                icon:
+                                                                    const Icon(
+                                                                  Icons
+                                                                      .share_outlined,
+                                                                  size: 19,
+                                                                  color:
+                                                                      primaryColor,
+                                                                ),
+                                                                onPressed: () =>
+                                                                    model
+                                                                        .showBarcode(),
+                                                              ),
+                                                            ],
+                                                          ),
                                                         ),
                                                       ),
                                                     ),
@@ -366,7 +405,8 @@ class ClubDashboardView extends StatelessWidget {
                                                         OutlinedButton.icon(
                                                           style:
                                                               generalButtonStyle(
-                                                                  white),
+                                                                  white,
+                                                                  vPadding: 10),
                                                           label: Padding(
                                                             padding:
                                                                 const EdgeInsets
@@ -420,7 +460,8 @@ class ClubDashboardView extends StatelessWidget {
                                                         OutlinedButton.icon(
                                                           style:
                                                               generalButtonStyle(
-                                                                  white),
+                                                                  white,
+                                                                  vPadding: 10),
                                                           label: Padding(
                                                             padding:
                                                                 const EdgeInsets
@@ -596,12 +637,6 @@ class ClubDashboardView extends StatelessWidget {
                                                                       .en !=
                                                                   'Paycool'
                                                           ? ListTile(
-                                                              onTap: () => model
-                                                                  .navigationService
-                                                                  .navigateTo(
-                                                                      clubProjectDetailsViewRoute,
-                                                                      arguments:
-                                                                          summary),
                                                               horizontalTitleGap:
                                                                   0,
                                                               leading:
@@ -614,91 +649,103 @@ class ClubDashboardView extends StatelessWidget {
                                                               //   'assets/images/club/user.png',
                                                               //   width: 30,
                                                               // ),
-                                                              title: Padding(
-                                                                padding: const EdgeInsets
-                                                                        .symmetric(
-                                                                    vertical:
-                                                                        4),
-                                                                child: Text(
-                                                                  model.storageService
-                                                                              .language ==
-                                                                          'zh'
-                                                                      ? summary
-                                                                          .project!
-                                                                          .sc
-                                                                          .toString()
-                                                                      : summary
-                                                                          .project!
-                                                                          .en
-                                                                          .toString(),
-                                                                  style: headText5.copyWith(
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .bold),
-                                                                ),
-                                                              ),
-                                                              subtitle:
+                                                              title: Column(
+                                                                mainAxisSize:
+                                                                    MainAxisSize
+                                                                        .min,
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .start,
+                                                                crossAxisAlignment:
+                                                                    CrossAxisAlignment
+                                                                        .start,
+                                                                children: [
+                                                                  Padding(
+                                                                    padding: const EdgeInsets
+                                                                            .symmetric(
+                                                                        vertical:
+                                                                            4),
+                                                                    child: Text(
+                                                                      model.storageService.language ==
+                                                                              'zh'
+                                                                          ? summary
+                                                                              .project!
+                                                                              .sc
+                                                                              .toString()
+                                                                          : summary
+                                                                              .project!
+                                                                              .en
+                                                                              .toString(),
+                                                                      style: headText5.copyWith(
+                                                                          fontWeight:
+                                                                              FontWeight.bold),
+                                                                    ),
+                                                                  ),
                                                                   Container(
-                                                                margin: EdgeInsets.only(
-                                                                    top: model
-                                                                            .isShowExpiredWarning
-                                                                        ? 20
-                                                                        : 0),
-                                                                child: model.showExpiredProjectWarning(summary
-                                                                            .expiredAt
-                                                                            .toString()) &&
-                                                                        model
-                                                                            .isShowExpiredWarning &&
-                                                                        !model.busy(
-                                                                            model.isShowExpiredWarning)
-                                                                    ? Stack(
-                                                                        clipBehavior:
-                                                                            Clip.none,
-                                                                        children: [
-                                                                          Positioned(
-                                                                            top:
-                                                                                -20,
-                                                                            right:
-                                                                                2,
-                                                                            child:
-                                                                                IconButton(
-                                                                              icon: const Icon(
-                                                                                Icons.cancel,
-                                                                                size: 18,
+                                                                    margin: EdgeInsets.only(
+                                                                        top: model.isShowExpiredWarning
+                                                                            ? 10
+                                                                            : 0),
+                                                                    child: model.showExpiredProjectWarning(summary.expiredAt.toString()) &&
+                                                                            model.isShowExpiredWarning &&
+                                                                            !model.busy(model.isShowExpiredWarning)
+                                                                        ? Stack(
+                                                                            clipBehavior:
+                                                                                Clip.none,
+                                                                            children: [
+                                                                              Container(
+                                                                                width: 200,
+                                                                                padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 13),
+                                                                                child: customText(text: model.storageService.language == 'sc' ? '您的 ${summary.project!.sc} 项目质押将在  ${model.expiredProjectInDays(summary.expiredAt.toString()).toString()} 天后到期, 您可以通过购买月费或年费来续订' : 'Your ${summary.project!.en} project staking is expiring in ${model.expiredProjectInDays(summary.expiredAt.toString()).toString()} days, you can renew it by stacking monthly or annually', color: red, isCustomFont: true, style: bodyText1),
                                                                               ),
-                                                                              color: red,
-                                                                              onPressed: () {
-                                                                                model.removeWarning();
-                                                                              },
-                                                                            ),
-                                                                          ),
-                                                                          Container(
-                                                                            width:
-                                                                                230,
-                                                                            padding:
-                                                                                const EdgeInsets.symmetric(horizontal: 2, vertical: 3),
-                                                                            child: customText(
-                                                                                text: model.storageService.language == 'sc' ? '您的 ${summary.project!.sc} 项目质押将在  ${model.expiredProjectInDays(summary.expiredAt.toString()).toString()} 天后到期, 您可以通过购买月费或年费来续订' : 'Your ${summary.project!.en} project staking is expiring in ${model.expiredProjectInDays(summary.expiredAt.toString()).toString()} days, you can renew it by stacking monthly or annually',
-                                                                                color: red,
-                                                                                isCustomFont: true,
-                                                                                style: bodyText1),
-                                                                          ),
-                                                                        ],
-                                                                      )
-                                                                    : Container(),
+                                                                              Align(
+                                                                                alignment: Alignment.topRight,
+
+                                                                                // Positioned(
+                                                                                //   top: -15,
+                                                                                //   right: 20,
+                                                                                child: Container(
+                                                                                  width: 25,
+                                                                                  height: 25,
+                                                                                  child: IconButton(
+                                                                                    padding: EdgeInsets.zero,
+                                                                                    icon: const Icon(
+                                                                                      Icons.cancel,
+                                                                                      size: 16,
+                                                                                    ),
+                                                                                    color: red,
+                                                                                    onPressed: () {
+                                                                                      model.removeWarning();
+                                                                                    },
+                                                                                  ),
+                                                                                ),
+                                                                              ),
+                                                                            ],
+                                                                          )
+                                                                        : Container(),
+                                                                  )
+                                                                ],
                                                               ),
+
                                                               trailing: Row(
                                                                 mainAxisSize:
                                                                     MainAxisSize
                                                                         .min,
-                                                                children: const [
-                                                                  Icon(
-                                                                    Icons
-                                                                        .arrow_forward_ios_outlined,
-                                                                    size: 19,
-                                                                    color:
-                                                                        primaryColor,
-                                                                  )
+                                                                children: [
+                                                                  IconButton(
+                                                                      onPressed: () => model.navigationService.navigateTo(
+                                                                          clubProjectDetailsViewRoute,
+                                                                          arguments:
+                                                                              summary),
+                                                                      icon:
+                                                                          const Icon(
+                                                                        Icons
+                                                                            .arrow_forward_ios_outlined,
+                                                                        size:
+                                                                            19,
+                                                                        color:
+                                                                            primaryColor,
+                                                                      ))
                                                                 ],
                                                               ),
                                                             )
@@ -711,8 +758,6 @@ class ClubDashboardView extends StatelessWidget {
 
                                               ListTile(
                                                 horizontalTitleGap: 0,
-                                                onTap: () =>
-                                                    model.showProjectList(),
                                                 leading: const Padding(
                                                   padding:
                                                       EdgeInsets.only(top: 4.0),
@@ -743,13 +788,16 @@ class ClubDashboardView extends StatelessWidget {
                                                 trailing: Row(
                                                   mainAxisSize:
                                                       MainAxisSize.min,
-                                                  children: const [
-                                                    Icon(
-                                                      Icons
-                                                          .arrow_forward_ios_outlined,
-                                                      size: 19,
-                                                      color: primaryColor,
-                                                    ),
+                                                  children: [
+                                                    IconButton(
+                                                        onPressed: () => model
+                                                            .showProjectList(),
+                                                        icon: const Icon(
+                                                          Icons
+                                                              .arrow_forward_ios_outlined,
+                                                          size: 19,
+                                                          color: primaryColor,
+                                                        ))
                                                   ],
                                                 ),
                                               ),
