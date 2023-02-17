@@ -1,4 +1,5 @@
 import 'package:decimal/decimal.dart';
+import 'package:flutter/cupertino.dart';
 
 class ClubProject {
   Name? name;
@@ -29,11 +30,12 @@ class ClubProject {
 
   ClubProject.fromJson(Map<String, dynamic> json) {
     if (json['coins'] != null) {
-      var c = json['coins'] as List;
+      var c = json['coins'];
       if (c.isNotEmpty) {
         coins = [];
         for (var v in c) {
           coins!.add(v);
+          debugPrint('coins $coins');
         }
       }
     }

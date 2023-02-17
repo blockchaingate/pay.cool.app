@@ -136,6 +136,7 @@ Text customText(
     TextStyle style = bodyText1,
     double letterSpace = 0.0,
     FontWeight weight = FontWeight.normal,
+    bool isBold = false,
     bool isUnderline = false,
     TextAlign textAlign = TextAlign.start,
     Color color = black}) {
@@ -145,7 +146,7 @@ Text customText(
     style: style.copyWith(
         color: color,
         fontSize: isCustomFont ? size : style.fontSize,
-        fontWeight: weight,
+        fontWeight: isBold ? FontWeight.bold : weight,
         letterSpacing: letterSpace,
         decoration:
             isUnderline ? TextDecoration.underline : TextDecoration.none),

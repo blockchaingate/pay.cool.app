@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/constants/route_names.dart';
@@ -37,13 +38,13 @@ class _ClubPackageDetailsViewState extends State<ClubPackageDetailsView> {
     }
     debugPrint('projects length ${widget.projectDetails!.length}');
     return Scaffold(
-      // extendBodyBehindAppBar: true,
+      extendBodyBehindAppBar: true,
       appBar: customAppBarWithTitleNB(
-          FlutterI18n.translate(context, "selectPackageDetails")),
+          FlutterI18n.translate(context, "selectPackage")),
       body: Container(
-        margin: const EdgeInsets.only(bottom: 20),
         alignment: Alignment.center,
-        decoration: BoxDecoration(image: blurBackgroundImage()),
+        decoration: BoxDecoration(
+            image: imageBackground('assets/images/club/background-1.png')),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -63,6 +64,9 @@ class _ClubPackageDetailsViewState extends State<ClubPackageDetailsView> {
                     itemCount: widget.projectDetails!.length,
                     itemBuilder: (BuildContext context, int index) {
                       return Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(25.0),
+                        ),
                         margin: const EdgeInsets.symmetric(
                             horizontal: 15, vertical: 5),
                         color: secondaryColor,
@@ -75,26 +79,26 @@ class _ClubPackageDetailsViewState extends State<ClubPackageDetailsView> {
                                 "package": widget.projectDetails![index],
                                 'paymentCoin': selectedCoin[index]
                               }),
-                          leading: widget.projectDetails![index].image == null
-                              ? Container(
-                                  width: 30,
-                                  height: 30,
-                                  decoration: roundedBoxDecoration(),
-                                )
-                              : Container(
-                                  // decoration:
-                                  //     roundedBoxDecoration(color: secondaryColor),
-                                  // padding: const EdgeInsets.all(8),
-                                  child: CircleAvatar(
-                                      onBackgroundImageError:
-                                          ((exception, stackTrace) =>
-                                              const Placeholder(
-                                                color: primaryColor,
-                                              )),
-                                      backgroundImage: NetworkImage(
-                                        widget.projectDetails![index].image
-                                            .toString(),
-                                      ))),
+                          leading: Container(
+                              decoration: roundedBoxDecoration(
+                                  color: primaryColor.withAlpha(55)),
+                              padding: const EdgeInsets.all(8),
+                              child: SvgPicture.asset(
+                                  'assets/images/club/stake-icon.svg',
+                                  width: 24,
+                                  color:
+                                      widget.projectDetails![index].name!.en ==
+                                              'Package D'
+                                          ? const Color(0XFFEF639F)
+                                          : widget.projectDetails![index].name!
+                                                      .en ==
+                                                  'Package E'
+                                              ? const Color(0XFFF7A750)
+                                              : widget.projectDetails![index]
+                                                          .name!.en ==
+                                                      'Package M1'
+                                                  ? const Color(0XFF5EB190)
+                                                  : const Color(0XFF6C6AEB))),
                           title: Text(
                             storageService.language == 'en'
                                 ? widget.projectDetails![index].name!.en
@@ -176,41 +180,61 @@ class _ClubPackageDetailsViewState extends State<ClubPackageDetailsView> {
                             // width: 200,
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.end,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                DropdownButton(
-                                  elevation: 15,
-                                  underline: const SizedBox.shrink(),
-                                  value: selectedCoin[index],
-                                  onChanged: (newValue) {
-                                    setState(() {
-                                      selectedCoin[index] = newValue.toString();
-                                    });
-                                  },
-                                  items:
-                                      widget.projectDetails![index].coins!.map(
-                                    (coin) {
-                                      return DropdownMenuItem(
-                                        value: coin,
-                                        child: Container(
-                                          //   height: 40,
-                                          //  color: secondaryColor,
-                                          //  decoration:
-                                          padding:
-                                              const EdgeInsets.only(left: 10.0),
-                                          child: Text(coin.toString(),
-                                              textAlign: TextAlign.center,
-                                              style: headText5.copyWith(
-                                                  fontWeight: FontWeight.bold)),
-                                        ),
-                                      );
-                                    },
-                                  ).toList(),
+                                Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    DropdownButton(
+                                      isDense: true,
+                                      elevation: 15,
+                                      dropdownColor: primaryColor,
+                                      underline: const SizedBox.shrink(),
+                                      value: selectedCoin[index],
+                                      onChanged: (newValue) {
+                                        setState(() {
+                                          selectedCoin[index] =
+                                              newValue.toString();
+                                        });
+                                      },
+                                      icon: const Icon(
+                                        Icons.arrow_drop_down,
+                                        size: 18,
+                                        color: primaryColor,
+                                      ),
+                                      items: widget
+                                          .projectDetails![index].coins!
+                                          .map(
+                                        (coin) {
+                                          return DropdownMenuItem(
+                                            value: coin,
+                                            child: Text(coin.toString(),
+                                                textAlign: TextAlign.center,
+                                                style: headText5.copyWith(
+                                                    fontWeight:
+                                                        FontWeight.bold)),
+                                          );
+                                        },
+                                      ).toList(),
+                                    ),
+                                    customText(
+                                        text:
+                                            '\$${widget.projectDetails![index].joiningFee}',
+                                        style: headText6,
+                                        isBold: true)
+                                  ],
                                 ),
                                 UIHelper.horizontalSpaceMedium,
-                                const Icon(
-                                  Icons.arrow_forward_ios,
-                                  color: primaryColor,
+                                const Padding(
+                                  padding: EdgeInsets.only(top: 8.0),
+                                  child: Icon(
+                                    Icons.arrow_forward_ios,
+                                    color: black,
+                                    size: 16,
+                                  ),
                                 ),
                               ],
                             ),

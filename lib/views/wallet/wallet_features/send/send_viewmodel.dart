@@ -235,7 +235,7 @@ class SendViewModel extends BaseViewModel {
 
   pasteClipBoardData() async {
     setBusy(true);
-    ClipboardData? data = await Clipboard.getData(Clipboard.kTextPlain);
+    ClipboardData? data = await Clipboard.getData('text/plain');
     if (data != null) {
       log.i('paste data ${data.text}');
       receiverWalletAddressTextController.text = data.text!;
@@ -282,7 +282,7 @@ class SendViewModel extends BaseViewModel {
         String contractAddr =
             environment["addresses"]["smartContract"][tickerName];
 
-        if (contractAddr.isNotEmpty) {
+        if (contractAddr.isEmpty) {
           await tokenListDatabaseService
               .getByTickerName(tickerName)
               .then((token) {

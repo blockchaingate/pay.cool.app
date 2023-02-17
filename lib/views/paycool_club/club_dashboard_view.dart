@@ -168,7 +168,7 @@ class ClubDashboardView extends StatelessWidget {
                                                                 style: headText1
                                                                     .copyWith(
                                                                         color:
-                                                                            green),
+                                                                            black),
                                                               ),
                                                             ],
                                                           ),
@@ -191,24 +191,32 @@ class ClubDashboardView extends StatelessWidget {
                                                         // onTap: (() => model
                                                         //     .showJoinedProjectsPopup()),
                                                         horizontalTitleGap: 0,
-                                                        leading:
-                                                            model.isValidMember
+                                                        leading: model
+                                                                .isValidMember
+                                                            ? model.dashboardSummary
+                                                                        .status ==
+                                                                    1
                                                                 ? Image.asset(
-                                                                    'assets/images/club/member.png',
+                                                                    'assets/images/club/crown.png',
                                                                     width: 26,
                                                                   )
-                                                                : const Padding(
-                                                                    padding:
-                                                                        EdgeInsets.all(
+                                                                : Image.asset(
+                                                                    'assets/images/club/crown-vip-member.png',
+                                                                    width: 26,
+                                                                  )
+                                                            : const Padding(
+                                                                padding:
+                                                                    EdgeInsets
+                                                                        .all(
                                                                             8.0),
-                                                                    child: Icon(
-                                                                      FontAwesomeIcons
-                                                                          .user,
-                                                                      color:
-                                                                          primaryColor,
-                                                                      size: 18,
-                                                                    ),
-                                                                  ),
+                                                                child: Icon(
+                                                                  FontAwesomeIcons
+                                                                      .user,
+                                                                  color:
+                                                                      primaryColor,
+                                                                  size: 18,
+                                                                ),
+                                                              ),
                                                         title: Column(
                                                           crossAxisAlignment:
                                                               CrossAxisAlignment
@@ -230,7 +238,7 @@ class ClubDashboardView extends StatelessWidget {
                                                             ),
                                                             Text(
                                                               model
-                                                                  .assignMemberType(),
+                                                                  .assignPaycoolMemberType(),
                                                               style: headText4.copyWith(
                                                                   color:
                                                                       secondaryColor,
@@ -565,7 +573,8 @@ class ClubDashboardView extends StatelessWidget {
                                                         .horizontalSpaceSmall,
                                                     Text(
                                                       FlutterI18n.translate(
-                                                          context, "projects"),
+                                                          context,
+                                                          "lisOfPrograms"),
                                                       style: headText3.copyWith(
                                                         fontWeight:
                                                             FontWeight.bold,
@@ -613,7 +622,7 @@ class ClubDashboardView extends StatelessWidget {
                                                                 child: Text(
                                                                   model.storageService
                                                                               .language ==
-                                                                          'sc'
+                                                                          'zh'
                                                                       ? summary
                                                                           .project!
                                                                           .sc
@@ -628,17 +637,56 @@ class ClubDashboardView extends StatelessWidget {
                                                                               .bold),
                                                                 ),
                                                               ),
-                                                              // subtitle:
-                                                              //     Container(
-                                                              //   child: customText(
-                                                              //       text:
-                                                              //           'Exipration text',
-                                                              //       color: red,
-                                                              //       isCustomFont:
-                                                              //           true,
-                                                              //       style:
-                                                              //           bodyText1),
-                                                              // ),
+                                                              subtitle:
+                                                                  Container(
+                                                                margin: EdgeInsets.only(
+                                                                    top: model
+                                                                            .isShowExpiredWarning
+                                                                        ? 20
+                                                                        : 0),
+                                                                child: model.showExpiredProjectWarning(summary
+                                                                            .expiredAt
+                                                                            .toString()) &&
+                                                                        model
+                                                                            .isShowExpiredWarning &&
+                                                                        !model.busy(
+                                                                            model.isShowExpiredWarning)
+                                                                    ? Stack(
+                                                                        clipBehavior:
+                                                                            Clip.none,
+                                                                        children: [
+                                                                          Positioned(
+                                                                            top:
+                                                                                -20,
+                                                                            right:
+                                                                                2,
+                                                                            child:
+                                                                                IconButton(
+                                                                              icon: const Icon(
+                                                                                Icons.cancel,
+                                                                                size: 18,
+                                                                              ),
+                                                                              color: red,
+                                                                              onPressed: () {
+                                                                                model.removeWarning();
+                                                                              },
+                                                                            ),
+                                                                          ),
+                                                                          Container(
+                                                                            width:
+                                                                                230,
+                                                                            padding:
+                                                                                const EdgeInsets.symmetric(horizontal: 2, vertical: 3),
+                                                                            child: customText(
+                                                                                text: model.storageService.language == 'sc' ? '您的 ${summary.project!.sc} 项目质押将在  ${model.expiredProjectInDays(summary.expiredAt.toString()).toString()} 天后到期, 您可以通过购买月费或年费来续订' : 'Your ${summary.project!.en} project staking is expiring in ${model.expiredProjectInDays(summary.expiredAt.toString()).toString()} days, you can renew it by stacking monthly or annually',
+                                                                                color: red,
+                                                                                isCustomFont: true,
+                                                                                style: bodyText1),
+                                                                          ),
+                                                                        ],
+                                                                      )
+                                                                    : Container(),
+                                                              ),
                                                               trailing: Row(
                                                                 mainAxisSize:
                                                                     MainAxisSize

@@ -77,26 +77,39 @@ class ClubRewardsView extends StatelessWidget {
                           ),
                       itemBuilder: (BuildContext context, int index) {
                         String memberType() {
-                          if (clubRewardsArgs.summary[index].status == 0) {
-                            return FlutterI18n.translate(context, "noPartner");
-                          } else if (clubRewardsArgs.summary[index].status ==
-                              1) {
-                            return FlutterI18n.translate(
-                                context, "basicPartner");
-                          } else if (clubRewardsArgs.summary[index].status ==
-                              2) {
-                            return FlutterI18n.translate(
-                                context, "juniorPartner");
-                          } else if (clubRewardsArgs.summary[index].status ==
-                              3) {
-                            return FlutterI18n.translate(
-                                context, "seniorPartner");
-                          } else if (clubRewardsArgs.summary[index].status ==
-                              4) {
-                            return FlutterI18n.translate(
-                                context, "executivePartner");
+                          if (clubRewardsArgs.summary.first.project!.en ==
+                              'Paycool') {
+                            if (clubRewardsArgs.summary.first.status == 1) {
+                              return FlutterI18n.translate(
+                                  context, "basicMember");
+                            } else {
+                              return FlutterI18n.translate(
+                                  context, "vipMember");
+                            }
                           } else {
-                            return FlutterI18n.translate(context, "noPartner");
+                            if (clubRewardsArgs.summary[index].status == 0) {
+                              return FlutterI18n.translate(
+                                  context, "noPartner");
+                            } else if (clubRewardsArgs.summary[index].status ==
+                                1) {
+                              return FlutterI18n.translate(
+                                  context, "basicPartner");
+                            } else if (clubRewardsArgs.summary[index].status ==
+                                2) {
+                              return FlutterI18n.translate(
+                                  context, "juniorPartner");
+                            } else if (clubRewardsArgs.summary[index].status ==
+                                3) {
+                              return FlutterI18n.translate(
+                                  context, "seniorPartner");
+                            } else if (clubRewardsArgs.summary[index].status ==
+                                4) {
+                              return FlutterI18n.translate(
+                                  context, "executivePartner");
+                            } else {
+                              return FlutterI18n.translate(
+                                  context, "noPartner");
+                            }
                           }
                         }
 

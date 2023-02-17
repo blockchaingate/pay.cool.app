@@ -578,8 +578,6 @@ class ClubDashboardView extends StatelessWidget {
                                                               colorTwo:
                                                                   primaryColor),
                                                       child: ListTile(
-                                                        onTap: (() => model
-                                                            .showJoinedProjectsPopup()),
                                                         horizontalTitleGap: 0,
                                                         leading:
                                                             model.isValidMember
@@ -620,7 +618,7 @@ class ClubDashboardView extends StatelessWidget {
                                                             ),
                                                             Text(
                                                               model
-                                                                  .assignMemberType(),
+                                                                  .assignPaycoolMemberType(),
                                                               style: headText4.copyWith(
                                                                   color:
                                                                       secondaryColor,

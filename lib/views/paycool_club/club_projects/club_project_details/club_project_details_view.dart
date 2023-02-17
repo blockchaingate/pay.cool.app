@@ -8,7 +8,6 @@ import 'package:paycool/constants/route_names.dart';
 import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/views/paycool_club/club_dashboard_model.dart';
 import 'package:paycool/views/paycool_club/club_projects/club_project_details/club_project_details_viemodel.dart';
-import 'package:paycool/views/paycool_club/club_projects/models/club_project_model.dart';
 import 'package:paycool/views/paycool_club/purchased_package_history/purchased_package_history_view.dart';
 import 'package:paycool/views/paycool_club/referral/referral_model.dart';
 import 'package:stacked/stacked.dart';
@@ -60,7 +59,7 @@ class ClubProjectDetailsView extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        viewmodel.storageService.language == 'sc'
+                        viewmodel.storageService.language == 'zh'
                             ? summary.project!.sc.toString()
                             : summary.project!.en.toString(),
                         style: headText1,
@@ -72,7 +71,7 @@ class ClubProjectDetailsView extends StatelessWidget {
                               null
                           ? Container()
                           : Text(
-                              viewmodel.storageService.language == 'sc'
+                              viewmodel.storageService.language == 'zh'
                                   ? viewmodel
                                       .selectedProject(
                                           summary.project!.id.toString())!
@@ -150,9 +149,9 @@ class ClubProjectDetailsView extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          Image.asset(
-                            'assets/images/club/crown.png',
-                            width: 25,
+                          SvgPicture.asset(
+                            'assets/images/club/crown-${summary.status}.svg',
+                            width: 50,
                           ),
                           UIHelper.horizontalSpaceSmall,
                           customText(

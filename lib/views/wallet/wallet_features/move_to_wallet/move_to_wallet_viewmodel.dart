@@ -791,7 +791,7 @@ class MoveToWalletViewmodel extends BaseViewModel {
       log.i('setWithdrawLimit coin type $ct');
     });
     await tokenListDatabaseService.getByCointype(ct).then((res) async {
-      if (res?.feeWithdraw! != null) {
+      if (res?.feeWithdraw! != null && res?.feeWithdraw! != "null") {
         token = res!;
         if (_groupValue == 'ETH') ercChainToken = token;
         if (_groupValue == 'TRX' || _groupValue == 'FAB') {

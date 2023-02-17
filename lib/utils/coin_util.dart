@@ -94,9 +94,9 @@ Future signHashKanbanMessage(Uint8List seed, Uint8List hash) async {
   debugPrint('chainIdV=$chainIdV');
   signature = web3_dart.MsgSignature(signature.r, signature.s, chainIdV);
 
-  final r = _padTo32(web3_dart.intToBytes(signature.r));
-  final s = _padTo32(web3_dart.intToBytes(signature.s));
-  final v = web3_dart.intToBytes(BigInt.from(signature.v));
+  final r = _padTo32(NumberUtil.encodeBigIntV1(signature.r));
+  final s = _padTo32(NumberUtil.encodeBigIntV1(signature.s));
+  final v = NumberUtil.encodeBigIntV1(BigInt.from(signature.v));
   final hexr = web3_dart.bytesToHex(r.toList(), include0x: true);
   final hexs = web3_dart.bytesToHex(s.toList(), include0x: true);
   final hexv = web3_dart.bytesToHex(v, include0x: true);
@@ -181,9 +181,9 @@ Future<Uint8List> signKanbanMessage(
   debugPrint('chainIdV=$chainIdV');
   signature = web3_dart.MsgSignature(signature.r, signature.s, chainIdV);
 
-  final r = _padTo32(web3_dart.intToBytes(signature.r));
-  final s = _padTo32(web3_dart.intToBytes(signature.s));
-  final v = web3_dart.intToBytes(BigInt.from(signature.v));
+  final r = _padTo32(NumberUtil.encodeBigIntV1(signature.r));
+  final s = _padTo32(NumberUtil.encodeBigIntV1(signature.s));
+  final v = NumberUtil.encodeBigIntV1(BigInt.from(signature.v));
 
   return uint8ListFromList(r + s + v);
   // return credential.sign(concat, chainId: chainId);
@@ -241,9 +241,9 @@ signTrxMessage(
 
   signature = web3_dart.MsgSignature(signature.r, signature.s, chainIdV);
 
-  final r = _padTo32(web3_dart.intToBytes(signature.r));
-  final s = _padTo32(web3_dart.intToBytes(signature.s));
-  var v = web3_dart.intToBytes(BigInt.from(signature.v));
+  final r = _padTo32(NumberUtil.encodeBigIntV1(signature.r));
+  final s = _padTo32(NumberUtil.encodeBigIntV1(signature.s));
+  var v = NumberUtil.encodeBigIntV1(BigInt.from(signature.v));
 
   var rsv = r + s + v;
   debugPrint('rsv  $rsv');
@@ -275,9 +275,9 @@ List<Uint8List> signTrxTx(
   //debugPrint('chainIdVchainIdVchainIdV==' + chainIdV.toString());
   //debugPrint('signature.v====');
   //debugPrint(signature.v);
-  final r = _padTo32(web3_dart.intToBytes(signature.r));
-  final s = _padTo32(web3_dart.intToBytes(signature.s));
-  var v = web3_dart.intToBytes(BigInt.from(signature.v));
+  final r = _padTo32(NumberUtil.encodeBigIntV1(signature.r));
+  final s = _padTo32(NumberUtil.encodeBigIntV1(signature.s));
+  var v = NumberUtil.encodeBigIntV1(BigInt.from(signature.v));
 
   if (signature.v == 0) {
     v = Uint8List.fromList([0].toList());
@@ -442,7 +442,7 @@ Uint8List uint8ListFromList(List<int> data) {
 ECPoint? _decompressKey(BigInt xBN, bool yBit, ECCurve c) {
   List<int> x9IntegerToBytes(BigInt s, int qLength) {
     //https://github.com/bcgit/bc-java/blob/master/core/src/main/java/org/bouncycastle/asn1/x9/X9IntegerConverter.java#L45
-    final bytes = web3_dart.intToBytes(s);
+    final bytes = NumberUtil.encodeBigIntV1(s);
 
     if (qLength < bytes.length) {
       return bytes.sublist(0, bytes.length - qLength);
@@ -499,9 +499,9 @@ Future<Uint8List> signBtcMessageWith(originalMessage, Uint8List privateKey,
   //debugPrint('chainIdVchainIdVchainIdV==' + chainIdV.toString());
   //debugPrint('signature.v====');
   //debugPrint(signature.v);
-  final r = _padTo32(web3_dart.intToBytes(signature.r));
-  final s = _padTo32(web3_dart.intToBytes(signature.s));
-  var v = web3_dart.intToBytes(BigInt.from(signature.v));
+  final r = _padTo32(NumberUtil.encodeBigIntV1(signature.r));
+  final s = _padTo32(NumberUtil.encodeBigIntV1(signature.s));
+  var v = NumberUtil.encodeBigIntV1(BigInt.from(signature.v));
 
   if (signature.v == 0) {
     v = Uint8List.fromList([0].toList());
@@ -538,9 +538,9 @@ Future<Uint8List> signDogeMessageWith(originalMessage, Uint8List privateKey,
   //debugPrint('chainIdVchainIdVchainIdV==' + chainIdV.toString());
   //debugPrint('signature.v====');
   //debugPrint(signature.v);
-  final r = _padTo32(web3_dart.intToBytes(signature.r));
-  final s = _padTo32(web3_dart.intToBytes(signature.s));
-  var v = web3_dart.intToBytes(BigInt.from(signature.v));
+  final r = _padTo32(NumberUtil.encodeBigIntV1(signature.r));
+  final s = _padTo32(NumberUtil.encodeBigIntV1(signature.s));
+  var v = NumberUtil.encodeBigIntV1(BigInt.from(signature.v));
 
   if (signature.v == 0) {
     v = Uint8List.fromList([0].toList());
@@ -578,9 +578,9 @@ Future<Uint8List> signPersonalMessageWith(
   debugPrint('chainIdV=$chainIdV');
   signature = web3_dart.MsgSignature(signature.r, signature.s, chainIdV);
 
-  final r = _padTo32(web3_dart.intToBytes(signature.r));
-  final s = _padTo32(web3_dart.intToBytes(signature.s));
-  final v = web3_dart.intToBytes(BigInt.from(signature.v));
+  final r = _padTo32(NumberUtil.encodeBigIntV1(signature.r));
+  final s = _padTo32(NumberUtil.encodeBigIntV1(signature.s));
+  final v = NumberUtil.encodeBigIntV1(BigInt.from(signature.v));
 
   // https://github.com/ethereumjs/ethereumjs-util/blob/8ffe697fafb33cefc7b7ec01c11e3a7da787fe0e/src/signature.ts#L63
   return uint8ListFromList(r + s + v);

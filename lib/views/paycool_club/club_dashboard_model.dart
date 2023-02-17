@@ -119,23 +119,24 @@ class Summary {
       this.status,
       this.expiredAt});
 
-  // int expiredProjectInDays() {
-  //   var expiredDate = DateTime.parse(formatStringDateV3(expiredAt));
-  //   var diff = expiredDate.difference(DateTime.now());
-  //   return diff.inDays;
-  // }
+  int expiredProjectInDays() {
+    var expiredDate = DateTime.parse(formatStringDateV3(expiredAt.toString()));
+    var diff = expiredDate.difference(DateTime.now());
+    return diff.inDays;
+  }
 
-  // bool showExpiredProjectWarning() {
-  //   bool res = false;
-  //   if (expiredAt != null && expiredAt.isNotEmpty) {
-  //     if (expiredProjectInDays() < 30) {
-  //       res = true;
-  //     } else {
-  //       res = false;
-  //     }
-  //   }
-  //   return res;
-  // }
+// 2025-01-20T16:44:40.663Z
+  bool showExpiredProjectWarning() {
+    bool res = false;
+    if (expiredAt != null && expiredAt!.isNotEmpty) {
+      if (expiredProjectInDays() < 30) {
+        res = true;
+      } else {
+        res = false;
+      }
+    }
+    return res;
+  }
 
   Summary.fromJson(Map<String, dynamic> json) {
     var ea;

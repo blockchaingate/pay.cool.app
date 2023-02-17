@@ -8,6 +8,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:paycool/constants/constants.dart';
 import 'package:paycool/utils/number_util.dart';
+import 'package:paycool/utils/string_util.dart';
 import 'package:paycool/views/paycool_club/club_dashboard_model.dart';
 import 'package:paycool/views/paycool_club/club_projects/models/club_project_model.dart';
 
@@ -92,6 +93,7 @@ class ClubDashboardViewModel extends BaseViewModel {
   Map<String, Decimal> rewardTokenPriceMap = {};
   Decimal totatRewardDollarVal = Constants.decimalZero;
   Decimal totalPaycoolRewardDollarVal = Constants.decimalZero;
+  bool isShowExpiredWarning = false;
 
   void init() async {
     setBusy(true);
@@ -145,6 +147,47 @@ class ClubDashboardViewModel extends BaseViewModel {
     setBusy(false);
   } // init ends
 
+  // project expiry status
+  int expiredProjectInDays(String date) {
+    var expiredDate = DateTime.parse(date);
+    var diff = expiredDate.difference(DateTime.now());
+    return diff.inDays;
+  }
+
+// 2025-01-20T16:44:40.663Z
+  bool showExpiredProjectWarning(String date) {
+    bool res = false;
+    if (date.isNotEmpty) {
+      if (expiredProjectInDays(date) < 30) {
+        res = true;
+        isShowExpiredWarning = true;
+      } else {
+        res = false;
+        isShowExpiredWarning = false;
+      }
+    }
+
+    return res;
+  }
+
+  removeWarning() {
+    setBusyForObject(true, isShowExpiredWarning);
+    isShowExpiredWarning = false;
+    setBusyForObject(false, isShowExpiredWarning);
+  }
+
+  List<Summary> numberOfProjectNotJoined() {
+    List<Summary> notJoinedProjects = [];
+    for (var su in dashboardSummary.summary!) {
+      // if user has not joined the project and project is not pay.cool
+      if (su.status == 0 && su.project!.en != 'Paycool') {
+        // then add that project to the unjoined project list
+        notJoinedProjects.add(su);
+      }
+    }
+    return notJoinedProjects;
+  }
+
   showProjectList() {
     showDialog(
         context: context!,
@@ -157,11 +200,14 @@ class ClubDashboardViewModel extends BaseViewModel {
               children: [
                 Expanded(
                   child: Container(
-                    padding: EdgeInsets.all(5),
-                    color: grey.withAlpha(125),
+                    padding: const EdgeInsets.all(5),
+                    // color: grey.withAlpha(125),
                     child: customText(
                       textAlign: TextAlign.center,
-                      text: FlutterI18n.translate(context, "projects"),
+                      text: numberOfProjectNotJoined().isNotEmpty
+                          ? FlutterI18n.translate(context, "lisOfPrograms")
+                          : FlutterI18n.translate(
+                              context, "currentlyNoOtherPrograms"),
                       style: headText3.copyWith(color: black),
                     ),
                   ),
@@ -176,7 +222,9 @@ class ClubDashboardViewModel extends BaseViewModel {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       for (var i = 0; i < dashboardSummary.summary!.length; i++)
-                        dashboardSummary.summary![i].status == 0
+                        dashboardSummary.summary![i].status == 0 &&
+                                dashboardSummary.summary![i].project!.en !=
+                                    'Paycool'
                             ? Padding(
                                 padding: const EdgeInsets.all(4.0),
                                 child: Row(
@@ -185,6 +233,7 @@ class ClubDashboardViewModel extends BaseViewModel {
                                       '${storageService.language == "en" ? dashboardSummary.summary![i].project!.en : dashboardSummary.summary![i].project!.sc}  ',
                                       textAlign: TextAlign.start,
                                       style: headText5.copyWith(
+                                          color: black,
                                           fontWeight: FontWeight.w500),
                                     ),
                                     // Flexible(
@@ -897,20 +946,14 @@ class ClubDashboardViewModel extends BaseViewModel {
     // setBusy(false);
   }
 
-  String assignMemberType({int? status}) {
+  String assignPaycoolMemberType({int? status}) {
     var condition = status ?? dashboardSummary.status;
     if (condition == 0) {
       return FlutterI18n.translate(context!, "noPartner");
     } else if (condition == 1) {
-      return FlutterI18n.translate(context!, "basicPartner");
-    } else if (condition == 2) {
-      return FlutterI18n.translate(context!, "juniorPartner");
-    } else if (condition == 3) {
-      return FlutterI18n.translate(context!, "seniorPartner");
-    } else if (condition == 4) {
-      return FlutterI18n.translate(context!, "executivePartner");
+      return FlutterI18n.translate(context!, "basicMember");
     } else {
-      return FlutterI18n.translate(context!, "noPartner");
+      return FlutterI18n.translate(context!, "vipMember");
     }
   }
 
@@ -929,7 +972,7 @@ class ClubDashboardViewModel extends BaseViewModel {
         .getDashboardSummary(fabAddress)
         .then((dashboardDetails) async {
       dashboardSummary = dashboardDetails!;
-      assignMemberType();
+      assignPaycoolMemberType();
     });
     fillJoinedProjects();
     setBusy(false);

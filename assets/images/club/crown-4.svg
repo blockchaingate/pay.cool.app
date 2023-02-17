@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1080" height="1080" viewBox="0 0 1080 1080">
+  <defs>
+    <filter id="Executive_Partner" x="297.134" y="673.665" width="504" height="95" filterUnits="userSpaceOnUse">
+      <feOffset dy="3" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feFlood flood-opacity="0.161"/>
+      <feComposite operator="in" in2="blur"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+    <clipPath id="clip-自定义大小_9">
+      <rect width="1080" height="1080"/>
+    </clipPath>
+  </defs>
+  <g id="自定义大小_9" data-name="自定义大小 – 9" clip-path="url(#clip-自定义大小_9)">
+    <rect width="1080" height="1080" fill="#fff"/>
+    <g id="组_79" data-name="组 79" transform="translate(330.679 330.206)">
+      <g id="组_64" data-name="组 64" transform="translate(0 0)">
+        <path id="路径_157" data-name="路径 157" d="M234.565,57.184l-65.144,72.382L83.635,78.094H48.975L93.32,280.3a15.829,15.829,0,0,0,15.828,15.828H425.712A15.828,15.828,0,0,0,441.54,280.3l44.345-202.2H451.226l-85.787,51.471L300.3,57.183H234.565Z" transform="translate(-48.975 -57.183)" fill="#fff68e"/>
+      </g>
+      <g id="组_65" data-name="组 65" transform="translate(218.455 0)">
+        <path id="路径_158" data-name="路径 158" d="M439.8,78.094l-85.787,51.471L288.866,57.183H256V296.126H414.282A15.829,15.829,0,0,0,430.11,280.3l44.345-202.2Z" transform="translate(-256 -57.183)" fill="#ffcd00"/>
+      </g>
+      <path id="路径_159" data-name="路径 159" d="M91,268.625H439.22v92.2H91Z" transform="translate(-46.655 -45.509)" fill="#ffcd00"/>
+      <path id="路径_160" data-name="路径 160" d="M256,268.625H430.11v92.2H256Z" transform="translate(-37.545 -45.509)" fill="#ff9f00"/>
+    </g>
+    <circle id="椭圆_15" data-name="椭圆 15" cx="15.813" cy="15.813" r="15.813" transform="translate(533.973 471.12)" fill="#9f9df3"/>
+    <path id="路径_176" data-name="路径 176" d="M271.828,205.828A15.828,15.828,0,0,0,256,190v31.656A15.828,15.828,0,0,0,271.828,205.828Z" transform="translate(293.134 281.356)" fill="#6c6aeb"/>
+    <circle id="椭圆_16" data-name="椭圆 16" cx="15.813" cy="15.813" r="15.813" transform="translate(470.721 471.12)" fill="#b8bcff"/>
+    <circle id="椭圆_17" data-name="椭圆 17" cx="15.813" cy="15.813" r="15.813" transform="translate(597.224 471.12)" fill="#6c6aeb"/>
+    <path id="路径_177" data-name="路径 177" d="M492.784,521.938H47.485A47.538,47.538,0,0,1,0,474.454V379.485A47.538,47.538,0,0,1,47.485,332h445.3a47.538,47.538,0,0,1,47.485,47.484v94.969A47.538,47.538,0,0,1,492.784,521.938Z" transform="translate(279 288.196)" fill="#b8bcff"/>
+    <path id="路径_178" data-name="路径 178" d="M478.65,332H256V521.938H478.65a47.538,47.538,0,0,0,47.485-47.484V379.485A47.538,47.538,0,0,0,478.65,332Z" transform="translate(293.134 288.196)" fill="#6c6aeb"/>
+    <g id="组_80" data-name="组 80" transform="translate(501.65 269.866)">
+      <path id="路径_164" data-name="路径 164" d="M258.485,94.969a47.485,47.485,0,1,1,47.484-47.485A47.538,47.538,0,0,1,258.485,94.969Z" transform="translate(-211)" fill="#ffcd00"/>
+    </g>
+    <path id="路径_179" data-name="路径 179" d="M303.485,47.485A47.538,47.538,0,0,0,256,0V94.969A47.538,47.538,0,0,0,303.485,47.485Z" transform="translate(293.134 269.866)" fill="#ff9f00"/>
+    <g id="组_81" data-name="组 81" transform="translate(702.14 312.074)">
+      <path id="路径_166" data-name="路径 166" d="M448.485,134.969a47.485,47.485,0,1,1,47.484-47.485A47.538,47.538,0,0,1,448.485,134.969Z" transform="translate(-401 -40)" fill="#ff9f00"/>
+    </g>
+    <g id="组_82" data-name="组 82" transform="translate(301.159 312.074)">
+      <path id="路径_167" data-name="路径 167" d="M68.485,134.969a47.485,47.485,0,1,1,47.485-47.485A47.538,47.538,0,0,1,68.485,134.969Z" transform="translate(-21 -40)" fill="#ffcd00"/>
+    </g>
+    <g transform="matrix(1, 0, 0, 1, 0, 0)" filter="url(#Executive_Partner)">
+      <text id="Executive_Partner-2" data-name="Executive Partner" transform="translate(549.13 737.67)" fill="#fff" font-size="55" font-family="Poppins-SemiBold, Poppins" font-weight="600"><tspan x="-242.88" y="0">Executive Partner</tspan></text>
+    </g>
+  </g>
+</svg>

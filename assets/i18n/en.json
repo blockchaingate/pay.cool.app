@@ -505,6 +505,8 @@
     "otherPrograms":"Other Programs",
     "selectPackage": "Select Package",
     "override": "Override",
-    "sales": "Sales"
+    "sales": "Sales",
+    "lisOfPrograms": "Programs",
+    "currentlyNoOtherPrograms": "Currently no other programs "
 
 }

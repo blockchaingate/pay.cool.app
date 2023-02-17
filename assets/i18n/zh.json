@@ -502,7 +502,8 @@
     "otherPrograms":"其他项目",
     "selectPackage": "选择套装",
     "override": "覆盖",
-    "sales": "销售额"
-
+    "sales": "销售额",
+    "lisOfPrograms": "项目列表",
+    "currentlyNoOtherPrograms": "暂无其他项目"
 
 }
