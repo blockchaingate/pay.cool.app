@@ -312,7 +312,7 @@ class SettingsViewmodel extends BaseViewModel with StoppableService {
     setBusy(true);
     isShowPaycool = storageService.showPaycool;
     setBusy(false);
-    log.w('setShowPaycool: ' + storageService.showPaycool.toString());
+    log.w('setShowPaycool: ${storageService.showPaycool}');
     navigationService.navigateUsingpopAndPushedNamed(SettingViewRoute);
   }
 
@@ -323,8 +323,7 @@ class SettingsViewmodel extends BaseViewModel with StoppableService {
     setBusy(true);
     isAutoStartPaycoolScan = storageService.autoStartPaycoolScan;
     setBusy(false);
-    log.w('setautoStartPaycoolScan: ' +
-        storageService.autoStartPaycoolScan.toString());
+    log.w('setautoStartPaycoolScan: ${storageService.autoStartPaycoolScan}');
     navigationService.navigateUsingpopAndPushedNamed(SettingViewRoute);
   }
 
@@ -335,7 +334,7 @@ class SettingsViewmodel extends BaseViewModel with StoppableService {
     setBusy(true);
     isShowPaycoolClub = storageService.showPaycoolClub;
     setBusy(false);
-    log.w('setShowPaycoolWallet: ' + storageService.showPaycoolClub.toString());
+    log.w('setShowPaycoolWallet: ${storageService.showPaycoolClub}');
     navigationService.navigateUsingPushReplacementNamed(SettingViewRoute);
   }
 

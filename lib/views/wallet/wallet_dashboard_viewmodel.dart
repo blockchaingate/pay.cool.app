@@ -672,7 +672,7 @@ class WalletDashboardViewModel extends BaseViewModel {
                           contentTextStyle: const TextStyle(color: grey),
                           contentPadding:
                               const EdgeInsets.symmetric(horizontal: 10),
-                          backgroundColor: secondaryColor.withOpacity(0.95),
+                          backgroundColor: secondaryColor,
                           title: Text(
                             FlutterI18n.translate(
                                 context, "freeGasQuestionNote"),
@@ -691,8 +691,12 @@ class WalletDashboardViewModel extends BaseViewModel {
                                 style: const TextStyle(color: black),
                                 controller: freeFabAnswerTextController,
                                 obscureText: false,
-                                decoration: const InputDecoration(
-                                  focusedBorder: const UnderlineInputBorder(
+                                decoration: InputDecoration(
+                                  enabledBorder: UnderlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      borderSide: const BorderSide(
+                                          color: grey, width: 1)),
+                                  focusedBorder: UnderlineInputBorder(
                                       borderSide:
                                           BorderSide(color: primaryColor)),
                                   icon: Icon(
@@ -727,8 +731,8 @@ class WalletDashboardViewModel extends BaseViewModel {
                                             child: Text(
                                               FlutterI18n.translate(
                                                   context, "close"),
-                                              style:
-                                                  const TextStyle(fontSize: 12),
+                                              style: const TextStyle(
+                                                  fontSize: 12, color: black),
                                             ),
                                           ),
                                           onPressed: () {

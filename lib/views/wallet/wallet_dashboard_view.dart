@@ -331,11 +331,11 @@ class WalletDashboardView extends StatelessWidget {
                         : Container(
                             margin: const EdgeInsets.symmetric(vertical: 8.0),
                             decoration: BoxDecoration(
-                                color: secondaryColor,
+                                color: primaryColor,
                                 borderRadius: BorderRadius.circular(30)),
                             child: SizedBox(
                               width: 120,
-                              height: 20,
+                              height: 22,
                               child: OutlinedButton.icon(
                                   style: ButtonStyle(
                                       padding: MaterialStateProperty.all(
@@ -344,12 +344,12 @@ class WalletDashboardView extends StatelessWidget {
                                   icon: const Icon(
                                     Icons.add,
                                     size: 14,
-                                    color: primaryColor,
+                                    color: white,
                                   ),
                                   label: Text(
-                                    FlutterI18n.translate(context, "getFree") +
-                                        ' FAB',
+                                    '${FlutterI18n.translate(context, "getFree")} FAB',
                                     style: headText5.copyWith(
+                                        color: secondaryColor,
                                         fontWeight: FontWeight.w400),
                                   )),
                             )),

@@ -73,7 +73,8 @@ class ClubDashboardViewModel extends BaseViewModel {
   TextEditingController refereeReferralCode = TextEditingController();
   bool isEnoughDusdWalletBalance = true;
   bool isValidMember = false;
-  GlobalKey globalKey = GlobalKey();
+  GlobalKey globalKey = GlobalKey(debugLabel: 'showBarcode');
+  // GlobalKey globalKey2 = GlobalKey(debugLabel: 'lightening');
   ClubDashboard dashboardSummary = ClubDashboard();
   JoinClubPaymentModel scanToPayModel = JoinClubPaymentModel();
   bool isValidClubReferralCode = false;
@@ -115,33 +116,35 @@ class ClubDashboardViewModel extends BaseViewModel {
     if (gasAmount == 0.0) await checkFreeFabForNewWallet();
 
     // total rewards calc
-    for (var summary in dashboardSummary.summary!) {
-      for (var reward in summary.totalReward!) {
-        if (reward.coin != null) {
-          try {
-            // reward token price
-            var rtp = await clubService.getPriceOfRewardToken(reward.coin!);
-            if (summary.project!.en == 'Paycool') {
-              totalPaycoolRewardDollarVal = NumberUtil.decimalLimiter(
+    if (isValidMember)
+      // ignore: curly_braces_in_flow_control_structures
+      for (var summary in dashboardSummary.summary!) {
+        for (var reward in summary.totalReward!) {
+          if (reward.coin != null) {
+            try {
+              // reward token price
+              var rtp = await clubService.getPriceOfRewardToken(reward.coin!);
+              if (summary.project!.en == 'Paycool') {
+                totalPaycoolRewardDollarVal = NumberUtil.decimalLimiter(
+                    reward.amount! * rtp,
+                    decimalPrecision: 8);
+              }
+              if (reward.coin == "FETDUSD-LP" || reward.coin == "UnknownCoin") {
+                reward.amount =
+                    NumberUtil.rawStringToDecimal(reward.amount.toString());
+              }
+              totatRewardDollarVal += NumberUtil.decimalLimiter(
                   reward.amount! * rtp,
-                  decimalPrecision: 8);
-            }
-            if (reward.coin == "FETDUSD-LP" || reward.coin == "UnknownCoin") {
-              reward.amount =
-                  NumberUtil.rawStringToDecimal(reward.amount.toString());
-            }
-            totatRewardDollarVal += NumberUtil.decimalLimiter(
-                reward.amount! * rtp,
-                decimalPrecision: 2);
+                  decimalPrecision: 2);
 
-            rewardTokenPriceMap.addAll({reward.coin!: rtp});
-          } catch (err) {
-            log.e(
-                'CATCH getPriceOfRewardToken getting price for ${reward.coin}');
+              rewardTokenPriceMap.addAll({reward.coin!: rtp});
+            } catch (err) {
+              log.e(
+                  'CATCH getPriceOfRewardToken getting price for ${reward.coin}');
+            }
           }
         }
       }
-    }
     log.e(
         'rewardTokenPriceMap ${rewardTokenPriceMap} --totatRewardDollarVal $totatRewardDollarVal ');
 
@@ -597,315 +600,6 @@ class ClubDashboardViewModel extends BaseViewModel {
     });
   }
 
-/*----------------------------------------------------------------------
-                      Show LightningRemit barcode
-----------------------------------------------------------------------*/
-  showLightningRemitBarcode() async {
-    await walletDatabaseService.getWalletBytickerName('FAB').then((coin) {
-      String kbAddress = walletService.toKbPaymentAddress(coin!.address!);
-      debugPrint('KBADDRESS $kbAddress');
-      showDialog(
-        context: context!,
-        builder: (BuildContext context) {
-          return Platform.isIOS
-              ? CupertinoAlertDialog(
-                  title: Container(
-                    child: Center(
-                        child: Text(
-                            FlutterI18n.translate(context, "receiveAddress"))),
-                  ),
-                  content: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          UIHelper.horizontalSpaceSmall,
-                          Expanded(
-                            child: Text(
-                                // add here cupertino widget to check in these small widgets first then the entire app
-                                kbAddress,
-                                textAlign: TextAlign.left,
-                                style: headText6),
-                          ),
-                          CupertinoButton(
-                              child: const Icon(
-                                FontAwesomeIcons.copy,
-                                //  CupertinoIcons.,
-                                color: primaryColor,
-                                size: 16,
-                              ),
-                              onPressed: () {
-                                sharedService.copyAddress(context, kbAddress)();
-                              })
-                        ],
-                      ),
-                      // UIHelper.verticalSpaceLarge,
-                      Container(
-                          margin: const EdgeInsets.only(top: 10.0),
-                          width: 250,
-                          height: 250,
-                          child: Center(
-                            child: Container(
-                              child: RepaintBoundary(
-                                key: globalKey,
-                                child: QrImage(
-                                    backgroundColor: white,
-                                    data: kbAddress,
-                                    version: QrVersions.auto,
-                                    size: 300,
-                                    gapless: true,
-                                    errorStateBuilder: (context, err) {
-                                      return Container(
-                                        child: Center(
-                                          child: Text(
-                                              FlutterI18n.translate(context,
-                                                  "somethingWentWrong"),
-                                              textAlign: TextAlign.center),
-                                        ),
-                                      );
-                                    }),
-                              ),
-                            ),
-                          )),
-                    ],
-                  ),
-                  actions: <Widget>[
-                    // QR image share button
-                    Container(
-                      margin: const EdgeInsets.all(5),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          CupertinoButton(
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(4)),
-                              child: Center(
-                                  child: Text(
-                                FlutterI18n.translate(context, "share"),
-                                style: headText5.copyWith(color: primaryColor),
-                              )),
-                              onPressed: () {
-                                String receiveFileName =
-                                    'Lightning-remit-kanban-receive-address.png';
-                                getApplicationDocumentsDirectory().then((dir) {
-                                  String filePath =
-                                      "${dir.path}/$receiveFileName";
-                                  File file = File(filePath);
-                                  Future.delayed(
-                                      const Duration(milliseconds: 30), () {
-                                    sharedService
-                                        .capturePng(globalKey: globalKey)
-                                        .then((byteData) {
-                                      file
-                                          .writeAsBytes(byteData!.toList())
-                                          .then((onFile) {
-                                        Share.shareFiles([onFile.path],
-                                            text: kbAddress);
-                                      });
-                                    });
-                                  });
-                                });
-                              }),
-                          CupertinoButton(
-                            padding: const EdgeInsets.only(left: 5),
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(4)),
-                            child: Text(
-                              FlutterI18n.translate(context, "close"),
-                              style: headText5,
-                            ),
-                            onPressed: () {
-                              Navigator.of(context).pop(false);
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                )
-              // Android Alert Dialog
-              : AlertDialog(
-                  titlePadding: EdgeInsets.zero,
-                  contentPadding: EdgeInsets.zero,
-                  insetPadding:
-                      const EdgeInsets.symmetric(vertical: 40, horizontal: 20),
-                  elevation: 5,
-                  backgroundColor: walletCardColor.withOpacity(0.85),
-                  title: Container(
-                    padding: const EdgeInsets.all(10.0),
-                    color: secondaryColor.withOpacity(0.5),
-                    child: Center(
-                        child: Text(
-                            FlutterI18n.translate(context, "receiveAddress"))),
-                  ),
-                  titleTextStyle:
-                      headText4.copyWith(fontWeight: FontWeight.bold),
-                  contentTextStyle: const TextStyle(color: grey),
-                  content: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      UIHelper.verticalSpaceLarge,
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          UIHelper.horizontalSpaceSmall,
-                          Expanded(
-                            child: Center(
-                              child: Text(
-                                  // add here cupertino widget to check in these small widgets first then the entire app
-                                  kbAddress,
-                                  style: headText6),
-                            ),
-                          ),
-                          IconButton(
-                              icon: const Icon(
-                                Icons.content_copy,
-                                color: primaryColor,
-                                size: 16,
-                              ),
-                              onPressed: () {
-                                sharedService.copyAddress(context, kbAddress)();
-                              })
-                        ],
-                      ),
-                      // UIHelper.verticalSpaceLarge,
-                      Container(
-                          margin: const EdgeInsets.only(top: 10.0),
-                          width: 250,
-                          height: 250,
-                          child: Center(
-                            child: Container(
-                              child: RepaintBoundary(
-                                key: globalKey,
-                                child: QrImage(
-                                    backgroundColor: white,
-                                    data: kbAddress,
-                                    version: QrVersions.auto,
-                                    size: 300,
-                                    gapless: true,
-                                    errorStateBuilder: (context, err) {
-                                      return Container(
-                                        child: Center(
-                                          child: Text(
-                                              FlutterI18n.translate(context,
-                                                  "somethingWentWrong"),
-                                              textAlign: TextAlign.center),
-                                        ),
-                                      );
-                                    }),
-                              ),
-                            ),
-                          )),
-                    ],
-                  ),
-                  actions: <Widget>[
-                    // QR image share button
-
-                    Container(
-                      padding: const EdgeInsets.all(10.0),
-                      child: ElevatedButton(
-                          child: Text(FlutterI18n.translate(context, "share"),
-                              style: headText6),
-                          onPressed: () {
-                            String receiveFileName =
-                                'Lightning-remit-kanban-receive-address.png';
-                            getApplicationDocumentsDirectory().then((dir) {
-                              String filePath = "${dir.path}/$receiveFileName";
-                              File file = File(filePath);
-
-                              Future.delayed(const Duration(milliseconds: 30),
-                                  () {
-                                sharedService
-                                    .capturePng(globalKey: globalKey)
-                                    .then((byteData) {
-                                  file
-                                      .writeAsBytes(byteData!.toList())
-                                      .then((onFile) {
-                                    Share.shareFiles([onFile.path],
-                                        text: kbAddress);
-                                  });
-                                });
-                              });
-                            });
-                          }),
-                    ),
-                    OutlinedButton(
-                      style: ButtonStyle(
-                        side: MaterialStateProperty.all(
-                            const BorderSide(color: primaryColor)),
-                        // backgroundColor: MaterialStateProperty.all(primaryColor),
-                        elevation: MaterialStateProperty.all(5),
-                        shape: MaterialStateProperty.all(const StadiumBorder(
-                            side: BorderSide(color: primaryColor, width: 2))),
-                      ),
-
-                      // style: ButtonStyle(
-                      // side: BorderSide(color: primaryColor),
-                      // color: primaryColor,
-                      // textColor: Colors.white,),
-                      child: Text(
-                        FlutterI18n.translate(context, "close"),
-                        style: headText6,
-                      ),
-                      onPressed: () {
-                        Navigator.of(context).pop(false);
-                      },
-                    ),
-                  ],
-                );
-        },
-      );
-    });
-  }
-
-/*----------------------------------------------------------------------
-                    Scan 
-----------------------------------------------------------------------*/
-
-  void scanBarcode() async {
-    try {
-      setBusy(true);
-
-      var barcode;
-      //  barcode = await BarcodeScanner.scan().then((value) => value.rawContent);
-      //barcodeRes.add(barcode);
-      log.i('barcode res $barcode');
-
-      if (barcode != "" || barcode != null) {
-        scanToPayModel = JoinClubPaymentModel.fromJson(jsonDecode(barcode));
-        debugPrint('payCoolModel ${scanToPayModel.toJson()}');
-        navigationService.navigateTo(JoinPayCoolClubViewRoute,
-            arguments: scanToPayModel);
-      }
-
-      setBusy(false);
-    } on PlatformException catch (e) {
-      if (e.code == "PERMISSION_NOT_GRANTED") {
-        setBusy(true);
-        sharedService.alertDialog(
-            '', FlutterI18n.translate(context!, "userAccessDenied"),
-            isWarning: false);
-        // receiverWalletAddressTextController.text =
-        //     FlutterI18n.translate(context, "userAccessDenied");
-      } else {
-        // setBusy(true);
-        sharedService.alertDialog(
-            '', FlutterI18n.translate(context!, "unknownError"),
-            isWarning: false);
-      }
-    } on FormatException {
-      sharedService.alertDialog(
-          '', FlutterI18n.translate(context!, "scanCancelled"),
-          isWarning: false);
-    } catch (e) {
-      sharedService.alertDialog(
-          '', FlutterI18n.translate(context!, "unknownError"),
-          isWarning: false);
-    }
-    setBusy(false);
-  }
-
   onBackButtonPressed() async {
     await sharedService.onBackButtonPressed(DashboardViewRoute);
   }
@@ -984,122 +678,6 @@ class ClubDashboardViewModel extends BaseViewModel {
     });
     fillJoinedProjects();
     setBusy(false);
-  }
-
-  bindpayUI(context, model) {
-    return Container(
-      child: Column(
-        children: [
-          UIHelper.divider,
-          UIHelper.verticalSpaceSmall,
-          Container(
-            // width: MediaQuery.of(context).size.width * 0.52,
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Text(
-              '${FlutterI18n.translate(context, "lightningRemit")} ${FlutterI18n.translate(context, "receiveAddress")}',
-              style: headText5,
-            ),
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          SizedBox(
-            width: MediaQuery.of(context).size.width * 0.52,
-            child: ElevatedButton(
-              style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(primaryColor)),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    FlutterI18n.translate(context, "lightningRemit"),
-                    style: headText3,
-                  ),
-                  // Text(
-                  //   FlutterI18n.translate(context, "LightningRemit") +
-                  //       ' ' +
-                  //       AppLocalizations.of(context)
-                  //           .receiveAddress,
-                  //   style: headText3,
-                  // ),
-                  // UIHelper.horizontalSpaceSmall,
-                  // Icon(Icons.qr_code)
-                ],
-              ),
-              onPressed: () {
-                model.showLightningRemitBarcode();
-              },
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  scanToPay(context, model) {
-    return Container(
-      child: Column(
-        children: <Widget>[
-          UIHelper.divider,
-          UIHelper.verticalSpaceSmall,
-          Container(
-            // width: MediaQuery.of(context).size.width * 0.52,
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Text(
-              FlutterI18n.translate(context, "scanToPayMessage"),
-              style: headText5,
-            ),
-          ),
-
-          // UIHelper.verticalSpaceSmall,
-          SizedBox(
-            width: MediaQuery.of(context).size.width * 0.52,
-            child: ElevatedButton(
-              style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(yellow)),
-              child: Text(
-                FlutterI18n.translate(context, "scanToPay"),
-                style: headText3.copyWith(
-                    color: black, fontWeight: FontWeight.w500),
-              ),
-              onPressed: () {
-                model.scanBarCode();
-              },
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  generateQR(context, model) {
-    return Column(
-      children: <Widget>[
-        Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Text(
-                FlutterI18n.translate(context, "generateQrCodeToScanAndPay"),
-                style: headText5)),
-        UIHelper.verticalSpaceSmall,
-        SizedBox(
-          width: MediaQuery.of(context).size.width * 0.52,
-          child: ElevatedButton(
-            style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.lightBlue)),
-            child: Text(
-              FlutterI18n.translate(context, "generateQrCode"),
-              style: headText3.copyWith(
-                  color: secondaryColor, fontWeight: FontWeight.w500),
-            ),
-            onPressed: () {
-              model.navigationService.navigateTo(GenerateCustomQrViewRoute);
-              //  model.joinClub();
-            },
-          ),
-        ),
-        UIHelper.verticalSpaceMedium,
-      ],
-    );
   }
 
   showBarcode() {
@@ -1302,8 +880,8 @@ class ClubDashboardViewModel extends BaseViewModel {
                                       file
                                           .writeAsBytes(byteData!.toList())
                                           .then((onFile) {
-                                        Share.shareFiles([onFile.path],
-                                            text: fabAddress);
+                                        Share.share(onFile.path,
+                                            subject: fabAddress);
                                       });
                                     });
                                   });
@@ -1315,63 +893,6 @@ class ClubDashboardViewModel extends BaseViewModel {
                   ],
                 );
         });
-    setBusy(false);
-  }
-
-  scanBarCode() async {
-    log.i("Barcode: going to scan");
-    setBusy(true);
-    var result;
-    try {
-      log.i("Barcode: try");
-
-      result = await BarcodeUtils().scanQR(context!);
-
-      log.i("Barcode Res: $result ");
-      scanToPayModel = JoinClubPaymentModel.fromJson(jsonDecode(result));
-      navigationService.navigateTo(JoinPayCoolClubViewRoute,
-          arguments: scanToPayModel);
-      setBusy(false);
-    } on PlatformException catch (e) {
-      log.i("Barcode PlatformException : ");
-      log.i(e.toString());
-      if (e.code == "PERMISSION_NOT_GRANTED") {
-        setBusy(false);
-        sharedService.alertDialog(
-            '', FlutterI18n.translate(context!, "userAccessDenied"),
-            isWarning: false);
-        // receiverWalletAddressTextController.text =
-        //     FlutterI18n.translate(context, "userAccessDenied");
-      } else {
-        setBusy(false);
-        sharedService.alertDialog(
-            '', FlutterI18n.translate(context!, "unknownError"),
-            isWarning: false);
-        // receiverWalletAddressTextController.text =
-        //     '${FlutterI18n.translate(context, "unknownError")}: $e';
-      }
-    } on FormatException {
-      log.i("Barcode FormatException : ");
-      // log.i(e.toString());
-      setBusy(false);
-
-      // navigationService.navigateTo(PayCoolClubDashboardViewRoute);
-      if (result != null && result != '') {
-        sharedService.alertDialog(
-            FlutterI18n.translate(context!, "scanCancelled"),
-            FlutterI18n.translate(context!, "invalidReferralCode"),
-            isWarning: false);
-      }
-    } catch (e) {
-      log.i("Barcode error : ");
-      log.i(e.toString());
-      setBusy(false);
-      sharedService.alertDialog(
-          '', FlutterI18n.translate(context!, "unknownError"),
-          isWarning: false);
-      // receiverWalletAddressTextController.text =
-      //     '${FlutterI18n.translate(context, "unknownError")}: $e';
-    }
     setBusy(false);
   }
 }
