@@ -24,7 +24,7 @@ class ClubProjectDetailsView extends StatelessWidget {
       onViewModelReady: (model) {
         model.sharedService.context = context;
         model.context = context;
-
+        debugPrint('id ${summary.project!.id} ');
         model.init();
       },
       builder: (context, ClubProjectDetailsViewModel viewmodel, _) => Scaffold(
@@ -160,10 +160,14 @@ class ClubProjectDetailsView extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          SvgPicture.asset(
-                            'assets/images/club/crown-${summary.status}.svg',
-                            width: 50,
-                          ),
+                          summary.status != 0
+                              ? SvgPicture.asset(
+                                  'assets/images/club/crown-${summary.status}.svg',
+                                  width: 50,
+                                )
+                              : Container(
+                                  margin: EdgeInsets.only(left: 5),
+                                ),
                           UIHelper.horizontalSpaceSmall,
                           customText(
                               text: viewmodel.assignMemberType(
@@ -184,7 +188,7 @@ class ClubProjectDetailsView extends StatelessWidget {
                             isUnderline: true,
                             letterSpace: 0.7),
                       ),
-                      summary.project!.en == "Meta force"
+                      summary.project!.id == 1 || summary.project!.id == 9
                           ? ListTile(
                               horizontalTitleGap: 0,
                               onTap: () => Navigator.push(
