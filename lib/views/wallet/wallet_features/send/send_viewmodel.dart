@@ -279,10 +279,10 @@ class SendViewModel extends BaseViewModel {
 
       if ((tickerName.isNotEmpty) && (tokenType.isNotEmpty)) {
         int decimal = 0;
-        String contractAddr =
+        String? contractAddr =
             environment["addresses"]["smartContract"][tickerName];
 
-        if (contractAddr.isEmpty) {
+        if (contractAddr == null || contractAddr.isEmpty) {
           await tokenListDatabaseService
               .getByTickerName(tickerName)
               .then((token) {
@@ -584,8 +584,8 @@ class SendViewModel extends BaseViewModel {
     if (!isTrx()) {
       gasPrice = int.tryParse(gasPriceTextController.text) ?? 0;
       gasLimit = int.tryParse(gasLimitTextController.text) ?? 0;
+      satoshisPerBytes = int.tryParse(satoshisPerByteTextController.text)!;
     }
-    satoshisPerBytes = int.tryParse(satoshisPerByteTextController.text)!;
     //await refreshBalance();
     if (toAddress == '') {
       debugPrint('address empty');

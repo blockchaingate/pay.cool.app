@@ -61,9 +61,6 @@ import '../../services/local_dialog_service.dart';
 //import 'package:json_diff/json_diff.dart';
 
 class WalletDashboardViewModel extends BaseViewModel {
-  late BuildContext contextVM;
-
-  WalletDashboardViewModel();
   final log = getLogger('WalletDashboardViewModel');
 
   WalletService walletService = locator<WalletService>();
@@ -82,7 +79,7 @@ class WalletDashboardViewModel extends BaseViewModel {
   final userDatabaseService = locator<UserSettingsDatabaseService>();
   var versionService = locator<VersionService>();
   var coreWalletDatabaseService = locator<CoreWalletDatabaseService>();
-
+  BuildContext? context;
   late WalletInfo rightWalletInfo;
 
   final double elevation = 5;
@@ -156,9 +153,9 @@ class WalletDashboardViewModel extends BaseViewModel {
     currentTabSelection = storageService.isFavCoinTabSelected ? 1 : 0;
 
     walletService.storeTokenListInDB();
-    log.e('contextvm 1 $contextVM');
+
     setBusy(false);
-    await versionService.checkVersion(contextVM, isForceUpdate: true);
+    await versionService.checkVersion(context, isForceUpdate: true);
     Future.delayed(const Duration(seconds: 2), () async {
       await walletService.storeTokenListUpdatesInDB();
     });
@@ -187,9 +184,9 @@ class WalletDashboardViewModel extends BaseViewModel {
 
   routeWithWalletInfoArgs(WalletBalance wallet, String routeName) async {
     // assign address from local DB to walletinfo object
-
-    if (MediaQuery.of(sharedService.context).size.width < largeSize) {
-      FocusScope.of(sharedService.context).requestFocus(FocusNode());
+    context ??= sharedService.context;
+    if (MediaQuery.of(context!).size.width < largeSize) {
+      FocusScope.of(context!).requestFocus(FocusNode());
       var walletInfo =
           await walletUtil.getWalletInfoObjFromWalletBalance(wallet);
 
@@ -200,7 +197,7 @@ class WalletDashboardViewModel extends BaseViewModel {
     } else {
       rightWalletInfo =
           await walletUtil.getWalletInfoObjFromWalletBalance(wallet);
-      (sharedService.context as Element).markNeedsBuild();
+      (context! as Element).markNeedsBuild();
     }
   }
 
@@ -422,7 +419,7 @@ class WalletDashboardViewModel extends BaseViewModel {
 
   showUpdateWalletDialog() {
     showDialog(
-      context: sharedService.context,
+      context: context!,
       barrierDismissible: false,
       builder: (BuildContext context) {
         return Platform.isIOS
@@ -497,12 +494,10 @@ class WalletDashboardViewModel extends BaseViewModel {
     String mnemonic = '';
     await dialogService
         .showDialog(
-            title:
-                FlutterI18n.translate(sharedService.context, "enterPassword"),
+            title: FlutterI18n.translate(context!, "enterPassword"),
             description: FlutterI18n.translate(
-                sharedService.context, "dialogManagerTypeSamePasswordNote"),
-            buttonTitle:
-                FlutterI18n.translate(sharedService.context, "confirm"))
+                context!, "dialogManagerTypeSamePasswordNote"),
+            buttonTitle: FlutterI18n.translate(context!, "confirm"))
         .then((res) async {
       if (res.confirmed) {
         mnemonic = res.returnedText;
@@ -556,15 +551,15 @@ class WalletDashboardViewModel extends BaseViewModel {
 ----------------------------------------------------------------------*/
 
   onSingleCoinCardClick(index) async {
-    if (MediaQuery.of(sharedService.context).size.width < largeSize) {
-      FocusScope.of(sharedService.context).requestFocus(FocusNode());
+    if (MediaQuery.of(context!).size.width < largeSize) {
+      FocusScope.of(context!).requestFocus(FocusNode());
       navigationService.navigateTo(walletFeaturesViewRoute,
           arguments: wallets[index]);
       searchCoinTextController.clear();
     } else {
       rightWalletInfo =
           await walletUtil.getWalletInfoObjFromWalletBalance(wallets[index]);
-      (contextVM as Element).markNeedsBuild();
+      (context as Element).markNeedsBuild();
     }
   }
 
@@ -628,8 +623,8 @@ class WalletDashboardViewModel extends BaseViewModel {
 
         if (localAppVersion['name']!.compareTo(apiAppVersion) == -1) {
           sharedService.alertDialog(
-              FlutterI18n.translate(sharedService.context, "appUpdateNotice"),
-              '${FlutterI18n.translate(sharedService.context, "pleaseUpdateYourAppFrom")} $localAppVersion ${FlutterI18n.translate(sharedService.context, "toLatestBuild")} $apiAppVersion ${FlutterI18n.translate(sharedService.context, "inText")} $store ${FlutterI18n.translate(sharedService.context, "clickOnWebsiteButton")}',
+              FlutterI18n.translate(context!, "appUpdateNotice"),
+              '${FlutterI18n.translate(context!, "pleaseUpdateYourAppFrom")} $localAppVersion ${FlutterI18n.translate(context!, "toLatestBuild")} $apiAppVersion ${FlutterI18n.translate(context!, "inText")} $store ${FlutterI18n.translate(context!, "clickOnWebsiteButton")}',
               isUpdate: true,
               isLater: true,
               isWebsite: true,
@@ -655,7 +650,7 @@ class WalletDashboardViewModel extends BaseViewModel {
           isFreeFabNotUsed = res['ok'];
           debugPrint(res['_body']['question'].toString());
           showDialog(
-              context: sharedService.context,
+              context: context!,
               builder: (context) {
                 return Center(
                   child: SizedBox(
@@ -842,12 +837,11 @@ class WalletDashboardViewModel extends BaseViewModel {
           debugPrint(isFreeFabNotUsed.toString());
 
           walletService.showInfoFlushbar(
-              FlutterI18n.translate(sharedService.context, "notice"),
-              FlutterI18n.translate(
-                  sharedService.context, "freeFabUsedAlready"),
+              FlutterI18n.translate(context!, "notice"),
+              FlutterI18n.translate(context!, "freeFabUsedAlready"),
               Icons.notification_important,
               yellow,
-              sharedService.context);
+              context!);
         }
       }
     });
@@ -962,7 +956,7 @@ class WalletDashboardViewModel extends BaseViewModel {
         if (pendingDepositCoins.isNotEmpty) {
           showSimpleNotification(
               Text(
-                  '${FlutterI18n.translate(sharedService.context, "requireRedeposit")}: $f'),
+                  '${FlutterI18n.translate(context!, "requireRedeposit")}: $f'),
               position: NotificationPosition.bottom,
               background: primaryColor);
         }
@@ -979,13 +973,13 @@ class WalletDashboardViewModel extends BaseViewModel {
     log.w('in showDialogWarning isConfirmDeposit $isConfirmDeposit');
     if (gasAmount == 0.0) {
       sharedService.alertDialog(
-          FlutterI18n.translate(sharedService.context, "insufficientGasAmount"),
-          FlutterI18n.translate(sharedService.context, "pleaseAddGasToTrade"));
+          FlutterI18n.translate(context!, "insufficientGasAmount"),
+          FlutterI18n.translate(context!, "pleaseAddGasToTrade"));
     }
     if (isConfirmDeposit) {
       sharedService.alertDialog(
-          FlutterI18n.translate(sharedService.context, "pendingConfirmDeposit"),
-          '${FlutterI18n.translate(sharedService.context, "pleaseConfirmYour")} ${confirmDepositCoinWallet.tickerName} ${FlutterI18n.translate(sharedService.context, "deposit")}',
+          FlutterI18n.translate(context!, "pendingConfirmDeposit"),
+          '${FlutterI18n.translate(context!, "pleaseConfirmYour")} ${confirmDepositCoinWallet.tickerName} ${FlutterI18n.translate(context!, "deposit")}',
           path: '/walletFeatures',
           arguments: confirmDepositCoinWallet,
           isWarning: true);
@@ -1131,14 +1125,13 @@ class WalletDashboardViewModel extends BaseViewModel {
   debugVersionPopup() async {
     // await _showNotification();
 
-    sharedService.alertDialog(
-        FlutterI18n.translate(sharedService.context, "notice"),
-        FlutterI18n.translate(sharedService.context, "testVersion"),
+    sharedService.alertDialog(FlutterI18n.translate(context!, "notice"),
+        FlutterI18n.translate(context!, "testVersion"),
         isWarning: false);
   }
 
   onBackButtonPressed() async {
-    sharedService.context = contextVM;
+    sharedService.context = context!;
     await sharedService.closeApp();
   }
 
