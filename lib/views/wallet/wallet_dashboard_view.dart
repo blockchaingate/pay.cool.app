@@ -361,7 +361,9 @@ class WalletDashboardView extends StatelessWidget {
           ),
         ),
         Container(
+          alignment: Alignment.centerLeft,
           margin: const EdgeInsets.only(left: 8.0),
+          width: MediaQuery.of(context).size.width / 2,
           child: Row(
             children: [
               Expanded(
@@ -379,12 +381,18 @@ class WalletDashboardView extends StatelessWidget {
                       decoration: const InputDecoration(
                           enabledBorder: OutlineInputBorder(
                             borderSide:
-                                BorderSide(color: primaryColor, width: 1),
+                                BorderSide(color: primaryColor, width: 0.5),
                           ),
+                          focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: primaryColor)),
                           // helperText: 'Search',
                           // helperStyle:
                           //     Theme.of(context).textTheme.bodyText1,
-                          suffixIcon: Icon(Icons.search, color: white)),
+                          suffixIcon: Icon(
+                            Icons.search,
+                            color: primaryColor,
+                            size: 18,
+                          )),
                       controller: model.searchCoinTextController,
                       onChanged: (String value) {
                         model.isShowFavCoins

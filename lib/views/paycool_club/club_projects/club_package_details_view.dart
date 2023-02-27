@@ -70,7 +70,9 @@ class _ClubPackageDetailsViewState extends State<ClubPackageDetailsView> {
                         ),
                         margin: const EdgeInsets.symmetric(
                             horizontal: 15, vertical: 5),
-                        color: secondaryColor,
+                        color: widget.projectDetails![index].status == 1
+                            ? secondaryColor
+                            : grey.withOpacity(0.1),
                         elevation: 10,
                         child: ListTile(
                           minVerticalPadding: 15,
@@ -223,24 +225,29 @@ class _ClubPackageDetailsViewState extends State<ClubPackageDetailsView> {
                                   ],
                                 ),
                                 UIHelper.horizontalSpaceMedium,
-                                Padding(
-                                  padding: EdgeInsets.only(top: 8.0),
-                                  child: IconButton(
-                                    onPressed: () => navigationService
-                                        .navigateTo(
-                                            clubPackageCheckoutViewRoute,
-                                            arguments: {
-                                          "package":
-                                              widget.projectDetails![index],
-                                          'paymentCoin': selectedCoin[index]
-                                        }),
-                                    icon: Icon(
-                                      Icons.arrow_forward_ios,
-                                      color: black,
-                                      size: 16,
-                                    ),
-                                  ),
-                                ),
+                                widget.projectDetails![index].status == 1
+                                    ? Padding(
+                                        padding:
+                                            const EdgeInsets.only(top: 8.0),
+                                        child: IconButton(
+                                          onPressed: () {
+                                            navigationService.navigateTo(
+                                                clubPackageCheckoutViewRoute,
+                                                arguments: {
+                                                  "package": widget
+                                                      .projectDetails![index],
+                                                  'paymentCoin':
+                                                      selectedCoin[index]
+                                                });
+                                          },
+                                          icon: const Icon(
+                                            Icons.arrow_forward_ios,
+                                            color: black,
+                                            size: 16,
+                                          ),
+                                        ),
+                                      )
+                                    : Container(),
                               ],
                             ),
                           ),

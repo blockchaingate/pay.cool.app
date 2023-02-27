@@ -137,7 +137,7 @@ class CoreWalletDatabaseService {
   Future<Map<dynamic, dynamic>?> getWalletBalancesBody() async {
     await initDb();
     final Database? db = await database;
-    ;
+
     Map? finalRes;
     List<Map>? res =
         await db!.query(tableName, columns: [columnWalletBalancesBody]);

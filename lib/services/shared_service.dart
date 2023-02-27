@@ -379,7 +379,7 @@ class SharedService {
     bool checkBoxValue = false;
     showDialog(
         barrierDismissible: isDismissible,
-        context: context!,
+        context: context,
         builder: (context) {
           return AlertDialog(
             titlePadding: const EdgeInsets.all(0),
@@ -573,7 +573,7 @@ class SharedService {
     if (lang == '') {
       debugPrint('language empty');
     } else {
-      Navigator.pushNamed(context!, '/walletSetup');
+      Navigator.pushNamed(context, '/walletSetup');
     }
   }
 
