@@ -7,6 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/constants/route_names.dart';
+import 'package:paycool/environments/environment_type.dart';
 import 'package:paycool/utils/string_util.dart';
 import 'package:paycool/views/paycool_club/club_dashboard_model.dart';
 import 'package:paycool/views/paycool_club/club_dashboard_viewmodel.dart';
@@ -615,108 +616,102 @@ class ClubDashboardView extends StatelessWidget {
                                                           for (var summary in model
                                                               .dashboardSummary
                                                               .summary!)
-                                                            // summary.status !=
-                                                            //             0 &&
                                                             summary.project!
                                                                         .en !=
                                                                     'Paycool'
-                                                                ? ListTile(
-                                                                    horizontalTitleGap:
-                                                                        0,
-                                                                    leading:
-                                                                        SvgPicture
-                                                                            .asset(
-                                                                      'assets/images/club/stake-icon.svg',
-                                                                      width: 25,
-                                                                    ),
-                                                                    //  Image.asset(
-                                                                    //   'assets/images/club/user.png',
-                                                                    //   width: 30,
-                                                                    // ),
-                                                                    title:
-                                                                        Column(
-                                                                      mainAxisSize:
-                                                                          MainAxisSize
-                                                                              .min,
-                                                                      mainAxisAlignment:
-                                                                          MainAxisAlignment
-                                                                              .start,
-                                                                      crossAxisAlignment:
-                                                                          CrossAxisAlignment
-                                                                              .start,
-                                                                      children: [
-                                                                        Padding(
-                                                                          padding:
-                                                                              const EdgeInsets.symmetric(vertical: 4),
-                                                                          child:
-                                                                              Text(
-                                                                            model.storageService.language == 'zh'
-                                                                                ? summary.project!.sc.toString()
-                                                                                : summary.project!.en.toString(),
-                                                                            style:
-                                                                                headText5.copyWith(fontWeight: FontWeight.bold),
-                                                                          ),
+                                                                ? (summary.project!.id ==
+                                                                                1 &&
+                                                                            isProduction) ||
+                                                                        summary.project!.id ==
+                                                                                9 &&
+                                                                            !isProduction
+                                                                    ? ListTile(
+                                                                        horizontalTitleGap:
+                                                                            0,
+                                                                        leading:
+                                                                            SvgPicture.asset(
+                                                                          'assets/images/club/stake-icon.svg',
+                                                                          width:
+                                                                              25,
                                                                         ),
-                                                                        summary.status !=
-                                                                                0
-                                                                            ? Container(
-                                                                                margin: EdgeInsets.only(top: model.isShowExpiredWarning ? 10 : 0),
-                                                                                child: model.showExpiredProjectWarning(summary.expiredAt.toString()) && model.isShowExpiredWarning && !model.busy(model.isShowExpiredWarning)
-                                                                                    ? Stack(
-                                                                                        clipBehavior: Clip.none,
-                                                                                        children: [
-                                                                                          Container(
-                                                                                            width: 200,
-                                                                                            padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 13),
-                                                                                            child: customText(text: model.storageService.language == 'sc' ? '您的 ${summary.project!.sc} 项目质押将在  ${model.expiredProjectInDays(summary.expiredAt.toString()).toString()} 天后到期, 您可以通过购买月费或年费来续订' : 'Your ${summary.project!.en} project staking is expiring in ${model.expiredProjectInDays(summary.expiredAt.toString()).toString()} days, you can renew it by stacking monthly or annually', color: red, isCustomFont: true, style: bodyText1),
-                                                                                          ),
-                                                                                          Align(
-                                                                                            alignment: Alignment.topRight,
-
-                                                                                            // Positioned(
-                                                                                            //   top: -15,
-                                                                                            //   right: 20,
-                                                                                            child: Container(
-                                                                                              width: 25,
-                                                                                              height: 25,
-                                                                                              child: IconButton(
-                                                                                                padding: EdgeInsets.zero,
-                                                                                                icon: const Icon(
-                                                                                                  Icons.cancel,
-                                                                                                  size: 16,
-                                                                                                ),
-                                                                                                color: red,
-                                                                                                onPressed: () {
-                                                                                                  model.removeWarning();
-                                                                                                },
+                                                                        //  Image.asset(
+                                                                        //   'assets/images/club/user.png',
+                                                                        //   width: 30,
+                                                                        // ),
+                                                                        title:
+                                                                            Column(
+                                                                          mainAxisSize:
+                                                                              MainAxisSize.min,
+                                                                          mainAxisAlignment:
+                                                                              MainAxisAlignment.start,
+                                                                          crossAxisAlignment:
+                                                                              CrossAxisAlignment.start,
+                                                                          children: [
+                                                                            Padding(
+                                                                              padding: const EdgeInsets.symmetric(vertical: 4),
+                                                                              child: Text(
+                                                                                model.storageService.language == 'zh' ? summary.project!.sc.toString() : summary.project!.en.toString(),
+                                                                                style: headText5.copyWith(fontWeight: FontWeight.bold),
+                                                                              ),
+                                                                            ),
+                                                                            summary.status != 0
+                                                                                ? Container(
+                                                                                    margin: EdgeInsets.only(top: model.isShowExpiredWarning ? 10 : 0),
+                                                                                    child: model.showExpiredProjectWarning(summary.expiredAt.toString()) && model.isShowExpiredWarning && !model.busy(model.isShowExpiredWarning)
+                                                                                        ? Stack(
+                                                                                            clipBehavior: Clip.none,
+                                                                                            children: [
+                                                                                              Container(
+                                                                                                width: 200,
+                                                                                                padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 13),
+                                                                                                child: customText(text: model.storageService.language == 'zh' ? '您的 ${summary.project!.sc} 项目质押将在  ${model.expiredProjectInDays(summary.expiredAt.toString()).toString()} 天后到期, 您可以通过购买月费或年费来续订' : 'Your ${summary.project!.en} project staking is expiring in ${model.expiredProjectInDays(summary.expiredAt.toString()).toString()} days, you can renew it by stacking monthly or annually', color: red, isCustomFont: true, style: bodyText1),
                                                                                               ),
-                                                                                            ),
-                                                                                          ),
-                                                                                        ],
-                                                                                      )
-                                                                                    : Container(),
-                                                                              )
-                                                                            : Container()
-                                                                      ],
-                                                                    ),
+                                                                                              Align(
+                                                                                                alignment: Alignment.topRight,
 
-                                                                    trailing:
-                                                                        Row(
-                                                                      mainAxisSize:
-                                                                          MainAxisSize
-                                                                              .min,
-                                                                      children: [
-                                                                        IconButton(
-                                                                            onPressed: () =>
-                                                                                model.navigationService.navigateTo(clubProjectDetailsViewRoute, arguments: summary),
-                                                                            icon: const Icon(
-                                                                              Icons.arrow_forward_ios_outlined,
-                                                                              size: 19,
-                                                                              color: primaryColor,
-                                                                            ))
-                                                                      ],
-                                                                    ),
-                                                                  )
+                                                                                                // Positioned(
+                                                                                                //   top: -15,
+                                                                                                //   right: 20,
+                                                                                                child: Container(
+                                                                                                  width: 25,
+                                                                                                  height: 25,
+                                                                                                  child: IconButton(
+                                                                                                    padding: EdgeInsets.zero,
+                                                                                                    icon: const Icon(
+                                                                                                      Icons.cancel,
+                                                                                                      size: 16,
+                                                                                                    ),
+                                                                                                    color: red,
+                                                                                                    onPressed: () {
+                                                                                                      model.removeWarning();
+                                                                                                    },
+                                                                                                  ),
+                                                                                                ),
+                                                                                              ),
+                                                                                            ],
+                                                                                          )
+                                                                                        : Container(),
+                                                                                  )
+                                                                                : Container()
+                                                                          ],
+                                                                        ),
+
+                                                                        trailing:
+                                                                            Row(
+                                                                          mainAxisSize:
+                                                                              MainAxisSize.min,
+                                                                          children: [
+                                                                            IconButton(
+                                                                                onPressed: () => model.navigationService.navigateTo(clubProjectDetailsViewRoute, arguments: summary),
+                                                                                icon: const Icon(
+                                                                                  Icons.arrow_forward_ios_outlined,
+                                                                                  size: 19,
+                                                                                  color: primaryColor,
+                                                                                ))
+                                                                          ],
+                                                                        ),
+                                                                      )
+                                                                    : Container()
                                                                 : Container(),
                                                         ],
                                                       ),

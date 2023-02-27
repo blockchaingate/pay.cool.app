@@ -2,7 +2,7 @@ import 'package:decimal/decimal.dart';
 
 class Constants {
   static Decimal decimalZero = Decimal.zero;
-
+  static int clubProjectExpireDays = 7;
   static int tronUsdtFee = 40;
   static int tronFee = 1;
 

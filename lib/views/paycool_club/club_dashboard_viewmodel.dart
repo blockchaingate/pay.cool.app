@@ -163,7 +163,9 @@ class ClubDashboardViewModel extends BaseViewModel {
     bool res = false;
     int days = expiredProjectInDays(date);
     if (date.isNotEmpty) {
-      if (days < 30 && !days.isNegative && days != 0) {
+      if (days < Constants.clubProjectExpireDays &&
+          !days.isNegative &&
+          days != 0) {
         res = true;
         isShowExpiredWarning = true;
       } else {
@@ -222,69 +224,66 @@ class ClubDashboardViewModel extends BaseViewModel {
                 ],
               ),
               contentTextStyle: const TextStyle(color: grey),
-              content: SizedBox(
-                // height: 200,
-                child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      for (var i = 0; i < dashboardSummary.summary!.length; i++)
-                        dashboardSummary.summary![i].status == 0 &&
-                                dashboardSummary.summary![i].project!.en !=
-                                    'Paycool' &&
-                                (dashboardSummary.summary![i].project!.id !=
-                                        1 &&
-                                    dashboardSummary.summary![i].project!.id !=
-                                        9)
-                            ? Padding(
-                                padding: const EdgeInsets.all(4.0),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text(
-                                      '${storageService.language == "en" ? dashboardSummary.summary![i].project!.en : dashboardSummary.summary![i].project!.sc}  ',
-                                      textAlign: TextAlign.start,
-                                      style: headText5.copyWith(
-                                          color: black,
-                                          fontWeight: FontWeight.w500),
-                                    ),
-                                    // Flexible(
-                                    //   child: Text(
-                                    //     assignMemberType(
-                                    //         status: dashboardSummary
-                                    //             .summary![i].status!
-                                    //             .toInt()),
-                                    //     textAlign: TextAlign.end,
-                                    //     style: headText5.copyWith(color: green),
-                                    //   ),
-                                    // ),
-                                    UIHelper.horizontalSpaceLarge,
-                                    TextButton(
-                                        // style: ButtonStyle(
-                                        //     shape: shapeRoundBorder,
-                                        //     backgroundColor:
-                                        //         MaterialStateProperty.all(
-                                        //             secondaryColor)),
-                                        onPressed: () {
-                                          navigationService.navigateTo(
-                                              clubProjectDetailsViewRoute,
-                                              arguments:
-                                                  dashboardSummary.summary![i]);
-                                          Navigator.of(context).pop();
-                                        },
-                                        child: Text(
-                                          FlutterI18n.translate(
-                                              context, "details"),
-                                          style: TextStyle(
-                                              decoration:
-                                                  TextDecoration.underline),
-                                        ))
-                                  ],
+              content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    for (var i = 0; i < dashboardSummary.summary!.length; i++)
+                      dashboardSummary.summary![i].status == 0 &&
+                              dashboardSummary.summary![i].project!.en !=
+                                  'Paycool' &&
+                              (dashboardSummary.summary![i].project!.id != 1 &&
+                                  dashboardSummary.summary![i].project!.id != 9)
+                          ? Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Expanded(
+                                  flex: 2,
+                                  child: Text(
+                                    '${storageService.language == "en" ? dashboardSummary.summary![i].project!.en : dashboardSummary.summary![i].project!.sc}  ',
+                                    textAlign: TextAlign.start,
+                                    style: headText5.copyWith(
+                                        color: black,
+                                        fontWeight: FontWeight.w500),
+                                  ),
                                 ),
-                              )
-                            : Container(),
-                    ]),
-              ),
+                                // Flexible(
+                                //   child: Text(
+                                //     assignMemberType(
+                                //         status: dashboardSummary
+                                //             .summary![i].status!
+                                //             .toInt()),
+                                //     textAlign: TextAlign.end,
+                                //     style: headText5.copyWith(color: green),
+                                //   ),
+                                // ),
+
+                                Expanded(
+                                  flex: 1,
+                                  child: TextButton(
+                                    // style: ButtonStyle(
+                                    //     shape: shapeRoundBorder,
+                                    //     backgroundColor:
+                                    //         MaterialStateProperty.all(
+                                    //             secondaryColor)),
+                                    onPressed: () {
+                                      navigationService.navigateTo(
+                                          clubProjectDetailsViewRoute,
+                                          arguments:
+                                              dashboardSummary.summary![i]);
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: Text(
+                                      FlutterI18n.translate(context, "details"),
+                                      style: const TextStyle(
+                                          decoration: TextDecoration.underline),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            )
+                          : Container(),
+                  ]),
               actions: [
                 Center(
                   child: Padding(
