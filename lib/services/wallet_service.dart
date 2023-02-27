@@ -510,10 +510,7 @@ class WalletService {
                     Generate TRX address
 ----------------------------------------------------------------------*/
 
-  generateTrxAddress(String mnemonic) {
-    var seed = generateSeed(mnemonic);
-    var root = generateBip32Root(seed);
-    debugPrint('root ${root.toString()}');
+  generateTrxAddress(root) {
     String ct = '195';
     bip32.BIP32 node = root.derivePath("m/44'/$ct'/0'/0/${0}");
     debugPrint('node ${node.toString()}');
@@ -771,12 +768,14 @@ class WalletService {
     log.i('generated root');
     // BCH address
     log.e('generating bch address');
+
     String bchAddress = await generateBchAddress(seed);
+    log.w('bch address $bchAddress');
     debugPrint(extractTimeFromDate(DateTime.now().toString()));
     log.e('generated bch adddress');
 
     log.w('generating trx address');
-    String trxAddress = generateTrxAddress(mnemonic);
+    String trxAddress = generateTrxAddress(root);
     debugPrint(extractTimeFromDate(DateTime.now().toString()));
     log.w('generated trx address');
 

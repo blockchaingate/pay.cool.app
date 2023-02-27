@@ -363,7 +363,7 @@ class LightningRemitViewmodel extends FutureViewModel {
                                 // add here cupertino widget to check in these small widgets first then the entire app
                                 kbAddress,
                                 textAlign: TextAlign.left,
-                                style: headText6),
+                                style: headText6.copyWith(color: white)),
                           ),
                           CupertinoButton(
                               child: const Icon(
@@ -444,17 +444,22 @@ class LightningRemitViewmodel extends FutureViewModel {
                                   });
                                 });
                               }),
-                          CupertinoButton(
-                            padding: const EdgeInsets.only(left: 5),
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(4)),
-                            child: Text(
-                              FlutterI18n.translate(context, "close"),
-                              style: headText5,
+                          SizedBox(
+                            height: 30,
+                            child: CupertinoButton(
+                              color: secondaryColor,
+                              padding:
+                                  const EdgeInsets.only(left: 10, right: 10),
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(25)),
+                              child: Text(
+                                FlutterI18n.translate(context, "close"),
+                                style: headText5,
+                              ),
+                              onPressed: () {
+                                Navigator.of(context).pop(false);
+                              },
                             ),
-                            onPressed: () {
-                              Navigator.of(context).pop(false);
-                            },
                           ),
                         ],
                       ),

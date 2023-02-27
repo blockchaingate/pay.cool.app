@@ -371,6 +371,7 @@ class WalletDashboardView extends StatelessWidget {
                     margin: const EdgeInsets.only(top: 5),
                     height: 30,
                     child: TextField(
+                      style: headText5,
                       enabled:
                           model.isShowFavCoins || model.isHideSmallAssetsButton
                               ? false

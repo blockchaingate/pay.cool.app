@@ -231,7 +231,11 @@ class ClubDashboardViewModel extends BaseViewModel {
                       for (var i = 0; i < dashboardSummary.summary!.length; i++)
                         dashboardSummary.summary![i].status == 0 &&
                                 dashboardSummary.summary![i].project!.en !=
-                                    'Paycool'
+                                    'Paycool' &&
+                                (dashboardSummary.summary![i].project!.id !=
+                                        1 &&
+                                    dashboardSummary.summary![i].project!.id !=
+                                        9)
                             ? Padding(
                                 padding: const EdgeInsets.all(4.0),
                                 child: Row(
@@ -762,17 +766,22 @@ class ClubDashboardViewModel extends BaseViewModel {
                                   });
                                 });
                               }),
-                          CupertinoButton(
-                            padding: const EdgeInsets.only(left: 5),
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(4)),
-                            child: Text(
-                              FlutterI18n.translate(context, "close"),
-                              style: headText5,
+                          SizedBox(
+                            height: 30,
+                            child: CupertinoButton(
+                              color: secondaryColor,
+                              padding:
+                                  const EdgeInsets.only(left: 10, right: 10),
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(25)),
+                              child: Text(
+                                FlutterI18n.translate(context, "close"),
+                                style: headText5,
+                              ),
+                              onPressed: () {
+                                Navigator.of(context).pop(false);
+                              },
                             ),
-                            onPressed: () {
-                              Navigator.of(context).pop(false);
-                            },
                           ),
                         ],
                       ),

@@ -507,6 +507,7 @@ class ClubDashboardView extends StatelessWidget {
                                       )
                                     : SliverToBoxAdapter(
                                         child: Container(
+                                          margin: const EdgeInsets.all(10),
                                           alignment: Alignment.center,
                                           child: Center(
                                             child: Column(
@@ -604,8 +605,7 @@ class ClubDashboardView extends StatelessWidget {
                                                 ),
                                               ),
                                               !model.isValidMember
-                                                  ? SliverToBoxAdapter(
-                                                      child: Container())
+                                                  ? Container()
                                                   : Visibility(
                                                       visible:
                                                           model.isValidMember,
@@ -615,11 +615,11 @@ class ClubDashboardView extends StatelessWidget {
                                                           for (var summary in model
                                                               .dashboardSummary
                                                               .summary!)
-                                                            summary.status !=
-                                                                        0 &&
-                                                                    summary.project!
-                                                                            .en !=
-                                                                        'Paycool'
+                                                            // summary.status !=
+                                                            //             0 &&
+                                                            summary.project!
+                                                                        .en !=
+                                                                    'Paycool'
                                                                 ? ListTile(
                                                                     horizontalTitleGap:
                                                                         0,
@@ -657,44 +657,46 @@ class ClubDashboardView extends StatelessWidget {
                                                                                 headText5.copyWith(fontWeight: FontWeight.bold),
                                                                           ),
                                                                         ),
-                                                                        Container(
-                                                                          margin:
-                                                                              EdgeInsets.only(top: model.isShowExpiredWarning ? 10 : 0),
-                                                                          child: model.showExpiredProjectWarning(summary.expiredAt.toString()) && model.isShowExpiredWarning && !model.busy(model.isShowExpiredWarning)
-                                                                              ? Stack(
-                                                                                  clipBehavior: Clip.none,
-                                                                                  children: [
-                                                                                    Container(
-                                                                                      width: 200,
-                                                                                      padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 13),
-                                                                                      child: customText(text: model.storageService.language == 'sc' ? '您的 ${summary.project!.sc} 项目质押将在  ${model.expiredProjectInDays(summary.expiredAt.toString()).toString()} 天后到期, 您可以通过购买月费或年费来续订' : 'Your ${summary.project!.en} project staking is expiring in ${model.expiredProjectInDays(summary.expiredAt.toString()).toString()} days, you can renew it by stacking monthly or annually', color: red, isCustomFont: true, style: bodyText1),
-                                                                                    ),
-                                                                                    Align(
-                                                                                      alignment: Alignment.topRight,
-
-                                                                                      // Positioned(
-                                                                                      //   top: -15,
-                                                                                      //   right: 20,
-                                                                                      child: Container(
-                                                                                        width: 25,
-                                                                                        height: 25,
-                                                                                        child: IconButton(
-                                                                                          padding: EdgeInsets.zero,
-                                                                                          icon: const Icon(
-                                                                                            Icons.cancel,
-                                                                                            size: 16,
+                                                                        summary.status !=
+                                                                                0
+                                                                            ? Container(
+                                                                                margin: EdgeInsets.only(top: model.isShowExpiredWarning ? 10 : 0),
+                                                                                child: model.showExpiredProjectWarning(summary.expiredAt.toString()) && model.isShowExpiredWarning && !model.busy(model.isShowExpiredWarning)
+                                                                                    ? Stack(
+                                                                                        clipBehavior: Clip.none,
+                                                                                        children: [
+                                                                                          Container(
+                                                                                            width: 200,
+                                                                                            padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 13),
+                                                                                            child: customText(text: model.storageService.language == 'sc' ? '您的 ${summary.project!.sc} 项目质押将在  ${model.expiredProjectInDays(summary.expiredAt.toString()).toString()} 天后到期, 您可以通过购买月费或年费来续订' : 'Your ${summary.project!.en} project staking is expiring in ${model.expiredProjectInDays(summary.expiredAt.toString()).toString()} days, you can renew it by stacking monthly or annually', color: red, isCustomFont: true, style: bodyText1),
                                                                                           ),
-                                                                                          color: red,
-                                                                                          onPressed: () {
-                                                                                            model.removeWarning();
-                                                                                          },
-                                                                                        ),
-                                                                                      ),
-                                                                                    ),
-                                                                                  ],
-                                                                                )
-                                                                              : Container(),
-                                                                        )
+                                                                                          Align(
+                                                                                            alignment: Alignment.topRight,
+
+                                                                                            // Positioned(
+                                                                                            //   top: -15,
+                                                                                            //   right: 20,
+                                                                                            child: Container(
+                                                                                              width: 25,
+                                                                                              height: 25,
+                                                                                              child: IconButton(
+                                                                                                padding: EdgeInsets.zero,
+                                                                                                icon: const Icon(
+                                                                                                  Icons.cancel,
+                                                                                                  size: 16,
+                                                                                                ),
+                                                                                                color: red,
+                                                                                                onPressed: () {
+                                                                                                  model.removeWarning();
+                                                                                                },
+                                                                                              ),
+                                                                                            ),
+                                                                                          ),
+                                                                                        ],
+                                                                                      )
+                                                                                    : Container(),
+                                                                              )
+                                                                            : Container()
                                                                       ],
                                                                     ),
 
@@ -721,12 +723,13 @@ class ClubDashboardView extends StatelessWidget {
                                                     ),
 
                                               !model.isValidMember
-                                                  ? SliverToBoxAdapter(
-                                                      child: Container())
+                                                  ? Container()
                                                   : UIHelper.divider,
-                                              !model.isValidMember
-                                                  ? SliverToBoxAdapter(
-                                                      child: Container())
+                                              !model.isValidMember ||
+                                                      model.dashboardSummary
+                                                              .summary!.length <
+                                                          3
+                                                  ? Container()
                                                   : ListTile(
                                                       horizontalTitleGap: 0,
                                                       leading: const Padding(
