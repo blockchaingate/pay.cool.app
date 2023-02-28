@@ -143,7 +143,7 @@ class WalletDashboardViewModel extends BaseViewModel {
                     INIT
 ----------------------------------------------------------------------*/
 
-  init() async {
+  init(context) async {
     setBusy(true);
 
     await refreshBalancesV2();
@@ -159,7 +159,7 @@ class WalletDashboardViewModel extends BaseViewModel {
     setBusy(false);
 
     await versionChecker.check(
-      _context!,
+      context,
       //test: true, testVersion: "2.3.102.166"
     );
     Future.delayed(const Duration(seconds: 2), () async {
