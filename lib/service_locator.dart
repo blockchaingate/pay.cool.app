@@ -27,7 +27,6 @@ import 'services/local_storage_service.dart';
 import 'services/navigation_service.dart';
 import 'services/shared_service.dart';
 import 'services/vault_service.dart';
-import 'services/version_service.dart';
 import 'services/wallet_service.dart';
 import 'views/lightning-remit/lightening_remit_viewmodel.dart';
 import 'views/settings/settings_viewmodel.dart';
@@ -83,7 +82,7 @@ Future serviceLocator() async {
   locator.registerLazySingleton(() => PayCoolService());
 
   //Version Service
-  locator.registerLazySingleton(() => VersionService());
+  //locator.registerLazySingleton(() => VersionService());
 
   // LocalStorageService Singelton
   var instance = await LocalStorageService.getInstance();

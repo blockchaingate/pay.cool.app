@@ -42,13 +42,17 @@ class _ClubPackageDetailsViewState extends State<ClubPackageDetailsView> {
       appBar: customAppBarWithTitleNB(
           FlutterI18n.translate(context, "selectPackage")),
       body: Container(
+        margin: EdgeInsets.only(top: 50),
         alignment: Alignment.center,
         decoration: BoxDecoration(
             image:
                 imageBackground(path: 'assets/images/club/background-1.png')),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
+            UIHelper.verticalSpaceLarge,
             UIHelper.verticalSpaceMedium,
 
             // Text(

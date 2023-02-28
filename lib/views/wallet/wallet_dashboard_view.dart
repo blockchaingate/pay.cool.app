@@ -42,13 +42,12 @@ class WalletDashboardView extends StatelessWidget {
     // RefreshController _refreshController =
     //     RefreshController(initialRefresh: false);
     return ViewModelBuilder<WalletDashboardViewModel>.reactive(
-        viewModelBuilder: () => WalletDashboardViewModel(),
+        viewModelBuilder: () => WalletDashboardViewModel(context: context),
         onViewModelReady: (model) async {
           // model.globalKeyOne = _one;
           // model.globalKeyTwo = _two;
           // model.refreshController = _refreshController;
           model.sharedService.context = context;
-          model.context = context;
           model.init();
         },
         // onDispose: () {
@@ -607,7 +606,7 @@ class FavTab extends StackedView<WalletDashboardViewModel> {
 
   @override
   WalletDashboardViewModel viewModelBuilder(BuildContext context) =>
-      WalletDashboardViewModel();
+      WalletDashboardViewModel(context: context);
 }
 
 class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {

@@ -16,7 +16,6 @@ import 'package:paycool/services/db/user_settings_database_service.dart';
 import 'package:paycool/services/db/wallet_database_service.dart';
 import 'package:paycool/services/local_storage_service.dart';
 import 'package:paycool/services/vault_service.dart';
-import 'package:paycool/services/version_service.dart';
 import 'package:paycool/utils/abi_util.dart' as abi_util;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -24,7 +23,6 @@ class WalletUtil {
   final log = getLogger('WalletUtil');
 
   final walletDatabaseService = locator<WalletDatabaseService>();
-  final versionService = locator<VersionService>();
   final storageService = locator<LocalStorageService>();
   final coreWalletDatabaseService = locator<CoreWalletDatabaseService>();
   final transactionHistoryDatabaseService =

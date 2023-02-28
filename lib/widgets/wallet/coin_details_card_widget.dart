@@ -25,7 +25,7 @@ class CoinDetailsCardWidget extends StackedView<WalletDashboardViewModel> {
       required this.context});
   @override
   WalletDashboardViewModel viewModelBuilder(BuildContext context) =>
-      WalletDashboardViewModel();
+      WalletDashboardViewModel(context: context);
   @override
   Widget builder(
       BuildContext context, WalletDashboardViewModel model, Widget? child) {

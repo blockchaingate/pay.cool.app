@@ -123,8 +123,8 @@ class ClubProjectDetailsViewModel extends BaseViewModel {
   // stacked packages
 
   goToProjectPackages(Project project) async {
-    var val = selectedProject(project.id.toString())!.projectId!;
-    var projectDetails = await clubService.getProjectDetails(val, fabAddress);
+    var id = selectedProject(project.id.toString())!.projectId!;
+    var projectDetails = await clubService.getProjectDetails(id, fabAddress);
     navigationService.navigateTo(clubPackageDetailsViewRoute,
         arguments: projectDetails);
   }

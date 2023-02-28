@@ -111,9 +111,10 @@ class ClubProjectDetailsView extends StatelessWidget {
                             customText(
                                 text: FlutterI18n.translate(
                                     context, "packageDetails"),
-                                color: const Color(0xffFFCC7E),
+                                color: const Color(0XFF3E0F00),
                                 style: headText3,
                                 isCustomFont: true,
+                                isBold: true,
                                 size: 17,
                                 letterSpace: 0.75),
                             OutlinedButton(

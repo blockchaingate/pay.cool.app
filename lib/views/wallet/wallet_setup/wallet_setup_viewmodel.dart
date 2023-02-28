@@ -11,6 +11,7 @@
 *----------------------------------------------------------------------
 */
 
+import 'package:aukfa_version_checker/aukfa_version_checker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:paycool/constants/colors.dart';
@@ -28,7 +29,6 @@ import 'package:paycool/services/local_dialog_service.dart';
 import 'package:paycool/services/local_storage_service.dart';
 import 'package:paycool/services/navigation_service.dart';
 import 'package:paycool/services/shared_service.dart';
-import 'package:paycool/services/version_service.dart';
 import 'package:paycool/services/wallet_service.dart';
 import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/utils/wallet/wallet_util.dart';
@@ -45,7 +45,6 @@ class WalletSetupViewmodel extends BaseViewModel {
   final walletDatabaseService = locator<WalletDatabaseService>();
   WalletService walletService = locator<WalletService>();
   final NavigationService navigationService = locator<NavigationService>();
-  VersionService versionService = locator<VersionService>();
   final storageService = locator<LocalStorageService>();
   final coreWalletDatabaseService = locator<CoreWalletDatabaseService>();
   final localDialogService = locator<LocalDialogService>();
@@ -55,6 +54,7 @@ class WalletSetupViewmodel extends BaseViewModel {
   final tokenListDatabaseService = locator<TokenListDatabaseService>();
   final authService = locator<LocalAuthService>();
   final userSettingsDatabaseService = locator<UserSettingsDatabaseService>();
+  final versionChecker = VersionChecker();
 
   late BuildContext context;
   bool isWallet = false;
@@ -86,8 +86,7 @@ class WalletSetupViewmodel extends BaseViewModel {
     await selectDefaultWalletLanguage();
 
     sharedService.context = context;
-    //  walletDatabaseService.initDb();
-    // await checkVersion();
+
     // await walletService.checkLanguage(context);
 
     if (storageService.hasPrivacyConsent) {
