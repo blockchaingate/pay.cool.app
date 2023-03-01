@@ -143,7 +143,7 @@ class WalletDashboardViewModel extends BaseViewModel {
                     INIT
 ----------------------------------------------------------------------*/
 
-  init(context) async {
+  init() async {
     setBusy(true);
 
     await refreshBalancesV2();
@@ -157,11 +157,14 @@ class WalletDashboardViewModel extends BaseViewModel {
     walletService.storeTokenListInDB();
 
     setBusy(false);
-
-    await versionChecker.check(
-      context,
-      //test: true, testVersion: "2.3.102.166"
-    );
+    try {
+      await versionChecker.check(
+        _context!,
+        //test: true, testVersion: "2.3.103"
+      );
+    } catch (err) {
+      log.e('version checker catch $err');
+    }
     Future.delayed(const Duration(seconds: 2), () async {
       await walletService.storeTokenListUpdatesInDB();
     });

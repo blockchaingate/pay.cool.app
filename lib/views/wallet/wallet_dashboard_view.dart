@@ -48,7 +48,7 @@ class WalletDashboardView extends StatelessWidget {
           // model.globalKeyTwo = _two;
           // model.refreshController = _refreshController;
           model.sharedService.context = context;
-          model.init(context);
+          model.init();
         },
         // onDispose: () {
         //   _refreshController.dispose();
