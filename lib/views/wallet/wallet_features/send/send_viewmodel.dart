@@ -167,8 +167,8 @@ class SendViewModel extends BaseViewModel {
       String ticker = walletInfo.tokenType!.isEmpty
           ? walletInfo.tickerName!
           : walletInfo.tokenType!;
-      String domainAddress = domainInfo['records']['crypto.$ticker.address'];
-      String owner = domainInfo['meta']['owner'];
+      String? domainAddress = domainInfo['records']['crypto.$ticker.address'];
+      String? owner = domainInfo['meta']['owner'];
 
       if (domainAddress != null) {
         receiverWalletAddressTextController.text = domainAddress;

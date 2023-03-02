@@ -110,6 +110,7 @@ const String GetTransactionCountApiRoute = 'getTransactionCount/';
 const String GetBalanceApiRoute = 'getBalance/';
 const String ResubmitDepositApiRoute = 'resubmitDeposit';
 const String SendRawTxApiRoute = 'sendRawTransaction';
+const String sendRawTxApiRouteV2 = 'sendRawTransactionPromise';
 const String DepositerrApiRoute = 'depositerr/';
 const String SubmitDepositApiRoute = 'submitDeposit';
 

@@ -182,3 +182,25 @@ Future<Map<String, dynamic>> sendKanbanRawTransaction(
     return {'success': false, 'data': 'error $e'};
   }
 }
+
+Future<Map<String, dynamic>> sendKanbanRawTransactionV2(
+    String baseUrl, String rawKanbanTransaction) async {
+  var url = '$baseUrl${kanbanApiRoute}v2/$sendRawTxApiRouteV2';
+  debugPrint('URL sendKanbanRawTransactionV2 $url');
+  var data = {'signedTransactionData': rawKanbanTransaction};
+
+  try {
+    var response = await client.post(Uri.parse(url), body: data);
+    debugPrint('response from sendKanbanRawTransactionV2=');
+    debugPrint(response.body.toString());
+    if (response.body.contains('TS crosschain withdraw verification failed')) {
+      return {'success': false, 'data': response.body};
+    }
+    Map<String, dynamic> res = jsonDecode(response.body);
+    return res;
+  } catch (e) {
+    debugPrint('sendKanbanRawTransactionV2 CATCH  $e');
+    //return e;
+    return {'success': false, 'data': 'error $e'};
+  }
+}
