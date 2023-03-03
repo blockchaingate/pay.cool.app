@@ -51,29 +51,34 @@ final log = getLogger('coin_util');
 var fabUtils = FabUtils();
 
 hashKanbanMessage(String message) {
-  List<int> messagePrefix = utf8.encode('\u0017Kanban Signed Message:\n');
-  log.w('magicHashForKanban prefix=== $messagePrefix');
+  List<int> messagePrefix = utf8.encode(Constants.KanbanMessagePrefix);
+  log.w('hashKanbanMessage prefix=== $messagePrefix');
 
   var messageHexToBytes = web3_dart.hexToBytes(message);
   debugPrint('messageHexToBytes $messageHexToBytes');
-
+  var messageLengthToAscii = ascii.encode(messageHexToBytes.length.toString());
   var messageBuffer = Uint8List(messageHexToBytes.length);
 
-  int preamble = messagePrefix.length + messageHexToBytes.length;
+  int preamble = messagePrefix.length +
+      messageHexToBytes.length +
+      messageLengthToAscii.length;
   Uint8List preambleBuffer = Uint8List(preamble);
 
-  preambleBuffer.setRange(0, messagePrefix.length, messagePrefix);
+  preambleBuffer.setRange(0, messagePrefix.length + messageLengthToAscii.length,
+      messagePrefix + messageLengthToAscii);
 
   int bufferStart = messagePrefix.length;
   int bufferEnd = preamble;
 
-  preambleBuffer.setRange(bufferStart, bufferEnd, messageHexToBytes);
+  preambleBuffer.setRange(
+      bufferStart + messageLengthToAscii.length, bufferEnd, messageHexToBytes);
 
-  log.w('magicHashForKanban buffer $preambleBuffer');
+  log.w('hashKanbanMessage buffer $preambleBuffer');
   return web3_dart.keccak256(preambleBuffer);
 }
 
-Future signHashKanbanMessage(Uint8List seed, Uint8List hash) async {
+Future signHashKanbanMessage(Uint8List seed, Uint8List hash,
+    {isMsgSignatureType = false}) async {
   var network = environment["chains"]["BTC"]["network"];
 
   final root2 = bip_32.BIP32.fromSeed(
@@ -86,7 +91,7 @@ Future signHashKanbanMessage(Uint8List seed, Uint8List hash) async {
   var bitCoinChild = root2.derivePath("m/44'/${1150}'/0'/0/0");
   var privateKey = bitCoinChild.privateKey;
 
-  var signature = sign(hash, privateKey!);
+  var signature = signMessageWithPrivateKey(hash, privateKey!);
 
   debugPrint('signature.v=======${signature.v}');
 
@@ -101,6 +106,7 @@ Future signHashKanbanMessage(Uint8List seed, Uint8List hash) async {
   final hexs = web3_dart.bytesToHex(s.toList(), include0x: true);
   final hexv = web3_dart.bytesToHex(v, include0x: true);
   var rsv = {"r": hexr, "s": hexs, "v": hexv};
+
   return rsv;
 }
 
@@ -108,8 +114,7 @@ Future signHashKanbanMessage(Uint8List seed, Uint8List hash) async {
                     Magic hash kanban
 ----------------------------------------------------------------------*/
 
-magicHashForKanban(message, network) {
-  network = network ?? bitcoin;
+magicHashForKanban(message) {
   log.i('kanban message prefix string ${Constants.KanbanMessagePrefix}');
   List<int> messagePrefix = utf8.encode('\u0017Kanban Signed Message:\n');
   log.w('magicHashForKanban prefix=== $messagePrefix');
@@ -123,17 +128,9 @@ magicHashForKanban(message, network) {
           .toInt();
   Uint8List buffer = Uint8List(totalBufferLen);
 
-//  int length = messagePrefix.length + messageVISize + message.length;
-//   Uint8List buffer = new Uint8List(length);
-//   buffer.setRange(0, messagePrefix.length, messagePrefix);
-//   encode(message.length, buffer, messagePrefix.length);
-//   buffer.setRange(
-//       messagePrefix.length + messageVISize, length, utf8.encode(message));
-
   buffer.setRange(0, messagePrefix.length + messageLengthToAscii.length,
       messagePrefix + messageLengthToAscii);
-  // var x = encode(message.length, buffer, messagePrefix.length);
-  // debugPrint('x $x');
+
   int bufferStart = messagePrefix.length
       // + messageVISize
       +
@@ -142,11 +139,6 @@ magicHashForKanban(message, network) {
 
   buffer.setRange(bufferStart, bufferEnd, utf8.encode(message));
 
-  // int y = 1;
-  // buffer.forEach((element) {
-  //   debugPrint('second index $y: value $element');
-  //   y++;
-  // });
   log.w('magicHashForKanban buffer $buffer');
   return web3_dart.keccak256(buffer);
 }
@@ -171,9 +163,9 @@ Future<Uint8List> signKanbanMessage(
   var bitCoinChild = root2.derivePath("m/44'/${1150}'/0'/0/0");
   var privateKey = bitCoinChild.privateKey;
   log.w('signKanbanMessage message $message');
-  var hash = magicHashForKanban(message, network);
+  var hash = magicHashForKanban(message);
   log.i('signKanbanMessage hash in hex ${uint8ListToHex(hash)}');
-  var signature = sign(hash, privateKey!);
+  var signature = signMessageWithPrivateKey(hash, privateKey!);
 
   debugPrint('signature.v=======${signature.v}');
 
@@ -231,7 +223,8 @@ signTrxMessage(
   debugPrint(
       'hashedOriginalMessageWithPrefix ${web3_dart.bytesToHex(hashedOriginalMessageWithPrefix)}');
 
-  var signature = sign(hashedOriginalMessageWithPrefix, privateKey);
+  var signature =
+      signMessageWithPrivateKey(hashedOriginalMessageWithPrefix, privateKey);
 
   debugPrint('signature v ${signature.v}');
 
@@ -259,7 +252,7 @@ List<Uint8List> signTrxTx(
 ) {
   debugPrint('sign trx');
 
-  var signature = sign(hash, privateKey);
+  var signature = signMessageWithPrivateKey(hash, privateKey);
 
   // https://github.com/ethereumjs/ethereumjs-util/blob/8ffe697fafb33cefc7b7ec01c11e3a7da787fe0e/src/signature.ts#L26
   // be aware that signature.v already is recovery + 27
@@ -355,7 +348,8 @@ Future signedBitcoinMessage(String originalMessage, String wif) async {
 }
 */
 
-web3_dart.MsgSignature sign(Uint8List messageHash, Uint8List privateKey) {
+web3_dart.MsgSignature signMessageWithPrivateKey(
+    Uint8List messageHash, Uint8List privateKey) {
   final digest = SHA256Digest();
   final signer = ECDSASigner(null, HMac(digest, 64));
   final key = ECPrivateKey(NumberUtil.decodeBigIntV1(privateKey), _params);
@@ -482,7 +476,7 @@ Future<Uint8List> signBtcMessageWith(originalMessage, Uint8List privateKey,
   debugPrint(network.toString());
   debugPrint('messageHash=');
   debugPrint(messageHash.toString());
-  var signature = sign(messageHash, privateKey);
+  var signature = signMessageWithPrivateKey(messageHash, privateKey);
 
   // https://github.com/ethereumjs/ethereumjs-util/blob/8ffe697fafb33cefc7b7ec01c11e3a7da787fe0e/src/signature.ts#L26
   // be aware that signature.v already is recovery + 27
@@ -521,7 +515,7 @@ Future<Uint8List> signDogeMessageWith(originalMessage, Uint8List privateKey,
   debugPrint(network.toString());
   debugPrint('messageHash=');
   debugPrint(messageHash.toString());
-  var signature = sign(messageHash, privateKey);
+  var signature = signMessageWithPrivateKey(messageHash, privateKey);
 
   // https://github.com/ethereumjs/ethereumjs-util/blob/8ffe697fafb33cefc7b7ec01c11e3a7da787fe0e/src/signature.ts#L26
   // be aware that signature.v already is recovery + 27
@@ -562,7 +556,8 @@ Future<Uint8List> signPersonalMessageWith(
 
   //final signature = await credential.signToSignature(concat, chainId: chainId);
 
-  var signature = sign(web3_dart.keccak256(concat), privateKey);
+  var signature =
+      signMessageWithPrivateKey(web3_dart.keccak256(concat), privateKey);
 
   // https://github.com/ethereumjs/ethereumjs-util/blob/8ffe697fafb33cefc7b7ec01c11e3a7da787fe0e/src/signature.ts#L26
   // be aware that signature.v already is recovery + 27

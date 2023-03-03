@@ -14,6 +14,7 @@ import 'package:paycool/utils/string_util.dart';
 import 'package:paycool/views/paycool/paycool_service.dart';
 import 'package:paycool/views/paycool/transaction_history/paycool_transaction_history_model.dart';
 import 'package:stacked/stacked.dart';
+import 'package:web3dart/crypto.dart';
 import '../../../widgets/pagination/pagination_model.dart';
 
 class PayCoolTransactionHistoryViewModel extends FutureViewModel {
@@ -38,6 +39,7 @@ class PayCoolTransactionHistoryViewModel extends FutureViewModel {
   int pageNumber = 1;
   int pageSize = 10;
   int _totalTransactionsCount = 0;
+  String prevId = '';
 
   @override
   Future futureToRun() async {
@@ -75,12 +77,16 @@ class PayCoolTransactionHistoryViewModel extends FutureViewModel {
   }
 
   showRefundButton(String orderId) {
-    setBusy(true);
-    selectedTxOrderId = '';
-    _isShowRefundButton = !_isShowRefundButton;
+    prevId = selectedTxOrderId;
+
     selectedTxOrderId = orderId;
-    log.w('order id $selectedTxOrderId');
-    setBusy(false);
+
+    //
+    if (prevId == selectedTxOrderId) _isShowRefundButton = !_isShowRefundButton;
+    if (prevId != selectedTxOrderId) _isShowRefundButton = true;
+    log.w(
+        'order id $selectedTxOrderId --_isShowRefundButton $_isShowRefundButton ');
+    rebuildUi();
   }
 
   getPaginationRewards(int pageNumber) async {
@@ -102,11 +108,13 @@ class PayCoolTransactionHistoryViewModel extends FutureViewModel {
     isProcessingAction = true;
     log.i(
         'requestRefund orderId $orderId -- smart contract Address $smartContractAddress');
-    String randomId = StringUtils.createCryptoRandomString();
+    String randomId = StringUtils.generateRandomHexString();
     log.i('randomId $randomId');
-    var id = "89d7e2530fc14714db77bc40b53c65ec27e4c39544278c90f4355a1e10dd8376";
-    var hashForSign = hashKanbanMessage(id);
-    log.i('hashForSign $hashForSign');
+    //var id = "89d7e2530fc14714db77bc40b53c65ec27e4c39544278c90f4355a1e10dd8376";
+
+    var hash = hashKanbanMessage(randomId);
+    log.w('hashKanbanMessage $hash');
+
     await dialogService
         .showDialog(
             title: FlutterI18n.translate(context!, "enterPassword"),
@@ -128,9 +136,10 @@ class PayCoolTransactionHistoryViewModel extends FutureViewModel {
         //     await sharedService.getExgAddressFromCoreWalletDatabase();
         //  var nonce = await getNonce(exgAddress);
         try {
-          signature = await signHashKanbanMessage(seed, hashForSign);
+          signature =
+              await signHashKanbanMessage(seed, hash, isMsgSignatureType: true);
 
-          log.i(' KanbanHex $signature');
+          log.i(' KanbanHex signature $signature');
         } catch (err) {
           setBusy(false);
           log.e('err $err');
@@ -144,6 +153,23 @@ class PayCoolTransactionHistoryViewModel extends FutureViewModel {
         //{"ok":true,"_body":{"transactionHash":"0x855f2d8ec57418670dd4cb27ecb71c6794ada5686e771fe06c48e30ceafe0548","status":"0x1"}}
 
         log.w('refund post res $res');
+
+        if (res!.refunds!.isNotEmpty) {
+          for (var tx in transactions) {
+            if (tx.orderId == res.id) {
+              tx.refunds = res.refunds;
+              rebuildUi();
+            }
+          }
+          sharedService.sharedSimpleNotification(
+              FlutterI18n.translate(context!, "success"),
+              isError: false);
+        } else {
+          sharedService.sharedSimpleNotification(
+              FlutterI18n.translate(context!, "failed"),
+              isError: true);
+        }
+
         // if (res['status'] == '0x1') {
         //   sharedService.sharedSimpleNotification(
         //       FlutterI18n.translate(context, "success"),

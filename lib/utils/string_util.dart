@@ -19,6 +19,7 @@ import 'package:hex/hex.dart';
 import 'package:decimal/decimal.dart';
 import 'package:intl/intl.dart';
 import 'package:bs58check/bs58check.dart' as Base58;
+import 'package:web3dart/crypto.dart' as web3_dart;
 
 class StringUtils {
   static final Random _random = Random.secure();
@@ -26,6 +27,14 @@ class StringUtils {
   static String createCryptoRandomString([int length = 64]) {
     var val = List<int>.generate(length, (index) => _random.nextInt(256));
     return base64Url.encode(val);
+  }
+
+  static String generateRandomHexString() {
+    Random random = Random.secure();
+    List<int> values = List.generate(32, (index) => random.nextInt(256));
+    String hexString =
+        values.map((value) => value.toRadixString(16).padLeft(2, '0')).join();
+    return hexString;
   }
 
   static String hexToAscii(String hexInput) {
@@ -38,6 +47,10 @@ class StringUtils {
   static String showPartialAddress(
       {String? address, int startLimit = 6, int endLimit = 6}) {
     return '${address!.substring(0, startLimit)}...${address.substring(address.length - endLimit)}';
+  }
+
+  static List<int> hexToBytes(String source) {
+    return HEX.decode(source);
   }
 }
 

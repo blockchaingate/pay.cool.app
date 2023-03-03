@@ -45,156 +45,182 @@ class PayCoolTransactionHistoryView extends StatelessWidget {
                   : Container(
                       margin: const EdgeInsets.all(8),
                       padding: const EdgeInsets.all(5.0),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          UIHelper.verticalSpaceSmall,
-                          // Container(
-                          //   padding: const EdgeInsets.symmetric(
-                          //       horizontal: 2.0, vertical: 10),
-                          //   decoration: roundedTopLeftRightBoxDecoration(
-                          //       color: secondaryColor),
-                          //   child: Row(
-                          //     mainAxisSize: MainAxisSize.min,
-                          //     children: [
-                          //       UIHelper.horizontalSpaceMedium,
-                          //       Expanded(
-                          //         flex: 2,
-                          //         child: Text(
-                          //             FlutterI18n.translate(context, "date")),
-                          //       ),
-                          //       Expanded(
-                          //         flex: 2,
-                          //         child: Text(
-                          //             FlutterI18n.translate(context, "coin")),
-                          //       ),
-                          //       Expanded(
-                          //         flex: 2,
-                          //         child: Text(
-                          //             FlutterI18n.translate(context, "amount")),
-                          //       ),
-                          //       Expanded(
-                          //         flex: 2,
-                          //         child: Text(
-                          //             FlutterI18n.translate(context, "status")),
-                          //       )
-                          //     ],
-                          //   ),
-                          // ),
-                          Expanded(
-                            child: ListView.builder(
-                                itemCount: model.transactions.length,
-                                itemBuilder: (BuildContext context, int index) {
-                                  return GestureDetector(
-                                    onTap: () => model.showRefundButton(model
-                                        .transactions[index].id
-                                        .toString()),
-                                    child: Container(
-                                      margin: const EdgeInsets.all(5.0),
-                                      padding: const EdgeInsets.all(10.0),
-                                      decoration: roundedBoxDecoration(
-                                          color: secondaryColor),
-                                      child: ListTile(
-                                          leading: Padding(
-                                            padding: const EdgeInsets.all(5.0),
-                                            child: Column(
-                                              mainAxisSize: MainAxisSize.min,
+                      child: ListView.builder(
+                          itemCount: model.transactions.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return GestureDetector(
+                              onDoubleTap: () => model.showRefundButton(
+                                  model.transactions[index].id.toString()),
+                              child: Container(
+                                margin: const EdgeInsets.all(5.0),
+                                padding: const EdgeInsets.all(10.0),
+                                decoration:
+                                    roundedBoxDecoration(color: secondaryColor),
+                                child: Stack(children: [
+                                  ListTile(
+                                      leading: Padding(
+                                        padding: const EdgeInsets.all(5.0),
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              formatStringDateV2(model
+                                                      .transactions[index]
+                                                      .dateCreated
+                                                      .toString())
+                                                  .split(' ')[0],
+                                              style: headText5.copyWith(
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                            Text(
+                                              formatStringDateV2(model
+                                                      .transactions[index]
+                                                      .dateCreated
+                                                      .toString())
+                                                  .split(' ')[1],
+                                              style: headText5,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      title: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text(
+                                            '${model.transactions[index].tickerName} ',
+                                            style: headText5,
+                                          ),
+                                          Text(
+                                            NumberUtil.decimalLimiter(
+                                                    model.transactions[index]
+                                                        .totalTransactionAmount!,
+                                                    decimalPrecision: 6)
+                                                .toString(),
+                                            style: const TextStyle(
+                                                fontSize: 14,
+                                                color: primaryColor,
+                                                fontWeight: FontWeight.bold),
+                                          )
+                                        ],
+                                      ),
+                                      subtitle: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 8.0),
+                                        child: Column(
+                                          children: [
+                                            Row(
                                               mainAxisAlignment:
                                                   MainAxisAlignment.start,
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.start,
                                               children: [
                                                 Text(
-                                                  formatStringDateV2(model
-                                                          .transactions[index]
-                                                          .dateCreated
-                                                          .toString())
-                                                      .split(' ')[0],
-                                                  style: headText5.copyWith(
+                                                  FlutterI18n.translate(
+                                                      context, "orderId"),
+                                                  style: const TextStyle(
+                                                      fontSize: 12,
+                                                      color: black,
                                                       fontWeight:
                                                           FontWeight.bold),
                                                 ),
-                                                Text(
-                                                  formatStringDateV2(model
-                                                          .transactions[index]
-                                                          .dateCreated
-                                                          .toString())
-                                                      .split(' ')[1],
-                                                  style: headText5,
+                                                Expanded(
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            left: 5.0),
+                                                    child: Text(
+                                                      StringUtils.showPartialAddress(
+                                                              address: model
+                                                                  .transactions[
+                                                                      index]
+                                                                  .id)
+                                                          .toString(),
+                                                      maxLines: 1,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      style: const TextStyle(
+                                                        fontSize: 12,
+                                                        color: black,
+                                                      ),
+                                                    ),
+                                                  ),
                                                 ),
                                               ],
                                             ),
-                                          ),
-                                          title: Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Text(
-                                                '${model.transactions[index].tickerName} ',
-                                                style: headText5,
-                                              ),
-                                              Text(
-                                                NumberUtil.decimalLimiter(
-                                                        model
-                                                            .transactions[index]
-                                                            .totalTransactionAmount!,
-                                                        decimalPrecision: 6)
-                                                    .toString(),
-                                                style: const TextStyle(
-                                                    fontSize: 14,
-                                                    color: primaryColor,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              )
-                                            ],
-                                          ),
-                                          subtitle: Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                vertical: 8.0),
-                                            child: Column(
-                                              children: [
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.start,
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      FlutterI18n.translate(
-                                                          context, "orderId"),
-                                                      style: const TextStyle(
-                                                          fontSize: 12,
-                                                          color: black,
-                                                          fontWeight:
-                                                              FontWeight.bold),
-                                                    ),
-                                                    Expanded(
-                                                      child: Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                    .only(
-                                                                left: 5.0),
-                                                        child: Text(
-                                                          model
-                                                              .transactions[
-                                                                  index]
-                                                              .id
-                                                              .toString(),
-                                                          maxLines: 1,
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
-                                                          style:
-                                                              const TextStyle(
-                                                            fontSize: 12,
-                                                            color: black,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                                // refund button
-                                                model.isShowRefundButton
-                                                    ? ElevatedButton(
+                                            // refund button
+                                            // model.isShowRefundButton &&
+                                            //         (model
+                                            //                 .transactions[
+                                            //                     index]
+                                            //                 .id ==
+                                            //             model
+                                            //                 .selectedTxOrderId)
+                                            //     ?
+
+                                            // : Container()
+                                          ],
+                                        ),
+                                      ),
+                                      trailing: CopyClipboardTextWidget(model
+                                          .transactions[index].id
+                                          .toString())),
+                                  model.isShowRefundButton &&
+                                          (model.transactions[index].id ==
+                                              model.selectedTxOrderId)
+                                      ? Positioned(
+                                          right: 10,
+                                          bottom: 20,
+                                          child: AnimatedContainer(
+                                            curve:
+                                                Curves.fastLinearToSlowEaseIn,
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width /
+                                                5,
+                                            height: model.isShowRefundButton &&
+                                                    (model.transactions[index]
+                                                            .id ==
+                                                        model.selectedTxOrderId)
+                                                ? 50.0
+                                                : 0.0,
+                                            duration: const Duration(
+                                                milliseconds: 500),
+                                            child: model.transactions[index]
+                                                    .refunds!.isNotEmpty
+                                                ? Container(
+                                                    margin:
+                                                        const EdgeInsets.only(
+                                                            top: 10.0),
+                                                    alignment: Alignment.center,
+                                                    decoration:
+                                                        roundedBoxDecoration(),
+                                                    child: customText(
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                        text: model
+                                                                    .transactions[
+                                                                        index]
+                                                                    .refunds!
+                                                                    .first
+                                                                    .txid !=
+                                                                null
+                                                            ? 'Refunded'
+                                                            : 'Refund Requested',
+                                                        color: secondaryColor,
+                                                        isBold: true),
+                                                  )
+                                                : Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            top: 15.0),
+                                                    child: ElevatedButton(
+                                                        style:
+                                                            generalButtonStyle(
+                                                                primaryColor),
                                                         onPressed: () =>
                                                             model.refund(
                                                                 model
@@ -207,20 +233,15 @@ class PayCoolTransactionHistoryView extends StatelessWidget {
                                                                         index]
                                                                     .address
                                                                     .toString()),
-                                                        child: Text('Refund'))
-                                                    : Container()
-                                              ],
-                                            ),
+                                                        child: Text('Refund')),
+                                                  ),
                                           ),
-                                          trailing: CopyClipboardTextWidget(
-                                              model.transactions[index].id
-                                                  .toString())),
-                                    ),
-                                  );
-                                }),
-                          )
-                        ],
-                      ),
+                                        )
+                                      : Container()
+                                ]),
+                              ),
+                            );
+                          }),
                     ),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
