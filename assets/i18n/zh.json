@@ -505,6 +505,9 @@
     "override": "覆盖",
     "sales": "销售额",
     "lisOfPrograms": "项目列表",
-    "currentlyNoOtherPrograms": "暂无其他项目"
+    "currentlyNoOtherPrograms": "暂无其他项目",
+    "Refund": "退款",
+    "RefundRequested": "已申请退款",
+    "Refunded": "已退款"
 
 }

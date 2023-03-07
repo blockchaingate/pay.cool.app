@@ -219,20 +219,20 @@ class SharedService {
 /* ---------------------------------------------------
         Loading indicator platform specific
 --------------------------------------------------- */
-  Widget loadingIndicator() {
+  Widget loadingIndicator({double width = 30, double height = 30}) {
     return Center(
         child: Platform.isIOS
             ? Container(
                 decoration: BoxDecoration(
                     color: grey.withAlpha(125),
                     borderRadius: const BorderRadius.all(Radius.circular(5))),
-                width: 30,
-                height: 30,
+                width: width,
+                height: height,
                 child: const CupertinoActivityIndicator())
-            : const SizedBox(
-                width: 20,
-                height: 20,
-                child: CircularProgressIndicator(
+            : SizedBox(
+                width: width,
+                height: height,
+                child: const CircularProgressIndicator(
                   backgroundColor: primaryColor,
                   semanticsLabel: 'Loading',
                   strokeWidth: 1.5,

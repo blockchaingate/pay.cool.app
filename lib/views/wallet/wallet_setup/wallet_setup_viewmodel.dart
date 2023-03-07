@@ -132,7 +132,7 @@ class WalletSetupViewmodel extends BaseViewModel {
                   constraints: BoxConstraints(
                       maxHeight: MediaQuery.of(context).size.height / 1.4),
                   child: LocalWebViewWidget(
-                      paycoolPrivacyUrl,
+                      '$paycoolWebsiteUrl${storageService.language}/privacy',
                       FlutterI18n.translate(context, "askPrivacyConsent"),
                       onProgress),
                 ),

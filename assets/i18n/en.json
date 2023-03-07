@@ -508,6 +508,7 @@
     "override": "Override",
     "sales": "Sales",
     "lisOfPrograms": "Programs",
-    "currentlyNoOtherPrograms": "Currently no other programs "
+    "currentlyNoOtherPrograms": "Currently no other programs ",
+    "refund": "Refund"
 
 }

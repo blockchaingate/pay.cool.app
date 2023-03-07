@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:paycool/constants/colors.dart';
@@ -172,7 +174,7 @@ class PayCoolTransactionHistoryView extends StatelessWidget {
                                           (model.transactions[index].id ==
                                               model.selectedTxOrderId)
                                       ? Positioned(
-                                          right: 10,
+                                          right: Platform.isIOS ? 5 : 10,
                                           bottom: 20,
                                           child: AnimatedContainer(
                                             curve:
@@ -208,15 +210,21 @@ class PayCoolTransactionHistoryView extends StatelessWidget {
                                                                     .first
                                                                     .txid !=
                                                                 null
-                                                            ? 'Refunded'
-                                                            : 'Refund Requested',
+                                                            ? FlutterI18n
+                                                                .translate(
+                                                                    context,
+                                                                    "Refunded")
+                                                            : FlutterI18n.translate(
+                                                                context,
+                                                                "Refund Requested"),
                                                         color: secondaryColor,
                                                         isBold: true),
                                                   )
                                                 : Padding(
                                                     padding:
                                                         const EdgeInsets.only(
-                                                            top: 15.0),
+                                                      top: 15.0,
+                                                    ),
                                                     child: ElevatedButton(
                                                         style:
                                                             generalButtonStyle(
@@ -233,7 +241,9 @@ class PayCoolTransactionHistoryView extends StatelessWidget {
                                                                         index]
                                                                     .address
                                                                     .toString()),
-                                                        child: Text('Refund')),
+                                                        child: Text(FlutterI18n
+                                                            .translate(context,
+                                                                "Refund"))),
                                                   ),
                                           ),
                                         )
