@@ -170,6 +170,8 @@ class LocalStorageService {
   String get language => _getFromDisk(AppLanguagesKey) ?? '';
   set language(String appLanguage) => _saveToDisk(AppLanguagesKey, appLanguage);
 
+  String get langCodeSC => language == 'zh' ? 'sc' : language;
+
 /*----------------------------------------------------------------------
                 Dark mode getter/setter
 ----------------------------------------------------------------------*/

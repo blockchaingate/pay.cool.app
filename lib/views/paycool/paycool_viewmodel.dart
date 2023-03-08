@@ -286,8 +286,8 @@ class PayCoolViewmodel extends FutureViewModel {
 
       var abiHex = generateGenericAbiHex(
           Constants.payCoolCreateAccountAbiCode, referralController.text);
-      var res =
-          await paycoolService.signSendTx(seed, abiHex, paycoolReferralAddress);
+      var res = await paycoolService.signSendTx(
+          seed!, abiHex, paycoolReferralAddress);
 
       if (res != null && res != '') {
         if (res == '0x1') {
@@ -355,7 +355,7 @@ class PayCoolViewmodel extends FutureViewModel {
       var seed = await walletService.getSeedDialog(sharedService.context);
       var res;
       for (var param in rewardInfoModel!.params!) {
-        res = await paycoolService.signSendTx(seed, param.data!, param.to!);
+        res = await paycoolService.signSendTx(seed!, param.data!, param.to!);
       }
       if (res == '0x1') {
         payOrderConfirmationPopup();

@@ -514,7 +514,7 @@ class SettingsContainer extends StatelessWidget {
                   recognizer: TapGestureRecognizer()
                     ..onTap = () {
                       model.sharedService.launchInBrowser(Uri.parse(
-                          '$paycoolWebsiteUrl${model.storageService.language}/privacy'));
+                          '$paycoolWebsiteUrl${model.storageService.langCodeSC}/privacy'));
                     },
                   text: FlutterI18n.translate(context, "privacyPolicy"),
                   style: Theme.of(context).textTheme.bodyLarge!.copyWith(

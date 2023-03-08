@@ -332,7 +332,7 @@ class FabUtils {
     var smartContractAddress = '';
     await coinService
         .getSmartContractAddressByTickerName(coinName)
-        .then((value) => smartContractAddress = value);
+        .then((value) => smartContractAddress = value!);
     var tokenBalance = 0.0;
     var tokenLockedBalance = 0.0;
     if (coinName == 'EXG' || coinName == 'CNB') {

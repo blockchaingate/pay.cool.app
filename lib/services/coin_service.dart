@@ -135,8 +135,8 @@ class CoinService {
 /*--------------------------------------------------------------------------
           Get smart contract address from file or database
 ------------------------------------------------------------------------- */
-  Future<String> getSmartContractAddressByTickerName(String tickerName) async {
-    String smartContractAddress = '';
+  Future<String?> getSmartContractAddressByTickerName(String tickerName) async {
+    String? smartContractAddress = '';
     int ct = 0;
 // check hardcoded list
     smartContractAddress =
@@ -151,7 +151,7 @@ class CoinService {
           .then((value) {
         if (value != null) {
           if (!value.startsWith('0x')) {
-            smartContractAddress = '0x' + value;
+            smartContractAddress = '0x$value';
           } else {
             smartContractAddress = value;
           }

@@ -1,6 +1,6 @@
 name: paycool
 description: Crypto payment application
-version: 2.3.105+156
+version: 2.3.106+158
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `pub publish`. This is preferred for private packages.

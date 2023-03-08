@@ -460,8 +460,8 @@ class WalletService {
                 Generate Seed
 ----------------------------------------------------------------------*/
 
-  Future<Uint8List> getSeedDialog(BuildContext context) async {
-    var seed;
+  Future<Uint8List?> getSeedDialog(BuildContext context) async {
+    Uint8List? seed;
     await dialogService
         .showDialog(
             title: FlutterI18n.translate(context, "enterPassword"),
@@ -475,9 +475,10 @@ class WalletService {
         seed = generateSeed(mnemonic);
       } else if (res.returnedText == 'Closed' && !res.confirmed) {
         log.e('Dialog Closed By User');
+        seed = null;
       } else {
         log.e('Wrong pass');
-
+        seed = null;
         sharedService.sharedSimpleNotification(
             FlutterI18n.translate(context, "pleaseProvideTheCorrectPassword"));
       }

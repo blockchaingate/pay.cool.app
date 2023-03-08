@@ -133,7 +133,8 @@ class ClubPackageCheckoutViewModel extends FutureViewModel {
 
     var res;
     var seed = await walletService.getSeedDialog(context!);
-    if (seed.isEmpty) {
+
+    if (seed == null) {
       setBusy(false);
       return;
     }
@@ -161,6 +162,8 @@ class ClubPackageCheckoutViewModel extends FutureViewModel {
         .then((res) {
       if (res.confirmed) {
         navigationService.navigateTo(clubDashboardViewRoute);
+      } else {
+        setBusy(false);
       }
     });
   }

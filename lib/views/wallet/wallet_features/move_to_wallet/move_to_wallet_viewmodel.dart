@@ -961,7 +961,7 @@ class MoveToWalletViewmodel extends BaseViewModel {
     String smartContractAddress = '';
     await coinService
         .getSmartContractAddressByTickerName(tickerName)
-        .then((value) => smartContractAddress = value);
+        .then((value) => smartContractAddress = value!);
 
     String balanceInfoABI = '70a08231';
 
@@ -985,13 +985,9 @@ class MoveToWalletViewmodel extends BaseViewModel {
     // if ((decimal != null) && (decimal > 0)) {
     //   tokenBalance = ((unlockInt) / BigInt.parse(pow(10, decimal).toString()));
     // } else {
-    tokenBalance =
-        NumberUtil.rawStringToDecimal(unlockInt.toString()).toDouble();
-    //   // debugPrint('tokenBalance for EXG==');
-    //   // debugPrint(tokenBalance);
-    // }
-
-    // }
+    tokenBalance = NumberUtil.rawStringToDecimal(unlockInt.toString(),
+            decimalPrecision: token.decimal!)
+        .toDouble();
 
     fabChainBalance = tokenBalance;
     debugPrint('$tickerName fab chain balance $fabChainBalance');
@@ -1019,8 +1015,8 @@ class MoveToWalletViewmodel extends BaseViewModel {
     } else {
       updateTickerForErc = walletInfo.tickerName!;
     }
-    ercSmartContractAddress = await coinService
-        .getSmartContractAddressByTickerName(updateTickerForErc);
+    ercSmartContractAddress = (await coinService
+        .getSmartContractAddressByTickerName(updateTickerForErc))!;
 
     await getEthTokenBalanceByAddress(
             officialAddress, updateTickerForErc, ercSmartContractAddress)

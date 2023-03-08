@@ -33,10 +33,10 @@ class NumberUtil {
     return result;
   }
 
-  static Decimal rawStringToDecimal(String raw, {int decimalPrecision = 18}) {
+  static Decimal rawStringToDecimal(String raw, {int? decimalPrecision = 18}) {
     if (raw.isNotEmpty) {
       Decimal amount = Decimal.parse(raw.toString());
-      var x = Decimal.fromInt((pow(10, decimalPrecision)).toInt());
+      var x = Decimal.fromInt((pow(10, decimalPrecision!)).toInt());
       Decimal result = (amount / x).toDecimal();
 
       return result;

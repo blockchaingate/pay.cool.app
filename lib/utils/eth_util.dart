@@ -94,7 +94,10 @@ Future getEthTokenBalanceByAddress(String address, String coinName,
     balanceIe8 = double.parse(balance['balance']) / 1e8;
     balance1e6 = double.parse(balance['balance']) / 1e6;
     tokenBalanceIe18 = double.parse(balance['balance']) / 1e18;
-  } catch (e) {}
+  } catch (err) {
+    debugPrint('getEthTokenBalanceByAddress CATCH $err');
+  }
+  ;
   return {
     'balance1e6': balance1e6,
     'balanceIe8': balanceIe8,

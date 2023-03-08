@@ -296,6 +296,7 @@ class SharedService {
   }
 
   Future<void> launchInBrowser(Uri url) async {
+    debugPrint('url $url');
     if (!await launchUrl(
       url,
       mode: LaunchMode.externalApplication,
@@ -306,7 +307,7 @@ class SharedService {
 
   Future<bool?> closeApp() async {
     return showDialog(
-        context: context!,
+        context: context,
         builder: (context) {
           return AlertDialog(
             elevation: 20,
