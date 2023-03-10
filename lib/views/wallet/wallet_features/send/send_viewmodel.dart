@@ -584,7 +584,7 @@ class SendViewModel extends BaseViewModel {
     if (!isTrx()) {
       gasPrice = int.tryParse(gasPriceTextController.text) ?? 0;
       gasLimit = int.tryParse(gasLimitTextController.text) ?? 0;
-      satoshisPerBytes = int.tryParse(satoshisPerByteTextController.text)!;
+      satoshisPerBytes = int.tryParse(satoshisPerByteTextController.text) ?? 0;
     }
     //await refreshBalance();
     if (toAddress == '') {

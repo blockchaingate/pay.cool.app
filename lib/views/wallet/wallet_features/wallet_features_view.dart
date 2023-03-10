@@ -336,7 +336,8 @@ class WalletFeaturesView extends StatelessWidget {
                         child: model.isBusy
                             ? SizedBox(
                                 height: 20,
-                                child: model.sharedService.loadingIndicator())
+                                child: model.sharedService.loadingIndicator(
+                                    isCustom: true, width: 15, height: 15))
                             : const Center(
                                 child: Icon(
                                   Icons.refresh,

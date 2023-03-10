@@ -2544,7 +2544,7 @@ class WalletService {
 
       txHex = '0x${HEX.encode(signed)}';
 
-      debugPrint('txHex in ETH=$txHex');
+      log.w(' txHex in sendtransaction ETH=$txHex');
       if (doSubmit) {
         var res = await _api.postEthTx(txHex);
         txHash = res['txHash'];

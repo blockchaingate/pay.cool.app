@@ -219,7 +219,15 @@ class SharedService {
 /* ---------------------------------------------------
         Loading indicator platform specific
 --------------------------------------------------- */
-  Widget loadingIndicator({double width = 30, double height = 30}) {
+  Widget loadingIndicator(
+      {double width = 30,
+      double height = 30,
+      bool isCustom = false,
+      double strokeWidth = 1.5}) {
+    if (!isCustom && Platform.isAndroid) {
+      width = 20;
+      height = 20;
+    }
     return Center(
         child: Platform.isIOS
             ? Container(
@@ -232,10 +240,10 @@ class SharedService {
             : SizedBox(
                 width: width,
                 height: height,
-                child: const CircularProgressIndicator(
+                child: CircularProgressIndicator(
                   backgroundColor: primaryColor,
                   semanticsLabel: 'Loading',
-                  strokeWidth: 1.5,
+                  strokeWidth: strokeWidth,
                   //  valueColor: AlwaysStoppedAnimation<Color>(secondaryColor)
                 ),
               ));
