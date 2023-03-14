@@ -25,7 +25,7 @@ Map devConfig = {
     "ETH": {
       "chain": 'ropsten',
       "hardfork": 'byzantium',
-      "chainId": 3,
+      "chainId": 5,
       "infura": "https://ropsten.infura.io/v3/6c5bdfe73ef54bbab0accf87a6b4b0ef",
       "gasPrice": 20,
       "gasPriceMax": 200,
