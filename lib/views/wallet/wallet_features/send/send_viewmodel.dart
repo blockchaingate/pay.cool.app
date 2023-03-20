@@ -321,7 +321,7 @@ class SendViewModel extends BaseViewModel {
         var ca;
         if (walletInfo.tickerName == 'USDTX') {
           // get trx-usdt contract address
-          ca = environment["addresses"]["smartContract"][tickerName];
+          ca = environment["addresses"]["smartContract"][tickerName] ?? '';
           if (ca == null) {
             await tokenListDatabaseService
                 .getByTickerName(tickerName)

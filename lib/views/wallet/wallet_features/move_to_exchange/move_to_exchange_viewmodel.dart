@@ -417,9 +417,10 @@ class MoveToExchangeViewModel extends BaseViewModel {
       // log.w('Big int amount $bigIntAmount');
       String contractAddr = '';
       if (walletInfo.tokenType!.isNotEmpty) {
-        contractAddr = environment["addresses"]["smartContract"][tickerName];
+        contractAddr =
+            environment["addresses"]["smartContract"][tickerName] ?? '';
       }
-      if (contractAddr == null && tokenType != '') {
+      if (contractAddr.isEmpty && tokenType != '') {
         log.i(
             '$tickerName with token type $tokenType contract is null so fetching from token database');
 

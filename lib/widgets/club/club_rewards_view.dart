@@ -31,292 +31,300 @@ class ClubRewardsView extends StatelessWidget {
         centerTitle: true,
         automaticallyImplyLeading: true,
       ),
-      body: Container(
-        decoration: BoxDecoration(image: blurBackgroundImage()),
-        child:
-            // clubRewardsArgs.summary.first.totalReward.isEmpty ||
-            //         clubRewardsArgs.summary.first.totalReward.first.coin == null
-            //     ? Center(
-            //         child: Image.asset(
-            //           "assets/images/img/rewards.png",
-            //           width: 25,
-            //           height: 25,
-            //         ),
-            //       )
-            //     :
-            Container(
-          margin: const EdgeInsets.all(8),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              UIHelper.verticalSpaceSmall,
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    customText(
-                        text: FlutterI18n.translate(context, "totalRewards"),
-                        style: headText2,
-                        color: green),
-                    UIHelper.horizontalSpaceSmall,
-                    customText(
-                        text: '\$${clubRewardsArgs.totalRewardsDollarValue}',
-                        style: headText2)
-                  ],
+      body: InteractiveViewer(
+        child: Container(
+          decoration: BoxDecoration(image: blurBackgroundImage()),
+          child:
+              // clubRewardsArgs.summary.first.totalReward.isEmpty ||
+              //         clubRewardsArgs.summary.first.totalReward.first.coin == null
+              //     ? Center(
+              //         child: Image.asset(
+              //           "assets/images/img/rewards.png",
+              //           width: 25,
+              //           height: 25,
+              //         ),
+              //       )
+              //     :
+              Container(
+            margin: const EdgeInsets.all(8),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                UIHelper.verticalSpaceSmall,
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      customText(
+                          text: FlutterI18n.translate(context, "totalRewards"),
+                          style: headText2,
+                          color: green),
+                      UIHelper.horizontalSpaceSmall,
+                      customText(
+                          text: '\$${clubRewardsArgs.totalRewardsDollarValue}',
+                          style: headText2)
+                    ],
+                  ),
                 ),
-              ),
-              UIHelper.verticalSpaceMedium,
-              Expanded(
-                  child: ListView.separated(
-                      shrinkWrap: true,
-                      itemCount: clubRewardsArgs.summary.length,
-                      separatorBuilder: (BuildContext context, int index) =>
-                          const Divider(
-                            height: 15,
-                          ),
-                      itemBuilder: (BuildContext context, int index) {
-                        String memberType() {
-                          if (clubRewardsArgs.summary.first.project!.en ==
-                              'Paycool') {
-                            if (clubRewardsArgs.summary.first.status == 1) {
-                              return FlutterI18n.translate(context, "member");
+                UIHelper.verticalSpaceMedium,
+                Expanded(
+                    child: ListView.separated(
+                        shrinkWrap: true,
+                        itemCount: clubRewardsArgs.summary.length,
+                        separatorBuilder: (BuildContext context, int index) =>
+                            const Divider(
+                              height: 15,
+                            ),
+                        itemBuilder: (BuildContext context, int index) {
+                          String memberType() {
+                            if (clubRewardsArgs.summary.first.project!.en ==
+                                'Paycool') {
+                              if (clubRewardsArgs.summary.first.status == 1) {
+                                return FlutterI18n.translate(context, "member");
+                              } else {
+                                return FlutterI18n.translate(
+                                    context, "vipMember");
+                              }
                             } else {
-                              return FlutterI18n.translate(
-                                  context, "vipMember");
-                            }
-                          } else {
-                            if (clubRewardsArgs.summary[index].status == 0) {
-                              return FlutterI18n.translate(
-                                  context, "noPartner");
-                            } else if (clubRewardsArgs.summary[index].status ==
-                                1) {
-                              return FlutterI18n.translate(
-                                  context, "basicPartner");
-                            } else if (clubRewardsArgs.summary[index].status ==
-                                2) {
-                              return FlutterI18n.translate(
-                                  context, "juniorPartner");
-                            } else if (clubRewardsArgs.summary[index].status ==
-                                3) {
-                              return FlutterI18n.translate(
-                                  context, "seniorPartner");
-                            } else if (clubRewardsArgs.summary[index].status ==
-                                4) {
-                              return FlutterI18n.translate(
-                                  context, "executivePartner");
-                            } else {
-                              return FlutterI18n.translate(
-                                  context, "noPartner");
+                              if (clubRewardsArgs.summary[index].status == 0) {
+                                return FlutterI18n.translate(
+                                    context, "noPartner");
+                              } else if (clubRewardsArgs
+                                      .summary[index].status ==
+                                  1) {
+                                return FlutterI18n.translate(
+                                    context, "basicPartner");
+                              } else if (clubRewardsArgs
+                                      .summary[index].status ==
+                                  2) {
+                                return FlutterI18n.translate(
+                                    context, "juniorPartner");
+                              } else if (clubRewardsArgs
+                                      .summary[index].status ==
+                                  3) {
+                                return FlutterI18n.translate(
+                                    context, "seniorPartner");
+                              } else if (clubRewardsArgs
+                                      .summary[index].status ==
+                                  4) {
+                                return FlutterI18n.translate(
+                                    context, "executivePartner");
+                              } else {
+                                return FlutterI18n.translate(
+                                    context, "noPartner");
+                              }
                             }
                           }
-                        }
 
-                        return clubRewardsArgs.summary[index].status != 0
-                            ? Container(
-                                margin: const EdgeInsets.all(5.0),
-                                padding: const EdgeInsets.all(10.0),
-                                decoration:
-                                    roundedBoxDecoration(color: secondaryColor),
-                                child: Column(
-                                  children: [
-                                    ListTile(
-                                      onTap: () => showRewardDistributionDialog(
-                                          context, index),
-                                      horizontalTitleGap: 0,
-                                      leading: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Container(
-                                            width: 57,
-                                            margin: const EdgeInsets.only(
-                                                right: 10),
-                                            child: Padding(
-                                                padding: const EdgeInsets.only(
-                                                    top: 8.0),
-                                                child: Text(memberType(),
-                                                    maxLines: 2,
-                                                    style: headText5.copyWith(
-                                                      color: primaryColor,
-                                                    ))),
-                                          ),
-                                        ],
-                                      ),
-                                      title: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Text(
-                                          storageService.language == "en"
-                                              ? clubRewardsArgs
-                                                  .summary[index].project!.en!
-                                              : clubRewardsArgs
-                                                  .summary[index].project!.sc!,
-                                          style: headText4,
-                                        ),
-                                      ),
-                                      trailing: clubRewardsArgs.summary[index]
-                                                      .rewardDistribution ==
-                                                  null ||
-                                              clubRewardsArgs.summary[index]
-                                                  .totalReward!.isEmpty ||
-                                              clubRewardsArgs.summary.first
-                                                      .project!.en ==
-                                                  'Paycool'
-                                          ? Row(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: const [])
-                                          : Row(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                UIHelper.horizontalSpaceSmall,
-                                                Text(
-                                                  FlutterI18n.translate(
-                                                      context, "details"),
-                                                  style: headText5.copyWith(
-                                                      color: primaryColor,
-                                                      decoration: TextDecoration
-                                                          .underline),
-                                                )
-                                              ],
+                          return clubRewardsArgs.summary[index].status != 0
+                              ? Container(
+                                  margin: const EdgeInsets.all(5.0),
+                                  padding: const EdgeInsets.all(10.0),
+                                  decoration: roundedBoxDecoration(
+                                      color: secondaryColor),
+                                  child: Column(
+                                    children: [
+                                      ListTile(
+                                        onTap: () =>
+                                            showRewardDistributionDialog(
+                                                context, index),
+                                        horizontalTitleGap: 0,
+                                        leading: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Container(
+                                              width: 57,
+                                              margin: const EdgeInsets.only(
+                                                  right: 10),
+                                              child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          top: 8.0),
+                                                  child: Text(memberType(),
+                                                      maxLines: 2,
+                                                      style: headText5.copyWith(
+                                                        color: primaryColor,
+                                                      ))),
                                             ),
-                                    ),
-                                    // Rewards
-                                    Container(
-                                      margin: const EdgeInsets.symmetric(
-                                          vertical: 8, horizontal: 10),
-                                      color: white,
-                                      height: clubRewardsArgs
-                                                  .summary.first.project!.en ==
-                                              'Paycool'
-                                          ? 50
-                                          : 130,
-                                      child:
-                                          clubRewardsArgs.summary[index]
-                                                  .totalReward!.isEmpty
-                                              ? Container()
-                                              : ListView.builder(
-                                                  itemCount: clubRewardsArgs
-                                                      .summary[index]
-                                                      .totalReward!
-                                                      .length,
-                                                  itemBuilder: ((context, j) {
-                                                    var selectedPrice =
-                                                        clubRewardsArgs
-                                                                .rewardTokenPriceMap![
-                                                            clubRewardsArgs
-                                                                .summary[index]
-                                                                .totalReward![j]
-                                                                .coin];
-                                                    return clubRewardsArgs
-                                                                .summary[index]
-                                                                .totalReward![j]
-                                                                .coin ==
-                                                            null
-                                                        ? Container()
-                                                        : Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                    .all(8.0),
-                                                            child: Row(
-                                                              children: [
-                                                                Expanded(
-                                                                  flex: 1,
-                                                                  child:
-                                                                      Padding(
-                                                                    padding: const EdgeInsets
-                                                                            .symmetric(
-                                                                        vertical:
-                                                                            4.0),
-                                                                    child: Text(
-                                                                      clubRewardsArgs
-                                                                          .summary[
-                                                                              index]
-                                                                          .totalReward![
-                                                                              j]
-                                                                          .coin!,
-                                                                      style:
-                                                                          headText6,
+                                          ],
+                                        ),
+                                        title: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Text(
+                                            storageService.language == "en"
+                                                ? clubRewardsArgs
+                                                    .summary[index].project!.en!
+                                                : clubRewardsArgs.summary[index]
+                                                    .project!.sc!,
+                                            style: headText4,
+                                          ),
+                                        ),
+                                        trailing: clubRewardsArgs.summary[index]
+                                                        .rewardDistribution ==
+                                                    null ||
+                                                clubRewardsArgs.summary[index]
+                                                    .totalReward!.isEmpty ||
+                                                clubRewardsArgs.summary.first
+                                                        .project!.en ==
+                                                    'Paycool'
+                                            ? Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: const [])
+                                            : Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  UIHelper.horizontalSpaceSmall,
+                                                  Text(
+                                                    FlutterI18n.translate(
+                                                        context, "details"),
+                                                    style: headText5.copyWith(
+                                                        color: primaryColor,
+                                                        decoration:
+                                                            TextDecoration
+                                                                .underline),
+                                                  )
+                                                ],
+                                              ),
+                                      ),
+                                      // Rewards
+                                      Container(
+                                        margin: const EdgeInsets.symmetric(
+                                            vertical: 8, horizontal: 10),
+                                        color: white,
+                                        height: clubRewardsArgs.summary.first
+                                                    .project!.en ==
+                                                'Paycool'
+                                            ? 50
+                                            : 130,
+                                        child:
+                                            clubRewardsArgs.summary[index]
+                                                    .totalReward!.isEmpty
+                                                ? Container()
+                                                : ListView.builder(
+                                                    itemCount: clubRewardsArgs
+                                                        .summary[index]
+                                                        .totalReward!
+                                                        .length,
+                                                    itemBuilder: ((context, j) {
+                                                      var selectedPrice =
+                                                          clubRewardsArgs
+                                                                  .rewardTokenPriceMap![
+                                                              clubRewardsArgs
+                                                                  .summary[
+                                                                      index]
+                                                                  .totalReward![
+                                                                      j]
+                                                                  .coin];
+                                                      return clubRewardsArgs
+                                                                  .summary[
+                                                                      index]
+                                                                  .totalReward![
+                                                                      j]
+                                                                  .coin ==
+                                                              null
+                                                          ? Container()
+                                                          : Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .all(8.0),
+                                                              child: Row(
+                                                                children: [
+                                                                  Expanded(
+                                                                    flex: 1,
+                                                                    child:
+                                                                        Padding(
+                                                                      padding: const EdgeInsets
+                                                                              .symmetric(
+                                                                          vertical:
+                                                                              4.0),
+                                                                      child:
+                                                                          Text(
+                                                                        clubRewardsArgs
+                                                                            .summary[index]
+                                                                            .totalReward![j]
+                                                                            .coin!,
+                                                                        style:
+                                                                            headText6,
+                                                                      ),
                                                                     ),
                                                                   ),
-                                                                ),
-                                                                Expanded(
-                                                                  flex: 3,
-                                                                  child: Column(
-                                                                      mainAxisSize:
-                                                                          MainAxisSize
-                                                                              .min,
-                                                                      mainAxisAlignment:
-                                                                          MainAxisAlignment
-                                                                              .start,
-                                                                      crossAxisAlignment:
-                                                                          CrossAxisAlignment
-                                                                              .start,
-                                                                      children: [
-                                                                        // AMOUNT
-                                                                        // clubRewardsArgs
-                                                                        //         .summary[
-                                                                        //             index]
-                                                                        //         .totalReward![
-                                                                        //             j]
-                                                                        //         .coin!
-                                                                        //         .contains(
-                                                                        //             '-')
-                                                                        //     ? Text(
-                                                                        //         '${NumberUtil.rawStringToDecimal(clubRewardsArgs.summary[index].totalReward![j].amount.toString())}',
-                                                                        //         maxLines:
-                                                                        //             2,
-                                                                        //         style: headText6.copyWith(
-                                                                        //             color: green,
-                                                                        //             fontWeight: FontWeight.bold),
-                                                                        //       )
-                                                                        //     :
-                                                                        Text(
-                                                                          NumberUtil.decimalLimiter(clubRewardsArgs.summary[index].totalReward![j].amount!, decimalPrecision: 18)
-                                                                              .toString(),
-                                                                          style: headText6.copyWith(
-                                                                              color: green,
-                                                                              fontWeight: FontWeight.bold),
-                                                                        ),
-                                                                        // USD VALUE
-                                                                        // clubRewardsArgs
-                                                                        //         .summary[
-                                                                        //             index]
-                                                                        //         .totalReward![
-                                                                        //             j]
-                                                                        //         .coin!
-                                                                        //         .contains(
-                                                                        //             '-')
-                                                                        //     ? Text(
-                                                                        //         '\$${NumberUtil.decimalLimiter(NumberUtil.rawStringToDecimal(clubRewardsArgs.summary[index].totalReward![j].amount.toString()) * selectedPrice!)}',
-                                                                        //         maxLines:
-                                                                        //             2,
-                                                                        //         overflow:
-                                                                        //             TextOverflow.ellipsis,
-                                                                        //         style: headText6.copyWith(
-                                                                        //             color: green,
-                                                                        //             fontWeight: FontWeight.bold),
-                                                                        //       )
-                                                                        //     :
-                                                                        Text(
-                                                                          '\$${NumberUtil.decimalLimiter((clubRewardsArgs.summary[index].totalReward![j].amount)! * selectedPrice!)}',
-                                                                          maxLines:
-                                                                              2,
-                                                                          style: headText6.copyWith(
-                                                                              color: green,
-                                                                              fontWeight: FontWeight.bold),
-                                                                        ),
-                                                                      ]),
-                                                                )
-                                                              ],
-                                                            ),
-                                                          );
-                                                  })),
-                                    ),
-                                  ],
-                                ),
-                              )
-                            : Container();
-                      }))
-            ],
+                                                                  Expanded(
+                                                                    flex: 3,
+                                                                    child: Column(
+                                                                        mainAxisSize:
+                                                                            MainAxisSize
+                                                                                .min,
+                                                                        mainAxisAlignment:
+                                                                            MainAxisAlignment
+                                                                                .start,
+                                                                        crossAxisAlignment:
+                                                                            CrossAxisAlignment.start,
+                                                                        children: [
+                                                                          // AMOUNT
+                                                                          // clubRewardsArgs
+                                                                          //         .summary[
+                                                                          //             index]
+                                                                          //         .totalReward![
+                                                                          //             j]
+                                                                          //         .coin!
+                                                                          //         .contains(
+                                                                          //             '-')
+                                                                          //     ? Text(
+                                                                          //         '${NumberUtil.rawStringToDecimal(clubRewardsArgs.summary[index].totalReward![j].amount.toString())}',
+                                                                          //         maxLines:
+                                                                          //             2,
+                                                                          //         style: headText6.copyWith(
+                                                                          //             color: green,
+                                                                          //             fontWeight: FontWeight.bold),
+                                                                          //       )
+                                                                          //     :
+                                                                          Text(
+                                                                            NumberUtil.decimalLimiter(clubRewardsArgs.summary[index].totalReward![j].amount!, decimalPrecision: 18).toString(),
+                                                                            style:
+                                                                                headText6.copyWith(color: green, fontWeight: FontWeight.bold),
+                                                                          ),
+                                                                          // USD VALUE
+                                                                          // clubRewardsArgs
+                                                                          //         .summary[
+                                                                          //             index]
+                                                                          //         .totalReward![
+                                                                          //             j]
+                                                                          //         .coin!
+                                                                          //         .contains(
+                                                                          //             '-')
+                                                                          //     ? Text(
+                                                                          //         '\$${NumberUtil.decimalLimiter(NumberUtil.rawStringToDecimal(clubRewardsArgs.summary[index].totalReward![j].amount.toString()) * selectedPrice!)}',
+                                                                          //         maxLines:
+                                                                          //             2,
+                                                                          //         overflow:
+                                                                          //             TextOverflow.ellipsis,
+                                                                          //         style: headText6.copyWith(
+                                                                          //             color: green,
+                                                                          //             fontWeight: FontWeight.bold),
+                                                                          //       )
+                                                                          //     :
+                                                                          Text(
+                                                                            '\$${NumberUtil.decimalLimiter((clubRewardsArgs.summary[index].totalReward![j].amount)! * selectedPrice!)}',
+                                                                            maxLines:
+                                                                                2,
+                                                                            style:
+                                                                                headText6.copyWith(color: green, fontWeight: FontWeight.bold),
+                                                                          ),
+                                                                        ]),
+                                                                  )
+                                                                ],
+                                                              ),
+                                                            );
+                                                    })),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              : Container();
+                        }))
+              ],
+            ),
           ),
         ),
       ),

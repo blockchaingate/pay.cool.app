@@ -140,7 +140,7 @@ class CoinService {
     int ct = 0;
 // check hardcoded list
     smartContractAddress =
-        environment["addresses"]["smartContract"][tickerName];
+        environment["addresses"]["smartContract"][tickerName] ?? '';
     if (smartContractAddress == null) {
       // check local DB
       await getCoinTypeByTickerName(tickerName).then((value) => ct = value);
