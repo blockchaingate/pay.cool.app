@@ -60,8 +60,8 @@ class PayCoolClubModel {
         imageUrl: json['imageUrl'] as String,
         name: json['name'] as String,
         titleLan: (json['titleLan'] as List<dynamic>)
-            ?.map((e) => LocalizeText.fromJson(e))
-            ?.toList(),
+            .map((e) => LocalizeText.fromJson(e))
+            .toList(),
         subTitleLan: json['subTitleLan'] as List<dynamic>,
         grade: json['grade'] as List<dynamic>,
         keyNodeAvailable: json['KeyNodeAvailable']);

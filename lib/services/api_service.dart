@@ -14,7 +14,9 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:paycool/constants/constants.dart';
 import 'package:paycool/models/wallet/wallet_transaction_history_model.dart';
+import 'package:paycool/views/lightning-remit/lightning_remit_transfer_history_model.dart';
 
 import '../constants/api_routes.dart';
 import '../logger.dart';
@@ -291,58 +293,38 @@ class ApiService {
 /*----------------------------------------------------------------------
                 Get Bindpay History
 ----------------------------------------------------------------------*/
-  Future getBindpayHistoryEvents() async {
-    String fabAddress = '';
+  Future<LightningRemitHistoryModel> getLightningRemitHistoryEvents(
+      String url, String fabAddress,
+      {int pageSize = 10, int pageNumber = 0}) async {
+    LightningRemitHistoryModel transferHistory = LightningRemitHistoryModel();
 
-    List<TransactionHistory> transactionHistory = [];
-    await coreWalletDatabaseService
-        .getWalletAddressByTickerName('FAB')
-        .then((address) => fabAddress = address);
+    Map<String, dynamic> body = {
+      "fabAddress": fabAddress.toString(),
+      "pageSize": pageSize,
+      "pageNum": pageNumber
+    };
 
-    String url = configService.getKanbanBaseUrl() + BindpayTxHHistoryApiRoute;
-    Map<String, dynamic> body = {"fabAddress": fabAddress};
-
-    log.i('getBindpayHistoryEvents url $url -- body $body');
+    log.i('getLightningRemitHistoryEvents url $url -- body $body');
 
     try {
-      var response = await client.post(Uri.parse(url), body: body);
+      var response = await client.post(Uri.parse(url),
+          headers: Constants.headersJson, body: jsonEncode(body));
 
       var json = jsonDecode(response.body);
       if (json != null) {
         log.w('getBindpayHistoryEvents json $json}');
         if (json['success']) {
           //   log.e('getTransactionHistoryEvents json ${json['data']}');
-          var data = json['data'] as List;
+          transferHistory = LightningRemitHistoryModel.fromJson(json['data']);
 
-          for (var element in data) {
-            var holder = PayCoolHistory.fromJson(element);
-            debugPrint(holder.toJson().toString());
-            var timestamp = holder.time;
-
-            var date = DateTime.fromMillisecondsSinceEpoch(timestamp! * 1000)
-                .toLocal();
-            String filteredDate =
-                date.toString().substring(0, date.toString().length - 4);
-
-            TransactionHistory tx = TransactionHistory(
-                tickerChainTxStatus: holder.status.toString(),
-                tag: holder.type.toString(),
-                tickerChainTxId: holder.txid,
-                date: filteredDate,
-                tickerName: holder.coin.toString(),
-                quantity: holder.amount);
-
-            transactionHistory.add(tx);
-          }
-
-          for (var element in transactionHistory) {
-            log.e('getTransactionHistoryEvents length ${element.toJson()}');
-          }
+          log.e(
+              'getLightningRemitHistoryEvents totalCount ${transferHistory.totalCount}');
         }
       }
-      return transactionHistory;
+
+      return transferHistory;
     } catch (err) {
-      log.e('getTransactionHistoryEvents CATCH $err');
+      log.e('getLightningRemitHistoryEvents CATCH $err');
 
       throw Exception(err);
     }

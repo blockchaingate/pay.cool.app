@@ -14,4 +14,13 @@ class PaginationModel {
   String toString() {
     return 'pageNumber: $pageNumber - pageSize: $pageSize - pages length: ${pages.length} -- totalPages:$totalPages';
   }
+
+  getTotalPages(Future<int> Function() getTotal) async {
+    int total = await getTotal();
+    totalPages = (total / pageSize).ceil();
+  }
+
+  setTotalPages(int total) {
+    totalPages = (total / pageSize).ceil();
+  }
 }

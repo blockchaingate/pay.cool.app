@@ -35,11 +35,9 @@ class PayCoolRewardsViewModel extends FutureViewModel
   void onData(data) async {
     setBusy(true);
     paymentRewards = data;
+    await paginationModel
+        .getTotalPages(() => payCoolService.getPaymentRewardCount(fabAddress));
 
-    _totalRewardListCount =
-        await payCoolService.getPaymentRewardCount(fabAddress);
-    paginationModel.totalPages =
-        (_totalRewardListCount / paginationModel.pageSize).ceil();
     paginationModel.pages = [];
     paginationModel.pages.addAll(paymentRewards);
     log.i('paginationModel ${paginationModel.toString()}');

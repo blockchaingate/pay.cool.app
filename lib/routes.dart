@@ -18,7 +18,7 @@ import 'package:paycool/views/paycool_club/checkout/club_package_checkout_view.d
 import 'package:paycool/views/paycool_club/club_projects/club_project_details/club_project_details_view.dart';
 import 'package:paycool/widgets/club/club_rewards_view.dart';
 import 'constants/route_names.dart';
-import 'views/lightning-remit/lightning-remit_view.dart';
+import 'views/lightning-remit/lightning_remit_view.dart';
 import 'views/paycool_club/club_projects/club_package_details_view.dart';
 import 'views/paycool_club/referral/referral_view.dart';
 import 'views/settings/settings_view.dart';

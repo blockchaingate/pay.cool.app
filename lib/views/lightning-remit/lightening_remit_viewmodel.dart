@@ -8,6 +8,7 @@ import 'package:paycool/logger.dart';
 import 'package:paycool/models/wallet/exchange_balance_model.dart';
 import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/api_service.dart';
+import 'package:paycool/services/config_service.dart';
 import 'package:paycool/services/db/transaction_history_database_service.dart';
 import 'package:paycool/services/db/wallet_database_service.dart';
 import 'package:paycool/services/local_dialog_service.dart';
@@ -21,6 +22,8 @@ import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:paycool/views/lightning-remit/lightning_remit_transfer_history_model.dart';
+import 'package:paycool/widgets/pagination/pagination_model.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:paycool/utils/barcode_util.dart';
 import 'package:paycool/services/local_storage_service.dart';
@@ -48,6 +51,7 @@ class LightningRemitViewmodel extends FutureViewModel {
   WalletDatabaseService walletDataBaseService =
       locator<WalletDatabaseService>();
   WalletService walletService = locator<WalletService>();
+  final configService = locator<ConfigService>();
   String tickerName = '';
   BuildContext? context;
   double quantity = 0.0;
@@ -61,7 +65,8 @@ class LightningRemitViewmodel extends FutureViewModel {
   bool isShowBottomSheet = false;
   List<ExchangeBalanceModel> exchangeBalances = [];
 
-  List<TransactionHistory> transactionHistory = [];
+  PaginationModel paginationModel = PaginationModel();
+  LightningRemitHistoryModel transferHistory = LightningRemitHistoryModel();
 
 /*----------------------------------------------------------------------
                     Default Future to Run
@@ -115,19 +120,36 @@ class LightningRemitViewmodel extends FutureViewModel {
     // getBindpayTransactionHistory();
   }
 
+  getPaginationTransactions(int pageNumber) async {
+    setBusy(true);
+    paginationModel.pageNumber = pageNumber;
+    await geTransactionstHistory();
+
+    setBusy(false);
+  }
+
   // get all LightningRemit transactions
 
-  getBindpayTransactionHistory() async {
+  geTransactionstHistory() async {
     setBusy(true);
-    transactionHistory = [];
-    await apiService.getBindpayHistoryEvents().then((res) {
-      res.forEach((tx) {
-        transactionHistory.add(tx);
-      });
-      log.w('LightningRemit txs ${transactionHistory.length}');
-      transactionHistory.sort((a, b) => DateTime.parse(b.date.toString())
-          .compareTo(DateTime.parse(a.date.toString())));
+    transferHistory.history = [];
+    String fabAddress =
+        await sharedService.getFabAddressFromCoreWalletDatabase();
+    String url =
+        '${configService.getKanbanBaseUrl()}v2/$BindpayTxHHistoryApiRoute';
+    await apiService
+        .getLightningRemitHistoryEvents(url, fabAddress,
+            pageNumber: paginationModel.pageNumber,
+            pageSize: paginationModel.pageSize)
+        .then((th) {
+      transferHistory = th;
     });
+    paginationModel.setTotalPages(transferHistory.totalCount);
+    paginationModel.pages = transferHistory.history;
+    log.w('LightningRemit count ${transferHistory.totalCount}');
+    transferHistory.history.sort((a, b) => DateTime.parse(b.date.toString())
+        .compareTo(DateTime.parse(a.date.toString())));
+
     setBusy(false);
   }
 

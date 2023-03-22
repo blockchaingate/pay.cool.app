@@ -1,24 +1,25 @@
+import '../../utils/string_util.dart';
+
 class WalletTransactionHistory {
   String? tag;
   String? tickerName;
   String? date;
   String? quantity;
-  List<Transactions>? transactions;
+  List<ExgWalletTransactions>? transactions;
 
   WalletTransactionHistory(
       {this.tag, this.tickerName, this.date, this.quantity, this.transactions});
 
   WalletTransactionHistory.fromJson(Map<String, dynamic> json) {
-    var localDate =
-        DateTime.fromMillisecondsSinceEpoch(json['timestamp'] * 1000).toLocal();
+  
     tag = json['action'];
     tickerName = json['coin'];
-    date = localDate.toString().substring(0, localDate.toString().length - 4);
+    date = StringUtils.localDateFromMilliseconds(json['timestamp'], removeLast4Chars: true),;
     quantity = json['quantity'];
     if (json['transactions'] != null) {
-      transactions = <Transactions>[];
+      transactions = <ExgWalletTransactions>[];
       json['transactions'].forEach((v) {
-        transactions!.add(Transactions.fromJson(v));
+        transactions!.add(ExgWalletTransactions.fromJson(v));
       });
     }
   }
@@ -36,15 +37,15 @@ class WalletTransactionHistory {
   }
 }
 
-class Transactions {
+class ExgWalletTransactions {
   String? chain;
   String? transactionId;
   int? timestamp;
   String? status;
 
-  Transactions({this.chain, this.transactionId, this.timestamp, this.status});
+  ExgWalletTransactions({this.chain, this.transactionId, this.timestamp, this.status});
 
-  Transactions.fromJson(Map<String, dynamic> json) {
+  ExgWalletTransactions.fromJson(Map<String, dynamic> json) {
     chain = json['chain'];
     transactionId = json['transactionId'];
     timestamp = json['timestamp'];

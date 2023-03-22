@@ -4,6 +4,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:paycool/views/lightning-remit/lightning_remit_transactions_history.view.dart';
 import 'package:stacked/stacked.dart';
 
 import 'package:paycool/constants/colors.dart';
@@ -480,14 +481,12 @@ class LightningRemitView extends StatelessWidget {
                           style: generalButtonStyle(black),
                           onPressed: () async {
                             if (!model.isBusy) {
-                              await model.getBindpayTransactionHistory();
+                              await model.geTransactionstHistory();
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (_) => TxHistoryView(
-                                          transactionHistory:
-                                              model.transactionHistory,
-                                          model: model)));
+                                      builder: (_) =>
+                                          LightningRemitTransactionHistoryView()));
                             }
                           },
                           child: Row(
@@ -599,138 +598,3 @@ class CoinListBottomSheetFloatingActionButton extends StatelessWidget {
 
 // transaction history
 
-class TxHistoryView extends StatelessWidget {
-  final List<TransactionHistory>? transactionHistory;
-  final LightningRemitViewmodel? model;
-  const TxHistoryView({this.transactionHistory, this.model});
-  @override
-  Widget build(BuildContext context) {
-    /*----------------------------------------------------------------------
-                    Copy Order
-----------------------------------------------------------------------*/
-
-    return Scaffold(
-      appBar: customAppBarWithTitle(
-          FlutterI18n.translate(context, "transactionHistory")),
-      body: SingleChildScrollView(
-        child: Container(
-            padding: const EdgeInsets.all(4.0),
-            child: Column(
-              children: <Widget>[
-                for (var transaction in transactionHistory!)
-                  Card(
-                    elevation: 4,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 8.0, horizontal: 4.0),
-                      color: secondaryColor,
-                      child: Row(
-                        children: <Widget>[
-                          SizedBox(
-                            width: 45,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: 3.0),
-                                  child: Text(transaction.tickerName.toString(),
-                                      style: subText2),
-                                ),
-                                // icon
-                                transaction.tag == 'send'
-                                    ? const Icon(
-                                        FontAwesomeIcons.arrowRight,
-                                        size: 11,
-                                        color: sellPrice,
-                                      )
-                                    : const Icon(
-                                        Icons.arrow_downward,
-                                        size: 18,
-                                        color: buyPrice,
-                                      ),
-                              ],
-                            ),
-                          ),
-                          UIHelper.horizontalSpaceSmall,
-                          Container(
-                            //  width: 200,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    SizedBox(
-                                      width: MediaQuery.of(context).size.width /
-                                          2.5,
-                                      child: RichText(
-                                        overflow: TextOverflow.ellipsis,
-                                        text: TextSpan(
-                                            text: transaction.tickerChainTxId,
-                                            style: subText2.copyWith(
-                                                decoration:
-                                                    TextDecoration.underline,
-                                                color: primaryColor),
-                                            recognizer: TapGestureRecognizer()
-                                              ..onTap = () {
-                                                model!.copyAddress(transaction
-                                                    .tickerChainTxId
-                                                    .toString());
-                                                model!.openExplorer(transaction
-                                                    .tickerChainTxId
-                                                    .toString());
-                                              }),
-                                      ),
-                                    ),
-                                    IconButton(
-                                      icon: const Icon(Icons.copy_outlined,
-                                          color: black, size: 16),
-                                      onPressed: () => model!.copyAddress(
-                                          transaction.tickerChainTxId
-                                              .toString()),
-                                    )
-                                  ],
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 5.0),
-                                  child: Text(
-                                    transaction.date!.substring(0, 19),
-                                    style: headText5.copyWith(
-                                        fontWeight: FontWeight.w400),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          UIHelper.horizontalSpaceSmall,
-                          UIHelper.horizontalSpaceSmall,
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text(FlutterI18n.translate(context, "quantity"),
-                                  style: subText2),
-                              Text(
-                                transaction.quantity!.toStringAsFixed(
-                                    // model
-                                    //   .decimalConfig
-                                    //   .quantityDecimal
-                                    2),
-                                style: headText5.copyWith(
-                                    fontWeight: FontWeight.w400),
-                              )
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-              ],
-            )),
-      ),
-    );
-  }
-}

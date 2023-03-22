@@ -1,6 +1,11 @@
 import 'package:decimal/decimal.dart';
 
 class Constants {
+  static Map<String, String> headersText = {"responseType;": "text"};
+  static Map<String, String> headersJson = {
+    'Content-Type': 'application/json; charset=UTF-8',
+  };
+
   static Decimal decimalZero = Decimal.zero;
   static int clubProjectExpireDays = 7;
   static int tronUsdtFee = 40;

@@ -52,6 +52,19 @@ class StringUtils {
   static List<int> hexToBytes(String source) {
     return HEX.decode(source);
   }
+
+  static String localDateFromMilliseconds(int milliseconds,
+      {bool removeLast4Chars = false}) {
+    var date =
+        DateTime.fromMillisecondsSinceEpoch(milliseconds * 1000).toLocal();
+    debugPrint('dateFromMilliseconds string ${date.toString().length}');
+    String finalDate = '';
+    removeLast4Chars
+        ? finalDate = date.toString().substring(0, date.toString().length - 4)
+        : finalDate = date.toString();
+    debugPrint('dateFromMilliseconds string ${finalDate.toString()}');
+    return finalDate;
+  }
 }
 
 String getLast64CharAbiHex(String abiHex) {

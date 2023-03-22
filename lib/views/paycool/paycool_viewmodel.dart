@@ -386,24 +386,6 @@ class PayCoolViewmodel extends FutureViewModel {
     });
   }
 
-/*----------------------------------------------------------------------
-                          Tx history
-----------------------------------------------------------------------*/
-
-  getPayCoolTransactionHistory() async {
-    setBusy(true);
-    transactionHistory = [];
-    await apiService.getBindpayHistoryEvents().then((res) {
-      res.forEach((tx) {
-        transactionHistory.add(tx);
-      });
-      log.w('LightningRemit txs ${transactionHistory.length}');
-      transactionHistory.sort((a, b) => DateTime.parse(b.date.toString())
-          .compareTo(DateTime.parse(a.date.toString())));
-    });
-    setBusy(false);
-  }
-
   // launch url
   openExplorer(String txId) async {
     String exchangilyExplorerUrl = ExchangilyExplorerUrl + txId;
