@@ -64,8 +64,13 @@ class ClubPackageCheckoutView extends StatelessWidget {
                       ? Center(
                           child: Column(
                           children: [
-                            Text(
-                              FlutterI18n.translate(context, "genericError"),
+                            Container(
+                              margin:
+                                  const EdgeInsets.symmetric(horizontal: 15.0),
+                              child: Text(
+                                FlutterI18n.translate(
+                                    context, "checkoutPackageError"),
+                              ),
                             ),
                             UIHelper.verticalSpaceMedium,
                             SizedBox(

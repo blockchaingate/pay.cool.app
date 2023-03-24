@@ -11,10 +11,10 @@ class WalletTransactionHistory {
       {this.tag, this.tickerName, this.date, this.quantity, this.transactions});
 
   WalletTransactionHistory.fromJson(Map<String, dynamic> json) {
-  
     tag = json['action'];
     tickerName = json['coin'];
-    date = StringUtils.localDateFromMilliseconds(json['timestamp'], removeLast4Chars: true),;
+    date = StringUtils.localDateFromMilliseconds(json['timestamp'],
+        removeLast4Chars: true);
     quantity = json['quantity'];
     if (json['transactions'] != null) {
       transactions = <ExgWalletTransactions>[];
@@ -43,7 +43,8 @@ class ExgWalletTransactions {
   int? timestamp;
   String? status;
 
-  ExgWalletTransactions({this.chain, this.transactionId, this.timestamp, this.status});
+  ExgWalletTransactions(
+      {this.chain, this.transactionId, this.timestamp, this.status});
 
   ExgWalletTransactions.fromJson(Map<String, dynamic> json) {
     chain = json['chain'];

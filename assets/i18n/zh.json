@@ -508,6 +508,7 @@
     "currentlyNoOtherPrograms": "暂无其他项目",
     "Refund": "退款",
     "RefundRequested": "已申请退款",
-    "Refunded": "已退款"
+    "Refunded": "已退款",
+    "checkoutPackageError": "请选择与您等级匹配的其它套餐"
 
 }

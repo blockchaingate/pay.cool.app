@@ -69,7 +69,7 @@ class WalletFeaturesViewModel extends BaseViewModel {
     decimalLimit = await coinService
         .getSingleTokenData(walletInfo.tickerName!)
         .then((res) => res!.decimal!);
-    if (decimalLimit == null || decimalLimit == 0) decimalLimit = 8;
+    if (decimalLimit == 0) decimalLimit = 8;
   }
 
   checkIfCoinIsFavorite() {

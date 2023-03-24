@@ -99,7 +99,7 @@ class ClubPackageCheckoutViewModel extends FutureViewModel {
     await apiService
         .getSingleWalletBalance(fabAddress, ticker, walletAddress)
         .then((res) async {
-      if (res != null && !res[0].unlockedExchangeBalance!.isNegative) {
+      if (res.isNotEmpty && !res[0].unlockedExchangeBalance!.isNegative) {
         log.w(res[0].unlockedExchangeBalance);
         //  walletBalance[0].unlockedExchangeBalance;
         exchangeBalance =
@@ -143,7 +143,19 @@ class ClubPackageCheckoutViewModel extends FutureViewModel {
     }
 
     if (res == '0x1') {
-      payOrderConfirmationPopup();
+      await dialogService
+          .showBasicDialog(
+        title:
+            FlutterI18n.translate(context!, "placeOrderTransactionSuccessful"),
+        buttonTitle: FlutterI18n.translate(context!, "visitDashboard"),
+      )
+          .then((res) {
+        if (res.confirmed) {
+          navigationService.navigateTo(clubDashboardViewRoute);
+        } else {
+          setBusy(false);
+        }
+      });
     } else if (res == '0x0') {
       sharedService.sharedSimpleNotification(
           FlutterI18n.translate(context!, "failed"),
@@ -151,20 +163,5 @@ class ClubPackageCheckoutViewModel extends FutureViewModel {
     }
 
     setBusy(false);
-  }
-
-  payOrderConfirmationPopup() async {
-    await dialogService
-        .showBasicDialog(
-      title: FlutterI18n.translate(context!, "placeOrderTransactionSuccessful"),
-      buttonTitle: FlutterI18n.translate(context!, "visitDashboard"),
-    )
-        .then((res) {
-      if (res.confirmed) {
-        navigationService.navigateTo(clubDashboardViewRoute);
-      } else {
-        setBusy(false);
-      }
-    });
   }
 }

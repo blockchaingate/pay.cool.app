@@ -3,6 +3,7 @@ import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:overlay_support/overlay_support.dart';
+import 'package:paycool/constants/api_routes.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/constants.dart';
 import 'package:paycool/environments/environment.dart';
@@ -17,6 +18,7 @@ import 'package:paycool/services/local_dialog_service.dart';
 import 'package:paycool/services/shared_service.dart';
 import 'package:paycool/services/wallet_service.dart';
 import 'package:paycool/utils/number_util.dart';
+import 'package:paycool/utils/wallet/erc20_util.dart';
 import 'package:stacked/stacked.dart';
 import '../../../../logger.dart';
 
@@ -60,6 +62,8 @@ class MoveToExchangeViewModel extends BaseViewModel {
   double unconfirmedBalance = 0.0;
   TokenModel tokenModel = TokenModel();
   double chainBalance = 0.0;
+  var erc20Util = Erc20Util();
+
   void initState() async {
     setBusy(true);
     coinName = walletInfo.tickerName.toString();
@@ -81,6 +85,10 @@ class MoveToExchangeViewModel extends BaseViewModel {
       feeUnit = 'FAB';
     } else if (tokenType == 'FAB') {
       feeUnit = 'FAB';
+    } else if (coinName == 'MATICM' || tokenType == 'POLYGON') {
+      feeUnit = 'MATIC(POLYGON)';
+    } else if (coinName == 'BNB' || tokenType == 'BNB') {
+      feeUnit = 'BNB';
     }
     await coinService
         .getSingleTokenData((walletInfo.tickerName.toString()))
@@ -88,7 +96,7 @@ class MoveToExchangeViewModel extends BaseViewModel {
       tokenModel = t!;
       decimalLimit = t.decimal!;
     });
-    if (decimalLimit == null || decimalLimit == 0) decimalLimit = 8;
+    if (decimalLimit == 0) decimalLimit = 8;
     if (tokenType.isNotEmpty) await getNativeChainTickerBalance();
     setBusy(false);
   }
@@ -151,6 +159,26 @@ class MoveToExchangeViewModel extends BaseViewModel {
     } else if (coinName == 'FAB') {
       satoshisPerByteTextController.text =
           environment["chains"]["FAB"]["satoshisPerBytes"].toString();
+    } else if (coinName == 'BNB' || tokenType == 'BNB') {
+      var gasPriceReal = await erc20Util.getGasPrice(ApiRoutes.bnbBaseUrl);
+      gasPriceTextController.text = gasPriceReal.toString();
+      gasLimitTextController.text =
+          environment["chains"]["BNB"]["gasLimit"].toString();
+
+      if (tokenType == 'BNB') {
+        gasLimitTextController.text =
+            environment["chains"]["BNB"]["gasLimitToken"].toString();
+      }
+    } else if (coinName == 'MATICM' || tokenType == 'POLYGON') {
+      var gasPriceReal = await erc20Util.getGasPrice(ApiRoutes.maticmBaseUrl);
+      gasPriceTextController.text = gasPriceReal.toString();
+      gasLimitTextController.text =
+          environment["chains"]["MATICM"]["gasLimit"].toString();
+
+      if (tokenType == 'POLYGON') {
+        gasLimitTextController.text =
+            environment["chains"]["POLYGON"]["gasLimitToken"].toString();
+      }
     } else if (coinName == 'USDTX') {
       trxGasValueTextController.text = Constants.tronUsdtFee.toString();
     } else if (coinName == 'TRX') {

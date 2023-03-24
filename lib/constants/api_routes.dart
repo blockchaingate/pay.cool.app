@@ -5,6 +5,11 @@
 import 'package:paycool/environments/environment.dart';
 import 'package:paycool/environments/environment_type.dart';
 
+class ApiRoutes {
+  static final String maticmBaseUrl = environment["endpoints"]["maticm"];
+  static final String bnbBaseUrl = environment["endpoints"]["bnb"];
+}
+
 const String baseBlockchainGateV2Url = isProduction
     ? 'https://api.blockchaingate.com/v2/'
     : 'https://test.blockchaingate.com/v2/';

@@ -509,6 +509,7 @@
     "sales": "Sales",
     "lisOfPrograms": "Programs",
     "currentlyNoOtherPrograms": "Currently no other programs ",
-    "refund": "Refund"
+    "refund": "Refund",
+    "checkoutPackageError": "Please select other re-staking package, matching your status"
 
 }

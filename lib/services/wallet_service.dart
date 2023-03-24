@@ -10,6 +10,7 @@ import 'package:hex/hex.dart';
 import 'package:paycool/services/config_service.dart';
 import 'package:paycool/services/local_dialog_service.dart';
 import 'package:paycool/utils/string_util.dart';
+import 'package:paycool/utils/wallet/erc20_util.dart';
 import 'dart:typed_data';
 import 'package:web3dart/web3dart.dart';
 import '../constants/colors.dart';
@@ -170,6 +171,7 @@ class WalletService {
   ];
 
   var fabUtils = FabUtils();
+  final erc20Util = Erc20Util();
 
   // verify wallet address
   Future<Map<String, bool>> verifyWalletAddresses(String mnemonic) async {

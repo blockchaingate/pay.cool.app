@@ -558,8 +558,7 @@ class PayCoolService with ReactiveServiceMixin {
     }
     if (txKanbanHex != '') {
       var resBody =
-          await sendKanbanRawTransaction(baseBlockchainGateV2Url, txKanbanHex);
-      // await sendKanbanRawTransactionV2(paycoolBaseUrl, txKanbanHex);
+          await sendKanbanRawTransactionV2(paycoolBaseUrl, txKanbanHex);
       res = resBody['_body'];
       var txHash = res['transactionHash'];
       //{"ok":true,"_body":{"transactionHash":"0x855f2d8ec57418670dd4cb27ecb71c6794ada5686e771fe06c48e30ceafe0548","status":"0x1"}}
