@@ -60,11 +60,7 @@ class MoveToExchangeView extends StatelessWidget {
                       activatedNegativeValues: false)
                 ],
                 onChanged: (String amount) {
-                  if (!model.isTrx()) {
-                    model.updateTransFee();
-                  } else {
-                    model.amountAfterFee();
-                  }
+                  model.amountAfterFee();
                 },
                 decoration: InputDecoration(
                   // suffix: RichText(
@@ -97,7 +93,7 @@ class MoveToExchangeView extends StatelessWidget {
               Row(
                 children: <Widget>[
                   Text(
-                      '${FlutterI18n.translate(context, "walletbalance")}  ${NumberUtil().truncateDoubleWithoutRouding(model.walletInfo.availableBalance!, precision: model.decimalLimit).toString()}',
+                      '${FlutterI18n.translate(context, "walletbalance")}  ${NumberUtil.customRoundNumber(model.walletInfo.availableBalance!, decimalPlaces: model.decimalLimit).toString()}',
                       style: subText2),
                   Padding(
                     padding: const EdgeInsets.symmetric(
@@ -129,17 +125,41 @@ class MoveToExchangeView extends StatelessWidget {
                                     style: headText6),
                           )
                         : Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
-                              Text(FlutterI18n.translate(context, "gasFee"),
-                                  style: headText6),
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    left:
-                                        5), // padding left to keep some space from the text
-                                child: Text(
-                                    '${NumberUtil().truncateDoubleWithoutRouding(model.transFee, precision: 4).toString()} ${model.feeUnit}',
-                                    style: headText6),
-                              )
+                              Row(
+                                children: [
+                                  Text(FlutterI18n.translate(context, "gasFee"),
+                                      style: headText6),
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        left:
+                                            5), // padding left to keep some space from the text
+                                    child: Text(
+                                        '${NumberUtil.customRoundNumber(model.transFee, decimalPlaces: 4).toString()} ${model.feeUnit}',
+                                        style: headText6),
+                                  )
+                                ],
+                              ),
+                              // chain balance
+
+                              model.tokenType.isNotEmpty
+                                  ? Row(
+                                      children: [
+                                        Text(
+                                            '${model.walletInfo.tokenType} ${FlutterI18n.translate(context, "balance")}',
+                                            style: headText5),
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              left:
+                                                  5), // padding left to keep some space from the text
+                                          child: Text(
+                                              '${NumberUtil.customRoundNumber(model.chainBalance, decimalPlaces: 6).toString()} ${model.feeUnit}',
+                                              style: headText6),
+                                        )
+                                      ],
+                                    )
+                                  : Container()
                             ],
                           ),
                     UIHelper.verticalSpaceSmall,
@@ -153,7 +173,7 @@ class MoveToExchangeView extends StatelessWidget {
                               left:
                                   5), // padding left to keep some space from the text
                           child: Text(
-                              '${NumberUtil().truncateDoubleWithoutRouding(model.kanbanTransFee, precision: 4).toString()} GAS',
+                              '${NumberUtil.customRoundNumber(model.kanbanTransFee, decimalPlaces: 4).toString()} GAS',
                               style: headText6),
                         )
                       ],

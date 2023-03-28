@@ -21,6 +21,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:paycool/utils/wallet/wallet_util.dart';
 
 import 'package:stacked/stacked.dart';
 import 'package:paycool/services/api_service.dart';
@@ -43,7 +44,7 @@ class TransactionHistoryViewmodel extends FutureViewModel {
   TransactionHistoryViewmodel({this.tickerName});
   final log = getLogger('TransactionHistoryViewmodel');
   late BuildContext context;
-  List<TransactionHistory> transactionHistoryToShowInView = [];
+  List<TransactionHistory> transactionsToDisplay = [];
   TransactionHistoryDatabaseService transactionHistoryDatabaseService =
       locator<TransactionHistoryDatabaseService>();
   WalletDatabaseService walletDataBaseService =
@@ -76,36 +77,51 @@ class TransactionHistoryViewmodel extends FutureViewModel {
     List<TransactionHistory> txHistoryEvents = [];
     txHistoryFromDb = data;
     txHistoryEvents = await apiService.getTransactionHistoryEvents();
-
-    for (var element in txHistoryEvents) {
-      if (element.tickerName == tickerName) {
-        transactionHistoryToShowInView.add(element);
-      } else if (element.tickerName.toUpperCase() == 'ETH_DSC' &&
-          tickerName == 'DSCE') {
-        transactionHistoryToShowInView.add(element);
-      } else if (element.tickerName.toUpperCase() == 'ETH_BST' &&
-          tickerName == 'BSTE') {
-        transactionHistoryToShowInView.add(element);
-      } else if (element.tickerName.toUpperCase() == 'ETH_FAB' &&
-          tickerName == 'FABE') {
-        transactionHistoryToShowInView.add(element);
-      } else if (element.tickerName.toUpperCase() == 'ETH_EXG' &&
-          tickerName == 'EXGE') {
-        // element.tickerName = 'EXG(ERC20)';
-        transactionHistoryToShowInView.add(element);
-      } else if (element.tickerName.toUpperCase() == 'TRON_USDT' &&
-          tickerName == 'USDTX') {
-        transactionHistoryToShowInView.add(element);
+    if (txHistoryEvents.isNotEmpty) {
+      for (var txFromApi in txHistoryEvents) {
+        if (txFromApi.tickerName == tickerName) {
+          transactionsToDisplay.add(txFromApi);
+        } else if (txFromApi.tickerName.toUpperCase() == 'ETH_DSC' &&
+            tickerName == 'DSCE') {
+          transactionsToDisplay.add(txFromApi);
+        } else if (txFromApi.tickerName.toUpperCase() == 'ETH_BST' &&
+            tickerName == 'BSTE') {
+          transactionsToDisplay.add(txFromApi);
+        } else if (txFromApi.tickerName.toUpperCase() == 'ETH_FAB' &&
+            tickerName == 'FABE') {
+          transactionsToDisplay.add(txFromApi);
+        } else if (txFromApi.tickerName.toUpperCase() == 'ETH_EXG' &&
+            tickerName == 'EXGE') {
+          // element.tickerName = 'EXG(ERC20)';
+          transactionsToDisplay.add(txFromApi);
+        } else if (txFromApi.tickerName.toUpperCase() == 'TRON_USDT' &&
+            tickerName == 'USDTX') {
+          transactionsToDisplay.add(txFromApi);
+        } else if (txFromApi.tickerName.toUpperCase() == 'BNB_USDT' &&
+            tickerName == 'USDTB') {
+          transactionsToDisplay.add(txFromApi);
+        } else if (txFromApi.tickerName.toUpperCase() == 'MATIC_USDT' &&
+            tickerName == 'USDTM') {
+          transactionsToDisplay.add(txFromApi);
+        } else if (txFromApi.tickerName.toUpperCase() == 'BNB_FAB' &&
+            tickerName == 'FABB') {
+          transactionsToDisplay.add(txFromApi);
+        } else if (txFromApi.tickerName.toUpperCase() == 'POLYGON_MATIC' &&
+            tickerName == 'MATICM') {
+          transactionsToDisplay.add(txFromApi);
+        } else if (txFromApi.tickerName.toUpperCase() == 'POLYGON_USDT' &&
+            tickerName == 'USDTM') {
+          transactionsToDisplay.add(txFromApi);
+        }
       }
     }
-
     for (var t in txHistoryFromDb) {
       if (t.tag == 'send' && t.tickerName == tickerName) {
-        transactionHistoryToShowInView.add(t);
+        transactionsToDisplay.add(t);
       }
     }
 
-    transactionHistoryToShowInView.sort(
+    transactionsToDisplay.sort(
         (a, b) => DateTime.parse(b.date).compareTo(DateTime.parse(a.date)));
 
     try {
@@ -130,15 +146,14 @@ class TransactionHistoryViewmodel extends FutureViewModel {
   }
 
   clearLists() {
-    transactionHistoryToShowInView = [];
+    transactionsToDisplay = [];
   }
 
 /*----------------------------------------------------------------------
                   Update special tokens ticker
 ----------------------------------------------------------------------*/
   updateTickers(String ticker) {
-    return walletService
-        .updateSpecialTokensTickerNameForTxHistory(ticker)['tickerName'];
+    return WalletUtil.updateSpecialTokensTickerName(ticker)['tickerName'];
   }
 
 /*----------------------------------------------------------------------
@@ -146,24 +161,24 @@ class TransactionHistoryViewmodel extends FutureViewModel {
 ----------------------------------------------------------------------*/
   getTransaction(String tickerName) async {
     setBusy(true);
-    transactionHistoryToShowInView = [];
+    transactionsToDisplay = [];
     await transactionHistoryDatabaseService
         .getByNameOrderByDate(tickerName)
         .then((data) async {
-      transactionHistoryToShowInView = data;
+      transactionsToDisplay = data;
       await sharedService
           .getSinglePairDecimalConfig(tickerName)
           .then((decimalConfig) => decimalConfig = decimalConfig);
 
-      for (var t in transactionHistoryToShowInView) {
+      for (var t in transactionsToDisplay) {
         log.e(t.toJson);
         if (t.tag.startsWith('sent')) {
           await walletService.checkTxStatus(t);
         }
       }
-      transactionHistoryToShowInView.sort(
+      transactionsToDisplay.sort(
           (a, b) => DateTime.parse(a.date).compareTo(DateTime.parse(b.date)));
-      for (var t in transactionHistoryToShowInView) {
+      for (var t in transactionsToDisplay) {
         log.w(t.toJson);
       }
       setBusy(false);
@@ -516,6 +531,13 @@ class TransactionHistoryViewmodel extends FutureViewModel {
           : TestnetEthereumExplorerUrl + txId;
       log.i('ETH - chainame $chain explorer url - $ethereumExplorerUrl');
       openExplorer(ethereumExplorerUrl);
+    } else if (chain.toUpperCase() == 'BNB') {
+      log.i('chainame $chain explorer url - ${bnbExplorerUrl + txId}');
+      openExplorer(bnbExplorerUrl + txId);
+    } else if (chain.toUpperCase() == 'MATICM' ||
+        chain.toUpperCase() == 'POLYGON') {
+      log.i('chainame $chain explorer url - ${maticmExplorerUrl + txId}');
+      openExplorer(maticmExplorerUrl + txId);
     } else if (chain.toUpperCase() == 'LTC') {
       String litecoinExplorerUrl = LitecoinExplorerUrl + txId;
       log.i('LTC - chainame $chain explorer url - $litecoinExplorerUrl');

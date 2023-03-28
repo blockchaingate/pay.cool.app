@@ -749,7 +749,7 @@ class ClubDashboardView extends StatelessWidget {
                                                                             mainAxisSize:
                                                                                 MainAxisSize.min,
                                                                             children: [
-                                                                              Text('FET ${NumberUtil.decimalLimiter(Decimal.parse(model.dashboardSummary.totalFabRewards()["FET"].toString()), decimalPrecision: 8)}', style: headText5),
+                                                                              Text('FET ${NumberUtil.decimalLimiter(Decimal.parse(model.dashboardSummary.totalFabRewards()["FET"].toString()), decimalPlaces: 8)}', style: headText5),
                                                                               Text('  \$${NumberUtil.decimalLimiter(Decimal.parse(model.dashboardSummary.totalFabRewards()["FET"]!.toString()) * Decimal.parse(model.rewardTokenPriceMap['FET'].toString()))}', maxLines: 2, style: headText5.copyWith(color: green, fontWeight: FontWeight.bold))
                                                                             ],
                                                                           )
@@ -769,7 +769,7 @@ class ClubDashboardView extends StatelessWidget {
                                                                           mainAxisSize:
                                                                               MainAxisSize.min,
                                                                           children: [
-                                                                            Text('FETDUSD-LP ${NumberUtil.decimalLimiter(Decimal.parse(model.dashboardSummary.totalFabRewards()["FETLP"]!.toString()), decimalPrecision: 8)}',
+                                                                            Text('FETDUSD-LP ${NumberUtil.decimalLimiter(Decimal.parse(model.dashboardSummary.totalFabRewards()["FETLP"]!.toString()), decimalPlaces: 8)}',
                                                                                 style: headText5),
                                                                             Text('  \$${NumberUtil.decimalLimiter(model.dashboardSummary.totalFabRewards()["FETLP"]! * Decimal.parse(model.rewardTokenPriceMap['FETDUSD-LP']!.toString()))}',
                                                                                 maxLines: 2,

@@ -17,14 +17,14 @@ import 'package:paycool/constants/constants.dart';
 import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/config_service.dart';
 import 'dart:convert';
-import 'package:bitcoin_flutter/bitcoin_flutter.dart' as BitcoinFlutter;
+import 'package:bitcoin_flutter/bitcoin_flutter.dart' as bitcoin_flutter;
 import 'package:paycool/services/shared_service.dart';
 import 'package:paycool/utils/custom_http_util.dart';
 
 final client = CustomHttpUtil.createLetsEncryptUpdatedCertClient();
-BitcoinFlutter.NetworkType kanbanMainnetNetwork = BitcoinFlutter.NetworkType(
+bitcoin_flutter.NetworkType kanbanMainnetNetwork = bitcoin_flutter.NetworkType(
     messagePrefix: Constants.KanbanMessagePrefix,
-    bip32: BitcoinFlutter.Bip32Type(public: 0x019da462, private: 0x019d9cfe),
+    bip32: bitcoin_flutter.Bip32Type(public: 0x019da462, private: 0x019d9cfe),
     pubKeyHash: 0x30,
     scriptHash: 0x32,
     wif: 0xb0);

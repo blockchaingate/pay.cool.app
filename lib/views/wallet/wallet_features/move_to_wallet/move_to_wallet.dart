@@ -114,7 +114,7 @@ class MoveToWalletView extends StatelessWidget {
                     Row(
                       children: <Widget>[
                         Text(
-                            '${FlutterI18n.translate(context, "inExchange")} ${NumberUtil().truncateDoubleWithoutRouding(model.walletInfo.inExchange!, precision: 6).toString()}',
+                            '${FlutterI18n.translate(context, "inExchange")} ${NumberUtil.customRoundNumber(model.walletInfo.inExchange!, decimalPlaces: 6).toString()}',
                             style: subText2),
                         Padding(
                           padding: const EdgeInsets.symmetric(
@@ -175,9 +175,7 @@ class MoveToWalletView extends StatelessWidget {
                     Row(
                       children: <Widget>[
                         Text(
-                            FlutterI18n.translate(context, "withdraw") +
-                                ' ' +
-                                FlutterI18n.translate(context, "fee"),
+                            '${FlutterI18n.translate(context, "withdraw")} ${FlutterI18n.translate(context, "fee")}',
                             style: headText6),
                         UIHelper.horizontalSpaceSmall,
                         Padding(
@@ -501,7 +499,7 @@ class MoveToWalletView extends StatelessWidget {
                         ),
                         onPressed: () {
                           model.isWithdrawChoice
-                              ? model.popupToConfirmWithdrawSelection()
+                              ? model.withdrawConfirmation()
                               : model.checkPass();
                         },
                         child: model.isBusy

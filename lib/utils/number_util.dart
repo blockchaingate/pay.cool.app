@@ -5,10 +5,15 @@ import 'package:paycool/constants/constants.dart';
 import 'package:paycool/logger.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:paycool/utils/string_validator.dart';
 
 class NumberUtil {
   int? maxDecimalDigits;
   final log = getLogger('NumberUtil');
+
+  static checkRegexAmount(Decimal amount) =>
+      RegexValidator(Constants.regexPattern.toString())
+          .isValid(amount.toString());
 
   // Decode a BigInt from bytes in big-endian encoding.
   static BigInt decodeBigIntV1(List<int> bytes) {
@@ -45,22 +50,33 @@ class NumberUtil {
     }
   }
 
+  static Decimal roundDecimal(Decimal value, int decimalPlaces) {
+    Decimal multiplier = Decimal.parse(pow(10, decimalPlaces).toString());
+    Decimal roundedValue = ((value * multiplier).truncate() / multiplier)
+        .toDecimal(scaleOnInfinitePrecision: decimalPlaces);
+    return roundedValue;
+  }
+
   /// Breaks at precision 19
-  static Decimal decimalLimiter(Decimal input, {int decimalPrecision = 2}) {
+  static Decimal decimalLimiter(Decimal input, {int decimalPlaces = 2}) {
     var finalRes = Constants.decimalZero;
 
     if (input != Constants.decimalZero) {
-      var p = pow(10, decimalPrecision);
-      var t = Decimal.fromInt(p.toInt());
-      var x = input * t;
-      var trunc = x.truncate();
-      var resInRational = trunc / t;
-      finalRes =
-          resInRational.toDecimal(scaleOnInfinitePrecision: decimalPrecision);
+      finalRes = roundDecimal(input, decimalPlaces);
     }
 
-    //debugPrint('finalRes $finalRes');
+    debugPrint('finalRes $finalRes');
     return finalRes;
+  }
+
+  static double customRoundNumber(double value, {int decimalPlaces = 2}) {
+    if (value != 0) {
+      Decimal decimalValue = Decimal.parse(value.toString());
+
+      return roundDecimal(decimalValue, decimalPlaces).toDouble();
+    } else {
+      return value;
+    }
   }
 
   static String fixed32Chars(String input, int keyLength) {
@@ -79,7 +95,8 @@ class NumberUtil {
     return Decimal.parse(value);
   }
 
-  double truncateDoubleWithoutRouding(double input, {int precision = 2}) {
+  static double truncateDoubleWithoutRouding(double input,
+      {int precision = 2}) {
     double res = 0.0;
     bool isInputContainsE = input.toString().contains('e');
     if (!input.isNaN && !isInputContainsE) {

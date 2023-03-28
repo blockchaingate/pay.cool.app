@@ -100,7 +100,7 @@ class PayCoolTransactionHistoryView extends StatelessWidget {
                                             NumberUtil.decimalLimiter(
                                                     model.transactions[index]
                                                         .totalTransactionAmount!,
-                                                    decimalPrecision: 6)
+                                                    decimalPlaces: 6)
                                                 .toString(),
                                             style: const TextStyle(
                                                 fontSize: 14,

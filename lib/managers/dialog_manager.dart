@@ -71,15 +71,12 @@ class _DialogManagerState extends State<DialogManager> {
         style: AlertStyle(
             animationType: AnimationType.grow,
             isOverlayTapDismiss: false,
-            backgroundColor: walletCardColor,
-            descStyle: Theme.of(context).textTheme.bodyMedium!,
-            titleStyle: Theme.of(context)
-                .textTheme
-                .displaySmall!
-                .copyWith(fontWeight: FontWeight.bold)),
+            backgroundColor: secondaryColor,
+            descStyle: headText4,
+            titleStyle: headText3.copyWith(fontWeight: FontWeight.bold)),
         context: context,
         title: request.title,
-        desc: request.description ?? '',
+        desc: request.description,
         closeFunction: () {
           FocusScope.of(context).requestFocus(FocusNode());
           _dialogService.dialogComplete(

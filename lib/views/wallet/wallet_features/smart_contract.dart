@@ -21,7 +21,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:paycool/utils/fab_util.dart';
 import 'package:paycool/environments/environment.dart';
-import 'package:paycool/utils/string_util.dart' as stringUtils;
+import 'package:paycool/utils/string_util.dart' as string_utils;
 import 'package:paycool/services/wallet_service.dart';
 import 'package:paycool/services/local_dialog_service.dart';
 import 'dart:typed_data';
@@ -36,8 +36,8 @@ class SmartContractView extends StatefulWidget {
 class _SmartContractViewState extends State<SmartContractView> {
   final log = getLogger('SmartContractViewState');
   final ApiService _api = locator<ApiService>();
-  late String _currentFunction;
-  late String _smartContractName;
+  String _currentFunction = '';
+  String _smartContractName = '';
   var abis;
   var functionHex;
   var abi;
@@ -52,7 +52,7 @@ class _SmartContractViewState extends State<SmartContractView> {
   TextEditingController smartContractAddressController =
       TextEditingController();
   TextEditingController payableController = TextEditingController();
-  late List<DropdownMenuItem<String>> _dropDownMenuItems;
+  List<DropdownMenuItem<String>>? _dropDownMenuItems;
   @override
   void initState() {
     smartContractAddressController.value = TextEditingValue(
@@ -120,9 +120,9 @@ class _SmartContractViewState extends State<SmartContractView> {
     }
 
     setState(() => {
-          _smartContractName = smartContractABI['Name'],
+          _smartContractName = smartContractABI['Name'] ?? '',
           _dropDownMenuItems = funcs,
-          _currentFunction = _currentFunc
+          _currentFunction = _currentFunc ?? ''
         });
   }
 
@@ -150,7 +150,7 @@ class _SmartContractViewState extends State<SmartContractView> {
           ),
           backgroundColor: const Color(0XFF1f2233),
         ),
-        backgroundColor: const Color(0xFF1F2233),
+        backgroundColor: Color.fromARGB(255, 104, 112, 158),
         body: Container(
             padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
             child: ListView(
@@ -198,7 +198,7 @@ class _SmartContractViewState extends State<SmartContractView> {
                         children: <Widget>[
                           Text(input['name'],
                               style: const TextStyle(
-                                  color: Colors.grey, fontSize: 18.0)),
+                                  color: white, fontSize: 18.0)),
                           const SizedBox(height: 10),
                           TextField(
                             controller: input['controller'],
@@ -210,8 +210,8 @@ class _SmartContractViewState extends State<SmartContractView> {
                               hintStyle:
                                   TextStyle(fontSize: 20.0, color: Colors.grey),
                             ),
-                            style: const TextStyle(
-                                fontSize: 16.0, color: Colors.white),
+                            style:
+                                const TextStyle(fontSize: 16.0, color: black),
                           ),
                         ],
                       ),
@@ -282,7 +282,7 @@ class _SmartContractViewState extends State<SmartContractView> {
       var text = inputs[i]['controller'].value.text;
       final number = int.parse(text, radix: 10);
       var hexString = number.toRadixString(16);
-      abiHex += stringUtils.fixLength(hexString, 64);
+      abiHex += string_utils.fixLength(hexString, 64);
     }
     return abiHex;
   }
@@ -339,7 +339,7 @@ class _SmartContractViewState extends State<SmartContractView> {
 
   execContract() async {
     var abiHex = formABI();
-    abiHex = stringUtils.trimHexPrefix(abiHex);
+    abiHex = string_utils.trimHexPrefix(abiHex);
 
     double value = 0;
     if (payable) {

@@ -42,10 +42,7 @@ class ClubDashboardView extends StatelessWidget {
                     ? const Center(child: ServerErrorWidget())
                     : model.isBusy
                         ? model.sharedService.loadingIndicator(
-                            isCustom: true,
-                            strokeWidth: 2.5,
-                            height: 40,
-                            width: 40)
+                            isCustom: true, height: 40, width: 40)
                         : WillPopScope(
                             onWillPop: () {
                               model.onBackButtonPressed();

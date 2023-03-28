@@ -41,7 +41,7 @@ class AddGasViewModel extends FutureViewModel {
   String fabAddress = '';
   var scarContractAddress;
   var contractInfo;
-  var utxos;
+  var utxos = [];
   double extraAmount = 0.0;
   int satoshisPerBytes = 14;
   var bytesPerInput;
@@ -121,11 +121,8 @@ class AddGasViewModel extends FutureViewModel {
     await apiService
         .getSingleWalletBalance(fabAddress, 'FAB', fabAddress)
         .then((walletBalance) {
-      if (walletBalance != null) {
-        fabBalance = NumberUtil().truncateDoubleWithoutRouding(
-            walletBalance[0].balance!,
-            precision: 6);
-      }
+      fabBalance = NumberUtil.customRoundNumber(walletBalance[0].balance!,
+          decimalPlaces: 6);
     });
 
     setBusy(false);
@@ -256,9 +253,9 @@ class AddGasViewModel extends FutureViewModel {
     if (transFee == 0.0) updateTransFee();
 
     var changeAmountWithSlider = (fabBalance - transFee) * sliderValue / 100;
-    amountController.text = NumberUtil()
-        .truncateDoubleWithoutRouding(changeAmountWithSlider, precision: 6)
-        .toString();
+    amountController.text =
+        NumberUtil.customRoundNumber(changeAmountWithSlider, decimalPlaces: 6)
+            .toString();
     setBusy(false);
   }
 

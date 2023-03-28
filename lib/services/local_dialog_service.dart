@@ -72,8 +72,8 @@ class LocalDialogService {
   Future<DialogResponse> showVerifyDialog(
       {String? title,
       String? description,
-      String? buttonTitle,
-      String? secondaryButton}) {
+      String? buttonTitle = 'Ok',
+      String? secondaryButton = ''}) {
     log.w('In show verify dialog');
     _dialogCompleter = Completer<DialogResponse>();
     _showVerifyDialogListener(DialogRequest(

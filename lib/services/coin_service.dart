@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:paycool/environments/environment_type.dart';
 
 import '../environments/coins.dart';
 import '../environments/environment.dart';
@@ -63,6 +64,24 @@ class CoinService {
       debugPrint(
           'ethTokenOfficialAddress $ethTokenOfficialAddress for $coinName');
       return ethTokenOfficialAddress;
+    } else if (coinName == 'BNB' || tokenType == 'BNB') {
+      var bnbTokenOfficialAddress = isProduction
+          ? environment['addresses']['exchangilyOfficial'][10]['address']
+          : environment['addresses']['exchangilyOfficial'][3]['address'];
+
+      debugPrint(
+          'BNBTokenOfficialAddress $bnbTokenOfficialAddress for $coinName');
+      return bnbTokenOfficialAddress;
+    } else if (coinName == 'MATICM' ||
+        tokenType == 'MATICM' ||
+        tokenType == 'POLYGON') {
+      var maticmTokenOfficialAddress = isProduction
+          ? environment['addresses']['exchangilyOfficial'][11]['address']
+          : environment['addresses']['exchangilyOfficial'][3]['address'];
+
+      debugPrint(
+          'maticmTokenOfficialAddress $maticmTokenOfficialAddress for $coinName');
+      return maticmTokenOfficialAddress;
     } else {
       var address = environment['addresses']['exchangilyOfficial']
           .where((addr) => addr['name'] == coinName)

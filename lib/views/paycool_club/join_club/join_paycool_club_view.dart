@@ -171,15 +171,13 @@ class JoinPayCoolClubView extends StackedView<JoinPayCoolClubViewModel> {
                               flex: 3,
                               child: Text(
                                 model.groupValue == 'DUSD'
-                                    ? NumberUtil()
-                                        .truncateDoubleWithoutRouding(
+                                    ? NumberUtil.customRoundNumber(
                                             model.dusdExchangeBalance,
-                                            precision: 2)
+                                            decimalPlaces: 2)
                                         .toString()
-                                    : NumberUtil()
-                                        .truncateDoubleWithoutRouding(
+                                    : NumberUtil.customRoundNumber(
                                             model.usdtExchangeBalance,
-                                            precision: 2)
+                                            decimalPlaces: 2)
                                         .toString(),
                                 style: Theme.of(context)
                                     .textTheme

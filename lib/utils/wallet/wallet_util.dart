@@ -1,11 +1,6 @@
-import 'dart:convert';
-import 'dart:typed_data';
-
 import 'package:flutter/widgets.dart';
-import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:paycool/environments/coins.dart' as coin_list;
 import 'package:paycool/logger.dart';
-import 'package:paycool/models/wallet/core_wallet_model.dart';
 import 'package:paycool/models/wallet/wallet.dart';
 import 'package:paycool/models/wallet/wallet_balance.dart';
 import 'package:paycool/service_locator.dart';
@@ -60,6 +55,18 @@ class WalletUtil {
     'USDTX': 'TRON USDT',
     'FABB': 'FAB Binance'
   };
+
+  static List<String> allUsdtTokens = ["USDT", "USDTX", "USDTB", "USDTM"];
+  List<String> usdtSpecialTokens = ["USDTX", "USDTB", "USDTM"];
+  static List<String> fabSpecialTokens = ["FABE", "FABB"];
+
+  static bool isSpecialUsdt(String tickerName) {
+    return allUsdtTokens.contains(tickerName);
+  }
+
+  static bool isSpecialFab(String tickerName) {
+    return fabSpecialTokens.contains(tickerName);
+  }
 
   // get wallet info object with address using single wallet balance
   Future<WalletInfo> getWalletInfoObjFromWalletBalance(WalletBalance wallet,
@@ -131,8 +138,7 @@ class WalletUtil {
 /*----------------------------------------------------------------------
                 Update special tokens tickername in UI
 ----------------------------------------------------------------------*/
-  Map<String, String> updateSpecialTokensTickerNameForTxHistory(
-      String tickerName) {
+  static Map<String, String> updateSpecialTokensTickerName(String tickerName) {
     String logoTicker = '';
     if (tickerName.toUpperCase() == 'ETH_BST' ||
         tickerName.toUpperCase() == 'BSTE') {

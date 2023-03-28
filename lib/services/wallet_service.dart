@@ -7,10 +7,12 @@ import 'dart:async';
 import 'package:bip39/bip39.dart' as bip39;
 import 'package:bip32/bip32.dart' as bip32;
 import 'package:hex/hex.dart';
+import 'package:paycool/constants/api_routes.dart';
 import 'package:paycool/services/config_service.dart';
 import 'package:paycool/services/local_dialog_service.dart';
 import 'package:paycool/utils/string_util.dart';
 import 'package:paycool/utils/wallet/erc20_util.dart';
+import 'package:paycool/utils/wallet/wallet_util.dart';
 import 'dart:typed_data';
 import 'package:web3dart/web3dart.dart';
 import '../constants/colors.dart';
@@ -84,12 +86,13 @@ class WalletService {
   var txids = [];
   ConfigService configService = locator<ConfigService>();
   final dialogService = locator<LocalDialogService>();
-
+  var httpClient = CustomHttpUtil.createLetsEncryptUpdatedCertClient();
   double? coinUsdBalance;
   List<String> coinTickers = [
     'BTC',
     'ETH',
     'FAB',
+    'BNB',
     'EXG',
     'USDT',
     'DUSD',
@@ -115,6 +118,7 @@ class WalletService {
   ];
 
   List<String> tokenType = [
+    '',
     '',
     '',
     '',
@@ -167,7 +171,8 @@ class WalletService {
     'Wings',
     'Metal',
     'Kyber Network',
-    'Genesis Vision'
+    'Genesis Vision',
+    'Binance Coin'
   ];
 
   var fabUtils = FabUtils();
@@ -296,13 +301,18 @@ class WalletService {
                 Check coin wallet balance
 ----------------------------------------------------------------------*/
 
-  Future<bool> checkCoinWalletBalance(double amount, String tickerName) async {
+  Future<bool> checkCoinWalletBalance(double amount, String tickerName,
+      {String address = ''}) async {
     bool isCorrectAmount = true;
 
     String fabAddress =
         await sharedService.getFabAddressFromCoreWalletDatabase();
-    String thirdPartyAddress =
-        await coinService.getCoinWalletAddress(tickerName);
+    String thirdPartyAddress = '';
+    if (address.isEmpty) {
+      thirdPartyAddress = await coinService.getCoinWalletAddress(tickerName);
+    } else {
+      thirdPartyAddress = address;
+    }
     log.w('thirdPartyAddress wallet address $thirdPartyAddress');
     await _apiService
         .getSingleWalletBalance(fabAddress, tickerName, thirdPartyAddress)
@@ -319,35 +329,6 @@ class WalletService {
       throw Exception(err);
     });
     return isCorrectAmount;
-  }
-
-/*----------------------------------------------------------------------
-                Update special tokens tickername in UI
-----------------------------------------------------------------------*/
-  updateSpecialTokensTickerNameForTxHistory(String tickerName) {
-    String logoTicker = '';
-    if (tickerName.toUpperCase() == 'ETH_BST' ||
-        tickerName.toUpperCase() == 'BSTE') {
-      tickerName = 'BST(ERC20)';
-      logoTicker = 'BSTE';
-    } else if (tickerName.toUpperCase() == 'ETH_DSC' ||
-        tickerName.toUpperCase() == 'DSCE') {
-      tickerName = 'DSC(ERC20)';
-      logoTicker = 'DSCE';
-    } else if (tickerName.toUpperCase() == 'ETH_EXG' ||
-        tickerName.toUpperCase() == 'EXGE') {
-      tickerName = 'EXG(ERC20)';
-      logoTicker = 'EXGE';
-    } else if (tickerName.toUpperCase() == 'ETH_FAB' ||
-        tickerName.toUpperCase() == 'FABE') {
-      tickerName = 'FAB(ERC20)';
-      logoTicker = 'FABE';
-    } else if (tickerName.toUpperCase() == 'TRON_USDT' ||
-        tickerName.toUpperCase() == 'USDTX') {
-      tickerName = 'USDT(TRC20)';
-      logoTicker = 'USDTX';
-    } else {}
-    return {"tickerName": tickerName, "logoTicker": logoTicker};
   }
 
   // addTxids(allTxids) {
@@ -391,6 +372,37 @@ class WalletService {
       }
     }
     //  });
+  }
+
+  Future<bool> hasSufficientWalletBalance(
+      double amount, String chainType) async {
+    bool isValidAmount = true;
+    String thirdPartyTicker = '';
+    String fabAddress =
+        await coreWalletDatabaseService.getWalletAddressByTickerName('FAB');
+    if (chainType == 'BNB' || chainType == "MATICM") {
+      thirdPartyTicker = 'ETH';
+    } else {
+      thirdPartyTicker = chainType;
+    }
+    String thirdPartyAddress = await coreWalletDatabaseService
+        .getWalletAddressByTickerName(thirdPartyTicker);
+    log.w('coinAddress $thirdPartyAddress');
+    await _apiService
+        .getSingleWalletBalance(fabAddress, chainType, thirdPartyAddress)
+        .then((walletBalance) {
+      log.w(walletBalance[0].balance);
+      if (walletBalance[0].balance! < amount) {
+        isValidAmount = false;
+      } else {
+        isValidAmount = true;
+      }
+    }).catchError((err) {
+      log.e(err);
+
+      throw Exception(err);
+    });
+    return isValidAmount;
   }
 
   /*----------------------------------------------------------------------
@@ -1354,32 +1366,62 @@ class WalletService {
       sepcialcoinType = await coinService.getCoinTypeByTickerName('DSC');
       abiHex = getWithdrawFuncABI(
           sepcialcoinType, amountInLink, addressInWallet,
-          isSpecialDeposit: true, chain: tokenType);
+          isSpecialToken: true, chain: tokenType);
       log.e('cointype $coinType -- abihex $abiHex');
     } else if (coinName == 'BSTE' || coinName == 'BST') {
       sepcialcoinType = await coinService.getCoinTypeByTickerName('BST');
       abiHex = getWithdrawFuncABI(
           sepcialcoinType, amountInLink, addressInWallet,
-          isSpecialDeposit: true, chain: tokenType);
+          isSpecialToken: true, chain: tokenType);
       log.e('cointype $coinType -- abihex $abiHex');
     } else if (coinName == 'EXGE' || coinName == 'EXG') {
       sepcialcoinType = await coinService.getCoinTypeByTickerName('EXG');
       abiHex = getWithdrawFuncABI(
           sepcialcoinType, amountInLink, addressInWallet,
-          isSpecialDeposit: true, chain: tokenType);
+          isSpecialToken: true, chain: tokenType);
       log.e('cointype $coinType -- abihex $abiHex');
-    } else if (coinName == 'FABE' ||
-        (coinName == 'FAB' && tokenType == 'ETH')) {
+    } else if ((coinName == 'FAB' && tokenType == 'BNB') ||
+        (coinName == 'FAB' && tokenType == 'ETH') ||
+        (WalletUtil.isSpecialFab(coinName) &&
+            (tokenType == 'BNB' || tokenType == 'ETH'))) {
       sepcialcoinType = await coinService.getCoinTypeByTickerName('FAB');
       abiHex = getWithdrawFuncABI(
           sepcialcoinType, amountInLink, addressInWallet,
-          isSpecialDeposit: true, chain: tokenType);
+          isSpecialToken: true, chain: tokenType);
+
+      log.e('cointype $coinType -- abihex $abiHex');
+    }
+    // Matic polygon is a special case where instead of
+    // token type, we use coinname as token type is empty
+    // because Matic is native coin on polygon
+    else if (coinName == 'MATICM') {
+      sepcialcoinType = await coinService.getCoinTypeByTickerName('MATIC');
+      abiHex = getWithdrawFuncABI(
+          sepcialcoinType, amountInLink, addressInWallet,
+          isSpecialToken: true,
+          chain: coinName == 'MATICM' ? coinName : tokenType);
+
+      log.e('cointype $coinType -- abihex $abiHex');
+    } else if (tokenType == 'POLYGON' &&
+        (WalletUtil.isSpecialUsdt(coinName) || coinName == 'USDT')) {
+      sepcialcoinType = await coinService.getCoinTypeByTickerName('USDT');
+      abiHex = getWithdrawFuncABI(
+          sepcialcoinType, amountInLink, addressInWallet,
+          isSpecialToken: true, chain: 'POLYGON');
+
+      log.e('cointype $coinType -- abihex $abiHex');
+    } else if (tokenType == 'BNB' &&
+        (WalletUtil.isSpecialUsdt(coinName) || coinName == 'USDT')) {
+      sepcialcoinType = await coinService.getCoinTypeByTickerName('USDT');
+      abiHex = getWithdrawFuncABI(
+          sepcialcoinType, amountInLink, addressInWallet,
+          isSpecialToken: true, chain: 'BNB');
 
       log.e('cointype $coinType -- abihex $abiHex');
     } else if (isSpeicalTronTokenWithdraw) {
       addressInWallet = fabUtils.btcToBase58Address(addressInWallet);
       abiHex = getWithdrawFuncABI(coinType, amountInLink, addressInWallet,
-          isSpecialDeposit: true, chain: tokenType);
+          isSpecialToken: true, chain: tokenType);
       log.e('cointype $coinType -- abihex $abiHex');
     } else {
       abiHex = getWithdrawFuncABI(coinType, amountInLink, addressInWallet);
@@ -1442,7 +1484,7 @@ class WalletService {
       sepcialcoinType = await coinService.getCoinTypeByTickerName('USDT');
       abiHex = getWithdrawFuncABI(
           sepcialcoinType, amountInLink, addressInWallet,
-          isSpecialDeposit: true, chain: tokenType);
+          isSpecialToken: true, chain: tokenType);
       log.e('cointype $coinType -- abihex $abiHex');
     } else {
       abiHex = getWithdrawFuncABI(coinType, amountInLink, addressInWallet);
@@ -1862,8 +1904,8 @@ class WalletService {
         return {
           'txHex': '',
           'errMsg': 'not enough fab coin to make the transaction.',
-          'transFee': NumberUtil()
-              .truncateDoubleWithoutRouding(transFeeDouble, precision: 8),
+          'transFee':
+              NumberUtil.customRoundNumber(transFeeDouble, decimalPlaces: 8),
           'amountInTx': amountInTx
         };
       }
@@ -1884,8 +1926,8 @@ class WalletService {
         return {
           'txHex': '',
           'errMsg': '',
-          'transFee': NumberUtil()
-              .truncateDoubleWithoutRouding(transFeeDouble, precision: 8),
+          'transFee':
+              NumberUtil.customRoundNumber(transFeeDouble, decimalPlaces: 8),
         };
       }
       var output2 = BigInt.parse(NumberUtil.toBigInt(amount, 8)).toInt();
@@ -1894,8 +1936,8 @@ class WalletService {
         return {
           'txHex': '',
           'errMsg': 'output1 or output2 should be greater than 0.',
-          'transFee': NumberUtil()
-              .truncateDoubleWithoutRouding(transFeeDouble, precision: 8),
+          'transFee':
+              NumberUtil.customRoundNumber(transFeeDouble, decimalPlaces: 8),
           'amountInTx': amountInTx
         };
       }
@@ -1917,8 +1959,8 @@ class WalletService {
       return {
         'txHex': txHex,
         'errMsg': '',
-        'transFee': NumberUtil()
-            .truncateDoubleWithoutRouding(transFeeDouble, precision: 8),
+        'transFee':
+            NumberUtil.customRoundNumber(transFeeDouble, decimalPlaces: 8),
         'amountInTx': amountInTx,
         'txids': allTxids
       };
@@ -2488,6 +2530,153 @@ class WalletService {
       }
     }
 
+    // Matic - BNB Transaction
+
+    else if (coin == 'MATICM' || coin == 'BNB') {
+      transFeeDouble = (BigInt.parse(gasPrice.toString()) *
+              BigInt.parse(gasLimit.toString()) /
+              BigInt.parse('1000000000'))
+          .toDouble();
+
+      if (getTransFeeOnly) {
+        return {
+          'txHex': '',
+          'txHash': '',
+          'errMsg': '',
+          'amountSent': '',
+          'transFee':
+              NumberUtil.customRoundNumber(transFeeDouble, decimalPlaces: 8),
+        };
+      }
+
+      final chainId = environment["chains"][coin]["chainId"];
+      final ethCoinChild =
+          root.derivePath("m/44'/${environment["CoinType"]["ETH"]}'/0'/0/0");
+      final privateKey = HEX.encode(ethCoinChild.privateKey!);
+      var amountSentInt = BigInt.parse(NumberUtil.toBigInt(amount));
+
+      Credentials credentials = EthPrivateKey.fromHex(privateKey);
+
+      final address = credentials.address;
+      final addressHex = address.hex;
+
+      String baseUrl = '';
+      if (coin == 'BNB') {
+        baseUrl = ApiRoutes.bnbBaseUrl;
+      } else if (coin == 'MATICM') {
+        baseUrl = ApiRoutes.maticmBaseUrl;
+      }
+
+      final nonce = await erc20Util.getNonce(
+          smartContractAddress: addressHex, baseUrl: baseUrl);
+
+      var apiUrl =
+          environment["chains"]["ETH"]["infura"]; //Replace with your API
+
+      var ethClient = Web3Client(apiUrl, httpClient);
+
+      amountInTx = amountSentInt;
+      final signed = await ethClient.signTransaction(
+          credentials,
+          Transaction(
+            nonce: nonce,
+            to: EthereumAddress.fromHex(toAddress),
+            gasPrice: EtherAmount.fromInt(EtherUnit.gwei, gasPrice),
+            maxGas: gasLimit,
+            value: EtherAmount.fromBigInt(EtherUnit.wei, amountSentInt),
+          ),
+          chainId: chainId,
+          fetchChainIdFromNetworkId: false);
+
+      txHex = '0x${HEX.encode(signed)}';
+
+      debugPrint('$coin txHex in ETH=$txHex');
+      if (doSubmit) {
+        var res = await erc20Util.postTx(baseUrl, txHex);
+        txHash = res['txHash'];
+        errMsg = res['errMsg'];
+      } else {
+        txHash = getTransactionHash(signed);
+      }
+    }
+    // matic -- polgon tokens
+    else if (tokenType == 'BNB' ||
+        tokenType == 'MATIC' ||
+        tokenType == 'POLYGON') {
+      transFeeDouble = (BigInt.parse(gasPrice.toString()) *
+              BigInt.parse(gasLimit.toString()) /
+              BigInt.parse('1000000000'))
+          .toDouble();
+      log.i('transFeeDouble===$transFeeDouble');
+      if (getTransFeeOnly) {
+        return {
+          'txHex': '',
+          'txHash': '',
+          'errMsg': '',
+          'amountSent': '',
+          'transFee':
+              NumberUtil.customRoundNumber(transFeeDouble, decimalPlaces: 8),
+        };
+      }
+
+      final chainId = environment["chains"][tokenType]["chainId"];
+      final ethCoinChild =
+          root.derivePath("m/44'/${environment["CoinType"]["ETH"]}'/0'/0/0");
+      final privateKey = HEX.encode(ethCoinChild.privateKey!);
+      Credentials credentials = EthPrivateKey.fromHex(privateKey);
+
+      final address = credentials.address;
+      final addressHex = address.hex;
+      String baseUrl = '';
+
+      if (tokenType == 'BNB') {
+        baseUrl = ApiRoutes.bnbBaseUrl;
+      } else if (tokenType == 'MATIC' || tokenType == 'POLYGON') {
+        baseUrl = ApiRoutes.maticmBaseUrl;
+      }
+      final nonce = await erc20Util.getNonce(
+          baseUrl: baseUrl, smartContractAddress: addressHex);
+
+      //gasLimit = 100000;
+
+      var convertedDecimalAmount =
+          BigInt.parse(NumberUtil.toBigInt(amount, decimal));
+
+      amountInTx = convertedDecimalAmount;
+      var transferAbi = 'a9059cbb';
+      var fxnCallHex = transferAbi +
+          string_utils.fixLength(string_utils.trimHexPrefix(toAddress), 64) +
+          string_utils.fixLength(
+              string_utils
+                  .trimHexPrefix(convertedDecimalAmount.toRadixString(16)),
+              64);
+      var apiUrl = environment["chains"]["ETH"]["infura"];
+
+      var ethClient = Web3Client(apiUrl, httpClient);
+      debugPrint(
+          '5 $nonce -- $contractAddress -- ${EtherUnit.wei} -- $fxnCallHex');
+      final signed = await ethClient.signTransaction(
+          credentials,
+          Transaction(
+              nonce: nonce,
+              to: EthereumAddress.fromHex(contractAddress),
+              gasPrice: EtherAmount.fromInt(EtherUnit.gwei, gasPrice),
+              maxGas: gasLimit,
+              value: EtherAmount.fromInt(EtherUnit.wei, 0),
+              data: Uint8List.fromList(string_utils.hex2Buffer(fxnCallHex))),
+          chainId: chainId,
+          fetchChainIdFromNetworkId: false);
+      log.w('signed=');
+      txHex = '0x${HEX.encode(signed)}';
+
+      if (doSubmit) {
+        var res = await erc20Util.postTx(baseUrl, txHex);
+        txHash = res['txHash'];
+        errMsg = res['errMsg'];
+      } else {
+        txHash = getTransactionHash(signed);
+      }
+    }
     // ETH Transaction
 
     else if (coin == 'ETH') {

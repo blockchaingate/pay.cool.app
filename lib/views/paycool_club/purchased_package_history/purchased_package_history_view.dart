@@ -31,8 +31,7 @@ class PurchasedPackageView extends StatelessWidget {
               ? SizedBox(
                   height: 500,
                   child: Center(child: model.sharedService.loadingIndicator()))
-              : model.purchasedPackages == null ||
-                      model.purchasedPackages.isEmpty
+              : model.purchasedPackages.isEmpty
                   ? SizedBox(
                       height: 400,
                       child: Center(

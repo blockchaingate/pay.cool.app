@@ -109,7 +109,7 @@ class PayCoolRewardsView extends StatelessWidget {
                                                             .paymentRewards[
                                                                 index]
                                                             .rewardAmount!,
-                                                        decimalPrecision: 6)
+                                                        decimalPlaces: 6)
                                                     .toString(),
                                                 style: const TextStyle(
                                                     fontSize: 14,

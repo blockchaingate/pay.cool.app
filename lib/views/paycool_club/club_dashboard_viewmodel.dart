@@ -127,7 +127,7 @@ class ClubDashboardViewModel extends BaseViewModel {
               if (summary.project!.en == 'Paycool') {
                 totalPaycoolRewardDollarVal = NumberUtil.decimalLimiter(
                     reward.amount! * rtp,
-                    decimalPrecision: 8);
+                    decimalPlaces: 8);
               }
               if (reward.coin == "FETDUSD-LP" || reward.coin == "UnknownCoin") {
                 reward.amount =
@@ -135,7 +135,7 @@ class ClubDashboardViewModel extends BaseViewModel {
               }
               totatRewardDollarVal += NumberUtil.decimalLimiter(
                   reward.amount! * rtp,
-                  decimalPrecision: 2);
+                  decimalPlaces: 2);
 
               rewardTokenPriceMap.addAll({reward.coin!: rtp});
             } catch (err) {

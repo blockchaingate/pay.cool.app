@@ -56,7 +56,7 @@ class ClubProjectDetailsViewModel extends BaseViewModel {
         var res = reward.amount! * rtp;
         log.w('res $res');
         totatRewardDollarVal +=
-            NumberUtil.decimalLimiter(res, decimalPrecision: 8);
+            NumberUtil.decimalLimiter(res, decimalPlaces: 8);
         log.e('totatRewardDollarVal $totatRewardDollarVal');
         rewardTokenPriceMap.addAll({reward.coin!: rtp});
       }

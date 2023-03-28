@@ -45,10 +45,7 @@ class ClubPackageCheckoutView extends StatelessWidget {
                           height: MediaQuery.of(context).size.height - 100,
                           width: MediaQuery.of(context).size.width - 100,
                           child: model.sharedService.loadingIndicator(
-                              isCustom: true,
-                              strokeWidth: 2.5,
-                              height: 40,
-                              width: 40)))
+                              isCustom: true, height: 40, width: 40)))
                   : Container(),
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -106,7 +103,7 @@ class ClubPackageCheckoutView extends StatelessWidget {
                                 checkoutFields(
                                     '${FlutterI18n.translate(context, "gas")} ${FlutterI18n.translate(context, "balance")}',
                                     NumberUtil.decimalLimiter(model.gasBalance,
-                                            decimalPrecision: 12)
+                                            decimalPlaces: 12)
                                         .toString(),
                                     context),
                                 UIHelper.verticalSpaceSmall,

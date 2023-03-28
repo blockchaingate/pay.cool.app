@@ -405,7 +405,7 @@
     "unlock": "Unlock",
     "enableBiometricAuthentication": "Enable Biometric Authentication",
     "pleaseSetupDeviceSecurity": "Please setup the device security either using Pin/Password or Biometric in the phone app settings",
-    "withdrawPopupNote": "Please confirm the coin you want to withdraw",
+    "withdrawPopupNote": "Please confirm the chain you want to use for this withdraw",
     "lockedOutTemp": "Too many failed attempts, please try after sometime.",
     "lockedOutPerm": "Too many failed attempts, please try to unlock using Pin or Password",
     "lockAppNow": "Lock App Now",

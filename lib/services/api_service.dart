@@ -736,6 +736,7 @@ class ApiService {
     try {
       var response = await client.get(Uri.parse(url));
       json = jsonDecode(response.body);
+      log.w('getFabUtxos $json');
     } catch (e) {
       log.e(e);
     }

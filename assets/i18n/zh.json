@@ -407,7 +407,7 @@
     "unlock": "解锁",
     "enableBiometricAuthentication": "启用生物特征认证",
     "pleaseSetupDeviceSecurity": "请在手机应用程序设置中使用 Pin 密码或生物特征识别设置增加设备安全。",
-    "withdrawPopupNote": "请确认您要提现的币种",
+    "withdrawPopupNote": "请确认您要用于此提款的链。",
     "lockedOutTemp": "失败的尝试太多，请稍后再试。",
     "lockedOutPerm": "尝试失败次数过多，请尝试使用 Pin 或密码解锁",
     "lockAppNow": "立即锁定应用",

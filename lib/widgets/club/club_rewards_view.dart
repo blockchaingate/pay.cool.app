@@ -280,7 +280,7 @@ class ClubRewardsView extends StatelessWidget {
                                                                           //       )
                                                                           //     :
                                                                           Text(
-                                                                            NumberUtil.decimalLimiter(clubRewardsArgs.summary[index].totalReward![j].amount!, decimalPrecision: 18).toString(),
+                                                                            NumberUtil.decimalLimiter(clubRewardsArgs.summary[index].totalReward![j].amount!, decimalPlaces: 18).toString(),
                                                                             style:
                                                                                 headText6.copyWith(color: green, fontWeight: FontWeight.bold),
                                                                           ),

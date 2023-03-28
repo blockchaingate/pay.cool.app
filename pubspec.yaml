@@ -1,6 +1,6 @@
 name: paycool
 description: Crypto payment application
-version: 2.3.110+162
+version: 2.3.111+163
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `pub publish`. This is preferred for private packages.
@@ -19,42 +19,35 @@ dependency_overrides:
   image_picker_android: 0.8.4+13
 
 dependencies:
-
   aukfa_version_checker:
     git:
       url: https://github.com/blockchaingate/exchangily-packages.git
       path: aukfa_version_checker
       ref: main
   auto_size_text: ^3.0.0
-
   bitbox:
     git:
       url: https://github.com/blockchaingate/exchangily-packages.git
       path: open_source_packages/bitbox_flutter
-
   bitcoin_flutter:
     git:
       url: https://github.com/blockchaingate/exchangily-packages.git
       path: open_source_packages/bitcoin_flutter
-
+  card_swiper: null
+  cupertino_icons: ^1.0.5
+  decimal: ^2.2.0
+  device_info: ^2.0.2
+  encrypt: ^5.0.1
   exchangily_ui:
     git:
       url: https://github.com/blockchaingate/exchangily-packages.git
       path: exchangily_ui
-      ref: main 
-  card_swiper:
-
-  #connectivity: ^0.4.3+1
-  cupertino_icons: ^1.0.5
-  decimal: ^2.2.0
-  device_info: ^2.0.2 #discontinued
-  encrypt: ^5.0.1
+      ref: main
   flutter:
     sdk: flutter
-  flutter_dotenv:
+  flutter_dotenv: null
   flutter_i18n: null
-  flutter_launcher_icons:
-
+  flutter_launcher_icons: null
   flutter_localizations:
     sdk: flutter
   flutter_svg: ^2.0.0+1
@@ -62,41 +55,39 @@ dependencies:
   font_awesome_flutter: ^10.2.1
   image_picker: ^0.8.6+1
   intl_translation: ^0.18.0
-
   keccak:
     git:
       url: https://github.com/blockchaingate/exchangily-packages.git
       path: open_source_packages/keccak
-
   launch_review: ^3.0.1
   local_auth: ^2.1.3
   logger: ^1.1.0
-  majascan:
+  majascan: null
   material_design_icons_flutter: ^6.0.7096
   observable_ish: null
   overlay_support: ^2.1.0
-  package_info: ^2.0.2 #discontinued
+  package_info: ^2.0.2
   path_provider: ^2.0.4
   protobuf: ^2.0.0
-  #pull_to_refrsh: ^2.0.0
   qr_code_utils: ^0.0.1
   qr_flutter: ^4.0.0
   rflutter_alert: ^2.0.4
   screenshot: ^1.3.0
   share_plus: ^6.3.0
-  shared_preferences:
+  shared_preferences: null
   shimmer: ^2.0.0
   sqflite: ^2.1.0+1
   stacked: ^3.1.0+3
-  tree_view: ^0.0.5 #discontinued
-  url_launcher: ^6.0.10
+  stacked_services: ^1.0.0
+  tree_view: ^0.0.5
   upgrader: ^6.0.1
+  url_launcher: ^6.0.10
   version: ^3.0.2
-  web3dart:
+  web3dart: null
   webview_flutter: ^4.0.2
 
 dev_dependencies:
-  flutter_lints:
+  flutter_lints: null
   flutter_test:
     sdk: flutter
   intl: ^0.17.0-nullsafety.2

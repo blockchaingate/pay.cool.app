@@ -25,6 +25,7 @@ import 'package:paycool/services/navigation_service.dart';
 import 'package:paycool/services/shared_service.dart';
 import 'package:paycool/services/wallet_service.dart';
 import 'package:flutter/material.dart';
+import 'package:paycool/utils/wallet/wallet_util.dart';
 import 'package:stacked/stacked.dart';
 import 'package:paycool/constants/route_names.dart';
 
@@ -61,8 +62,8 @@ class WalletFeaturesViewModel extends BaseViewModel {
   init() async {
     getWalletFeatures();
     getErrDeposit();
-    specialTicker = walletService.updateSpecialTokensTickerNameForTxHistory(
-        walletInfo.tickerName!)["tickerName"];
+    specialTicker = WalletUtil.updateSpecialTokensTickerName(
+        walletInfo.tickerName!)["tickerName"]!;
     log.i('wi object to check name ${walletInfo.toJson()}');
     refreshBalance();
     checkIfCoinIsFavorite();
@@ -146,9 +147,9 @@ class WalletFeaturesViewModel extends BaseViewModel {
           var item = result[i];
           var coinType = item['coinType'];
           String tickerNameByCointype = newCoinTypeMap[coinType]!;
-          if (tickerNameByCointype == null) {
+          if (tickerNameByCointype.isEmpty) {
             await tokenListDatabaseService.getAll().then((tokenList) {
-              if (tokenList != null) {
+              if (tokenList.isNotEmpty) {
                 tickerNameByCointype = tokenList
                     .firstWhere((element) => element.coinType == coinType)
                     .tickerName!;

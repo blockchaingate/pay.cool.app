@@ -138,7 +138,7 @@ class WalletDashboardViewModel extends BaseViewModel {
   String totalWalletBalance = '';
   String totalLockedBalance = '';
   String totalExchangeBalance = '';
-  var coinsToHideList = ["USDTB"];
+  var coinsToHideList = [""];
 /*----------------------------------------------------------------------
                     INIT
 ----------------------------------------------------------------------*/
@@ -360,53 +360,6 @@ class WalletDashboardViewModel extends BaseViewModel {
   //   }
   //   setBusyForObject(favWalletInfoList, false);
   // }
-
-/*----------------------------------------------------------------------
-                            Move Trx Usdt
-----------------------------------------------------------------------*/
-  moveTronUsdt() async {
-    try {
-      var tronUsdtWalletObj =
-          wallets.singleWhere((element) => element.coin == 'USDTX');
-      if (tronUsdtWalletObj != null) {
-        int tronUsdtIndex = wallets.indexOf(tronUsdtWalletObj);
-        if (tronUsdtIndex != 5) {
-          wallets.removeAt(tronUsdtIndex);
-          wallets.insert(5, tronUsdtWalletObj);
-        } else {
-          log.i('2nd else move tronusdt tron usdt already at #5');
-        }
-      } else {
-        log.w('1st else move tronusdt can\'t find tron usdt');
-      }
-    } catch (err) {
-      log.e('movetronusdt Catch $err');
-    }
-  }
-
-  moveTron() {
-    try {
-      var tronWalletObj =
-          wallets.singleWhere((element) => element.coin == 'TRX');
-      if (tronWalletObj != null) {
-        int tronUsdtIndex = wallets.indexOf(tronWalletObj);
-        if (tronUsdtIndex != 7) {
-          wallets.removeAt(tronUsdtIndex);
-          wallets.insert(7, tronWalletObj);
-        } else {
-          log.i('2nd else moveTron tron usdt already at #7');
-        }
-      } else {
-        log.w('1st else moveTron cant find tron usdt');
-      }
-    } catch (err) {
-      log.e('moveTron Catch $err');
-    }
-  }
-
-/*----------------------------------------------------------------------
-                            Fav Tab
-----------------------------------------------------------------------*/
 
 /*----------------------------------------------------------------------
                 Update wallet with new native coins
@@ -944,9 +897,9 @@ class WalletDashboardViewModel extends BaseViewModel {
           var item = result[i];
           var coinType = item['coinType'];
           String tickerNameByCointype = newCoinTypeMap[coinType]!;
-          if (tickerNameByCointype == null) {
+          if (tickerNameByCointype.isEmpty) {
             await tokenListDatabaseService.getAll().then((tokenList) {
-              if (tokenList != null) {
+              if (tokenList.isNotEmpty) {
                 tickerNameByCointype = tokenList
                     .firstWhere((element) => element.coinType == coinType)
                     .tickerName!;
@@ -954,12 +907,11 @@ class WalletDashboardViewModel extends BaseViewModel {
             });
           }
           log.w('tickerNameByCointype $tickerNameByCointype');
-          tickerNameByCointype =
-              walletUtil.updateSpecialTokensTickerNameForTxHistory(
-                  tickerNameByCointype)["tickerName"]!;
+          tickerNameByCointype = WalletUtil.updateSpecialTokensTickerName(
+              tickerNameByCointype)["tickerName"]!;
           log.i(
               'if Special then updated tickerNameByCointype $tickerNameByCointype');
-          if (tickerNameByCointype != null &&
+          if (tickerNameByCointype.isNotEmpty &&
               !pendingDepositCoins.contains(tickerNameByCointype)) {
             pendingDepositCoins.add(tickerNameByCointype);
           }
@@ -1054,6 +1006,27 @@ class WalletDashboardViewModel extends BaseViewModel {
     await tokenListDatabaseService.insert(newToken);
   }
 
+// move coin in the list
+  moveCoin(String tickerName, int desiredIndexPosition) {
+    try {
+      var walletObj =
+          wallets.singleWhere((element) => element.coin == tickerName);
+      if (walletObj.coin!.isNotEmpty) {
+        int walletObjIndex = wallets.indexOf(walletObj);
+        if (walletObjIndex != desiredIndexPosition) {
+          wallets.removeAt(walletObjIndex);
+          wallets.insert(desiredIndexPosition, walletObj);
+        } else {
+          log.i(
+              '2nd else moveCoin $tickerName already at $desiredIndexPosition');
+        }
+      } else {
+        log.w('1st else moveCoin cant find $tickerName');
+      }
+    } catch (err) {
+      log.e('moveCoin Catch $err');
+    }
+  }
 /*-------------------------------------------------------------------------------------
                           Refresh Balances
 -------------------------------------------------------------------------------------*/
@@ -1097,8 +1070,10 @@ class WalletDashboardViewModel extends BaseViewModel {
     calcTotalBal();
 
     await checkToUpdateWallet();
-    moveTronUsdt();
-    moveTron();
+    moveCoin('USDTX', 5);
+    moveCoin('BNB', 6);
+    moveCoin('TRX', 7);
+
     // get gas balance
     await walletService
         .gasBalance(

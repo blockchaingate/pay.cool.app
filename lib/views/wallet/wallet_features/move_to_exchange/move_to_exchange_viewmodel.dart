@@ -19,6 +19,7 @@ import 'package:paycool/services/shared_service.dart';
 import 'package:paycool/services/wallet_service.dart';
 import 'package:paycool/utils/number_util.dart';
 import 'package:paycool/utils/wallet/erc20_util.dart';
+import 'package:paycool/utils/wallet/wallet_util.dart';
 import 'package:stacked/stacked.dart';
 import '../../../../logger.dart';
 
@@ -63,7 +64,6 @@ class MoveToExchangeViewModel extends BaseViewModel {
   TokenModel tokenModel = TokenModel();
   double chainBalance = 0.0;
   var erc20Util = Erc20Util();
-
   void initState() async {
     setBusy(true);
     coinName = walletInfo.tickerName.toString();
@@ -73,8 +73,8 @@ class MoveToExchangeViewModel extends BaseViewModel {
     setFee();
     await getGas();
     //  }
-    specialTicker = walletService.updateSpecialTokensTickerNameForTxHistory(
-        walletInfo.tickerName.toString())['tickerName'];
+    specialTicker = WalletUtil.updateSpecialTokensTickerName(
+        walletInfo.tickerName.toString())['tickerName']!;
     refreshBalance();
 
     if (coinName == 'BTC') {
@@ -120,9 +120,9 @@ class MoveToExchangeViewModel extends BaseViewModel {
 
   fillMaxAmount() {
     setBusy(true);
-    amountController.text = NumberUtil()
-        .truncateDoubleWithoutRouding(walletInfo.availableBalance!,
-            precision: decimalLimit)
+    amountController.text = NumberUtil.customRoundNumber(
+            walletInfo.availableBalance!,
+            decimalPlaces: decimalLimit)
         .toString();
     amount = double.parse(amountController.text);
     setBusy(false);
@@ -239,9 +239,8 @@ class MoveToExchangeViewModel extends BaseViewModel {
       setBusy(false);
       return 0.0;
     }
-    amount = NumberUtil().truncateDoubleWithoutRouding(
-        double.parse(amountController.text),
-        precision: decimalLimit);
+    amount = NumberUtil.customRoundNumber(double.parse(amountController.text),
+        decimalPlaces: decimalLimit);
     log.w('amountAfterFee func: amount $amount');
 
     double finalAmount = 0.0;
@@ -249,7 +248,7 @@ class MoveToExchangeViewModel extends BaseViewModel {
 
     // if tron coins then assign fee accordingly
     if (isTrx()) {
-      if (walletInfo.tickerName == 'USDTX') {
+      if (walletInfo.tickerName == 'USDTX' || walletInfo.tokenType == 'TRX') {
         transFee = double.parse(trxGasValueTextController.text);
         finalAmount = amount;
         finalAmount <= walletInfo.availableBalance!
@@ -283,17 +282,17 @@ class MoveToExchangeViewModel extends BaseViewModel {
         finalAmount = amount;
       }
     }
-    finalAmount = NumberUtil()
-        .truncateDoubleWithoutRouding(finalAmount, precision: decimalLimit);
+    finalAmount = NumberUtil.truncateDoubleWithoutRouding(finalAmount,
+        precision: decimalLimit);
     finalAmount <= walletInfo.availableBalance!
         ? isValidAmount = true
         : isValidAmount = false;
     log.i(
-        'Func:amountAfterFee --trans fee $transFee  -- entered amount $amount =  finalAmount $finalAmount -- decimal limit final amount ${NumberUtil().truncateDoubleWithoutRouding(finalAmount, precision: decimalLimit)} -- isValidAmount $isValidAmount');
+        'Func:amountAfterFee --trans fee $transFee  -- entered amount $amount =  finalAmount $finalAmount -- decimal limit final amount ${NumberUtil.customRoundNumber(finalAmount, decimalPlaces: decimalLimit)} -- isValidAmount $isValidAmount');
     setBusy(false);
+    // It happens because floating-point numbers cannot always precisely represent decimal fractions. Instead, they represent them as binary fractions, which can sometimes result in rounding errors.
     //0.025105000000000002
-    return NumberUtil()
-        .truncateDoubleWithoutRouding(finalAmount, precision: decimalLimit);
+    return finalAmount;
   }
 
   checkPass() async {
@@ -402,7 +401,8 @@ class MoveToExchangeViewModel extends BaseViewModel {
     // check chain balance
     if (tokenType.isNotEmpty) {
       bool hasSufficientChainBalance = await walletService
-          .checkCoinWalletBalance(transFee, walletInfo.tokenType!);
+          .checkCoinWalletBalance(transFee, walletInfo.tokenType!,
+              address: walletInfo.address!);
       if (!hasSufficientChainBalance) {
         log.e('Chain $tokenType -- insufficient balance');
         sharedService.sharedSimpleNotification(walletInfo.tokenType!,
@@ -655,7 +655,7 @@ class MoveToExchangeViewModel extends BaseViewModel {
     var to = coinService.getCoinOfficalAddress(coinName, tokenType: tokenType);
     amount = double.tryParse(amountController.text)!;
 
-    if (to == null || amount == null || amount <= 0) {
+    if (to == null || amount <= 0) {
       transFee = 0.0;
       setBusy(false);
       return;

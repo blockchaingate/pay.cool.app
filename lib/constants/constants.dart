@@ -1,6 +1,7 @@
 import 'package:decimal/decimal.dart';
 
 class Constants {
+  static Pattern regexPattern = r'^(0|(\d+)|\.(\d+))(\.(\d+))?$';
   static Map<String, String> headersText = {"responseType;": "text"};
   static Map<String, String> headersJson = {
     'Content-Type': 'application/json; charset=UTF-8',
@@ -30,6 +31,8 @@ class Constants {
   static const String EthChainPrefix = '0003';
   static const String TronChainPrefix = '0007';
   static const String FabChainPrefix = '0002';
+  static const String bnbChainPrefix = '0008';
+  static const String maticmChainPrefix = '0009';
 
   static const String depositSignatureAbi = "0x379eb862";
   static const String withdrawSignatureAbi = "0x3295d51e";

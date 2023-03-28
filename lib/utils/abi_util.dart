@@ -195,9 +195,9 @@ String constructPaycoolCancelAbiHex(String orderId) {
                     Withdraw abi
 ----------------------------------------------------------------------*/
 getWithdrawFuncABI(coinType, amountInLink, addressInWallet,
-    {String chain = '', bool isSpecialDeposit = false}) {
+    {String chain = '', bool isSpecialToken = false}) {
   var abiHex = Constants.withdrawSignatureAbi;
-  if (isSpecialDeposit) {
+  if (isSpecialToken) {
     var hexaDecimalCoinType = fix8LengthCoinType(coinType.toRadixString(16));
     abiHex += specialFixLength(hexaDecimalCoinType, 64, chain);
   } else {
@@ -269,6 +269,10 @@ specialFixLength(String hexaDecimalCoinType, int length, String chain) {
       retStr += Constants.TronChainPrefix;
     } else if (chain == 'FAB') {
       retStr += Constants.FabChainPrefix;
+    } else if (chain == 'MATICM' || chain == 'POLYGON') {
+      retStr += Constants.maticmChainPrefix;
+    } else if (chain == 'BNB') {
+      retStr += Constants.bnbChainPrefix;
     }
 
     retStr += hexaDecimalCoinType;

@@ -26,12 +26,12 @@ TextStyle subText1 =
 TextStyle subText2 =
     const TextStyle(fontSize: 10.3, color: grey, fontWeight: FontWeight.w400);
 TextStyle headText5 =
-    const TextStyle(fontSize: 12.5, color: black, fontWeight: FontWeight.w400);
+    const TextStyle(fontSize: 13, color: black, fontWeight: FontWeight.w400);
 const TextStyle bodyText1 =
     TextStyle(fontSize: 13, color: black, fontWeight: FontWeight.w400);
 TextStyle bodyText2 = const TextStyle(fontSize: 13, color: red);
 TextStyle headText6 =
-    const TextStyle(fontSize: 10.5, color: black, fontWeight: FontWeight.w500);
+    const TextStyle(fontSize: 11.5, color: black, fontWeight: FontWeight.w500);
 
 // appbar
 AppBar customAppBar({Color color = primaryColor}) => AppBar(

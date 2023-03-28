@@ -29,12 +29,10 @@ class CoinDetailsCardWidget extends StackedView<WalletDashboardViewModel> {
   @override
   Widget builder(
       BuildContext context, WalletDashboardViewModel model, Widget? child) {
-    var walletUtils = WalletUtil();
     String finalTickerName = '';
     String logoTicker = '';
 
-    var specialTickerRes =
-        walletUtils.updateSpecialTokensTickerNameForTxHistory(tickerName);
+    var specialTickerRes = WalletUtil.updateSpecialTokensTickerName(tickerName);
     finalTickerName = specialTickerRes['tickerName']!;
     logoTicker = specialTickerRes['logoTicker']!;
     if (model.hideSmallAmountCheck(wallets[index])) {
@@ -101,10 +99,9 @@ class CoinDetailsCardWidget extends StackedView<WalletDashboardViewModel> {
                                 wallets[index].balance!.isNegative
                                     ? FlutterI18n.translate(
                                         context, "unavailable")
-                                    : NumberUtil()
-                                        .truncateDoubleWithoutRouding(
+                                    : NumberUtil.customRoundNumber(
                                             wallets[index].balance!,
-                                            precision: 6)
+                                            decimalPlaces: 6)
                                         .toString(),
                                 style: headText6),
                           ),
@@ -125,10 +122,9 @@ class CoinDetailsCardWidget extends StackedView<WalletDashboardViewModel> {
                                 wallets[index].lockBalance!.isNegative
                                     ? FlutterI18n.translate(
                                         context, "unavailable")
-                                    : NumberUtil()
-                                        .truncateDoubleWithoutRouding(
+                                    : NumberUtil.customRoundNumber(
                                             wallets[index].lockBalance!,
-                                            precision: 6)
+                                            decimalPlaces: 6)
                                         .toString(),
                                 style: headText6.copyWith(color: red)),
                           )
@@ -151,11 +147,10 @@ class CoinDetailsCardWidget extends StackedView<WalletDashboardViewModel> {
                                         .isNegative
                                     ? FlutterI18n.translate(
                                         context, "unavailable")
-                                    : NumberUtil()
-                                        .truncateDoubleWithoutRouding(
+                                    : NumberUtil.customRoundNumber(
                                             wallets[index]
                                                 .unlockedExchangeBalance!,
-                                            precision: 6)
+                                            decimalPlaces: 6)
                                         .toString(),
                                 style: headText6),
                           ),
@@ -182,13 +177,12 @@ class CoinDetailsCardWidget extends StackedView<WalletDashboardViewModel> {
                               wallets[index].usdValue!.usd!.isNegative
                                   ? FlutterI18n.translate(
                                       context, "unavailable")
-                                  : NumberUtil()
-                                      .truncateDoubleWithoutRouding(
+                                  : NumberUtil.customRoundNumber(
                                           (!wallets[index].balance!.isNegative
                                                   ? wallets[index].balance
                                                   : 0.0)! *
                                               wallets[index].usdValue!.usd!,
-                                          precision: 2)
+                                          decimalPlaces: 2)
                                       .toString(),
                               style: const TextStyle(color: green),
                             ),
@@ -273,7 +267,7 @@ class CoinDetailsCardWidget extends StackedView<WalletDashboardViewModel> {
                                           style:
                                               subText2.copyWith(color: yellow)),
                                       Text(
-                                          '${NumberUtil().truncateDoubleWithoutRouding(wallets[index].unconfirmedBalance!, precision: 8)}  FAB',
+                                          '${NumberUtil.customRoundNumber(wallets[index].unconfirmedBalance!, decimalPlaces: 8)}  FAB',
                                           textAlign: TextAlign.start,
                                           style:
                                               subText2.copyWith(color: yellow)),

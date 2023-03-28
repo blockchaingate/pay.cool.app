@@ -24,6 +24,7 @@ import 'package:paycool/services/db/token_list_database_service.dart';
 import 'package:paycool/utils/eth_util.dart';
 import 'dart:convert';
 import 'package:paycool/utils/fab_util.dart';
+import 'package:paycool/utils/wallet/wallet_util.dart';
 import 'package:stacked/stacked.dart';
 
 class MoveToWalletViewmodel extends BaseViewModel {
@@ -59,11 +60,15 @@ class MoveToWalletViewmodel extends BaseViewModel {
   var ethChainBalance;
   var fabChainBalance;
   var trxTsWalletBalance;
+  var bnbTsWalletBalance;
+  var polygonTsWalletBalance;
   bool isWithdrawChoice = false;
   String _groupValue = '';
   get groupValue => _groupValue;
   bool isShowFabChainBalance = false;
   bool isShowTrxTsWalletBalance = false;
+  bool isShowBnbTsWalletBalance = false;
+  bool isShowPolygonTsWalletBalance = false;
   String specialTicker = '';
   String updateTickerForErc = '';
   bool isAlert = false;
@@ -75,6 +80,9 @@ class MoveToWalletViewmodel extends BaseViewModel {
   String ercSmartContractAddress = '';
   TokenModel ercChainToken = TokenModel();
   TokenModel mainChainToken = TokenModel();
+
+  TokenModel bnbChainToken = TokenModel();
+  TokenModel polygonChainToken = TokenModel();
   bool isSubmittingTx = false;
   var tokenType;
   var fabUtils = FabUtils();
@@ -113,11 +121,26 @@ class MoveToWalletViewmodel extends BaseViewModel {
       isShowTrxTsWalletBalance = true;
 
       radioButtonSelection('TRX');
-    } else if (walletInfo.tickerName == "BTC") {
-      setWithdrawLimit("BTC");
+    } // BNB
+    else if (walletInfo.tickerName == 'FABB' ||
+        walletInfo.tickerName == 'USDTB' ||
+        walletInfo.tokenType == 'BNB') {
+      isShowBnbTsWalletBalance = true;
+
+      radioButtonSelection('BNB');
     }
-    specialTicker = walletService.updateSpecialTokensTickerNameForTxHistory(
-        walletInfo.tickerName!)['tickerName'];
+    // POLYGON
+    else if (walletInfo.tokenType == 'MATICM' ||
+        walletInfo.tickerName == 'MATICM' ||
+        walletInfo.tokenType == 'POLYGON') {
+      isShowPolygonTsWalletBalance = true;
+
+      radioButtonSelection('POLYGON');
+    } else {
+      setWithdrawLimit(walletInfo.tickerName!);
+    }
+    specialTicker = WalletUtil.updateSpecialTokensTickerName(
+        walletInfo.tickerName.toString())['tickerName']!;
     await checkGasBalance();
     await getSingleCoinExchangeBal();
 
@@ -127,6 +150,26 @@ class MoveToWalletViewmodel extends BaseViewModel {
 /*---------------------------------------------------
         popup to confirm withdraw coin selection
 --------------------------------------------------- */
+
+  withdrawConfirmation() async {
+    try {
+      await _dialogService
+          .showVerifyDialog(
+              title: FlutterI18n.translate(context, "withdrawPopupNote"),
+              description: _groupValue,
+              buttonTitle: FlutterI18n.translate(context, "confirm"))
+          .then((res) {
+        if (res.confirmed) {
+          debugPrint('res  ${res.confirmed}');
+          checkPass();
+        } else {
+          debugPrint('res ${res.confirmed}');
+        }
+      });
+    } catch (err) {
+      log.e('withdrawConfirmation CATCH $err');
+    }
+  }
 
   popupToConfirmWithdrawSelection() {
     showDialog(
@@ -221,7 +264,8 @@ class MoveToWalletViewmodel extends BaseViewModel {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 isShowTrxTsWalletBalance ||
-                                        walletInfo.tickerName == "USDT" ||
+                                        WalletUtil.isSpecialUsdt(
+                                            walletInfo.tickerName!) ||
                                         walletInfo.tickerName == "USDTX"
                                     ? Row(
                                         children: <Widget>[
@@ -526,7 +570,7 @@ class MoveToWalletViewmodel extends BaseViewModel {
           isUsedInView ? MainAxisAlignment.start : MainAxisAlignment.center,
       children: [
         isShowTrxTsWalletBalance ||
-                walletInfo.tickerName == "USDT" ||
+                WalletUtil.isSpecialUsdt(walletInfo.tickerName!) ||
                 walletInfo.tickerName == "USDTX"
             ? Row(
                 children: <Widget>[
@@ -585,6 +629,61 @@ class MoveToWalletViewmodel extends BaseViewModel {
             Text('ERC20', style: headText6),
           ],
         ),
+        UIHelper.horizontalSpaceMedium,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // BNB radio button
+            isShowBnbTsWalletBalance ||
+                    WalletUtil.isSpecialUsdt(walletInfo.tickerName!) ||
+                    WalletUtil.isSpecialFab(walletInfo.tickerName!) ||
+                    walletInfo.tickerName == 'FAB' ||
+                    walletInfo.tickerName == 'USDT'
+                ? Row(
+                    children: <Widget>[
+                      SizedBox(
+                        height: 10,
+                        width: 20,
+                        child: Radio(
+                            activeColor: primaryColor,
+                            onChanged: (value) {
+                              radioButtonSelection(value);
+                            },
+                            groupValue: groupValue,
+                            value: 'BNB'),
+                      ),
+                      UIHelper.horizontalSpaceSmall,
+                      Text('BNB Chain', style: headText6),
+                    ],
+                  )
+                : Container(),
+            UIHelper.horizontalSpaceMedium,
+
+            // MATIC radio button
+            isShowPolygonTsWalletBalance ||
+                    WalletUtil.isSpecialUsdt(walletInfo.tickerName!) ||
+                    walletInfo.tickerName == 'USDT'
+                ? Row(
+                    children: <Widget>[
+                      SizedBox(
+                        height: 10,
+                        width: 20,
+                        child: Radio(
+                            activeColor: primaryColor,
+                            onChanged: (value) {
+                              radioButtonSelection(value);
+                            },
+                            groupValue: groupValue,
+                            value: 'POLYGON'),
+                      ),
+                      UIHelper.horizontalSpaceSmall,
+                      Text('POLYGON Chain', style: headText6),
+                    ],
+                  )
+                : Container(),
+          ],
+        )
       ],
     );
   }
@@ -790,29 +889,37 @@ class MoveToWalletViewmodel extends BaseViewModel {
       ct = value;
       log.i('setWithdrawLimit coin type $ct');
     });
+
     await tokenListDatabaseService.getByCointype(ct).then((res) async {
-      if (res?.feeWithdraw! != null && res?.feeWithdraw! != "null") {
-        token = res!;
-        if (_groupValue == 'ETH') ercChainToken = token;
-        if (_groupValue == 'TRX' || _groupValue == 'FAB') {
-          mainChainToken = token;
-        }
+      if (res != null &&
+          res?.feeWithdraw! != null &&
+          res?.feeWithdraw! != "null") {
+        token = res;
+        assignToken(token);
       } else {
-        await coinService.getSingleTokenData(ticker).then((resFromApi) {
+        await coinService
+            .getSingleTokenData(ticker, coinType: ct)
+            .then((resFromApi) {
           if (resFromApi != null) {
             debugPrint('token from api res ${resFromApi.toJson()}');
             token = resFromApi;
-            if (_groupValue == 'ETH') ercChainToken = token;
-            if (_groupValue == 'TRX' || _groupValue == 'FAB') {
-              mainChainToken = token;
-            }
+            assignToken(token);
           }
         });
       }
     });
+
     setBusy(false);
   }
 
+  assignToken(TokenModel token) {
+    if (_groupValue == 'ETH') ercChainToken = token;
+    if (_groupValue == 'BNB') bnbChainToken = token;
+    if (_groupValue == 'POLYGON') polygonChainToken = token;
+    if (_groupValue == 'TRX' || _groupValue == 'FAB') {
+      mainChainToken = token;
+    }
+  }
 /*---------------------------------------------------
                       Get gas
 --------------------------------------------------- */
@@ -862,6 +969,8 @@ class MoveToWalletViewmodel extends BaseViewModel {
       tickerName = 'USDT';
       isWithdrawChoice = true;
       isShowFabChainBalance = false;
+    } else if (walletInfo.tickerName == 'MATICM') {
+      tickerName = 'MATIC';
     }
     //  else if (walletInfo.tickerName == 'USDTX') {
     //   tickerName = 'USDT';
@@ -890,7 +999,8 @@ class MoveToWalletViewmodel extends BaseViewModel {
             ? await getTrxTsWalletBalance()
             : await getTrxUsdtTsWalletBalance();
       }
-
+      if (_groupValue == 'BNB') await getBnbTsWalletBalance();
+      if (_groupValue == 'POLYGON') await getPolygonTsWalletBalance();
       if (_groupValue == 'FAB') {
         tickerName == 'FAB'
             ? await getFabBalance()
@@ -910,6 +1020,55 @@ class MoveToWalletViewmodel extends BaseViewModel {
       trxTsWalletBalance = res['balance'] / 1e6;
       log.e('getTrxTsWalletBalance $trxTsWalletBalance');
     });
+    setBusy(false);
+  }
+
+  getBnbTsWalletBalance() async {
+    setBusy(true);
+    String officialAddress = '';
+    officialAddress = coinService.getCoinOfficalAddress('ETH');
+    var fabAddress = await sharedService.getFabAddressFromCoreWalletDatabase();
+    String updatedTicker = '';
+    if (WalletUtil.isSpecialUsdt(walletInfo.tickerName!) ||
+        walletInfo.tickerName == 'USDT') {
+      updatedTicker = 'USDTB';
+    } else if (walletInfo.tickerName == 'FAB' ||
+        WalletUtil.isSpecialFab(walletInfo.tickerName!)) {
+      updatedTicker = 'FABB';
+    } else {
+      updatedTicker = walletInfo.tickerName!;
+    }
+    await apiService
+        .getSingleWalletBalance(fabAddress, updatedTicker, officialAddress)
+        .then((res) {
+      bnbTsWalletBalance = res[0].balance;
+    });
+
+    log.w('bnbTsWalletBalance $bnbTsWalletBalance');
+
+    setBusy(false);
+  }
+
+  getPolygonTsWalletBalance() async {
+    setBusy(true);
+    String officialAddress = '';
+    officialAddress = coinService.getCoinOfficalAddress('ETH');
+    var fabAddress = await sharedService.getFabAddressFromCoreWalletDatabase();
+    String updatedTicker = '';
+    if (WalletUtil.isSpecialUsdt(walletInfo.tickerName!) ||
+        walletInfo.tickerName == 'USDT') {
+      updatedTicker = 'USDTM';
+    } else {
+      updatedTicker = walletInfo.tickerName!;
+    }
+    await apiService
+        .getSingleWalletBalance(fabAddress, updatedTicker, officialAddress)
+        .then((res) {
+      polygonTsWalletBalance = res[0].balance;
+    });
+
+    log.w('POLYGON TsWalletBalance $polygonTsWalletBalance');
+
     setBusy(false);
   }
 
@@ -1047,6 +1206,8 @@ class MoveToWalletViewmodel extends BaseViewModel {
     if (value == 'FAB') {
       isShowFabChainBalance = true;
       isShowTrxTsWalletBalance = false;
+      isShowPolygonTsWalletBalance = false;
+      isShowBnbTsWalletBalance = false;
       if (walletInfo.tickerName != 'FAB') tokenType = 'FAB';
       // if (walletInfo.tickerName == 'FAB') walletInfo.tokenType = '';
       // updateTickerForErc = walletInfo.tickerName;
@@ -1063,6 +1224,8 @@ class MoveToWalletViewmodel extends BaseViewModel {
         await setWithdrawLimit(walletInfo.tickerName!);
       }
     } else if (value == 'TRX') {
+      isShowPolygonTsWalletBalance = false;
+      isShowBnbTsWalletBalance = false;
       isShowTrxTsWalletBalance = true;
       //   if (walletInfo.tickerName != 'TRX') walletInfo.tokenType = 'TRX';
 
@@ -1073,10 +1236,38 @@ class MoveToWalletViewmodel extends BaseViewModel {
         await setWithdrawLimit('USDTX');
         tokenType = 'TRX';
       }
+    } else if (value == 'BNB') {
+      isShowBnbTsWalletBalance = true;
+      isShowTrxTsWalletBalance = false;
+      isShowFabChainBalance = false;
+      isShowPolygonTsWalletBalance = false;
+      if (WalletUtil.isSpecialUsdt(walletInfo.tickerName!) ||
+          walletInfo.tickerName == 'USDT') {
+        await setWithdrawLimit('USDTB');
+      } else if (WalletUtil.isSpecialFab(walletInfo.tickerName!) ||
+          walletInfo.tickerName == 'FAB') {
+        await setWithdrawLimit('FABB');
+      } else {
+        await setWithdrawLimit(walletInfo.tickerName!);
+      }
+      tokenType = 'BNB';
+    } else if (value == 'POLYGON') {
+      isShowPolygonTsWalletBalance = true;
+      isShowFabChainBalance = false;
+      isShowBnbTsWalletBalance = false;
+      isShowTrxTsWalletBalance = false;
+      if (WalletUtil.isSpecialUsdt(walletInfo.tickerName!) ||
+          walletInfo.tickerName == 'USDT') {
+        await setWithdrawLimit('USDTM');
+      } else {
+        await setWithdrawLimit(walletInfo.tickerName!);
+      }
+      tokenType = 'POLYGON';
     } else {
       isShowTrxTsWalletBalance = false;
       isShowFabChainBalance = false;
-
+      isShowPolygonTsWalletBalance = false;
+      isShowBnbTsWalletBalance = false;
       tokenType = 'ETH';
       log.i('chain type ${walletInfo.tokenType}');
       if (walletInfo.tickerName == 'FAB' && !isShowFabChainBalance) {
@@ -1137,10 +1328,7 @@ class MoveToWalletViewmodel extends BaseViewModel {
       }
       await getSingleCoinExchangeBal();
 
-      if (amount == null ||
-          amount > walletInfo.inExchange! ||
-          amount == 0 ||
-          amount.isNegative) {
+      if (amount > walletInfo.inExchange! || amount == 0 || amount.isNegative) {
         sharedService.alertDialog(
             FlutterI18n.translate(context, "invalidAmount"),
             FlutterI18n.translate(context, "pleaseEnterValidNumber"),
@@ -1175,7 +1363,20 @@ class MoveToWalletViewmodel extends BaseViewModel {
         setBusy(false);
         return;
       }
-
+      if (groupValue == 'BNB' && amount > bnbTsWalletBalance) {
+        sharedService.alertDialog(FlutterI18n.translate(context!, "notice"),
+            '${FlutterI18n.translate(context!, "lowTsWalletBalanceErrorFirstPart ")} $bnbTsWalletBalance. ${FlutterI18n.translate(context!, "lowTsWalletBalanceErrorSecondPart")}',
+            isWarning: false);
+        setBusy(false);
+        return;
+      }
+      if (groupValue == 'POLYGON' && amount > polygonTsWalletBalance) {
+        sharedService.alertDialog(FlutterI18n.translate(context!, "notice"),
+            '${FlutterI18n.translate(context!, "lowTsWalletBalanceErrorFirstPart")} $polygonTsWalletBalance. ${FlutterI18n.translate(context!, "lowTsWalletBalanceErrorSecondPart")}',
+            isWarning: false);
+        setBusy(false);
+        return;
+      }
       message = '';
       var res = await _dialogService.showDialog(
           title: FlutterI18n.translate(context, "enterPassword"),
@@ -1191,7 +1392,9 @@ class MoveToWalletViewmodel extends BaseViewModel {
 
         var coinName = walletInfo.tickerName;
         var coinAddress = '';
-        if (isShowFabChainBalance && coinName != 'FAB') {
+        if (isShowFabChainBalance &&
+            coinName != 'FAB' &&
+            !WalletUtil.isSpecialFab(coinName!)) {
           coinAddress = exgAddress;
           tokenType = 'FAB';
           log.i('coin address is exg address');
@@ -1200,15 +1403,34 @@ class MoveToWalletViewmodel extends BaseViewModel {
         /// Ticker is FAB but fab chain balance is false then
         /// take coin address as ETH wallet address because coin is an erc20
         else if (coinName == 'FAB' && !isShowFabChainBalance) {
-          await walletDataBaseService
-              .getWalletBytickerName('ETH')
-              .then((wallet) => coinAddress = wallet!.address!);
+          await sharedService
+              .getCoinAddressFromCoreWalletDatabase('ETH')
+              .then((walletAddress) => coinAddress = walletAddress);
           log.i('coin address is ETH address');
+        } // i.e when user is in FABB and selects FAB withdraw
+        // then token type set to empty and uses fab address
+        else if ((coinName != 'FAB' && isShowFabChainBalance) &&
+            WalletUtil.isSpecialFab(coinName!)) {
+          coinAddress =
+              await sharedService.getFabAddressFromCoreWalletDatabase();
+          tokenType = '';
+          coinName = 'FAB';
+          log.i('coin address is FAB address');
         } else if (coinName == 'USDT' && isShowTrxTsWalletBalance) {
-          await walletDataBaseService
-              .getWalletBytickerName('TRX')
-              .then((wallet) => coinAddress = wallet!.address!);
+          await sharedService
+              .getCoinAddressFromCoreWalletDatabase('TRX')
+              .then((walletAddress) => coinAddress = walletAddress);
           log.i('coin address is TRX address');
+        } else if (coinName == 'EXG' && !isShowFabChainBalance) {
+          coinAddress = exgAddress;
+          log.i('coin address is EXG address');
+        } else if ((coinName == 'USDT' ||
+                WalletUtil.isSpecialUsdt(coinName!)) &&
+            isShowTrxTsWalletBalance) {
+          coinAddress =
+              await sharedService.getCoinAddressFromCoreWalletDatabase('TRX');
+          log.i('coin address is TRX address');
+          coinName = 'USDTX';
         } else {
           coinAddress = walletInfo.address!;
           log.i('coin address is its own wallet info address');
@@ -1236,6 +1458,7 @@ class MoveToWalletViewmodel extends BaseViewModel {
         // }
 
         if (walletInfo.tickerName == 'TRX' ||
+            walletInfo.tokenType == 'TRX' ||
             walletInfo.tickerName == 'USDTX') {
           int kanbanGasPrice = environment['chains']['KANBAN']['gasPrice'];
           int kanbanGasLimit = environment['chains']['KANBAN']['gasLimit'];
@@ -1254,7 +1477,7 @@ class MoveToWalletViewmodel extends BaseViewModel {
               message = txId;
             } else {
               serverError = ret['data'].toString();
-              if (serverError == null || serverError == '') {
+              if (serverError.isEmpty) {
                 var errMsg = FlutterI18n.translate(context, "serverError");
                 error(errMsg);
                 isShowErrorDetailsButton = true;

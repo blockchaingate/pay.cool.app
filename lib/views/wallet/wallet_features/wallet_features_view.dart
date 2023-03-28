@@ -350,7 +350,7 @@ class WalletFeaturesView extends StatelessWidget {
                     Expanded(
                       flex: 4,
                       child: Text(
-                        '${NumberUtil().truncateDoubleWithoutRouding(model.walletInfo.usdValue!).toString()} USD',
+                        '${NumberUtil.customRoundNumber(model.walletInfo.usdValue!).toString()} USD',
                         textAlign: TextAlign.right,
                         style: subText1.copyWith(color: buyPrice),
                       ),
@@ -372,7 +372,7 @@ class WalletFeaturesView extends StatelessWidget {
                         FlutterI18n.translate(context, "walletbalance"),
                         style: subText1),
                     Text(
-                        '${NumberUtil().truncateDoubleWithoutRouding(model.walletInfo.availableBalance!, precision: model.decimalLimit).toString()} ${model.specialTicker}',
+                        '${NumberUtil.customRoundNumber(model.walletInfo.availableBalance!, decimalPlaces: model.decimalLimit).toString()} ${model.specialTicker}',
                         style: headText5),
                   ],
                 ),
@@ -391,7 +391,7 @@ class WalletFeaturesView extends StatelessWidget {
                                   context, "unConfirmedBalance"),
                               style: subText1),
                           Text(
-                              '${NumberUtil().truncateDoubleWithoutRouding(model.unconfirmedBalance, precision: model.decimalLimit).toString()} ${model.specialTicker}',
+                              '${NumberUtil.customRoundNumber(model.unconfirmedBalance, decimalPlaces: model.decimalLimit).toString()} ${model.specialTicker}',
                               style: headText5),
                         ],
                       ),
@@ -413,10 +413,9 @@ class WalletFeaturesView extends StatelessWidget {
                     Expanded(
                         flex: 4,
                         child: Text(
-                            NumberUtil()
-                                .truncateDoubleWithoutRouding(
+                            NumberUtil.customRoundNumber(
                                     model.walletInfo.inExchange!,
-                                    precision: model.decimalLimit)
+                                    decimalPlaces: model.decimalLimit)
                                 .toString(),
                             textAlign: TextAlign.right,
                             style: subText1)),

@@ -210,8 +210,8 @@ class SharedService {
 
   Widget stackFullScreenLoadingIndicator() {
     return Container(
-        height: UIHelper.getScreenFullHeight(context!),
-        width: UIHelper.getScreenFullWidth(context!),
+        height: UIHelper.getScreenFullHeight(context),
+        width: UIHelper.getScreenFullWidth(context),
         color: Colors.transparent,
         child: loadingIndicator());
   }
@@ -223,7 +223,7 @@ class SharedService {
       {double width = 30,
       double height = 30,
       bool isCustom = false,
-      double strokeWidth = 1.5}) {
+      double strokeWidth = 5}) {
     if (!isCustom && Platform.isAndroid) {
       width = 20;
       height = 20;

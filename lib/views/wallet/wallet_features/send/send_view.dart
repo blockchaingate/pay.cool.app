@@ -16,7 +16,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:paycool/constants/colors.dart';
-import 'package:paycool/constants/constants.dart';
 import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/models/wallet/wallet.dart';
 import 'package:paycool/shared/ui_helpers.dart';
@@ -46,7 +45,7 @@ class SendWalletView extends StatelessWidget {
         builder: (context, model, child) => Scaffold(
               resizeToAvoidBottomInset: false,
               appBar: customAppBarWithTitleNB(
-                  FlutterI18n.translate(context, "send")),
+                  '${FlutterI18n.translate(context, "send")} ${model.specialTickerName}'),
               body: GestureDetector(
                 onTap: () {
                   FocusScope.of(context).unfocus();
@@ -244,12 +243,13 @@ class SendWalletView extends StatelessWidget {
                                       Row(
                                         children: <Widget>[
                                           Text(
-                                            '${FlutterI18n.translate(context, "walletbalance")}  ${NumberUtil().truncateDoubleWithoutRouding(model.walletInfo.availableBalance!, precision: model.singlePairDecimalConfig.qtyDecimal)} ',
+                                            '${FlutterI18n.translate(context, "walletbalance")}  ${NumberUtil.customRoundNumber(model.walletInfo.availableBalance!, decimalPlaces: model.singlePairDecimalConfig.qtyDecimal)} ',
                                             style: headText6.copyWith(
                                                 fontWeight: FontWeight.w400),
                                           ),
                                           Text(
-                                            tickerName.toUpperCase(),
+                                            model.specialTickerName
+                                                .toUpperCase(),
                                             style: headText6,
                                           )
                                         ],
@@ -293,10 +293,22 @@ class SendWalletView extends StatelessWidget {
                                               '${FlutterI18n.translate(context, "gasFee")}: ${model.trxGasValueTextController.text} TRX',
                                               textAlign: TextAlign.left,
                                               style: headText6)
-                                          : Text(
-                                              '${FlutterI18n.translate(context, "gasFee")}:  ${model.trxGasValueTextController.text} TRX',
-                                              textAlign: TextAlign.left,
-                                              style: headText6),
+                                          : Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                    '${FlutterI18n.translate(context, "gasFee")}:  ${model.trxGasValueTextController.text} TRX',
+                                                    textAlign: TextAlign.left,
+                                                    style: headText6),
+                                                Text(
+                                                    'TRX'
+                                                    '${FlutterI18n.translate(context, "balance")}: ${model.chainBalance} TRX',
+                                                    textAlign: TextAlign.left,
+                                                    style: headText6),
+                                              ],
+                                            ),
                                     )
                                   : Padding(
                                       padding: const EdgeInsets.only(
@@ -325,7 +337,7 @@ class SendWalletView extends StatelessWidget {
                                                             strokeWidth: 0.75,
                                                           ))
                                                 : Text(
-                                                    '${NumberUtil().truncateDoubleWithoutRouding(model.transFee, precision: 6)}  ${model.feeUnit}',
+                                                    '${NumberUtil.customRoundNumber(model.transFee, decimalPlaces: 6)}  ${model.feeUnit}',
                                                     style: headText6.copyWith(
                                                         fontWeight:
                                                             FontWeight.w400),
@@ -410,9 +422,13 @@ class SendWalletView extends StatelessWidget {
                                       child: Column(
                                         children: <Widget>[
                                           Visibility(
-                                              visible: (tickerName == 'ETH' ||
-                                                  tokenType == 'ETH' ||
-                                                  tokenType == 'FAB'),
+                                              visible:
+                                                  (model.specialTickerName ==
+                                                          'ETH' ||
+                                                      tokenType == 'ETH' ||
+                                                      model.tokenType ==
+                                                          'POLYGON' ||
+                                                      tokenType == 'FAB'),
                                               child: Row(
                                                 children: <Widget>[
                                                   Expanded(
@@ -465,9 +481,13 @@ class SendWalletView extends StatelessWidget {
                                                 ],
                                               )),
                                           Visibility(
-                                              visible: (tickerName == 'ETH' ||
-                                                  tokenType == 'ETH' ||
-                                                  tokenType == 'FAB'),
+                                              visible:
+                                                  (model.specialTickerName ==
+                                                          'ETH' ||
+                                                      model.tokenType ==
+                                                          'POLYGON' ||
+                                                      tokenType == 'ETH' ||
+                                                      tokenType == 'FAB'),
                                               child: Row(
                                                 children: <Widget>[
                                                   Expanded(
@@ -525,9 +545,12 @@ class SendWalletView extends StatelessWidget {
                                                 ],
                                               )),
                                           Visibility(
-                                              visible: (tickerName == 'BTC' ||
-                                                  tickerName == 'FAB' ||
-                                                  tokenType == 'FAB'),
+                                              visible:
+                                                  (model.specialTickerName ==
+                                                          'BTC' ||
+                                                      model.specialTickerName ==
+                                                          'FAB' ||
+                                                      tokenType == 'FAB'),
                                               child: Row(
                                                 children: <Widget>[
                                                   Expanded(
