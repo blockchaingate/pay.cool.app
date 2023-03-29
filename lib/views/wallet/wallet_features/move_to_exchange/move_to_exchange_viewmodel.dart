@@ -179,7 +179,7 @@ class MoveToExchangeViewModel extends BaseViewModel {
         gasLimitTextController.text =
             environment["chains"]["POLYGON"]["gasLimitToken"].toString();
       }
-    } else if (coinName == 'USDTX') {
+    } else if (coinName == 'USDTX' || coinName == 'USDCX') {
       trxGasValueTextController.text = Constants.tronUsdtFee.toString();
     } else if (coinName == 'TRX') {
       trxGasValueTextController.text = Constants.tronFee.toString();
@@ -355,7 +355,7 @@ class MoveToExchangeViewModel extends BaseViewModel {
       return;
     }
 // check trx balance if tron usdt deposit
-    if (walletInfo.tickerName == 'USDTX') {
+    if (walletInfo.tickerName == 'USDTX' || walletInfo.tokenType == 'TRX') {
       log.e('amount $amount --- wallet bal: ${walletInfo.availableBalance}');
       bool isCorrectAmount = true;
       await walletService
@@ -473,7 +473,9 @@ class MoveToExchangeViewModel extends BaseViewModel {
       log.i('3 - -- ${walletInfo.tickerName}, --   $amount, - - $option');
 
       // TRON Transaction
-      if (walletInfo.tickerName == 'TRX' || walletInfo.tickerName == 'USDTX') {
+      if (walletInfo.tickerName == 'TRX' ||
+          walletInfo.tickerName == 'USDTX' ||
+          walletInfo.tokenType == 'TRX') {
         setBusy(true);
         log.i('depositing tron ${walletInfo.tickerName}');
 
@@ -482,7 +484,10 @@ class MoveToExchangeViewModel extends BaseViewModel {
                 mnemonic: mnemonic,
                 walletInfo: walletInfo,
                 amount: finalAmount,
-                isTrxUsdt: walletInfo.tickerName == 'USDTX' ? true : false,
+                isTrxUsdt: walletInfo.tickerName == 'USDTX' ||
+                        walletInfo.tickerName == 'USDCX'
+                    ? true
+                    : false,
                 isBroadcast: false,
                 options: option)
             .then((res) {
@@ -705,7 +710,7 @@ class MoveToExchangeViewModel extends BaseViewModel {
         kanbanTransFee = kanbanTransFeeDouble;
         setBusy(false);
       }
-      if (walletInfo.tickerName != 'TRX' && walletInfo.tickerName != 'USDTX') {
+      if (!isTrx()) {
         if (transFee == 0.0) {
           isValidAmount = false;
         }

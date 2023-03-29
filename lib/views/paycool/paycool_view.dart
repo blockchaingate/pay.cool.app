@@ -85,7 +85,8 @@ class PayCoolView extends StatelessWidget {
                         : model.isBusy && !model.isPaying
                             ? Padding(
                                 padding: const EdgeInsets.only(top: 30.0),
-                                child: model.sharedService.loadingIndicator(),
+                                child: model.sharedService.loadingIndicator(
+                                    width: 40, height: 40, isCustom: true),
                               )
                             : !model.isMember!
                                 ? Container(

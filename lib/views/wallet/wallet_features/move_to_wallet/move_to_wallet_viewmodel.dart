@@ -567,7 +567,9 @@ class MoveToWalletViewmodel extends BaseViewModel {
   Row radioChoiceRow(BuildContext context, {isUsedInView = true}) {
     return Row(
       mainAxisAlignment:
-          isUsedInView ? MainAxisAlignment.start : MainAxisAlignment.center,
+          // isUsedInView ? MainAxisAlignment.start :
+          MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         isShowTrxTsWalletBalance ||
                 WalletUtil.isSpecialUsdt(walletInfo.tickerName!) ||
@@ -631,8 +633,8 @@ class MoveToWalletViewmodel extends BaseViewModel {
         ),
         UIHelper.horizontalSpaceMedium,
         Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
+          // mainAxisAlignment: MainAxisAlignment.start,
+          // crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // BNB radio button
             isShowBnbTsWalletBalance ||

@@ -282,8 +282,7 @@ class SendWalletView extends StatelessWidget {
                           padding: const EdgeInsets.symmetric(horizontal: 10),
                           child: Column(
                             children: <Widget>[
-                              walletInfo.tickerName == 'TRX' ||
-                                      walletInfo.tickerName == 'USDTX'
+                              model.isTrx()
                                   ? Container(
                                       padding: const EdgeInsets.only(
                                           top: 10, bottom: 0),

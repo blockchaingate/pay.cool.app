@@ -214,7 +214,9 @@ class CoinService {
     } else {
       await apiService.getTokenListUpdates().then((tokens) {
         for (var token in tokens) {
-          if (token.tickerName == tickerName) coinType = token.coinType!;
+          if (token.tickerName == tickerName) {
+            coinType = token.coinType!;
+          }
         }
       });
     }

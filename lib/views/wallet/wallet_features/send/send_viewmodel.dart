@@ -157,7 +157,7 @@ class SendViewModel extends BaseViewModel {
             environment["chains"]["BNB"]["gasLimitToken"].toString();
       }
       feeUnit = 'BNB';
-    } else if (coinName == 'USDTX') {
+    } else if (coinName == 'USDTX' || coinName == 'USDCX') {
       trxGasValueTextController.text = Constants.tronUsdtFee.toString();
     } else if (coinName == 'TRX') {
       trxGasValueTextController.text = Constants.tronFee.toString();
@@ -209,11 +209,10 @@ class SendViewModel extends BaseViewModel {
     setBusyForObject(userTypedDomain, true);
     bool isValidDomainFormat = false;
     userTypedDomain = '';
-    if (domainTlds == null || domainTlds.isEmpty) {
+    if (domainTlds.isEmpty) {
       domainTlds = await apiService.getDomainSupportedTlds();
     }
-    if ((domainTlds != null || domainTlds.isNotEmpty) &&
-        domainName.contains('.')) {
+    if ((domainTlds.isNotEmpty) && domainName.contains('.')) {
       isValidDomainFormat = domainTlds.contains(domainName.split('.')[1]);
     }
 
@@ -244,7 +243,7 @@ class SendViewModel extends BaseViewModel {
   bool isTrx() {
     log.i(
         'isTrx ${walletInfo.tickerName == 'TRX' || walletInfo.tickerName == 'USDTX'}');
-    return walletInfo.tickerName == 'TRX' || walletInfo.tickerName == 'USDTX'
+    return walletInfo.tickerName == 'TRX' || walletInfo.tokenType == 'TRX'
         ? true
         : false;
   }
@@ -333,7 +332,7 @@ class SendViewModel extends BaseViewModel {
         tokenType = 'FAB';
       }
 
-      if ((tickerName.isNotEmpty) && (tokenType.isNotEmpty)) {
+      if ((tickerName.isNotEmpty) && (tokenType.isNotEmpty) && !isTrx()) {
         int decimal = 0;
         String? contractAddr =
             environment["addresses"]["smartContract"][tickerName];
@@ -371,24 +370,30 @@ class SendViewModel extends BaseViewModel {
       log.i('OPTIONS before send $options');
 
       // TRON Transaction
-      if (walletInfo.tickerName == 'TRX' || walletInfo.tickerName == 'USDTX') {
+      if (isTrx()) {
         log.i('sending tron ${walletInfo.tickerName}');
         var privateKey = tron_address_util.generateTrxPrivKey(mnemonic);
-        var ca;
-        if (walletInfo.tickerName == 'USDTX') {
+        String ca = '';
+        if (walletInfo.tickerName == 'USDTX' ||
+            walletInfo.tickerName == 'USDCX') {
           // get trx-usdt contract address
           ca = environment["addresses"]["smartContract"][tickerName] ?? '';
-          if (ca == null) {
+          if (ca.isEmpty) {
             await tokenListDatabaseService
                 .getByTickerName(tickerName)
                 .then((token) async {
               if (token != null) {
-                ca = token.contract;
+                ca = token.contract!;
               } else {
                 await apiService.getTokenListUpdates().then((tokenList) {
                   for (var token in tokenList) {
                     if (token.tickerName == 'USDTX') {
-                      ca = token.contract;
+                      ca = token.contract!;
+                      break;
+                    }
+                    if (token.tickerName == 'USDCX') {
+                      ca = token.contract!;
+                      break;
                     }
                   }
                 });
@@ -397,71 +402,83 @@ class SendViewModel extends BaseViewModel {
           }
           log.i('contract address $ca');
         }
-        await tron_transaction_util
-            .generateTrxTransactionContract(
-                contractAddressTronUsdt: ca,
-                privateKey: privateKey,
-                fromAddr: walletInfo.address!,
-                gasLimit: int.parse(trxGasValueTextController.text),
-                toAddr: toAddress,
-                amount: amount.toDouble(),
-                isTrxUsdt: walletInfo.tickerName == 'USDTX' ? true : false,
-                tickerName: walletInfo.tickerName!,
-                isBroadcast: true)
-            .then((res) {
-          log.i('send screen state ${walletInfo.tickerName} res: $res');
-          var txRes = res['broadcastTronTransactionRes'];
-          if (txRes['code'] == 'SUCCESS') {
-            log.w('trx tx res $res');
-            txHash = txRes['txid'];
+        if (ca.isNotEmpty)
+          await tron_transaction_util
+              .generateTrxTransactionContract(
+                  contractAddressTronUsdt: ca,
+                  privateKey: privateKey,
+                  fromAddr: walletInfo.address!,
+                  gasLimit: int.parse(trxGasValueTextController.text),
+                  toAddr: toAddress,
+                  amount: amount.toDouble(),
+                  isTrxUsdt: walletInfo.tickerName == 'USDTX' ||
+                          walletInfo.tickerName == 'USDCX'
+                      ? true
+                      : false,
+                  tickerName: walletInfo.tickerName!,
+                  isBroadcast: true)
+              .then((res) {
+            log.i('send screen state ${walletInfo.tickerName} res: $res');
+            var txRes = res['broadcastTronTransactionRes'];
+            if (txRes['code'] == 'SUCCESS') {
+              log.w('trx tx res $res');
+              txHash = txRes['txid'];
+              isShowErrorDetailsButton = false;
+              isShowDetailsMessage = false;
+
+              String t = '';
+              if (walletInfo.tickerName == 'USDTX') {
+                t = 'USDT(TRC20)';
+              } else if (walletInfo.tickerName == 'USDCX') {
+                t = 'USDC(TRC20)';
+              } else {
+                t = walletInfo.tickerName!;
+              }
+              sharedService.alertDialog(
+                FlutterI18n.translate(context, "sendTransactionComplete"),
+                '$t ${FlutterI18n.translate(context, "isOnItsWay")}',
+              );
+              // add tx to db
+              addSendTransactionToDB(walletInfo, amount.toDouble(), txHash);
+              Future.delayed(const Duration(milliseconds: 3), () {
+                refreshBalance();
+              });
+            } else if (res['broadcastTronTransactionRes']['result'] ==
+                'false') {
+              String errMsg =
+                  res['broadcastTronTransactionRes']['message'].toString();
+              log.e('In Catch error - $errMsg');
+
+              isShowErrorDetailsButton = true;
+              isShowDetailsMessage = true;
+              serverError = errMsg;
+              setBusy(false);
+            }
+            setBusy(false);
+          }).timeout(const Duration(seconds: 25), onTimeout: () {
+            log.e('In time out');
+            setBusy(false);
             isShowErrorDetailsButton = false;
             isShowDetailsMessage = false;
-
-            String t = '';
-            walletInfo.tickerName == 'USDTX'
-                ? t = 'USDT(TRC20)'
-                : t = walletInfo.tickerName!;
             sharedService.alertDialog(
-              FlutterI18n.translate(context, "sendTransactionComplete"),
-              '$t ${FlutterI18n.translate(context, "isOnItsWay")}',
-            );
-            // add tx to db
-            addSendTransactionToDB(walletInfo, amount.toDouble(), txHash);
-            Future.delayed(const Duration(milliseconds: 3), () {
-              refreshBalance();
-            });
-          } else if (res['broadcastTronTransactionRes']['result'] == 'false') {
-            String errMsg =
-                res['broadcastTronTransactionRes']['message'].toString();
-            log.e('In Catch error - $errMsg');
-
+                FlutterI18n.translate(context, "notice"),
+                FlutterI18n.translate(
+                    context, "serverTimeoutPleaseTryAgainLater"),
+                isWarning: false);
+          }).catchError((error) {
+            log.e('In Catch error - $error');
+            sharedService.alertDialog(
+                FlutterI18n.translate(context, "serverError"),
+                '$tickerName ${FlutterI18n.translate(context, "transanctionFailed")}',
+                isWarning: false);
             isShowErrorDetailsButton = true;
             isShowDetailsMessage = true;
-            serverError = errMsg;
+            serverError = error.toString();
             setBusy(false);
-          }
-          setBusy(false);
-        }).timeout(const Duration(seconds: 25), onTimeout: () {
-          log.e('In time out');
-          setBusy(false);
-          isShowErrorDetailsButton = false;
-          isShowDetailsMessage = false;
-          sharedService.alertDialog(
-              FlutterI18n.translate(context, "notice"),
-              FlutterI18n.translate(
-                  context, "serverTimeoutPleaseTryAgainLater"),
-              isWarning: false);
-        }).catchError((error) {
-          log.e('In Catch error - $error');
-          sharedService.alertDialog(
-              FlutterI18n.translate(context, "serverError"),
-              '$tickerName ${FlutterI18n.translate(context, "transanctionFailed")}',
-              isWarning: false);
-          isShowErrorDetailsButton = true;
-          isShowDetailsMessage = true;
-          serverError = error.toString();
-          setBusy(false);
-        });
+          });
+        else {
+          log.e('no contract address');
+        }
       } else {
         // Other coins transaction
         await walletService

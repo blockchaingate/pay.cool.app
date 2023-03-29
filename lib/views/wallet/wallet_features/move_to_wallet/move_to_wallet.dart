@@ -166,7 +166,15 @@ class MoveToWalletView extends StatelessWidget {
                     //
                     // // withdraw choice radio
                     model.isWithdrawChoice
-                        ? Container(child: model.radioChoiceRow(context))
+                        ? Container(
+                            color: grey.withAlpha(120),
+                            height: 50,
+                            width: MediaQuery.of(context).size.width,
+                            child: ListView(
+                                shrinkWrap: true,
+                                scrollDirection: Axis.horizontal,
+                                padding: EdgeInsets.all(10),
+                                children: [model.radioChoiceRow(context)]))
                         : Container(),
                     model.isWithdrawChoice
                         ? UIHelper.verticalSpaceMedium

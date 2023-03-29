@@ -43,7 +43,9 @@ class ReferralView extends StatelessWidget {
           body: model.isBusy
               ? SizedBox(
                   height: 500,
-                  child: Center(child: model.sharedService.loadingIndicator()))
+                  child: Center(
+                      child: model.sharedService.loadingIndicator(
+                          isCustom: true, width: 40, height: 40)))
               : Container(
                   decoration: BoxDecoration(image: blurBackgroundImage()),
                   child: Column(
