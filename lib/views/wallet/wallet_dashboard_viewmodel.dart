@@ -888,7 +888,7 @@ class WalletDashboardViewModel extends BaseViewModel {
         for (var i = 0; i < result.length; i++) {
           var item = result[i];
           var coinType = item['coinType'];
-          String tickerNameByCointype = newCoinTypeMap[coinType]!;
+          String tickerNameByCointype = newCoinTypeMap[coinType] ?? '';
           if (tickerNameByCointype.isEmpty) {
             await tokenListDatabaseService.getAll().then((tokenList) {
               if (tokenList.isNotEmpty) {
@@ -915,7 +915,10 @@ class WalletDashboardViewModel extends BaseViewModel {
         if (pendingDepositCoins.isNotEmpty) {
           showSimpleNotification(
               Text(
-                  '${FlutterI18n.translate(_context!, "requireRedeposit")}: $f'),
+                '${FlutterI18n.translate(_context!, "requireRedeposit")}: $f',
+                textAlign: TextAlign.center,
+                style: headText4.copyWith(color: secondaryColor),
+              ),
               position: NotificationPosition.bottom,
               background: primaryColor);
         }

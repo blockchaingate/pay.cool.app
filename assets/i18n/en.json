@@ -60,7 +60,7 @@
     "hideMnemonic": "Hide Mnemonic",
     "deleteWallet": "Delete Wallet",
     "finishWalletBackup": "Finish Wallet Backup",
-    "finishWalletCreation": "Finish Wallet creation",
+    "finishWalletCreation": "Finish Wallet Creation",
     "serverTimeoutPleaseTryAgainLater": "Server Timeout, Please try again later",
     "serverError": "Server Error",
     "emptyPassword": "Empty Password",

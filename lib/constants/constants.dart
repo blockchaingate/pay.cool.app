@@ -17,7 +17,9 @@ class Constants {
     'FABE',
     'EXGE',
     'DSCE',
-    'BSTE'
+    'BSTE',
+    'USDCX',
+    'FABB'
   ];
   static const String appName = 'Paycool';
   static const String androidStoreId = "club.paycool.paycool";

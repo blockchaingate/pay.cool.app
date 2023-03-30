@@ -64,11 +64,11 @@ class RedepositViewModel extends FutureViewModel {
         var item = errDepositData[i];
         log.w('errDepositData count $i $item');
         var coinType = item['coinType'];
-        String tickerNameByCointype = newCoinTypeMap[coinType]!;
+        String tickerNameByCointype = newCoinTypeMap[coinType] ?? '';
         debugPrint('tickerNameByCointype $tickerNameByCointype');
-        if (tickerNameByCointype == null) {
+        if (tickerNameByCointype.isEmpty) {
           await tokenListDatabaseService.getAll().then((tokenList) {
-            if (tokenList != null) {
+            if (tokenList.isEmpty) {
               tickerNameByCointype = tokenList
                   .firstWhere((element) => element.coinType == coinType)
                   .tickerName!;
@@ -96,7 +96,7 @@ class RedepositViewModel extends FutureViewModel {
 
     log.w('errDepositList=== $errDepositList');
     // if there is only one redeposit entry
-    if (errDepositList != null && errDepositList.isNotEmpty) {
+    if (errDepositList.isNotEmpty) {
       errDepositList = errDepositList;
       errDepositTransactionID = errDepositList[0]["transactionID"];
       this.kanbanTransFee = kanbanTransFee;
@@ -174,8 +174,7 @@ class RedepositViewModel extends FutureViewModel {
 
         sharedService.alertDialog(
             FlutterI18n.translate(context, "redepositCompleted"),
-            FlutterI18n.translate(context, "transactionId") +
-                ': ' +
+            '${FlutterI18n.translate(context, "transactionId")}: ' +
                 newTransactionId,
             path: '/dashboard');
       } else if (resRedeposit['message'] != '') {
@@ -209,7 +208,7 @@ class RedepositViewModel extends FutureViewModel {
     bool isSpecial = false;
     late int specialCoinType;
     coinName = newCoinTypeMap[coinType]!;
-    if (coinName == null) {
+    if (coinName.isEmpty) {
       await tokenListDatabaseService
           .getTickerNameByCoinType(coinType)
           .then((ticker) {
