@@ -1480,8 +1480,9 @@ class WalletService {
 
     int sepcialcoinType;
     var abiHex;
-    if (coinName == 'USDTX') {
-      sepcialcoinType = await coinService.getCoinTypeByTickerName('USDT');
+    if (coinName == 'USDTX' || coinName == 'USDCX') {
+      sepcialcoinType = await coinService
+          .getCoinTypeByTickerName(coinName == 'USDTX' ? 'USDT' : 'USDC');
       abiHex = getWithdrawFuncABI(
           sepcialcoinType, amountInLink, addressInWallet,
           isSpecialToken: true, chain: tokenType);
@@ -1591,8 +1592,9 @@ class WalletService {
     int sepcialcoinType;
     var abiHex;
     // if ticker is USDT tron then use USDT coin type
-    if (walletInfo.tickerName == 'USDTX') {
-      sepcialcoinType = await coinService.getCoinTypeByTickerName('USDT');
+    if (walletInfo.tickerName == 'USDTX' || walletInfo.tickerName == 'USDCX') {
+      sepcialcoinType = await coinService.getCoinTypeByTickerName(
+          walletInfo.tickerName == 'USDTX' ? 'USDT' : 'USDC');
       abiHex = getDepositFuncABI(
           sepcialcoinType, txHash, amountInLink, addressInKanban, signedMess,
           chain: walletInfo.tokenType!, isSpecialDeposit: true);

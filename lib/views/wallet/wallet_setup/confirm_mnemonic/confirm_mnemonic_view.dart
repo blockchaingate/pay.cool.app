@@ -84,26 +84,26 @@ class ConfirmMnemonicView extends StatelessWidget {
                       },
                     ),
                     UIHelper.verticalSpaceSmall,
-                    OutlinedButton(
-                      style: ButtonStyle(
-                        padding: MaterialStateProperty.all(
-                            const EdgeInsets.symmetric(
-                                vertical: 12.0, horizontal: 15.0)),
-                        side: MaterialStateProperty.all(BorderSide(
-                            color: !model.isTap ? primaryColor : grey)),
-                        backgroundColor:
-                            MaterialStateProperty.all(secondaryColor),
-                        elevation: MaterialStateProperty.all(5),
-                      ),
-                      child: Text(
-                          FlutterI18n.translate(
-                              context, "verifyMnemonicByWrite"),
-                          style: headText5.copyWith(
-                              fontWeight: !model.isTap
-                                  ? FontWeight.bold
-                                  : FontWeight.normal)),
-                      onPressed: () => model.selectConfirmMethod('write'),
-                    ),
+                    // OutlinedButton(
+                    //   style: ButtonStyle(
+                    //     padding: MaterialStateProperty.all(
+                    //         const EdgeInsets.symmetric(
+                    //             vertical: 12.0, horizontal: 15.0)),
+                    //     side: MaterialStateProperty.all(BorderSide(
+                    //         color: !model.isTap ? primaryColor : grey)),
+                    //     backgroundColor:
+                    //         MaterialStateProperty.all(secondaryColor),
+                    //     elevation: MaterialStateProperty.all(5),
+                    //   ),
+                    //   child: Text(
+                    //       FlutterI18n.translate(
+                    //           context, "verifyMnemonicByWrite"),
+                    //       style: headText5.copyWith(
+                    //           fontWeight: !model.isTap
+                    //               ? FontWeight.bold
+                    //               : FontWeight.normal)),
+                    //   onPressed: () => model.selectConfirmMethod('write'),
+                    // ),
                   ],
                 ),
                 UIHelper.verticalSpaceSmall,
@@ -227,7 +227,7 @@ class ConfirmMnemonicView extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.all(12.0),
                       child: Text(
-                        FlutterI18n.translate(context, "finishWalletBackup"),
+                        FlutterI18n.translate(context, "finishWalletCreation"),
                         style: Theme.of(context).textTheme.button,
                       ),
                     ),

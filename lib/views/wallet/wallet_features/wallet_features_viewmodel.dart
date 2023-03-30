@@ -146,7 +146,7 @@ class WalletFeaturesViewModel extends BaseViewModel {
         for (var i = 0; i < result.length; i++) {
           var item = result[i];
           var coinType = item['coinType'];
-          String tickerNameByCointype = newCoinTypeMap[coinType]!;
+          String tickerNameByCointype = newCoinTypeMap[coinType] ?? '';
           if (tickerNameByCointype.isEmpty) {
             await tokenListDatabaseService.getAll().then((tokenList) {
               if (tokenList.isNotEmpty) {
@@ -242,6 +242,9 @@ class WalletFeaturesViewModel extends BaseViewModel {
     } else if (walletInfo.tickerName == 'USDT' ||
         walletInfo.tickerName == 'USDTX') {
       tickerName = 'USDT';
+    } else if (walletInfo.tickerName == 'USDC' ||
+        walletInfo.tickerName == 'USDCX') {
+      tickerName = 'USDC';
     } else {
       tickerName = walletInfo.tickerName!;
     }

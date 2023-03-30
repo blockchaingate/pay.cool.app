@@ -163,7 +163,8 @@ class WalletUtil {
     } else if (tickerName.toUpperCase() == 'USDT') {
       tickerName = 'USDT(ETH)';
       logoTicker = 'USDT';
-    } else if (tickerName.toUpperCase() == 'USDCX') {
+    } else if (tickerName.toUpperCase() == 'TRON_USDC' ||
+        tickerName.toUpperCase() == 'USDCX') {
       tickerName = 'USDC(TRX)';
       logoTicker = 'USDCX';
     } else if (tickerName.toUpperCase() == 'MATICM') {

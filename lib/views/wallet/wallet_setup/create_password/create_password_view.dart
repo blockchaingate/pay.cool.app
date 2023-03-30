@@ -232,7 +232,7 @@ class CreatePasswordView extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
-                        FlutterI18n.translate(context, "setPasswordNote"),
+                        FlutterI18n.translate(context, "createPasswordNote"),
                         textAlign: TextAlign.left,
                         style: headText5.copyWith(fontWeight: FontWeight.bold),
                       ),

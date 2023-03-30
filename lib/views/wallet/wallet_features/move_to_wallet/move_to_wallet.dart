@@ -122,8 +122,10 @@ class MoveToWalletView extends StatelessWidget {
                           ),
                           child: walletInfo.tickerName == 'USDTX'
                               ? Text('USDT'.toUpperCase(), style: subText2)
-                              : Text(model.specialTicker.toUpperCase(),
-                                  style: subText2),
+                              : walletInfo.tickerName == 'USDCX'
+                                  ? Text('USDC'.toUpperCase(), style: subText2)
+                                  : Text(model.specialTicker.toUpperCase(),
+                                      style: subText2),
                         ),
                         model.isWithdrawChoice
                             ? SizedBox(
@@ -173,7 +175,7 @@ class MoveToWalletView extends StatelessWidget {
                             child: ListView(
                                 shrinkWrap: true,
                                 scrollDirection: Axis.horizontal,
-                                padding: EdgeInsets.all(10),
+                                padding: const EdgeInsets.all(10),
                                 children: [model.radioChoiceRow(context)]))
                         : Container(),
                     model.isWithdrawChoice
