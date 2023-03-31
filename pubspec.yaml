@@ -1,6 +1,6 @@
 name: paycool
 description: Crypto payment application
-version: 2.3.113+166
+version: 2.3.114+167
 # The following line prevents the package from being accidentally published to
 # pub.dev using `pub publish`. This is preferred for private packages.
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
@@ -32,9 +32,10 @@ dependencies:
     git:
       url: https://github.com/blockchaingate/exchangily-packages.git
       path: open_source_packages/bitcoin_flutter
+  cached_network_image: ^3.2.3
   card_swiper: null
   cupertino_icons: ^1.0.5
-  decimal: ^2.2.0 
+  decimal: ^2.2.0
   device_info: ^2.0.2
   encrypt: ^5.0.1
   exchangily_ui:

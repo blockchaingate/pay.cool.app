@@ -99,7 +99,7 @@ class ConfirmMnemonicViewModel extends BaseViewModel {
         debugPrint('if : adding element ');
         tappedMnemonicList.add(singleWord);
         tapTextControllerList[i].text =
-            tappedMnemonicList.length.toString() + ') ' + singleWord;
+            '${tappedMnemonicList.length}) $singleWord';
         lastIndexList.add(i);
       }
       // else {
@@ -217,7 +217,7 @@ class ConfirmMnemonicViewModel extends BaseViewModel {
           showSimpleNotification(
               Text(FlutterI18n.translate(context, "invalidMnemonic"),
                   style: headText4.copyWith(fontWeight: FontWeight.bold)),
-              position: NotificationPosition.bottom,
+              position: NotificationPosition.top,
               background: primaryColor,
               subtitle: Text(FlutterI18n.translate(
                   context, "pleaseFillAllTheTextFieldsCorrectly")));

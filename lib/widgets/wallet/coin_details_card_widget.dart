@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:paycool/constants/api_routes.dart';
@@ -57,22 +58,42 @@ class CoinDetailsCardWidget extends StackedView<WalletDashboardViewModel> {
                 UIHelper.horizontalSpaceSmall,
                 // Card logo container
                 Container(
-                    padding: const EdgeInsets.all(8),
-                    // decoration: BoxDecoration(
-                    //     color: walletCardColor,
-                    //     borderRadius: BorderRadius.circular(50),
-                    //     boxShadow: const [
-                    //       BoxShadow(
-                    //           color: fabLogoColor,
-                    //           offset: Offset(1.0, 5.0),
-                    //           blurRadius: 10.0,
-                    //           spreadRadius: 1.0),
-                    //     ]),
-                    child: Image.network(
-                        '$WalletCoinsLogoUrl${logoTicker.toLowerCase()}.png'),
-                    //asset('assets/images/wallet-page/$tickerName.png'),
-                    width: 35,
-                    height: 35),
+                  padding: const EdgeInsets.all(8),
+                  //asset('assets/images/wallet-page/$tickerName.png'),
+                  width: 35,
+                  height: 35,
+                  // decoration: BoxDecoration(
+                  //     color: walletCardColor,
+                  //     borderRadius: BorderRadius.circular(50),
+                  //     boxShadow: const [
+                  //       BoxShadow(
+                  //           color: fabLogoColor,
+                  //           offset: Offset(1.0, 5.0),
+                  //           blurRadius: 10.0,
+                  //           spreadRadius: 1.0),
+                  //     ]),
+
+                  // Todo Error handling when image not found or url not found
+                  child: CachedNetworkImage(
+                    imageUrl:
+                        '$WalletCoinsLogoUrl${logoTicker.toLowerCase()}.png',
+                    placeholder: (context, url) =>
+                        const CircularProgressIndicator(),
+                    errorWidget: (context, url, error) =>
+                        const Icon(Icons.error),
+                    fit: BoxFit.cover,
+                    fadeInDuration: const Duration(milliseconds: 500),
+                    fadeOutDuration: const Duration(milliseconds: 500),
+                    fadeOutCurve: Curves.easeOut,
+                    fadeInCurve: Curves.easeIn,
+                    imageBuilder: (context, imageProvider) => FadeInImage(
+                      placeholder: const AssetImage(
+                          'assets/images/launcher/paycool-logo.png'),
+                      image: imageProvider,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
                 UIHelper.horizontalSpaceSmall,
                 // Tickername available locked and inexchange column
                 Expanded(

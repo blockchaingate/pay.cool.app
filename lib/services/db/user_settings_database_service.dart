@@ -58,7 +58,7 @@ class UserSettingsDatabaseService {
 
   Future<List<UserSettings>> getAll() async {
     await initDb();
-    final Database db = await database!;
+    final Database db = await database;
     log.w('getall $db');
 
     // res is giving me the same output in the log whether i map it or just take var res

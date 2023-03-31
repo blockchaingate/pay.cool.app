@@ -139,7 +139,7 @@ class CoinService {
         for (var j = 0; j < newTokens.length; j++) {
           if (newTokens[j].tickerName == tickerName) {
             tokenResult = newTokens[j];
-            log.w(' new tokens list:  res ${tokenResult!.toJson()}');
+            log.w(' new tokens list:  res ${tokenResult.toJson()}');
             break;
           }
         }

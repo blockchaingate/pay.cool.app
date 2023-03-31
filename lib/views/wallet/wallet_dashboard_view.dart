@@ -509,7 +509,7 @@ class WalletDashboardView extends StatelessWidget {
             children: [
               // All coins tab
               model.isBusy || model.busy(model.isHideSmallAssetsButton)
-                  ? ShimmerLayout(
+                  ? const ShimmerLayout(
                       layoutType: 'walletDashboard',
                       count: 9,
                     )
@@ -574,7 +574,7 @@ class FavTab extends StackedView<WalletDashboardViewModel> {
     return model.busy(model.favWallets)
         ? model.sharedService.loadingIndicator()
         : Container(
-            child: model.favWallets.isEmpty || model.favWallets == null
+            child: model.favWallets.isEmpty
                 ? Center(
                     child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
