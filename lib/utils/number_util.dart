@@ -57,6 +57,16 @@ class NumberUtil {
     return roundedValue;
   }
 
+  static double customRoundNumber(double value, {int decimalPlaces = 2}) {
+    if (value != 0) {
+      Decimal decimalValue = Decimal.parse(value.toString());
+
+      return roundDecimal(decimalValue, decimalPlaces).toDouble();
+    } else {
+      return value;
+    }
+  }
+
   /// Breaks at precision 19
   static Decimal decimalLimiter(Decimal input, {int decimalPlaces = 2}) {
     var finalRes = Constants.decimalZero;
@@ -69,14 +79,16 @@ class NumberUtil {
     return finalRes;
   }
 
-  static double customRoundNumber(double value, {int decimalPlaces = 2}) {
-    if (value != 0) {
-      Decimal decimalValue = Decimal.parse(value.toString());
+// create a function fixed32Chars that takes a string and a key length as parameters and returns a string with hex characters instead of '0' for better security
 
-      return roundDecimal(decimalValue, decimalPlaces).toDouble();
-    } else {
-      return value;
+  static String fixed32CharsV2(String input, int keyLength) {
+    if (input.length < 32) {
+      int diff = 32 - keyLength;
+      for (var i = 0; i < diff; i++) {
+        input += '0'; // generate a random hex character
+      }
     }
+    return input;
   }
 
   static String fixed32Chars(String input, int keyLength) {

@@ -172,7 +172,7 @@ class WalletDashboardViewModel extends BaseViewModel {
       debugPrint('version checker catch $err');
     }
     Future.delayed(const Duration(seconds: 2), () async {
-      await walletService.storeTokenListUpdatesInDB();
+      await walletService.updateTokenListDb();
     });
   }
 

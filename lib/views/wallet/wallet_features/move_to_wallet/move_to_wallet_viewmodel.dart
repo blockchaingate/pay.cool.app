@@ -630,7 +630,7 @@ class MoveToWalletViewmodel extends BaseViewModel {
                   value: 'ETH'),
             ),
             UIHelper.horizontalSpaceSmall,
-            Text('ERC20', style: headText6),
+            Text('ETH Chain', style: headText6),
           ],
         ),
         UIHelper.horizontalSpaceMedium,
@@ -733,7 +733,7 @@ class MoveToWalletViewmodel extends BaseViewModel {
                                 style: headText5),
                             Padding(
                               padding: const EdgeInsets.only(top: 8.0),
-                              child: Text('e.g. FAB and FAB(ERC20)',
+                              child: Text('e.g. FAB and FAB(ETH)',
                                   style: headText5),
                             ),
                           ])
@@ -804,7 +804,7 @@ class MoveToWalletViewmodel extends BaseViewModel {
                                   style: headText5),
                               Padding(
                                 padding: const EdgeInsets.only(top: 8.0),
-                                child: Text('e.g. FAB and FAB(ERC20)',
+                                child: Text('e.g. FAB and FAB(ETH)',
                                     style: headText5),
                               ),
                               Center(
