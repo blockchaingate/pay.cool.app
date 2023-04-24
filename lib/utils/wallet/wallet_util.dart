@@ -182,6 +182,12 @@ class WalletUtil {
     } else if (tickerName.toUpperCase() == 'USDTB') {
       tickerName = 'USDT(BNB)';
       logoTicker = 'USDT';
+    } else if (tickerName.toUpperCase() == 'EXGB') {
+      tickerName = 'EXG(BNB)';
+      logoTicker = 'EXGB';
+    } else if (tickerName.toUpperCase() == 'GETB') {
+      tickerName = 'GET(BNB)';
+      logoTicker = 'GETB';
     } else {
       logoTicker = tickerName;
     }

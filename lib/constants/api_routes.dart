@@ -18,8 +18,9 @@ const String baseKanbanUrl = isProduction
     ? 'https://kanbanprod.fabcoinapi.com/'
     : 'https://kanbantest.fabcoinapi.com/';
 
-const String paycoolBaseUrl =
-    isProduction ? 'https://api.pay.cool/api/' : 'https://fabtest.info/api/';
+const String paycoolBaseUrl = isProduction
+    ? 'https://api.pay.cool/api/'
+    : 'https://test.fabcoin.org/api/';
 
 const String tronBaseApiUrl = 'https://api.trongrid.io/';
 const String kanbanApiRoute = 'kanban/';

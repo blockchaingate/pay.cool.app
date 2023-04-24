@@ -45,6 +45,11 @@ class MerchantModel {
       // this.merchant
       });
 
+  clear() {
+    name = null;
+    image = '';
+  }
+
   MerchantModel.fromJson(Map<String, dynamic> json) {
     sId = json['_id'] ?? '';
     status = json['status'] ?? 0;

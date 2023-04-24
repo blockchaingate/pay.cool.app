@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:paycool/utils/number_util.dart';
 import 'package:qr_code_utils/qr_code_utils.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:path_provider/path_provider.dart';
@@ -41,6 +42,7 @@ import 'package:paycool/views/paycool/models/merchant_model.dart';
 import 'package:paycool/views/paycool/paycool_service.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:stacked/stacked.dart';
+import 'package:stacked_services/stacked_services.dart' show DialogService;
 import 'package:url_launcher/url_launcher.dart';
 import '../../environments/environment.dart';
 import '../../services/config_service.dart';
@@ -74,6 +76,7 @@ class PayCoolViewmodel extends FutureViewModel {
   GlobalKey globalKey = GlobalKey();
   ScrollController? scrollController;
   String loadingStatus = '';
+  //final stackedDialogService = locator<DialogService>();
 
   // var barcodeRes = [];
   //var barcodeRes2;
@@ -109,6 +112,7 @@ class PayCoolViewmodel extends FutureViewModel {
   String orderId = '';
   MerchantModel? merchantModel = MerchantModel();
   String? orderIdFromCreateStoreOrder = '';
+  String? orderIdFromMerchantAddress = '';
   bool isScanningImage = false;
   bool isServerDown = false;
   Decimal gasBalance = Constants.decimalZero;
@@ -373,6 +377,10 @@ class PayCoolViewmodel extends FutureViewModel {
   }
 
   payOrderConfirmationPopup() async {
+    payOrder.clear();
+    merchantModel!.clear();
+    amountPayable = Decimal.zero;
+    taxAmount = Decimal.zero;
     await dialogService
         .showBasicDialog(
       title: FlutterI18n.translate(
@@ -1074,7 +1082,7 @@ class PayCoolViewmodel extends FutureViewModel {
 
   orderDetails({String? barcodeScanData}) async {
     String scannedOrderId = '';
-
+    String scannedMerchantAddress = '';
     String scannedTemplateId = '';
     String charToCompare = barcodeScanData![0];
     debugPrint('charToCompare $charToCompare');
@@ -1089,6 +1097,104 @@ class PayCoolViewmodel extends FutureViewModel {
       orderIdFromCreateStoreOrder =
           await paycoolService.createTemplateById(scannedTemplateId.toString());
       getOrderDetailsById(orderIdFromCreateStoreOrder!);
+    } else if (charToCompare == "a") {
+      scannedMerchantAddress = extractId(barcodeScanData);
+      Decimal amount = Constants.decimalZero;
+      final controller = TextEditingController();
+      bool isCancel = false;
+      await showDialog(
+        barrierDismissible: false,
+        context: sharedService.context,
+        builder: (context) {
+          return AlertDialog(
+            elevation: 10,
+            backgroundColor: white,
+            insetPadding: const EdgeInsets.symmetric(horizontal: 20),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            titlePadding: const EdgeInsets.all(0),
+            actionsPadding: const EdgeInsets.all(0),
+            title: Container(
+              alignment: Alignment.center,
+              color: primaryColor.withOpacity(0.1),
+              padding: const EdgeInsets.all(10),
+              child: Text(
+                FlutterI18n.translate(context, "enterAmountToPay"),
+                style: headText3,
+              ),
+            ),
+            titleTextStyle: headText4,
+            contentTextStyle: const TextStyle(color: grey),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 10),
+            content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  UIHelper.verticalSpaceSmall,
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextField(
+                      controller: controller,
+                      keyboardType: TextInputType.number,
+                      style: headText4,
+                      decoration: InputDecoration(
+                        labelStyle: headText4,
+                        focusedBorder: const UnderlineInputBorder(
+                            borderSide: BorderSide(color: primaryColor)),
+                        enabledBorder: const UnderlineInputBorder(
+                            borderSide: BorderSide(color: grey)),
+                      ),
+                      onChanged: (value) => amount = Decimal.parse(value),
+                    ),
+                  ),
+                  UIHelper.verticalSpaceSmall,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      SizedBox(
+                        width: 100,
+                        height: 40,
+                        child: ElevatedButton(
+                            style: ButtonStyle(
+                                backgroundColor:
+                                    MaterialStateProperty.all(grey)),
+                            onPressed: () {
+                              Navigator.of(context).pop(false);
+                              isCancel = true;
+                            },
+                            child: Text(
+                              FlutterI18n.translate(
+                                  sharedService.context, "Cancel"),
+                              style: headText5,
+                            )),
+                      ),
+                      SizedBox(
+                        width: 100,
+                        height: 40,
+                        child: ElevatedButton(
+                            style: ButtonStyle(
+                                backgroundColor:
+                                    MaterialStateProperty.all(primaryColor)),
+                            onPressed: () {
+                              Navigator.of(context).pop(false);
+                            },
+                            child: Text(FlutterI18n.translate(
+                                sharedService.context, "Confirm"))),
+                      ),
+                    ],
+                  ),
+                  UIHelper.verticalSpaceSmall,
+                ]),
+          );
+        },
+      );
+      if (isCancel) {
+        return;
+      }
+      orderIdFromMerchantAddress = await paycoolService.createOrderFromAddress(
+          scannedMerchantAddress.toString(), amount);
+      getOrderDetailsById(orderIdFromMerchantAddress!);
     } else {
       sharedService.sharedSimpleNotification('Incorrect data format');
     }

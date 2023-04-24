@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:decimal/decimal.dart';
 import 'package:observable_ish/observable_ish.dart';
 import 'package:paycool/constants/api_routes.dart';
 import 'package:paycool/environments/environment.dart';
@@ -81,6 +82,32 @@ class PayCoolService with ReactiveServiceMixin {
     } catch (err) {
       log.e('In createTemplateById catch $err');
       return null;
+    }
+  }
+  //https://test.fabcoin.org/api/userpay/createOrderFromAddress
+
+  Future<String> createOrderFromAddress(String address, Decimal amount) async {
+    String url = '${paycoolBaseUrl}userpay/createOrderFromAddress';
+
+    final body = {"address": address, "amount": amount};
+    log.i('createOrderFromAddress url $url -- body ${jsonEncode(body)}');
+
+    try {
+      var response = await client.post(Uri.parse(url),
+          body: jsonEncode(body),
+          headers: {
+            'Content-type': 'application/json',
+            'Accept': 'application/json'
+          });
+
+      var json = jsonDecode(response.body);
+
+      log.w('createOrderFromAddress json $json');
+      // return order id
+      return json['_id'];
+    } catch (err) {
+      log.e('In createOrderFromAddress catch $err');
+      return '';
     }
   }
 

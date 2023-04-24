@@ -34,6 +34,14 @@ class PayOrder {
     tax = Decimal.parse(json['taxRate'].toString());
     rebateRate == Decimal.parse(json['rebateRate'].toString());
   }
+  clear() {
+    orderId = '';
+    title = null;
+    price = Decimal.zero;
+    qty = Decimal.zero;
+    tax = Decimal.zero;
+    rebateRate = Decimal.zero;
+  }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};

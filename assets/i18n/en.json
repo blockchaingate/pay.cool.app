@@ -512,6 +512,6 @@
     "lisOfPrograms": "Programs",
     "currentlyNoOtherPrograms": "Currently no other programs ",
     "refund": "Refund",
-    "checkoutPackageError": "Please select other re-staking package, matching your status"
-
+    "checkoutPackageError": "Please select other re-staking package, matching your status",
+    "enterAmountToPay": "Enter amount to pay" 
 }
