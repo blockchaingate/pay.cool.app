@@ -144,14 +144,22 @@ class MoveToExchangeView extends StatelessWidget {
                               // chain balance
 
                               model.tokenType.isNotEmpty
-                                  ? Row(
+                                  ? Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
-                                        Text(
-                                            '${model.walletInfo.tokenType} ${FlutterI18n.translate(context, "balance")}',
-                                            style: headText5),
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(top: 15.0),
+                                          child: Text(
+                                              '${model.walletInfo.tokenType} ${FlutterI18n.translate(context, "balance")}',
+                                              style: headText5),
+                                        ),
                                         Padding(
                                           padding: const EdgeInsets.only(
-                                              left:
+                                              top:
                                                   5), // padding left to keep some space from the text
                                           child: Text(
                                               '${NumberUtil.customRoundNumber(model.chainBalance, decimalPlaces: 6).toString()} ${model.feeUnit}',

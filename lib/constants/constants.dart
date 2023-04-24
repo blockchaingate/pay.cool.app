@@ -14,6 +14,7 @@ class Constants {
 
   static const List<String> specialTokens = [
     'USDTX',
+    'USDTM',
     'FABE',
     'EXGE',
     'DSCE',

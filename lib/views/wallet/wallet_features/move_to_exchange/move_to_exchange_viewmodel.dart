@@ -325,10 +325,7 @@ class MoveToExchangeViewModel extends BaseViewModel {
     } else {
       checkTransFeeAgainst = chainBalance;
     }
-    if (transFee > checkTransFeeAgainst &&
-        walletInfo.tickerName != 'TRX' &&
-        walletInfo.tickerName != 'USDTX' &&
-        walletInfo.tokenType != 'TRX') {
+    if (transFee > checkTransFeeAgainst && !isTrx()) {
       sharedService.showInfoFlushbar(
           FlutterI18n.translate(context, "notice"),
           FlutterI18n.translate(context, "insufficientBalance"),
@@ -400,8 +397,9 @@ class MoveToExchangeViewModel extends BaseViewModel {
 
     // check chain balance
     if (tokenType.isNotEmpty) {
-      bool hasSufficientChainBalance = await walletService
-          .checkCoinWalletBalance(transFee, walletInfo.tokenType!,
+      var _tokenType = tokenType == 'POLYGON' ? 'MATICM' : tokenType;
+      bool hasSufficientChainBalance =
+          await walletService.checkCoinWalletBalance(transFee, _tokenType,
               address: walletInfo.address!);
       if (!hasSufficientChainBalance) {
         log.e('Chain $tokenType -- insufficient balance');
@@ -706,6 +704,7 @@ class MoveToExchangeViewModel extends BaseViewModel {
         .then((ret) {
       log.w('updateTransFee $ret');
       if (ret != null && ret['transFee'] != null) {
+        log.i('trans Fee ${ret['transFee']}');
         transFee = ret['transFee'];
         kanbanTransFee = kanbanTransFeeDouble;
         setBusy(false);

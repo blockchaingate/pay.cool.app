@@ -239,11 +239,9 @@ class WalletFeaturesViewModel extends BaseViewModel {
     } else if (walletInfo.tickerName == 'EXGE' ||
         walletInfo.tickerName == 'EXG') {
       tickerName = 'EXG';
-    } else if (walletInfo.tickerName == 'USDT' ||
-        walletInfo.tickerName == 'USDTX') {
+    } else if (WalletUtil.isSpecialUsdt(walletInfo.tickerName!)) {
       tickerName = 'USDT';
-    } else if (walletInfo.tickerName == 'USDC' ||
-        walletInfo.tickerName == 'USDCX') {
+    } else if (WalletUtil.isSpecialUsdc(walletInfo.tickerName!)) {
       tickerName = 'USDC';
     } else {
       tickerName = walletInfo.tickerName!;

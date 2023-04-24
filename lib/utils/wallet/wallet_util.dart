@@ -57,12 +57,16 @@ class WalletUtil {
   };
 
   static List<String> allUsdtTokens = ["USDT", "USDTX", "USDTB", "USDTM"];
+  static List<String> allUsdcTokens = ["USDC", "USDCX"];
   List<String> usdtSpecialTokens = ["USDTX", "USDTB", "USDTM"];
   static List<String> fabSpecialTokens = ["FABE", "FABB"];
 
   static bool isSpecialUsdt(String tickerName) {
     return allUsdtTokens.contains(tickerName);
   }
+
+  static bool isSpecialUsdc(String tickerName) =>
+      allUsdcTokens.contains(tickerName);
 
   static bool isSpecialFab(String tickerName) {
     return fabSpecialTokens.contains(tickerName);

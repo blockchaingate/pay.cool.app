@@ -45,6 +45,7 @@ class RedepositViewModel extends FutureViewModel {
   late WalletInfo walletInfo;
   late BuildContext context;
   String errorMessage = '';
+  String tickerNameByCointype = '';
   @override
   Future futureToRun() => getErrDeposit();
 
@@ -58,23 +59,21 @@ class RedepositViewModel extends FutureViewModel {
     setBusy(true);
     var address = await sharedService.getExgAddressFromCoreWalletDatabase();
     await walletService.getErrDeposit(address).then((errDepositData) async {
-      debugPrint(
+      log.i(
           'redeposit res length ${errDepositData.length} ---data $errDepositData');
       for (var i = 0; i < errDepositData.length; i++) {
         var item = errDepositData[i];
         log.w('errDepositData count $i $item');
         var coinType = item['coinType'];
-        String tickerNameByCointype = newCoinTypeMap[coinType] ?? '';
-        debugPrint('tickerNameByCointype $tickerNameByCointype');
+        tickerNameByCointype = newCoinTypeMap[coinType] ?? '';
+        log.w('tickerNameByCointype $tickerNameByCointype');
         if (tickerNameByCointype.isEmpty) {
           await tokenListDatabaseService.getAll().then((tokenList) {
-            if (tokenList.isEmpty) {
-              tickerNameByCointype = tokenList
-                  .firstWhere((element) => element.coinType == coinType)
-                  .tickerName!;
-              if (tickerNameByCointype == walletInfo.tickerName) {
-                errDepositList.add(item);
-              }
+            tickerNameByCointype = tokenList
+                .firstWhere((element) => element.coinType == coinType)
+                .tickerName!;
+            if (tickerNameByCointype == walletInfo.tickerName) {
+              errDepositList.add(item);
             }
           });
         } else if (tickerNameByCointype == walletInfo.tickerName) {
@@ -207,7 +206,7 @@ class RedepositViewModel extends FutureViewModel {
     String coinName = '';
     bool isSpecial = false;
     late int specialCoinType;
-    coinName = newCoinTypeMap[coinType]!;
+    coinName = newCoinTypeMap[coinType] ?? '';
     if (coinName.isEmpty) {
       await tokenListDatabaseService
           .getTickerNameByCoinType(coinType)
