@@ -12,10 +12,13 @@
 */
 import 'package:flutter/gestures.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:kyc/kyc.dart';
 import 'package:paycool/constants/api_routes.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
+import 'package:paycool/constants/route_names.dart';
 import 'package:paycool/environments/environment_type.dart';
+import 'package:paycool/service_locator.dart';
 import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/views/settings/settings_viewmodel.dart';
 import 'package:paycool/widgets/bottom_nav.dart';
@@ -188,6 +191,7 @@ class SettingsContainer extends StatelessWidget {
                     },
                     items: [
                       DropdownMenuItem(
+                        value: model.languages['en'],
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -202,9 +206,9 @@ class SettingsContainer extends StatelessWidget {
                                 textAlign: TextAlign.center, style: headText6),
                           ],
                         ),
-                        value: model.languages['en'],
                       ),
                       DropdownMenuItem(
+                        value: model.languages['zh'],
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -220,9 +224,9 @@ class SettingsContainer extends StatelessWidget {
                                 textAlign: TextAlign.center, style: headText6),
                           ],
                         ),
-                        value: model.languages['zh'],
                       ),
                       DropdownMenuItem(
+                        value: model.languages['es'],
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -238,7 +242,6 @@ class SettingsContainer extends StatelessWidget {
                                 textAlign: TextAlign.center, style: headText6),
                           ],
                         ),
-                        value: model.languages['es'],
                       ),
                     ]),
               ),
@@ -473,28 +476,99 @@ class SettingsContainer extends StatelessWidget {
                 ],
               ),
             ),
+            Container(
+              padding: const EdgeInsets.all(15),
+              child: Row(
+                //  crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Expanded(
+                    child: Material(
+                      borderRadius: BorderRadius.circular(30.0),
+                      elevation: 5,
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  //  KycData(
+                                  //   kycService: KycBaseService(),
+                                  //   progress: 1.0 / 9.0,
+                                  //   isProd: isProduction,
+                                  //   xAccessToken: ValueNotifier<String?>(null),
+                                  //   child:
+                                  KycView(
+                                onFormSubmit: (KycModel kycModel) async {
+                                  try {
+                                    final kycService =
+                                        locator<KycBaseService>();
 
-            //Card(child: Container(child: Text(model.test))),
-            // Version Code
-            Card(
-              elevation: 5,
-              child: Container(
-                color: primaryColor,
-                width: 200,
-                height: 40,
-                child: Center(
-                    child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Text(
-                      'v ${model.versionName}.${model.buildNumber}',
-                      style: headText6.copyWith(color: secondaryColor),
+                                    var sig = await model.walletService
+                                        .signKycData(kycModel, context);
+
+                                    String url = isProduction
+                                        ? KycConstants.prodBaseUrl
+                                        : KycConstants.testBaseUrl;
+                                    final res;
+
+                                    if (sig.isNotEmpty) {
+                                      res = await kycService.submitKycData(
+                                          url, kycModel.setSignature(sig));
+                                    } else {
+                                      res = {
+                                        'success': false,
+                                        'error': 'Failed to sign data'
+                                      };
+                                    }
+                                    return res;
+                                  } catch (e) {
+                                    debugPrint('CATCH error $e');
+                                  }
+                                },
+                                // ),
+                              ),
+                            ),
+                          );
+                        },
+                        child: Container(
+                          padding: EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(30.0),
+                            gradient: LinearGradient(
+                              colors: [
+                                primaryColor,
+                                primaryColor.withAlpha(900),
+                              ],
+                              begin: Alignment.centerLeft,
+                              end: Alignment.centerRight,
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.verified_user,
+                                  color: Colors.white), // Icon related to KYC
+                              SizedBox(
+                                  width: 8.0), // Space between icon and text
+                              Text(
+                                FlutterI18n.translate(
+                                  context,
+                                  model.kycCompleted
+                                      ? "Check KYC Status"
+                                      : "Start KYC Process",
+                                ),
+                                style: headText5.copyWith(color: Colors.white),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     ),
-                    if (!isProduction)
-                      const Text(' Debug',
-                          style: TextStyle(color: Colors.white))
-                  ],
-                )),
+                  )
+                  // ),
+                ],
               ),
             ),
             Container(
@@ -523,6 +597,23 @@ class SettingsContainer extends StatelessWidget {
                       ),
                 ),
               ),
+            ),
+            UIHelper.verticalSpaceLarge,
+            // Version Code
+            SizedBox(
+              height: 40,
+              child: Center(
+                  child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    'v ${model.versionName}.${model.buildNumber}',
+                    style: headText6.copyWith(color: black),
+                  ),
+                  if (!isProduction)
+                    const Text(' Debug', style: TextStyle(color: Colors.white))
+                ],
+              )),
             ),
           ]),
     );

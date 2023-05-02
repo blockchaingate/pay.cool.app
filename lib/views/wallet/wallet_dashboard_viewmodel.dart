@@ -851,9 +851,15 @@ class WalletDashboardViewModel extends BaseViewModel {
           tlb += wallets[i].lockBalance! * wallets[i].usdValue!.usd!;
         }
 
-        if (!wallets[i].unlockedExchangeBalance!.isNegative) {
+        if (!wallets[i].unlockedExchangeBalance!.isNegative &&
+            wallets[i].unlockedExchangeBalance != 0.0) {
+          debugPrint('ticker ${wallets[i].coin}');
+          debugPrint(
+              'exchange balance ${wallets[i].unlockedExchangeBalance!} -- usd value ${wallets[i].usdValue!.usd!}');
+
           teb +=
               wallets[i].unlockedExchangeBalance! * wallets[i].usdValue!.usd!;
+          debugPrint('teb $teb');
         }
       }
     }

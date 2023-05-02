@@ -49,6 +49,7 @@ const String lightningRemitViewRoute = '/lightningRemit';
 const String InstructionsViewRoute = '/campaignInstructions';
 const String SettingViewRoute = '/settings';
 const String PayCoolViewRoute = '/paycool';
+
 /*----------------------------------------------------------------------
                       Campaign Routes
 ----------------------------------------------------------------------*/

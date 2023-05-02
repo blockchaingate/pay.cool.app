@@ -11,8 +11,11 @@
 *----------------------------------------------------------------------
 */
 
+import 'package:flutter/cupertino.dart';
 import 'package:get_it/get_it.dart';
+import 'package:kyc/kyc.dart';
 import 'package:paycool/services/db/core_wallet_database_service.dart';
+import 'environments/environment_type.dart';
 import 'services/api_service.dart';
 import 'services/coin_service.dart';
 import 'services/config_service.dart';
@@ -57,6 +60,8 @@ GetIt locator = GetIt.instance;
 Future serviceLocator() async {
   // Singleton returns the old instance
 
+  locator.registerLazySingleton(() => KycBaseService(
+      isProd: isProduction, xAccessToken: ValueNotifier<String?>(null)));
   // Wallet
   locator.registerLazySingleton(() => WalletService());
   locator.registerLazySingleton(() => WalletDatabaseService());

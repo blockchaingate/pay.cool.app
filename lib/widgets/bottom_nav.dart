@@ -29,8 +29,6 @@ class BottomNavBar extends StatelessWidget {
   final SharedService sharedService = locator<SharedService>();
   @override
   Widget build(BuildContext context) {
-    debugPrint("QQQQWWWW init BottomNavBar. Count is $count");
-
     return ViewModelBuilder<BottomNavViewmodel>.reactive(
         onViewModelReady: (model) async {
           debugPrint("init BottomNavBar2");

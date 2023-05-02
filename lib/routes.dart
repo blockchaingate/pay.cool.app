@@ -202,7 +202,7 @@ class RouteGenerator {
             builder: (_) => const LightningRemitView());
 
 /*----------------------------------------------------------------------
-                      Navigation Routes
+                      Setting Routes
 ----------------------------------------------------------------------*/
       case SettingViewRoute:
         return MaterialPageRoute(

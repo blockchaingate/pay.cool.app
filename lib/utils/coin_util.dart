@@ -50,11 +50,11 @@ final BigInt _halfCurveOrder = _params.n >> 1;
 final log = getLogger('coin_util');
 var fabUtils = FabUtils();
 
-hashKanbanMessage(String message) {
+hashKanbanMessage(String hexMessage) {
   List<int> messagePrefix = utf8.encode(Constants.KanbanMessagePrefix);
   log.w('hashKanbanMessage prefix=== $messagePrefix');
 
-  var messageHexToBytes = web3_dart.hexToBytes(message);
+  var messageHexToBytes = web3_dart.hexToBytes(hexMessage);
   debugPrint('messageHexToBytes $messageHexToBytes');
   var messageLengthToAscii = ascii.encode(messageHexToBytes.length.toString());
   var messageBuffer = Uint8List(messageHexToBytes.length);
@@ -77,7 +77,8 @@ hashKanbanMessage(String message) {
   return web3_dart.keccak256(preambleBuffer);
 }
 
-Future signHashKanbanMessage(Uint8List seed, Uint8List hash,
+Future<Map<String, String>> signHashKanbanMessage(
+    Uint8List seed, Uint8List hash,
     {isMsgSignatureType = false}) async {
   var network = environment["chains"]["BTC"]["network"];
 
@@ -98,7 +99,7 @@ Future signHashKanbanMessage(Uint8List seed, Uint8List hash,
   final chainIdV = signature.v + 27;
   debugPrint('chainIdV=$chainIdV');
   signature = web3_dart.MsgSignature(signature.r, signature.s, chainIdV);
-
+  log.w('signature ${signature.toString()}');
   final r = _padTo32(NumberUtil.encodeBigIntV1(signature.r));
   final s = _padTo32(NumberUtil.encodeBigIntV1(signature.s));
   final v = NumberUtil.encodeBigIntV1(BigInt.from(signature.v));

@@ -1,6 +1,6 @@
 name: paycool
 description: Crypto payment application
-version: 2.3.117+168
+version: 2.3.119+171
 # The following line prevents the package from being accidentally published to
 # pub.dev using `pub publish`. This is preferred for private packages.
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
@@ -16,6 +16,8 @@ dependency_overrides:
   #web3dart: 2.3.5
   # Could not resolve all artifacts for configuration ':image_picker_android:debugUnitTestRuntimeClasspath'
   image_picker_android: 0.8.4+13
+  kyc:
+    path: "../exchangily-packages/kyc"
 
 dependencies:
   aukfa_version_checker:
@@ -59,6 +61,12 @@ dependencies:
     git:
       url: https://github.com/blockchaingate/exchangily-packages.git
       path: open_source_packages/keccak
+
+  kyc:
+     git:
+       url: https://github.com/blockchaingate/exchangily-packages.git
+       path: kyc
+       ref: main
   launch_review: ^3.0.1
   local_auth: ^2.1.3
   logger: ^1.1.0

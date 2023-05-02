@@ -556,7 +556,7 @@ class ApiService {
   }
 
 /*-------------------------------------------------------------------------------------
-                      Get all wallet balance
+                      Get single wallet balance
 -------------------------------------------------------------------------------------*/
 
   Future<List<WalletBalance>> getSingleWalletBalance(String fabAddress,

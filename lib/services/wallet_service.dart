@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:bitbox/bitbox.dart' as bitbox;
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:flutter/material.dart';
+import 'package:kyc/kyc.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'dart:async';
 import 'package:bip39/bip39.dart' as bip39;
@@ -177,6 +178,52 @@ class WalletService {
 
   var fabUtils = FabUtils();
   final erc20Util = Erc20Util();
+
+  // getSeedUsing pasword
+  Future<Uint8List?> getSeedUsingPassword(BuildContext context) async {
+    Uint8List? seed;
+    await dialogService
+        .showDialog(
+            title: FlutterI18n.translate(context, "enterPassword"),
+            description: FlutterI18n.translate(
+                context, "dialogManagerTypeSamePasswordNote"),
+            buttonTitle: FlutterI18n.translate(context, "confirm"))
+        .then((res) async {
+      if (res.confirmed) {
+        return seed = generateSeed(res.returnedText);
+      } else if (res.returnedText == 'Closed' && !res.confirmed) {
+        log.e('Dialog Closed By User');
+        seed = Uint8List(0);
+      } else {
+        log.e('Wrong pass');
+        seed = Uint8List(0);
+      }
+    });
+    return seed;
+  }
+
+// sign kanban data
+  Future<String> signKycData(KycModel kycModel, BuildContext context) async {
+    String finalSignature = '';
+    var data =
+        'email=${kycModel.email}&first_name=${kycModel.firstName}&last_name=${kycModel.lastName}';
+    log.i('data $data');
+    var hexData = StringUtils.stringToHex(data);
+    log.w('hexData $hexData');
+
+    var stringToHash = coin_util.hashKanbanMessage(hexData);
+    log.w('stringToHash $stringToHash');
+
+    var seed = await getSeedUsingPassword(context);
+    if (seed!.isNotEmpty) {
+      var signature = await coin_util.signHashKanbanMessage(seed, stringToHash);
+      log.w('signature $signature');
+      var s = trimHexPrefix(signature['s']!);
+      var v = trimHexPrefix(signature['v']!);
+      finalSignature = '${signature['r']}$s$v}';
+    }
+    return finalSignature;
+  }
 
   // verify wallet address
   Future<Map<String, bool>> verifyWalletAddresses(String mnemonic) async {
@@ -535,7 +582,7 @@ class WalletService {
     return seed;
   }
 
-  generateSeed(String mnemonic) {
+  Uint8List generateSeed(String mnemonic) {
     Uint8List seed = bip39.mnemonicToSeed(mnemonic);
     log.w('Seed $seed');
     return seed;

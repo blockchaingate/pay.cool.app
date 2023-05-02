@@ -62,6 +62,7 @@ class SettingsViewmodel extends BaseViewModel with StoppableService {
   final authService = locator<LocalAuthService>();
   final localAuthService = locator<LocalAuthService>();
   final coreWalletDatabaseService = locator<CoreWalletDatabaseService>();
+  bool kycCompleted = false;
 
   final Map<String, String> languages = {
     'en': 'English',
@@ -133,21 +134,13 @@ class SettingsViewmodel extends BaseViewModel with StoppableService {
       currentLang = FlutterI18n.currentLocale(context!);
     });
 
-    storageService.isShowCaseView == null
-        ? isShowCaseOnce = false
-        : isShowCaseOnce = storageService.isShowCaseView;
+    isShowCaseOnce = storageService.isShowCaseView;
 
-    storageService.showPaycool == null
-        ? isShowPaycool = false
-        : isShowPaycool = storageService.showPaycool;
+    isShowPaycool = storageService.showPaycool;
 
-    storageService.showPaycoolClub == null
-        ? isShowPaycoolClub = false
-        : isShowPaycoolClub = storageService.showPaycoolClub;
+    isShowPaycoolClub = storageService.showPaycoolClub;
 
-    storageService.autoStartPaycoolScan == null
-        ? isAutoStartPaycoolScan = false
-        : isAutoStartPaycoolScan = storageService.autoStartPaycoolScan;
+    isAutoStartPaycoolScan = storageService.autoStartPaycoolScan;
 
     getAppVersion();
     baseServerUrl = configService.getKanbanBaseUrl();

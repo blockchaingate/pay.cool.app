@@ -284,7 +284,7 @@
     "toLatestBuild": "to latest build",
     "inText": "in",
     "submitYourAnswer": "Submit your answer",
-  
+    "submit": "Submit",
     "freeFabUpdate": "Free Fab Update",
     "freeFabSuccess": "Your will get your FAB shortly, Thank you",
     "getFree": "Get free",
@@ -513,5 +513,8 @@
     "currentlyNoOtherPrograms": "Currently no other programs ",
     "refund": "Refund",
     "checkoutPackageError": "Please select other re-staking package, matching your status",
-    "enterAmountToPay": "Enter amount to pay" 
+    "enterAmountToPay": "Enter amount to pay" ,
+    "enterFirstName": "Please enter your first name",
+    "enterLastName": "Please enter your last name"
+ 
 }

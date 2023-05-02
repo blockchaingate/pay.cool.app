@@ -24,6 +24,17 @@ import 'package:web3dart/crypto.dart' as web3_dart;
 class StringUtils {
   static final Random _random = Random.secure();
 
+  static String stringToHexUsingUint8List(String input) {
+    Uint8List uint8List = Uint8List.fromList(input.codeUnits);
+    return uint8List.map((c) => c.toRadixString(16).padLeft(2, '0')).join();
+  }
+
+  static String stringToHex(String input) {
+    return input.codeUnits
+        .map((c) => c.toRadixString(16).padLeft(2, '0'))
+        .join();
+  }
+
   static String createCryptoRandomString([int length = 64]) {
     var val = List<int>.generate(length, (index) => _random.nextInt(256));
     return base64Url.encode(val);
@@ -151,12 +162,12 @@ uint8ListToHex(Uint8List list) {
   return HEX.encode(list);
 }
 
-hexToUint8List(String source) {
-  return Uint8List.fromList(HEX.decode(source));
+hexToUint8List(String hexSource) {
+  return Uint8List.fromList(HEX.decode(hexSource));
 }
 
-hexToBytes(String source) {
-  return HEX.decode(source);
+hexToBytes(String hexSource) {
+  return HEX.decode(hexSource);
 }
 
 /*
