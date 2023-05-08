@@ -62,7 +62,7 @@ class SettingsViewmodel extends BaseViewModel with StoppableService {
   final authService = locator<LocalAuthService>();
   final localAuthService = locator<LocalAuthService>();
   final coreWalletDatabaseService = locator<CoreWalletDatabaseService>();
-  bool kycCompleted = false;
+  var kycCheckResult = {};
 
   final Map<String, String> languages = {
     'en': 'English',
@@ -94,6 +94,7 @@ class SettingsViewmodel extends BaseViewModel with StoppableService {
   Map<String, String>? versionInfo;
   UserSettings userSettings = UserSettings();
   bool isUserSettingsEmpty = false;
+  bool kycCompleted = false;
 
   Locale? currentLang;
   bool _isBiometricAuth = false;
@@ -150,7 +151,16 @@ class SettingsViewmodel extends BaseViewModel with StoppableService {
     } catch (err) {
       log.e('CATCH selectDefaultWalletLanguage failed');
     }
+    await checkKycStatus();
     setBusy(false);
+  }
+
+  checkKycStatus() async {
+    var result = await walletService.checkKycStatus();
+    log.w('kycCheckResult $kycCheckResult');
+    kycCompleted = result['success'];
+    kycCheckResult = result['data'];
+    notifyListeners();
   }
 
   // changeLanguage() async {

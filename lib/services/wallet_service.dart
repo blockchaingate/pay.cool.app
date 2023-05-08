@@ -179,6 +179,36 @@ class WalletService {
   var fabUtils = FabUtils();
   final erc20Util = Erc20Util();
 
+// https://testapi.fundark.com/kyc/wallet_address/moxGusyPrnFqsotinFQVHrzfZtYXra5nSH
+// {"success":true,"data":{"user":null}}
+//      or
+// {"success":true,"data":{"user":{"email":"cojomog655@larland.com",
+// "wallet_address":"mvLuZXGYMxpRM65kgzbfoKqs3FPcisM6ri"},
+// "kyc":{"step":2,"status":0}}}
+  checkKycStatus() async {
+    var fabAddress = await sharedService.getFabAddressFromCoreWalletDatabase();
+    var url = '${KycConstants.baseUrl}/kyc/wallet_address/$fabAddress';
+    log.w('checkKycStatus url $url');
+    var response = await client.get(Uri.parse(url));
+    try {
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        log.w('confirmPhoneCode response: ${response.body}');
+        var data = jsonDecode(response.body);
+        if (data['data']['user'] != null) {
+          log.i('checkKycStatus user data ${data['data']['kyc']}');
+          return {"success": true, "data": data['data']['kyc']};
+        } else {
+          return {"success": false, "data": null};
+        }
+      } else {
+        return {"success": true, "error": jsonEncode(response.body)};
+      }
+    } catch (err) {
+      log.e('checkKycStatus CATCH $err');
+      return {"success": true, "error": err.toString()};
+    }
+  }
+
   // getSeedUsing pasword
   Future<Uint8List?> getSeedUsingPassword(BuildContext context) async {
     Uint8List? seed;

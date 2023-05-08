@@ -476,6 +476,7 @@ class SettingsContainer extends StatelessWidget {
                 ],
               ),
             ),
+
             Container(
               padding: const EdgeInsets.all(15),
               child: Row(
@@ -488,48 +489,110 @@ class SettingsContainer extends StatelessWidget {
                       elevation: 5,
                       child: InkWell(
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  //  KycData(
-                                  //   kycService: KycBaseService(),
-                                  //   progress: 1.0 / 9.0,
-                                  //   isProd: isProduction,
-                                  //   xAccessToken: ValueNotifier<String?>(null),
-                                  //   child:
-                                  KycView(
-                                onFormSubmit: (KycModel kycModel) async {
-                                  try {
-                                    final kycService =
-                                        locator<KycBaseService>();
+                          model.kycCompleted
+                              ? showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return Center(
+                                      child: Container(
+                                        width: 200,
+                                        height: 200,
+                                        decoration:
+                                            roundedBoxDecoration(color: white),
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  'Step',
+                                                  style: headText3,
+                                                ),
+                                                UIHelper.horizontalSpaceMedium,
+                                                Text(
+                                                  model.kycCheckResult["step"]
+                                                      .toString(),
+                                                  style: headText3,
+                                                ),
+                                              ],
+                                            ),
+                                            UIHelper.verticalSpaceLarge,
+                                            UIHelper.divider,
+                                            UIHelper.verticalSpaceLarge,
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  'Status',
+                                                  style: headText3,
+                                                ),
+                                                UIHelper.horizontalSpaceMedium,
+                                                Text(
+                                                  model.kycCheckResult["status"]
+                                                      .toString(),
+                                                  style: headText3,
+                                                )
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  })
+                              : Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        //  KycData(
+                                        //   kycService: KycBaseService(),
+                                        //   progress: 1.0 / 9.0,
+                                        //   isProd: isProduction,
+                                        //   xAccessToken: ValueNotifier<String?>(null),
+                                        //   child:
+                                        KycView(
+                                      kycPrimaryColor: primaryColor,
+                                      onFormSubmit: (KycModel kycModel) async {
+                                        try {
+                                          final kycService =
+                                              locator<KycBaseService>();
 
-                                    var sig = await model.walletService
-                                        .signKycData(kycModel, context);
+                                          var sig = await model.walletService
+                                              .signKycData(kycModel, context);
 
-                                    String url = isProduction
-                                        ? KycConstants.prodBaseUrl
-                                        : KycConstants.testBaseUrl;
-                                    final res;
+                                          String url = isProduction
+                                              ? KycConstants.prodBaseUrl
+                                              : KycConstants.testBaseUrl;
+                                          final res;
 
-                                    if (sig.isNotEmpty) {
-                                      res = await kycService.submitKycData(
-                                          url, kycModel.setSignature(sig));
-                                    } else {
-                                      res = {
-                                        'success': false,
-                                        'error': 'Failed to sign data'
-                                      };
-                                    }
-                                    return res;
-                                  } catch (e) {
-                                    debugPrint('CATCH error $e');
-                                  }
-                                },
-                                // ),
-                              ),
-                            ),
-                          );
+                                          if (sig.isNotEmpty) {
+                                            res =
+                                                await kycService.submitKycData(
+                                                    url,
+                                                    kycModel.setSignature(sig));
+                                          } else {
+                                            res = {
+                                              'success': false,
+                                              'error': 'Failed to sign data'
+                                            };
+                                          }
+                                          return res;
+                                        } catch (e) {
+                                          debugPrint('CATCH error $e');
+                                        }
+                                      },
+                                      // ),
+                                    ),
+                                  ),
+                                );
                         },
                         child: Container(
                           padding: EdgeInsets.all(8),
