@@ -15,6 +15,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:kyc/kyc.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:paycool/constants/route_names.dart';
 import 'package:paycool/models/wallet/user_settings_model.dart';
@@ -64,11 +65,6 @@ class SettingsViewmodel extends BaseViewModel with StoppableService {
   final coreWalletDatabaseService = locator<CoreWalletDatabaseService>();
   var kycCheckResult = {};
 
-  final Map<String, String> languages = {
-    'en': 'English',
-    'zh': '简体中文',
-    'es': 'Español'
-  }; //,'fr':'français','ja':'日本語'};
   String? selectedLanguage;
   // bool result = false;
   String errorMessage = '';
@@ -102,7 +98,24 @@ class SettingsViewmodel extends BaseViewModel with StoppableService {
   final t = TextEditingController();
   bool _lockAppNow = false;
   get lockAppNow => _lockAppNow;
-
+  final Map<String, String> languages = {
+    "en": "English",
+    "zh": "简体中文",
+    "es": "Español",
+    "tr": "Türkçe",
+    "fr": "Français",
+    "ja": "日本",
+    "hi": "हिंदी",
+  };
+  final Map<String, String> languageWithIsoCode = {
+    "en": "US",
+    "zh": "CN",
+    "es": "ES",
+    "tr": "TR",
+    "fr": "FR",
+    "ja": "JP",
+    "hi": "IN",
+  };
   @override
   void start() async {
     super.start();
@@ -159,7 +172,7 @@ class SettingsViewmodel extends BaseViewModel with StoppableService {
     var result = await walletService.checkKycStatus();
     log.w('kycCheckResult $kycCheckResult');
     kycCompleted = result['success'];
-    kycCheckResult = result['data'];
+    kycCheckResult = result['data'] ?? {};
     notifyListeners();
   }
 
@@ -508,11 +521,9 @@ class SettingsViewmodel extends BaseViewModel with StoppableService {
 
   changeWalletLanguage(String updatedLanguageValue) async {
     setBusy(true);
-
     //remove cached announcement Data in different language
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.remove("announceData");
-
+    prefs.remove('announceData');
     // Get the Map key using value
     // String key = languages.keys.firstWhere((k) => languages[k] == lang);
     String key = '';
@@ -526,34 +537,58 @@ class SettingsViewmodel extends BaseViewModel with StoppableService {
     }
 // selected language should be English,Chinese or other language selected not its lang code
     selectedLanguage = key.isEmpty ? updatedLanguageValue : languages[key];
-    log.w('selectedLanguage $selectedLanguage');
-    if (updatedLanguageValue == 'Chinese' ||
-        updatedLanguageValue == 'zh' ||
-        key == 'zh') {
-      log.e('in zh');
-
-      currentLang = const Locale('zh');
+    log.w("selectedLanguage $selectedLanguage");
+    if (updatedLanguageValue == "Chinese" ||
+        updatedLanguageValue == "zh" ||
+        key == "zh") {
+      log.e("in zh");
+      currentLang = const Locale("zh");
       await FlutterI18n.refresh(context!, currentLang);
-      storageService.language = 'zh';
-    } else if (updatedLanguageValue == 'English' ||
-        updatedLanguageValue == 'en' ||
-        key == 'en') {
-      log.e('in en');
-
-      currentLang = const Locale('en');
+      storageService.language = "zh";
+    } else if (updatedLanguageValue == "English" ||
+        updatedLanguageValue == "en" ||
+        key == "en") {
+      log.e("in en");
+      currentLang = const Locale("en");
       await FlutterI18n.refresh(context!, currentLang);
-      storageService.language = 'en';
-    } else if (updatedLanguageValue == 'Spanish' ||
-        updatedLanguageValue == 'es' ||
-        key == 'es') {
-      log.e('in es');
-
-      currentLang = const Locale('es');
+      storageService.language = "en";
+    } else if (updatedLanguageValue == "Spanish" ||
+        updatedLanguageValue == "es" ||
+        key == "es") {
+      log.e("in es");
+      currentLang = const Locale("es");
       await FlutterI18n.refresh(context!, currentLang);
-      storageService.language = 'es';
+      storageService.language = "es";
+    } else if (updatedLanguageValue == "Français" ||
+        updatedLanguageValue == "fr" ||
+        key == "fr") {
+      log.e("in fr");
+      currentLang = const Locale("fr");
+      await FlutterI18n.refresh(context!, currentLang);
+      storageService.language = "fr";
+    } else if (updatedLanguageValue == "Türkçe" ||
+        updatedLanguageValue == "tr" ||
+        key == "tr") {
+      log.e("in tr");
+      currentLang = const Locale("tr");
+      await FlutterI18n.refresh(context!, currentLang);
+      storageService.language = "tr";
+    } else if (updatedLanguageValue == "日本" ||
+        updatedLanguageValue == "ja" ||
+        key == "ja") {
+      log.e("in ja");
+      currentLang = const Locale("ja");
+      await FlutterI18n.refresh(context!, currentLang);
+      storageService.language = "ja";
+    } else if (updatedLanguageValue == "हिंदी" ||
+        updatedLanguageValue == "hi" ||
+        key == "hi") {
+      log.e("in hi");
+      currentLang = const Locale("hi");
+      await FlutterI18n.refresh(context!, currentLang);
+      storageService.language = "hi";
     }
     navigationService.navigateUsingpopAndPushedNamed(SettingViewRoute);
-
     setBusy(false);
   }
 

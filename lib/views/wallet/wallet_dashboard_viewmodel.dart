@@ -139,37 +139,45 @@ class WalletDashboardViewModel extends BaseViewModel {
   String totalLockedBalance = '';
   String totalExchangeBalance = '';
   var coinsToHideList = [""];
+  List<WalletInfo> walletInfoList = [];
+  final List<String> chainList = ["FAB", "ETH", "TRX", "BNB"];
 /*----------------------------------------------------------------------
                     INIT
 ----------------------------------------------------------------------*/
 
   init() async {
     setBusy(true);
-
-    await refreshBalancesV2();
-
+    await refreshBalancesV2().then((value) async {
+      for (var i = 0; i < value.length; i++) {
+        try {
+          await WalletUtil()
+              .getWalletInfoObjFromWalletBalance(wallets[i])
+              .then((value) {
+            walletInfoList.add(value);
+          });
+        } catch (error) {
+          debugPrint("getWalletInfoObjFromWalletBalance ===> $error");
+        }
+      }
+    });
     showDialogWarning();
-
     getConfirmDepositStatus();
     //buildFavCoinListV1();
     currentTabSelection = storageService.isFavCoinTabSelected ? 1 : 0;
-
     walletService.storeTokenListInDB();
-
     setBusy(false);
     try {
       await versionChecker
           .check(
         _context!,
-        //test: true, testVersion: "2.3.103"
+        //test: true, testVersion: “2.3.103"
       )
           .timeout(const Duration(seconds: 2), onTimeout: () {
-        debugPrint('time out version checker after waiting for 2 seconds');
-
+        debugPrint("time out version checker after waiting for 2 seconds");
         setBusy(false);
       });
     } catch (err) {
-      debugPrint('version checker catch $err');
+      debugPrint("version checker catch $err");
     }
     Future.delayed(const Duration(seconds: 2), () async {
       await walletService.updateTokenListDb();
@@ -303,15 +311,15 @@ class WalletDashboardViewModel extends BaseViewModel {
     isShowFavCoins = true;
     favWallets.clear();
     String favCoinsJson = storageService.favWalletCoins;
-    if (favCoinsJson != null && favCoinsJson != '') {
+    if (favCoinsJson != '') {
       List<String> favWalletCoins =
           (jsonDecode(favCoinsJson) as List<dynamic>).cast<String>();
 
       var wallets = await refreshBalancesV2();
-
+      var coins = wallets.isEmpty ? walletsCopy : wallets;
       for (var i = 0; i < favWalletCoins.length; i++) {
-        for (var j = 0; j < wallets.length; j++) {
-          if (wallets[j].coin == favWalletCoins[i].toString()) {
+        for (var j = 0; j < coins.length; j++) {
+          if (coins[j].coin == favWalletCoins[i].toString()) {
             favWallets.add(wallets[j]);
             break;
           }

@@ -20,6 +20,7 @@ import 'package:paycool/constants/route_names.dart';
 import 'package:paycool/environments/environment_type.dart';
 import 'package:paycool/service_locator.dart';
 import 'package:paycool/shared/ui_helpers.dart';
+import 'package:paycool/utils/string_util.dart';
 import 'package:paycool/views/settings/settings_viewmodel.dart';
 import 'package:paycool/widgets/bottom_nav.dart';
 import 'package:flutter/material.dart';
@@ -46,8 +47,6 @@ class SettingsView extends StatelessWidget {
           // When the keyboard appears, the Flutter widgets resize to avoid that we use resizeToAvoidBottomInset: false
           resizeToAvoidBottomInset: false,
 
-          appBar: customAppBarWithTitleNB(
-              FlutterI18n.translate(context, "settings")),
           body: model.isBusy
               ? Center(child: model.sharedService.loadingIndicator())
               // : model.isShowCaseOnce == false
@@ -114,16 +113,7 @@ class SettingsContainer extends StatelessWidget {
       child: ListView(
           // crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            // InkWell(
-            //   child: Text(
-            //     FlutterI18n.translate(context, "title"),
-            //     style: TextStyle(color: Colors.amber),
-            //   ),
-            //   onTap: () {
-            //     model.changeLanguage();
-            //   },
-            // ),
-
+            UIHelper.verticalSpaceLarge,
             InkWell(
               splashColor: primaryColor,
               child: Container(
@@ -190,59 +180,27 @@ class SettingsContainer extends StatelessWidget {
                       model.changeWalletLanguage(newValue.toString());
                     },
                     items: [
-                      DropdownMenuItem(
-                        value: model.languages['en'],
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              "assets/images/flags/en.png",
-                              width: 20,
-                              height: 20,
-                            ),
-                            const SizedBox(width: 15),
-                            Text("English",
-                                textAlign: TextAlign.center, style: headText6),
-                          ],
+                      for (var language in model.languages.entries)
+                        DropdownMenuItem(
+                          value: language.value,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                KycUtil.generateflag(
+                                    isoCode: model.languageWithIsoCode[
+                                            language.key] ??
+                                        ""),
+                                style: TextStyle(color: black),
+                              ),
+                              UIHelper.horizontalSpaceSmall,
+                              Text(language.value,
+                                  textAlign: TextAlign.center,
+                                  style: headText6),
+                            ],
+                          ),
                         ),
-                      ),
-                      DropdownMenuItem(
-                        value: model.languages['zh'],
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              "assets/images/flags/zh.png",
-                              width: 20,
-                              height: 20,
-                            ),
-                            const SizedBox(width: 15),
-                            Text("简体中文",
-                                textAlign: TextAlign.center, style: headText6),
-                          ],
-                        ),
-                      ),
-                      DropdownMenuItem(
-                        value: model.languages['es'],
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              "assets/images/flags/es.webp",
-                              width: 20,
-                              height: 20,
-                            ),
-                            const SizedBox(width: 15),
-                            Text("Español",
-                                textAlign: TextAlign.center, style: headText6),
-                          ],
-                        ),
-                      ),
                     ]),
               ),
             ),
@@ -674,7 +632,7 @@ class SettingsContainer extends StatelessWidget {
                     style: headText6.copyWith(color: black),
                   ),
                   if (!isProduction)
-                    const Text(' Debug', style: TextStyle(color: Colors.white))
+                    const Text(' Debug', style: TextStyle(color: grey))
                 ],
               )),
             ),

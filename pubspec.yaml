@@ -1,6 +1,6 @@
 name: paycool
 description: Crypto payment application
-version: 2.3.120+172
+version: 2.3.121+174
 # The following line prevents the package from being accidentally published to
 # pub.dev using `pub publish`. This is preferred for private packages.
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
@@ -133,3 +133,5 @@ flutter_icons:
         - asset: assets/fonts/Work_Sans/WorkSans-SemiBold.ttf
         - asset: assets/fonts/Work_Sans/WorkSans-Bold.ttf
         - asset: assets/fonts/Work_Sans/WorkSans-Thin.ttf
+
+
