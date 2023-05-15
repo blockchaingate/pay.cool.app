@@ -245,14 +245,29 @@ class WalletFeaturesView extends StatelessWidget {
                         ),
                       ),
                     ),
-                  )
+                  ),
                 ],
               ),
             ),
           ],
         ),
-
-        // bottomNavigationBar: BottomNavBar(count: 0),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+        floatingActionButton: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              '${FlutterI18n.translate(context, "smartContractAddress")} ',
+              style: headText5.copyWith(color: primaryColor),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(4.0),
+              child: Text(
+                model.smartContractAddress,
+                style: headText6.copyWith(color: black),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -434,8 +449,7 @@ class WalletFeaturesView extends StatelessWidget {
         elevation: model.elevation,
         child: InkWell(
           splashColor: primaryColor.withAlpha(30),
-          onTap: (model.features[index].route != null &&
-                  model.features[index].route != '')
+          onTap: (model.features[index].route != '')
               ? () {
                   var route = model.features[index].route;
                   Navigator.pushNamed(context, '/$route',

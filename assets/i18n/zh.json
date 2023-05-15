@@ -593,5 +593,7 @@
     "finishKycNote": "恭喜！您已成功完成 KYC 过程。请等待批准。在此期间，您可以探索应用程序。",
     "checkProgressInSettings": "在设置中查看进度",
     "invalidToken": "无效的令牌",
-    "successfullySubmitted": "提交成功"
+    "successfullySubmitted": "提交成功",
+    "checkKycStatus": "检查KYC状态",
+    "startKycProcess": "开始KYC流程"
 }

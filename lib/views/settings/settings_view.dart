@@ -192,7 +192,7 @@ class SettingsContainer extends StatelessWidget {
                                     isoCode: model.languageWithIsoCode[
                                             language.key] ??
                                         ""),
-                                style: TextStyle(color: black),
+                                style: const TextStyle(color: black),
                               ),
                               UIHelper.horizontalSpaceSmall,
                               Text(language.value,
@@ -553,7 +553,7 @@ class SettingsContainer extends StatelessWidget {
                                 );
                         },
                         child: Container(
-                          padding: EdgeInsets.all(8),
+                          padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(30.0),
                             gradient: LinearGradient(
@@ -569,19 +569,24 @@ class SettingsContainer extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.center,
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Icon(Icons.verified_user,
+                              const Icon(Icons.verified_user,
                                   color: Colors.white), // Icon related to KYC
-                              SizedBox(
+                              const SizedBox(
                                   width: 8.0), // Space between icon and text
-                              Text(
-                                FlutterI18n.translate(
-                                  context,
-                                  model.kycCompleted
-                                      ? "Check KYC Status"
-                                      : "Start KYC Process",
-                                ),
-                                style: headText5.copyWith(color: Colors.white),
-                              ),
+                              model.busy(model.kycCompleted)
+                                  ? Text(
+                                      FlutterI18n.translate(context, "loading"),
+                                      style: headText5,
+                                    )
+                                  : Text(
+                                      FlutterI18n.translate(
+                                          context,
+                                          model.kycCompleted
+                                              ? "checkKycStatus"
+                                              : "startKycProcess"),
+                                      style: headText5.copyWith(
+                                          color: Colors.white),
+                                    ),
                             ],
                           ),
                         ),

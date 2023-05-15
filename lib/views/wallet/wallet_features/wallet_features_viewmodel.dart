@@ -59,6 +59,7 @@ class WalletFeaturesViewModel extends BaseViewModel {
   ];
   int decimalLimit = 6;
   double unconfirmedBalance = 0.0;
+  String smartContractAddress = '';
   init() async {
     getWalletFeatures();
     getErrDeposit();
@@ -67,10 +68,14 @@ class WalletFeaturesViewModel extends BaseViewModel {
     log.i('wi object to check name ${walletInfo.toJson()}');
     refreshBalance();
     checkIfCoinIsFavorite();
-    decimalLimit = await coinService
-        .getSingleTokenData(walletInfo.tickerName!)
-        .then((res) => res!.decimal!);
-    if (decimalLimit == 0) decimalLimit = 8;
+
+    if (smartContractAddress.isEmpty)
+      await coinService.getSingleTokenData(walletInfo.tickerName!).then((res) {
+        decimalLimit = res!.decimal!;
+        smartContractAddress = res.contract!;
+        log.w('decimal limit $decimalLimit');
+        log.w('smart contract address $smartContractAddress');
+      });
   }
 
   checkIfCoinIsFavorite() {

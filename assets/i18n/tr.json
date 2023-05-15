@@ -593,5 +593,7 @@
 "finishKycNote": "Tebrikler! KYC sürecini başarıyla tamamladınız. Lütfen onayı bekleyin. Bu arada uygulamayı keşfedebilirsiniz.",
 "checkProgressInSettings": "Ayarlar bölümünden ilerlemeyi kontrol edin",
 "invalidToken": "Geçersiz Token",
-"successfullySubmitted": "Başarıyla Gönderildi"
+"successfullySubmitted": "Başarıyla Gönderildi",
+"checkKycStatus": "KYC Durumunu Kontrol Et",
+"startKycProcess": "KYC Sürecini Başlat"
 }

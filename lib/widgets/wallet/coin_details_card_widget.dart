@@ -16,7 +16,6 @@ class CoinDetailsCardWidget extends StackedView<WalletDashboardViewModel> {
   final String tickerName;
   final int index;
   final List<WalletBalance> wallets;
-
   final BuildContext context;
 
   const CoinDetailsCardWidget(

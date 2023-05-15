@@ -593,5 +593,8 @@
     "finishKycNote": "Congratulations! You have successfully completed the KYC process. Please wait for the approval. In the meantime, you can explore the app.",
     "checkProgressInSettings": "Check progress in settings",
     "invalidToken": "Invalid Token",
-    "successfullySubmitted": "Successfully Submitted"
+    "successfullySubmitted": "Successfully Submitted",
+    "checkKycStatus": "Check KYC Status",
+    "startKycProcess": "Start KYC Process",
+    "emailVerificationCodeSent": "Email verification code sent"
 }

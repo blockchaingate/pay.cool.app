@@ -169,11 +169,12 @@ class SettingsViewmodel extends BaseViewModel with StoppableService {
   }
 
   checkKycStatus() async {
+    setBusyForObject(kycCompleted, true);
     var result = await walletService.checkKycStatus();
     log.w('kycCheckResult $kycCheckResult');
     kycCompleted = result['success'];
     kycCheckResult = result['data'] ?? {};
-    notifyListeners();
+    setBusyForObject(kycCompleted, false);
   }
 
   // changeLanguage() async {

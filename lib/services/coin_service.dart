@@ -219,6 +219,16 @@ class CoinService {
           }
         }
       });
+      if (coinType == 0) {
+        await apiService.getTokenList().then((tokens) {
+          for (var token in tokens) {
+            if (token.tickerName == tickerName) {
+              coinType = token.coinType!;
+              break;
+            }
+          }
+        });
+      }
     }
     debugPrint('ticker $tickerName -- coin type $coinType');
     return coinType;

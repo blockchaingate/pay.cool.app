@@ -590,5 +590,7 @@
     "finishKycNote": "बधाई हो! आपने सफलतापूर्वक KYC प्रक्रिया पूरी की है। कृपया मंजूरी के लिए प्रतीक्षा करें। इस बीच, आप एप्लिकेशन का अन्वेषण कर सकते हैं।",
     "checkProgressInSettings": "सेटिंग में प्रगति की जांच करें",
     "invalidToken": "अवैध टोकन",
-    "successfullySubmitted": "सफलतापूर्वक जमा कर दिया गया"
+    "successfullySubmitted": "सफलतापूर्वक जमा कर दिया गया",
+    "checkKycStatus": "KYC स्थिति जांचें",
+    "startKycProcess": "KYC प्रक्रिया शुरू करें"
 }

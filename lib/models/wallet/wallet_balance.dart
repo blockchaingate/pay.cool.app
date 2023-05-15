@@ -70,6 +70,7 @@ class WalletBalance {
   List<DepositErr>? depositErr;
   double? unlockedExchangeBalance;
   double? lockedExchangeBalance;
+  String? tokenType;
 
   WalletBalance(
       {this.coin,
@@ -79,7 +80,8 @@ class WalletBalance {
       this.usdValue,
       this.depositErr,
       this.unlockedExchangeBalance,
-      this.lockedExchangeBalance});
+      this.lockedExchangeBalance,
+      this.tokenType});
 
   factory WalletBalance.fromJson(Map<String, dynamic> json) {
     List<DepositErr> depositErrList = [];

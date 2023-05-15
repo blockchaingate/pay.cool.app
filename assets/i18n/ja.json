@@ -593,5 +593,7 @@
     "finishKycNote": "おめでとうございます！ KYCプロセスが正常に完了しました。承認を待ってください。その間、アプリを探索できます。",
     "checkProgressInSettings": "設定で進捗状況を確認してください",
     "invalidToken": "無効なトークン",
-    "successfullySubmitted": "正常に送信されました"
+    "successfullySubmitted": "正常に送信されました",
+    "checkKycStatus": "KYCステータスを確認する",
+    "startKycProcess": "KYCプロセスを開始する"
     }

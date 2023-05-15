@@ -12,18 +12,17 @@
 */
 
 import 'package:card_swiper/card_swiper.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
-
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/constants/ui_var.dart';
 import 'package:paycool/models/wallet/wallet.dart';
+import 'package:paycool/models/wallet/wallet_balance.dart';
 import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/views/wallet/wallet_dashboard_viewmodel.dart';
 import 'package:paycool/views/wallet/wallet_features/wallet_features_view.dart';
 import 'package:paycool/widgets/bottom_nav.dart';
-import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:paycool/widgets/shimmer_layouts/shimmer_layout.dart';
 import 'package:paycool/widgets/wallet/add_gas/gas_balance_and_add_gas_button_widget.dart';
 import 'package:paycool/widgets/wallet/coin_details_card_widget.dart';
@@ -202,8 +201,7 @@ class WalletDashboardView extends StatelessWidget {
           ),
         ),
 
-        Container(
-            child: Swiper(
+        Swiper(
           itemBuilder: (BuildContext context, int index) {
             if (index == 0) {
               return TotalBalanceCardWidget(model: model);
@@ -228,7 +226,7 @@ class WalletDashboardView extends StatelessWidget {
           ),
           autoplay: true,
           autoplayDelay: 7000,
-        )),
+        ),
 
         //Refresh BalancesV2
         Positioned(
@@ -408,11 +406,10 @@ class WalletDashboardView extends StatelessWidget {
         ),
         UIHelper.verticalSpaceSmall,
         model.isUpdateWallet
-            ? Container(
-                child: TextButton(
+            ? TextButton(
                 child: Text(FlutterI18n.translate(context, "updateWallet")),
                 onPressed: () => model.updateWallet(),
-              ))
+              )
             : Container(),
       ],
     );
@@ -444,6 +441,7 @@ class WalletDashboardView extends StatelessWidget {
                   delegate: _SliverAppBarDelegate(
                     TabBar(
                         // labelPadding: EdgeInsets.only(bottom: 14, top: 14),
+
                         onTap: (int tabIndex) {
                           model.updateTabSelection(tabIndex);
                         },
@@ -453,30 +451,49 @@ class WalletDashboardView extends StatelessWidget {
                         indicatorSize: TabBarIndicatorSize.tab,
                         tabs: const [
                           Tab(
-                            text: "ALL",
+                            text: "All",
+
                             iconMargin: EdgeInsets.only(bottom: 3),
+                            // child: Text(
+                            //     model.walletInfoCopy.length.toString(),
+                            //     style: TextStyle(fontSize: 10, color: grey))
                           ),
                           Tab(
                             text: "FAB",
                             iconMargin: EdgeInsets.only(bottom: 3),
+                            // child: Text(
+                            //     model.favWalletInfoList.length.toString(),
+                            //     style: TextStyle(fontSize: 10, color: grey)),
                           ),
                           Tab(
                             text: "ETH",
                             iconMargin: EdgeInsets.only(bottom: 3),
+                            // child: Text(
+                            //     model.favWalletInfoList.length.toString(),
+                            //     style: TextStyle(fontSize: 10, color: grey)),
                           ),
                           Tab(
                             text: "TRX",
                             iconMargin: EdgeInsets.only(bottom: 3),
+                            // child: Text(
+                            //     model.favWalletInfoList.length.toString(),
+                            //     style: TextStyle(fontSize: 10, color: grey)),
                           ),
                           Tab(
                             text: "BNB",
                             iconMargin: EdgeInsets.only(bottom: 3),
+                            // child: Text(
+                            //     model.favWalletInfoList.length.toString(),
+                            //     style: TextStyle(fontSize: 10, color: grey)),
                           ),
                           Tab(
                             icon: Icon(Icons.star,
                                 // color: primaryColor,
                                 size: 18),
                             iconMargin: EdgeInsets.only(bottom: 3),
+                            // child: Text(
+                            //     model.favWalletInfoList.length.toString(),
+                            //     style: TextStyle(fontSize: 10, color: grey)),
                           ),
                         ]),
                   ))
@@ -488,7 +505,7 @@ class WalletDashboardView extends StatelessWidget {
               // All coins tab
               model.isBusy || model.busy(model.isHideSmallAssetsButton)
                   ? const ShimmerLayout(
-                      layoutType: "walletDashboard",
+                      layoutType: 'walletDashboard',
                       count: 9,
                     )
                   :
@@ -498,6 +515,7 @@ class WalletDashboardView extends StatelessWidget {
               buildListView(model),
               buildListView(model),
               buildListView(model),
+
               FavTab(),
             ],
           ),
@@ -505,40 +523,42 @@ class WalletDashboardView extends StatelessWidget {
   }
 
   ListView buildListView(WalletDashboardViewModel model) {
-    List<WalletInfo> newList = [];
+    List<WalletBalance> newList = [];
+
     if (model.currentTabSelection == 0) {
-      newList = model.walletInfoList;
+      newList = model.wallets;
     } else if (model.currentTabSelection == 1) {
-      newList = model.walletInfoList.where((element) {
+      newList = model.wallets.where((element) {
         return element.tokenType == model.chainList[0] ||
-            element.tickerName == model.chainList[0];
+            element.coin == model.chainList[0];
       }).toList();
     } else if (model.currentTabSelection == 2) {
-      newList = model.walletInfoList.where((element) {
+      newList = model.wallets.where((element) {
         return element.tokenType == model.chainList[1] ||
-            element.tickerName == model.chainList[1];
+            element.coin == model.chainList[1];
       }).toList();
     } else if (model.currentTabSelection == 3) {
-      newList = model.walletInfoList.where((element) {
+      newList = model.wallets.where((element) {
         return element.tokenType == model.chainList[2] ||
-            element.tickerName == model.chainList[2];
+            element.coin == model.chainList[2];
       }).toList();
     } else if (model.currentTabSelection == 4) {
-      newList = model.walletInfoList.where((element) {
+      newList = model.wallets.where((element) {
         return element.tokenType == model.chainList[3] ||
-            element.tickerName == model.chainList[3];
+            element.coin == model.chainList[3];
       }).toList();
     }
+
     return ListView.builder(
       padding: const EdgeInsets.only(top: 0),
       shrinkWrap: true,
       itemCount: newList.length,
       itemBuilder: (BuildContext context, int index) {
-        var tickerName = newList[index].tickerName!.toLowerCase();
-        var usdBalance = (!newList[index].availableBalance!.isNegative
-                ? newList[index].availableBalance
+        var tickerName = newList[index].coin!.toLowerCase();
+        var usdBalance = (!newList[index].balance!.isNegative
+                ? newList[index].balance
                 : 0.0)! *
-            newList[index].usdValue!;
+            newList[index].usdValue!.usd!;
         return Visibility(
           // Default visible widget will be visible when usdVal is greater than equals to 0 and isHideSmallAmountAssets is false
           visible: usdBalance >= 0 && !model.isHideSmallAssetsButton,
@@ -548,13 +568,13 @@ class WalletDashboardView extends StatelessWidget {
               child: CoinDetailsCardWidget(
                 tickerName: tickerName,
                 index: index,
-                wallets: model.wallets,
+                wallets: newList,
                 context: context,
               )),
           child: CoinDetailsCardWidget(
             tickerName: tickerName,
             index: index,
-            wallets: model.wallets,
+            wallets: newList,
             context: context,
           ),
         );
@@ -572,7 +592,10 @@ class FavTab extends StackedView<WalletDashboardViewModel> {
 
   @override
   Widget builder(
-      BuildContext context, WalletDashboardViewModel model, Widget? child) {
+    BuildContext context,
+    WalletDashboardViewModel model,
+    Widget? child,
+  ) {
     debugPrint('fav list length before');
     debugPrint(model.favWallets.length.toString());
     return model.busy(model.favWallets)

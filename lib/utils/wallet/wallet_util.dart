@@ -4,6 +4,7 @@ import 'package:paycool/logger.dart';
 import 'package:paycool/models/wallet/wallet.dart';
 import 'package:paycool/models/wallet/wallet_balance.dart';
 import 'package:paycool/service_locator.dart';
+import 'package:paycool/services/coin_service.dart';
 import 'package:paycool/services/db/core_wallet_database_service.dart';
 import 'package:paycool/services/db/token_list_database_service.dart';
 import 'package:paycool/services/db/transaction_history_database_service.dart';
@@ -25,7 +26,7 @@ class WalletUtil {
   final tokenListDatabaseService = locator<TokenListDatabaseService>();
   final userSettingsDatabaseService = locator<UserSettingsDatabaseService>();
   final _vaultService = locator<VaultService>();
-
+  final coinService = locator<CoinService>();
   Map<String, String> coinTickerAndNameList = {
     'BTC': 'Bitcoin',
     'ETH': 'Ethereum',
@@ -60,6 +61,9 @@ class WalletUtil {
   static List<String> allUsdcTokens = ["USDC", "USDCX"];
   List<String> usdtSpecialTokens = ["USDTX", "USDTB", "USDTM"];
   static List<String> fabSpecialTokens = ["FABE", "FABB"];
+  List<String> exgSpecialTokens = ["EXGE"];
+  List<String> bstSpecialTokens = ["BSTE"];
+  List<String> dscSpecialTokens = ["DSCE"];
 
   static bool isSpecialUsdt(String tickerName) {
     return allUsdtTokens.contains(tickerName);
@@ -82,9 +86,8 @@ class WalletUtil {
 
     String tickerName = wallet.coin!.toUpperCase();
     String walletAddress = '';
-    var alltokens = await tokenListDatabaseService.getAll();
-    debugPrint(alltokens.length.toString());
-    int coinType = await getCoinTypeIdByName(tickerName);
+
+    int coinType = await coinService.getCoinTypeByTickerName(tickerName);
 
     // use coin type to get the token type
     String tokenType = getTokenType(coinType);
@@ -112,11 +115,12 @@ class WalletUtil {
           .getWalletAddressByTickerName(tickerName);
     }
     String? coinName = '';
+
     for (var i = 0; i < coinTickerAndNameList.length; i++) {
       if (coinTickerAndNameList.containsKey(wallet.coin)) {
         coinName = coinTickerAndNameList[wallet.coin];
+        break;
       }
-      break;
     }
     var walletInfo = WalletInfo();
     if (requiredAddressOnly) {
@@ -188,10 +192,13 @@ class WalletUtil {
       logoTicker = 'USDT';
     } else if (tickerName.toUpperCase() == 'EXGB') {
       tickerName = 'EXG(BNB)';
-      logoTicker = 'EXGB';
+      logoTicker = 'EXG';
     } else if (tickerName.toUpperCase() == 'GETB') {
       tickerName = 'GET(BNB)';
-      logoTicker = 'GETB';
+      logoTicker = 'GET';
+    } else if (tickerName.toUpperCase() == 'FETB') {
+      tickerName = 'FET(BNB)';
+      logoTicker = 'FET';
     } else {
       logoTicker = tickerName;
     }
@@ -245,32 +252,6 @@ class WalletUtil {
       log.e('deleteWallet CATCH -- wallet delete failed: $err');
       throw Exception(['Wallet deletion failed $err']);
     }
-  }
-
-  /*----------------------------------------------------------------------
-                Get Coin Type Id By Name
-----------------------------------------------------------------------*/
-
-  Future<int> getCoinTypeIdByName(String coinName) async {
-    int coinType = 0;
-    MapEntry<int, String>? hardCodedCoinList;
-    bool isOldToken = coin_list.newCoinTypeMap.containsValue(coinName);
-    debugPrint('is old token value $isOldToken');
-    if (isOldToken) {
-      hardCodedCoinList = coin_list.newCoinTypeMap.entries
-          .firstWhere((coinTypeMap) => coinTypeMap.value == coinName);
-    }
-    // var coins =
-    //     coinList.coin_list.where((coin) => coin['name'] == coinName).toList();
-    if (hardCodedCoinList != null) {
-      coinType = hardCodedCoinList.key;
-    } else {
-      await tokenListDatabaseService
-          .getCoinTypeByTickerName(coinName)
-          .then((value) => coinType = value);
-    }
-    debugPrint('ticker $coinName -- coin type $coinType');
-    return coinType;
   }
 
   // get token type

@@ -589,5 +589,7 @@
     "finishKycNote": "¡Felicidades! Ha completado exitosamente el proceso KYC. Por favor, espere la aprobación. Mientras tanto, puede explorar la aplicación.",
     "checkProgressInSettings": "Verificar progreso en configuración",
     "invalidToken": "Token inválido",
-    "successfullySubmitted": "Enviado con éxito"
+    "successfullySubmitted": "Enviado con éxito",
+    "checkKycStatus": "Verificar estado de KYC",
+    "startKycProcess": "Iniciar proceso de KYC"
 }
