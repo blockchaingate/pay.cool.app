@@ -240,13 +240,10 @@ class SendViewModel extends BaseViewModel {
     }
   }
 
-  bool isTrx() {
-    log.i(
-        'isTrx ${walletInfo.tickerName == 'TRX' || walletInfo.tickerName == 'USDTX'}');
-    return walletInfo.tickerName == 'TRX' || walletInfo.tokenType == 'TRX'
-        ? true
-        : false;
-  }
+  bool isTrx() =>
+      walletInfo.tickerName == 'TRX' || walletInfo.tokenType == 'TRX'
+          ? true
+          : false;
 
   fillMaxAmount() {
     setBusy(true);
@@ -373,12 +370,11 @@ class SendViewModel extends BaseViewModel {
       if (isTrx()) {
         log.i('sending tron ${walletInfo.tickerName}');
         var privateKey = tron_address_util.generateTrxPrivKey(mnemonic);
-        String ca = '';
-        if (walletInfo.tickerName == 'USDTX' ||
-            walletInfo.tickerName == 'USDCX') {
+        String? ca = '';
+        if (walletInfo.tokenType == 'TRX') {
           // get trx-usdt contract address
           ca = environment["addresses"]["smartContract"][tickerName] ?? '';
-          if (ca.isEmpty) {
+          if (ca!.isEmpty) {
             await tokenListDatabaseService
                 .getByTickerName(tickerName)
                 .then((token) async {
@@ -386,23 +382,17 @@ class SendViewModel extends BaseViewModel {
                 ca = token.contract!;
               } else {
                 await apiService.getTokenListUpdates().then((tokenList) {
-                  for (var token in tokenList) {
-                    if (token.tickerName == 'USDTX') {
-                      ca = token.contract!;
-                      break;
-                    }
-                    if (token.tickerName == 'USDCX') {
-                      ca = token.contract!;
-                      break;
-                    }
-                  }
+                  ca = tokenList
+                      .firstWhere((element) =>
+                          element.tickerName == walletInfo.tickerName)
+                      .contract;
                 });
               }
             });
           }
           log.i('contract address $ca');
         }
-        if (ca.isNotEmpty)
+        if (ca!.isNotEmpty)
           await tron_transaction_util
               .generateTrxTransactionContract(
                   contractAddressTronUsdt: ca,

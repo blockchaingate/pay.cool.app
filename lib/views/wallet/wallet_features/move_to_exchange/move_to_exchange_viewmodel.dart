@@ -622,7 +622,7 @@ class MoveToExchangeViewModel extends BaseViewModel {
         .getSingleWalletBalance(
             fabAddress, walletInfo.tickerName!, walletInfo.address!)
         .then((walletBalance) {
-      if (walletBalance != null) {
+      if (walletBalance.isNotEmpty) {
         log.w(walletBalance[0].balance);
         walletInfo.availableBalance = walletBalance[0].balance;
         unconfirmedBalance = walletBalance[0].unconfirmedBalance!;
