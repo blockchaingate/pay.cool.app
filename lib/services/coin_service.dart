@@ -212,13 +212,24 @@ class CoinService {
     if (hardCodedCoinList != null) {
       coinType = hardCodedCoinList.key;
     } else {
-      await apiService.getTokenListUpdates().then((tokens) {
-        for (var token in tokens) {
-          if (token.tickerName == tickerName) {
-            coinType = token.coinType!;
-          }
-        }
-      });
+      try {
+        await tokenListDatabaseService
+            .getByTickerName(tickerName)
+            .then((token) {
+          coinType = token!.coinType!;
+          debugPrint('Coin found in token database');
+        });
+      } catch (err) {
+        debugPrint(
+            'CATCH: CANNOT find Coin found in token database -err: $err');
+      }
+      if (coinType == 0) {
+        await apiService.getTokenListUpdates().then((tokens) {
+          coinType = tokens
+              .firstWhere((element) => element.tickerName == tickerName)
+              .coinType!;
+        });
+      }
       if (coinType == 0) {
         await apiService.getTokenList().then((tokens) {
           for (var token in tokens) {
