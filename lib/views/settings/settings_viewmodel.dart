@@ -11,7 +11,6 @@
 *----------------------------------------------------------------------
 */
 
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -175,12 +174,12 @@ class SettingsViewmodel extends BaseViewModel with StoppableService {
     setBusyForObject(kycStarted, true);
     var result = await walletService.checkKycStatus();
     kycStarted = result['success'];
-    var res = result['data'] ?? {};
-    log.w('checkkycstatus res $res');
-
-    //var json = jsonDecode(kycCheckResult);
-    kycCheckResult = UserDataContent.fromJson(res['data']);
-    log.w('checkkycstatus kycCheckResult ${kycCheckResult.toJson()}');
+    if (kycStarted) {
+      var res = result['data'] ?? {};
+      log.w('checkkycstatus res $res');
+      kycCheckResult = UserDataContent.fromJson(res['data']);
+      log.w('checkkycstatus kycCheckResult ${kycCheckResult.toJson()}');
+    }
     setBusyForObject(kycStarted, false);
   }
 
