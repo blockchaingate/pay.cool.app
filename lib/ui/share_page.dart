@@ -90,7 +90,7 @@
 //                                             spreadRadius: 1.0,
 //                                             color: Color(0x22666666)),
 //                                       ]),
-//                                   child: QrImage(
+//                                   child: QrImageView(
 //                                       backgroundColor: Color(0xffffffff),
 //                                       data: "www.exchangily.com",
 //                                       version: QrVersions.auto,

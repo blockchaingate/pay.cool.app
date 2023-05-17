@@ -62,6 +62,8 @@ Future serviceLocator() async {
 
   locator.registerLazySingleton(() => KycBaseService(
       isProd: isProduction, xAccessToken: ValueNotifier<String?>(null)));
+  locator.registerLazySingleton<KycNavigationService>(
+      () => KycNavigationService());
   // Wallet
   locator.registerLazySingleton(() => WalletService());
   locator.registerLazySingleton(() => WalletDatabaseService());

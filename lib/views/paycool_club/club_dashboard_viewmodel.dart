@@ -707,20 +707,18 @@ class ClubDashboardViewModel extends BaseViewModel {
                             child: Container(
                               child: RepaintBoundary(
                                 key: globalKey,
-                                child: QrImage(
+                                child: QrImageView(
                                     backgroundColor: white,
                                     data: fabAddress,
                                     version: QrVersions.auto,
                                     size: 300,
                                     gapless: true,
                                     errorStateBuilder: (context, err) {
-                                      return Container(
-                                        child: Center(
-                                          child: Text(
-                                              FlutterI18n.translate(context,
-                                                  "somethingWentWrong"),
-                                              textAlign: TextAlign.center),
-                                        ),
+                                      return Center(
+                                        child: Text(
+                                            FlutterI18n.translate(
+                                                context, "somethingWentWrong"),
+                                            textAlign: TextAlign.center),
                                       );
                                     }),
                               ),
@@ -815,7 +813,7 @@ class ClubDashboardViewModel extends BaseViewModel {
                           margin: const EdgeInsets.all(30),
                           child: RepaintBoundary(
                             key: globalKey,
-                            child: QrImage(
+                            child: QrImageView(
                                 backgroundColor: white,
                                 data: fabAddress,
                                 version: QrVersions.auto,

@@ -11,13 +11,16 @@
 *----------------------------------------------------------------------
 */
 
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:kyc/kyc.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/route_names.dart';
+import 'package:paycool/environments/environment_type.dart';
 import 'package:paycool/models/wallet/user_settings_model.dart';
 import 'package:paycool/services/config_service.dart';
 import 'package:paycool/services/db/core_wallet_database_service.dart';
@@ -63,7 +66,7 @@ class SettingsViewmodel extends BaseViewModel with StoppableService {
   final authService = locator<LocalAuthService>();
   final localAuthService = locator<LocalAuthService>();
   final coreWalletDatabaseService = locator<CoreWalletDatabaseService>();
-  var kycCheckResult = {};
+  var kycCheckResult = UserDataContent();
 
   String? selectedLanguage;
   // bool result = false;
@@ -90,7 +93,7 @@ class SettingsViewmodel extends BaseViewModel with StoppableService {
   Map<String, String>? versionInfo;
   UserSettings userSettings = UserSettings();
   bool isUserSettingsEmpty = false;
-  bool kycCompleted = false;
+  bool kycStarted = false;
 
   Locale? currentLang;
   bool _isBiometricAuth = false;
@@ -169,12 +172,16 @@ class SettingsViewmodel extends BaseViewModel with StoppableService {
   }
 
   checkKycStatus() async {
-    setBusyForObject(kycCompleted, true);
+    setBusyForObject(kycStarted, true);
     var result = await walletService.checkKycStatus();
-    log.w('kycCheckResult $kycCheckResult');
-    kycCompleted = result['success'];
-    kycCheckResult = result['data'] ?? {};
-    setBusyForObject(kycCompleted, false);
+    kycStarted = result['success'];
+    var res = result['data'] ?? {};
+    log.w('checkkycstatus res $res');
+
+    //var json = jsonDecode(kycCheckResult);
+    kycCheckResult = UserDataContent.fromJson(res['data']);
+    log.w('checkkycstatus kycCheckResult ${kycCheckResult.toJson()}');
+    setBusyForObject(kycStarted, false);
   }
 
   // changeLanguage() async {

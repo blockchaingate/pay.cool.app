@@ -16,6 +16,8 @@ dart pub get
 dart analyze
 dart migrate --apply-changes
 
+dart fix --dry-run
+dart fix --apply
 
 flutter pub cache repair
 

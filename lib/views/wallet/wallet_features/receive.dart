@@ -132,7 +132,7 @@ class _ReceiveWalletScreenState extends State<ReceiveWalletScreen> {
                           child: Container(
                             child: RepaintBoundary(
                               key: _globalKey,
-                              child: QrImage(
+                              child: QrImageView(
                                   backgroundColor: white,
                                   data: convertedToFabAddress == ''
                                       ? widget.walletInfo.address!

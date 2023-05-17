@@ -1446,7 +1446,7 @@ class PayCoolViewmodel extends FutureViewModel {
                             child: Container(
                               child: RepaintBoundary(
                                 key: globalKey,
-                                child: QrImage(
+                                child: QrImageView(
                                     backgroundColor: white,
                                     data: kbAddress,
                                     version: QrVersions.auto,
@@ -1573,7 +1573,7 @@ class PayCoolViewmodel extends FutureViewModel {
                             child: Container(
                               child: RepaintBoundary(
                                 key: globalKey,
-                                child: QrImage(
+                                child: QrImageView(
                                     backgroundColor: white,
                                     data: kbAddress,
                                     version: QrVersions.auto,

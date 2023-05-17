@@ -185,6 +185,17 @@ class WalletService {
 // {"success":true,"data":{"user":{"email":"cojomog655@larland.com",
 // "wallet_address":"mvLuZXGYMxpRM65kgzbfoKqs3FPcisM6ri"},
 // "kyc":{"step":2,"status":0}}}
+
+  // Api response
+  // user register and email confirmed: no kyc data
+  // phone code sent: kyc.status == 0
+  // phone code confirmed: status: 1
+  // citizenship selected: status: 2
+  // verifyIdentity:  status: 3
+  // verifyInfo: status: 4
+  // selectIdType: status: 5
+  // uploadDocument: status: 6
+  // uploadVideo: status: 7
   checkKycStatus() async {
     var fabAddress = await sharedService.getFabAddressFromCoreWalletDatabase();
     var url = '${KycConstants.baseUrl}/kyc/wallet_address/$fabAddress';
@@ -195,8 +206,8 @@ class WalletService {
         log.w('confirmPhoneCode response: ${response.body}');
         var data = jsonDecode(response.body);
         if (data['data']['user'] != null) {
-          log.i('checkKycStatus user data ${data['data']['kyc']}');
-          return {"success": true, "data": data['data']['kyc']};
+          log.i('checkKycStatus user data $data');
+          return {"success": true, "data": data};
         } else {
           return {"success": false, "data": null};
         }
@@ -233,11 +244,8 @@ class WalletService {
   }
 
 // sign kanban data
-  Future<String> signKycData(KycModel kycModel, BuildContext context) async {
+  Future<String> signKycData(String data, BuildContext context) async {
     String finalSignature = '';
-    var data =
-        'email=${kycModel.email}&first_name=${kycModel.firstName}&last_name=${kycModel.lastName}';
-    log.i('data $data');
     var hexData = StringUtils.stringToHex(data);
     log.w('hexData $hexData');
 
@@ -361,7 +369,7 @@ class WalletService {
     final currentTimeDateTime = DateTime.parse(currentTime);
     var diff = currentTimeDateTime.difference(lastUpdateTimeFromDBDateTime);
     log.i(
-        'isMoreThan24HoursSinceLastUpdate currentTimeDateTime $currentTimeDateTime -- diff.inMinutes ${diff.inHours}');
+        'isMoreThan24HoursSinceLastUpdate currentTimeDateTime $currentTimeDateTime  -- lastUpdateTimeFromDBDateTime $lastUpdateTimeFromDBDateTime -- diff.hours ${diff.inHours}');
     var result = diff.inHours > 24;
     log.w('isMoreThan24HoursSinceLastUpdate $result');
 

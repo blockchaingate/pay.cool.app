@@ -253,7 +253,7 @@ class DisplayQrCode extends StatelessWidget {
       appBar: AppBar(
         title: Row(
           children: [
-            Text(FlutterI18n.translate(context, "id") + ':',
+            Text('${FlutterI18n.translate(context, "id")}:',
                 style: headText5.copyWith(fontWeight: FontWeight.bold)),
             Flexible(
               child: Text(
@@ -268,7 +268,7 @@ class DisplayQrCode extends StatelessWidget {
       ),
       body: Container(
         child: Center(
-          child: QrImage(
+          child: QrImageView(
               data: qr,
               version: QrVersions.auto,
               size: 200.0,

@@ -298,7 +298,7 @@ class DisplayQrCode extends StatelessWidget {
       ),
       body: Container(
         child: Center(
-          child: QrImage(
+          child: QrImageView(
               data: qr,
               version: QrVersions.auto,
               size: 200.0,
