@@ -203,7 +203,7 @@ class WalletService {
     var response = await client.get(Uri.parse(url));
     try {
       if (response.statusCode == 200 || response.statusCode == 201) {
-        log.w('confirmPhoneCode response: ${response.body}');
+        log.w('checkKycStatus response: ${response.body}');
         var data = jsonDecode(response.body);
         if (data['data']['user'] != null) {
           log.i('checkKycStatus user data $data');

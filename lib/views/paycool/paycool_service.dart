@@ -373,7 +373,7 @@ class PayCoolService with ReactiveServiceMixin {
           PayCoolTransactionHistoryModelList transactionList =
               PayCoolTransactionHistoryModelList.fromJson(json);
           log.w(
-              'getTransactionHistory func:  transactions length -- ${transactionList!.transactions!.length}');
+              'getTransactionHistory func:  transactions length -- ${transactionList.transactions!.length}');
           return transactionList.transactions;
         } else {
           return [];

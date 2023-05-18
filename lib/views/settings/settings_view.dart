@@ -520,11 +520,15 @@ class SettingsContainer extends StatelessWidget {
                                                                         .only(
                                                                     left: 4.0),
                                                             child: Text(
-                                                              model
-                                                                  .kycCheckResult
-                                                                  .kyc!
-                                                                  .step
-                                                                  .toString(),
+                                                              model.kycCheckResult.kyc!
+                                                                          .step ==
+                                                                      -1
+                                                                  ? '0'
+                                                                  : model
+                                                                      .kycCheckResult
+                                                                      .kyc!
+                                                                      .step
+                                                                      .toString(),
                                                               style: headText3,
                                                             ),
                                                           ),
@@ -623,6 +627,7 @@ class SettingsContainer extends StatelessWidget {
                                                                       kycService
                                                                           .updateXAccessToken(
                                                                               token);
+
                                                                       kycNavigationService.navigateToStep(
                                                                           context,
                                                                           model

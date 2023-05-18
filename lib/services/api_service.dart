@@ -17,6 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:paycool/constants/constants.dart';
 import 'package:paycool/models/wallet/wallet_transaction_history_model.dart';
 import 'package:paycool/views/lightning-remit/lightning_remit_transfer_history_model.dart';
+import 'package:paycool/views/wallet/wallet_features/transaction_history/transaction_history_model_v2.dart';
 
 import '../constants/api_routes.dart';
 import '../logger.dart';
@@ -192,6 +193,49 @@ class ApiService {
       return transactionHistory;
     } catch (err) {
       log.e('getWalletTransactionHistory CATCH $err');
+
+      throw Exception(err);
+    }
+  }
+
+  Future<TransactionHistoryEventsData?> getTransactionHistoryEventsV2(
+      {int pageSize = 10, int pageNumber = 0}) async {
+    String fabAddress = '';
+    if (pageNumber != 0) {
+      pageNumber = pageNumber - 1;
+    }
+    TransactionHistoryEvents transactionHistoryEvents =
+        TransactionHistoryEvents();
+
+    fabAddress = await sharedService.getFabAddressFromCoreWalletDatabase();
+
+    String url =
+        '${configService.getKanbanBaseUrl()}v2/$WithDrawDepositTxHistoryApiRoute';
+    url = '$url/$pageSize/$pageNumber';
+
+    Map<String, dynamic> body = {
+      "fabAddress": fabAddress,
+      "pageSize": pageSize,
+      "pageNum": pageNumber
+    };
+
+    log.i('getTransactionHistoryEventsV2 url $url -- body $body');
+
+    try {
+      var response = await client.post(Uri.parse(url), body: body);
+
+      var json = jsonDecode(response.body);
+      if (json != null) {
+        log.w('getTransactionHistoryEventsV2 json $json}');
+        if (json['success']) {
+          transactionHistoryEvents = TransactionHistoryEvents.fromJson(json);
+          log.w(
+              'getTransactionHistoryEventsV2 json ${transactionHistoryEvents.toJson()}}');
+        }
+      }
+      return transactionHistoryEvents.data;
+    } catch (err) {
+      log.e('getTransactionHistoryEventsV2 CATCH $err');
 
       throw Exception(err);
     }

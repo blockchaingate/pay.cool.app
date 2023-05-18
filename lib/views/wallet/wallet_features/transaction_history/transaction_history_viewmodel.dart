@@ -22,6 +22,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:paycool/utils/wallet/wallet_util.dart';
+import 'package:paycool/widgets/pagination/pagination_model.dart';
 
 import 'package:stacked/stacked.dart';
 import 'package:paycool/services/api_service.dart';
@@ -55,7 +56,7 @@ class TransactionHistoryViewmodel extends FutureViewModel {
   final navigationService = locator<NavigationService>();
   final userSettingsDatabaseService = locator<UserSettingsDatabaseService>();
   final coinService = locator<CoinService>();
-
+  PaginationModel paginationModel = PaginationModel();
   WalletInfo walletInfo = WalletInfo();
   bool isChinese = false;
   bool isDialogUp = false;
@@ -109,6 +110,12 @@ class TransactionHistoryViewmodel extends FutureViewModel {
         } else if (txFromApi.tickerName.toUpperCase() == 'BNB_FAB' &&
             tickerName == 'FABB') {
           transactionsToDisplay.add(txFromApi);
+        } else if (txFromApi.tickerName.toUpperCase() == 'BNB_GET' &&
+            tickerName == 'GETB') {
+          transactionsToDisplay.add(txFromApi);
+        } else if (txFromApi.tickerName.toUpperCase() == 'BNB_FET' &&
+            tickerName == 'FETB') {
+          transactionsToDisplay.add(txFromApi);
         } else if (txFromApi.tickerName.toUpperCase() == 'POLYGON_MATIC' &&
             tickerName == 'MATICM') {
           transactionsToDisplay.add(txFromApi);
@@ -140,6 +147,14 @@ class TransactionHistoryViewmodel extends FutureViewModel {
     if (decimalLimit == 0) decimalLimit = 8;
     setBusy(false);
     // debugPrint(transactionHistoryToShowInView.first.toJson());
+  }
+
+  getPaginationTransactions(int pageNumber) async {
+    setBusy(true);
+    paginationModel.pageNumber = pageNumber;
+    await futureToRun();
+
+    setBusy(false);
   }
 
   reloadTransactions() async {

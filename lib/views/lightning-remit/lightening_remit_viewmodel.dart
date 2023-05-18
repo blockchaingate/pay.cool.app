@@ -145,10 +145,10 @@ class LightningRemitViewmodel extends FutureViewModel {
       transferHistory = th;
     });
     paginationModel.setTotalPages(transferHistory.totalCount);
-    paginationModel.pages = transferHistory.history;
     log.w('LightningRemit count ${transferHistory.totalCount}');
     transferHistory.history.sort((a, b) => DateTime.parse(b.date.toString())
         .compareTo(DateTime.parse(a.date.toString())));
+    paginationModel.pages = transferHistory.history;
 
     setBusy(false);
   }

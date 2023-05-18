@@ -6,6 +6,7 @@ import 'package:paycool/models/wallet/wallet.dart';
 import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/views/wallet/wallet_features/transaction_history/transaction_history_card_widget.dart';
 import 'package:paycool/views/wallet/wallet_features/transaction_history/transaction_history_viewmodel.dart';
+import 'package:paycool/widgets/pagination/pagination_widget.dart';
 import 'package:stacked/stacked.dart';
 
 class TransactionHistoryView extends StatelessWidget {
@@ -140,6 +141,14 @@ class TransactionHistoryView extends StatelessWidget {
                                       ),
                               ],
                             )),
+                floatingActionButtonLocation:
+                    FloatingActionButtonLocation.centerDocked,
+                floatingActionButton: model.paginationModel.pages.isEmpty
+                    ? Container()
+                    : PaginationWidget(
+                        pageCallback: model.getPaginationTransactions,
+                        paginationModel: model.paginationModel,
+                      ),
               ),
             ));
   }
