@@ -611,5 +611,7 @@
     "videoSizeTooLarge": "वीडियो का आकार बहुत बड़ा है",
     "resendCode": "कोड फिर से भेजें",
     "recordVideo": "वीडियो रिकॉर्ड करें",
-    "selectVideoFromGallery": "गैलरी से वीडियो चुनें"
+    "selectVideoFromGallery": "गैलरी से वीडियो चुनें",
+    "kycStep-1": "ईमेल कोड भेजा गया",
+    "incorrectPhoneNumber": "गलत फ़ोन नंबर"
 }

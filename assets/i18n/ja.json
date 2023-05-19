@@ -614,5 +614,7 @@
     "videoSizeTooLarge": "動画サイズが大きすぎます",
     "resendCode": "コードを再送信",
     "recordVideo": "ビデオを録画",
-    "selectVideoFromGallery": "ギャラリーからビデオを選択"
+    "selectVideoFromGallery": "ギャラリーからビデオを選択",
+    "kycStep-1": "メールコードが送信されました",
+    "incorrectPhoneNumber": "電話番号が間違っています"
 }

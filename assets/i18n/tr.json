@@ -614,5 +614,7 @@
   "videoSizeTooLarge": "Video boyutu çok büyük",
   "resendCode": "Kodu Tekrar Gönder",
   "recordVideo": "Video Kaydet",
-  "selectVideoFromGallery": "Galeriden Video Seç"
+  "selectVideoFromGallery": "Galeriden Video Seç",
+  "kycStep-1": "E-posta kodu gönderildi",
+  "incorrectPhoneNumber": "Yanlış Telefon Numarası"
 }
