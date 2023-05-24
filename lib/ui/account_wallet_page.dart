@@ -65,7 +65,7 @@ class _AccountWalletState extends State<AccountWallet> {
                     decoration: BoxDecoration(
                         // color: Color(mainColor),
                         borderRadius: BorderRadius.circular(10),
-                        gradient: LinearGradient(colors: [
+                        gradient: const LinearGradient(colors: [
                           Color(0xFFcd45ff),
                           Color(0xFF7368ff),
                         ])),

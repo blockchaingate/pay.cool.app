@@ -48,7 +48,7 @@ Future<void> main() async {
     await serviceLocator();
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
 
-    Logger.level = Level.info;
+    Logger.level = Level.nothing;
 
     SystemChannels.textInput
         .invokeMethod('TextInput.hide'); // Hides keyboard initially
@@ -143,16 +143,13 @@ class MyApp extends StatelessWidget {
           unselectedWidgetColor: Colors.black,
           disabledColor: grey.withAlpha(100),
           primaryColor: primaryColor,
-
-          //  colorScheme: ColorScheme(background: secondaryColor,
-          backgroundColor: secondaryColor,
           cardColor: walletCardColor,
           canvasColor: secondaryColor,
           //  brightness: Brightness.dark,
-          buttonTheme: ButtonThemeData(
+          buttonTheme: const ButtonThemeData(
               minWidth: double.infinity,
               buttonColor: primaryColor,
-              padding: const EdgeInsets.all(15),
+              padding: EdgeInsets.all(15),
               shape: StadiumBorder(),
               textTheme: ButtonTextTheme.primary),
           fontFamily: 'WorkSans',
@@ -178,7 +175,10 @@ class MyApp extends StatelessWidget {
                   fontSize: 13, color: white, fontWeight: FontWeight.w400),
               bodyMedium: TextStyle(fontSize: 13, color: red),
               titleLarge: TextStyle(
-                  fontSize: 10.5, color: white, fontWeight: FontWeight.w500)),
+                  fontSize: 10.5,
+                  color: white,
+                  fontWeight: FontWeight
+                      .w500)), // colorScheme:  const ColorScheme(background: secondaryColor),
         ),
       ),
     );

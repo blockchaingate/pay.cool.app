@@ -280,9 +280,9 @@ class TransactionHistoryViewmodel extends FutureViewModel {
                                                     true);
                                               },
                                             text: transactionHistory
-                                                    .kanbanTxId!.isEmpty
+                                                    .kanbanTxId.isEmpty
                                                 ? transactionHistory
-                                                        .kanbanTxStatus!.isEmpty
+                                                        .kanbanTxStatus.isEmpty
                                                     ? FlutterI18n.translate(
                                                         context, "inProgress")
                                                     : firstCharToUppercase(

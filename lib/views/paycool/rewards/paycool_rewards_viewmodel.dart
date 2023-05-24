@@ -19,10 +19,10 @@ class PayCoolRewardsViewModel extends FutureViewModel
   PaginationModel paginationModel = PaginationModel();
   int pageNumber = 1;
   int pageSize = 10;
-  int _totalRewardListCount = 0;
+  final int _totalRewardListCount = 0;
 
   @override
-  List<ReactiveServiceMixin> get reactiveServices => [payCoolService];
+  List<ListenableServiceMixin> get listenableServices => [payCoolService];
   @override
   Future futureToRun() async {
     fabAddress = await sharedService.getFabAddressFromCoreWalletDatabase();

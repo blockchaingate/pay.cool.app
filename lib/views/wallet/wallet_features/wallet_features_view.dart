@@ -224,7 +224,7 @@ class WalletFeaturesView extends StatelessWidget {
                                         BoxShadow(
                                             color: model.features[6].shadowColor
                                                 .withOpacity(0.2),
-                                            offset: Offset(0, 2),
+                                            offset: const Offset(0, 2),
                                             blurRadius: 10,
                                             spreadRadius: 3)
                                       ]),
@@ -473,7 +473,7 @@ class WalletFeaturesView extends StatelessWidget {
                           BoxShadow(
                               color: model.features[index].shadowColor
                                   .withOpacity(0.2),
-                              offset: Offset(0, 9),
+                              offset: const Offset(0, 9),
                               blurRadius: 10,
                               spreadRadius: 3)
                         ]),

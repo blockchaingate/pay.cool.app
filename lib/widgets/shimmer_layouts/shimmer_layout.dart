@@ -23,24 +23,24 @@ class ShimmerLayout extends StatelessWidget {
 
               if (layoutType == 'walletDashboard') {
                 layout = Shimmer.fromColors(
-                    child: ShimmerWalletDashboardLayout(),
                     baseColor: Colors.grey,
-                    highlightColor: Colors.white);
+                    highlightColor: Colors.white,
+                    child: const ShimmerWalletDashboardLayout());
               } else if (layoutType == 'marketPairs') {
                 layout = Shimmer.fromColors(
-                    child: ShimmerMarketPairsLayout(),
                     baseColor: Colors.grey,
-                    highlightColor: Colors.white);
+                    highlightColor: Colors.white,
+                    child: const ShimmerMarketPairsLayout());
               } else if (layoutType == 'orderbook') {
                 layout = Shimmer.fromColors(
-                    child: ShimmerOrderbookLayout(),
                     baseColor: grey.withAlpha(155),
-                    highlightColor: Colors.white);
+                    highlightColor: Colors.white,
+                    child: const ShimmerOrderbookLayout());
               } else if (layoutType == 'marketTrades') {
                 layout = Shimmer.fromColors(
-                    child: ShimmerMarketTradesLayout(),
                     baseColor: Colors.grey,
-                    highlightColor: Colors.white);
+                    highlightColor: Colors.white,
+                    child: const ShimmerMarketTradesLayout());
               }
               return layout;
             }));

@@ -197,7 +197,7 @@ class FabUtils {
         final getLockerInfo = contract.function('getLockerInfo');
         var res = getLockerInfo.decodeReturnValues(balanceHex);
 
-        if (res != null && res.length == 2) {
+        if (res.length == 2) {
           var values = res[1];
           values.forEach((element) => {balance = balance + element.toDouble()});
           balance = balance / 1e8;

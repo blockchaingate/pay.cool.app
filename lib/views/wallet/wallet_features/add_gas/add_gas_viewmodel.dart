@@ -83,7 +83,7 @@ class AddGasViewModel extends FutureViewModel {
         fxnDepositCallHex, options['gasLimit'], options['gasPrice']);
     extraAmount = contractInfo['totalFee'];
 
-    utxos.forEach((utxo) {
+    for (var utxo in utxos) {
       var utxoValue = utxo['value'];
       debugPrint(utxoValue.toString());
       // double utxoValueDouble = bigNum2Double(utxo['value']);
@@ -91,7 +91,7 @@ class AddGasViewModel extends FutureViewModel {
       var t = Decimal.fromInt(utxoValue) / Decimal.parse('1e8');
       //  debugPrint(' t ${t.toDouble()}');
       sumUtxos = sumUtxos + t.toDouble();
-    });
+    }
     double amt = 0.0;
     //for (var i = 0; i < sumUtxos; i + 0.05) {
     // totalAmount =

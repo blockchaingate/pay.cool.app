@@ -129,7 +129,7 @@ class _AccountPasswordState extends State<AccountPassword> {
                     decoration: BoxDecoration(
                         // color: Color(mainColor),
                         borderRadius: BorderRadius.circular(10),
-                        gradient: LinearGradient(colors: [
+                        gradient: const LinearGradient(colors: [
                           Color(0xFFcd45ff),
                           Color(0xFF7368ff),
                         ])),

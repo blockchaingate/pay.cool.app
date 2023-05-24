@@ -1,6 +1,6 @@
 name: paycool
 description: Crypto payment application
-version: 2.3.124+181
+version: 2.3.124+182
 # The following line prevents the package from being accidentally published to
 # pub.dev using `pub publish`. This is preferred for private packages.
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
@@ -16,8 +16,8 @@ dependency_overrides:
   #web3dart: 2.3.5
   # Could not resolve all artifacts for configuration ':image_picker_android:debugUnitTestRuntimeClasspath'
   image_picker_android: 0.8.4+13
-  # kyc:
-  #   path: "../exchangily-packages/kyc"
+  kyc:
+    path: "../exchangily-packages/kyc"
 
 dependencies:
   aukfa_version_checker:
@@ -79,7 +79,7 @@ dependencies:
   protobuf: ^2.0.0
   qr_code_utils: ^0.0.1
   qr_flutter: ^4.0.0
-  rflutter_alert: ^2.0.4
+  rflutter_alert: ^2.0.6
   screenshot: ^2.1.0
   share_plus: ^7.0.0
   shared_preferences: null

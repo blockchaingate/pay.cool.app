@@ -19,7 +19,6 @@ import 'package:hex/hex.dart';
 import 'package:decimal/decimal.dart';
 import 'package:intl/intl.dart';
 import 'package:bs58check/bs58check.dart' as Base58;
-import 'package:web3dart/crypto.dart' as web3_dart;
 
 class StringUtils {
   static final Random _random = Random.secure();
@@ -210,7 +209,7 @@ bigNumToDouble(BigInt bigNum, {int decimalLength = 8}) {
     var beforeDecimal = str.split('.')[0];
     var afterDecimal = str.split('.')[1];
     if (afterDecimal.length > decimalLength) {
-      s = beforeDecimal + '.' + afterDecimal.substring(0, 8);
+      s = '$beforeDecimal.${afterDecimal.substring(0, 8)}';
 
       d = double.parse(s);
     }

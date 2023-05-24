@@ -28,13 +28,13 @@ class _EventDetailState extends State<EventDetail> {
     ExpanderType.plusMinus: Icon(Icons.add),
   };
   final Map<ExpanderModifier, Widget> expansionModifierOptions = {
-    ExpanderModifier.none: ModContainer(ExpanderModifier.none),
-    ExpanderModifier.circleFilled: ModContainer(ExpanderModifier.circleFilled),
+    ExpanderModifier.none: const ModContainer(ExpanderModifier.none),
+    ExpanderModifier.circleFilled: const ModContainer(ExpanderModifier.circleFilled),
     ExpanderModifier.circleOutlined:
-        ModContainer(ExpanderModifier.circleOutlined),
-    ExpanderModifier.squareFilled: ModContainer(ExpanderModifier.squareFilled),
+        const ModContainer(ExpanderModifier.circleOutlined),
+    ExpanderModifier.squareFilled: const ModContainer(ExpanderModifier.squareFilled),
     ExpanderModifier.squareOutlined:
-        ModContainer(ExpanderModifier.squareOutlined),
+        const ModContainer(ExpanderModifier.squareOutlined),
   };
   final ExpanderPosition _expanderPosition = ExpanderPosition.start;
   final ExpanderType _expanderType = ExpanderType.caret;
@@ -56,7 +56,7 @@ class _EventDetailState extends State<EventDetail> {
 
   @override
   Widget build(BuildContext context) {
-    TreeViewTheme _treeViewTheme = TreeViewTheme(
+    TreeViewTheme treeViewTheme = TreeViewTheme(
       expanderTheme: ExpanderThemeData(
           type: _expanderType,
           modifier: _expanderModifier,
@@ -106,12 +106,12 @@ class _EventDetailState extends State<EventDetail> {
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(
                         horizontal: 20, vertical: 20),
-                    child: Column(
+                    child: const Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
-                          children: const [
+                          children: [
                             SizedBox(
                                 width: 40,
                                 child: FaIcon(FontAwesomeIcons.coins,
@@ -121,11 +121,11 @@ class _EventDetailState extends State<EventDetail> {
                                     color: Color(0xff333333), fontSize: 18)),
                           ],
                         ),
-                        const SizedBox(
+                        SizedBox(
                           height: 10,
                         ),
                         Row(
-                          children: const [
+                          children: [
                             SizedBox(
                                 width: 40,
                                 child: FaIcon(FontAwesomeIcons.userAlt,
@@ -135,11 +135,11 @@ class _EventDetailState extends State<EventDetail> {
                                     color: Color(0xff333333), fontSize: 18)),
                           ],
                         ),
-                        const SizedBox(
+                        SizedBox(
                           height: 10,
                         ),
                         Row(
-                          children: const [
+                          children: [
                             SizedBox(
                                 width: 40,
                                 child: FaIcon(FontAwesomeIcons.moneyBill,
@@ -195,7 +195,7 @@ class _EventDetailState extends State<EventDetail> {
                                       .copyWith(selectedKey: key);
                                 });
                               },
-                              theme: _treeViewTheme,
+                              theme: treeViewTheme,
                             ),
                           ),
                         ),
@@ -271,40 +271,40 @@ class ModContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double _borderWidth = 0;
-    BoxShape _shapeBorder = BoxShape.rectangle;
-    Color _backColor = Colors.transparent;
-    Color _backAltColor = Colors.grey.shade700;
+    double borderWidth = 0;
+    BoxShape shapeBorder = BoxShape.rectangle;
+    Color backColor = Colors.transparent;
+    Color backAltColor = Colors.grey.shade700;
     switch (modifier) {
       case ExpanderModifier.none:
         break;
       case ExpanderModifier.circleFilled:
-        _shapeBorder = BoxShape.circle;
-        _backColor = _backAltColor;
+        shapeBorder = BoxShape.circle;
+        backColor = backAltColor;
         break;
       case ExpanderModifier.circleOutlined:
-        _borderWidth = 1;
-        _shapeBorder = BoxShape.circle;
+        borderWidth = 1;
+        shapeBorder = BoxShape.circle;
         break;
       case ExpanderModifier.squareFilled:
-        _backColor = _backAltColor;
+        backColor = backAltColor;
         break;
       case ExpanderModifier.squareOutlined:
-        _borderWidth = 1;
+        borderWidth = 1;
         break;
     }
     return Row(
       children: [
         Container(
           decoration: BoxDecoration(
-            shape: _shapeBorder,
-            border: _borderWidth == 0
+            shape: shapeBorder,
+            border: borderWidth == 0
                 ? null
                 : Border.all(
-                    width: _borderWidth,
-                    color: _backAltColor,
+                    width: borderWidth,
+                    color: backAltColor,
                   ),
-            color: _backColor,
+            color: backColor,
           ),
           width: 15,
           height: 15,

@@ -1,8 +1,6 @@
-import 'dart:async';
 
 //import 'package:connectivity/connectivity.dart';
 
-import '../enums/connectivity_status.dart';
 
 class ConnectivityService {
   // Create our public controller

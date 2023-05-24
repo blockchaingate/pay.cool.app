@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
-import 'dart:typed_data';
 
 import 'package:http/io_client.dart';
 import 'package:paycool/constants/constants.dart';
@@ -20,7 +19,7 @@ class CustomHttpUtil {
       }
       debugPrint('certicate added');
     } on TlsException catch (e) {
-      if (e?.osError?.message != null &&
+      if (e.osError?.message != null &&
           e.osError!.message.contains('CERT_ALREADY_IN_HASH_TABLE')) {
         debugPrint('createHttpClient() - cert already trusted! Skipping.');
       } else {

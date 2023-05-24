@@ -1,5 +1,4 @@
 import 'package:flutter/widgets.dart';
-import 'package:paycool/environments/coins.dart' as coin_list;
 import 'package:paycool/logger.dart';
 import 'package:paycool/models/wallet/wallet.dart';
 import 'package:paycool/models/wallet/wallet_balance.dart';

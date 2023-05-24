@@ -520,7 +520,7 @@ class MoveToWalletView extends StatelessWidget {
                                   strokeWidth: 1,
                                 ))
                             : Text(FlutterI18n.translate(context, "confirm"),
-                                style: Theme.of(context).textTheme.button),
+                                style: Theme.of(context).textTheme.labelLarge),
                       ),
                     ),
                   ],

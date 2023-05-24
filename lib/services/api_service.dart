@@ -30,7 +30,6 @@ import '../service_locator.dart';
 import '../utils/custom_http_util.dart';
 import '../utils/string_util.dart' as string_utils;
 import '../environments/environment.dart';
-import '../views/paycool/paycool__history.dart';
 import 'config_service.dart';
 import 'db/core_wallet_database_service.dart';
 import 'local_storage_service.dart';

@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:paycool/logger.dart';
@@ -14,7 +12,6 @@ import 'package:paycool/utils/string_util.dart';
 import 'package:paycool/views/paycool/paycool_service.dart';
 import 'package:paycool/views/paycool/transaction_history/paycool_transaction_history_model.dart';
 import 'package:stacked/stacked.dart';
-import 'package:web3dart/crypto.dart';
 import '../../../widgets/pagination/pagination_model.dart';
 
 class PayCoolTransactionHistoryViewModel extends FutureViewModel {
@@ -126,7 +123,7 @@ class PayCoolTransactionHistoryViewModel extends FutureViewModel {
         String mnemonic = passRes.returnedText;
 
         var seed = walletService.generateSeed(mnemonic);
-        var signature;
+        Map<String, String> signature = {};
         // var keyPairKanban = getExgKeyPair(Uint8List.fromList(seed));
         // debugPrint('keyPairKanban $keyPairKanban');
         // int kanbanGasPrice = environment["chains"]["KANBAN"]["gasPrice"];

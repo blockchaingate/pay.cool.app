@@ -125,7 +125,7 @@ class ConfirmMnemonicView extends StatelessWidget {
                               child: TextButton(
                                   style: ButtonStyle(
                                     side: MaterialStateProperty.all(
-                                        BorderSide(color: primaryColor)),
+                                        const BorderSide(color: primaryColor)),
                                   ),
                                   onPressed: () {
                                     model.clearTappedList();
@@ -181,7 +181,7 @@ class ConfirmMnemonicView extends StatelessWidget {
                                     // enabled: false, // if false use cant see the selection border around
                                     readOnly: true,
                                     autocorrect: false,
-                                    style: TextStyle(color: black),
+                                    style: const TextStyle(color: black),
                                     decoration: InputDecoration(
                                       // alignLabelWithHint: true,
                                       fillColor: model
@@ -228,7 +228,7 @@ class ConfirmMnemonicView extends StatelessWidget {
                       padding: const EdgeInsets.all(12.0),
                       child: Text(
                         FlutterI18n.translate(context, "finishWalletCreation"),
-                        style: Theme.of(context).textTheme.button,
+                        style: Theme.of(context).textTheme.labelLarge,
                       ),
                     ),
                     onPressed: () {

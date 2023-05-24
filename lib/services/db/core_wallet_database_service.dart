@@ -100,7 +100,6 @@ class CoreWalletDatabaseService {
 // Insert Data In The Database
   Future insert(CoreWalletModel walletCoreModel) async {
     final Database? db = await database;
-    ;
     var dataToInsert = walletCoreModel.toJson();
     await db!
         .insert(tableName, dataToInsert,

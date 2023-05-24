@@ -86,11 +86,11 @@ class CreatePasswordView extends StatelessWidget {
                                 //     ),
                                 //     onPressed: () => model.toggelPassword()),
                                 Visibility(
+                                  visible: model.checkPasswordConditions &&
+                                      model.password.isNotEmpty,
                                   child: const Padding(
                                       padding: EdgeInsets.only(right: 10),
                                       child: Icon(Icons.check, color: green)),
-                                  visible: model.checkPasswordConditions &&
-                                      model.password.isNotEmpty,
                                 )
                                 // model.checkPasswordConditions &&
                                 //         model.password.isNotEmpty
@@ -144,12 +144,12 @@ class CreatePasswordView extends StatelessWidget {
                                 //     onPressed: () => model.toggelPassword()),
 
                                 Visibility(
-                                    child: const Padding(
-                                        padding: EdgeInsets.only(right: 10),
-                                        child: Icon(Icons.check, color: green)),
                                     visible:
                                         model.checkConfirmPasswordConditions &&
-                                            model.confirmPassword.isNotEmpty)
+                                            model.confirmPassword.isNotEmpty,
+                                    child: const Padding(
+                                        padding: EdgeInsets.only(right: 10),
+                                        child: Icon(Icons.check, color: green)))
                               ],
                             ),
                             focusedBorder: const OutlineInputBorder(
@@ -199,7 +199,7 @@ class CreatePasswordView extends StatelessWidget {
                                           context, "importingWallet")
                                       : FlutterI18n.translate(
                                           context, "creatingWallet"),
-                                  style: Theme.of(context).textTheme.button,
+                                  style: Theme.of(context).textTheme.labelLarge,
                                 ),
                               )
                             : ButtonTheme(

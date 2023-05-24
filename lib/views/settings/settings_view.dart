@@ -16,11 +16,9 @@ import 'package:kyc/kyc.dart';
 import 'package:paycool/constants/api_routes.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
-import 'package:paycool/constants/route_names.dart';
 import 'package:paycool/environments/environment_type.dart';
 import 'package:paycool/service_locator.dart';
 import 'package:paycool/shared/ui_helpers.dart';
-import 'package:paycool/utils/string_util.dart';
 import 'package:paycool/views/settings/settings_viewmodel.dart';
 import 'package:paycool/widgets/bottom_nav.dart';
 import 'package:flutter/material.dart';
@@ -86,10 +84,10 @@ class SettingsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    GlobalKey _one = GlobalKey();
-    GlobalKey _two = GlobalKey();
-    model.one = _one;
-    model.two = _two;
+    GlobalKey one = GlobalKey();
+    GlobalKey two = GlobalKey();
+    model.one = one;
+    model.two = two;
     debugPrint('isShow _SettingsWidgetState ${model.isShowCaseOnce}');
     model.showcaseEvent(context);
     // WidgetsBinding.instance
@@ -606,7 +604,9 @@ class SettingsContainer extends StatelessWidget {
                                                                       : KycConstants
                                                                           .testBaseUrl;
 
-                                                                  final res;
+                                                                  Map<String,
+                                                                          dynamic>
+                                                                      res = {};
                                                                   if (sig
                                                                       .isNotEmpty) {
                                                                     res = await kycService
@@ -654,7 +654,6 @@ class SettingsContainer extends StatelessWidget {
                                                                           'Failed to sign data'
                                                                     };
                                                                   }
-                                                                  return res;
                                                                 } catch (e) {
                                                                   debugPrint(
                                                                       'CATCH error $e');
@@ -726,7 +725,7 @@ class SettingsContainer extends StatelessWidget {
                                           String url = isProduction
                                               ? KycConstants.prodBaseUrl
                                               : KycConstants.testBaseUrl;
-                                          final res;
+                                          final Map<String, dynamic> res;
 
                                           if (sig.isNotEmpty) {
                                             res =
@@ -748,7 +747,6 @@ class SettingsContainer extends StatelessWidget {
                                     ),
                                   ),
                                 );
-                          ;
                         },
                         child: Container(
                           padding: const EdgeInsets.all(8),
@@ -879,7 +877,7 @@ class SettingsContainer extends StatelessWidget {
           ),
         ),
         model.isDeleting
-            ? Text(FlutterI18n.translate(context, "deleteWallet") + '...')
+            ? Text('${FlutterI18n.translate(context, "deleteWallet")}...')
             : Text(
                 FlutterI18n.translate(context, "deleteWallet"),
                 textAlign: TextAlign.center,

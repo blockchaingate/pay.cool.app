@@ -244,9 +244,8 @@ class JoinPayCoolClubView extends StackedView<JoinPayCoolClubViewModel> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            FlutterI18n.translate(
-                                    context, "scanOrPasteReferralCodeBelow") +
-                                '*',
+                            '${FlutterI18n.translate(
+                                    context, "scanOrPasteReferralCodeBelow")}*',
                             style: headText5,
                           ),
                           UIHelper.verticalSpaceSmall,
@@ -318,7 +317,7 @@ class JoinPayCoolClubView extends StackedView<JoinPayCoolClubViewModel> {
                             },
                             child: Text(
                               FlutterI18n.translate(context, "cancel"),
-                              style: Theme.of(context).textTheme.button,
+                              style: Theme.of(context).textTheme.labelLarge,
                             ),
                           ),
                           UIHelper.horizontalSpaceSmall,
@@ -335,7 +334,7 @@ class JoinPayCoolClubView extends StackedView<JoinPayCoolClubViewModel> {
                                 ? model.sharedService.loadingIndicator()
                                 : Text(
                                     FlutterI18n.translate(context, "confirm"),
-                                    style: Theme.of(context).textTheme.button,
+                                    style: Theme.of(context).textTheme.labelLarge,
                                   ),
                           ),
                         ],

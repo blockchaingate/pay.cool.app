@@ -16,7 +16,6 @@ import 'package:paycool/constants/api_routes.dart';
 import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/coin_service.dart';
 import 'package:paycool/utils/number_util.dart';
-import 'package:paycool/utils/string_util.dart';
 import 'package:keccak/keccak.dart';
 import 'package:hex/hex.dart';
 import 'dart:typed_data';
@@ -97,7 +96,6 @@ Future getEthTokenBalanceByAddress(String address, String coinName,
   } catch (err) {
     debugPrint('getEthTokenBalanceByAddress CATCH $err');
   }
-  ;
   return {
     'balance1e6': balance1e6,
     'balanceIe8': balanceIe8,

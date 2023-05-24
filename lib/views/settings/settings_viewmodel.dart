@@ -17,9 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:kyc/kyc.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/route_names.dart';
-import 'package:paycool/environments/environment_type.dart';
 import 'package:paycool/models/wallet/user_settings_model.dart';
 import 'package:paycool/services/config_service.dart';
 import 'package:paycool/services/db/core_wallet_database_service.dart';
@@ -178,6 +176,7 @@ class SettingsViewmodel extends BaseViewModel with StoppableService {
       var res = result['data'] ?? {};
       log.w('checkkycstatus res $res');
       kycCheckResult = UserDataContent.fromJson(res['data']);
+      kycCheckResult.kyc!.step = 6;
       log.w('checkkycstatus kycCheckResult ${kycCheckResult.toJson()}');
     }
     setBusyForObject(kycStarted, false);
@@ -255,7 +254,7 @@ class SettingsViewmodel extends BaseViewModel with StoppableService {
     setBusy(true);
     if (selectedLanguage == '' || selectedLanguage == null) {
       String key = '';
-      if (storageService.language == null || storageService.language.isEmpty) {
+      if (storageService.language.isEmpty) {
         storageService.language = 'en';
       } else {
         key = storageService.language;

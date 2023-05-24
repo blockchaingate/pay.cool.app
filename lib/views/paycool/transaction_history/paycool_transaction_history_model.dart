@@ -49,7 +49,7 @@ class PayCoolTransactionHistory {
 
   factory PayCoolTransactionHistory.fromJson(Map<String, dynamic> json) {
     //double merchantAmount = BigInt.from(json['merchantGet']).toDouble() / 1e8;
-    var r;
+    List<Refunds> r = [];
     Decimal merchantAmount = json['merchantGet'] == null
         ? Constants.decimalZero
         : NumberUtil.rawStringToDecimal(
@@ -66,11 +66,7 @@ class PayCoolTransactionHistory {
     );
 
     Decimal total = Constants.decimalZero;
-    if (merchantAmount != null &&
-        exchangilyAmount != null &&
-        taxAmount != null) {
-      total = merchantAmount + exchangilyAmount + taxAmount + rewardAmount;
-    }
+    total = merchantAmount + exchangilyAmount + taxAmount + rewardAmount;
 
     String? ticker = coin_list.newCoinTypeMap[json['paidCoin']];
     if (json['refunds'] != null) {

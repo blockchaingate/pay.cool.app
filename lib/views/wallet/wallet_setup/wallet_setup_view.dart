@@ -91,13 +91,13 @@ class WalletSetupView extends StatelessWidget {
                     model.isDeleting
                         ? Text(
                             FlutterI18n.translate(context, "deletingWallet"),
-                            style: Theme.of(context).textTheme.bodyText1,
+                            style: Theme.of(context).textTheme.bodyLarge,
                           )
                         : Container(),
                     !model.isBusy && model.errorMessage.isNotEmpty
                         ? Text(
                             model.errorMessage,
-                            style: Theme.of(context).textTheme.bodyText1,
+                            style: Theme.of(context).textTheme.bodyLarge,
                           )
                         : Container(),
                     // Button Container
@@ -108,7 +108,7 @@ class WalletSetupView extends StatelessWidget {
                             child: Center(
                               child: Text(
                                 '${FlutterI18n.translate(context, "checkingExistingWallet")}...',
-                                style: Theme.of(context).textTheme.bodyText1,
+                                style: Theme.of(context).textTheme.bodyLarge,
                               ),
                             ),
                           )
@@ -120,7 +120,7 @@ class WalletSetupView extends StatelessWidget {
                                   child: Text(
                                     '${FlutterI18n.translate(context, "restoringWallet")}...',
                                     style:
-                                        Theme.of(context).textTheme.bodyText1,
+                                        Theme.of(context).textTheme.bodyLarge,
                                   ),
                                 ),
                               )
@@ -164,7 +164,7 @@ class WalletSetupView extends StatelessWidget {
                                                         context, "unlock"),
                                                     style: Theme.of(context)
                                                         .textTheme
-                                                        .headline4),
+                                                        .headlineMedium),
                                               ],
                                             ),
                                             onPressed: () {

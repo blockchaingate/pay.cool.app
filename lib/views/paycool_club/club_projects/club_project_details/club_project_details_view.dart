@@ -167,7 +167,7 @@ class ClubProjectDetailsView extends StatelessWidget {
                                   width: 50,
                                 )
                               : Container(
-                                  margin: EdgeInsets.only(left: 5),
+                                  margin: const EdgeInsets.only(left: 5),
                                 ),
                           UIHelper.horizontalSpaceSmall,
                           customText(
@@ -241,9 +241,9 @@ class ClubProjectDetailsView extends StatelessWidget {
                             text: FlutterI18n.translate(context, "rewards"),
                             style: headText5,
                             letterSpace: 0.5),
-                        trailing: Row(
+                        trailing: const Row(
                           mainAxisSize: MainAxisSize.min,
-                          children: const [
+                          children: [
                             Icon(
                               Icons.arrow_forward_ios,
                               color: grey,
@@ -272,9 +272,9 @@ class ClubProjectDetailsView extends StatelessWidget {
                             text: FlutterI18n.translate(context, "referrals"),
                             style: headText5,
                             letterSpace: 0.5),
-                        trailing: Row(
+                        trailing: const Row(
                           mainAxisSize: MainAxisSize.min,
-                          children: const [
+                          children: [
                             Icon(
                               Icons.arrow_forward_ios,
                               color: grey,

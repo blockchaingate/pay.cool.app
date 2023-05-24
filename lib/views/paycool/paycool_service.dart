@@ -6,7 +6,6 @@ import 'package:observable_ish/observable_ish.dart';
 import 'package:paycool/constants/api_routes.dart';
 import 'package:paycool/environments/environment.dart';
 import 'package:paycool/logger.dart';
-import 'package:paycool/models/wallet/transaction_history.dart';
 import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/db/core_wallet_database_service.dart';
 import 'package:paycool/services/shared_service.dart';
@@ -14,18 +13,16 @@ import 'package:paycool/utils/abi_util.dart';
 import 'package:paycool/utils/custom_http_util.dart';
 import 'package:paycool/utils/kanban.util.dart';
 import 'package:paycool/utils/keypair_util.dart';
-import 'package:paycool/utils/string_util.dart';
 import 'package:paycool/views/paycool/models/pay_order_model.dart';
 import 'package:paycool/views/paycool/models/merchant_model.dart';
 import 'package:paycool/views/paycool/rewards/payment_rewards_model.dart';
 import 'package:paycool/views/paycool/transaction_history/paycool_transaction_history_model.dart';
 import 'package:stacked/stacked.dart';
 import 'package:hex/hex.dart';
-import 'package:web3dart/crypto.dart';
 import 'models/payment_rewards_model.dart';
 
 //@LazySingleton()
-class PayCoolService with ReactiveServiceMixin {
+class PayCoolService with ListenableServiceMixin {
   final log = getLogger('PayCoolService');
 
   final client = CustomHttpUtil.createLetsEncryptUpdatedCertClient();
@@ -316,7 +313,7 @@ class PayCoolService with ReactiveServiceMixin {
         log.w(' json  object $json');
         txHistory = PayCoolTransactionHistory.fromJson(json);
       } else {
-        log.e("Not good response " + response.body);
+        log.e("Not good response ${response.body}");
       }
     } catch (err) {
       log.e('In getRefund catch $err');
@@ -540,7 +537,7 @@ class PayCoolService with ReactiveServiceMixin {
           PaymentRewards paymentRewardList = PaymentRewards.fromJson(json);
 
           log.e(
-              'getPaymentRewards length ${paymentRewardList!.paymentRewards!.length}');
+              'getPaymentRewards length ${paymentRewardList.paymentRewards!.length}');
           return paymentRewardList.paymentRewards;
         } else {
           return [];

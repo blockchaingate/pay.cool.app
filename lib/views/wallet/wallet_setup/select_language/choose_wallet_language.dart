@@ -55,7 +55,7 @@ class ChooseWalletLanguageView extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 5),
               child: Row(
                 children: <Widget>[
-                  Expanded(
+                  const Expanded(
                     flex: 1,
                     child: Icon(
                       Icons.language,
@@ -80,8 +80,8 @@ class ChooseWalletLanguageView extends StatelessWidget {
                     highlightColor: white,
                     child: Center(
                       child: Text(
-                        FlutterI18n.translate(context, "loading") + '...',
-                        style: Theme.of(context).textTheme.bodyText2,
+                        '${FlutterI18n.translate(context, "loading")}...',
+                        style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ),
                   )

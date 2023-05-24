@@ -74,7 +74,7 @@ class JoinPayCoolClubViewModel extends BaseViewModel {
     log.i('Exg wallet address $exgWalletAddress');
     // CoinUtil.getCoinOfficalAddress('DUSD');
     referralCode.text = '';
-    if (scanToPayModel != null && scanToPayModel.datAbiHex != null) {
+    if (scanToPayModel.datAbiHex != null) {
       log.i('in scan to pay if ${scanToPayModel.toJson()}');
       var extractedReferralAddress =
           extractAddressFromAbihex(scanToPayModel.datAbiHex.toString());
@@ -226,8 +226,7 @@ class JoinPayCoolClubViewModel extends BaseViewModel {
           .getSingleWalletBalance(fabAddress, paymentCoins[i],
               paymentCoins[i] == 'USDT' ? usdtWalletAddress : dusdWalletAddress)
           .then((walletBalance) async {
-        if (walletBalance != null &&
-            !walletBalance[0].unlockedExchangeBalance!.isNegative) {
+        if (!walletBalance[0].unlockedExchangeBalance!.isNegative) {
           log.w(walletBalance[0].unlockedExchangeBalance);
           paymentCoins[i] == 'USDT'
               ? usdtExchangeBalance = walletBalance[0].unlockedExchangeBalance!
@@ -349,11 +348,9 @@ class JoinPayCoolClubViewModel extends BaseViewModel {
     }
 
     await payCoolClubService.isValidMember(referralCode.text).then((value) {
-      if (value != null) {
-        log.w('isValid paste $value');
+      log.w('isValid paste $value');
 
-        isValidReferralAddress = value;
-      }
+      isValidReferralAddress = value;
     });
     if (!isValidReferralAddress) {
       sharedService.sharedSimpleNotification(

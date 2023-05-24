@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:paycool/utils/number_util.dart';
 import 'package:qr_code_utils/qr_code_utils.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:path_provider/path_provider.dart';
@@ -42,7 +41,6 @@ import 'package:paycool/views/paycool/models/merchant_model.dart';
 import 'package:paycool/views/paycool/paycool_service.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:stacked/stacked.dart';
-import 'package:stacked_services/stacked_services.dart' show DialogService;
 import 'package:url_launcher/url_launcher.dart';
 import '../../environments/environment.dart';
 import '../../services/config_service.dart';
@@ -202,14 +200,14 @@ class PayCoolViewmodel extends FutureViewModel {
   scanImageFile() async {
     // Pick an image
     setBusyForObject(isScanningImage, true);
-    String _qrcodeFile = '';
+    String qrcodeFile = '';
     final image = await ImagePicker().pickImage(source: ImageSource.gallery);
     if (image != null) {
-      _qrcodeFile = image.path;
-      log.w(_qrcodeFile);
+      qrcodeFile = image.path;
+      log.w(qrcodeFile);
     }
     try {
-      var barcodeScanData = await QrCodeUtils.decodeFrom(_qrcodeFile);
+      var barcodeScanData = await QrCodeUtils.decodeFrom(qrcodeFile);
       log.i(barcodeScanData);
       orderDetails(barcodeScanData: barcodeScanData);
     } catch (err) {
@@ -232,8 +230,7 @@ class PayCoolViewmodel extends FutureViewModel {
 
         if (isMember! && isAutoStartPaycoolScan!) {
           debugPrint("This user is member!");
-          debugPrint(
-              "isAutoStartPaycoolScan: " + isAutoStartPaycoolScan.toString());
+          debugPrint("isAutoStartPaycoolScan: $isAutoStartPaycoolScan");
 
           scanBarcodeV2();
         }
@@ -269,11 +266,9 @@ class PayCoolViewmodel extends FutureViewModel {
     await payCoolClubService
         .isValidMember(referralController.text)
         .then((value) {
-      if (value != null) {
-        log.w('isValid paymember: $value');
+      log.w('isValid paymember: $value');
 
-        isValidReferralAddress = value;
-      }
+      isValidReferralAddress = value;
     });
     if (!isValidReferralAddress) {
       sharedService.sharedSimpleNotification(
@@ -293,7 +288,7 @@ class PayCoolViewmodel extends FutureViewModel {
       var res = await paycoolService.signSendTx(
           seed!, abiHex, paycoolReferralAddress);
 
-      if (res != null && res != '') {
+      if (res != '') {
         if (res == '0x1') {
           sharedService.alertDialog(
               FlutterI18n.translate(sharedService.context, "newAccountCreated"),
@@ -341,9 +336,7 @@ class PayCoolViewmodel extends FutureViewModel {
     await apiService
         .getSingleWalletBalance(fabAddress, tickerName, selectedCoinAddress)
         .then((walletBalance) {
-      if (walletBalance != null) {
-        walletBalanceRes = walletBalance;
-      }
+      walletBalanceRes = walletBalance;
     });
 
     if (walletBalanceRes![0].unlockedExchangeBalance! <
@@ -357,7 +350,7 @@ class PayCoolViewmodel extends FutureViewModel {
     //displayAbiHexinReadableFormat(scanToPayModel.datAbiHex);
     try {
       var seed = await walletService.getSeedDialog(sharedService.context);
-      var res;
+      String res = '';
       for (var param in rewardInfoModel!.params!) {
         res = await paycoolService.signSendTx(seed!, param.data!, param.to!);
       }
@@ -1316,7 +1309,7 @@ class PayCoolViewmodel extends FutureViewModel {
         log.i('decimalLimit $decimalLimit');
       });
     } catch (err) {
-      if (decimalLimit == null || decimalLimit == 0) decimalLimit = 8;
+      if (decimalLimit == 0) decimalLimit = 8;
       log.e('Decimal limit CATCH in barcode scan: $err');
     }
     amountPayable = rewardInfoModel!.totalAmount!;

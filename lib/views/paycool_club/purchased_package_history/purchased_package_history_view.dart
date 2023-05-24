@@ -1,12 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:paycool/views/paycool_club/purchased_package_history/purchased_package_history_viewmodel.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
-import 'package:paycool/constants/route_names.dart';
 import 'package:paycool/widgets/pagination/pagination_widget.dart';
 
 import 'package:stacked/stacked.dart';
@@ -46,7 +43,7 @@ class PurchasedPackageView extends StatelessWidget {
                       decoration: const BoxDecoration(
                         color: white,
                         borderRadius: BorderRadius.only(
-                            topLeft: const Radius.circular(20),
+                            topLeft: Radius.circular(20),
                             topRight: Radius.circular(20)),
                       ),
                       child: Column(
@@ -66,7 +63,7 @@ class PurchasedPackageView extends StatelessWidget {
                                   )),
                                   child: ListTile(
                                     contentPadding:
-                                        EdgeInsets.symmetric(horizontal: 8),
+                                        const EdgeInsets.symmetric(horizontal: 8),
                                     onTap: () {},
                                     leading: Padding(
                                       padding: const EdgeInsets.all(8.0),
@@ -203,7 +200,7 @@ class PurchasedPackageView extends StatelessWidget {
                                       ),
                                     ),
                                     trailing: Container(
-                                        margin: EdgeInsets.only(
+                                        margin: const EdgeInsets.only(
                                             left: 10, right: 10),
                                         child: Column(
                                           mainAxisSize: MainAxisSize.min,

@@ -647,10 +647,10 @@ class ClubDashboardView extends StatelessWidget {
                                                             ),
                                                           ],
                                                         ),
-                                                        trailing: Row(
+                                                        trailing: const Row(
                                                           mainAxisSize:
                                                               MainAxisSize.min,
-                                                          children: const [
+                                                          children: [
                                                             UIHelper
                                                                 .horizontalSpaceSmall,
                                                             Icon(
@@ -739,8 +739,6 @@ class ClubDashboardView extends StatelessWidget {
                                                                         vertical:
                                                                             4.0),
                                                                     child: model.dashboardSummary.totalFabRewards()["FET"] != null &&
-                                                                            model.rewardTokenPriceMap !=
-                                                                                null &&
                                                                             model
                                                                                 .rewardTokenPriceMap.isNotEmpty &&
                                                                             model.rewardTokenPriceMap['FET'] !=
@@ -757,8 +755,6 @@ class ClubDashboardView extends StatelessWidget {
                                                                   ),
                                                                   model.dashboardSummary.totalFabRewards()[
                                                                                   "FETLP"] !=
-                                                                              null &&
-                                                                          model.rewardTokenPriceMap !=
                                                                               null &&
                                                                           model
                                                                               .rewardTokenPriceMap
@@ -783,10 +779,10 @@ class ClubDashboardView extends StatelessWidget {
                                                           ),
                                                         ),
                                                       ),
-                                                      trailing: Row(
+                                                      trailing: const Row(
                                                         mainAxisSize:
                                                             MainAxisSize.min,
-                                                        children: const [
+                                                        children: [
                                                           UIHelper
                                                               .horizontalSpaceSmall,
                                                           Icon(

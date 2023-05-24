@@ -93,25 +93,23 @@ class SharedService {
     } else {
       log.i('base $base');
       await getAllPairDecimalConfig().then((res) {
-        if (res != null) {
-          singlePairDecimalConfig =
-              res.firstWhere((element) => element.name == pairName + base);
-          log.i(
-              'returning result $singlePairDecimalConfig -- name $pairName -- base $base');
+        singlePairDecimalConfig =
+            res.firstWhere((element) => element.name == pairName + base);
+        log.i(
+            'returning result $singlePairDecimalConfig -- name $pairName -- base $base');
 
-          // if firstWhere fails
-          if (singlePairDecimalConfig != null) {
-            log.w(
-                'single pair decimal config for $pairName result ${singlePairDecimalConfig.toJson()}');
-            return singlePairDecimalConfig;
-          } else {
-            log.i('single pair config using for loop');
-            for (PairDecimalConfig pair in res) {
-              if (pair.name == pairName) {
-                singlePairDecimalConfig = PairDecimalConfig(
-                    priceDecimal: pair.priceDecimal,
-                    qtyDecimal: pair.qtyDecimal);
-              }
+        // if firstWhere fails
+        if (singlePairDecimalConfig != null) {
+          log.w(
+              'single pair decimal config for $pairName result ${singlePairDecimalConfig.toJson()}');
+          return singlePairDecimalConfig;
+        } else {
+          log.i('single pair config using for loop');
+          for (PairDecimalConfig pair in res) {
+            if (pair.name == pairName) {
+              singlePairDecimalConfig = PairDecimalConfig(
+                  priceDecimal: pair.priceDecimal,
+                  qtyDecimal: pair.qtyDecimal);
             }
           }
         }
@@ -127,7 +125,7 @@ class SharedService {
     List<PairDecimalConfig> result = [];
     result = await decimalConfigDatabaseService.getAll();
     log.e('decimal configs length in db ${result.length}');
-    if (result == null || result.isEmpty) {
+    if (result.isEmpty) {
       await apiService.getPairDecimalConfig().then((res) async {
         if (res == null) {
           return null;
@@ -171,8 +169,8 @@ class SharedService {
 --------------------------------------------------- */
 
   Decoration circularGradientBoxDecoration() {
-    return BoxDecoration(
-      borderRadius: const BorderRadius.all(Radius.circular(25)),
+    return const BoxDecoration(
+      borderRadius: BorderRadius.all(Radius.circular(25)),
       gradient: LinearGradient(
         colors: [Colors.redAccent, Colors.yellow],
         begin: FractionalOffset.topLeft,
@@ -182,7 +180,7 @@ class SharedService {
   }
 
   Decoration rectangularGradientBoxDecoration() {
-    return BoxDecoration(
+    return const BoxDecoration(
       // borderRadius: BorderRadius.all(Radius.circular(25)),
       gradient: LinearGradient(
         colors: [Colors.redAccent, Colors.yellow],

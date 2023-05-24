@@ -226,18 +226,15 @@ class CoinService {
       if (coinType == 0) {
         await apiService.getTokenListUpdates().then((tokens) {
           coinType = tokens
-              .firstWhere((element) => element.tickerName == tickerName)
+              .firstWhere((element) => element.coinName == tickerName)
               .coinType!;
         });
       }
       if (coinType == 0) {
         await apiService.getTokenList().then((tokens) {
-          for (var token in tokens) {
-            if (token.tickerName == tickerName) {
-              coinType = token.coinType!;
-              break;
-            }
-          }
+          coinType = tokens
+              .firstWhere((element) => element.tickerName == tickerName)
+              .coinType!;
         });
       }
     }

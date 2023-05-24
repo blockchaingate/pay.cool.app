@@ -81,7 +81,7 @@ class PayCoolView extends StatelessWidget {
                       ],
                     )),
                     model.isServerDown
-                        ? ServerErrorWidget()
+                        ? const ServerErrorWidget()
                         : model.isBusy && !model.isPaying
                             ? Padding(
                                 padding: const EdgeInsets.only(top: 30.0),
@@ -174,7 +174,7 @@ class PayCoolView extends StatelessWidget {
                                                 borderRadius:
                                                     BorderRadius.circular(25),
                                                 gradient:
-                                                    LinearGradient(colors: [
+                                                    const LinearGradient(colors: [
                                                   Color(0xFFcd45ff),
                                                   Color(0xFF7368ff),
                                                 ])),

@@ -34,7 +34,6 @@ import 'package:paycool/services/shared_service.dart';
 import 'package:paycool/services/wallet_service.dart';
 import 'package:paycool/utils/barcode_util.dart';
 import 'package:paycool/utils/number_util.dart';
-import 'package:paycool/utils/string_validator.dart';
 import 'package:paycool/utils/tron_util/trx_generate_address_util.dart'
     as tron_address_util;
 import 'package:paycool/utils/tron_util/trx_transaction_util.dart'
@@ -614,11 +613,9 @@ class SendViewModel extends BaseViewModel {
         .getSingleWalletBalance(
             fabAddress, walletInfo.tickerName!, walletInfo.address!)
         .then((walletBalance) {
-      if (walletBalance != null) {
-        log.w(walletBalance);
+      log.w(walletBalance);
 
-        walletInfo.availableBalance = walletBalance[0].balance;
-      }
+      walletInfo.availableBalance = walletBalance[0].balance;
     }).catchError((err) {
       log.e(err);
       setBusy(false);

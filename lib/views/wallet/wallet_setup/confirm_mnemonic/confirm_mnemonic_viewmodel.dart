@@ -197,7 +197,7 @@ class ConfirmMnemonicViewModel extends BaseViewModel {
               userTypedMnemonicList[10] != '' &&
               userTypedMnemonicList[11] != '') ||
           !isProduction) {
-        var localEnv;
+        String? localEnv;
         if (!isProduction) {
           try {
             localEnv = dotenv.env['MNEMONIC'];

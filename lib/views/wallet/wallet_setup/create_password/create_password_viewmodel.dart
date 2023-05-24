@@ -137,7 +137,7 @@ class CreatePasswordViewModel extends BaseViewModel {
               FlutterI18n.translate(context, "pleaseFillBothPasswordFields")));
 
       if (!isProduction) {
-        var localEnv;
+        String? localEnv;
         try {
           localEnv = dotenv.env['PASSWORD'];
         } catch (err) {

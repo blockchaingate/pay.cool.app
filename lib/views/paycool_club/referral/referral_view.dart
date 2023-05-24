@@ -79,9 +79,9 @@ class ReferralView extends StatelessWidget {
                                         projects[index].en!,
                                         style: headText4,
                                       ),
-                                      trailing: Row(
+                                      trailing: const Row(
                                         mainAxisSize: MainAxisSize.min,
-                                        children: const [
+                                        children: [
                                           Icon(
                                             Icons.arrow_forward_ios,
                                             color: grey,
@@ -94,7 +94,7 @@ class ReferralView extends StatelessWidget {
                                           Text(
                                             FlutterI18n.translate(
                                                 context, "referrals"),
-                                            style: TextStyle(color: green),
+                                            style: const TextStyle(color: green),
                                           ),
                                           UIHelper.horizontalSpaceSmall,
                                           model.idReferralsMap.containsKey(

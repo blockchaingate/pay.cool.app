@@ -87,7 +87,7 @@ class SendWalletView extends StatelessWidget {
                                                   borderSide: BorderSide(
                                                       color: grey, width: 0.5)),
                                           suffixIcon: Container(
-                                            margin: EdgeInsets.only(
+                                            margin: const EdgeInsets.only(
                                               top: 2,
                                             ),
                                             child: Row(

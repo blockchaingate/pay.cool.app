@@ -356,12 +356,10 @@ List<dynamic> _encodeToRlp(Transaction transaction, MsgSignature signature) {
   // list.add('');
   list.add(transaction.data);
 
-  if (signature != null) {
-    list
-      ..add(signature.v)
-      ..add(signature.r)
-      ..add(signature.s);
-  }
+  list
+    ..add(signature.v)
+    ..add(signature.r)
+    ..add(signature.s);
 
   return list;
 }

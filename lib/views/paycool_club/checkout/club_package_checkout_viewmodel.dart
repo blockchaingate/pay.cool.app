@@ -131,7 +131,7 @@ class ClubPackageCheckoutViewModel extends FutureViewModel {
 
     setBusy(true);
 
-    var res;
+    String res = '';
     var seed = await walletService.getSeedDialog(context!);
 
     if (seed == null) {

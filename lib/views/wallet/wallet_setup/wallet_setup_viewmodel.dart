@@ -335,7 +335,7 @@ class WalletSetupViewmodel extends BaseViewModel {
       coreWalletDbData = '';
       log.e('checkExistingWallet func: getEncryptedMnemonic CATCH err $err');
     }
-    if (coreWalletDbData == null || coreWalletDbData.isEmpty) {
+    if (coreWalletDbData.isEmpty) {
       log.w('coreWalletDbData is null or empty');
       List walletDatabase;
       try {

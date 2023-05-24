@@ -39,10 +39,8 @@ class PayCoolClubModel {
   factory PayCoolClubModel.fromJson(Map<String, dynamic> json) {
     List<LocalizeText> sloganLanTextList = [];
     var sloganLanTextListJson = json['sloganLan'] as List;
-    if (sloganLanTextListJson != null) {
-      sloganLanTextList =
-          sloganLanTextListJson.map((e) => LocalizeText.fromJson(e)).toList();
-    }
+    sloganLanTextList =
+        sloganLanTextListJson.map((e) => LocalizeText.fromJson(e)).toList();
 
     return PayCoolClubModel(
         levelRewardRate: json['levelRewardRate'] as List<dynamic>,
@@ -76,12 +74,12 @@ class PayCoolClubModel {
       'status': status,
       'lastUpdated': lastUpdated,
       'dateCreated': dateCreated,
-      'sloganLan': sloganLan?.map((e) => e?.toJson())?.toList(),
-      'descLan': descLan?.map((e) => e?.toJson())?.toList(),
+      'sloganLan': sloganLan?.map((e) => e.toJson()).toList(),
+      'descLan': descLan?.map((e) => e.toJson()).toList(),
       'avatarUrl': avatarUrl,
       'imageUrl': imageUrl,
       'name': name,
-      'titleLan': titleLan?.map((e) => e?.toJson())?.toList(),
+      'titleLan': titleLan?.map((e) => e.toJson()).toList(),
       'subTitleLan': subTitleLan,
       'grade': grade,
       'hasJoined': hasJoined,

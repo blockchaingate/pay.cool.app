@@ -1135,7 +1135,7 @@ class MoveToWalletViewmodel extends BaseViewModel {
       'address': trimHexPrefix(smartContractAddress),
       'data': balanceInfoABI + fixLength(trimHexPrefix(address), 64)
     };
-    var tokenBalance;
+    double tokenBalance;
     var url = '${fabUtils.fabBaseUrl}callcontract';
     debugPrint(
         'Fab_util -- address $address getFabTokenBalanceForABI balance by address url -- $url -- body $body');
@@ -1377,15 +1377,15 @@ class MoveToWalletViewmodel extends BaseViewModel {
         return;
       }
       if (groupValue == 'BNB' && amount > bnbTsWalletBalance) {
-        sharedService.alertDialog(FlutterI18n.translate(context!, "notice"),
-            '${FlutterI18n.translate(context!, "lowTsWalletBalanceErrorFirstPart ")} $bnbTsWalletBalance. ${FlutterI18n.translate(context!, "lowTsWalletBalanceErrorSecondPart")}',
+        sharedService.alertDialog(FlutterI18n.translate(context, "notice"),
+            '${FlutterI18n.translate(context, "lowTsWalletBalanceErrorFirstPart ")} $bnbTsWalletBalance. ${FlutterI18n.translate(context, "lowTsWalletBalanceErrorSecondPart")}',
             isWarning: false);
         setBusy(false);
         return;
       }
       if (groupValue == 'POLYGON' && amount > polygonTsWalletBalance) {
-        sharedService.alertDialog(FlutterI18n.translate(context!, "notice"),
-            '${FlutterI18n.translate(context!, "lowTsWalletBalanceErrorFirstPart")} $polygonTsWalletBalance. ${FlutterI18n.translate(context!, "lowTsWalletBalanceErrorSecondPart")}',
+        sharedService.alertDialog(FlutterI18n.translate(context, "notice"),
+            '${FlutterI18n.translate(context, "lowTsWalletBalanceErrorFirstPart")} $polygonTsWalletBalance. ${FlutterI18n.translate(context, "lowTsWalletBalanceErrorSecondPart")}',
             isWarning: false);
         setBusy(false);
         return;

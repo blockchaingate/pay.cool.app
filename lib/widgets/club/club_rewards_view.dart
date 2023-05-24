@@ -168,9 +168,9 @@ class ClubRewardsView extends StatelessWidget {
                                                 clubRewardsArgs.summary.first
                                                         .project!.en ==
                                                     'Paycool'
-                                            ? Row(
+                                            ? const Row(
                                                 mainAxisSize: MainAxisSize.min,
-                                                children: const [])
+                                                children: [])
                                             : Row(
                                                 mainAxisSize: MainAxisSize.min,
                                                 children: [

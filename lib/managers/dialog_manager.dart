@@ -157,13 +157,15 @@ class _DialogManagerState extends State<DialogManager> {
 
   void _showDialog(DialogRequest request) {
     Alert(
+        context: context,
         style: AlertStyle(
-            animationType: AnimationType.grow,
+            alertElevation: 6,
+            animationType: AnimationType.fromTop,
+            animationDuration: const Duration(milliseconds: 300),
             isOverlayTapDismiss: false,
             backgroundColor: secondaryColor,
             descStyle: headText6,
             titleStyle: headText4.copyWith(fontWeight: FontWeight.bold)),
-        context: context,
         title: request.title,
         desc: request.description,
         closeFunction: () {
@@ -177,29 +179,34 @@ class _DialogManagerState extends State<DialogManager> {
           //if (!Platform.isIOS)
           debugPrint('popped');
         },
-        content: Column(
-          children: <Widget>[
-            UIHelper.verticalSpaceSmall,
-            TextField(
-              autofocus: true,
-              style: const TextStyle(color: black),
-              controller: controller,
-              obscureText: true,
-              decoration: InputDecoration(
-                labelStyle: headText6,
-                focusedBorder: const UnderlineInputBorder(
-                    borderSide: BorderSide(color: primaryColor)),
-                enabledBorder: const UnderlineInputBorder(
-                    borderSide: BorderSide(color: grey)),
-                icon: const Icon(
-                  Icons.security,
-                  color: primaryColor,
+        content: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              UIHelper.verticalSpaceSmall,
+              TextField(
+                autofocus: true,
+                style: const TextStyle(color: black),
+                controller: controller,
+                obscureText: true,
+                decoration: InputDecoration(
+                  labelStyle: headText6,
+                  focusedBorder: const UnderlineInputBorder(
+                      borderSide: BorderSide(color: primaryColor)),
+                  enabledBorder: const UnderlineInputBorder(
+                      borderSide: BorderSide(color: grey)),
+                  icon: const Icon(
+                    Icons.security,
+                    color: primaryColor,
+                  ),
+                  labelText:
+                      FlutterI18n.translate(context, "typeYourWalletPassword"),
                 ),
-                labelText:
-                    FlutterI18n.translate(context, "typeYourWalletPassword"),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
         buttons: [
           DialogButton(

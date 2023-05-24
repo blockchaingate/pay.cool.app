@@ -235,7 +235,7 @@ class RedepositView extends StatelessWidget {
                 },
                 child: Text(
                   FlutterI18n.translate(context, "confirm"),
-                  style: Theme.of(context).textTheme.button,
+                  style: Theme.of(context).textTheme.labelLarge,
                 ),
               ),
             ],

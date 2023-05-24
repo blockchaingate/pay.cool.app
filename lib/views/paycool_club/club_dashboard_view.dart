@@ -1,4 +1,3 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
@@ -675,7 +674,7 @@ class ClubDashboardView extends StatelessWidget {
                                                                                                   // Positioned(
                                                                                                   //   top: -15,
                                                                                                   //   right: 20,
-                                                                                                  child: Container(
+                                                                                                  child: SizedBox(
                                                                                                     width: 25,
                                                                                                     height: 25,
                                                                                                     child: IconButton(

@@ -101,7 +101,7 @@ class BottomNavBar extends StatelessWidget {
                                       .settings
                                       .name ==
                                   'SettingsView') {
-                                return null;
+                                return;
                               }
                               break;
                           }
@@ -143,7 +143,7 @@ class BottomNavBar extends StatelessWidget {
                                       .settings
                                       .name ==
                                   'SettingsView') {
-                                return null;
+                                return;
                               }
                               break;
                           }
@@ -184,7 +184,7 @@ class BottomNavBar extends StatelessWidget {
                                       .settings
                                       .name ==
                                   'SettingsView') {
-                                return null;
+                                return;
                               }
                               break;
                           }
@@ -216,7 +216,7 @@ class BottomNavBar extends StatelessWidget {
                                       .settings
                                       .name ==
                                   'SettingsView') {
-                                return null;
+                                return;
                               }
                               break;
                           }

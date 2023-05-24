@@ -109,7 +109,7 @@ Future generateTrxTransactionContract(
       : Tron.Transaction_Contract_ContractType.TransferContract;
 
   parameter.typeUrl =
-      "type.googleapis.com/protocol." + transferContractType.toString();
+      "type.googleapis.com/protocol.$transferContractType";
 
   //debugPrint('PARAMETER $parameter');
 

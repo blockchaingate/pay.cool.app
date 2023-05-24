@@ -125,7 +125,7 @@ class WalletDashboardView extends StatelessWidget {
               return coinList(model, ctx);
               // return tester();
             } else {
-              if (model.rightWalletInfo == null && model.wallets != null) {
+              if (model.rightWalletInfo == null) {
                 model.assignDefaultWalletForIos();
               }
               return Row(
@@ -135,8 +135,7 @@ class WalletDashboardView extends StatelessWidget {
                       height: double.infinity,
                       child: coinList(model, ctx)),
                   Expanded(
-                    child: model.wallets == null ||
-                            model.rightWalletInfo == null
+                    child: model.rightWalletInfo == null
                         ? Container()
                         : WalletFeaturesView(walletInfo: model.rightWalletInfo),
                   )
@@ -420,6 +419,7 @@ class WalletDashboardView extends StatelessWidget {
         length: 6,
         initialIndex: model.currentTabSelection,
         child: NestedScrollView(
+          controller: model.walletsScrollController,
           headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
             return <Widget>[
               MediaQuery.of(context).size.width < largeSize

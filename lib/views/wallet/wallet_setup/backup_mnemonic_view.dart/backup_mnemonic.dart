@@ -65,7 +65,7 @@ class BackupMnemonicWalletView extends StatelessWidget {
                                     vertical: 32.0, horizontal: 20),
                                 children: [
                                   Container(
-                                      padding: EdgeInsets.all(5.0),
+                                      padding: const EdgeInsets.all(5.0),
                                       child: Text(
                                         FlutterI18n.translate(context,
                                             "backupMnemonicNoticeTitle"),
@@ -74,7 +74,7 @@ class BackupMnemonicWalletView extends StatelessWidget {
                                       )),
                                   const SizedBox(height: 20),
                                   Container(
-                                      padding: EdgeInsets.all(5.0),
+                                      padding: const EdgeInsets.all(5.0),
                                       // padding: EdgeInsets.symmetric(horizontal: 20),
                                       child: Text(
                                         FlutterI18n.translate(context,
@@ -95,7 +95,7 @@ class BackupMnemonicWalletView extends StatelessWidget {
                   children: <Widget>[
                     UIHelper.verticalSpaceMedium,
                     Container(
-                      margin: EdgeInsets.all(5),
+                      margin: const EdgeInsets.all(5),
                       padding: const EdgeInsets.symmetric(
                           vertical: 10, horizontal: 10),
                       decoration: BoxDecoration(
@@ -200,7 +200,7 @@ class BackupMnemonicWalletView extends StatelessWidget {
                             shape: buttonRoundShape(primaryColor)),
                         child: Text(
                           FlutterI18n.translate(context, "confirm"),
-                          style: Theme.of(context).textTheme.button,
+                          style: Theme.of(context).textTheme.labelLarge,
                         ),
                         onPressed: () {
                           model.navigationService.navigateTo(

@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:paycool/constants/colors.dart';
@@ -188,7 +187,7 @@ class LightningRemitViewmodel extends FutureViewModel {
     } else {
       showBottomSheet(
         context: context1,
-        builder: (context1) => Container(
+        builder: (context1) => SizedBox(
           width: double.infinity,
           height: 250,
           child: ListView.separated(
@@ -650,32 +649,32 @@ class LightningRemitViewmodel extends FutureViewModel {
         return;
       }
       await refreshBalance();
-      ExchangeBalanceModel _selectedExchangeBal = exchangeBalances
+      ExchangeBalanceModel selectedExchangeBal = exchangeBalances
           .firstWhere((element) => element.ticker == tickerName);
       // int coinType = getCoinTypeIdByName(tickerName);
-      debugPrint(_selectedExchangeBal.coinType.toString());
+      debugPrint(selectedExchangeBal.coinType.toString());
       double amount = double.parse(amountController.text);
-      double selectedCoinBalance = _selectedExchangeBal.unlockedAmount;
+      double selectedCoinBalance = selectedExchangeBal.unlockedAmount;
       if (selectedCoinBalance <= 0.0 || amount > selectedCoinBalance) {
         sharedService.alertDialog(
-            FlutterI18n.translate(context!!, "validationError"),
-            FlutterI18n.translate(context!!, "invalidAmount"));
+            FlutterI18n.translate(context!, "validationError"),
+            FlutterI18n.translate(context!, "invalidAmount"));
         setBusy(false);
-        log.e('No exchange balance ${_selectedExchangeBal.unlockedAmount}');
+        log.e('No exchange balance ${selectedExchangeBal.unlockedAmount}');
         return;
       }
       await dialogService
           .showDialog(
-              title: FlutterI18n.translate(context!!, "enterPassword"),
+              title: FlutterI18n.translate(context!, "enterPassword"),
               description: FlutterI18n.translate(
-                  context!!, "dialogManagerTypeSamePasswordNote"),
-              buttonTitle: FlutterI18n.translate(context!!, "confirm"))
+                  context!, "dialogManagerTypeSamePasswordNote"),
+              buttonTitle: FlutterI18n.translate(context!, "confirm"))
           .then((res) async {
         if (res.confirmed) {
           String mnemonic = res.returnedText;
           Uint8List seed = walletService.generateSeed(mnemonic);
           await walletService
-              .sendCoin(seed, _selectedExchangeBal.coinType,
+              .sendCoin(seed, selectedExchangeBal.coinType,
                   addressController.text, double.parse(amountController.text))
               .then((res) {
             log.w('RES $res');

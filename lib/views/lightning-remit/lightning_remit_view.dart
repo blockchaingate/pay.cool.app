@@ -1,15 +1,12 @@
 import 'dart:io';
 
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:paycool/views/lightning-remit/lightning_remit_transactions_history.view.dart';
 import 'package:stacked/stacked.dart';
 
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
-import 'package:paycool/models/wallet/transaction_history.dart';
 import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/views/lightning-remit/lightening_remit_viewmodel.dart';
 import 'package:paycool/widgets/bottom_nav.dart';
@@ -245,7 +242,7 @@ class LightningRemitView extends StatelessWidget {
                                                     context, "noCoinBalance"),
                                                 style: Theme.of(context)
                                                     .textTheme
-                                                    .bodyText2),
+                                                    .bodyMedium),
                                             subtitle: Text(
                                                 FlutterI18n.translate(context,
                                                     "transferFundsToExchangeUsingDepositButton"),
@@ -265,6 +262,7 @@ class LightningRemitView extends StatelessWidget {
                                   items: model.exchangeBalances.map(
                                     (coin) {
                                       return DropdownMenuItem(
+                                        value: coin.ticker,
                                         child: Container(
                                           //   height: 40,
                                           color: secondaryColor,
@@ -288,7 +286,6 @@ class LightningRemitView extends StatelessWidget {
                                             ],
                                           ),
                                         ),
-                                        value: coin.ticker,
                                       );
                                     },
                                   ).toList()),

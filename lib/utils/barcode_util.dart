@@ -1,7 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 // import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
-import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:majascan/majascan.dart';
 //import 'package:qr_code_scanner/qr_code_scanner.dart';
 

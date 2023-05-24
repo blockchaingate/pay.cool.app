@@ -62,8 +62,7 @@ class AddGasView extends StatelessWidget {
                             borderSide:
                                 BorderSide(color: primaryColor, width: 1.0)),
                         hintText:
-                            FlutterI18n.translate(context, "enterAmount") +
-                                '(FAB)',
+                            '${FlutterI18n.translate(context, "enterAmount")}(FAB)',
                         hintStyle: headText6,
                       ),
                       controller: model.amountController,
@@ -109,7 +108,7 @@ class AddGasView extends StatelessWidget {
                             style:
                                 const TextStyle(fontSize: 12.0, color: black)),
                       ),
-                      Text(model.transFee.toString() + ' FAB',
+                      Text('${model.transFee} FAB',
                           style: const TextStyle(fontSize: 13.0, color: black))
                     ]),
                     // Slider
@@ -243,8 +242,7 @@ class AddGasView extends StatelessWidget {
                                     double.parse(model.amountController.text);
                               }
                               // var res = await AddGasDo(double.parse(myController.text));
-                              model.amountController.text == '' ||
-                                      amount == null
+                              model.amountController.text == ''
                                   ? model.sharedService.showInfoFlushbar(
                                       FlutterI18n.translate(
                                           context, "invalidAmount"),

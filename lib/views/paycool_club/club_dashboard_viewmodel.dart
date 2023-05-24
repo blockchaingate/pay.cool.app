@@ -1,14 +1,10 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:decimal/decimal.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:paycool/constants/constants.dart';
 import 'package:paycool/utils/number_util.dart';
-import 'package:paycool/utils/string_util.dart';
 import 'package:paycool/views/paycool_club/club_dashboard_model.dart';
 import 'package:paycool/views/paycool_club/club_projects/models/club_project_model.dart';
 
@@ -26,7 +22,6 @@ import 'package:paycool/services/shared_service.dart';
 import 'package:paycool/shared/ui_helpers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:paycool/utils/barcode_util.dart';
 import 'package:paycool/views/paycool_club/referral/referral_model.dart';
 import 'package:paycool/views/paycool_club/paycool_club_service.dart';
 import 'package:paycool/views/paycool_club/join_club/join_club_payment_model.dart';
@@ -146,7 +141,7 @@ class ClubDashboardViewModel extends BaseViewModel {
         }
       }
     log.e(
-        'rewardTokenPriceMap ${rewardTokenPriceMap} --totatRewardDollarVal $totatRewardDollarVal ');
+        'rewardTokenPriceMap $rewardTokenPriceMap --totatRewardDollarVal $totatRewardDollarVal ');
 
     setBusy(false);
   } // init ends

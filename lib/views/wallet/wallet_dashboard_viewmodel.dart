@@ -669,10 +669,10 @@ class WalletDashboardViewModel extends BaseViewModel {
                                       borderRadius: BorderRadius.circular(10),
                                       borderSide: const BorderSide(
                                           color: grey, width: 1)),
-                                  focusedBorder: UnderlineInputBorder(
+                                  focusedBorder: const UnderlineInputBorder(
                                       borderSide:
                                           BorderSide(color: primaryColor)),
-                                  icon: Icon(
+                                  icon: const Icon(
                                     Icons.question_answer,
                                     color: primaryColor,
                                     size: 18,

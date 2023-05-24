@@ -9,7 +9,7 @@ class AddGasWithShowcaseWidget extends StatelessWidget {
   final WalletDashboardViewModel model;
   @override
   Widget build(BuildContext context) {
-    var begin = Offset(0.0, 1.0);
+    var begin = const Offset(0.0, 1.0);
     var end = Offset.zero;
     var tween = Tween(begin: begin, end: end);
     //  if (model.isShowCaseView && model.gasAmount < 0.0001 && !model.isBusy) {

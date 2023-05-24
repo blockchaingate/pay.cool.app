@@ -12,7 +12,6 @@
 */
 
 import 'package:bip32/bip32.dart' as bip_32;
-import 'package:bitbox/bitbox.dart' as bitbox;
 import 'package:bitcoin_flutter/bitcoin_flutter.dart';
 import 'package:flutter/widgets.dart';
 import 'package:paycool/constants/constants.dart';
@@ -298,8 +297,8 @@ int convertDecimalToHex(int coinType) {
 ----------------------------------------------------------------------*/
 
 Uint8List hash256(Uint8List buffer) {
-  Uint8List _tmp = SHA256Digest().process(buffer);
-  return SHA256Digest().process(_tmp);
+  Uint8List tmp = SHA256Digest().process(buffer);
+  return SHA256Digest().process(tmp);
 }
 
 /*--------------------------------------------------------------------------
@@ -547,9 +546,9 @@ Future<Uint8List> signDogeMessageWith(originalMessage, Uint8List privateKey,
 }
 
 Future<Uint8List> signPersonalMessageWith(
-    String _messagePrefix, Uint8List privateKey, Uint8List payload,
+    String messagePrefix, Uint8List privateKey, Uint8List payload,
     {int? chainId}) async {
-  final prefix = _messagePrefix + payload.length.toString();
+  final prefix = messagePrefix + payload.length.toString();
   final prefixBytes = ascii.encode(prefix);
 
   // will be a Uint8List, see the documentation of Uint8List.+
