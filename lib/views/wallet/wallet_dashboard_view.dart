@@ -29,8 +29,39 @@ import 'package:paycool/widgets/wallet/total_balance_card_widget.dart';
 // import 'package:showcaseview/showcaseview.dart';
 import 'package:stacked/stacked.dart';
 
-class WalletDashboardView extends StatelessWidget {
+class WalletDashboardView extends StatefulWidget {
   const WalletDashboardView({Key? key}) : super(key: key);
+
+  @override
+  State<WalletDashboardView> createState() => _WalletDashboardViewState();
+}
+
+class _WalletDashboardViewState extends State<WalletDashboardView>
+    with SingleTickerProviderStateMixin {
+  TabController? _tabController;
+  late WalletDashboardViewModel newModel;
+
+  @override
+  initState() {
+    super.initState();
+    _tabController = TabController(length: 6, vsync: this);
+    _tabController!.addListener(() {
+      _handleTabSelection();
+    });
+  }
+
+  @override
+  dispose() {
+    _tabController!.removeListener(_handleTabSelection);
+    _tabController!.dispose();
+    super.dispose();
+  }
+
+  void _handleTabSelection() {
+    debugPrint('is busy 0 ${newModel.isBusy}');
+    newModel.updateTabSelection(_tabController!.index);
+    debugPrint('is busy 2 ${newModel.isBusy}');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,6 +75,7 @@ class WalletDashboardView extends StatelessWidget {
         viewModelBuilder: () => WalletDashboardViewModel(context: context),
         disposeViewModel: true,
         onViewModelReady: (model) async {
+          newModel = model;
           // model.globalKeyOne = _one;
           // model.globalKeyTwo = _two;
           // model.refreshController = _refreshController;
@@ -418,7 +450,7 @@ class WalletDashboardView extends StatelessWidget {
     // var top = 0.0;
     return DefaultTabController(
         length: 6,
-        initialIndex: model.currentTabSelection,
+        initialIndex: model.selectedTabIndex,
         child: NestedScrollView(
           controller: model.walletsScrollController,
           headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
@@ -441,7 +473,7 @@ class WalletDashboardView extends StatelessWidget {
                   delegate: _SliverAppBarDelegate(
                     TabBar(
                         // labelPadding: EdgeInsets.only(bottom: 14, top: 14),
-
+                        controller: _tabController,
                         onTap: (int tabIndex) {
                           model.updateTabSelection(tabIndex);
                         },
@@ -452,101 +484,70 @@ class WalletDashboardView extends StatelessWidget {
                         tabs: const [
                           Tab(
                             text: "All",
-
                             iconMargin: EdgeInsets.only(bottom: 3),
-                            // child: Text(
-                            //     model.walletInfoCopy.length.toString(),
-                            //     style: TextStyle(fontSize: 10, color: grey))
                           ),
                           Tab(
                             text: "FAB",
                             iconMargin: EdgeInsets.only(bottom: 3),
-                            // child: Text(
-                            //     model.favWalletInfoList.length.toString(),
-                            //     style: TextStyle(fontSize: 10, color: grey)),
                           ),
                           Tab(
                             text: "ETH",
                             iconMargin: EdgeInsets.only(bottom: 3),
-                            // child: Text(
-                            //     model.favWalletInfoList.length.toString(),
-                            //     style: TextStyle(fontSize: 10, color: grey)),
                           ),
                           Tab(
                             text: "TRX",
                             iconMargin: EdgeInsets.only(bottom: 3),
-                            // child: Text(
-                            //     model.favWalletInfoList.length.toString(),
-                            //     style: TextStyle(fontSize: 10, color: grey)),
                           ),
                           Tab(
                             text: "BNB",
                             iconMargin: EdgeInsets.only(bottom: 3),
-                            // child: Text(
-                            //     model.favWalletInfoList.length.toString(),
-                            //     style: TextStyle(fontSize: 10, color: grey)),
                           ),
                           Tab(
-                            icon: Icon(Icons.star,
-                                // color: primaryColor,
-                                size: 18),
+                            icon: Icon(Icons.star, size: 18),
                             iconMargin: EdgeInsets.only(bottom: 3),
-                            // child: Text(
-                            //     model.favWalletInfoList.length.toString(),
-                            //     style: TextStyle(fontSize: 10, color: grey)),
                           ),
                         ]),
                   ))
             ];
           },
-          body: TabBarView(
-            //  physics: ClampingScrollPhysics(),
-            children: [
-              // All coins tab
-              model.isBusy || model.busy(model.isHideSmallAssetsButton)
-                  ? const ShimmerLayout(
-                      layoutType: 'walletDashboard',
-                      count: 9,
-                    )
-                  :
-                  //Center(child: Text(model.isBusy.toString())),
-                  buildListView(model),
-              buildListView(model),
-              buildListView(model),
-              buildListView(model),
-              buildListView(model),
+          body: model.isBusy ||
+                  model.busy(model.isHideSmallAssetsButton) ||
+                  model.busy(model.selectedTabIndex)
+              ? const ShimmerLayout(
+                  layoutType: 'walletDashboard',
+                  count: 9,
+                )
+              : TabBarView(
+                  controller: _tabController,
+                  physics: AlwaysScrollableScrollPhysics(),
+                  children: [
+                    // All coins tab
+                    //Center(child: Text(model.isBusy.toString())),
+                    buildListView(model),
+                    buildListView(model),
+                    buildListView(model),
+                    buildListView(model),
+                    buildListView(model),
 
-              FavTab(),
-            ],
-          ),
+                    FavTab(),
+                  ],
+                ),
         ));
   }
 
   ListView buildListView(WalletDashboardViewModel model) {
     List<WalletBalance> newList = [];
 
-    if (model.currentTabSelection == 0) {
-      newList = model.wallets;
-    } else if (model.currentTabSelection == 1) {
-      newList = model.wallets.where((element) {
-        return element.tokenType == model.chainList[0] ||
-            element.coin == model.chainList[0];
-      }).toList();
-    } else if (model.currentTabSelection == 2) {
-      newList = model.wallets.where((element) {
-        return element.tokenType == model.chainList[1] ||
-            element.coin == model.chainList[1];
-      }).toList();
-    } else if (model.currentTabSelection == 3) {
-      newList = model.wallets.where((element) {
-        return element.tokenType == model.chainList[2] ||
-            element.coin == model.chainList[2];
-      }).toList();
-    } else if (model.currentTabSelection == 4) {
-      newList = model.wallets.where((element) {
-        return element.tokenType == model.chainList[3] ||
-            element.coin == model.chainList[3];
-      }).toList();
+    if (model.selectedTabIndex == 0) {
+      newList = model.wallets!;
+    } else if (model.selectedTabIndex == 1) {
+      newList = model.fabWalletTokens;
+    } else if (model.selectedTabIndex == 2) {
+      newList = model.ethWalletTokens;
+    } else if (model.selectedTabIndex == 3) {
+      newList = model.trxWalletTokens;
+    } else if (model.selectedTabIndex == 4) {
+      newList = model.bnbWalletTokens;
     }
 
     return ListView.builder(

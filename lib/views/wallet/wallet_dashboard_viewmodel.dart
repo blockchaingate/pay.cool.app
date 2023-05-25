@@ -90,7 +90,7 @@ class WalletDashboardViewModel extends BaseViewModel {
 
   double gasAmount = 0;
   String exgAddress = '';
-
+  bool isHideSearch = false;
   bool isHideSmallAssetsButton = false;
   var refreshController;
   bool isConfirmDeposit = false;
@@ -129,7 +129,7 @@ class WalletDashboardViewModel extends BaseViewModel {
   final List<String> chainList = ["FAB", "ETH", "TRX", "BNB"];
 
   bool isShowFavCoins = false;
-  int currentTabSelection = 0;
+  int selectedTabIndex = 0;
   ScrollController walletsScrollController = ScrollController();
   int minusHeight = 25;
 
@@ -144,6 +144,10 @@ class WalletDashboardViewModel extends BaseViewModel {
   String totalExchangeBalance = '';
   var coinsToHideList = [""];
   final coinService = locator<CoinService>();
+  List<WalletBalance> fabWalletTokens = [];
+  List<WalletBalance> ethWalletTokens = [];
+  List<WalletBalance> trxWalletTokens = [];
+  List<WalletBalance> bnbWalletTokens = [];
 
 /*----------------------------------------------------------------------
                     INIT
@@ -170,10 +174,20 @@ class WalletDashboardViewModel extends BaseViewModel {
 
     getConfirmDepositStatus();
     //buildFavCoinListV1();
-    currentTabSelection = storageService.isFavCoinTabSelected ? 1 : 0;
+    selectedTabIndex = storageService.isFavCoinTabSelected ? 1 : 0;
 
     walletService.storeTokenListInDB();
-
+    for (var chain in chainList) {
+      if (chain == 'FAB') {
+        fabWalletTokens = getSortedWalletList(chain);
+      } else if (chain == 'ETH') {
+        ethWalletTokens = getSortedWalletList(chain);
+      } else if (chain == 'TRX') {
+        trxWalletTokens = getSortedWalletList(chain);
+      } else if (chain == 'BNB') {
+        bnbWalletTokens = getSortedWalletList(chain);
+      }
+    }
     setBusy(false);
     try {
       await versionChecker
@@ -192,6 +206,13 @@ class WalletDashboardViewModel extends BaseViewModel {
     Future.delayed(const Duration(seconds: 2), () async {
       await walletService.updateTokenListDb();
     });
+  }
+
+  List<WalletBalance> getSortedWalletList(String chainName) {
+    return wallets!
+        .where((wallet) =>
+            wallet.tokenType == chainName || wallet.coin == chainName)
+        .toList();
   }
 
   assignDefaultWalletForIos() async {
@@ -267,18 +288,34 @@ class WalletDashboardViewModel extends BaseViewModel {
   }
 
   updateTabSelection(int tabIndex) {
+    print('is busy 0.75 $isBusy');
     setBusy(true);
-    if (tabIndex == 5) {
+    setBusyForObject(selectedTabIndex, true);
+    notifyListeners();
+    print('is busy 1$isBusy');
+    selectedTabIndex = tabIndex;
+    isHideSmallAssetsButton = true;
+    isHideSearch = true;
+
+    if (tabIndex == 0) {
+      isHideSmallAssetsButton = false;
+      isHideSearch = false;
+    } else if (tabIndex == 5) {
       isShowFavCoins = true;
     } else {
-      isShowFavCoins = false;
+      isHideSmallAssetsButton = false;
+      isHideSearch = false;
     }
 
-    currentTabSelection = tabIndex;
+    if (tabIndex != 5) {
+      isShowFavCoins = false;
+    }
     storageService.isFavCoinTabSelected = isShowFavCoins ? true : false;
     debugPrint(
-        'current tab sel $currentTabSelection -- isShowFavCoins $isShowFavCoins');
+        'current tab sel $selectedTabIndex -- isShowFavCoins $isShowFavCoins');
+
     setBusy(false);
+    setBusyForObject(selectedTabIndex, false);
   }
 
 /*----------------------------------------------------------------------
