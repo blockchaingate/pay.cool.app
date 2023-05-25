@@ -179,90 +179,6 @@ class WalletService {
   var fabUtils = FabUtils();
   final erc20Util = Erc20Util();
 
-// https://testapi.fundark.com/kyc/wallet_address/moxGusyPrnFqsotinFQVHrzfZtYXra5nSH
-// {"success":true,"data":{"user":null}}
-//      or
-// {"success":true,"data":{"user":{"email":"cojomog655@larland.com",
-// "wallet_address":"mvLuZXGYMxpRM65kgzbfoKqs3FPcisM6ri"},
-// "kyc":{"step":2,"status":0}}}
-
-  // Api response
-  // user register and email confirmed: no kyc data
-  // phone code sent: kyc.status == 0
-  // phone code confirmed: status: 1
-  // citizenship selected: status: 2
-  // verifyIdentity:  status: 3
-  // verifyInfo: status: 4
-  // selectIdType: status: 5
-  // uploadDocument: status: 6
-  // uploadVideo: status: 7
-  checkKycStatus() async {
-    var fabAddress = await sharedService.getFabAddressFromCoreWalletDatabase();
-    var url = '${KycConstants.baseUrl}/kyc/wallet_address/$fabAddress';
-    log.w('checkKycStatus url $url');
-    var response = await client.get(Uri.parse(url));
-    try {
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        log.w('checkKycStatus response: ${response.body}');
-        var data = jsonDecode(response.body);
-        if (data['data']['user'] != null) {
-          log.i('checkKycStatus user data $data');
-          return {"success": true, "data": data};
-        } else {
-          return {"success": false, "data": null};
-        }
-      } else {
-        return {"success": true, "error": jsonEncode(response.body)};
-      }
-    } catch (err) {
-      log.e('checkKycStatus CATCH $err');
-      return {"success": true, "error": err.toString()};
-    }
-  }
-
-  // getSeedUsing pasword
-  Future<Uint8List?> getSeedUsingPassword(BuildContext context) async {
-    Uint8List? seed;
-    await dialogService
-        .showDialog(
-            title: FlutterI18n.translate(context, "enterPassword"),
-            description: FlutterI18n.translate(
-                context, "dialogManagerTypeSamePasswordNote"),
-            buttonTitle: FlutterI18n.translate(context, "confirm"))
-        .then((res) async {
-      if (res.confirmed) {
-        return seed = generateSeed(res.returnedText);
-      } else if (res.returnedText == 'Closed' && !res.confirmed) {
-        log.e('Dialog Closed By User');
-        seed = Uint8List(0);
-      } else {
-        log.e('Wrong pass');
-        seed = Uint8List(0);
-      }
-    });
-    return seed;
-  }
-
-// sign kanban data
-  Future<String> signKycData(String data, BuildContext context) async {
-    String finalSignature = '';
-    var hexData = StringUtils.stringToHex(data);
-    log.w('hexData $hexData');
-
-    var stringToHash = coin_util.hashKanbanMessage(hexData);
-    log.w('stringToHash $stringToHash');
-
-    var seed = await getSeedUsingPassword(context);
-    if (seed!.isNotEmpty) {
-      var signature = await coin_util.signHashKanbanMessage(seed, stringToHash);
-      log.w('signature $signature');
-      var s = trimHexPrefix(signature['s']!);
-      var v = trimHexPrefix(signature['v']!);
-      finalSignature = '${signature['r']}$s$v}';
-    }
-    return finalSignature;
-  }
-
   // verify wallet address
   Future<Map<String, bool>> verifyWalletAddresses(String mnemonic) async {
     Map<String, bool> res = {
@@ -2019,8 +1935,7 @@ class WalletService {
         return {
           'txHex': '',
           'errMsg': 'not enough fab coin to make the transaction.',
-          'transFee':
-              NumberUtil.customRoundNumber(transFeeDouble, decimalPlaces: 8),
+          'transFee': NumberUtil.roundDouble(transFeeDouble, decimalPlaces: 8),
           'amountInTx': amountInTx
         };
       }
@@ -2041,8 +1956,7 @@ class WalletService {
         return {
           'txHex': '',
           'errMsg': '',
-          'transFee':
-              NumberUtil.customRoundNumber(transFeeDouble, decimalPlaces: 8),
+          'transFee': NumberUtil.roundDouble(transFeeDouble, decimalPlaces: 8),
         };
       }
       var output2 = BigInt.parse(NumberUtil.toBigInt(amount, 8)).toInt();
@@ -2051,8 +1965,7 @@ class WalletService {
         return {
           'txHex': '',
           'errMsg': 'output1 or output2 should be greater than 0.',
-          'transFee':
-              NumberUtil.customRoundNumber(transFeeDouble, decimalPlaces: 8),
+          'transFee': NumberUtil.roundDouble(transFeeDouble, decimalPlaces: 8),
           'amountInTx': amountInTx
         };
       }
@@ -2074,8 +1987,7 @@ class WalletService {
       return {
         'txHex': txHex,
         'errMsg': '',
-        'transFee':
-            NumberUtil.customRoundNumber(transFeeDouble, decimalPlaces: 8),
+        'transFee': NumberUtil.roundDouble(transFeeDouble, decimalPlaces: 8),
         'amountInTx': amountInTx,
         'txids': allTxids
       };
@@ -2659,8 +2571,7 @@ class WalletService {
           'txHash': '',
           'errMsg': '',
           'amountSent': '',
-          'transFee':
-              NumberUtil.customRoundNumber(transFeeDouble, decimalPlaces: 8),
+          'transFee': NumberUtil.roundDouble(transFeeDouble, decimalPlaces: 8),
         };
       }
 
@@ -2729,8 +2640,7 @@ class WalletService {
           'txHash': '',
           'errMsg': '',
           'amountSent': '',
-          'transFee':
-              NumberUtil.customRoundNumber(transFeeDouble, decimalPlaces: 8),
+          'transFee': NumberUtil.roundDouble(transFeeDouble, decimalPlaces: 8),
         };
       }
 

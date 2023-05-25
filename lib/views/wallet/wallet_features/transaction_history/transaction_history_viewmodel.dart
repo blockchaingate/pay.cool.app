@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:pagination_widget/pagination_widget.dart';
 import 'package:paycool/constants/api_routes.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
@@ -22,7 +23,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:paycool/utils/wallet/wallet_util.dart';
-import 'package:paycool/widgets/pagination/pagination_model.dart';
 
 import 'package:stacked/stacked.dart';
 import 'package:paycool/services/api_service.dart';

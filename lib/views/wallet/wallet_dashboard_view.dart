@@ -42,6 +42,7 @@ class WalletDashboardView extends StatelessWidget {
     //     RefreshController(initialRefresh: false);
     return ViewModelBuilder<WalletDashboardViewModel>.reactive(
         viewModelBuilder: () => WalletDashboardViewModel(context: context),
+        disposeViewModel: true,
         onViewModelReady: (model) async {
           // model.globalKeyOne = _one;
           // model.globalKeyTwo = _two;

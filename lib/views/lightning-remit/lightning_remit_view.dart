@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
-import 'package:paycool/views/lightning-remit/lightning_remit_transactions_history.view.dart';
+import 'package:paycool/views/lightning-remit/lightning_remit_transfer_history.view.dart';
 import 'package:stacked/stacked.dart';
 
 import 'package:paycool/constants/colors.dart';
@@ -435,7 +435,7 @@ class LightningRemitView extends StatelessWidget {
                             UIHelper.horizontalSpaceSmall,
 
 /*----------------------------------------------------------------------------------------------------
-                                              Receive Button
+                                              Transaction history Button
 ----------------------------------------------------------------------------------------------------*/
 
                             Expanded(
@@ -483,7 +483,7 @@ class LightningRemitView extends StatelessWidget {
                                   context,
                                   MaterialPageRoute(
                                       builder: (_) =>
-                                          LightningRemitTransactionHistoryView()));
+                                          LightningRemitTransferHistoryView()));
                             }
                           },
                           child: Row(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:pagination_widget/pagination_widget.dart';
 import 'package:paycool/logger.dart';
 import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/coin_service.dart';
@@ -12,7 +13,6 @@ import 'package:paycool/utils/string_util.dart';
 import 'package:paycool/views/paycool/paycool_service.dart';
 import 'package:paycool/views/paycool/transaction_history/paycool_transaction_history_model.dart';
 import 'package:stacked/stacked.dart';
-import '../../../widgets/pagination/pagination_model.dart';
 
 class PayCoolTransactionHistoryViewModel extends FutureViewModel {
   final log = getLogger('PayCoolTransactionHistoryViewmodel');

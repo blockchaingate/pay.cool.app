@@ -57,7 +57,7 @@ class NumberUtil {
     return roundedValue;
   }
 
-  static double customRoundNumber(double value, {int decimalPlaces = 2}) {
+  static double roundDouble(double value, {int decimalPlaces = 2}) {
     if (value != 0) {
       Decimal decimalValue = Decimal.parse(value.toString());
 

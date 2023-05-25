@@ -119,8 +119,7 @@ class MoveToExchangeViewModel extends BaseViewModel {
 
   fillMaxAmount() {
     setBusy(true);
-    amountController.text = NumberUtil.customRoundNumber(
-            walletInfo.availableBalance!,
+    amountController.text = NumberUtil.roundDouble(walletInfo.availableBalance!,
             decimalPlaces: decimalLimit)
         .toString();
     amount = double.parse(amountController.text);
@@ -238,7 +237,7 @@ class MoveToExchangeViewModel extends BaseViewModel {
       setBusy(false);
       return 0.0;
     }
-    amount = NumberUtil.customRoundNumber(double.parse(amountController.text),
+    amount = NumberUtil.roundDouble(double.parse(amountController.text),
         decimalPlaces: decimalLimit);
     log.w('amountAfterFee func: amount $amount');
 
@@ -287,7 +286,7 @@ class MoveToExchangeViewModel extends BaseViewModel {
         ? isValidAmount = true
         : isValidAmount = false;
     log.i(
-        'Func:amountAfterFee --trans fee $transFee  -- entered amount $amount =  finalAmount $finalAmount -- decimal limit final amount ${NumberUtil.customRoundNumber(finalAmount, decimalPlaces: decimalLimit)} -- isValidAmount $isValidAmount');
+        'Func:amountAfterFee --trans fee $transFee  -- entered amount $amount =  finalAmount $finalAmount -- decimal limit final amount ${NumberUtil.roundDouble(finalAmount, decimalPlaces: decimalLimit)} -- isValidAmount $isValidAmount');
     setBusy(false);
     // It happens because floating-point numbers cannot always precisely represent decimal fractions. Instead, they represent them as binary fractions, which can sometimes result in rounding errors.
     //0.025105000000000002

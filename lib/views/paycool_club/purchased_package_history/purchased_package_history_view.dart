@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:pagination_widget/pagination_widget.dart';
 import 'package:paycool/views/paycool_club/purchased_package_history/purchased_package_history_viewmodel.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
-import 'package:paycool/widgets/pagination/pagination_widget.dart';
-
 import 'package:stacked/stacked.dart';
 
 class PurchasedPackageView extends StatelessWidget {
@@ -62,8 +61,8 @@ class PurchasedPackageView extends StatelessWidget {
                                         BorderSide(color: grey.withAlpha(40)),
                                   )),
                                   child: ListTile(
-                                    contentPadding:
-                                        const EdgeInsets.symmetric(horizontal: 8),
+                                    contentPadding: const EdgeInsets.symmetric(
+                                        horizontal: 8),
                                     onTap: () {},
                                     leading: Padding(
                                       padding: const EdgeInsets.all(8.0),

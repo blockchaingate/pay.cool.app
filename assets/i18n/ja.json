@@ -616,5 +616,7 @@
     "recordVideo": "ビデオを録画",
     "selectVideoFromGallery": "ギャラリーからビデオを選択",
     "kycStep-1": "メールコードが送信されました",
-    "incorrectPhoneNumber": "電話番号が間違っています"
+    "incorrectPhoneNumber": "電話番号が間違っています",
+    "kycStarted": "kyc開始",
+    "kycApproved": "kyc承認"
 }

@@ -246,7 +246,7 @@ class SendViewModel extends BaseViewModel {
 
   fillMaxAmount() {
     setBusy(true);
-    sendAmountTextController.text = NumberUtil.customRoundNumber(
+    sendAmountTextController.text = NumberUtil.roundDouble(
             walletInfo.availableBalance!,
             decimalPlaces: singlePairDecimalConfig.qtyDecimal)
         .toString();

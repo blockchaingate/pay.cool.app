@@ -121,8 +121,8 @@ class AddGasViewModel extends FutureViewModel {
     await apiService
         .getSingleWalletBalance(fabAddress, 'FAB', fabAddress)
         .then((walletBalance) {
-      fabBalance = NumberUtil.customRoundNumber(walletBalance[0].balance!,
-          decimalPlaces: 6);
+      fabBalance =
+          NumberUtil.roundDouble(walletBalance[0].balance!, decimalPlaces: 6);
     });
 
     setBusy(false);
@@ -254,7 +254,7 @@ class AddGasViewModel extends FutureViewModel {
 
     var changeAmountWithSlider = (fabBalance - transFee) * sliderValue / 100;
     amountController.text =
-        NumberUtil.customRoundNumber(changeAmountWithSlider, decimalPlaces: 6)
+        NumberUtil.roundDouble(changeAmountWithSlider, decimalPlaces: 6)
             .toString();
     setBusy(false);
   }

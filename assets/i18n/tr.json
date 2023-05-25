@@ -616,5 +616,7 @@
   "recordVideo": "Video Kaydet",
   "selectVideoFromGallery": "Galeriden Video Seç",
   "kycStep-1": "E-posta kodu gönderildi",
-  "incorrectPhoneNumber": "Yanlış Telefon Numarası"
+  "incorrectPhoneNumber": "Yanlış Telefon Numarası",
+  "kycStarted": "kycBaşladı",
+  "kycApproved": "kycOnaylandı"
 }

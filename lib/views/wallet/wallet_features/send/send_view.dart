@@ -243,7 +243,7 @@ class SendWalletView extends StatelessWidget {
                                       Row(
                                         children: <Widget>[
                                           Text(
-                                            '${FlutterI18n.translate(context, "walletbalance")}  ${NumberUtil.customRoundNumber(model.walletInfo.availableBalance!, decimalPlaces: model.singlePairDecimalConfig.qtyDecimal)} ',
+                                            '${FlutterI18n.translate(context, "walletbalance")}  ${NumberUtil.roundDouble(model.walletInfo.availableBalance!, decimalPlaces: model.singlePairDecimalConfig.qtyDecimal)} ',
                                             style: headText6.copyWith(
                                                 fontWeight: FontWeight.w400),
                                           ),
@@ -336,7 +336,7 @@ class SendWalletView extends StatelessWidget {
                                                             strokeWidth: 0.75,
                                                           ))
                                                 : Text(
-                                                    '${NumberUtil.customRoundNumber(model.transFee, decimalPlaces: 6)}  ${model.feeUnit}',
+                                                    '${NumberUtil.roundDouble(model.transFee, decimalPlaces: 6)}  ${model.feeUnit}',
                                                     style: headText6.copyWith(
                                                         fontWeight:
                                                             FontWeight.w400),

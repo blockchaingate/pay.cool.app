@@ -1,5 +1,7 @@
+import 'package:paycool/utils/string_util.dart';
+
 class Transaction {
-  final String chain;
+  String chain;
   final String transactionId;
   final int? timestamp;
   final String status;
@@ -13,10 +15,10 @@ class Transaction {
 
   factory Transaction.fromJson(Map<String, dynamic> json) {
     return Transaction(
-      chain: json['chain'],
-      transactionId: json['transactionId'],
-      timestamp: json['timestamp'],
-      status: json['status'],
+      chain: json['chain'] ?? '',
+      transactionId: json['transactionId'] ?? '',
+      timestamp: json['timestamp'] ?? 0,
+      status: json['status'] ?? '',
     );
   }
 
@@ -32,7 +34,7 @@ class Transaction {
 
 class HistoryItem {
   final String action;
-  final String coin;
+  String coin;
   final int timestamp;
   final String quantity;
   final List<Transaction> transactions;
@@ -45,12 +47,23 @@ class HistoryItem {
     required this.transactions,
   });
 
+  date() {
+    return DateTime.fromMillisecondsSinceEpoch(timestamp * 1000)
+        .toLocal()
+        .toString()
+        .substring(0, date.toString().length - 4);
+  }
+
+  String setFilteredDate(String date) {
+    return formatStringDateV2(date);
+  }
+
   factory HistoryItem.fromJson(Map<String, dynamic> json) {
     return HistoryItem(
-      action: json['action'],
-      coin: json['coin'],
-      timestamp: json['timestamp'],
-      quantity: json['quantity'],
+      action: json['action'].toString().toLowerCase(),
+      coin: json['coin'] ?? '',
+      timestamp: json['timestamp'] ?? 0,
+      quantity: json['quantity'] ?? '',
       transactions: List<Transaction>.from(
         json['transactions']
             .map((transaction) => Transaction.fromJson(transaction)),

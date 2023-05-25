@@ -616,6 +616,8 @@
     "resendCode": "Resend Code",
     "recordVideo": "Record Video",
     "selectVideoFromGallery": "Select Video from Gallery",
-    "incorrectPhoneNumber": "Incorrect Phone Number"
+    "incorrectPhoneNumber": "Incorrect Phone Number",
+    "kycStarted": "KYC Started",
+    "kycApproved": "KYC Approved"
 
 }

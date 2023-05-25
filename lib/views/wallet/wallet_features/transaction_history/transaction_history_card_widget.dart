@@ -157,7 +157,7 @@ class TxHisotryCardWidget extends StatelessWidget {
                 child: Container(
                   alignment: Alignment.center,
                   child: AutoSizeText(
-                    NumberUtil.customRoundNumber(transaction.quantity!,
+                    NumberUtil.roundDouble(transaction.quantity!,
                             decimalPlaces: model.decimalLimit)
                         .toString(),
                     textAlign: TextAlign.right,

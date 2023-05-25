@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:pagination_widget/pagination_widget.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/utils/number_util.dart';
 import 'package:paycool/utils/string_util.dart';
-import 'package:paycool/widgets/pagination/pagination_widget.dart';
 import 'package:paycool/widgets/shared/copy_clipboard_text_widget.dart';
 import 'package:stacked/stacked.dart';
 
@@ -172,10 +172,10 @@ class PayCoolRewardsView extends StatelessWidget {
                     ),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        floatingActionButton: model.paginationModel.pages.isEmpty
+        floatingActionButton: model.paginationModel.totalPages == 0
             ? Container()
             : PaginationWidget(
-                pageCallback: model.getPaginationRewards,
+                pageCallback: model.getPaginationData,
                 paginationModel: model.paginationModel,
               ),
       ),

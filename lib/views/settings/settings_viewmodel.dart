@@ -32,6 +32,7 @@ import 'package:paycool/services/shared_service.dart';
 import 'package:paycool/services/stoppable_service.dart';
 import 'package:paycool/services/vault_service.dart';
 import 'package:paycool/services/wallet_service.dart';
+import 'package:paycool/utils/wallet/local_kyc_util.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 //import 'package:showcaseview/showcaseview.dart';
 
@@ -42,7 +43,7 @@ import '../../models/dialog/dialog_response.dart';
 import '../../service_locator.dart';
 import '../../services/local_dialog_service.dart';
 
-class SettingsViewmodel extends BaseViewModel with StoppableService {
+class SettingsViewModel extends BaseViewModel with StoppableService {
   bool isVisible = false;
   String mnemonic = '';
   final log = getLogger('SettingsViewmodel');
@@ -63,7 +64,6 @@ class SettingsViewmodel extends BaseViewModel with StoppableService {
   final authService = locator<LocalAuthService>();
   final localAuthService = locator<LocalAuthService>();
   final coreWalletDatabaseService = locator<CoreWalletDatabaseService>();
-  var kycCheckResult = UserDataContent();
 
   String? selectedLanguage;
   // bool result = false;
@@ -78,8 +78,8 @@ class SettingsViewmodel extends BaseViewModel with StoppableService {
   bool isDialogDisplay = false;
   ScrollController? scrollController;
   bool isDeleting = false;
-  GlobalKey? one;
-  GlobalKey? two;
+  // GlobalKey? one;
+  // GlobalKey? two;
   bool isShowCaseOnce = false;
   bool? isShowPaycool;
   bool isShowPaycoolClub = false;
@@ -91,7 +91,7 @@ class SettingsViewmodel extends BaseViewModel with StoppableService {
   UserSettings userSettings = UserSettings();
   bool isUserSettingsEmpty = false;
   bool kycStarted = false;
-
+  var kycCheckResult = UserDataContent();
   Locale? currentLang;
   bool _isBiometricAuth = false;
   get isBiometricAuth => _isBiometricAuth;
@@ -170,13 +170,13 @@ class SettingsViewmodel extends BaseViewModel with StoppableService {
 
   checkKycStatus() async {
     setBusyForObject(kycStarted, true);
-    var result = await walletService.checkKycStatus();
+    var result = await LocalKycUtil.checkKycStatus();
     kycStarted = result['success'];
     if (kycStarted) {
       var res = result['data'] ?? {};
       log.w('checkkycstatus res $res');
       kycCheckResult = UserDataContent.fromJson(res['data']);
-      kycCheckResult.kyc!.step = 6;
+      // kycCheckResult.kyc!.step = 8;
       log.w('checkkycstatus kycCheckResult ${kycCheckResult.toJson()}');
     }
     setBusyForObject(kycStarted, false);

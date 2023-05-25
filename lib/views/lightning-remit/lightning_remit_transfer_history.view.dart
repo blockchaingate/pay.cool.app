@@ -2,14 +2,14 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:pagination_widget/pagination_widget.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/views/lightning-remit/lightening_remit_viewmodel.dart';
-import 'package:paycool/widgets/pagination/pagination_widget.dart';
 import 'package:stacked/stacked.dart';
 
-class LightningRemitTransactionHistoryView
+class LightningRemitTransferHistoryView
     extends StackedView<LightningRemitViewmodel> {
   @override
   LightningRemitViewmodel viewModelBuilder(BuildContext context) =>
@@ -105,7 +105,8 @@ class LightningRemitTransactionHistoryView
                                                         ..onTap = () {
                                                           viewModel.copyAddress(
                                                               transaction.txid
-                                                                  .toString());
+                                                                  .toString(),
+                                                              context);
                                                           viewModel.openExplorer(
                                                               transaction.txid
                                                                   .toString());
@@ -117,9 +118,10 @@ class LightningRemitTransactionHistoryView
                                                 Icons.copy_outlined,
                                                 color: black,
                                                 size: 16),
-                                            onPressed: () => viewModel
-                                                .copyAddress(transaction.txid
-                                                    .toString()),
+                                            onPressed: () =>
+                                                viewModel.copyAddress(
+                                                    transaction.txid.toString(),
+                                                    context),
                                           )
                                         ],
                                       ),
@@ -164,10 +166,10 @@ class LightningRemitTransactionHistoryView
                   )),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        floatingActionButton: viewModel.paginationModel.pages.isEmpty
+        floatingActionButton: viewModel.paginationModel.totalPages == 0
             ? Container()
             : PaginationWidget(
                 paginationModel: viewModel.paginationModel,
-                pageCallback: viewModel.getPaginationTransactions));
+                pageCallback: viewModel.getPaginationData));
   }
 }

@@ -92,7 +92,7 @@ class MoveToExchangeView extends StatelessWidget {
               Row(
                 children: <Widget>[
                   Text(
-                      '${FlutterI18n.translate(context, "walletbalance")}  ${NumberUtil.customRoundNumber(model.walletInfo.availableBalance!, decimalPlaces: model.decimalLimit).toString()}',
+                      '${FlutterI18n.translate(context, "walletbalance")}  ${NumberUtil.roundDouble(model.walletInfo.availableBalance!, decimalPlaces: model.decimalLimit).toString()}',
                       style: subText2),
                   Padding(
                     padding: const EdgeInsets.symmetric(
@@ -135,7 +135,7 @@ class MoveToExchangeView extends StatelessWidget {
                                         left:
                                             5), // padding left to keep some space from the text
                                     child: Text(
-                                        '${NumberUtil.customRoundNumber(model.transFee, decimalPlaces: 4).toString()} ${model.feeUnit}',
+                                        '${NumberUtil.roundDouble(model.transFee, decimalPlaces: 4).toString()} ${model.feeUnit}',
                                         style: headText6),
                                   )
                                 ],
@@ -161,7 +161,7 @@ class MoveToExchangeView extends StatelessWidget {
                                               top:
                                                   5), // padding left to keep some space from the text
                                           child: Text(
-                                              '${NumberUtil.customRoundNumber(model.chainBalance, decimalPlaces: 6).toString()} ${model.feeUnit}',
+                                              '${NumberUtil.roundDouble(model.chainBalance, decimalPlaces: 6).toString()} ${model.feeUnit}',
                                               style: headText6),
                                         )
                                       ],
@@ -180,7 +180,7 @@ class MoveToExchangeView extends StatelessWidget {
                               left:
                                   5), // padding left to keep some space from the text
                           child: Text(
-                              '${NumberUtil.customRoundNumber(model.kanbanTransFee, decimalPlaces: 4).toString()} GAS',
+                              '${NumberUtil.roundDouble(model.kanbanTransFee, decimalPlaces: 4).toString()} GAS',
                               style: headText6),
                         )
                       ],

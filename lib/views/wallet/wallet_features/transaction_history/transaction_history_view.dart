@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:pagination_widget/pagination_widget.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/models/wallet/wallet.dart';
 import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/views/wallet/wallet_features/transaction_history/transaction_history_card_widget.dart';
 import 'package:paycool/views/wallet/wallet_features/transaction_history/transaction_history_viewmodel.dart';
-import 'package:paycool/widgets/pagination/pagination_widget.dart';
+
 import 'package:stacked/stacked.dart';
 
 class TransactionHistoryView extends StatelessWidget {

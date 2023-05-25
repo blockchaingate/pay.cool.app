@@ -114,7 +114,7 @@ class MoveToWalletView extends StatelessWidget {
                     Row(
                       children: <Widget>[
                         Text(
-                            '${FlutterI18n.translate(context, "inExchange")} ${NumberUtil.customRoundNumber(model.walletInfo.inExchange!, decimalPlaces: 6).toString()}',
+                            '${FlutterI18n.translate(context, "inExchange")} ${NumberUtil.roundDouble(model.walletInfo.inExchange!, decimalPlaces: 6).toString()}',
                             style: subText2),
                         Padding(
                           padding: const EdgeInsets.symmetric(

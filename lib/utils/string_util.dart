@@ -269,3 +269,11 @@ DateTime dateFromMilliseconds(int milliseconds) {
   debugPrint('dateFromMilliseconds: $formattedDate');
   return formattedDate;
 }
+
+int convertDateToTimestamp(DateTime date) {
+  return date.millisecondsSinceEpoch ~/ 1000;
+}
+
+DateTime convertTimeStampToDate(int timestamp) {
+  return DateTime.fromMillisecondsSinceEpoch(timestamp * 1000).toLocal();
+}

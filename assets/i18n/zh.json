@@ -616,5 +616,7 @@
     "recordVideo": "录制视频",
     "selectVideoFromGallery": "从图库中选择视频",
     "kycStep-1": "已发送电子邮件代码",
-    "incorrectPhoneNumber": "电话号码错误"
+    "incorrectPhoneNumber": "电话号码错误",
+    "kycStarted": "kyc已启动",
+    "kycApproved": "kyc已批准"
 }

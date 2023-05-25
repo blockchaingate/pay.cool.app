@@ -119,7 +119,7 @@ class CoinDetailsCardWidget extends StackedView<WalletDashboardViewModel> {
                                 wallets[index].balance!.isNegative
                                     ? FlutterI18n.translate(
                                         context, "unavailable")
-                                    : NumberUtil.customRoundNumber(
+                                    : NumberUtil.roundDouble(
                                             wallets[index].balance!,
                                             decimalPlaces: 6)
                                         .toString(),
@@ -142,7 +142,7 @@ class CoinDetailsCardWidget extends StackedView<WalletDashboardViewModel> {
                                 wallets[index].lockBalance!.isNegative
                                     ? FlutterI18n.translate(
                                         context, "unavailable")
-                                    : NumberUtil.customRoundNumber(
+                                    : NumberUtil.roundDouble(
                                             wallets[index].lockBalance!,
                                             decimalPlaces: 6)
                                         .toString(),
@@ -167,7 +167,7 @@ class CoinDetailsCardWidget extends StackedView<WalletDashboardViewModel> {
                                         .isNegative
                                     ? FlutterI18n.translate(
                                         context, "unavailable")
-                                    : NumberUtil.customRoundNumber(
+                                    : NumberUtil.roundDouble(
                                             wallets[index]
                                                 .unlockedExchangeBalance!,
                                             decimalPlaces: 6)
@@ -197,7 +197,7 @@ class CoinDetailsCardWidget extends StackedView<WalletDashboardViewModel> {
                               wallets[index].usdValue!.usd!.isNegative
                                   ? FlutterI18n.translate(
                                       context, "unavailable")
-                                  : NumberUtil.customRoundNumber(
+                                  : NumberUtil.roundDouble(
                                           (!wallets[index].balance!.isNegative
                                                   ? wallets[index].balance
                                                   : 0.0)! *
@@ -287,7 +287,7 @@ class CoinDetailsCardWidget extends StackedView<WalletDashboardViewModel> {
                                           style:
                                               subText2.copyWith(color: yellow)),
                                       Text(
-                                          '${NumberUtil.customRoundNumber(wallets[index].unconfirmedBalance!, decimalPlaces: 8)}  FAB',
+                                          '${NumberUtil.roundDouble(wallets[index].unconfirmedBalance!, decimalPlaces: 8)}  FAB',
                                           textAlign: TextAlign.start,
                                           style:
                                               subText2.copyWith(color: yellow)),

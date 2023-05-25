@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pagination_widget/pagination_widget.dart';
 import 'package:paycool/logger.dart';
 import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/local_storage_service.dart';
@@ -8,7 +9,6 @@ import 'package:paycool/services/shared_service.dart';
 import 'package:paycool/views/paycool_club/purchased_package_history/purchased_package_history_model.dart';
 
 import 'package:paycool/views/paycool_club/paycool_club_service.dart';
-import 'package:paycool/widgets/pagination/pagination_model.dart';
 
 import 'package:stacked/stacked.dart';
 

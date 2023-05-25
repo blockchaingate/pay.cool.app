@@ -171,11 +171,11 @@ class JoinPayCoolClubView extends StackedView<JoinPayCoolClubViewModel> {
                               flex: 3,
                               child: Text(
                                 model.groupValue == 'DUSD'
-                                    ? NumberUtil.customRoundNumber(
+                                    ? NumberUtil.roundDouble(
                                             model.dusdExchangeBalance,
                                             decimalPlaces: 2)
                                         .toString()
-                                    : NumberUtil.customRoundNumber(
+                                    : NumberUtil.roundDouble(
                                             model.usdtExchangeBalance,
                                             decimalPlaces: 2)
                                         .toString(),
@@ -244,8 +244,7 @@ class JoinPayCoolClubView extends StackedView<JoinPayCoolClubViewModel> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            '${FlutterI18n.translate(
-                                    context, "scanOrPasteReferralCodeBelow")}*',
+                            '${FlutterI18n.translate(context, "scanOrPasteReferralCodeBelow")}*',
                             style: headText5,
                           ),
                           UIHelper.verticalSpaceSmall,
@@ -334,7 +333,8 @@ class JoinPayCoolClubView extends StackedView<JoinPayCoolClubViewModel> {
                                 ? model.sharedService.loadingIndicator()
                                 : Text(
                                     FlutterI18n.translate(context, "confirm"),
-                                    style: Theme.of(context).textTheme.labelLarge,
+                                    style:
+                                        Theme.of(context).textTheme.labelLarge,
                                   ),
                           ),
                         ],

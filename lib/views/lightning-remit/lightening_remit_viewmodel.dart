@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:pagination_widget/pagination_widget.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/logger.dart';
@@ -22,7 +23,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:paycool/views/lightning-remit/lightning_remit_transfer_history_model.dart';
-import 'package:paycool/widgets/pagination/pagination_model.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:paycool/utils/barcode_util.dart';
 import 'package:paycool/services/local_storage_service.dart';
@@ -119,11 +119,10 @@ class LightningRemitViewmodel extends FutureViewModel {
     // getBindpayTransactionHistory();
   }
 
-  getPaginationTransactions(int pageNumber) async {
+  getPaginationData(int pageNumber) async {
     setBusy(true);
     paginationModel.pageNumber = pageNumber;
     await geTransactionstHistory();
-
     setBusy(false);
   }
 
@@ -147,7 +146,6 @@ class LightningRemitViewmodel extends FutureViewModel {
     log.w('LightningRemit count ${transferHistory.totalCount}');
     transferHistory.history.sort((a, b) => DateTime.parse(b.date.toString())
         .compareTo(DateTime.parse(a.date.toString())));
-    paginationModel.pages = transferHistory.history;
 
     setBusy(false);
   }
@@ -746,11 +744,11 @@ class LightningRemitViewmodel extends FutureViewModel {
         .then((res) => addressController.text = res!.text!);
   }
 
-  copyAddress(String txId) {
+  copyAddress(String txId, BuildContext context) {
     Clipboard.setData(ClipboardData(text: txId));
     showSimpleNotification(
         Center(
-            child: Text(FlutterI18n.translate(context!, "copiedSuccessfully"),
+            child: Text(FlutterI18n.translate(context, "copiedSuccessfully"),
                 style: headText5)),
         position: NotificationPosition.bottom,
         background: primaryColor);

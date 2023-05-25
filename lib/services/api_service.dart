@@ -200,8 +200,8 @@ class ApiService {
   Future<TransactionHistoryEventsData?> getTransactionHistoryEventsV2(
       {int pageSize = 10, int pageNumber = 0}) async {
     String fabAddress = '';
-    if (pageNumber != 0) {
-      pageNumber = pageNumber - 1;
+    if (pageNumber == 0) {
+      pageNumber = pageNumber + 1;
     }
     TransactionHistoryEvents transactionHistoryEvents =
         TransactionHistoryEvents();
@@ -210,7 +210,6 @@ class ApiService {
 
     String url =
         '${configService.getKanbanBaseUrl()}v2/$WithDrawDepositTxHistoryApiRoute';
-    url = '$url/$pageSize/$pageNumber';
 
     Map<String, dynamic> body = {
       "fabAddress": fabAddress,
@@ -218,10 +217,11 @@ class ApiService {
       "pageNum": pageNumber
     };
 
-    log.i('getTransactionHistoryEventsV2 url $url -- body $body');
+    log.i('getTransactionHistoryEventsV2 url $url -- body ${jsonEncode(body)}');
 
     try {
-      var response = await client.post(Uri.parse(url), body: body);
+      var response = await client.post(Uri.parse(url),
+          body: jsonEncode(body), headers: Constants.headersJson);
 
       var json = jsonDecode(response.body);
       if (json != null) {
@@ -282,16 +282,7 @@ class ApiService {
                 if (element['transactionId'] != null) {
                   kanbanTxId = element['transactionId'];
                 }
-              }
-              // if (chain == 'FAB' ||
-              //     chain == 'ETH' ||
-              //     ticker == 'BTC' ||
-              //     ticker == 'LTC' ||
-              //     ticker == 'ETH' ||
-              //     ticker == 'DOGE' ||
-              //     ticker == 'FAB' ||
-              //     ticker == 'BCH')
-              else {
+              } else {
                 tickerChainTxStatus = element['status'] ?? '';
                 chainName = chain;
                 if (element['transactionId'] != null) {
@@ -334,7 +325,7 @@ class ApiService {
   }
 
 /*----------------------------------------------------------------------
-                Get Bindpay History
+                Get LightningRemit History
 ----------------------------------------------------------------------*/
   Future<LightningRemitHistoryModel> getLightningRemitHistoryEvents(
       String url, String fabAddress,

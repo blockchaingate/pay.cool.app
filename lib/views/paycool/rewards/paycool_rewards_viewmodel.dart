@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:pagination_widget/pagination_widget.dart';
 import 'package:paycool/logger.dart';
 import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/shared_service.dart';
 import 'package:paycool/views/paycool/paycool_service.dart';
 import 'package:paycool/views/paycool/rewards/payment_rewards_model.dart';
-import 'package:paycool/widgets/pagination/pagination_model.dart';
 import 'package:stacked/stacked.dart';
 
 class PayCoolRewardsViewModel extends FutureViewModel
@@ -38,17 +38,15 @@ class PayCoolRewardsViewModel extends FutureViewModel
     await paginationModel
         .getTotalPages(() => payCoolService.getPaymentRewardCount(fabAddress));
 
-    paginationModel.pages = [];
-    paginationModel.pages.addAll(paymentRewards);
     log.i('paginationModel ${paginationModel.toString()}');
     setBusy(false);
   }
 
-  getPaginationRewards(int pageNumber) async {
+  getPaginationData(int pageNumber) async {
     setBusy(true);
     paginationModel.pageNumber = pageNumber;
-    var paginationResults = await futureToRun();
-    paymentRewards = paginationResults;
+    var res = await futureToRun();
+    paymentRewards = res;
 
     setBusy(false);
   }

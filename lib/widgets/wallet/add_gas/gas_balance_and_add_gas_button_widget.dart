@@ -48,7 +48,7 @@ class GasBalanceAndAddGasButtonWidget extends StatelessWidget {
             ),
             UIHelper.horizontalSpaceSmall,
             Text(
-              "${FlutterI18n.translate(context, "gas")}: ${NumberUtil.customRoundNumber(gasAmount, decimalPlaces: 6)}",
+              "${FlutterI18n.translate(context, "gas")}: ${NumberUtil.roundDouble(gasAmount, decimalPlaces: 6)}",
               style: headText5.copyWith(wordSpacing: 1.25),
             ),
             UIHelper.horizontalSpaceSmall,

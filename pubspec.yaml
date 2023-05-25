@@ -1,6 +1,6 @@
 name: paycool
 description: Crypto payment application
-version: 2.3.124+182
+version: 2.3.125+183
 # The following line prevents the package from being accidentally published to
 # pub.dev using `pub publish`. This is preferred for private packages.
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
@@ -18,6 +18,8 @@ dependency_overrides:
   image_picker_android: 0.8.4+13
   kyc:
     path: "../exchangily-packages/kyc"
+  pagination_widget:
+    path: "../exchangily-packages/pagination_widget"
 
 dependencies:
   aukfa_version_checker:
@@ -77,6 +79,11 @@ dependencies:
   package_info: ^2.0.2
   path_provider: ^2.0.4
   protobuf: ^2.0.0
+  pagination_widget:
+     git:
+       url: https://github.com/blockchaingate/exchangily-packages.git
+       path: pagination_widget
+       ref: main
   qr_code_utils: ^0.0.1
   qr_flutter: ^4.0.0
   rflutter_alert: ^2.0.6
