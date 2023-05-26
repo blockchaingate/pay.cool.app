@@ -193,12 +193,10 @@ class WalletDashboardViewModel extends BaseViewModel {
       await versionChecker
           .check(
         _context!,
-        //test: true, testVersion: "2.3.103"
+        //test: true, testVersion: "2.3.126"
       )
           .timeout(const Duration(seconds: 2), onTimeout: () {
         debugPrint('time out version checker after waiting for 2 seconds');
-
-        setBusy(false);
       });
     } catch (err) {
       debugPrint('version checker catch $err');
@@ -209,7 +207,7 @@ class WalletDashboardViewModel extends BaseViewModel {
   }
 
   List<WalletBalance> getSortedWalletList(String chainName) {
-    return wallets!
+    return wallets
         .where((wallet) =>
             wallet.tokenType == chainName || wallet.coin == chainName)
         .toList();

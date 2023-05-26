@@ -116,6 +116,7 @@ class SettingsViewModel extends BaseViewModel with StoppableService {
     "ja": "JP",
     "hi": "IN",
   };
+
   @override
   void start() async {
     super.start();

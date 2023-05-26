@@ -156,6 +156,7 @@ class _ReceiveWalletScreenState extends State<ReceiveWalletScreen> {
                     Container(
                       padding: const EdgeInsets.all(10.0),
                       child: ElevatedButton(
+                          style: generalButtonStyle1,
                           child: Text(
                               FlutterI18n.translate(
                                   context, "saveAndShareQrCode"),
