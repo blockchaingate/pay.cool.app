@@ -172,7 +172,7 @@ class PayCoolService with ListenableServiceMixin {
   Future<PaymentRewardsModel?> getPayOrderInfoWithRewards(String id) async {
     String fabAddress =
         await coreWalletDatabaseService.getWalletAddressByTickerName('FAB');
-    //https:fabtest.info/api/userpay/v2/order/635ab250f8ba77d673a32474
+    //https://test.fabcoin.org/api/userpay/v2/order/635ab250f8ba77d673a32474/rewardInfo
     String url = '${paycoolBaseUrl}userpay/v2/order/$id/$fabAddress/rewardInfo';
 
     log.i('getPayOrderInfoWithRewards url $url');

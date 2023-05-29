@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:paycool/services/local_auth_service.dart';
+import 'package:paycool/utils/wallet/wallet_util.dart';
 import 'package:qr_code_utils/qr_code_utils.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:path_provider/path_provider.dart';
@@ -70,12 +72,13 @@ class PayCoolViewmodel extends FutureViewModel {
   final payCoolClubService = locator<PayCoolClubService>();
   final userSettingsDatabaseService = locator<UserSettingsDatabaseService>();
   String tickerName = '';
-  double quantity = 0.0;
+  double exchangeBalance = 0.0;
+  ExchangeBalanceModel? selectedExchangeBalanceModel;
   GlobalKey globalKey = GlobalKey();
   ScrollController? scrollController;
   String loadingStatus = '';
   //final stackedDialogService = locator<DialogService>();
-
+  final authService = locator<LocalAuthService>();
   // var barcodeRes = [];
   //var barcodeRes2;
   var walletBalancesBody;
@@ -175,7 +178,8 @@ class PayCoolViewmodel extends FutureViewModel {
     if (exchangeBalances.isNotEmpty) {
       tickerName = exchangeBalances[0].ticker;
 
-      quantity = exchangeBalances[0].unlockedAmount;
+      exchangeBalance = exchangeBalances[0].unlockedAmount;
+      selectedExchangeBalanceModel = exchangeBalances[0];
     }
 
     setBusyForObject(tickerName, false);
@@ -193,7 +197,9 @@ class PayCoolViewmodel extends FutureViewModel {
     String address = await sharedService.getExgAddressFromCoreWalletDatabase();
     await walletService.gasBalance(address).then((data) {
       gasBalance = Decimal.parse(data.toString());
-    }).catchError((onError) => log.e(onError));
+    }).catchError((onError) {
+      log.e(onError);
+    });
     log.w('gas amount $gasBalance');
   }
 
@@ -311,6 +317,12 @@ class PayCoolViewmodel extends FutureViewModel {
     setBusy(false);
   }
 
+  authenticateChoice() {
+    // show dialog to ask user which authentication type to use
+    // whether password or biometric
+    // if biometric, call authenticateBiometric()
+    // if password, call authenticatePassword()
+  }
   makePayment() async {
     setBusy(true);
     isPaying = true;
@@ -330,8 +342,10 @@ class PayCoolViewmodel extends FutureViewModel {
       setBusy(false);
       return;
     }
+    var walletUtil = WalletUtil();
+    String tt = walletUtil.getTokenType(selectedExchangeBalanceModel!.coinType);
     String selectedCoinAddress =
-        await coinService.getCoinWalletAddress(tickerName, tokenType: 'ETH');
+        await coinService.getCoinWalletAddress(tickerName, tokenType: tt);
     List<WalletBalance>? walletBalanceRes;
     await apiService
         .getSingleWalletBalance(fabAddress, tickerName, selectedCoinAddress)
@@ -347,8 +361,8 @@ class PayCoolViewmodel extends FutureViewModel {
       setBusy(false);
       return;
     }
-    //displayAbiHexinReadableFormat(scanToPayModel.datAbiHex);
     try {
+      authenticateChoice();
       var seed = await walletService.getSeedDialog(sharedService.context);
       String res = '';
       for (var param in rewardInfoModel!.params!) {
@@ -356,6 +370,7 @@ class PayCoolViewmodel extends FutureViewModel {
       }
       if (res == '0x1') {
         payOrderConfirmationPopup();
+        resetVariables();
       } else if (res == '0x0') {
         sharedService.sharedSimpleNotification(
             FlutterI18n.translate(sharedService.context, "failed"),
@@ -428,7 +443,7 @@ class PayCoolViewmodel extends FutureViewModel {
                   return Container(
                     decoration: BoxDecoration(
                       // color: grey.withAlpha(300),
-                      borderRadius: index == 0
+                      borderRadius: index == exchangeBalances.length - 1
                           ? const BorderRadius.vertical(
                               top: Radius.circular(10))
                           : const BorderRadius.all(Radius.zero),
@@ -1189,7 +1204,9 @@ class PayCoolViewmodel extends FutureViewModel {
           scannedMerchantAddress.toString(), amount);
       getOrderDetailsById(orderIdFromMerchantAddress!);
     } else {
-      sharedService.sharedSimpleNotification('Incorrect data format');
+      sharedService.sharedSimpleNotification(
+          FlutterI18n.translate(sharedService.context, "invalidQRCode"),
+          isError: true);
     }
   }
 
@@ -1283,14 +1300,14 @@ class PayCoolViewmodel extends FutureViewModel {
         .getMerchantInfo(rewardInfoModel!.merchantId.toString());
     coinPayable = newCoinTypeMap[rewardInfoModel!.paidCoin].toString();
     if (coinPayable.isEmpty || coinPayable == "null") {
-      var nullToken = await coinService.getSingleTokenData('',
+      var token = await coinService.getSingleTokenData('',
           coinType: rewardInfoModel!.paidCoin!);
-      coinPayable = nullToken!.tickerName!;
+      coinPayable = token!.tickerName!;
     }
     // ignore: iterable_contains_unrelated_type
-    final v =
+    final canMakePaymentUsingExistingCoins =
         exchangeBalances.indexWhere((element) => element.ticker == coinPayable);
-    if (v.isNegative) {
+    if (canMakePaymentUsingExistingCoins.isNegative) {
       dialogService.showBasicDialog(
           title:
               "$coinPayable ${FlutterI18n.translate(sharedService.context, "insufficientBalanceForPayment")}",
@@ -1346,6 +1363,8 @@ class PayCoolViewmodel extends FutureViewModel {
     String name,
   ) {
     tickerName = name;
+    selectedExchangeBalanceModel =
+        exchangeBalances.firstWhere((element) => element.ticker == tickerName);
     debugPrint('tickerName 1 $tickerName');
     notifyListeners();
   }
@@ -1358,8 +1377,10 @@ class PayCoolViewmodel extends FutureViewModel {
     if (index + 1 <= exchangeBalances.length) {
       tickerName = exchangeBalances.elementAt(index).ticker;
     }
-    quantity = updatedQuantity;
-    debugPrint('IOS tickerName $tickerName --- quantity $quantity');
+    exchangeBalance = updatedQuantity;
+    selectedExchangeBalanceModel =
+        exchangeBalances.firstWhere((element) => element.ticker == tickerName);
+    debugPrint('IOS tickerName $tickerName --- quantity $exchangeBalance');
     setBusy(false);
     if (isShowBottomSheet) navigationService.goBack();
     // changeBottomSheetStatus();
@@ -1640,14 +1661,6 @@ class PayCoolViewmodel extends FutureViewModel {
       );
     });
     setBusy(false);
-  }
-
-/*----------------------------------------------------------------------
-                            Transfer
-----------------------------------------------------------------------*/
-
-  transfer() async {
-    setBusy(true);
   }
 
 /*----------------------------------------------------------------------

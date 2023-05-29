@@ -618,6 +618,6 @@
     "selectVideoFromGallery": "Select Video from Gallery",
     "incorrectPhoneNumber": "Incorrect Phone Number",
     "kycStarted": "KYC Started",
-    "kycApproved": "KYC Approved"
-
+    "kycApproved": "KYC Approved",
+    "invaidQrCode": "Invalid QR Code"
 }

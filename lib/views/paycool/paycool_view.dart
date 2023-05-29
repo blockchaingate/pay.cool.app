@@ -287,8 +287,7 @@ class PayCoolView extends StatelessWidget {
                                                                 child: Icon(
                                                                   Icons
                                                                       .arrow_drop_down,
-                                                                  color:
-                                                                      secondaryColor,
+                                                                  color: white,
                                                                 ),
                                                               ),
                                                               iconEnabledColor:
@@ -340,7 +339,7 @@ class PayCoolView extends StatelessWidget {
                                                                             textAlign:
                                                                                 TextAlign.center,
                                                                             style:
-                                                                                headText4,
+                                                                                headText4.copyWith(color: white),
                                                                           ),
                                                                         ),
                                                                 ),
@@ -1244,11 +1243,16 @@ class CoinListBottomSheetFloatingActionButton extends StatelessWidget {
                         //model.tickerName == ''
                         // ? FlutterI18n.translate(context, "selectCoin")
                         // :
-                        model!.tickerName),
+                        model!.tickerName,
+                        style: headText4.copyWith(color: white)),
               ),
-              Text(model!.quantity == 0.0 ? '' : model!.quantity.toString()),
+              Text(
+                  model!.exchangeBalance == 0.0
+                      ? ''
+                      : model!.exchangeBalance.toString(),
+                  style: headText4.copyWith(color: white)),
               model!.exchangeBalances.isNotEmpty
-                  ? const Icon(Icons.arrow_drop_down)
+                  ? const Icon(Icons.arrow_drop_down, color: white)
                   : Container()
             ]),
           ),
