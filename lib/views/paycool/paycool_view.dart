@@ -173,11 +173,11 @@ class PayCoolView extends StatelessWidget {
                                                 // color: Color(mainColor),
                                                 borderRadius:
                                                     BorderRadius.circular(25),
-                                                gradient:
-                                                    const LinearGradient(colors: [
-                                                  Color(0xFFcd45ff),
-                                                  Color(0xFF7368ff),
-                                                ])),
+                                                gradient: const LinearGradient(
+                                                    colors: [
+                                                      Color(0xFFcd45ff),
+                                                      Color(0xFF7368ff),
+                                                    ])),
                                             margin: const EdgeInsetsDirectional
                                                 .only(top: 10.0),
                                             child: TextButton(
@@ -649,11 +649,9 @@ class PayCoolView extends StatelessWidget {
                                                                               MainAxisAlignment.end,
                                                                           children: [
                                                                             model.merchantModel!.image != null
-                                                                                ? Image.network(
-                                                                                    model.merchantModel!.image.toString(),
-                                                                                    width: 20,
-                                                                                    height: 20,
-                                                                                  )
+                                                                                ? Image.network(model.merchantModel!.image.toString(), width: 20, height: 20, errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
+                                                                                    return Container();
+                                                                                  })
                                                                                 : Container(),
                                                                             UIHelper.horizontalSpaceSmall,
                                                                             Text(model.storageService.language == "en" ? model.merchantModel!.name!.en.toString() : model.merchantModel!.name!.sc.toString(),

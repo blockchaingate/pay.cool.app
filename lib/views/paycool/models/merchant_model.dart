@@ -5,14 +5,14 @@ class MerchantModel {
   int? status;
   LocalizationModel? name;
   String? phone;
-  int? version;
+  double? version;
   int? lockedDays;
   String? website;
   String? openTime;
   String? closeTime;
   String? coin;
-  int? rebateRate;
-  int? taxRate;
+  double? rebateRate;
+  double? taxRate;
   String? refAddress;
   String? image;
   String? feeChargerSmartContractAddress;
@@ -56,21 +56,21 @@ class MerchantModel {
     name =
         json['name'] != null ? LocalizationModel.fromJson(json['name']) : null;
     phone = json['phone'];
-    version = json['version'];
+    version = double.tryParse(json['version'].toString()) ?? 0.0;
     lockedDays = json['lockedDays'];
     website = json['website'];
     openTime = json['openTime'];
     closeTime = json['closeTime'];
     coin = json['coin'];
-    rebateRate = json['rebateRate'];
-    taxRate = json['taxRate'];
+    rebateRate = double.tryParse(json['rebateRate'].toString()) ?? 0.0;
+    taxRate = double.tryParse(json['taxRate'].toString()) ?? 0.0;
     refAddress = json['refAddress'];
     image = json['image'];
     feeChargerSmartContractAddress = json['feeChargerSmartContractAddress'];
     owner = json['owner'];
     id = json['id'];
     hideOnStore = json['hideOnStore'] ?? false;
-    rewardCoin = json["rewardCoin"];
+    rewardCoin = json["rewardCoin"] ?? '';
     // merchant =
     //     json['merchant'] != null ? Merchant.fromJson(json['merchant']) : null;
   }
