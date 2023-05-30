@@ -71,6 +71,7 @@ class _DialogManagerState extends State<DialogManager> {
         style: AlertStyle(
             animationType: AnimationType.grow,
             isOverlayTapDismiss: false,
+            alertAlignment: Alignment.center,
             backgroundColor: secondaryColor,
             descStyle: headText4,
             titleStyle: headText3.copyWith(fontWeight: FontWeight.bold)),
@@ -128,6 +129,7 @@ class _DialogManagerState extends State<DialogManager> {
             animationType: AnimationType.grow,
             isOverlayTapDismiss: false,
             backgroundColor: secondaryColor,
+            alertAlignment: Alignment.center,
             descStyle: headText6,
             titleStyle: headText3.copyWith(fontWeight: FontWeight.bold)),
         context: context,
@@ -160,6 +162,7 @@ class _DialogManagerState extends State<DialogManager> {
         context: context,
         style: AlertStyle(
             alertElevation: 6,
+            alertAlignment: Alignment.center,
             animationType: AnimationType.fromTop,
             animationDuration: const Duration(milliseconds: 300),
             isOverlayTapDismiss: false,

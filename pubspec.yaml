@@ -1,6 +1,6 @@
 name: paycool
 description: Crypto payment application
-version: 2.3.127+187
+version: 2.3.128+188
 
 publish_to: "none"
 
@@ -82,9 +82,9 @@ dependencies:
   protobuf: ^2.0.0
   qr_code_utils: ^0.0.1
   qr_flutter: ^4.0.0
-  rflutter_alert: ^2.0.6
+  rflutter_alert: ^2.0.7
   screenshot: ^2.1.0
-  share_plus: ^7.0.0
+  share_plus: ^7.0.2
   shared_preferences: null
   shimmer: ^2.0.0
   sqflite: ^2.1.0+1

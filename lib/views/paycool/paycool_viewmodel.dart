@@ -1511,7 +1511,7 @@ class PayCoolViewmodel extends FutureViewModel {
                                       file
                                           .writeAsBytes(byteData!.toList())
                                           .then((onFile) {
-                                        Share.share(onFile.path,
+                                        Share.shareXFiles([XFile(onFile.path)],
                                             subject: kbAddress);
                                       });
                                     });
@@ -1631,7 +1631,7 @@ class PayCoolViewmodel extends FutureViewModel {
                                   file
                                       .writeAsBytes(byteData!.toList())
                                       .then((onFile) {
-                                    Share.shareFiles(onFile.readAsLinesSync(),
+                                    Share.shareXFiles([XFile(onFile.path)],
                                         text: kbAddress);
                                   });
                                 });

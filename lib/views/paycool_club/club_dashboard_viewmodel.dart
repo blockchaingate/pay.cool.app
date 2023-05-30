@@ -751,7 +751,7 @@ class ClubDashboardViewModel extends BaseViewModel {
                                       file
                                           .writeAsBytes(byteData!.toList())
                                           .then((onFile) {
-                                        Share.share(onFile.path,
+                                        Share.shareXFiles([XFile(onFile.path)],
                                             subject: fabAddress);
                                       });
                                     });
@@ -881,7 +881,7 @@ class ClubDashboardViewModel extends BaseViewModel {
                                       file
                                           .writeAsBytes(byteData!.toList())
                                           .then((onFile) {
-                                        Share.share(onFile.path,
+                                        Share.shareXFiles([XFile(onFile.path)],
                                             subject: fabAddress);
                                       });
                                     });
