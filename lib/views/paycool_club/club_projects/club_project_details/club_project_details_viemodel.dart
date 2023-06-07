@@ -13,6 +13,7 @@ import 'package:paycool/views/paycool_club/club_dashboard_model.dart';
 import 'package:paycool/views/paycool_club/club_projects/models/club_project_model.dart';
 import 'package:paycool/views/paycool_club/paycool_club_service.dart';
 import 'package:stacked/stacked.dart';
+import 'package:stacked_services/stacked_services.dart';
 
 class ClubProjectDetailsViewModel extends BaseViewModel {
   final storageService = locator<LocalStorageService>();

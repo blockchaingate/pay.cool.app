@@ -2,6 +2,7 @@ import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:local_auth/error_codes.dart' as auth_error;
 import 'package:paycool/logger.dart';
+import 'package:stacked_services/stacked_services.dart';
 
 import '../constants/route_names.dart';
 import '../service_locator.dart';
@@ -38,8 +39,7 @@ class LocalAuthService {
 
     //     navigationService.currentRoute() != SettingViewRoute
     if (localStorageService!.hasAppGoneInTheBackgroundKey) {
-      navigationService!
-          .navigateUsingPushReplacementNamed(WalletSetupViewRoute);
+      navigationService!.navigateTo(WalletSetupViewRoute);
     }
     _auth.stopAuthentication();
   }
@@ -57,7 +57,10 @@ class LocalAuthService {
   }
 
   // Authenticate
-  Future<bool> authenticateApp() async {
+  Future<bool> authenticateApp(
+      {bool isBiometricOnly = false,
+      isStickyAuth = true,
+      bool isSensitiveTransaction = true}) async {
     _hasAuthorized = false;
     _authInProgress = true;
     setIsCancelledValueFalse();
@@ -65,8 +68,11 @@ class LocalAuthService {
       await _auth
           .authenticate(
         localizedReason: 'Authenticate',
-        // useErrorDialogs: true,
-        //  stickyAuth: true,
+        options: AuthenticationOptions(
+          biometricOnly: isBiometricOnly,
+          stickyAuth: isStickyAuth,
+          sensitiveTransaction: isSensitiveTransaction,
+        ),
       )
           .then((res) {
         _hasAuthorized = res;

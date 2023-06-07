@@ -76,7 +76,7 @@ class ClubPackageCheckoutView extends StatelessWidget {
                               child: OutlinedButton(
                                   style: outlinedButtonStyles2,
                                   onPressed: () => !model.isBusy
-                                      ? model.navigationService.goBack()
+                                      ? model.navigationService.back()
                                       : model.log.e('model busy'),
                                   child: Text(
                                     FlutterI18n.translate(context, "cancel"),
@@ -151,7 +151,7 @@ class ClubPackageCheckoutView extends StatelessWidget {
                                       child: OutlinedButton(
                                           style: outlinedButtonStyles2,
                                           onPressed: () => !model.isBusy
-                                              ? model.navigationService.goBack()
+                                              ? model.navigationService.back()
                                               : model.log.e('model busy'),
                                           child: Text(
                                             FlutterI18n.translate(

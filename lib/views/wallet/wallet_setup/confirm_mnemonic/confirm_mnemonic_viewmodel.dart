@@ -23,6 +23,7 @@ import 'package:paycool/environments/environment_type.dart';
 import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/navigation_service.dart';
 import 'package:stacked/stacked.dart';
+import 'package:stacked_services/stacked_services.dart';
 
 import '../../../../logger.dart';
 

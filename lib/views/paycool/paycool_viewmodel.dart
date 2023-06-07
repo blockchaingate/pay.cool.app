@@ -43,6 +43,7 @@ import 'package:paycool/views/paycool/models/merchant_model.dart';
 import 'package:paycool/views/paycool/paycool_service.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:stacked/stacked.dart';
+import 'package:stacked_services/stacked_services.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../environments/environment.dart';
 import '../../services/config_service.dart';
@@ -1382,7 +1383,7 @@ class PayCoolViewmodel extends FutureViewModel {
         exchangeBalances.firstWhere((element) => element.ticker == tickerName);
     debugPrint('IOS tickerName $tickerName --- quantity $exchangeBalance');
     setBusy(false);
-    if (isShowBottomSheet) navigationService.goBack();
+    if (isShowBottomSheet) navigationService.back();
     // changeBottomSheetStatus();
   }
 

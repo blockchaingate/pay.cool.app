@@ -26,6 +26,7 @@ import 'package:paycool/utils/wallet/wallet_util.dart';
 
 import 'package:stacked/stacked.dart';
 import 'package:paycool/services/api_service.dart';
+import 'package:stacked_services/stacked_services.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:paycool/utils/string_util.dart';
 import 'package:paycool/services/db/user_settings_database_service.dart';

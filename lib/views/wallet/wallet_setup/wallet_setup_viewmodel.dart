@@ -35,6 +35,7 @@ import 'package:paycool/utils/wallet/wallet_util.dart';
 import 'package:paycool/widgets/web_view_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stacked/stacked.dart';
+import 'package:stacked_services/stacked_services.dart';
 import '../../../constants/api_routes.dart';
 import '../../../service_locator.dart';
 import 'dart:io' show Platform;
@@ -152,7 +153,7 @@ class WalletSetupViewmodel extends BaseViewModel {
                               backgroundColor:
                                   MaterialStateProperty.all(secondaryColor),
                               shape: buttonRoundShape(secondaryColor)),
-                          onPressed: (() => navigationService.goBack()),
+                          onPressed: (() => navigationService.back()),
                           child: Text(
                             FlutterI18n.translate(context, "decline"),
                             style: headText5,
@@ -185,7 +186,7 @@ class WalletSetupViewmodel extends BaseViewModel {
 
   setPrivacyConsent() {
     storageService.hasPrivacyConsent = true;
-    navigationService.goBack();
+    navigationService.back();
     checkExistingWallet();
   }
 
@@ -379,7 +380,7 @@ class WalletSetupViewmodel extends BaseViewModel {
     if (storageService.hasInAppBiometricAuthEnabled) {
       if (!authService.isCancelled) await authService.authenticateApp();
       if (hasAuthenticated) {
-        navigationService.navigateUsingpopAndPushedNamed(DashboardViewRoute);
+        navigationService.navigateTo(DashboardViewRoute);
         storageService.hasAppGoneInTheBackgroundKey = false;
       }
       if (authService.isCancelled || !hasAuthenticated) {
@@ -389,10 +390,10 @@ class WalletSetupViewmodel extends BaseViewModel {
       }
       // bool isDeviceSupported = await authService.isDeviceSupported();
       if (!storageService.hasPhoneProtectionEnabled) {
-        navigationService.navigateUsingpopAndPushedNamed(DashboardViewRoute);
+        navigationService.navigateTo(DashboardViewRoute);
       }
     } else {
-      navigationService.navigateUsingpopAndPushedNamed(DashboardViewRoute);
+      navigationService.navigateTo(DashboardViewRoute);
     }
     setBusy(false);
 

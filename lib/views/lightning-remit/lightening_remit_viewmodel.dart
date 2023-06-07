@@ -30,6 +30,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:stacked/stacked.dart';
 import 'package:paycool/models/wallet/transaction_history.dart';
 import 'package:paycool/services/db/token_list_database_service.dart';
+import 'package:stacked_services/stacked_services.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:paycool/constants/api_routes.dart';
 
@@ -181,7 +182,7 @@ class LightningRemitViewmodel extends FutureViewModel {
     if (isShowBottomSheet) {
       debugPrint('Bottom Sheet already visible');
 
-      navigationService.goBack();
+      navigationService.back();
     } else {
       showBottomSheet(
         context: context1,
@@ -325,7 +326,7 @@ class LightningRemitViewmodel extends FutureViewModel {
     quantity = updatedQuantity;
     debugPrint('IOS tickerName $tickerName --- quantity $quantity');
     setBusy(false);
-    if (isShowBottomSheet) navigationService.goBack();
+    if (isShowBottomSheet) navigationService.back();
     changeBottomSheetStatus();
   }
 

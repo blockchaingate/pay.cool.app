@@ -16,6 +16,7 @@ import 'package:paycool/shared/ui_helpers.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:flutter/material.dart';
 import 'package:overlay_support/overlay_support.dart';
+import 'package:stacked_services/stacked_services.dart' show NavigationService;
 
 import '../constants/colors.dart';
 import '../constants/custom_styles.dart';

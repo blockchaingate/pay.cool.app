@@ -22,6 +22,7 @@ import 'package:paycool/views/paycool_club/join_club/join_club_payment_model.dar
 import 'package:paycool/views/paycool_club/paycool_club_service.dart';
 import 'package:stacked/stacked.dart';
 import 'package:paycool/services/local_dialog_service.dart';
+import 'package:stacked_services/stacked_services.dart';
 
 class JoinPayCoolClubViewModel extends BaseViewModel {
   final log = getLogger('JoinPayCoolClubViewModel');

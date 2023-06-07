@@ -10,6 +10,7 @@ import 'package:package_info/package_info.dart';
 import 'package:paycool/routes.dart';
 import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/navigation_service.dart';
+import 'package:stacked_services/stacked_services.dart';
 import 'constants/colors.dart';
 import 'environments/environment_type.dart';
 import 'managers/dialog_manager.dart';
@@ -77,7 +78,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         // darkTheme: ThemeData.dark(),
         debugShowCheckedModeBanner: false,
-        navigatorKey: locator<NavigationService>().navigatorKey,
+        navigatorKey: StackedService.navigatorKey,
         builder: (context, widget) => Stack(
           children: [
             Navigator(

@@ -49,7 +49,7 @@ class ClubProjectDetailsView extends StatelessWidget {
                           Icons.arrow_back,
                           color: black,
                         ),
-                        onPressed: () => viewmodel.navigationService.goBack(),
+                        onPressed: () => viewmodel.navigationService.back(),
                       ),
                     ),
                   ),

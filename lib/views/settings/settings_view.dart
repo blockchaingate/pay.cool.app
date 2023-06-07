@@ -17,11 +17,11 @@ import 'package:paycool/constants/api_routes.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/environments/environment_type.dart';
-import 'package:paycool/service_locator.dart';
 import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/views/settings/settings_viewmodel.dart';
 import 'package:paycool/widgets/bottom_nav.dart';
 import 'package:flutter/material.dart';
+import 'package:paycool/widgets/payment_biometric_auth.dart';
 import 'package:paycool/widgets/wallet/kyc_widget.dart';
 import 'package:stacked/stacked.dart';
 
@@ -401,7 +401,42 @@ class SettingsContainer extends StatelessWidget {
             //       onPressed: () => model.reloadApp(),
             //       child: Text('Reload app')),
             // ),
-
+            Container(
+              padding: const EdgeInsets.all(15),
+              child: Row(
+                //  crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  const Padding(
+                    padding: EdgeInsets.only(left: 5.0, right: 8.0),
+                    child: Icon(Icons.fingerprint_outlined,
+                        color: black, size: 18),
+                  ),
+                  // Add column here and add text box that shows which node is current
+                  Expanded(
+                    child: Text(
+                        FlutterI18n.translate(
+                            context, "biometricAuthForPayment"),
+                        style: headText5,
+                        textAlign: TextAlign.left),
+                  ),
+                  SizedBox(
+                    height: 20,
+                    child: Switch(
+                        inactiveThumbColor: grey,
+                        activeTrackColor: white,
+                        activeColor: primaryColor,
+                        inactiveTrackColor: white,
+                        value: model.storageService.isHKServer,
+                        onChanged: (value) {
+                          PaymentBiometricAuthWidget.setupPaymentBiometricAuth(
+                              context);
+                        }),
+                  ),
+                  // ),
+                ],
+              ),
+            ),
             Container(
               padding: const EdgeInsets.all(15),
               child: Row(

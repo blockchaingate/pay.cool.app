@@ -619,5 +619,6 @@
     "incorrectPhoneNumber": "Incorrect Phone Number",
     "kycStarted": "KYC Started",
     "kycApproved": "KYC Approved",
-    "invaidQrCode": "Invalid QR Code"
+    "invaidQrCode": "Invalid QR Code",
+    "biometricAuthForPayment": "Biometric Authentication for Payment"
 }

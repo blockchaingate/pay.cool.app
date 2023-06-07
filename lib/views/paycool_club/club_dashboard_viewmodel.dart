@@ -30,6 +30,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:stacked/stacked.dart';
 import 'package:paycool/services/db/wallet_database_service.dart';
 import 'package:paycool/services/local_dialog_service.dart';
+import 'package:stacked_services/stacked_services.dart';
 import '../../models/wallet/wallet.dart';
 import '../../services/wallet_service.dart';
 

@@ -56,6 +56,7 @@ import 'package:overlay_support/overlay_support.dart';
 import 'package:paycool/utils/wallet/wallet_util.dart';
 // import 'package:showcaseview/showcaseview.dart';
 import 'package:stacked/stacked.dart';
+import 'package:stacked_services/stacked_services.dart';
 
 import '../../services/local_dialog_service.dart';
 //import 'package:aukfa_version_checker
@@ -1106,8 +1107,7 @@ class WalletDashboardViewModel extends BaseViewModel {
     }
     if (finalWbb.isEmpty) {
       storageService.hasWalletVerified = false;
-      navigationService
-          .navigateUsingPushNamedAndRemoveUntil(WalletSetupViewRoute);
+      navigationService.pushNamedAndRemoveUntil(WalletSetupViewRoute);
       return [];
     }
     walletBalancesApiRes =

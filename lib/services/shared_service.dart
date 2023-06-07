@@ -21,6 +21,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:package_info/package_info.dart';
+import 'package:stacked_services/stacked_services.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../constants/colors.dart';
@@ -108,8 +109,7 @@ class SharedService {
           for (PairDecimalConfig pair in res) {
             if (pair.name == pairName) {
               singlePairDecimalConfig = PairDecimalConfig(
-                  priceDecimal: pair.priceDecimal,
-                  qtyDecimal: pair.qtyDecimal);
+                  priceDecimal: pair.priceDecimal, qtyDecimal: pair.qtyDecimal);
             }
           }
         }
@@ -298,7 +298,7 @@ class SharedService {
 -------------------------------------------------------------------------------------*/
 
   onBackButtonPressed(String route) async {
-    navigationService.navigateUsingpopAndPushedNamed(route);
+    navigationService.navigateTo(route);
   }
 
   Future<void> launchInBrowser(Uri url) async {
@@ -509,9 +509,8 @@ class SharedService {
                               } else {
                                 debugPrint('PATH $path');
                                 Navigator.of(context).pop(false);
-                                navigationService
-                                    .navigateUsingPushReplacementNamed(path,
-                                        arguments: arguments);
+                                navigationService.navigateTo(path,
+                                    arguments: arguments);
                               }
                             },
                           ),

@@ -11,6 +11,7 @@ import 'package:paycool/views/paycool_club/purchased_package_history/purchased_p
 import 'package:paycool/views/paycool_club/paycool_club_service.dart';
 
 import 'package:stacked/stacked.dart';
+import 'package:stacked_services/stacked_services.dart';
 
 class PurchasedPackageViewmodel extends FutureViewModel {
   final log = getLogger('PurchasedPackageViewmodel');

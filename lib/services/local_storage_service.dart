@@ -38,6 +38,8 @@ class LocalStorageService {
   static const String CameraOpenKey = 'CameraOpenKey';
   static const String privacyConsentKey = 'privacyConsentKey';
   static const String tokenListDbUpdateTimeKey = 'tokenListDbUpdateTimeKey';
+  static const String StoreDeviceIdKey = 'storeDeviceIdKey';
+  static const String BiometricAuthDataKey = 'biometricAuthDataKey';
 /*----------------------------------------------------------------------
                         Instance
 ----------------------------------------------------------------------*/
@@ -114,14 +116,23 @@ class LocalStorageService {
 
   set customTokens(String value) => _saveToDisk(CustomTokensKey, value);
 
-/*----------------------------------------------------------------------
-                testing log string list
-----------------------------------------------------------------------  */
   String get testingLogStringList =>
       _getFromDisk(TestingLogStringListKey) ?? '';
 
   set testingLogStringList(String value) =>
       _saveToDisk(TestingLogStringListKey, value);
+
+/*----------------------------------------------------------------------
+                Biometric auth getter/setter
+----------------------------------------------------------------------  */
+  String get deviceId => _getFromDisk(StoreDeviceIdKey) ?? '';
+
+  set deviceId(String value) => _saveToDisk(StoreDeviceIdKey, value);
+
+  String get biometricAuthData => _getFromDisk(BiometricAuthDataKey) ?? '';
+
+  set biometricAuthData(String value) =>
+      _saveToDisk(BiometricAuthDataKey, value);
 
 /*----------------------------------------------------------------------
                 Biometric auth getter/setter

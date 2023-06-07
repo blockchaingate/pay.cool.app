@@ -10,6 +10,7 @@ import 'package:paycool/services/local_storage_service.dart';
 import 'package:paycool/services/navigation_service.dart';
 import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/views/paycool_club/club_projects/models/club_project_model.dart';
+import 'package:stacked_services/stacked_services.dart';
 
 class ClubPackageDetailsView extends StatefulWidget {
   final List<ClubProject>? projectDetails;

@@ -20,6 +20,7 @@ import 'package:paycool/services/shared_service.dart';
 import 'package:paycool/services/local_storage_service.dart';
 import 'package:paycool/widgets/bottom_navmodel.dart';
 import 'package:stacked/stacked.dart';
+import 'package:stacked_services/stacked_services.dart';
 
 class BottomNavBar extends StatelessWidget {
   final int count;
@@ -64,39 +65,32 @@ class BottomNavBar extends StatelessWidget {
                             case 0:
                               if (currentRouteName != 'clubDashboardView') {
                                 navigationService
-                                    .navigateUsingpopAndPushedNamed(
-                                        clubDashboardViewRoute);
+                                    .navigateTo(clubDashboardViewRoute);
                               }
                               break;
 
                             case 1:
                               if (currentRouteName != 'WalletDashboardView') {
                                 navigationService
-                                    .navigateUsingpopAndPushedNamed(
-                                        DashboardViewRoute);
+                                    .navigateTo(DashboardViewRoute);
                               }
                               break;
 
                             case 2:
                               if (currentRouteName != 'PayCoolView') {
-                                navigationService
-                                    .navigateUsingpopAndPushedNamed(
-                                        PayCoolViewRoute);
+                                navigationService.navigateTo(PayCoolViewRoute);
                               }
                               break;
                             case 3:
                               if (currentRouteName != 'BindpayView') {
                                 navigationService
-                                    .navigateUsingpopAndPushedNamed(
-                                        lightningRemitViewRoute);
+                                    .navigateTo(lightningRemitViewRoute);
                               }
                               break;
 
                             case 4:
                               if (currentRouteName != 'SettingsView') {
-                                navigationService
-                                    .navigateUsingpopAndPushedNamed(
-                                        SettingViewRoute);
+                                navigationService.navigateTo(SettingViewRoute);
                               } else if (ModalRoute.of(context)!
                                       .settings
                                       .name ==
@@ -113,32 +107,26 @@ class BottomNavBar extends StatelessWidget {
                             case 0:
                               if (currentRouteName != 'WalletDashboardView') {
                                 navigationService
-                                    .navigateUsingpopAndPushedNamed(
-                                        DashboardViewRoute);
+                                    .navigateTo(DashboardViewRoute);
                               }
                               break;
 
                             case 1:
                               if (currentRouteName != 'PayCoolView') {
-                                navigationService
-                                    .navigateUsingpopAndPushedNamed(
-                                        PayCoolViewRoute);
+                                navigationService.navigateTo(PayCoolViewRoute);
                               }
                               break;
 
                             case 2:
                               if (currentRouteName != 'BindpayView') {
                                 navigationService
-                                    .navigateUsingpopAndPushedNamed(
-                                        lightningRemitViewRoute);
+                                    .navigateTo(lightningRemitViewRoute);
                               }
                               break;
 
                             case 3:
                               if (currentRouteName != 'SettingsView') {
-                                navigationService
-                                    .navigateUsingpopAndPushedNamed(
-                                        SettingViewRoute);
+                                navigationService.navigateTo(SettingViewRoute);
                               } else if (ModalRoute.of(context)!
                                       .settings
                                       .name ==
@@ -155,31 +143,26 @@ class BottomNavBar extends StatelessWidget {
                             case 0:
                               if (currentRouteName != 'clubDashboardView') {
                                 navigationService
-                                    .navigateUsingpopAndPushedNamed(
-                                        clubDashboardViewRoute);
+                                    .navigateTo(clubDashboardViewRoute);
                               }
                               break;
                             case 1:
                               if (currentRouteName != 'WalletDashboardView') {
                                 navigationService
-                                    .navigateUsingpopAndPushedNamed(
-                                        DashboardViewRoute);
+                                    .navigateTo(DashboardViewRoute);
                               }
                               break;
 
                             case 2:
                               if (currentRouteName != 'BindpayView') {
                                 navigationService
-                                    .navigateUsingpopAndPushedNamed(
-                                        lightningRemitViewRoute);
+                                    .navigateTo(lightningRemitViewRoute);
                               }
                               break;
 
                             case 3:
                               if (currentRouteName != 'SettingsView') {
-                                navigationService
-                                    .navigateUsingpopAndPushedNamed(
-                                        SettingViewRoute);
+                                navigationService.navigateTo(SettingViewRoute);
                               } else if (ModalRoute.of(context)!
                                       .settings
                                       .name ==
@@ -195,23 +178,19 @@ class BottomNavBar extends StatelessWidget {
                             case 0:
                               if (currentRouteName != 'WalletDashboardView') {
                                 navigationService
-                                    .navigateUsingpopAndPushedNamed(
-                                        DashboardViewRoute);
+                                    .navigateTo(DashboardViewRoute);
                               }
                               break;
                             case 1:
                               if (currentRouteName != 'BindpayView') {
                                 navigationService
-                                    .navigateUsingpopAndPushedNamed(
-                                        lightningRemitViewRoute);
+                                    .navigateTo(lightningRemitViewRoute);
                               }
                               break;
 
                             case 2:
                               if (currentRouteName != 'SettingsView') {
-                                navigationService
-                                    .navigateUsingpopAndPushedNamed(
-                                        SettingViewRoute);
+                                navigationService.navigateTo(SettingViewRoute);
                               } else if (ModalRoute.of(context)!
                                       .settings
                                       .name ==

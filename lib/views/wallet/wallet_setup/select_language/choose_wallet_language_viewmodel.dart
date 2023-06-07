@@ -21,6 +21,7 @@ import 'package:paycool/services/local_storage_service.dart';
 import 'package:paycool/services/navigation_service.dart';
 import 'package:paycool/services/wallet_service.dart';
 import 'package:stacked/stacked.dart';
+import 'package:stacked_services/stacked_services.dart';
 
 class ChooseWalletLanguageViewModel extends BaseViewModel {
   final log = getLogger('ChooseWalletLanguageScreenState');

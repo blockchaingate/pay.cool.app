@@ -26,6 +26,7 @@ import 'package:paycool/services/wallet_service.dart';
 import 'package:paycool/utils/string_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
+import 'package:stacked_services/stacked_services.dart';
 
 class CreatePasswordViewModel extends BaseViewModel {
   final log = getLogger('CreatePasswordViewModel');
@@ -73,7 +74,7 @@ class CreatePasswordViewModel extends BaseViewModel {
         .createOfflineWalletsV1(
             randomMnemonicFromRoute, passTextController.text)
         .then((data) {
-      navigationService.navigateUsingPushNamedAndRemoveUntil(PayCoolViewRoute);
+      navigationService.pushNamedAndRemoveUntil(PayCoolViewRoute);
       storageService.showPaycoolClub = false;
       randomMnemonicFromRoute = '';
       passTextController.text = '';

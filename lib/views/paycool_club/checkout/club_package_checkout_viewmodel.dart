@@ -18,6 +18,7 @@ import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/navigation_service.dart';
 import 'package:paycool/services/shared_service.dart';
 import 'package:paycool/views/paycool_club/paycool_club_service.dart';
+import 'package:stacked_services/stacked_services.dart';
 
 class ClubPackageCheckoutViewModel extends FutureViewModel {
   final String packageId;

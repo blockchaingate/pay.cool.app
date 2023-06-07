@@ -28,6 +28,7 @@ import 'package:flutter/material.dart';
 import 'package:paycool/utils/wallet/wallet_util.dart';
 import 'package:stacked/stacked.dart';
 import 'package:paycool/constants/route_names.dart';
+import 'package:stacked_services/stacked_services.dart';
 
 class WalletFeaturesViewModel extends BaseViewModel {
   final log = getLogger('WalletFeaturesViewModel');

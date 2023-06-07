@@ -13,6 +13,7 @@
 
 import 'dart:io';
 
+import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:kyc/kyc.dart';
@@ -37,6 +38,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 //import 'package:showcaseview/showcaseview.dart';
 
 import 'package:stacked/stacked.dart';
+import 'package:stacked_services/stacked_services.dart';
 
 import '../../logger.dart';
 import '../../models/dialog/dialog_response.dart';
@@ -68,7 +70,7 @@ class SettingsViewModel extends BaseViewModel with StoppableService {
   String? selectedLanguage;
   // bool result = false;
   String errorMessage = '';
-  DialogResponse? dialogResponse;
+  // DialogResponse? dialogResponse;
   BuildContext? context;
   String versionName = '';
   String buildNumber = '';
@@ -197,7 +199,7 @@ class SettingsViewModel extends BaseViewModel with StoppableService {
   setLockAppNowValue() {
     setBusyForObject(lockAppNow, true);
     _lockAppNow = !_lockAppNow;
-    navigationService.navigateUsingPushReplacementNamed(WalletSetupViewRoute);
+    navigationService.navigateTo(WalletSetupViewRoute);
     setBusyForObject(lockAppNow, false);
   }
 
@@ -336,7 +338,7 @@ class SettingsViewModel extends BaseViewModel with StoppableService {
     isShowPaycool = storageService.showPaycool;
     setBusy(false);
     log.w('setShowPaycool: ${storageService.showPaycool}');
-    navigationService.navigateUsingpopAndPushedNamed(SettingViewRoute);
+    navigationService.navigateTo(SettingViewRoute);
   }
 
   setAutoScanPaycool(bool v) {
@@ -347,7 +349,7 @@ class SettingsViewModel extends BaseViewModel with StoppableService {
     isAutoStartPaycoolScan = storageService.autoStartPaycoolScan;
     setBusy(false);
     log.w('setautoStartPaycoolScan: ${storageService.autoStartPaycoolScan}');
-    navigationService.navigateUsingpopAndPushedNamed(SettingViewRoute);
+    navigationService.navigateTo(SettingViewRoute);
   }
 
   setShowPaycoolClub(bool v) {
@@ -358,7 +360,7 @@ class SettingsViewModel extends BaseViewModel with StoppableService {
     isShowPaycoolClub = storageService.showPaycoolClub;
     setBusy(false);
     log.w('setShowPaycoolWallet: ${storageService.showPaycoolClub}');
-    navigationService.navigateUsingPushReplacementNamed(SettingViewRoute);
+    navigationService.navigateTo(SettingViewRoute);
   }
 
 /*-------------------------------------------------------------------------------------
@@ -595,7 +597,7 @@ class SettingsViewModel extends BaseViewModel with StoppableService {
       await FlutterI18n.refresh(context!, currentLang);
       storageService.language = "hi";
     }
-    navigationService.navigateUsingpopAndPushedNamed(SettingViewRoute);
+    navigationService.navigateTo(SettingViewRoute);
     setBusy(false);
   }
 

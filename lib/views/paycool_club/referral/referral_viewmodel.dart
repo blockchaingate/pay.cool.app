@@ -10,6 +10,7 @@ import 'package:paycool/views/paycool_club/referral/referral_model.dart';
 import 'package:paycool/views/paycool_club/paycool_club_service.dart';
 
 import 'package:stacked/stacked.dart';
+import 'package:stacked_services/stacked_services.dart';
 
 class ReferralViewmodel extends BaseViewModel {
   final log = getLogger('ReferralViewmodel');
