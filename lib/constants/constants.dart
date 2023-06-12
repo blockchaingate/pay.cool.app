@@ -15,12 +15,14 @@ class Constants {
   static const List<String> specialTokens = [
     'USDTX',
     'USDTM',
+    'USDTB',
+    'USDCX',
     'FABE',
     'EXGE',
     'DSCE',
     'BSTE',
-    'USDCX',
-    'FABB'
+    'FABB',
+    'MATICM',
   ];
   static const String appName = 'Paycool';
   static const String androidStoreId = "club.paycool.paycool";

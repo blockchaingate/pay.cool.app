@@ -726,42 +726,6 @@ class ApiService {
     return {};
   }
 
-  // Get Orders by address
-  Future getOrdersTest(String exgAddress) async {
-    String url =
-        configService.getKanbanBaseUrl() + OrdersByAddrApiRoute + exgAddress;
-    log.w('get my orders url $url');
-    try {
-      throw Exception('Catch Exception');
-    } catch (err) {
-      log.e('getOrders Failed to load the data from the API， $err');
-      throw Exception('Catch Exception $err');
-    }
-  }
-
-  // Get Orders by tickername
-  Future getMyOrdersPagedByFabHexAddressAndTickerName(
-      String exgAddress, String tickerName) async {
-    String url =
-        '${configService.getKanbanBaseUrl()}$GetOrdersByTickerApiRoute$exgAddress/$tickerName';
-    // String url = environment['endpoints']['kanban'] +
-    //     'getordersbytickername/' +
-    //     exgAddress +
-    //     '/' +
-    //     tickerName;
-    log.i('getMyOrdersByTickerName url $url');
-    try {
-      final res = await client.get(Uri.parse(url));
-      debugPrint('after res ${res.body}');
-      if (res.statusCode == 200 || res.statusCode == 201) {
-        return jsonDecode(res.body);
-      }
-    } catch (e) {
-      log.e('getMyOrdersByTickerName Failed to load the data from the API， $e');
-      throw Exception;
-    }
-  }
-
   // Get FabUtxos
   Future getFabUtxos(String address) async {
     var url = fabBaseUrl + GetUtxosApiRoute + address;
