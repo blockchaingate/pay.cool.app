@@ -211,13 +211,6 @@ final String eventsUrl = environment["eventInfo"];
 
 const String txStatusStatusRoute = 'kanban/explorer/getTransactionStatus';
 
-// Websockets
-
-const String AllPricesWSRoute = 'allPrices';
-const String TradesWSRoute = 'trades@';
-const String OrdersWSRoute = 'orders@';
-const String TickerWSRoute = 'ticker@';
-
 // My Orders
 
 const String GetOrdersByAddrApiRoute = 'ordersbyaddresspaged/';
@@ -229,5 +222,3 @@ const String GetOrdersByTickerApiRoute = 'getordersbytickernamepaged/';
 /// 0xb754f9c8b706c59646a4e97601a0ad81067e1cf9/HOT
 const String GetSingleCoinExchangeBalApiRoute = 'exchangily/getBalance/';
 const String AssetsBalanceApiRoute = 'exchangily/getBalances/';
-
-const String OrdersByAddrApiRoute = 'ordersbyaddress/';
