@@ -4,20 +4,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:logger/logger.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:package_info/package_info.dart';
 import 'package:paycool/routes.dart';
 import 'package:paycool/service_locator.dart';
-import 'package:paycool/services/navigation_service.dart';
 import 'package:stacked_services/stacked_services.dart';
+
 import 'constants/colors.dart';
 import 'environments/environment_type.dart';
 import 'managers/dialog_manager.dart';
 import 'services/local_dialog_service.dart';
-
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_i18n/flutter_i18n.dart';
 
 Future<void> main() async {
   final String defaultLocale = Platform.localeName;

@@ -983,6 +983,54 @@ class PayCoolView extends StatelessWidget {
                                                                       .bold)),
                                                     ),
                                                   ),
+                                                  UIHelper.verticalSpaceMedium,
+                                                  // Pay - Receive Button Row
+
+                                                  SizedBox(
+                                                    width: 400,
+                                                    height: 45,
+                                                    child: ElevatedButton(
+                                                      style: ButtonStyle(
+                                                          elevation:
+                                                              MaterialStateProperty
+                                                                  .all(20.0),
+                                                          shape:
+                                                              shapeRoundBorder,
+                                                          backgroundColor:
+                                                              MaterialStateProperty
+                                                                  .all(
+                                                                      primaryColor),
+                                                          textStyle:
+                                                              MaterialStateProperty
+                                                                  .all(
+                                                                      const TextStyle(
+                                                            color: Colors.white,
+                                                          ))),
+                                                      onPressed: () {
+                                                        if (model.isBusy ||
+                                                            model.rewardInfoModel!
+                                                                    .params ==
+                                                                null) {
+                                                          debugPrint(
+                                                              'busy or no data');
+                                                        } else {
+                                                          model.makePayment(
+                                                              isBiometric:
+                                                                  true);
+                                                        }
+                                                      },
+                                                      child: Text(
+                                                          "Pay with FaceID",
+                                                          strutStyle:
+                                                              const StrutStyle(),
+                                                          style: headText4.copyWith(
+                                                              color:
+                                                                  secondaryColor,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold)),
+                                                    ),
+                                                  ),
                                                   //  UIHelper.horizontalSpaceSmall,
                                                   SizedBox(
                                                     height: isPhone() ? 50 : 80,

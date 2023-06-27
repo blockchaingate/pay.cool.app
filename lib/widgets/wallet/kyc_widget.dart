@@ -7,7 +7,6 @@ import 'package:paycool/environments/environment_type.dart';
 import 'package:paycool/service_locator.dart';
 import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/utils/wallet/local_kyc_util.dart';
-import 'package:paycool/views/settings/settings_view.dart';
 import 'package:paycool/views/settings/settings_viewmodel.dart';
 import 'package:stacked/stacked.dart';
 
