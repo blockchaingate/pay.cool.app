@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:paycool/services/local_auth_service.dart';
 import 'package:paycool/utils/wallet/wallet_util.dart';
 import 'package:qr_code_utils/qr_code_utils.dart';
@@ -318,13 +319,7 @@ class PayCoolViewmodel extends FutureViewModel {
     setBusy(false);
   }
 
-  authenticateChoice() {
-    // show dialog to ask user which authentication type to use
-    // whether password or biometric
-    // if biometric, call authenticateBiometric()
-    // if password, call authenticatePassword()
-  }
-  makePayment() async {
+  makePayment({isBiometric = false}) async {
     setBusy(true);
     isPaying = true;
     if (merchantModel!.status == 0) {
@@ -363,19 +358,61 @@ class PayCoolViewmodel extends FutureViewModel {
       return;
     }
     try {
-      authenticateChoice();
-      var seed = await walletService.getSeedDialog(sharedService.context);
-      String res = '';
-      for (var param in rewardInfoModel!.params!) {
-        res = await paycoolService.signSendTx(seed!, param.data!, param.to!);
-      }
-      if (res == '0x1') {
-        payOrderConfirmationPopup();
-        resetVariables();
-      } else if (res == '0x0') {
-        sharedService.sharedSimpleNotification(
-            FlutterI18n.translate(sharedService.context, "failed"),
-            isError: true);
+      if (isBiometric) {
+        final localAuth = LocalAuthentication();
+        List<BiometricType> availableBiometrics =
+            await localAuth.getAvailableBiometrics();
+
+        if (availableBiometrics.contains(BiometricType.face)) {
+          await localAuth
+              .authenticate(
+            localizedReason: 'Please authenticate to proceed.',
+            options: const AuthenticationOptions(
+              biometricOnly: true,
+              stickyAuth: true,
+              sensitiveTransaction: true,
+            ),
+          )
+              .then((value) async {
+            if (value) {
+              var seed =
+                  walletService.generateSeed(storageService.biometricAuthData);
+              String res = '';
+              for (var param in rewardInfoModel!.params!) {
+                res = await paycoolService.signSendTx(
+                    seed, param.data!, param.to!);
+              }
+              if (res == '0x1') {
+                payOrderConfirmationPopup();
+                resetVariables();
+              } else if (res == '0x0') {
+                sharedService.sharedSimpleNotification(
+                    FlutterI18n.translate(sharedService.context, "failed"),
+                    isError: true);
+              }
+            }
+          });
+        } else {
+          sharedService.sharedSimpleNotification(
+              FlutterI18n.translate(sharedService.context, "biometricError"),
+              isError: true);
+          setBusy(false);
+          return;
+        }
+      } else {
+        var seed = await walletService.getSeedDialog(sharedService.context);
+        String res = '';
+        for (var param in rewardInfoModel!.params!) {
+          res = await paycoolService.signSendTx(seed!, param.data!, param.to!);
+        }
+        if (res == '0x1') {
+          payOrderConfirmationPopup();
+          resetVariables();
+        } else if (res == '0x0') {
+          sharedService.sharedSimpleNotification(
+              FlutterI18n.translate(sharedService.context, "failed"),
+              isError: true);
+        }
       }
     } catch (err) {
       log.e('CATCH signtx v2 failed $err');
@@ -1145,7 +1182,8 @@ class PayCoolViewmodel extends FutureViewModel {
                     padding: const EdgeInsets.all(8.0),
                     child: TextField(
                       controller: controller,
-                      keyboardType: TextInputType.number,
+                      keyboardType: const TextInputType.numberWithOptions(
+                          decimal: true, signed: false),
                       style: headText4,
                       decoration: InputDecoration(
                         labelStyle: headText4,
