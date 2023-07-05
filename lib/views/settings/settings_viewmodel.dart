@@ -227,8 +227,8 @@ class SettingsViewModel extends BaseViewModel with StoppableService {
         if (!storageService.enableBiometricPayment) {
           storageService.biometricAuthData = '';
 
-          sharedService.sharedSimpleNotification(
-              FlutterI18n.translate(context!, "failed"));
+          // sharedService.sharedSimpleNotification(
+          //     FlutterI18n.translate(context!, "failed"));
         } else {
           await sharedService.storeDeviceId();
 
@@ -261,7 +261,7 @@ class SettingsViewModel extends BaseViewModel with StoppableService {
       }
     }).catchError((err) {
       sharedService.sharedSimpleNotification(
-          FlutterI18n.translate(sharedService.context, "biometricError"),
+          FlutterI18n.translate(sharedService.context, "failed"),
           isError: true);
       setBusy(false);
     });
