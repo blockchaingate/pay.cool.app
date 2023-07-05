@@ -613,5 +613,8 @@
     "kycStep-1": "Código de correo electrónico enviado",
     "incorrectPhoneNumber": "Número de teléfono incorrecto",
     "kycStarted": "kycIniciado",
-    "kycApproved": "kycAprobado"
+    "kycApproved": "kycAprobado",
+    "biometricAuthForPayment": "Autenticación biométrica para el pago",
+    "payUsingBiometric": "Pagar usando biometría",
+    "pleaseAuthenticateToProceed": "Por favor, autentíquese para continuar."
 }

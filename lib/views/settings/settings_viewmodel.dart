@@ -17,6 +17,7 @@ import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:kyc/kyc.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:paycool/constants/route_names.dart';
 import 'package:paycool/models/wallet/user_settings_model.dart';
@@ -28,7 +29,6 @@ import 'package:paycool/services/db/user_settings_database_service.dart';
 import 'package:paycool/services/db/wallet_database_service.dart';
 import 'package:paycool/services/local_auth_service.dart';
 import 'package:paycool/services/local_storage_service.dart';
-import 'package:paycool/services/navigation_service.dart';
 import 'package:paycool/services/shared_service.dart';
 import 'package:paycool/services/stoppable_service.dart';
 import 'package:paycool/services/vault_service.dart';
@@ -41,7 +41,6 @@ import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 
 import '../../logger.dart';
-import '../../models/dialog/dialog_response.dart';
 import '../../service_locator.dart';
 import '../../services/local_dialog_service.dart';
 
@@ -201,6 +200,71 @@ class SettingsViewModel extends BaseViewModel with StoppableService {
     _lockAppNow = !_lockAppNow;
     navigationService.navigateTo(WalletSetupViewRoute);
     setBusyForObject(lockAppNow, false);
+  }
+
+  // set biometric payment
+  toggleBiometricPayment() async {
+    errorMessage = '';
+    final localAuth = LocalAuthentication();
+
+    await localAuth
+        .authenticate(
+      localizedReason:
+          FlutterI18n.translate(context!, "pleaseAuthenticateToProceed"),
+      options: const AuthenticationOptions(
+        biometricOnly: true,
+        stickyAuth: true,
+        sensitiveTransaction: true,
+      ),
+    )
+        .then((value) async {
+      if (value) {
+        log.w('biometric value $value');
+        storageService.enableBiometricPayment =
+            !storageService.enableBiometricPayment;
+        notifyListeners();
+
+        if (!storageService.enableBiometricPayment) {
+          storageService.biometricAuthData = '';
+
+          sharedService.sharedSimpleNotification(
+              'Biometric payment authentication disabled');
+        } else {
+          await sharedService.storeDeviceId();
+
+          var res = await dialogService.showDialog(
+              title: FlutterI18n.translate(context!, "enterPassword"),
+              description: FlutterI18n.translate(
+                  context!, "dialogManagerTypeSamePasswordNote"),
+              buttonTitle: FlutterI18n.translate(context!, "confirm"),
+              isBiometricPayment: true);
+
+          if (res.confirmed) {
+            sharedService.sharedSimpleNotification(
+                'Biometric payment authentication Enabled',
+                isError: false);
+          } else if (res.returnedText == 'Closed' && !res.confirmed) {
+            log.e('Dialog Closed By User');
+            isDeleting = false;
+            setBusy(false);
+            return errorMessage = '';
+          } else {
+            log.e('Wrong pass');
+            setBusy(false);
+
+            return errorMessage = FlutterI18n.translate(
+                context!, "pleaseProvideTheCorrectPassword");
+          }
+        }
+      } else {
+        log.e('failed to verify biometric');
+      }
+    }).catchError((err) {
+      sharedService.sharedSimpleNotification(
+          FlutterI18n.translate(sharedService.context, "biometricError"),
+          isError: true);
+      setBusy(false);
+    });
   }
 
 // Set biometric auth

@@ -618,5 +618,8 @@
     "kycStep-1": "Code e-mail envoyé",
     "incorrectPhoneNumber": "Numéro de téléphone incorrect",
     "kycStarted": "kycCommencé",
-    "kycApproved": "kycApprouvé"
+    "kycApproved": "kycApprouvé",
+    "biometricAuthForPayment": "Authentification biométrique pour paiement",
+    "payUsingBiometric": "Payer avec la biométrie",
+    "pleaseAuthenticateToProceed": "Veuillez vous authentifier pour continuer."    
 }

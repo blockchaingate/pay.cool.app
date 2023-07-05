@@ -12,6 +12,7 @@
 */
 import 'dart:io';
 import 'dart:ui';
+import 'package:device_info/device_info.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:overlay_support/overlay_support.dart';
 
@@ -37,7 +38,6 @@ import 'db/core_wallet_database_service.dart';
 import 'db/decimal_config_database_service.dart';
 import 'db/token_list_database_service.dart';
 import 'local_storage_service.dart';
-import 'navigation_service.dart';
 
 class SharedService {
   late BuildContext context;
@@ -49,6 +49,19 @@ class SharedService {
   DecimalConfigDatabaseService decimalConfigDatabaseService =
       locator<DecimalConfigDatabaseService>();
   final coreWalletDatabaseService = locator<CoreWalletDatabaseService>();
+
+  storeDeviceId() async {
+    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+    if (Platform.isAndroid) {
+      var androidInfo = await deviceInfo.androidInfo;
+      log.w("androidInfo $androidInfo");
+      storageService.deviceId = androidInfo.id.toString();
+    } else if (Platform.isIOS) {
+      var iosInfo = await deviceInfo.iosInfo;
+      log.w("iosInfo $iosInfo");
+      storageService.deviceId = iosInfo.identifierForVendor.toString();
+    }
+  }
 
 /*--------------------------------------------------------------------------
                   Show Simple Notification

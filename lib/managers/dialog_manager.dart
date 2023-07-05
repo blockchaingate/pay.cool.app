@@ -12,6 +12,7 @@
 */
 
 import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:paycool/services/local_storage_service.dart';
 import 'package:paycool/shared/ui_helpers.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:flutter/material.dart';
@@ -238,8 +239,7 @@ class _DialogManagerState extends State<DialogManager> {
                   var coreWalletDatabaseService =
                       locator<CoreWalletDatabaseService>();
                   // todo: just check using new format first
-                  // todo:  then check with old format if new format
-                  /// todo: decryption is not available
+                  // todo:  then check with old format if new format decryption is not available
 
                   encryptedMnemonic =
                       await coreWalletDatabaseService.getEncryptedMnemonic();
@@ -257,12 +257,25 @@ class _DialogManagerState extends State<DialogManager> {
                         await _vaultService.readEncryptedData(controller.text);
                   } else if (encryptedMnemonic.isNotEmpty) {
                     await _vaultService
-                        .decryptMnemonic(controller.text, encryptedMnemonic)
+                        .decryptData(controller.text, encryptedMnemonic)
                         .then((data) {
                       finalRes = data;
                     });
                   }
                   if (finalRes != '') {
+                    // if biometric payment call then encrypt password with device id
+                    // then store that in local storage
+                    if (request.isBiometricPayment!) {
+                      LocalStorageService localStorageService =
+                          locator<LocalStorageService>();
+                      var encryptedBiometricAuthData =
+                          _vaultService.encryptData(
+                              localStorageService.deviceId, controller.text);
+                      localStorageService.biometricAuthData =
+                          encryptedBiometricAuthData;
+                      log.i(
+                          ' localStorageService.biometricAuthData ${localStorageService.biometricAuthData}');
+                    }
                     Navigator.of(context).pop();
                     controller.text = '';
                     _dialogService.dialogComplete(DialogResponse(

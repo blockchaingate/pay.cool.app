@@ -40,6 +40,8 @@ class LocalStorageService {
   static const String tokenListDbUpdateTimeKey = 'tokenListDbUpdateTimeKey';
   static const String StoreDeviceIdKey = 'storeDeviceIdKey';
   static const String BiometricAuthDataKey = 'biometricAuthDataKey';
+  static const String BiometricPaymentKey = 'biometricPaymentKey';
+
 /*----------------------------------------------------------------------
                         Instance
 ----------------------------------------------------------------------*/
@@ -157,6 +159,10 @@ class LocalStorageService {
       _getFromDisk(CancelBiometricAuthKey) ?? false;
   set hasCancelledBiometricAuth(bool value) =>
       _saveToDisk(CancelBiometricAuthKey, value);
+
+  bool get enableBiometricPayment => _getFromDisk(BiometricPaymentKey) ?? false;
+  set enableBiometricPayment(bool value) =>
+      _saveToDisk(BiometricPaymentKey, value);
 
 /*----------------------------------------------------------------------
                 walelt verification

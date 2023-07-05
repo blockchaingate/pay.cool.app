@@ -618,5 +618,9 @@
   "kycStep-1": "E-posta kodu gönderildi",
   "incorrectPhoneNumber": "Yanlış Telefon Numarası",
   "kycStarted": "kycBaşladı",
-  "kycApproved": "kycOnaylandı"
+  "kycApproved": "kycOnaylandı",
+  "biometricAuthForPayment": "Ödeme için Biyometrik Kimlik Doğrulama",
+  "payUsingBiometric": "Biyometrik Kimlik Doğrulama ile Öde",
+  "pleaseAuthenticateToProceed": "Devam etmek için lütfen kimlik doğrulama yapın."
+  
 }

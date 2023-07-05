@@ -20,13 +20,14 @@ class DialogRequest {
   final String? cancelButton;
   final String? secondaryButton;
   final bool? isSpecialReq;
+  final bool? isBiometricPayment;
 
-  DialogRequest({
-    required this.title,
-    required this.description,
-    required this.buttonTitle,
-    this.cancelButton,
-    this.secondaryButton,
-    this.isSpecialReq,
-  });
+  DialogRequest(
+      {required this.title,
+      required this.description,
+      required this.buttonTitle,
+      this.cancelButton,
+      this.secondaryButton,
+      this.isSpecialReq,
+      this.isBiometricPayment});
 }

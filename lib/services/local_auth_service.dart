@@ -7,7 +7,6 @@ import 'package:stacked_services/stacked_services.dart';
 import '../constants/route_names.dart';
 import '../service_locator.dart';
 import 'local_storage_service.dart';
-import 'navigation_service.dart';
 
 class LocalAuthService {
   final log = getLogger('LocalAuthService');

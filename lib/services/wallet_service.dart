@@ -81,6 +81,7 @@ class WalletService {
       locator<TransactionHistoryDatabaseService>();
   final ApiService _apiService = locator<ApiService>();
   final coinService = locator<CoinService>();
+  final _vaultService = locator<VaultService>();
 
   final coreWalletDatabaseService = locator<CoreWalletDatabaseService>();
   double? currentTickerUsdValue;
@@ -178,6 +179,14 @@ class WalletService {
 
   var fabUtils = FabUtils();
   final erc20Util = Erc20Util();
+
+  biometricPaymentSeed() async {
+    String eMnemonic = await coreWalletDatabaseService.getEncryptedMnemonic();
+    String dKey = await _vaultService.decryptData(
+        storageService.deviceId, storageService.biometricAuthData);
+    var dMnemonic = await _vaultService.decryptData(dKey, eMnemonic);
+    return generateSeed(dMnemonic);
+  }
 
   // verify wallet address
   Future<Map<String, bool>> verifyWalletAddresses(String mnemonic) async {
@@ -873,7 +882,7 @@ class WalletService {
         // encrypt the mnemonic
         if (userPassword.isNotEmpty && mnemonic.isNotEmpty) {
           var encryptedMnemonic =
-              vaultService.encryptMnemonic(userPassword, mnemonic);
+              vaultService.encryptData(userPassword, mnemonic);
 
           log.i('encryptedMnemonic $encryptedMnemonic');
 

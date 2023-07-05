@@ -23,7 +23,7 @@ class VaultService {
 
   // encrypt mnemonic
 
-  String encryptMnemonic(String pass, String mnemonic) {
+  String encryptData(String pass, String dataToEncrypt) {
     String userTypedKey = pass;
     int userKeyLength = userTypedKey.length;
     String fixed32CharKey = '';
@@ -36,19 +36,19 @@ class VaultService {
 
     final iv = encrypt.IV.fromLength(16);
     final encrypter = encrypt.Encrypter(encrypt.AES(key));
-    final encrypted = encrypter.encrypt(mnemonic, iv: iv);
+    final encrypted = encrypter.encrypt(dataToEncrypt, iv: iv);
     return encrypted.base64;
   }
 
   // --------- decrypt mnemonic start here
 
-  Future<String> decryptMnemonic(
+  Future<String> decryptData(
     String userTypedKey,
-    String encryptedBase64Mnemonic,
+    String encryptedBase64Data,
   ) async {
     try {
       encrypt.Encrypted encryptedText =
-          encrypt.Encrypted.fromBase64(encryptedBase64Mnemonic);
+          encrypt.Encrypted.fromBase64(encryptedBase64Data);
 
       int userKeyLength = userTypedKey.length;
       String fixed32CharKey = '';

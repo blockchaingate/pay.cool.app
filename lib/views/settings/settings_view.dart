@@ -21,7 +21,6 @@ import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/views/settings/settings_viewmodel.dart';
 import 'package:paycool/widgets/bottom_nav.dart';
 import 'package:flutter/material.dart';
-import 'package:paycool/widgets/payment_biometric_auth.dart';
 import 'package:paycool/widgets/wallet/kyc_widget.dart';
 import 'package:stacked/stacked.dart';
 
@@ -315,7 +314,6 @@ class SettingsContainer extends StatelessWidget {
             // Biometric authentication toggle
             // Card(
             //     elevation: 5,
-            //     color: secondaryColor,
             //     child: Container(
             //       padding: EdgeInsets.all(10),
             //       child: Row(
@@ -427,10 +425,9 @@ class SettingsContainer extends StatelessWidget {
                         activeTrackColor: white,
                         activeColor: primaryColor,
                         inactiveTrackColor: white,
-                        value: model.storageService.isHKServer,
+                        value: model.storageService.enableBiometricPayment,
                         onChanged: (value) {
-                          PaymentBiometricAuthWidget.setupPaymentBiometricAuth(
-                              context);
+                          model.toggleBiometricPayment();
                         }),
                   ),
                   // ),

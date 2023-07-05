@@ -618,5 +618,9 @@
     "kycStep-1": "メールコードが送信されました",
     "incorrectPhoneNumber": "電話番号が間違っています",
     "kycStarted": "kyc開始",
-    "kycApproved": "kyc承認"
+    "kycApproved": "kyc承認",
+    "biometricAuthForPayment": "生体認証による支払い",
+    "payUsingBiometric": "生体認証で支払う",
+    "pleaseAuthenticateToProceed": "続行するには認証してください。"
+    
 }

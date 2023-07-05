@@ -52,12 +52,18 @@ class LocalDialogService {
 
   // Calls the dialog listener and returns a future that will wait for the dialog to complete
   Future<DialogResponse> showDialog(
-      {String? title, String? description, String? buttonTitle}) {
+      {String? title,
+      String? description,
+      String? buttonTitle,
+      bool isBiometricPayment = false}) {
     log.w('In show dialog');
     _dialogCompleter = Completer<DialogResponse>();
     _showDialogListener(DialogRequest(
-        title: title!, description: description!, buttonTitle: buttonTitle!));
-    log.i('1');
+        title: title!,
+        description: description!,
+        buttonTitle: buttonTitle!,
+        isBiometricPayment: isBiometricPayment));
+
     return _dialogCompleter.future;
   }
 

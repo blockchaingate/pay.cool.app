@@ -620,5 +620,8 @@
     "kycStarted": "KYC Started",
     "kycApproved": "KYC Approved",
     "invaidQrCode": "Invalid QR Code",
-    "biometricAuthForPayment": "Biometric Authentication for Payment"
+    "biometricAuthForPayment": "Biometric Authentication for Payment",
+    "payUsingBiometric": "Pay using Biometric",
+    "pleaseAuthenticateToProceed": "Please authenticate to proceed.."
+
 }
