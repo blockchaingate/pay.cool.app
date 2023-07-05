@@ -30,9 +30,10 @@ class VaultService {
 
     if (userKeyLength < 32) {
       fixed32CharKey = NumberUtil.fixed32Chars(userTypedKey, userKeyLength);
+    } else {
+      fixed32CharKey = userTypedKey.substring(0, 32);
     }
-    final key = encrypt.Key.fromUtf8(
-        fixed32CharKey.isEmpty ? userTypedKey : fixed32CharKey);
+    final key = encrypt.Key.fromUtf8(fixed32CharKey);
 
     final iv = encrypt.IV.fromLength(16);
     final encrypter = encrypt.Encrypter(encrypt.AES(key));

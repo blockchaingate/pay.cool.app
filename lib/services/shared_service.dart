@@ -52,15 +52,17 @@ class SharedService {
 
   storeDeviceId() async {
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+    String deviceId = '';
     if (Platform.isAndroid) {
       var androidInfo = await deviceInfo.androidInfo;
       log.w("androidInfo $androidInfo");
-      storageService.deviceId = androidInfo.id.toString();
+      deviceId = androidInfo.id.toString();
     } else if (Platform.isIOS) {
       var iosInfo = await deviceInfo.iosInfo;
       log.w("iosInfo $iosInfo");
-      storageService.deviceId = iosInfo.identifierForVendor.toString();
+      deviceId = iosInfo.identifierForVendor.toString();
     }
+    storageService.deviceId = deviceId.substring(0, 32);
   }
 
 /*--------------------------------------------------------------------------

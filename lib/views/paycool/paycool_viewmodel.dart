@@ -1334,6 +1334,9 @@ class PayCoolViewmodel extends FutureViewModel {
 
     merchantModel = await paycoolService
         .getMerchantInfo(rewardInfoModel!.merchantId.toString());
+    if (merchantModel!.name!.sc == null) {
+      merchantModel!.name!.sc = merchantModel!.name!.en;
+    }
     coinPayable = newCoinTypeMap[rewardInfoModel!.paidCoin].toString();
     if (coinPayable.isEmpty || coinPayable == "null") {
       var token = await coinService.getSingleTokenData('',
