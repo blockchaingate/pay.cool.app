@@ -26,8 +26,7 @@ import 'package:paycool/views/wallet/wallet_features/wallet_features_viewmodel.d
 import 'package:stacked/stacked.dart';
 
 class WalletFeaturesView extends StatelessWidget {
-  final WalletInfo walletInfo;
-  WalletFeaturesView({Key? key, required this.walletInfo}) : super(key: key);
+  WalletFeaturesView({Key? key}) : super(key: key);
   final log = getLogger('WalletFeatures');
 
   @override
@@ -35,7 +34,6 @@ class WalletFeaturesView extends StatelessWidget {
     return ViewModelBuilder<WalletFeaturesViewModel>.reactive(
       viewModelBuilder: () => WalletFeaturesViewModel(),
       onViewModelReady: (model) {
-        model.walletInfo = walletInfo;
         model.context = context;
         model.init();
       },
@@ -108,7 +106,7 @@ class WalletFeaturesView extends StatelessWidget {
                                           color: white, size: 22),
                                   onPressed: () =>
                                       model.updateFavWalletCoinsList(
-                                          model.walletInfo.tickerName!),
+                                          model.walletInfo!.tickerName!),
                                 ),
                               ),
                               Positioned(
@@ -123,7 +121,9 @@ class WalletFeaturesView extends StatelessWidget {
                     ),
                   );
                 } else {
-                  return headerContainer(context, model);
+                  return Container(
+                      margin: EdgeInsets.only(top: 10),
+                      child: headerContainer(context, model));
                 }
               },
             ),
@@ -152,7 +152,7 @@ class WalletFeaturesView extends StatelessWidget {
                       ],
                     ),
                   ),
-                  model.walletInfo.tickerName == 'Maticm'
+                  model.walletInfo!.tickerName == 'Maticm'
                       ? Container()
                       : SizedBox(
                           height: model.containerHeight,
@@ -184,7 +184,7 @@ class WalletFeaturesView extends StatelessWidget {
                                   ),
                                 )
                               : Container(),
-                          walletInfo.tickerName == 'FAB'
+                          model.walletInfo!.tickerName == 'FAB'
                               ? Expanded(
                                   child: _featuresCard(context, 5, model),
                                 )
@@ -207,7 +207,7 @@ class WalletFeaturesView extends StatelessWidget {
                         onTap: () {
                           var route = model.features[6].route;
                           Navigator.pushNamed(context, route,
-                              arguments: walletInfo);
+                              arguments: model.walletInfo!);
                         },
                         child: Container(
                           height: 45,
@@ -285,7 +285,7 @@ class WalletFeaturesView extends StatelessWidget {
               padding: const EdgeInsets.only(left: 5),
               child: Row(
                 children: <Widget>[
-                  Text(model.specialTicker, style: headText5),
+                  Text(model.specialTicker!, style: headText5),
                   const Padding(
                     padding: EdgeInsets.all(2.0),
                     child: Icon(
@@ -294,7 +294,7 @@ class WalletFeaturesView extends StatelessWidget {
                       color: white,
                     ),
                   ),
-                  Text(walletInfo.name ?? '', style: subText1)
+                  Text(model.walletInfo!.name ?? '', style: subText1)
                 ],
               ),
             ),
@@ -305,7 +305,8 @@ class WalletFeaturesView extends StatelessWidget {
                 children: <Widget>[
                   Positioned(
                     //   bottom: -15,
-                    child: _buildTotalBalanceCard(context, model, walletInfo),
+                    child: _buildTotalBalanceCard(
+                        context, model, model.walletInfo!),
                   )
                 ],
               ),
@@ -319,7 +320,7 @@ class WalletFeaturesView extends StatelessWidget {
   Widget _buildTotalBalanceCard(
       context, WalletFeaturesViewModel model, walletInfo) {
     String message = FlutterI18n.translate(context, "sameBalanceNote");
-    String nativeTicker = model.specialTicker.split('(')[0];
+    String nativeTicker = model.specialTicker!.split('(')[0];
     return Card(
         elevation: model.elevation,
         color: secondaryColor,
@@ -365,7 +366,7 @@ class WalletFeaturesView extends StatelessWidget {
                     Expanded(
                       flex: 4,
                       child: Text(
-                        '${NumberUtil.roundDouble(model.walletInfo.usdValue!).toString()} USD',
+                        '${NumberUtil.roundDouble(model.walletInfo!.usdValue!).toString()} USD',
                         textAlign: TextAlign.right,
                         style: subText1.copyWith(color: buyPrice),
                       ),
@@ -387,13 +388,13 @@ class WalletFeaturesView extends StatelessWidget {
                         FlutterI18n.translate(context, "walletbalance"),
                         style: subText1),
                     Text(
-                        '${NumberUtil.roundDouble(model.walletInfo.availableBalance!, decimalPlaces: model.decimalLimit).toString()} ${model.specialTicker}',
+                        '${NumberUtil.roundDouble(model.walletInfo!.availableBalance!, decimalPlaces: model.decimalLimit).toString()} ${model.specialTicker}',
                         style: headText5),
                   ],
                 ),
               ),
               // Middle column row contains unconfirmed balance
-              model.walletInfo.tickerName == 'FAB'
+              model.walletInfo!.tickerName == 'FAB'
                   ? Container(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 5.0, vertical: 5.0),
@@ -422,13 +423,14 @@ class WalletFeaturesView extends StatelessWidget {
                     Expanded(
                       flex: 4,
                       child: Text(
-                          '${FlutterI18n.translate(context, "inExchange")} ${model.specialTicker.contains('(') ? '\n$message $nativeTicker' : ''}',
+                          '${FlutterI18n.translate(context, "inExchange")} ${model.specialTicker!.contains('(') ? '\n$message $nativeTicker' : ''}',
                           style: subText1),
                     ),
                     Expanded(
                         flex: 4,
                         child: Text(
-                            NumberUtil.roundDouble(model.walletInfo.inExchange!,
+                            NumberUtil.roundDouble(
+                                    model.walletInfo!.inExchange!,
                                     decimalPlaces: model.decimalLimit)
                                 .toString(),
                             textAlign: TextAlign.right,
@@ -452,7 +454,7 @@ class WalletFeaturesView extends StatelessWidget {
               ? () {
                   var route = model.features[index].route;
                   Navigator.pushNamed(context, '/$route',
-                      arguments: model.walletInfo);
+                      arguments: model.walletInfo!);
                 }
               : null,
           child: Container(

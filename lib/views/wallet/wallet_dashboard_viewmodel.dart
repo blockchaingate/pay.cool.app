@@ -84,7 +84,7 @@ class WalletDashboardViewModel extends BaseViewModel {
   var coreWalletDatabaseService = locator<CoreWalletDatabaseService>();
   final versionChecker = VersionChecker();
 
-  late WalletInfo rightWalletInfo;
+  WalletInfo? get rightWalletInfo => walletService.walletInfoDetails;
 
   final double elevation = 5;
   String totalUsdBalance = '';
@@ -156,7 +156,6 @@ class WalletDashboardViewModel extends BaseViewModel {
 
   init() async {
     setBusy(true);
-
     await refreshBalancesV2().then((value) async {
       for (var i = 0; i < value.length; i++) {
         try {
@@ -214,9 +213,8 @@ class WalletDashboardViewModel extends BaseViewModel {
         .toList();
   }
 
-  assignDefaultWalletForIos() async {
-    rightWalletInfo =
-        await walletUtil.getWalletInfoObjFromWalletBalance(wallets[3]);
+  updateRightWallet() async {
+    setWalletDetails(wallets[3]);
   }
 
   // moveDown() {
@@ -235,6 +233,12 @@ class WalletDashboardViewModel extends BaseViewModel {
   //       duration: Duration(milliseconds: 500));
   // }
 
+  setWalletDetails(WalletBalance wallet) async {
+    walletService.setWalletInfoDetails(
+        await walletUtil.getWalletInfoObjFromWalletBalance(wallet));
+    walletService.setSpecialTickerName();
+  }
+
   routeWithWalletInfoArgs(WalletBalance wallet, String routeName) async {
     // assign address from local DB to walletinfo object
 
@@ -246,12 +250,9 @@ class WalletDashboardViewModel extends BaseViewModel {
       log.w('routeWithWalletInfoArgs walletInfo ${walletInfo.toJson()}');
       searchCoinTextController.clear();
       // navigate accordingly
-      navigationService.navigateTo(routeName, arguments: walletInfo);
-    } else {
-      rightWalletInfo =
-          await walletUtil.getWalletInfoObjFromWalletBalance(wallet);
-      (_context! as Element).markNeedsBuild();
+      navigationService.navigateTo(routeName);
     }
+    setWalletDetails(wallet);
   }
 
   _scrollListener() {
@@ -575,9 +576,7 @@ class WalletDashboardViewModel extends BaseViewModel {
           arguments: wallets[index]);
       searchCoinTextController.clear();
     } else {
-      rightWalletInfo =
-          await walletUtil.getWalletInfoObjFromWalletBalance(wallets[index]);
-      (_context as Element).markNeedsBuild();
+      setWalletDetails(wallets[index]);
     }
   }
 

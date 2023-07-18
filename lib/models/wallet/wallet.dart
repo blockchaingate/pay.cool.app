@@ -41,7 +41,7 @@ class WalletInfo {
     this.id,
     this.tickerName,
     this.tokenType,
-    this.address,
+    this.address = '',
     this.lockedBalance,
     this.availableBalance,
     this.usdValue,

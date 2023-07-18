@@ -818,7 +818,7 @@ class PayCoolView extends StatelessWidget {
                                                         UIHelper
                                                             .verticalSpaceSmall,
                                                         Container(
-                                                          width: 400,
+                                                          // width: 400,
                                                           padding:
                                                               const EdgeInsets
                                                                       .only(
@@ -1085,8 +1085,13 @@ class PayCoolView extends StatelessWidget {
                                                   SizedBox(
                                                     height: isPhone() ? 7 : 12,
                                                   ),
-                                                  SizedBox(
-                                                    width: 400,
+                                                  Container(
+                                                    constraints: BoxConstraints(
+                                                        minWidth: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width *
+                                                            0.35),
                                                     height: 45,
                                                     child: ElevatedButton(
                                                       style: ButtonStyle(

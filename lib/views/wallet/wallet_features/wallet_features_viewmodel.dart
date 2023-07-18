@@ -30,10 +30,10 @@ import 'package:stacked/stacked.dart';
 import 'package:paycool/constants/route_names.dart';
 import 'package:stacked_services/stacked_services.dart';
 
-class WalletFeaturesViewModel extends BaseViewModel {
+class WalletFeaturesViewModel extends ReactiveViewModel {
   final log = getLogger('WalletFeaturesViewModel');
 
-  late WalletInfo walletInfo;
+  WalletInfo? get walletInfo => walletService.walletInfoDetails;
   WalletService walletService = locator<WalletService>();
   final storageService = locator<LocalStorageService>();
   ApiService apiService = locator<ApiService>();
@@ -47,7 +47,7 @@ class WalletFeaturesViewModel extends BaseViewModel {
   late double walletBalance;
   late BuildContext context;
   var errDepositItem;
-  String specialTicker = '';
+  String? get specialTicker => walletService.specialTickerName;
   List<WalletFeatureName> features = [];
   bool isFavorite = false;
   List<String> iconImg = [
@@ -61,17 +61,17 @@ class WalletFeaturesViewModel extends BaseViewModel {
   int decimalLimit = 6;
   double unconfirmedBalance = 0.0;
   String smartContractAddress = '';
+
   init() async {
     getWalletFeatures();
     getErrDeposit();
-    specialTicker = WalletUtil.updateSpecialTokensTickerName(
-        walletInfo.tickerName!)["tickerName"]!;
-    log.i('wi object to check name ${walletInfo.toJson()}');
+
+    log.i('wi object to check name ${walletInfo!.toJson()}');
     refreshBalance();
     checkIfCoinIsFavorite();
 
     if (smartContractAddress.isEmpty)
-      await coinService.getSingleTokenData(walletInfo.tickerName!).then((res) {
+      await coinService.getSingleTokenData(walletInfo!.tickerName!).then((res) {
         decimalLimit = res!.decimal!;
         smartContractAddress = res.contract!;
         log.w('decimal limit $decimalLimit');
@@ -85,7 +85,7 @@ class WalletFeaturesViewModel extends BaseViewModel {
       List<String> favWalletCoins =
           (jsonDecode(favCoinsJson) as List<dynamic>).cast<String>();
 
-      if (favWalletCoins.contains(walletInfo.tickerName)) {
+      if (favWalletCoins.contains(walletInfo!.tickerName)) {
         setBusy(true);
         isFavorite = true;
         setBusy(false);
@@ -163,7 +163,7 @@ class WalletFeaturesViewModel extends BaseViewModel {
             });
           }
           log.w('tickerNameByCointype $tickerNameByCointype');
-          if (tickerNameByCointype == walletInfo.tickerName) {
+          if (tickerNameByCointype == walletInfo!.tickerName) {
             setBusy(true);
             errDepositItem = item;
             log.w('err deposit item $errDepositItem');
@@ -185,41 +185,41 @@ class WalletFeaturesViewModel extends BaseViewModel {
     //  await getExchangeBal();
     await apiService
         .getSingleWalletBalance(
-            fabAddress, walletInfo.tickerName!, walletInfo.address!)
+            fabAddress, walletInfo!.tickerName!, walletInfo!.address!)
         .then((walletBalance) async {
       var availableBalance = walletBalance[0].balance;
-      walletInfo.availableBalance = availableBalance;
+      walletInfo!.availableBalance = availableBalance;
       var lockedBalance = walletBalance[0].lockBalance;
-      walletInfo.lockedBalance = lockedBalance;
+      walletInfo!.lockedBalance = lockedBalance;
       unconfirmedBalance = walletBalance[0].unconfirmedBalance!;
-      if (!specialTicker.contains('(')) {
-        walletInfo.inExchange = walletBalance[0].unlockedExchangeBalance;
+      if (!specialTicker!.contains('(')) {
+        walletInfo!.inExchange = walletBalance[0].unlockedExchangeBalance;
       } else {
         await getExchangeBalForSpecialTokens();
       }
       double currentUsdValue = walletBalance[0].usdValue!.usd!;
       log.e(
-          'market price $currentUsdValue -- available bal $availableBalance -- inExchange ${walletInfo.inExchange} -- locked bal $lockedBalance');
-      walletInfo.usdValue = walletService.calculateCoinUsdBalance(
+          'market price $currentUsdValue -- available bal $availableBalance -- inExchange ${walletInfo!.inExchange} -- locked bal $lockedBalance');
+      walletInfo!.usdValue = walletService.calculateCoinUsdBalance(
           currentUsdValue, availableBalance!, lockedBalance!);
-      log.w(walletInfo.toJson());
+      log.w(walletInfo!.toJson());
       unconfirmedBalance = walletBalance[0].unconfirmedBalance!;
     })
         // await walletService
         //     .coinBalanceByAddress(
-        //         walletInfo.tickerName, walletInfo.address, walletInfo.tokenType)
+        //         walletInfo!.tickerName, walletInfo!.address, walletInfo!.tokenType)
         //     .then((data) async {
         //   if (data != null) {
         //     log.e('data $data');
 
         //     walletBalance = data['tokenBalanceIe18'];
         //     double walletLockedBal = data['lockbalance'];
-        //     walletInfo.availableBalance = walletBalance;
+        //     walletInfo!.availableBalance = walletBalance;
         //     double currentUsdValue = await walletService
-        //         .getCoinMarketPriceByTickerName(walletInfo.tickerName);
+        //         .getCoinMarketPriceByTickerName(walletInfo!.tickerName);
         //     walletService.calculateCoinUsdBalance(
         //         currentUsdValue, walletBalance, walletLockedBal);
-        //     walletInfo.usdValue = walletService.coinUsdBalance;
+        //     walletInfo!.usdValue = walletService.coinUsdBalance;
         //   }
         //   await getExchangeBal();
         // })
@@ -234,29 +234,32 @@ class WalletFeaturesViewModel extends BaseViewModel {
   // get exchange balance for single coin
   getExchangeBalForSpecialTokens() async {
     String tickerName = '';
-    if (walletInfo.tickerName == 'DSCE' || walletInfo.tickerName == 'DSC') {
+    if (walletInfo!.tickerName == 'DSCE' || walletInfo!.tickerName == 'DSC') {
       tickerName = 'DSC';
-    } else if (walletInfo.tickerName == 'BSTE' ||
-        walletInfo.tickerName == 'BST') {
+    } else if (walletInfo!.tickerName == 'BSTE' ||
+        walletInfo!.tickerName == 'BST') {
       tickerName = 'BST';
-    } else if (walletInfo.tickerName == 'FABE' ||
-        walletInfo.tickerName == 'FAB') {
+    } else if (walletInfo!.tickerName == 'FABE' ||
+        walletInfo!.tickerName == 'FAB') {
       tickerName = 'FAB';
-    } else if (walletInfo.tickerName == 'EXGE' ||
-        walletInfo.tickerName == 'EXG') {
+    } else if (walletInfo!.tickerName == 'EXGE' ||
+        walletInfo!.tickerName == 'EXG') {
       tickerName = 'EXG';
-    } else if (WalletUtil.isSpecialUsdt(walletInfo.tickerName!)) {
+    } else if (WalletUtil.isSpecialUsdt(walletInfo!.tickerName!)) {
       tickerName = 'USDT';
-    } else if (WalletUtil.isSpecialUsdc(walletInfo.tickerName!)) {
+    } else if (WalletUtil.isSpecialUsdc(walletInfo!.tickerName!)) {
       tickerName = 'USDC';
     } else {
-      tickerName = walletInfo.tickerName!;
+      tickerName = walletInfo!.tickerName!;
     }
     await apiService.getSingleCoinExchangeBalance(tickerName).then((res) {
       if (res != null) {
-        walletInfo.inExchange = res.unlockedAmount;
-        log.w('exchange bal ${walletInfo.inExchange}');
+        walletInfo!.inExchange = res.unlockedAmount;
+        log.w('exchange bal ${walletInfo!.inExchange}');
       }
     });
   }
+
+  @override
+  List<ListenableServiceMixin> get listenableServices => [walletService];
 }

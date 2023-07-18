@@ -3,6 +3,7 @@ import 'package:bitbox/bitbox.dart' as bitbox;
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:flutter/material.dart';
 import 'package:kyc/kyc.dart';
+import 'package:observable_ish/observable_ish.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'dart:async';
 import 'package:bip39/bip39.dart' as bip39;
@@ -14,6 +15,7 @@ import 'package:paycool/services/local_dialog_service.dart';
 import 'package:paycool/utils/string_util.dart';
 import 'package:paycool/utils/wallet/erc20_util.dart';
 import 'package:paycool/utils/wallet/wallet_util.dart';
+import 'package:stacked/stacked.dart';
 import 'dart:typed_data';
 import 'package:web3dart/web3dart.dart';
 import '../constants/colors.dart';
@@ -66,8 +68,16 @@ import 'package:paycool/utils/tron_util/trx_generate_address_util.dart'
 import 'package:paycool/utils/tron_util/trx_transaction_util.dart'
     as TronTransactionUtil;
 
-class WalletService {
+class WalletService with ListenableServiceMixin {
   final log = getLogger('Wallet Service');
+  final RxValue<WalletInfo?> _walletInfoDetails =
+      RxValue<WalletInfo>(WalletInfo(address: ''));
+  WalletInfo? get walletInfoDetails => _walletInfoDetails.value;
+  final RxValue<String?> _specialTickerName = RxValue<String>('');
+  String? get specialTickerName => _specialTickerName.value;
+  WalletService() {
+    listenToReactiveValues([_walletInfoDetails, _specialTickerName]);
+  }
 
   final client = CustomHttpUtil.createLetsEncryptUpdatedCertClient();
   TokenListDatabaseService tokenListDatabaseService =
@@ -179,6 +189,17 @@ class WalletService {
 
   var fabUtils = FabUtils();
   final erc20Util = Erc20Util();
+
+  void setWalletInfoDetails(WalletInfo walletInfo) {
+    _walletInfoDetails.value = walletInfo;
+    notifyListeners();
+  }
+
+  void setSpecialTickerName() {
+    _specialTickerName.value = WalletUtil.updateSpecialTokensTickerName(
+        _walletInfoDetails.value!.tickerName!)["tickerName"]!;
+    notifyListeners();
+  }
 
   biometricPaymentSeed() async {
     String eMnemonic = await coreWalletDatabaseService.getEncryptedMnemonic();

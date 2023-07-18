@@ -109,8 +109,7 @@ class RouteGenerator {
             builder: (_) => MoveToWalletView(walletInfo: args));
 
       case walletFeaturesViewRoute:
-        return MaterialPageRoute(
-            builder: (_) => WalletFeaturesView(walletInfo: args));
+        return MaterialPageRoute(builder: (_) => WalletFeaturesView());
 
       case ReceiveViewRoute:
         return MaterialPageRoute(

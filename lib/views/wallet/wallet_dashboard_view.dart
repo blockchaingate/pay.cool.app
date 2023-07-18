@@ -145,10 +145,6 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
             );
           }
         }),
-
-        /*------------------------------------------------------------------------------
-                                        Build Wallet List Container
-        -------------------------------------------------------------------------------*/
         //   !Platform.isAndroid
         //      ?
         Expanded(
@@ -156,10 +152,10 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
               builder: (BuildContext ctx, BoxConstraints constraints) {
             if (constraints.maxWidth < largeSize) {
               return coinList(model, ctx);
-              // return tester();
             } else {
-              if (model.rightWalletInfo == null) {
-                model.assignDefaultWalletForIos();
+              if (model.rightWalletInfo == null ||
+                  model.rightWalletInfo!.address!.isEmpty) {
+                model.updateRightWallet();
               }
               return Row(
                 children: [
@@ -168,9 +164,10 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
                       height: double.infinity,
                       child: coinList(model, ctx)),
                   Expanded(
-                    child: model.rightWalletInfo == null
+                    child: model.rightWalletInfo == null ||
+                            model.rightWalletInfo!.address!.isEmpty
                         ? Container()
-                        : WalletFeaturesView(walletInfo: model.rightWalletInfo),
+                        : WalletFeaturesView(),
                   )
                 ],
               );
@@ -477,6 +474,7 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
                         onTap: (int tabIndex) {
                           model.updateTabSelection(tabIndex);
                         },
+                        isScrollable: isPhone() ? false : true,
                         labelColor: primaryColor,
                         unselectedLabelColor: grey,
                         indicatorColor: primaryColor,
@@ -539,7 +537,7 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
     List<WalletBalance> newList = [];
 
     if (model.selectedTabIndex == 0) {
-      newList = model.wallets!;
+      newList = model.wallets;
     } else if (model.selectedTabIndex == 1) {
       newList = model.fabWalletTokens;
     } else if (model.selectedTabIndex == 2) {

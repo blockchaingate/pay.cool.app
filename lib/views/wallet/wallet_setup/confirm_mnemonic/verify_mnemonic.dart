@@ -78,8 +78,8 @@ class VerifyMnemonicWalletView extends StatelessWidget {
             focusedBorder: OutlineInputBorder(
                 borderSide: const BorderSide(color: primaryColor, width: 1.5),
                 borderRadius: BorderRadius.circular(30.0)),
-            border: OutlineInputBorder(
-              borderSide: const BorderSide(color: primaryColor, width: 0.5),
+            enabledBorder: OutlineInputBorder(
+              borderSide: const BorderSide(color: grey, width: 1),
               borderRadius: BorderRadius.circular(30.0),
             ),
           ),
