@@ -62,7 +62,11 @@ class SharedService {
       log.w("iosInfo $iosInfo");
       deviceId = iosInfo.identifierForVendor.toString();
     }
-    storageService.deviceId = deviceId.substring(0, 32);
+    String dId = deviceId;
+    if (deviceId.length > 32) {
+      dId = deviceId.substring(0, 32);
+    }
+    storageService.deviceId = dId;
   }
 
 /*--------------------------------------------------------------------------
