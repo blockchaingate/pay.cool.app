@@ -11,12 +11,12 @@
 *----------------------------------------------------------------------
 */
 
+import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:overlay_support/overlay_support.dart';
 import 'package:paycool/services/local_storage_service.dart';
 import 'package:paycool/shared/ui_helpers.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
-import 'package:flutter/material.dart';
-import 'package:overlay_support/overlay_support.dart';
 import 'package:stacked_services/stacked_services.dart' show NavigationService;
 
 import '../constants/colors.dart';
@@ -27,7 +27,6 @@ import '../models/dialog/dialog_response.dart';
 import '../service_locator.dart';
 import '../services/db/core_wallet_database_service.dart';
 import '../services/local_dialog_service.dart';
-import '../services/navigation_service.dart';
 import '../services/vault_service.dart';
 
 class DialogManager extends StatefulWidget {

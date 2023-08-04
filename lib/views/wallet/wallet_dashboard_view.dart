@@ -13,12 +13,16 @@
 
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/constants/ui_var.dart';
 import 'package:paycool/models/wallet/wallet_balance.dart';
 import 'package:paycool/shared/ui_helpers.dart';
+import 'package:paycool/views/bond/buyBond/bond_sembol_view.dart';
+import 'package:paycool/views/bond/login/login_view.dart';
+import 'package:paycool/views/bond/register/bond_register_view.dart';
 import 'package:paycool/views/wallet/wallet_dashboard_viewmodel.dart';
 import 'package:paycool/views/wallet/wallet_features/wallet_features_view.dart';
 import 'package:paycool/widgets/bottom_nav.dart';
@@ -40,6 +44,7 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
     with SingleTickerProviderStateMixin {
   TabController? _tabController;
   late WalletDashboardViewModel newModel;
+  final PageController _pageController = PageController(initialPage: 1);
 
   @override
   initState() {
@@ -54,6 +59,7 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
   dispose() {
     _tabController!.removeListener(_handleTabSelection);
     _tabController!.dispose();
+    _pageController.dispose();
     super.dispose();
   }
 
@@ -67,7 +73,10 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
   Widget build(BuildContext context) {
     // GlobalKey _one = GlobalKey(debugLabel: "one");
     // GlobalKey _two = GlobalKey(debugLabel: "two");
+    final key1 = GlobalKey<ScaffoldState>();
     final key = GlobalKey<ScaffoldState>();
+
+    Size size = MediaQuery.of(context).size;
 
     // RefreshController _refreshController =
     //     RefreshController(initialRefresh: false);
@@ -76,53 +85,102 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
         disposeViewModel: true,
         onViewModelReady: (model) async {
           newModel = model;
-          // model.globalKeyOne = _one;
-          // model.globalKeyTwo = _two;
-          // model.refreshController = _refreshController;
+
           model.sharedService.context = context;
           model.init();
         },
-        // onDispose: () {
-        //   _refreshController.dispose();
-        //   debugPrint('_refreshController disposed in wallet dashboard view');
-        // },
         builder: (context, WalletDashboardViewModel model, child) {
-          // var connectionStatus = Provider.of<ConnectivityStatus>(context);
-          // if (connectionStatus == ConnectivityStatus.Offline)
-          //   return NetworkStausView();
-          // else
-          return WillPopScope(
-            onWillPop: () {
-              model.onBackButtonPressed();
-              return Future(() => false);
-            },
-            child: Scaffold(
-              key: key,
-              appBar: customAppBar(color: secondaryColor),
-              body: GestureDetector(
-                onTap: () {
-                  FocusScope.of(context).requestFocus(FocusNode());
-                },
-                child:
-                    //  ShowCaseWidget(
-                    //   onStart: (index, key) {
-                    //     debugPrint('onStart: $index, $key');
-                    //   },
-                    //   onComplete: (index, key) {
-                    //     debugPrint('onComplete: $index, $key');
-                    //   },
-                    //   onFinish: () {
-                    //     model.storageService.isShowCaseView = false;
-
-                    //     model.updateShowCaseViewStatus();
-                    //   },
-                    //   builder:
-                    Builder(
-                        // ignore: missing_return
-                        builder: (context) => mainWidgets(model, context)),
-                // ),
+          return AnnotatedRegion<SystemUiOverlayStyle>(
+            value: SystemUiOverlayStyle.light,
+            child: WillPopScope(
+              onWillPop: () {
+                model.onBackButtonPressed();
+                return Future(() => false);
+              },
+              child: PageView(
+                controller: _pageController,
+                scrollDirection: Axis.vertical,
+                children: [
+                  Scaffold(
+                    key: key1,
+                    body: GestureDetector(
+                      onTap: () {
+                        FocusScope.of(context).requestFocus(FocusNode());
+                      },
+                      child: Builder(
+                          builder: (context) => bondPage(model, context)),
+                      // ),
+                    ),
+                  ),
+                  Scaffold(
+                    key: key,
+                    appBar: PreferredSize(
+                      preferredSize: const Size.fromHeight(140),
+                      child: InkWell(
+                        onTap: () {
+                          _pageController.animateToPage(0,
+                              duration: Duration(seconds: 2),
+                              curve: Curves.easeInOut);
+                        },
+                        child: Container(
+                          decoration: const BoxDecoration(
+                            image: DecorationImage(
+                                opacity: 0.8,
+                                image: AssetImage("assets/images/bondBg.jpeg"),
+                                fit: BoxFit.cover),
+                            border: Border(
+                              bottom: BorderSide(
+                                color: Colors.white,
+                                width: 2.0,
+                              ),
+                            ),
+                          ),
+                          width: double.infinity,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                height: size.height * 0.05,
+                              ),
+                              SizedBox(
+                                  width: 50,
+                                  child: Image.asset(
+                                      "assets/images/salvador.png")),
+                              SizedBox(
+                                child: Text(
+                                  "EI SALVADOR",
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                              SizedBox(
+                                child: Text(
+                                  "NATIONAL BOND PRE-SALE",
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    body: GestureDetector(
+                      onTap: () {
+                        FocusScope.of(context).requestFocus(FocusNode());
+                      },
+                      child: Builder(
+                          builder: (context) => mainWidgets(model, context)),
+                      // ),
+                    ),
+                    bottomNavigationBar: BottomNavBar(count: 1),
+                  )
+                ],
               ),
-              bottomNavigationBar: BottomNavBar(count: 1),
             ),
           );
         });
@@ -184,14 +242,12 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
   Widget topWidget(WalletDashboardViewModel model, BuildContext context) {
     return Container(
       height: 180,
-      decoration: const BoxDecoration(image: DecorationImage(image: AssetImage(
-          // 'assets/images/wallet-page/background.png'
-          // 'assets/images/img/starMainBg2.jpg',
-          // 'assets/images/paycool/Liquid1.jpg'
-          'assets/images/paycool/walletBg8.jpg'), fit: BoxFit.cover)),
+      decoration: const BoxDecoration(
+          image: DecorationImage(
+              image: AssetImage('assets/images/paycool/walletBg8.jpg'),
+              fit: BoxFit.cover)),
       child: Stack(children: <Widget>[
         Container(
-            // height: 350.0,
             decoration: BoxDecoration(
                 color: Colors.white,
                 gradient: LinearGradient(
@@ -207,6 +263,7 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
                       0.5,
                       1.0
                     ]))),
+
         Positioned(
           top: 30,
           left: 0,
@@ -236,11 +293,6 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
             } else {
               return TotalBalanceCardWidget2(model: model);
             }
-
-            // return TotalBalanceCardWidget(
-            //   logo: logoWidget,
-            //   title: titleWidget,
-            // );
           },
           itemCount: 2,
           itemWidth: 500,
@@ -262,10 +314,7 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
             right: 5,
             child: IconButton(
                 onPressed: () {
-                  // if (model.currentTabSelection == 0)
                   model.refreshBalancesV2();
-                  // else
-                  //   model.getBalanceForSelectedCustomTokens();
                 },
                 icon: model.isBusy
                     ? Container(
@@ -578,6 +627,213 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
           ),
         );
       },
+    );
+  }
+
+  Widget bondPage(WalletDashboardViewModel model, BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+    return Stack(
+      children: [
+        Container(
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+                image: AssetImage("assets/images/bgImage.png"),
+                fit: BoxFit.cover),
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.fromLTRB(30, 50, 30, 0),
+          child: model.bondMeVm.email == null
+              ? SizedBox(
+                  height: size.height,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(
+                        "assets/images/salvador.png",
+                        height: 100,
+                      ),
+                      UIHelper.verticalSpaceLarge,
+                      Text(
+                        "El Salvador Digital National Bond",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white),
+                      ),
+                      UIHelper.verticalSpaceLarge,
+                      Container(
+                        width: size.width * 0.9,
+                        height: 45,
+                        decoration: BoxDecoration(
+                          gradient: buttoGradient,
+                          borderRadius: BorderRadius.circular(40.0),
+                        ),
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const BondLoginView()));
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.transparent,
+                            shadowColor: Colors.transparent,
+                          ),
+                          child: Text(
+                            'Login',
+                            style: TextStyle(
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Text(
+                        "You have a account?",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w200,
+                            color: Colors.white),
+                      ),
+                      UIHelper.verticalSpaceSmall,
+                      Container(
+                        width: size.width * 0.9,
+                        height: 45,
+                        decoration: BoxDecoration(
+                          gradient: buttoGradient,
+                          borderRadius: BorderRadius.circular(40.0),
+                        ),
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const BondRegisterView()));
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.transparent,
+                            shadowColor: Colors.transparent,
+                          ),
+                          child: Text(
+                            'Register',
+                            style: TextStyle(
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Text(
+                        "You don't have a account?",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w200,
+                            color: Colors.white),
+                      ),
+                    ],
+                  ),
+                )
+              : Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      "assets/images/salvador.png",
+                      height: 100,
+                    ),
+                    UIHelper.verticalSpaceLarge,
+                    Text(
+                      "El Salvador",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white),
+                    ),
+                    UIHelper.verticalSpaceSmall,
+                    Text(
+                      "NATIONAL BOND PRE-SALE",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white),
+                    ),
+                    UIHelper.verticalSpaceSmall,
+                    Text(
+                      "WITH UNIQUE NFTs",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w200,
+                          color: Colors.white),
+                    ),
+                    UIHelper.verticalSpaceLarge,
+                    Container(
+                      width: size.width * 0.9,
+                      height: 45,
+                      decoration: BoxDecoration(
+                        gradient: buttoGradient,
+                        borderRadius: BorderRadius.circular(40.0),
+                      ),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const BondSembolView()));
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.transparent,
+                          shadowColor: Colors.transparent,
+                        ),
+                        child: Text(
+                          'Buy Now',
+                          style: TextStyle(
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                    // UIHelper.verticalSpaceMedium,
+                    // model.bondMeVm.kycLevel != null &&
+                    //         model.bondMeVm.kycLevel! < 2
+                    //     ? Container(
+                    //         width: size.width * 0.9,
+                    //         height: 45,
+                    //         decoration: BoxDecoration(
+                    //           gradient: buttoGradient,
+                    //           borderRadius: BorderRadius.circular(40.0),
+                    //         ),
+                    //         child: ElevatedButton(
+                    //           onPressed: () {
+                    //             print(" kyc");
+                    //           },
+                    //           style: ElevatedButton.styleFrom(
+                    //             backgroundColor: Colors.transparent,
+                    //             shadowColor: Colors.transparent,
+                    //           ),
+                    //           child: Text(
+                    //             ' KYC',
+                    //             style: TextStyle(
+                    //               fontSize: 16.0,
+                    //               fontWeight: FontWeight.bold,
+                    //             ),
+                    //           ),
+                    //         ),
+                    //       )
+                    //     : SizedBox()
+                  ],
+                ),
+        ),
+      ],
     );
   }
 }

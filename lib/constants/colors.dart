@@ -28,5 +28,10 @@ const Color red = Colors.red;
 const Color exgLogoColor = Color.fromRGBO(207, 101, 68, .85);
 const Color fabLogoColor = Color.fromRGBO(162, 48, 203, .85);
 
+const Color inputBorder = Color(0xff25273E);
+const Color inputText = Color(0xff7989A6);
+const LinearGradient buttoGradient =
+    LinearGradient(colors: <Color>[Color(0xff57AAFF), Color(0xffC165FF)]);
+
 // Design v2
 

@@ -107,6 +107,8 @@ flutter:
   uses-material-design: true
 
   assets:
+    - assets/animations/
+    - assets/images/
     - assets/images/start-page/
     - assets/images/img/
     - assets/images/flags/
@@ -117,7 +119,7 @@ flutter:
     - assets/images/club/
     - assets/images/launcher/
     - assets/i18n/
-    - envs/
+    # - envs/
 
 flutter_icons:
   image_path: "assets/images/launcher/paycool-logo-v1.jpg"

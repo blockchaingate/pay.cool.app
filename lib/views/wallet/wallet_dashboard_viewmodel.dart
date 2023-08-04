@@ -15,16 +15,23 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:aukfa_version_checker/aukfa_version_checker.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
+// import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:overlay_support/overlay_support.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/constants/route_names.dart';
 import 'package:paycool/constants/ui_var.dart';
 import 'package:paycool/environments/coins.dart';
+import 'package:paycool/logger.dart';
+import 'package:paycool/models/bond/vm/me_vm.dart';
 import 'package:paycool/models/wallet/core_wallet_model.dart';
 import 'package:paycool/models/wallet/token_model.dart';
 import 'package:paycool/models/wallet/wallet.dart';
 import 'package:paycool/models/wallet/wallet_balance.dart';
+import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/api_service.dart';
 import 'package:paycool/services/coin_service.dart';
 import 'package:paycool/services/db/core_wallet_database_service.dart';
@@ -34,25 +41,13 @@ import 'package:paycool/services/db/user_settings_database_service.dart';
 import 'package:paycool/services/db/wallet_database_service.dart';
 //import 'package:paycool/services/dialog_service.dart';
 import 'package:paycool/services/local_storage_service.dart';
-import 'package:paycool/services/navigation_service.dart';
 import 'package:paycool/services/shared_service.dart';
+import 'package:paycool/services/wallet_service.dart';
 import 'package:paycool/shared/ui_helpers.dart';
-
 import 'package:paycool/utils/fab_util.dart';
 import 'package:paycool/utils/number_util.dart';
 import 'package:paycool/utils/tron_util/trx_generate_address_util.dart'
     as tron_address_util;
-import 'package:flutter/cupertino.dart';
-
-import 'package:flutter/material.dart';
-
-import 'package:paycool/logger.dart';
-import 'package:paycool/service_locator.dart';
-import 'package:paycool/services/wallet_service.dart';
-
-// import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:overlay_support/overlay_support.dart';
-
 import 'package:paycool/utils/wallet/wallet_util.dart';
 // import 'package:showcaseview/showcaseview.dart';
 import 'package:stacked/stacked.dart';
@@ -93,11 +88,11 @@ class WalletDashboardViewModel extends BaseViewModel {
   String exgAddress = '';
   bool isHideSearch = false;
   bool isHideSmallAssetsButton = false;
-  var refreshController;
+  // var refreshController;
   bool isConfirmDeposit = false;
   late WalletInfo confirmDepositCoinWallet;
 
-  var lang;
+  // var lang;
 
   var top = 0.0;
   final freeFabAnswerTextController = TextEditingController();
@@ -150,12 +145,17 @@ class WalletDashboardViewModel extends BaseViewModel {
   List<WalletBalance> trxWalletTokens = [];
   List<WalletBalance> bnbWalletTokens = [];
 
+  // bond page
+
+  BondMeVm bondMeVm = BondMeVm();
+
 /*----------------------------------------------------------------------
                     INIT
 ----------------------------------------------------------------------*/
 
   init() async {
     setBusy(true);
+    await getUserBondMeData();
     await refreshBalancesV2().then((value) async {
       for (var i = 0; i < value.length; i++) {
         try {
@@ -203,6 +203,16 @@ class WalletDashboardViewModel extends BaseViewModel {
     }
     Future.delayed(const Duration(seconds: 2), () async {
       await walletService.updateTokenListDb();
+    });
+  }
+
+  Future<void> getUserBondMeData() async {
+    await apiService.getBondMe().then((value) {
+      if (value != null) {
+        print("-----------------");
+        print(value.email);
+        bondMeVm = value;
+      }
     });
   }
 
@@ -255,44 +265,44 @@ class WalletDashboardViewModel extends BaseViewModel {
     setWalletDetails(wallet);
   }
 
-  _scrollListener() {
-    walletsScrollController = ScrollController();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (walletsScrollController.hasClients) {
-        if (walletsScrollController.offset >=
-                walletsScrollController.position.maxScrollExtent &&
-            !walletsScrollController.position.outOfRange) {
-          setBusy(true);
-          debugPrint('bottom');
+  // _scrollListener() {
+  //   walletsScrollController = ScrollController();
+  //   WidgetsBinding.instance.addPostFrameCallback((_) {
+  //     if (walletsScrollController.hasClients) {
+  //       if (walletsScrollController.offset >=
+  //               walletsScrollController.position.maxScrollExtent &&
+  //           !walletsScrollController.position.outOfRange) {
+  //         setBusy(true);
+  //         debugPrint('bottom');
 
-          isBottomOfTheList = true;
-          isTopOfTheList = false;
-          minusHeight = 50;
-          setBusy(false);
-        }
-        if (walletsScrollController.offset <=
-                walletsScrollController.position.minScrollExtent &&
-            !walletsScrollController.position.outOfRange) {
-          setBusy(true);
-          debugPrint('top');
-          isTopOfTheList = true;
-          isBottomOfTheList = false;
-          minusHeight = 25;
-          setBusy(false);
-        }
-        if (walletsScrollController.position.outOfRange) {
-          debugPrint('bot in');
-        }
-      }
-    });
-  }
+  //         isBottomOfTheList = true;
+  //         isTopOfTheList = false;
+  //         minusHeight = 50;
+  //         setBusy(false);
+  //       }
+  //       if (walletsScrollController.offset <=
+  //               walletsScrollController.position.minScrollExtent &&
+  //           !walletsScrollController.position.outOfRange) {
+  //         setBusy(true);
+  //         debugPrint('top');
+  //         isTopOfTheList = true;
+  //         isBottomOfTheList = false;
+  //         minusHeight = 25;
+  //         setBusy(false);
+  //       }
+  //       if (walletsScrollController.position.outOfRange) {
+  //         debugPrint('bot in');
+  //       }
+  //     }
+  //   });
+  // }
 
   updateTabSelection(int tabIndex) {
-    print('is busy 0.75 $isBusy');
+    // print('is busy 0.75 $isBusy');
     setBusy(true);
     setBusyForObject(selectedTabIndex, true);
     notifyListeners();
-    print('is busy 1$isBusy');
+    // print('is busy 1$isBusy');
     selectedTabIndex = tabIndex;
     isHideSmallAssetsButton = true;
     isHideSearch = true;
@@ -454,14 +464,12 @@ class WalletDashboardViewModel extends BaseViewModel {
                           color: primaryColor, fontWeight: FontWeight.w500),
                     )),
                   ),
-                  content: Container(
-                      child: TextButton(
-                          onPressed: () {
-                            Navigator.of(context).pop(true);
-                            updateWallet();
-                          },
-                          child: Text(
-                              FlutterI18n.translate(context, "updateNow")))),
+                  content: TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop(true);
+                        updateWallet();
+                      },
+                      child: Text(FlutterI18n.translate(context, "updateNow"))),
                   actions: const <Widget>[],
                 ))
             : AlertDialog(
@@ -1027,7 +1035,7 @@ class WalletDashboardViewModel extends BaseViewModel {
 
   buildNewWalletObject(
       TokenModel newToken, WalletBalance newTokenWalletBalance) async {
-    String newCoinAddress = '';
+    // String newCoinAddress = '';
 
     //newCoinAddress = assignNewTokenAddress(newToken);
     double marketPrice = newTokenWalletBalance.usdValue!.usd ?? 0.0;
@@ -1134,6 +1142,7 @@ class WalletDashboardViewModel extends BaseViewModel {
         .then((data) => gasAmount = data)
         .catchError((onError) {
       log.e(onError);
+      return 0.0;
     });
     log.w('Gas Amount $gasAmount');
 

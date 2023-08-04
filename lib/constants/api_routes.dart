@@ -222,3 +222,9 @@ const String GetOrdersByTickerApiRoute = 'getordersbytickernamepaged/';
 /// 0xb754f9c8b706c59646a4e97601a0ad81067e1cf9/HOT
 const String GetSingleCoinExchangeBalApiRoute = 'exchangily/getBalance/';
 const String AssetsBalanceApiRoute = 'exchangily/getBalances/';
+
+/* ---------------------------------------------------------------------
+                          Bond
+---------------------------------------------------------------------- */
+
+const String BaseBondApiRoute = 'https://testapi.fundark.com/api/';
