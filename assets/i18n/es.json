@@ -610,11 +610,12 @@
     "resendCode": "Reenviar Código",
     "recordVideo": "Grabar Video",
     "selectVideoFromGallery": "Seleccionar video de la galería",
-    "kycStep-1": "Código de correo electrónico enviado",
     "incorrectPhoneNumber": "Número de teléfono incorrecto",
     "kycStarted": "kycIniciado",
     "kycApproved": "kycAprobado",
     "biometricAuthForPayment": "Autenticación biométrica para el pago",
     "payUsingBiometric": "Pagar usando biometría",
-    "pleaseAuthenticateToProceed": "Por favor, autentíquese para continuar."
+    "pleaseAuthenticateToProceed": "Por favor, autentíquese para continuar.",
+    "nextStep": "Siguiente Paso",
+    "kycStep-1": "Verificar Número de Teléfono"
 }

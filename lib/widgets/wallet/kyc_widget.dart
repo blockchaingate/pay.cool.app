@@ -60,13 +60,7 @@ class KycWidget extends ViewModelWidget<SettingsViewModel> {
                                               ),
                                               UIHelper.horizontalSpaceMedium,
                                               Text(
-                                                model.kycCheckResult.kyc!.status
-                                                            .toString() ==
-                                                        '0'
-                                                    ? FlutterI18n.translate(
-                                                        context, "kycStarted")
-                                                    : FlutterI18n.translate(
-                                                        context, "kycApproved"),
+                                                model.showKycStatus(context),
                                                 style: headText4,
                                               )
                                             ],
@@ -84,37 +78,21 @@ class KycWidget extends ViewModelWidget<SettingsViewModel> {
                                                 children: [
                                                   Text(
                                                     FlutterI18n.translate(
-                                                        context, "step"),
+                                                        context, "nextStep"),
                                                     style: headText3,
-                                                  ),
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            left: 4.0),
-                                                    child: Text(
-                                                      model.kycCheckResult.kyc!
-                                                                  .step ==
-                                                              -1
-                                                          ? '0'
-                                                          : model.kycCheckResult
-                                                              .kyc!.step
-                                                              .toString(),
-                                                      style: headText3,
-                                                    ),
                                                   ),
                                                   UIHelper
                                                       .horizontalSpaceMedium,
                                                   Text(
                                                     FlutterI18n.translate(
                                                         context,
-                                                        'kycStep${model.kycCheckResult.kyc!.step.toString()}'),
+                                                        'kycStep${model.kycUser.kycLevel.toString()}'),
                                                     style: headText4,
                                                   ),
                                                 ],
                                               ),
                                               UIHelper.verticalSpaceSmall,
-                                              model.kycCheckResult.kyc!.step ==
-                                                      7
+                                              model.kycUser.kycLevel == 7
                                                   ? Container(
                                                       margin:
                                                           const EdgeInsets.all(
@@ -153,15 +131,6 @@ class KycWidget extends ViewModelWidget<SettingsViewModel> {
                                                               locator<
                                                                   KycNavigationService>();
 
-                                                          var data =
-                                                              'action=login';
-
-                                                          var sig =
-                                                              await LocalKycUtil
-                                                                  .signKycData(
-                                                                      data,
-                                                                      context);
-
                                                           String url = isProduction
                                                               ? KycConstants
                                                                   .prodBaseUrl
@@ -170,53 +139,42 @@ class KycWidget extends ViewModelWidget<SettingsViewModel> {
 
                                                           Map<String, dynamic>
                                                               res = {};
-                                                          if (sig.isNotEmpty) {
-                                                            res =
-                                                                await kycService
-                                                                    .login(url,
-                                                                        sig);
-                                                            debugPrint(
-                                                                'login res $res');
-                                                            model
-                                                                .setBusy(false);
-                                                            if (res[
-                                                                'success']) {
-                                                              var token = res[
-                                                                          'data']
-                                                                      ['data']
-                                                                  ['token'];
+                                                          UserLoginModel
+                                                              userLoginModel =
+                                                              UserLoginModel();
 
-                                                              kycService
-                                                                  .updateXAccessToken(
-                                                                      token);
+                                                          res = await kycService
+                                                              .login(url,
+                                                                  userLoginModel);
+                                                          debugPrint(
+                                                              'login res $res');
+                                                          model.setBusy(false);
+                                                          if (res['success']) {
+                                                            var token =
+                                                                res['data']
+                                                                        ['data']
+                                                                    ['token'];
 
-                                                              kycNavigationService
-                                                                  .navigateToStep(
-                                                                      context,
-                                                                      model
-                                                                          .kycCheckResult
-                                                                          .kyc!
-                                                                          .step);
-                                                            } else {
-                                                              model.setBusy(
-                                                                  false);
-                                                              model
-                                                                  .sharedService
-                                                                  .sharedSimpleNotification(
-                                                                      FlutterI18n.translate(
-                                                                          context,
-                                                                          'loginFailed'),
-                                                                      isError:
-                                                                          true);
-                                                            }
+                                                            kycService
+                                                                .updateXAccessToken(
+                                                                    token);
+
+                                                            kycNavigationService
+                                                                .navigateToStep(
+                                                                    context,
+                                                                    model
+                                                                        .kycUser
+                                                                        .kycLevel!);
                                                           } else {
                                                             model
                                                                 .setBusy(false);
-                                                            res = {
-                                                              'success': false,
-                                                              'error':
-                                                                  'Failed to sign data'
-                                                            };
+                                                            model.sharedService
+                                                                .sharedSimpleNotification(
+                                                                    FlutterI18n.translate(
+                                                                        context,
+                                                                        'loginFailed'),
+                                                                    isError:
+                                                                        true);
                                                           }
                                                         } catch (e) {
                                                           debugPrint(
@@ -335,7 +293,9 @@ class KycWidget extends ViewModelWidget<SettingsViewModel> {
                                   context,
                                   model.kycStarted
                                       ? "checkKycStatus"
-                                      : "startKycProcess"),
+                                      : model.tokenExpired
+                                          ? "Login to check KYC status"
+                                          : "startKycProcess"),
                               style: headText5.copyWith(color: Colors.white),
                             ),
                     ],

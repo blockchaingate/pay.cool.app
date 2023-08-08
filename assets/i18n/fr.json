@@ -615,11 +615,12 @@
     "resendCode": "Renvoyer le Code",
     "recordVideo": "Enregistrer la vidéo",
     "selectVideoFromGallery": "Sélectionnez la vidéo dans la galerie",
-    "kycStep-1": "Code e-mail envoyé",
     "incorrectPhoneNumber": "Numéro de téléphone incorrect",
     "kycStarted": "kycCommencé",
     "kycApproved": "kycApprouvé",
     "biometricAuthForPayment": "Authentification biométrique pour paiement",
     "payUsingBiometric": "Payer avec la biométrie",
-    "pleaseAuthenticateToProceed": "Veuillez vous authentifier pour continuer."    
+    "pleaseAuthenticateToProceed": "Veuillez vous authentifier pour continuer.",
+    "nextStep": "Étape suivante",
+    "kycStep-1": "Vérifier le numéro de téléphone"
 }
