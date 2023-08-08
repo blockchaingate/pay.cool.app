@@ -615,12 +615,12 @@
   "resendCode": "Kodu Tekrar Gönder",
   "recordVideo": "Video Kaydet",
   "selectVideoFromGallery": "Galeriden Video Seç",
-  "kycStep-1": "E-posta kodu gönderildi",
   "incorrectPhoneNumber": "Yanlış Telefon Numarası",
   "kycStarted": "kycBaşladı",
   "kycApproved": "kycOnaylandı",
   "biometricAuthForPayment": "Ödeme için Biyometrik Kimlik Doğrulama",
   "payUsingBiometric": "Biyometrik Kimlik Doğrulama ile Öde",
-  "pleaseAuthenticateToProceed": "Devam etmek için lütfen kimlik doğrulama yapın."
-  
+  "pleaseAuthenticateToProceed": "Devam etmek için lütfen kimlik doğrulama yapın.",
+  "nextStep": "Sonraki Adım",
+  "kycStep-1": "Telefon Numarasını Doğrula"
 }

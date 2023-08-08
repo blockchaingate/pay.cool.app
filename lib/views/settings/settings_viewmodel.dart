@@ -11,10 +11,12 @@
 *----------------------------------------------------------------------
 */
 
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:kyc/kyc.dart';
 import 'package:local_auth/local_auth.dart';
@@ -92,13 +94,16 @@ class SettingsViewModel extends BaseViewModel with StoppableService {
   UserSettings userSettings = UserSettings();
   bool isUserSettingsEmpty = false;
   bool kycStarted = false;
-  var kycCheckResult = UserDataContent();
+  var kycUser = KycUserModel();
   Locale? currentLang;
   bool _isBiometricAuth = false;
   get isBiometricAuth => _isBiometricAuth;
   final t = TextEditingController();
   bool _lockAppNow = false;
   get lockAppNow => _lockAppNow;
+  bool tokenExpired = false;
+  final kycService = locator<KycBaseService>();
+
   final Map<String, String> languages = {
     "en": "English",
     "zh": "简体中文",
@@ -166,23 +171,59 @@ class SettingsViewModel extends BaseViewModel with StoppableService {
     } catch (err) {
       log.e('CATCH selectDefaultWalletLanguage failed');
     }
-    await checkKycStatus();
+    await checkKycStatusV2();
     setBusy(false);
   }
 
-  checkKycStatus() async {
+  String showKycStatus(BuildContext context) {
+    if (kycUser.kycLevel.toString() == '0' ||
+        kycUser.kycLevel.toString() == '1' ||
+        kycUser.kycLevel.toString() == '2' ||
+        kycUser.kycLevel.toString() == '3') {
+      return FlutterI18n.translate(context, "level") +
+          ' ' +
+          kycUser.kycLevel.toString();
+    } else {
+      return FlutterI18n.translate(context, "kycStarted");
+    }
+  }
+
+  checkKycStatusV2() async {
     setBusyForObject(kycStarted, true);
-    var result = await LocalKycUtil.checkKycStatus();
+    tokenExpired = false;
+
+    var result = await kycService.getUserDetails(dotenv.env['USER_TOKEN']!);
+
     kycStarted = result['success'];
     if (kycStarted) {
       var res = result['data'] ?? {};
-      log.w('checkkycstatus res $res');
-      kycCheckResult = UserDataContent.fromJson(res['data']);
+
+      kycUser = res;
       // kycCheckResult.kyc!.step = 8;
-      log.w('checkkycstatus kycCheckResult ${kycCheckResult.toJson()}');
+      log.w('checkkycstatus kycCheckResult ${kycUser.toJson()}');
+    } else {
+      var json = jsonDecode(result['error']);
+      log.e(json['errorName']);
+      if (json['errorName'] == 'TokenExpiredError') {
+        tokenExpired = true;
+      }
     }
     setBusyForObject(kycStarted, false);
   }
+
+  // checkKycStatus() async {
+  //   setBusyForObject(kycStarted, true);
+  //   var result = await LocalKycUtil.checkKycStatus();
+  //   kycStarted = result['success'];
+  //   if (kycStarted) {
+  //     var res = result['data'] ?? {};
+  //     log.w('checkkycstatus res $res');
+  //     kycCheckResult = UserDataContent.fromJson(res['data']);
+  //     // kycCheckResult.kyc!.step = 8;
+  //     log.w('checkkycstatus kycCheckResult ${kycCheckResult.toJson()}');
+  //   }
+  //   setBusyForObject(kycStarted, false);
+  // }
 
   // changeLanguage() async {
   //   debugPrint("currentLang.languageCode: " + currentLang.languageCode.toString());

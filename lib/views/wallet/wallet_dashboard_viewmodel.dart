@@ -156,8 +156,9 @@ class WalletDashboardViewModel extends BaseViewModel {
 
   init() async {
     setBusy(true);
-    await refreshBalancesV2().then((value) async {
-      for (var i = 0; i < value.length; i++) {
+    await walletService.storeTokenListInDB();
+    await refreshBalancesV2().then((walletBalances) async {
+      for (var i = 0; i < walletBalances.length; i++) {
         try {
           await coinService
               .getCoinTypeByTickerName(wallets[i].coin!)
@@ -176,7 +177,6 @@ class WalletDashboardViewModel extends BaseViewModel {
     //buildFavCoinListV1();
     selectedTabIndex = storageService.isFavCoinTabSelected ? 1 : 0;
 
-    walletService.storeTokenListInDB();
     for (var chain in chainList) {
       if (chain == 'FAB') {
         fabWalletTokens = getSortedWalletList(chain);
@@ -201,9 +201,9 @@ class WalletDashboardViewModel extends BaseViewModel {
     } catch (err) {
       debugPrint('version checker catch $err');
     }
-    Future.delayed(const Duration(seconds: 2), () async {
-      await walletService.updateTokenListDb();
-    });
+    // Future.delayed(const Duration(seconds: 2), () async {
+    //   await walletService.updateTokenListDb();
+    // });
   }
 
   List<WalletBalance> getSortedWalletList(String chainName) {
