@@ -617,16 +617,17 @@ class PayCoolService with ListenableServiceMixin {
 
       final address = credentials.address;
       final addressHex = address.hex;
-      final nonce = await _apiService.getEthNonce(addressHex);
+      var nonce = await _apiService.getEthNonce(addressHex);
+
+      if (incNonce) {
+        nonce = nonce + 1;
+      }
 
       try {
         txKanbanHex = await signAbiHexWithPrivateKey(
-            abiHex,
-            privateKey,
-            toAddress,
-            nonce,
-            environment["chains"]["ETH"]["gasPrice"],
-            environment["chains"]["ETH"]["gasLimit"],
+            abiHex, privateKey, toAddress, nonce, 1000000000, 200000,
+            // environment["chains"]["ETH"]["gasPrice"],
+            // environment["chains"]["ETH"]["gasLimit"],
             chainIdParam: "ETH");
 
         log.i('txKanbanHex $txKanbanHex');
@@ -637,13 +638,15 @@ class PayCoolService with ListenableServiceMixin {
         var resBody =
             await sendRawTransactionV3(paycoolBaseUrl, txKanbanHex, "eth");
 
+        print(resBody.toString());
+
         //{"ok":true,"_body":{"transactionHash":"0x855f2d8ec57418670dd4cb27ecb71c6794ada5686e771fe06c48e30ceafe0548","status":"0x1"}}
         //{"success":true,"data":{"txid":"0x9fe2100728cb211320b7057978c9a2beb405dcab89bda848db1322bfcee6d079"}}
 
         if (!resBody["success"]) {
           return null;
         } else {
-          var res = resBody["data"]["txid"];
+          var res = resBody["data"];
           return res;
         }
       }

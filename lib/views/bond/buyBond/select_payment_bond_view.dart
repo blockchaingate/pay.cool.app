@@ -37,7 +37,7 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
   List<String> dropdownItemsCoin = ['USDT'];
 
   String? selectedValueChain;
-  List<String> dropdownItemsChain = ['ETH', 'KANBAN', 'BNB'];
+  List<String> dropdownItemsChain = ['ETH', 'KANBAN'];
 
   @override
   void initState() {
@@ -71,12 +71,21 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
                 txHash != null
                     ? Align(
                         alignment: Alignment.center,
-                        child: Text(
-                          txHash!,
-                          style: TextStyle(
-                            fontSize: 24.0,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
+                        child: InkWell(
+                          onTap: () {
+                            selectedValueChain == "KANBAN"
+                                ? _launchUrl(
+                                    "https://test.exchangily.com/explorer/tx-detail/$txHash")
+                                : _launchUrl(
+                                    "https://goerli.etherscan.io/tx/$txHash");
+                          },
+                          child: Text(
+                            txHash!,
+                            style: TextStyle(
+                              fontSize: 24.0,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       )
@@ -235,7 +244,11 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
                                   .showSnackBar(snackBar);
                               return;
                             }
-                            bondApprove(size);
+                            await apiService.confirmOrderBond(
+                                context,
+                                widget.orderBondVm!.bondOrder!.bondId
+                                    .toString());
+                            await bondApprove(size);
                           } else {
                             navigationService.navigateTo(DashboardViewRoute);
                           }
@@ -358,7 +371,7 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
     await paycoolService
         .signSendTxBond(seed, abiHex!, toAddress,
             chain: selectedValueChain!, incNonce: true)
-        .then((value) {
+        .then((value) async {
       setState(() {
         txHash = value;
       });

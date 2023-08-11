@@ -27,7 +27,7 @@ Map devConfig = {
       "hardfork": 'byzantium',
       "chainId": 5,
       "infura": "https://goerli.infura.io/v3/6c5bdfe73ef54bbab0accf87a6b4b0ef",
-      "gasPrice": 10,
+      "gasPrice": 90,
       "gasPriceMax": 200,
       "gasLimit": 21000,
       "gasLimitToken": 70000
@@ -40,7 +40,7 @@ Map devConfig = {
       "hardfork": 'byzantium',
       "gasPrice": 10,
       "gasPriceMax": 100,
-      "gasLimit": 21000,
+      "gasLimit": 210000,
       "gasLimitToken": 70000
     },
     "MATIC": {
@@ -68,7 +68,11 @@ Map devConfig = {
       "gasPrice": 40,
       "gasLimit": 500000
     },
-    "KANBAN": {"chainId": 212, "gasPrice": 50000000, "gasLimit": 20000000}
+    "KANBAN": {"chainId": 212, "gasPrice": 50000000, "gasLimit": 20000000},
+    "KANBANBOND": {
+      "native": {"gasPrice": 0.05, "gasLimit": 20000000},
+      "token": {"gasPrice": 0.05, "gasLimit": 20000000},
+    }
   },
   "CoinType": {
     "BTC": 1,
