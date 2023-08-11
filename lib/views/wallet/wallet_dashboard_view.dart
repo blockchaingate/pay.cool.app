@@ -787,7 +787,7 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
-                                      const BondSembolView()));
+                                      BondSembolView(model.bondMeVm)));
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.transparent,

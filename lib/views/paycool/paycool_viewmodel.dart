@@ -375,7 +375,7 @@ class PayCoolViewmodel extends FutureViewModel {
             .then((value) async {
           if (value) {
             var seed = await walletService.biometricPaymentSeed();
-            String res = '';
+            String? res = '';
             for (var param in rewardInfoModel!.params!) {
               res =
                   await paycoolService.signSendTx(seed, param.data!, param.to!);
@@ -398,7 +398,7 @@ class PayCoolViewmodel extends FutureViewModel {
         });
       } else {
         var seed = await walletService.getSeedDialog(sharedService.context);
-        String res = '';
+        String? res = '';
         for (var param in rewardInfoModel!.params!) {
           res = await paycoolService.signSendTx(seed!, param.data!, param.to!);
         }

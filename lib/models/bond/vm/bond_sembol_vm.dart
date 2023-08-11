@@ -28,7 +28,7 @@ class BondInfo {
   String? symbol;
   int? v;
   int? couponFrequency;
-  int? couponRate;
+  double? couponRate;
   String? description;
   int? faceValue;
   int? issuePrice;

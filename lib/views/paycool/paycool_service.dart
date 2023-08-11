@@ -1,24 +1,29 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:bip32/bip32.dart' as bip32;
 import 'package:decimal/decimal.dart';
+import 'package:flutter/material.dart';
+import 'package:hex/hex.dart';
 import 'package:observable_ish/observable_ish.dart';
 import 'package:paycool/constants/api_routes.dart';
 import 'package:paycool/environments/environment.dart';
 import 'package:paycool/logger.dart';
 import 'package:paycool/service_locator.dart';
+import 'package:paycool/services/api_service.dart';
 import 'package:paycool/services/db/core_wallet_database_service.dart';
 import 'package:paycool/services/shared_service.dart';
 import 'package:paycool/utils/abi_util.dart';
 import 'package:paycool/utils/custom_http_util.dart';
 import 'package:paycool/utils/kanban.util.dart';
 import 'package:paycool/utils/keypair_util.dart';
-import 'package:paycool/views/paycool/models/pay_order_model.dart';
 import 'package:paycool/views/paycool/models/merchant_model.dart';
+import 'package:paycool/views/paycool/models/pay_order_model.dart';
 import 'package:paycool/views/paycool/rewards/payment_rewards_model.dart';
 import 'package:paycool/views/paycool/transaction_history/paycool_transaction_history_model.dart';
 import 'package:stacked/stacked.dart';
-import 'package:hex/hex.dart';
+import 'package:web3dart/web3dart.dart';
+
 import 'models/payment_rewards_model.dart';
 
 //@LazySingleton()
@@ -28,6 +33,7 @@ class PayCoolService with ListenableServiceMixin {
   final client = CustomHttpUtil.createLetsEncryptUpdatedCertClient();
   final coreWalletDatabaseService = locator<CoreWalletDatabaseService>();
   SharedService sharedService = locator<SharedService>();
+  final ApiService _apiService = locator<ApiService>();
 
   final RxValue<int> _pageNumber = RxValue<int>(1);
   int get pageNumber => _pageNumber.value;
@@ -564,7 +570,6 @@ class PayCoolService with ListenableServiceMixin {
     int kanbanGasLimit = environment["chains"]["KANBAN"]["gasLimit"];
 
     var txKanbanHex;
-    var res;
 
     var nonce = await getNonce(exgAddress);
     try {
@@ -583,8 +588,8 @@ class PayCoolService with ListenableServiceMixin {
     if (txKanbanHex != '') {
       var resBody =
           await sendKanbanRawTransactionV2(paycoolBaseUrl, txKanbanHex);
-      res = resBody['_body'];
-      var txHash = res['transactionHash'];
+      var res = resBody['_body'];
+      // var txHash = res['transactionHash'];
       //{"ok":true,"_body":{"transactionHash":"0x855f2d8ec57418670dd4cb27ecb71c6794ada5686e771fe06c48e30ceafe0548","status":"0x1"}}
 
       log.w('res $res');
@@ -595,5 +600,210 @@ class PayCoolService with ListenableServiceMixin {
       }
     }
     return result;
+  }
+
+  Future<String?> signSendTxBond(
+      Uint8List seed, String abiHex, String toAddress,
+      {String chain = "KANBAN", bool incNonce = false}) async {
+    var txKanbanHex;
+    if (chain == "ETH") {
+      final root = bip32.BIP32.fromSeed(seed);
+
+      final ethCoinChild =
+          root.derivePath("m/44'/${environment["CoinType"]["ETH"]}'/0'/0/0");
+      final privateKey = HEX.encode(ethCoinChild.privateKey!);
+
+      Credentials credentials = EthPrivateKey.fromHex(privateKey);
+
+      final address = credentials.address;
+      final addressHex = address.hex;
+      final nonce = await _apiService.getEthNonce(addressHex);
+
+      try {
+        txKanbanHex = await signAbiHexWithPrivateKey(
+            abiHex,
+            privateKey,
+            toAddress,
+            nonce,
+            environment["chains"]["ETH"]["gasPrice"],
+            environment["chains"]["ETH"]["gasLimit"],
+            chainIdParam: "ETH");
+
+        log.i('txKanbanHex $txKanbanHex');
+      } catch (err) {
+        log.e('err $err');
+      }
+      if (txKanbanHex != '' && txKanbanHex != null) {
+        var resBody =
+            await sendRawTransactionV3(paycoolBaseUrl, txKanbanHex, "eth");
+
+        //{"ok":true,"_body":{"transactionHash":"0x855f2d8ec57418670dd4cb27ecb71c6794ada5686e771fe06c48e30ceafe0548","status":"0x1"}}
+        //{"success":true,"data":{"txid":"0x9fe2100728cb211320b7057978c9a2beb405dcab89bda848db1322bfcee6d079"}}
+
+        if (!resBody["success"]) {
+          return null;
+        } else {
+          var res = resBody["data"]["txid"];
+          return res;
+        }
+      }
+    } else {
+      String exgAddress =
+          await sharedService.getExgAddressFromCoreWalletDatabase();
+
+      var keyPairKanban = getExgKeyPair(Uint8List.fromList(seed));
+      log.w('keyPairKanban $keyPairKanban');
+      int kanbanGasPrice = environment["chains"]["KANBAN"]["gasPrice"];
+      int kanbanGasLimit = environment["chains"]["KANBAN"]["gasLimit"];
+
+      var nonce = await getNonce(exgAddress);
+
+      if (incNonce) {
+        nonce = nonce + 1;
+      }
+
+      try {
+        txKanbanHex = await signAbiHexWithPrivateKey(
+            abiHex,
+            HEX.encode(keyPairKanban["privateKey"]),
+            toAddress,
+            nonce,
+            kanbanGasPrice,
+            kanbanGasLimit);
+
+        log.i('txKanbanHex $txKanbanHex');
+      } catch (err) {
+        log.e('err $err');
+      }
+      if (txKanbanHex != '') {
+        var resBody =
+            await sendRawTransactionV3(paycoolBaseUrl, txKanbanHex, 'kanban');
+
+        if (!resBody["success"]) {
+          return null;
+        } else {
+          var res = resBody["data"]["txid"];
+          return res;
+        }
+      }
+    }
+
+    return null;
+  }
+
+  // bond api for approve functions
+  Future<String?> encodeEthApproveAbiHex(
+      BuildContext context, var spender, var value) async {
+    String url = payCoolEncodeAbiUrl;
+    var body = {
+      "types": ["address", "uint256"],
+      "params": [spender, value]
+    };
+    try {
+      final res = await client.post(Uri.parse(url),
+          body: jsonEncode(body),
+          headers: {
+            'Content-type': 'application/json',
+            'Accept': 'application/json'
+          });
+      log.w('encodeAbiHex json ${res.body}');
+      var json = jsonDecode(res.body)['encodedParams'];
+      if (res.statusCode == 200 || res.statusCode == 201) {
+        return json.toString();
+      } else {
+        log.e("error: ${res.body}");
+        return res.body;
+      }
+    } catch (e) {
+      log.e('CATCH encodeAbiHex failed to load the data from the API $e');
+      return '';
+    }
+  }
+
+  // bond api for approve functions
+  Future<String?> encodeKanbanApproveAbiHex(
+      BuildContext context, var spender, coinType, var value) async {
+    String url = payCoolEncodeAbiUrl;
+    var body = {
+      "types": ["address", "uint32", "uint256"],
+      "params": [spender, coinType, value]
+    };
+    try {
+      final res = await client.post(Uri.parse(url),
+          body: jsonEncode(body),
+          headers: {
+            'Content-type': 'application/json',
+            'Accept': 'application/json'
+          });
+      log.w('encodeAbiHex json ${res.body}');
+      var json = jsonDecode(res.body)['encodedParams'];
+      if (res.statusCode == 200 || res.statusCode == 201) {
+        return json.toString();
+      } else {
+        log.e("error: ${res.body}");
+        return res.body;
+      }
+    } catch (e) {
+      log.e('CATCH encodeAbiHex failed to load the data from the API $e');
+      return '';
+    }
+  }
+
+  // bond api for purchase eth functions
+  Future<String?> encodeEthPurchaseAbiHex(
+      BuildContext context, String email, var tokenAddr, var amount) async {
+    String url = payCoolEncodeAbiUrl;
+    var body = {
+      "types": ["string", "address", "uint256"],
+      "params": [email, tokenAddr, amount]
+    };
+    try {
+      final res = await client.post(Uri.parse(url),
+          body: jsonEncode(body),
+          headers: {
+            'Content-type': 'application/json',
+            'Accept': 'application/json'
+          });
+      log.w('encodeAbiHex json ${res.body}');
+      var json = jsonDecode(res.body)['encodedParams'];
+      if (res.statusCode == 200 || res.statusCode == 201) {
+        return json.toString();
+      } else {
+        log.e("error: ${res.body}");
+        return res.body;
+      }
+    } catch (e) {
+      log.e('CATCH encodeAbiHex failed to load the data from the API $e');
+      return '';
+    }
+  }
+
+  // bond api for purchase eth functions
+  Future<String?> encodeKanbanPurchaseAbiHex(
+      BuildContext context, String email, var tokenType, var amount) async {
+    String url = payCoolEncodeAbiUrl;
+    var body = {
+      "types": ["string", "uint32", "uint256"],
+      "params": [email, tokenType, amount]
+    };
+    try {
+      final res = await client.post(Uri.parse(url),
+          body: jsonEncode(body),
+          headers: {
+            'Content-type': 'application/json',
+            'Accept': 'application/json'
+          });
+      log.w('encodeAbiHex json ${res.body}');
+      var json = jsonDecode(res.body)['encodedParams'];
+      if (res.statusCode == 200 || res.statusCode == 201) {
+        return json.toString();
+      } else {
+        log.e("error: ${res.body}");
+        return res.body;
+      }
+    } catch (e) {
+      log.e('CATCH encodeAbiHex failed to load the data from the API $e');
+      return '';
+    }
   }
 }

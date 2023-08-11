@@ -6,6 +6,7 @@ import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/models/bond/rm/order_bond_rm.dart';
 import 'package:paycool/models/bond/vm/bond_sembol_vm.dart';
+import 'package:paycool/models/bond/vm/me_vm.dart';
 import 'package:paycool/models/bond/vm/order_bond_vm.dart';
 import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/api_service.dart';
@@ -14,7 +15,8 @@ import 'package:paycool/views/bond/buyBond/select_payment_bond_view.dart';
 import 'package:paycool/widgets/keyboard_down.dart';
 
 class BondSembolView extends StatefulWidget {
-  const BondSembolView({super.key});
+  final BondMeVm? bondMeVm;
+  const BondSembolView(this.bondMeVm, {super.key});
 
   @override
   State<BondSembolView> createState() => _BondSembolViewState();
@@ -99,7 +101,6 @@ class _BondSembolViewState extends State<BondSembolView>
                     bottom: keyboardHeight,
                     child: KeyboardClose(),
                   ),
-
                 Positioned(
                   top: 100,
                   left: size.width * 0.1,
@@ -135,7 +136,6 @@ class _BondSembolViewState extends State<BondSembolView>
                     ),
                   ),
                 ),
-
                 bondSembolVm != null
                     ? Padding(
                         padding: const EdgeInsets.fromLTRB(20, 100, 20, 100),
@@ -145,11 +145,7 @@ class _BondSembolViewState extends State<BondSembolView>
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              UIHelper.verticalSpaceSmall,
-                              Text(
-                                'Selected Bond: $selectedValue',
-                                style: bondText1,
-                              ),
+                              UIHelper.verticalSpaceLarge,
                               UIHelper.verticalSpaceLarge,
                               Text(
                                 "${bondSembolVm!.bondInfo!.issuer}",
@@ -244,14 +240,14 @@ class _BondSembolViewState extends State<BondSembolView>
                                 setState(() {
                                   orderBondVm = value;
                                 });
-                                print(value.bondOrder!.bondId);
                               }
                             }).whenComplete(() {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          const SelectPaymentBondView()));
+                                          SelectPaymentBondView(
+                                              orderBondVm!, widget.bondMeVm!)));
                             });
                           } else {
                             var snackBar = SnackBar(
@@ -275,50 +271,6 @@ class _BondSembolViewState extends State<BondSembolView>
                     ),
                   ),
                 ),
-                // Align(
-                //   alignment: Alignment.bottomCenter,
-                //   child: Padding(
-                //     padding: const EdgeInsets.only(bottom: 100),
-                //     child: Container(
-                //       width: size.width * 0.9,
-                //       height: 45,
-                //       decoration: BoxDecoration(
-                //         gradient: buttoGradient,
-                //         borderRadius: BorderRadius.circular(40.0),
-                //       ),
-                //       child: ElevatedButton(
-                //         onPressed: () {
-                //           var param = BondUpdatePaymentRm(
-                //             paymentAccount: "Digital Currency",
-                //             paymentMethod: "64ac153764ff60fbaadfd331",
-                //           );
-
-                //           apiService
-                //               .updatePaymentBond(
-                //                   context,
-                //                   orderBondVm!.bondOrder!.bondId.toString(),
-                //                   param)
-                //               .then((value) {
-                //             if (value != null) {
-                //               print(value.bondOrder!.bondId);
-                //             }
-                //           });
-                //         },
-                //         style: ElevatedButton.styleFrom(
-                //           backgroundColor: Colors.transparent,
-                //           shadowColor: Colors.transparent,
-                //         ),
-                //         child: Text(
-                //           'Update Payment',
-                //           style: TextStyle(
-                //             fontSize: 16.0,
-                //             fontWeight: FontWeight.bold,
-                //           ),
-                //         ),
-                //       ),
-                //     ),
-                //   ),
-                // ),
               ],
             ),
           ),

@@ -1311,7 +1311,7 @@ class ApiService {
       var json = jsonDecode(response.body)["data"];
       return BondSembolVm.fromJson(json);
     } catch (err) {
-      throw Exception(err);
+      return null;
     }
   }
 

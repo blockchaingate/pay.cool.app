@@ -11,6 +11,8 @@
 *----------------------------------------------------------------------
 */
 
+import 'dart:io' show Platform;
+
 import 'package:aukfa_version_checker/aukfa_version_checker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
@@ -27,7 +29,6 @@ import 'package:paycool/services/db/wallet_database_service.dart';
 import 'package:paycool/services/local_auth_service.dart';
 import 'package:paycool/services/local_dialog_service.dart';
 import 'package:paycool/services/local_storage_service.dart';
-import 'package:paycool/services/navigation_service.dart';
 import 'package:paycool/services/shared_service.dart';
 import 'package:paycool/services/wallet_service.dart';
 import 'package:paycool/shared/ui_helpers.dart';
@@ -36,9 +37,9 @@ import 'package:paycool/widgets/web_view_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
+
 import '../../../constants/api_routes.dart';
 import '../../../service_locator.dart';
-import 'dart:io' show Platform;
 
 class WalletSetupViewmodel extends BaseViewModel {
   final log = getLogger('WalletSetupViewModel');

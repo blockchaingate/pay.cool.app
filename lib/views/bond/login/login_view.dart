@@ -117,6 +117,7 @@ class _BondLoginViewState extends State<BondLoginView> {
                           TextField(
                             controller: model.passwordController,
                             style: TextStyle(color: Colors.white, fontSize: 13),
+                            obscureText: true,
                             keyboardType: TextInputType.visiblePassword,
                             decoration: InputDecoration(
                               hintText: 'Please enter your password',

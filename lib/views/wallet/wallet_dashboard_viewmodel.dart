@@ -209,8 +209,6 @@ class WalletDashboardViewModel extends BaseViewModel {
   Future<void> getUserBondMeData() async {
     await apiService.getBondMe().then((value) {
       if (value != null) {
-        print("-----------------");
-        print(value.email);
         bondMeVm = value;
       }
     });

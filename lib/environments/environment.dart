@@ -27,7 +27,7 @@ Map devConfig = {
       "hardfork": 'byzantium',
       "chainId": 5,
       "infura": "https://goerli.infura.io/v3/6c5bdfe73ef54bbab0accf87a6b4b0ef",
-      "gasPrice": 20,
+      "gasPrice": 10,
       "gasPriceMax": 200,
       "gasLimit": 21000,
       "gasLimitToken": 70000

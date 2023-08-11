@@ -132,6 +132,7 @@ class SharedService {
             }
           }
         }
+        // ignore: invalid_return_type_for_catch_error
       }).catchError((err) => log.e('getSinglePairDecimalConfig CATCH $err'));
     }
     return singlePairDecimalConfig;

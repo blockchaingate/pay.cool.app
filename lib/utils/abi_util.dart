@@ -11,19 +11,21 @@
 *----------------------------------------------------------------------
 */
 
+import 'dart:typed_data';
+
 import 'package:flutter/widgets.dart';
+import 'package:hex/hex.dart';
+import 'package:paycool/constants/constants.dart';
 import 'package:paycool/environments/environment.dart';
 import 'package:paycool/logger.dart';
 import 'package:paycool/utils/exaddr.dart';
 import 'package:paycool/utils/fab_util.dart';
 import 'package:paycool/utils/number_util.dart';
-import './string_util.dart';
-import 'package:web3dart/web3dart.dart';
-import 'package:hex/hex.dart';
 import 'package:web3dart/crypto.dart';
 import 'package:web3dart/src/utils/rlp.dart' as rlp;
-import 'dart:typed_data';
-import 'package:paycool/constants/constants.dart';
+import 'package:web3dart/web3dart.dart';
+
+import './string_util.dart';
 
 var fabUtils = FabUtils();
 final log = getLogger('AbiUtils');
@@ -371,14 +373,17 @@ Uint8List uint8ListFromList(List<int> data) {
 }
 
 Future signAbiHexWithPrivateKey(String abiHex, String privateKey,
-    String coinPoolAddress, int nonce, int gasPrice, int gasLimit) async {
-  var chainId = environment["chains"]["KANBAN"]["chainId"];
-  //var apiUrl = "https://ropsten.infura.io/v3/6c5bdfe73ef54bbab0accf87a6b4b0ef"; //Replace with your API
-
-  //var httpClient = new http.Client();
+    String coinPoolAddress, int nonce, int gasPrice, int gasLimit,
+    {String chainIdParam = "KANBAN"}) async {
+  int? chainId;
+  if (chainIdParam == "ETH") {
+    chainId = environment["chains"]["ETH"]["chainId"];
+  } else {
+    chainId = environment["chains"]["KANBAN"]["chainId"];
+  }
 
   abiHex = trimHexPrefix(abiHex);
-  //var ethClient = new Web3Client(apiUrl, httpClient);
+
   var credentials = EthPrivateKey.fromHex(privateKey);
 
   var transaction = Transaction(
@@ -388,6 +393,7 @@ Future signAbiHexWithPrivateKey(String abiHex, String privateKey,
       nonce: nonce,
       value: EtherAmount.fromInt(EtherUnit.wei, 0),
       data: Uint8List.fromList(HEX.decode(abiHex)));
+
   final innerSignature =
       chainId == null ? null : MsgSignature(BigInt.zero, BigInt.zero, chainId);
 
