@@ -50,6 +50,24 @@ class SharedService {
       locator<DecimalConfigDatabaseService>();
   final coreWalletDatabaseService = locator<CoreWalletDatabaseService>();
 
+  navigateWithAnimation(Widget viewToNavigate) => Navigator.of(context).push(
+        PageRouteBuilder(
+          pageBuilder: (context, animation, secondaryAnimation) =>
+              viewToNavigate,
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            var begin = const Offset(0.0, 1.0);
+            var end = Offset.zero;
+            var curve = Curves.easeInOut;
+            var tween =
+                Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+            return SlideTransition(
+              position: animation.drive(tween),
+              child: child,
+            );
+          },
+        ),
+      );
+
   storeDeviceId() async {
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
     String deviceId = '';

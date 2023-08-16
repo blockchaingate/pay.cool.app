@@ -41,6 +41,7 @@ class LocalStorageService {
   static const String StoreDeviceIdKey = 'storeDeviceIdKey';
   static const String BiometricAuthDataKey = 'biometricAuthDataKey';
   static const String BiometricPaymentKey = 'biometricPaymentKey';
+  static const String KycTokenKey = 'kycTokenKey';
 
 /*----------------------------------------------------------------------
                         Instance
@@ -124,6 +125,10 @@ class LocalStorageService {
   set testingLogStringList(String value) =>
       _saveToDisk(TestingLogStringListKey, value);
 
+  // ------------ kyc token ------------
+  String get kycToken => _getFromDisk(KycTokenKey) ?? '';
+
+  set kycToken(String value) => _saveToDisk(KycTokenKey, value);
 /*----------------------------------------------------------------------
                 Biometric auth getter/setter
 ----------------------------------------------------------------------  */
@@ -165,7 +170,7 @@ class LocalStorageService {
       _saveToDisk(BiometricPaymentKey, value);
 
 /*----------------------------------------------------------------------
-                walelt verification
+                wallet verification
 ----------------------------------------------------------------------*/
   bool get hasWalletVerified => _getFromDisk(WalletVerificationKey) ?? false;
   set hasWalletVerified(bool value) =>

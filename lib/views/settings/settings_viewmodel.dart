@@ -21,7 +21,9 @@ import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:kyc/kyc.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/route_names.dart';
+import 'package:paycool/environments/environment_type.dart';
 import 'package:paycool/models/wallet/user_settings_model.dart';
 import 'package:paycool/services/config_service.dart';
 import 'package:paycool/services/db/core_wallet_database_service.dart';
@@ -35,7 +37,6 @@ import 'package:paycool/services/shared_service.dart';
 import 'package:paycool/services/stoppable_service.dart';
 import 'package:paycool/services/vault_service.dart';
 import 'package:paycool/services/wallet_service.dart';
-import 'package:paycool/utils/wallet/local_kyc_util.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 //import 'package:showcaseview/showcaseview.dart';
 
@@ -93,7 +94,7 @@ class SettingsViewModel extends BaseViewModel with StoppableService {
   Map<String, String>? versionInfo;
   UserSettings userSettings = UserSettings();
   bool isUserSettingsEmpty = false;
-  bool kycStarted = false;
+
   var kycUser = KycUserModel();
   Locale? currentLang;
   bool _isBiometricAuth = false;
@@ -101,7 +102,6 @@ class SettingsViewModel extends BaseViewModel with StoppableService {
   final t = TextEditingController();
   bool _lockAppNow = false;
   get lockAppNow => _lockAppNow;
-  bool tokenExpired = false;
   final kycService = locator<KycBaseService>();
 
   final Map<String, String> languages = {
@@ -150,7 +150,7 @@ class SettingsViewModel extends BaseViewModel with StoppableService {
 
   init() async {
     setBusy(true);
-
+    sharedService.context = context!;
     Future.delayed(Duration.zero, () async {
       currentLang = FlutterI18n.currentLocale(context!);
     });
@@ -171,7 +171,7 @@ class SettingsViewModel extends BaseViewModel with StoppableService {
     } catch (err) {
       log.e('CATCH selectDefaultWalletLanguage failed');
     }
-    await checkKycStatusV2();
+
     setBusy(false);
   }
 
@@ -188,42 +188,47 @@ class SettingsViewModel extends BaseViewModel with StoppableService {
     }
   }
 
-  checkKycStatusV2() async {
-    setBusyForObject(kycStarted, true);
-    tokenExpired = false;
+  onLoginFormSubmit(UserLoginModel user) async {
+    setBusy(true);
 
-    var result = await kycService.getUserDetails(dotenv.env['USER_TOKEN']!);
+    try {
+      final kycService = locator<KycBaseService>();
 
-    kycStarted = result['success'];
-    if (kycStarted) {
-      var res = result['data'] ?? {};
+      String url =
+          isProduction ? KycConstants.prodBaseUrl : KycConstants.testBaseUrl;
+      final Map<String, dynamic> res;
 
-      kycUser = res;
-      // kycCheckResult.kyc!.step = 8;
-      log.w('checkkycstatus kycCheckResult ${kycUser.toJson()}');
-    } else {
-      var json = jsonDecode(result['error']);
-      log.e(json['errorName']);
-      if (json['errorName'] == 'TokenExpiredError') {
-        tokenExpired = true;
+      if (user.email!.isNotEmpty && user.password!.isNotEmpty) {
+        res = await kycService.login(url, user);
+        if (res['success']) {
+          storageService.kycToken = res['data']['token'];
+        }
+      } else {
+        res = {
+          'success': false,
+          'error': FlutterI18n.translate(
+              context!, 'pleaseFillAllTheTextFieldsCorrectly')
+        };
       }
+      return res;
+    } catch (e) {
+      debugPrint('CATCH error $e');
     }
-    setBusyForObject(kycStarted, false);
+
+    setBusy(false);
   }
 
-  // checkKycStatus() async {
-  //   setBusyForObject(kycStarted, true);
-  //   var result = await LocalKycUtil.checkKycStatus();
-  //   kycStarted = result['success'];
-  //   if (kycStarted) {
-  //     var res = result['data'] ?? {};
-  //     log.w('checkkycstatus res $res');
-  //     kycCheckResult = UserDataContent.fromJson(res['data']);
-  //     // kycCheckResult.kyc!.step = 8;
-  //     log.w('checkkycstatus kycCheckResult ${kycCheckResult.toJson()}');
-  //   }
-  //   setBusyForObject(kycStarted, false);
-  // }
+  checkKycStatusV2() async {
+    if (storageService.kycToken.isEmpty) {
+      log.e('kyc token is empty');
+      await sharedService.navigateWithAnimation(KycLogin(
+          onFormSubmit: onLoginFormSubmit, kycPrimaryColor: primaryColor));
+      return;
+    } else {
+      kycService.xAccessToken.value = storageService.kycToken;
+      navigationService.navigateToView(const KycStatus());
+    }
+  }
 
   // changeLanguage() async {
   //   debugPrint("currentLang.languageCode: " + currentLang.languageCode.toString());

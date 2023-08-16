@@ -12,6 +12,7 @@
 */
 import 'package:flutter/gestures.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:kyc/kyc.dart';
 import 'package:paycool/constants/api_routes.dart';
 import 'package:paycool/constants/colors.dart';
@@ -21,7 +22,6 @@ import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/views/settings/settings_viewmodel.dart';
 import 'package:paycool/widgets/bottom_nav.dart';
 import 'package:flutter/material.dart';
-import 'package:paycool/widgets/wallet/kyc_widget.dart';
 import 'package:stacked/stacked.dart';
 
 class SettingsView extends StatelessWidget {
@@ -465,7 +465,39 @@ class SettingsContainer extends StatelessWidget {
                 ],
               ),
             ),
-            KycWidget(),
+            UIHelper.verticalSpaceSmall,
+            Container(
+              margin: EdgeInsets.symmetric(horizontal: 17),
+              decoration: BoxDecoration(
+                color: white,
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: [
+                  BoxShadow(
+                    color: primaryColor.withOpacity(0.7),
+                    blurRadius: 5,
+                    offset: const Offset(0, 3), // changes position of shadow
+                  ),
+                ],
+              ),
+              child: ListTile(
+                contentPadding: EdgeInsets.symmetric(horizontal: 5),
+                dense: true,
+                iconColor: black,
+                leading: Icon(
+                  FontAwesomeIcons.passport,
+                  size: 18,
+                ),
+                title: Text(
+                  'KYC',
+                  style: headText4,
+                ),
+                onTap: () => model.checkKycStatusV2(),
+                trailing: Icon(
+                  Icons.arrow_forward_ios_sharp,
+                  size: 18,
+                ),
+              ),
+            ),
             Container(
               padding: const EdgeInsets.all(5),
               child: Center(
