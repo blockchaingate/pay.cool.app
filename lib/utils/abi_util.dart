@@ -375,12 +375,7 @@ Uint8List uint8ListFromList(List<int> data) {
 Future signAbiHexWithPrivateKey(String abiHex, String privateKey,
     String coinPoolAddress, int nonce, int gasPrice, int gasLimit,
     {String chainIdParam = "KANBAN"}) async {
-  int? chainId;
-  if (chainIdParam == "ETH") {
-    chainId = environment["chains"]["ETH"]["chainId"];
-  } else {
-    chainId = environment["chains"]["KANBAN"]["chainId"];
-  }
+  int? chainId = environment["chains"][chainIdParam]["chainId"];
 
   abiHex = trimHexPrefix(abiHex);
 

@@ -27,7 +27,7 @@ Map devConfig = {
       "hardfork": 'byzantium',
       "chainId": 5,
       "infura": "https://goerli.infura.io/v3/6c5bdfe73ef54bbab0accf87a6b4b0ef",
-      "gasPrice": 90,
+      "gasPrice": 10,
       "gasPriceMax": 200,
       "gasLimit": 21000,
       "gasLimitToken": 70000
@@ -72,6 +72,35 @@ Map devConfig = {
     "KANBANBOND": {
       "native": {"gasPrice": 0.05, "gasLimit": 20000000},
       "token": {"gasPrice": 0.05, "gasLimit": 20000000},
+    }
+  },
+  "Bond": {
+    "CoinPool": "0x8d65fc45de848e650490f1ffcd51c6baf52ea595",
+    "Chains": {
+      "ETH": {
+        "bondAddress": "0x4a22a0733711329c374deb2e2f7d743f791a753b",
+        "acceptedTokens": {
+          "id": "0x3908eaeeb2aee3f5fccbb01b35596a9acae87f7d",
+          "symbol": "USDT",
+          "decimals": 6
+        },
+        "gasPrice": 10000000000,
+        "gasLimit": 200000
+      },
+      "BNB": {
+        "bondAddress": "0x52c9c3c5f9d0bbc36f07382a3fe15f514dba7c41",
+        "acceptedTokens": {
+          "id": "0x4db5d28f758d32d8294389f30289d4413e1aef8c",
+          "symbol": "USDT",
+          "decimals": 6
+        },
+        "gasPrice": 10000000000,
+        "gasLimit": 200000
+      },
+      "KANBAN": {
+        "bondAddress": "0x5c8121a804ab6ebc59d0fd6006dfa6cab28cdbde",
+        "acceptedTokens": {"id": "131073", "symbol": "USDT", "decimals": 18}
+      }
     }
   },
   "CoinType": {
@@ -247,6 +276,31 @@ Map productionConfig = {
       "gasLimit": 200000
     },
     "KANBAN": {"chainId": 211, "gasPrice": 50000000, "gasLimit": 20000000}
+  },
+  "Bond": {
+    "CoinPool": "0x8d65fc45de848e650490f1ffcd51c6baf52ea595",
+    "Chains": {
+      "ETH": {
+        "bondAddress": "0x4a22a0733711329c374deb2e2f7d743f791a753b",
+        "acceptedTokens": {
+          "id": "0x3908eaeeb2aee3f5fccbb01b35596a9acae87f7d",
+          "symbol": "USDT",
+          "decimals": 6
+        }
+      },
+      "BNB": {
+        "bondAddress": "0x52c9c3c5f9d0bbc36f07382a3fe15f514dba7c41",
+        "acceptedTokens": {
+          "id": "0x4db5d28f758d32d8294389f30289d4413e1aef8c",
+          "symbol": "USDT",
+          "decimals": 6
+        }
+      },
+      "KANBAN": {
+        "bondAddress": "0x8d65fc45de848e650490f1ffcd51c6baf52ea595",
+        "acceptedTokens": {"id": "131073", "symbol": "USDT", "decimals": 18}
+      }
+    }
   },
   "CoinType": {
     "BTC": 0,

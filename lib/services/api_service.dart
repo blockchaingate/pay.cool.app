@@ -979,6 +979,21 @@ class ApiService {
     return nonce;
   }
 
+  // Eth Nonce
+  Future getBnbNonce(String address) async {
+    var url = 'https://testapi.fundark.com/api/bnb/nonce';
+    var body = {"native": address};
+    var nonce = 0;
+    try {
+      var response = await client.post(Uri.parse(url), body: body);
+      var data = jsonDecode(response.body)['data'];
+      nonce = int.parse(data);
+    } catch (e) {
+      debugPrint('getBnbNonce $e');
+    }
+    return nonce;
+  }
+
 /*----------------------------------------------------------------------
                   Get Decimal configuration for the coins
 ----------------------------------------------------------------------*/

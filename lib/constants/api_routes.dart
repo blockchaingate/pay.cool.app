@@ -207,6 +207,7 @@ final String bchBaseUrl = environment["endpoints"]["bch"];
 final String dogeBaseUrl = environment["endpoints"]["doge"];
 final String fabBaseUrl = environment["endpoints"]["fab"];
 final String ethBaseUrl = environment["endpoints"]["eth"];
+final String bnbBaseUrl = environment["endpoints"]["bnb"];
 final String eventsUrl = environment["eventInfo"];
 
 const String txStatusStatusRoute = 'kanban/explorer/getTransactionStatus';

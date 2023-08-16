@@ -211,8 +211,6 @@ Future<Map<String, dynamic>> sendRawTransactionV3(
   var url = 'https://testapi.fundark.com/api/$chain/postrawtransaction';
   var data = {'rawtx': rawKanbanTransaction};
 
-  print(url);
-
   try {
     var response = await client.post(Uri.parse(url), body: data);
     debugPrint('response from sendKanbanRawTransactionV3=');

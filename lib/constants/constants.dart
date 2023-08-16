@@ -49,19 +49,10 @@ class Constants {
   static const String payCoolCreateAccountAbiCode = "0x9859387b";
 
   static const String bondAbiCodeKanban = "0x85d7b238";
-  static const String bondAbiCodeEth = "0x288ba926";
+  static const String bondAbiCodeEth = "0xd13a00ba";
 
   static const String bondApproveEthAbiCode = "0x095ea7b3";
   static const String bondApproveKanbanAbiCode = "0x78c94cb5";
-
-  static const String bondAddress =
-      "0x4a22a0733711329c374deb2e2f7d743f791a753b";
-  static const String bondAddressETH =
-      "0x3908eaeeb2aee3f5fccbb01b35596a9acae87f7d";
-  static const String bondAddressBNB =
-      "0x52c9c3c5f9d0bbc36f07382a3fe15f514dba7c41";
-  static const String bondAddressKANBAN =
-      "0x8d65fc45de848e650490f1ffcd51c6baf52ea595";
 
   static const String EthMessagePrefix = '\u0019Ethereum Signed Message:\n';
   static const String BtcMessagePrefix = '\x18Bitcoin Signed Message:\n';
