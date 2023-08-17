@@ -34,11 +34,13 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
   final TextEditingController _emailController = TextEditingController();
   String? txHash;
 
-  String? selectedValueCoin;
-  List<String> dropdownItemsCoin = ['USDT'];
-
   String? selectedValueChain;
   List<String> dropdownItemsChain = ['ETH', 'KANBAN', "BNB"];
+
+  String? selectedValueCoin;
+  List<String> dropdownItemsCoin = [];
+  int index = 0;
+  bool isChainSelected = false;
 
   @override
   void initState() {
@@ -124,7 +126,9 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
                               onChanged: (String? newValue) {
                                 setState(() {
                                   selectedValueChain = newValue;
+                                  isChainSelected = true;
                                 });
+                                setCoins();
                               },
                               items: dropdownItemsChain.map((String value) {
                                 return DropdownMenuItem<String>(
@@ -136,40 +140,43 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
                                   TextStyle(color: Colors.black, fontSize: 14),
                             ),
                           ),
-                          UIHelper.verticalSpaceMedium,
-                          Container(
-                            width: MediaQuery.of(context).size.width *
-                                0.9, // Set the width to 80% of the screen width
-                            padding: EdgeInsets.symmetric(horizontal: 12),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8),
-                              color: Colors.grey[200],
-                            ),
-                            child: DropdownButton<String>(
-                              value: selectedValueCoin,
-                              hint: Text(
-                                'Select Coin',
-                                style: TextStyle(color: Colors.black),
+                          if (isChainSelected) UIHelper.verticalSpaceMedium,
+                          if (isChainSelected)
+                            Container(
+                              width: MediaQuery.of(context).size.width *
+                                  0.9, // Set the width to 80% of the screen width
+                              padding: EdgeInsets.symmetric(horizontal: 12),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8),
+                                color: Colors.grey[200],
                               ),
-                              dropdownColor: Colors.white,
-                              underline: SizedBox(),
-                              isExpanded: true,
-                              iconEnabledColor: Colors.black,
-                              onChanged: (String? newValue) {
-                                setState(() {
-                                  selectedValueCoin = newValue!;
-                                });
-                              },
-                              items: dropdownItemsCoin.map((String value) {
-                                return DropdownMenuItem<String>(
-                                  value: value,
-                                  child: Text(value),
-                                );
-                              }).toList(),
-                              style:
-                                  TextStyle(color: Colors.black, fontSize: 14),
+                              child: DropdownButton<String>(
+                                value: selectedValueCoin,
+                                hint: Text(
+                                  'Select Coin',
+                                  style: TextStyle(color: Colors.black),
+                                ),
+                                dropdownColor: Colors.white,
+                                underline: SizedBox(),
+                                isExpanded: true,
+                                iconEnabledColor: Colors.black,
+                                onChanged: (String? newValue) {
+                                  setState(() {
+                                    selectedValueCoin = newValue!;
+                                    index =
+                                        selectedValueCoin!.indexOf(newValue);
+                                  });
+                                },
+                                items: dropdownItemsCoin.map((String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(value),
+                                  );
+                                }).toList(),
+                                style: TextStyle(
+                                    color: Colors.black, fontSize: 14),
+                              ),
                             ),
-                          ),
                           UIHelper.verticalSpaceMedium,
                           RichText(
                             textAlign: TextAlign.center,
@@ -288,7 +295,7 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
     var amount;
 
     String toAddress = environment["Bond"]["Chains"]["$selectedValueChain"]
-        ["acceptedTokens"]["id"];
+        ["acceptedTokens"][index]["id"];
 
     if (selectedValueChain == "KANBAN") {
       toAddress = environment["Bond"]["CoinPool"];
@@ -320,8 +327,9 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
               context,
               environment["Bond"]["Chains"]["$selectedValueChain"]
                   ["bondAddress"],
-              131073,
-              amount) //TODO exg cointype will come here
+              environment["Bond"]["Chains"]["$selectedValueChain"]
+                  ["acceptedTokens"][index]["id"],
+              amount)
           .then((value) async {
         setState(() {
           abiHex = Constants.bondApproveKanbanAbiCode + value.toString();
@@ -372,7 +380,7 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
               context,
               _emailController.text,
               environment["Bond"]["Chains"]["$selectedValueChain"]
-                  ["acceptedTokens"]["id"],
+                  ["acceptedTokens"][index]["id"],
               amount)
           .then((value) async {
         setState(() {
@@ -384,7 +392,11 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
 
       await paycoolService
           .encodeKanbanPurchaseAbiHex(
-              context, _emailController.text, 131073, amount)
+              context,
+              _emailController.text,
+              environment["Bond"]["Chains"]["$selectedValueChain"]
+                  ["acceptedTokens"][index]["id"],
+              amount)
           .then((value) async {
         setState(() {
           abiHex = Constants.bondAbiCodeKanban + value.toString();
@@ -398,7 +410,7 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
               context,
               _emailController.text,
               environment["Bond"]["Chains"]["$selectedValueChain"]
-                  ["acceptedTokens"]["id"],
+                  ["acceptedTokens"][index]["id"],
               amount)
           .then((value) async {
         setState(() {
@@ -415,6 +427,17 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
         txHash = value;
       });
     });
+  }
+
+  setCoins() {
+    dropdownItemsCoin.clear();
+    var coins =
+        environment["Bond"]["Chains"]["$selectedValueChain"]["acceptedTokens"];
+
+    for (var element in coins) {
+      dropdownItemsCoin.add(element["symbol"]);
+    }
+    print(coins);
   }
 }
 

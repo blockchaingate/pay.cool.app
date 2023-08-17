@@ -79,27 +79,45 @@ Map devConfig = {
     "Chains": {
       "ETH": {
         "bondAddress": "0x4a22a0733711329c374deb2e2f7d743f791a753b",
-        "acceptedTokens": {
-          "id": "0x3908eaeeb2aee3f5fccbb01b35596a9acae87f7d",
-          "symbol": "USDT",
-          "decimals": 6
-        },
+        "acceptedTokens": [
+          {
+            "id": "0x3908eaeeb2aee3f5fccbb01b35596a9acae87f7d",
+            "symbol": "USDT",
+            "decimals": 6
+          },
+          {
+            "id": "0x3908eaeeb2aee3f5fccbb01b35596a9acae87f7w",
+            "symbol": "USDC",
+            "decimals": 6
+          },
+        ],
         "gasPrice": 10000000000,
         "gasLimit": 200000
       },
       "BNB": {
         "bondAddress": "0x52c9c3c5f9d0bbc36f07382a3fe15f514dba7c41",
-        "acceptedTokens": {
-          "id": "0x4db5d28f758d32d8294389f30289d4413e1aef8c",
-          "symbol": "USDT",
-          "decimals": 6
-        },
+        "acceptedTokens": [
+          {
+            "id": "0x4db5d28f758d32d8294389f30289d4413e1aef8c",
+            "symbol": "USDT",
+            "decimals": 6
+          },
+          {
+            "id": "0x4db5d28f758d32d8294389f30289d4413e1aef8a",
+            "symbol": "USDC",
+            "decimals": 6
+          },
+        ],
         "gasPrice": 10000000000,
         "gasLimit": 200000
       },
       "KANBAN": {
         "bondAddress": "0x5c8121a804ab6ebc59d0fd6006dfa6cab28cdbde",
-        "acceptedTokens": {"id": "131073", "symbol": "USDT", "decimals": 18}
+        "acceptedTokens": [
+          {"id": "131073", "symbol": "USDT", "decimals": 18},
+          {"id": "131074", "symbol": "DUSD", "decimals": 18},
+          {"id": "196632", "symbol": "USDC", "decimals": 18},
+        ]
       }
     }
   },
@@ -281,24 +299,46 @@ Map productionConfig = {
     "CoinPool": "0x8d65fc45de848e650490f1ffcd51c6baf52ea595",
     "Chains": {
       "ETH": {
-        "bondAddress": "0x4a22a0733711329c374deb2e2f7d743f791a753b",
-        "acceptedTokens": {
-          "id": "0x3908eaeeb2aee3f5fccbb01b35596a9acae87f7d",
-          "symbol": "USDT",
-          "decimals": 6
-        }
+        "bondAddress": "0x24344C80729E1D03F3B994aC7E2EE55b451287C3",
+        "acceptedTokens": [
+          {
+            "id": "0x3908eaeeb2aee3f5fccbb01b35596a9acae87f7d",
+            "symbol": "USDT",
+            "decimals": 6
+          },
+          {
+            "id": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "symbol": "USDC",
+            "decimals": 6
+          }
+        ],
+        "gasPrice": 10000000000,
+        "gasLimit": 200000
       },
       "BNB": {
-        "bondAddress": "0x52c9c3c5f9d0bbc36f07382a3fe15f514dba7c41",
-        "acceptedTokens": {
-          "id": "0x4db5d28f758d32d8294389f30289d4413e1aef8c",
-          "symbol": "USDT",
-          "decimals": 6
-        }
+        "bondAddress": "0x24344C80729E1D03F3B994aC7E2EE55b451287C3",
+        "acceptedTokens": [
+          {
+            "id": "0x55d398326f99059fF775485246999027B3197955",
+            "symbol": "USDT",
+            "decimals": 6
+          },
+          {
+            "id": "0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d",
+            "symbol": "USDC",
+            "decimals": 6
+          }
+        ],
+        "gasPrice": 10000000000,
+        "gasLimit": 200000
       },
       "KANBAN": {
-        "bondAddress": "0x8d65fc45de848e650490f1ffcd51c6baf52ea595",
-        "acceptedTokens": {"id": "131073", "symbol": "USDT", "decimals": 18}
+        "bondAddress": "0x649b20f352b1a58d9e8c9d57efb0da8c5f8903ad",
+        "acceptedTokens": [
+          {"id": "196609", "symbol": "USDT", "decimals": 18},
+          {"id": "131074", "symbol": "DUSD", "decimals": 18},
+          {"id": "196632", "symbol": "USDC", "decimals": 18},
+        ]
       }
     }
   },
