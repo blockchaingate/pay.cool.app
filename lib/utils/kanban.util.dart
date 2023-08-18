@@ -204,3 +204,25 @@ Future<Map<String, dynamic>> sendKanbanRawTransactionV2(
     return {'success': false, 'data': 'error $e'};
   }
 }
+
+// this one is the last one that works just ETH
+Future<Map<String, dynamic>> sendRawTransactionV3(
+    String baseUrl, String rawKanbanTransaction, String chain) async {
+  var url = 'https://testapi.fundark.com/api/$chain/postrawtransaction';
+  var data = {'rawtx': rawKanbanTransaction};
+
+  try {
+    var response = await client.post(Uri.parse(url), body: data);
+    debugPrint('response from sendKanbanRawTransactionV3=');
+    debugPrint(response.body.toString());
+    if (response.body.contains('TS crosschain withdraw verification failed')) {
+      return {'success': false, 'data': response.body};
+    }
+    Map<String, dynamic> res = jsonDecode(response.body);
+    return res;
+  } catch (e) {
+    debugPrint('sendKanbanRawTransactionV2 CATCH  $e');
+    //return e;
+    return {'success': false, 'data': 'error $e'};
+  }
+}

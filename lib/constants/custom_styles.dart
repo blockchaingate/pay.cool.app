@@ -33,6 +33,8 @@ TextStyle bodyText2 = const TextStyle(fontSize: 13, color: red);
 TextStyle headText6 =
     const TextStyle(fontSize: 11.5, color: black, fontWeight: FontWeight.w500);
 
+TextStyle bondText1 = TextStyle(color: Colors.white);
+
 // appbar
 AppBar customAppBar({Color color = primaryColor}) => AppBar(
       automaticallyImplyLeading: false,

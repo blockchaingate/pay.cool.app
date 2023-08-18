@@ -207,6 +207,7 @@ final String bchBaseUrl = environment["endpoints"]["bch"];
 final String dogeBaseUrl = environment["endpoints"]["doge"];
 final String fabBaseUrl = environment["endpoints"]["fab"];
 final String ethBaseUrl = environment["endpoints"]["eth"];
+final String bnbBaseUrl = environment["endpoints"]["bnb"];
 final String eventsUrl = environment["eventInfo"];
 
 const String txStatusStatusRoute = 'kanban/explorer/getTransactionStatus';
@@ -222,3 +223,9 @@ const String GetOrdersByTickerApiRoute = 'getordersbytickernamepaged/';
 /// 0xb754f9c8b706c59646a4e97601a0ad81067e1cf9/HOT
 const String GetSingleCoinExchangeBalApiRoute = 'exchangily/getBalance/';
 const String AssetsBalanceApiRoute = 'exchangily/getBalances/';
+
+/* ---------------------------------------------------------------------
+                          Bond
+---------------------------------------------------------------------- */
+
+const String BaseBondApiRoute = 'https://testapi.fundark.com/api/';

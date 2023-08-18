@@ -15,6 +15,11 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:paycool/constants/constants.dart';
+import 'package:paycool/models/bond/vm/bond_sembol_vm.dart';
+import 'package:paycool/models/bond/vm/get_captcha_vm.dart';
+import 'package:paycool/models/bond/vm/me_vm.dart';
+import 'package:paycool/models/bond/vm/order_bond_vm.dart';
+import 'package:paycool/models/bond/vm/register_email_vm.dart';
 import 'package:paycool/models/wallet/wallet_transaction_history_model.dart';
 import 'package:paycool/views/lightning-remit/lightning_remit_transfer_history_model.dart';
 import 'package:paycool/views/wallet/wallet_features/transaction_history/transaction_history_model_v2.dart';
@@ -975,6 +980,21 @@ class ApiService {
     return nonce;
   }
 
+  // Eth Nonce
+  Future getBnbNonce(String address) async {
+    var url = 'https://testapi.fundark.com/api/bnb/nonce';
+    var body = {"native": address};
+    var nonce = 0;
+    try {
+      var response = await client.post(Uri.parse(url), body: body);
+      var data = jsonDecode(response.body)['data'];
+      nonce = int.parse(data);
+    } catch (e) {
+      debugPrint('getBnbNonce $e');
+    }
+    return nonce;
+  }
+
 /*----------------------------------------------------------------------
                   Get Decimal configuration for the coins
 ----------------------------------------------------------------------*/
@@ -1087,5 +1107,326 @@ class ApiService {
       log.e('getEventSingle failed to load the data from the API $e');
     }
     return {};
+  }
+
+  /*----------------------------------------------------------------------
+                  Bond Requests
+----------------------------------------------------------------------*/
+
+  // Get user info
+  Future<BondMeVm?> getBondMe() async {
+    var token = storageService.bondToken;
+    if (token.isEmpty || token == '') {
+      return null;
+    } else {
+      var url = "${BaseBondApiRoute}user/me";
+
+      try {
+        var response = await client.get(Uri.parse(url), headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'x-access-token': token,
+        });
+        if (!jsonDecode(response.body)["success"] ||
+            response.statusCode != 200) {
+          return null;
+        }
+        var json = jsonDecode(response.body)["data"];
+        return BondMeVm.fromJson(json);
+      } catch (err) {
+        throw Exception(err);
+      }
+    }
+  }
+
+  Future<RegisterEmailVm?> registerWithEmail(
+      BuildContext context, param) async {
+    String url = "${BaseBondApiRoute}user/register/email";
+    var jsonBody = json.encode(param);
+
+    try {
+      var response =
+          await client.post(Uri.parse(url), body: jsonBody, headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      });
+      if (!jsonDecode(response.body)["success"]) {
+        return null;
+      }
+      var json = jsonDecode(response.body)["data"];
+      return RegisterEmailVm.fromJson(json);
+    } catch (err) {
+      throw Exception(err);
+    }
+  }
+
+  Future<RegisterEmailVm?> loginWithEmail(BuildContext context, param) async {
+    String url = "${BaseBondApiRoute}user/login";
+    var jsonBody = json.encode(param);
+
+    try {
+      var response =
+          await client.post(Uri.parse(url), body: jsonBody, headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      });
+      if (!jsonDecode(response.body)["success"]) {
+        return null;
+      }
+      var json = jsonDecode(response.body)["data"];
+      return RegisterEmailVm.fromJson(json);
+    } catch (err) {
+      throw Exception(err);
+    }
+  }
+
+  Future<GetCaptchaVm?> getCaptcha(BuildContext context) async {
+    String url = "${BaseBondApiRoute}user/captcha";
+
+    try {
+      var response = await client.get(Uri.parse(url), headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      });
+      if (!jsonDecode(response.body)["success"]) {
+        return null;
+      }
+      var json = jsonDecode(response.body)["data"];
+      return GetCaptchaVm.fromJson(json);
+    } catch (err) {
+      throw Exception(err);
+    }
+  }
+
+  Future<bool?> verifyCaptcha(BuildContext context, param) async {
+    String url = "${BaseBondApiRoute}user/verifyCaptcha";
+    var jsonBody = json.encode(param);
+
+    try {
+      var response =
+          await client.post(Uri.parse(url), body: jsonBody, headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      });
+      if (!jsonDecode(response.body)["success"]) {
+        return null;
+      }
+      var json = jsonDecode(response.body)["data"]["isHuman"];
+      return json;
+    } catch (err) {
+      throw Exception(err);
+    }
+  }
+
+  Future<String?> sendEmail(BuildContext context) async {
+    String url = "${BaseBondApiRoute}user/sendEmailCode";
+    var token = storageService.bondToken;
+    if (token.isEmpty || token == '') {
+      return null;
+    } else {
+      try {
+        var response = await client.get(Uri.parse(url), headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'x-access-token': token,
+        });
+        if (!jsonDecode(response.body)["success"]) {
+          return null;
+        }
+        var json = jsonDecode(response.body)["message"];
+        return json;
+      } catch (err) {
+        throw Exception(err);
+      }
+    }
+  }
+
+  Future<bool?> verifyEmail(BuildContext context, param) async {
+    String url = "${BaseBondApiRoute}user/verifyEmail";
+    var token = storageService.bondToken;
+    if (token.isEmpty || token == '') {
+      return null;
+    } else {
+      var jsonBody = json.encode(param);
+
+      try {
+        var response =
+            await client.post(Uri.parse(url), body: jsonBody, headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'x-access-token': token,
+        });
+        if (!jsonDecode(response.body)["success"]) {
+          return null;
+        }
+        var json = jsonDecode(response.body)["success"];
+        return json;
+      } catch (err) {
+        throw Exception(err);
+      }
+    }
+  }
+
+  Future<String?> forgotPassword(BuildContext context, param) async {
+    String url = "${BaseBondApiRoute}user/forgotPassword";
+    var token = storageService.bondToken;
+    if (token.isEmpty || token == '') {
+      return null;
+    } else {
+      var jsonBody = json.encode(param);
+      try {
+        var response =
+            await client.post(Uri.parse(url), body: jsonBody, headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'x-access-token': token,
+        });
+        if (!jsonDecode(response.body)["success"]) {
+          return null;
+        }
+        var json = jsonDecode(response.body)["message"];
+        return json;
+      } catch (err) {
+        return null;
+      }
+    }
+  }
+
+  Future<String?> resetPassword(BuildContext context, param) async {
+    String url = "${BaseBondApiRoute}user/resetPassword";
+    var jsonBody = json.encode(param);
+
+    try {
+      var response =
+          await client.post(Uri.parse(url), body: jsonBody, headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      });
+      if (!jsonDecode(response.body)["success"]) {
+        return null;
+      }
+      var json = jsonDecode(response.body)["message"];
+      return json;
+    } catch (err) {
+      throw Exception(err);
+    }
+  }
+
+  Future<BondSembolVm?> bondSembol(
+      BuildContext context, String bondType) async {
+    String url = "${BaseBondApiRoute}bond/$bondType";
+
+    try {
+      var response = await client.get(Uri.parse(url), headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      });
+      if (!jsonDecode(response.body)["success"]) {
+        return null;
+      }
+      var json = jsonDecode(response.body)["data"];
+      return BondSembolVm.fromJson(json);
+    } catch (err) {
+      return null;
+    }
+  }
+
+  Future<OrderBondVm?> orderBond(BuildContext context, param) async {
+    String url = "${BaseBondApiRoute}bond/order";
+    var token = storageService.bondToken;
+    if (token.isEmpty || token == '') {
+      return null;
+    } else {
+      var jsonBody = json.encode(param);
+      try {
+        var response =
+            await client.post(Uri.parse(url), body: jsonBody, headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'x-access-token': token,
+        });
+        if (!jsonDecode(response.body)["success"]) {
+          return null;
+        }
+        var json = jsonDecode(response.body)["data"];
+        return OrderBondVm.fromJson(json);
+      } catch (err) {
+        throw Exception(err);
+      }
+    }
+  }
+
+  Future<OrderBondVm?> updatePaymentBond(
+      BuildContext context, String bondId, param) async {
+    String url = "${BaseBondApiRoute}bond/order/$bondId/updatePayment";
+    var token = storageService.bondToken;
+    if (token.isEmpty || token == '') {
+      return null;
+    } else {
+      var jsonBody = json.encode(param);
+      try {
+        var response =
+            await client.post(Uri.parse(url), body: jsonBody, headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'x-access-token': token,
+        });
+        if (!jsonDecode(response.body)["success"]) {
+          return null;
+        }
+        var json = jsonDecode(response.body)["data"];
+        return OrderBondVm.fromJson(json);
+      } catch (err) {
+        throw Exception(err);
+      }
+    }
+  }
+
+  Future<OrderBondVm?> confirmOrderBond(
+      BuildContext context, String bondId) async {
+    String url = "${BaseBondApiRoute}bond/order/$bondId/confirmOrder";
+    var token = storageService.bondToken;
+    if (token.isEmpty || token == '') {
+      return null;
+    } else {
+      try {
+        var response = await client.post(Uri.parse(url), headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'x-access-token': token,
+        });
+        if (!jsonDecode(response.body)["success"]) {
+          return null;
+        }
+        var json = jsonDecode(response.body)["data"];
+        return OrderBondVm.fromJson(json);
+      } catch (err) {
+        throw Exception(err);
+      }
+    }
+  }
+
+  Future<OrderBondVm?> deleteOrderBond(
+      BuildContext context, String bondId) async {
+    String url = "${BaseBondApiRoute}bond/order/$bondId/confirmOrder";
+    var token = storageService.bondToken;
+    if (token.isEmpty || token == '') {
+      return null;
+    } else {
+      try {
+        var response = await client.delete(Uri.parse(url), headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'x-access-token': token,
+        });
+        if (!jsonDecode(response.body)["success"]) {
+          return null;
+        }
+        var json = jsonDecode(response.body)["data"];
+        return OrderBondVm.fromJson(json);
+      } catch (err) {
+        throw Exception(err);
+      }
+    }
   }
 }

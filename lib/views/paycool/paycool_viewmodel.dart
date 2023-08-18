@@ -1,18 +1,15 @@
 import 'dart:io';
+
 import 'package:decimal/decimal.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:local_auth/local_auth.dart';
-import 'package:paycool/services/db/core_wallet_database_service.dart';
-import 'package:paycool/services/local_auth_service.dart';
-import 'package:paycool/utils/wallet/wallet_util.dart';
-import 'package:qr_code_utils/qr_code_utils.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:qr_flutter/qr_flutter.dart';
 import 'package:paycool/constants/api_routes.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/constants.dart';
@@ -24,32 +21,35 @@ import 'package:paycool/models/shared/pair_decimal_config_model.dart';
 import 'package:paycool/models/wallet/exchange_balance_model.dart';
 import 'package:paycool/models/wallet/transaction_history.dart';
 import 'package:paycool/models/wallet/wallet_balance.dart';
-
 import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/api_service.dart';
 import 'package:paycool/services/coin_service.dart';
+import 'package:paycool/services/db/core_wallet_database_service.dart';
 import 'package:paycool/services/db/token_list_database_service.dart';
 import 'package:paycool/services/db/transaction_history_database_service.dart';
 import 'package:paycool/services/db/user_settings_database_service.dart';
 import 'package:paycool/services/db/wallet_database_service.dart';
+import 'package:paycool/services/local_auth_service.dart';
 import 'package:paycool/services/local_storage_service.dart';
-import 'package:paycool/services/navigation_service.dart';
 import 'package:paycool/services/shared_service.dart';
 import 'package:paycool/services/wallet_service.dart';
 import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/utils/abi_util.dart';
 import 'package:paycool/utils/barcode_util.dart';
 import 'package:paycool/utils/fab_util.dart';
-import 'package:paycool/views/paycool_club/paycool_club_service.dart';
+import 'package:paycool/utils/wallet/wallet_util.dart';
 import 'package:paycool/views/paycool/models/merchant_model.dart';
 import 'package:paycool/views/paycool/paycool_service.dart';
+import 'package:paycool/views/paycool_club/paycool_club_service.dart';
+import 'package:qr_code_utils/qr_code_utils.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:url_launcher/url_launcher.dart';
+
 import '../../environments/environment.dart';
 import '../../services/config_service.dart';
-import 'package:image_picker/image_picker.dart';
 import '../../services/local_dialog_service.dart';
 import 'models/pay_order_model.dart';
 import 'models/payment_rewards_model.dart';
@@ -375,7 +375,7 @@ class PayCoolViewmodel extends FutureViewModel {
             .then((value) async {
           if (value) {
             var seed = await walletService.biometricPaymentSeed();
-            String res = '';
+            String? res = '';
             for (var param in rewardInfoModel!.params!) {
               res =
                   await paycoolService.signSendTx(seed, param.data!, param.to!);
@@ -398,7 +398,7 @@ class PayCoolViewmodel extends FutureViewModel {
         });
       } else {
         var seed = await walletService.getSeedDialog(sharedService.context);
-        String res = '';
+        String? res = '';
         for (var param in rewardInfoModel!.params!) {
           res = await paycoolService.signSendTx(seed!, param.data!, param.to!);
         }
@@ -1330,6 +1330,7 @@ class PayCoolViewmodel extends FutureViewModel {
         .then((value) => rewardInfoModel = value)
         .catchError((err) {
       invalidScanData(err);
+      return null;
     });
 
     merchantModel = await paycoolService

@@ -43,6 +43,8 @@ class LocalStorageService {
   static const String BiometricPaymentKey = 'biometricPaymentKey';
   static const String KycTokenKey = 'kycTokenKey';
 
+  static const String BondTokenKey = 'bondTokenKey';
+
 /*----------------------------------------------------------------------
                         Instance
 ----------------------------------------------------------------------*/
@@ -276,6 +278,14 @@ class LocalStorageService {
   List<String> get tokenList => _getFromDisk(TokenListKey) ?? false;
 
   set tokenList(List<String> value) => _saveToDisk(TokenListKey, value);
+
+/*----------------------------------------------------------------------
+                   Bond Token 
+----------------------------------------------------------------------  */
+  String get bondToken => _getFromDisk(BondTokenKey) ?? '';
+  // 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NGJhZGQzNTIzYjFkYzg1MTNkYjc0MzAiLCJpZGVudGlmaWVyIjoibGF3cmVuY2UuZmFuQHdoYXRldmVyLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNjkxMDEyMjQzLCJleHAiOjE2OTEwOTg2NDN9.BisAaHKKI6SKyG6RiYi2r_mz0W9TfEZYX440oXfiN5k';
+
+  set bondToken(String value) => _saveToDisk(BondTokenKey, value);
 
 /*----------------------------------------------------------------------
                 Showcase View getter/setter

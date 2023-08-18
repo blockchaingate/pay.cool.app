@@ -26,7 +26,7 @@ class WalletSetupView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool isTablet = MediaQuery.of(context).size.width >= 768.0;
+    // bool isTablet = MediaQuery.of(context).size.width >= 768.0;
     return ViewModelBuilder<WalletSetupViewmodel>.reactive(
       viewModelBuilder: () => WalletSetupViewmodel(),
       onViewModelReady: (WalletSetupViewmodel model) async {

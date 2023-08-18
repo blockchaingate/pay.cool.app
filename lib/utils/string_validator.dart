@@ -55,3 +55,20 @@ class ValidatorInputFormatter implements TextInputFormatter {
     return newValue;
   }
 }
+
+bool validateEmail(String email) {
+  // Regular expression pattern for email validation
+  const pattern = r'^[\w-]+(\.[\w-]+)*@([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,7}$';
+  final regExp = RegExp(pattern);
+
+  // Check if the email matches the pattern
+  return regExp.hasMatch(email);
+}
+
+bool validatePassword(String param) {
+  RegExp pattern = RegExp(
+      r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[`~!@#\$%\^&*\(\)-_\+\=\{\[\}\]]).{8,}$');
+  bool hasSpecialCharacters = param.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'));
+
+  return pattern.hasMatch(param) && hasSpecialCharacters;
+}

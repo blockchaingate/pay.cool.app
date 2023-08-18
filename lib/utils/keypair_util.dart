@@ -25,8 +25,8 @@ getExgKeyPair(seed) {
               public: environment["chains"]["BTC"]["network"].bip32.public,
               private: environment["chains"]["BTC"]["network"].bip32.private)));
 
-  final fabCoinChild = root.derivePath(
-      "m/44'/${environment["CoinType"]["FAB"]}'/0'/0/0");
+  final fabCoinChild =
+      root.derivePath("m/44'/${environment["CoinType"]["FAB"]}'/0'/0/0");
   final fabPublicKey = fabCoinChild.publicKey;
 
   final fabPrivateKey = fabCoinChild.privateKey;
