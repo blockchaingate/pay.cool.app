@@ -400,34 +400,57 @@ class WalletService with ListenableServiceMixin {
   // }
 
   storeTokenListInDB() async {
-    List existingTokensInTokenDatabase;
+    initializeTokenListDBUpdateTime();
+    List existingTokensInTokenDatabase = [];
     try {
       existingTokensInTokenDatabase = await tokenListDatabaseService.getAll();
+      log.e(
+          'existingTokensInTokenDatabase token list length ${existingTokensInTokenDatabase.length}');
     } catch (err) {
       existingTokensInTokenDatabase = [];
       log.e('getTokenList tokenListDatabaseService.getAll CATCH err $err');
     }
-    List<TokenModel> newTokenListFromTokenUpdateApi = [];
-    await _apiService.getTokenListUpdates().then((tokenList) {
-      log.w(
-          'getTokenListUpdates token list from api length ${tokenList.length}');
-      newTokenListFromTokenUpdateApi = tokenList;
+    List<TokenModel> tokenListFromTokenUpdateApi = [];
+
+    await _apiService.getTokenListUpdates().then((tokenListUpdates) {
+      log.w('getTokenListUpdates length ${tokenListUpdates.length}');
+      tokenListFromTokenUpdateApi = tokenListUpdates;
     }).catchError((err) {
       log.e('getTokenListUpdates Catch $err');
     });
-    //  await getTokenListUpdates().then((newTokenListFromTokenUpdateApi) async {
-    if (newTokenListFromTokenUpdateApi.isNotEmpty) {
-      existingTokensInTokenDatabase ??= [];
+    await _apiService.getTokenList().then((tokenList) {
+      log.i('getTokenList length ${tokenList.length}');
+      for (var t in tokenList) {
+        var result = tokenListFromTokenUpdateApi.firstWhere(
+            (element) => element.coinType == t.coinType,
+            orElse: () => TokenModel(coinType: -1));
+        if (result.coinType!.isNegative) {
+          log.w(
+              'tokenListFromTokenUpdateApi does not have ${t.coinType} -- adding it');
+          tokenListFromTokenUpdateApi.add(t);
+        }
+      }
+    }).catchError((err) {
+      log.e('getTokenListUpdates Catch $err');
+    });
+
+    log.e(
+        'tokenListFromTokenUpdateApi final length ${tokenListFromTokenUpdateApi.length}');
+    if (tokenListFromTokenUpdateApi.isNotEmpty) {
       if (existingTokensInTokenDatabase.length !=
-          newTokenListFromTokenUpdateApi.length) {
+              tokenListFromTokenUpdateApi.length ||
+          isMoreThan24HoursSinceLastUpdate(storageService.tokenListDBUpdateTime,
+              DateTime.now().toLocal().toIso8601String())) {
         await tokenListDatabaseService.deleteDb().whenComplete(() => log.e(
             'token list database cleared before inserting updated token data from api'));
 
         /// Fill the token list database with new data from the api
 
-        for (var singleNewToken in newTokenListFromTokenUpdateApi) {
+        for (var singleNewToken in tokenListFromTokenUpdateApi) {
           await tokenListDatabaseService.insert(singleNewToken);
         }
+        storageService.tokenListDBUpdateTime =
+            DateTime.now().toLocal().toIso8601String();
       } else {
         log.i('storeTokenListInDB -- local token db same length as api\'s ');
       }

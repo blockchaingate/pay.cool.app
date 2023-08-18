@@ -1,6 +1,6 @@
 name: paycool
 description: Crypto payment application
-version: 2.3.132+194
+version: 2.3.133+196
 
 publish_to: "none"
 
@@ -13,8 +13,8 @@ dependency_overrides:
   hex: ^0.2.0
 
   image_picker_android: 0.8.4+13
-  # kyc:
-  #   path: "../exchangily-packages/kyc"
+  kyc:
+    path: "../exchangily-packages/kyc"
   # pagination_widget:
   #   path: "../exchangily-packages/pagination_widget"
 
@@ -64,7 +64,7 @@ dependencies:
     git:
       url: https://github.com/blockchaingate/exchangily-packages.git
       path: kyc
-      ref: main
+      ref: kyc-v2
   launch_review: ^3.0.1
   local_auth: ^2.1.6
   logger: ^1.1.0

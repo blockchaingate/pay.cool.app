@@ -615,12 +615,14 @@
     "resendCode": "コードを再送信",
     "recordVideo": "ビデオを録画",
     "selectVideoFromGallery": "ギャラリーからビデオを選択",
-    "kycStep-1": "メールコードが送信されました",
     "incorrectPhoneNumber": "電話番号が間違っています",
     "kycStarted": "kyc開始",
     "kycApproved": "kyc承認",
     "biometricAuthForPayment": "生体認証による支払い",
     "payUsingBiometric": "生体認証で支払う",
-    "pleaseAuthenticateToProceed": "続行するには認証してください。"
-    
+    "pleaseAuthenticateToProceed": "続行するには認証してください。",
+    "nextStep": "次のステップ",
+    "kycStep-1": "電話番号を確認",
+    "kycLoginPasswordConditions": "パスワードは少なくとも8文字以上で、数字、大文字、小文字それぞれ1つ以上を含める必要があります。",
+    "failedToSendVerificationCode": "認証コードの送信に失敗しました"
 }

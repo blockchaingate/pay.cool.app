@@ -223,22 +223,23 @@ class CoinService {
         debugPrint(
             'CATCH: CANNOT find Coin found in token database -err: $err');
       }
-      if (coinType == 0) {
-        await apiService.getTokenListUpdates().then((tokens) {
-          coinType = tokens
-              .firstWhere((element) => element.coinName == tickerName)
-              .coinType!;
-        });
-      }
-      if (coinType == 0) {
-        await apiService.getTokenList().then((tokens) {
-          coinType = tokens
-              .firstWhere((element) => element.tickerName == tickerName)
-              .coinType!;
-        });
-      }
+      // if (coinType == 0) {
+      //   await apiService.getTokenListUpdates().then((tokens) {
+      //     coinType = tokens
+      //         .firstWhere((element) => element.coinName == tickerName)
+      //         .coinType!;
+      //   });
+      // }
+      // if (coinType == 0) {
+      //   await apiService.getTokenList().then((tokens) {
+      //     coinType = tokens
+      //         .firstWhere((element) => element.tickerName == tickerName)
+      //         .coinType!;
+      //   });
+      // }
     }
-    debugPrint('ticker $tickerName -- coin type $coinType');
+    log.i(
+        'Func:getCoinTypeByTickerName -- ticker $tickerName -- coin type $coinType');
     return coinType;
   }
 }

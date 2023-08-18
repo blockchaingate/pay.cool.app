@@ -58,8 +58,8 @@ class TokenModel {
 
     data['decimal'] = decimal;
     data['tickerName'] = tickerName;
-    data['coinName'] = coinName;
-    data['chainName'] = chainName;
+    data['coinName'] = coinName ?? '';
+    data['chainName'] = chainName ?? '';
     data['type'] = coinType;
     data['contract'] = contract;
     data['minWithdraw'] = minWithdraw;

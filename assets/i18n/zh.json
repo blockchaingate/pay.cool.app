@@ -615,11 +615,14 @@
     "resendCode": "重新发送代码",
     "recordVideo": "录制视频",
     "selectVideoFromGallery": "从图库中选择视频",
-    "kycStep-1": "已发送电子邮件代码",
     "incorrectPhoneNumber": "电话号码错误",
     "kycStarted": "kyc已启动",
     "kycApproved": "kyc已批准",
     "biometricAuthForPayment": "生物特征支付认证",
     "payUsingBiometric": "使用生物特征支付",
-    "pleaseAuthenticateToProceed": "请进行身份验证以继续。"    
+    "pleaseAuthenticateToProceed": "请进行身份验证以继续。",
+    "nextStep": "下一步",
+    "kycStep-1": "验证电话号码",
+    "kycLoginPasswordConditions": "密码至少应为8个字符长，且包含至少一个数字、一个大写字母和一个小写字母。",
+    "failedToSendVerificationCode": "发送验证码失败"
 }

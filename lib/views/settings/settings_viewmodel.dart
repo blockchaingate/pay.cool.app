@@ -11,15 +11,19 @@
 *----------------------------------------------------------------------
 */
 
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:kyc/kyc.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/route_names.dart';
+import 'package:paycool/environments/environment_type.dart';
 import 'package:paycool/models/wallet/user_settings_model.dart';
 import 'package:paycool/services/config_service.dart';
 import 'package:paycool/services/db/core_wallet_database_service.dart';
@@ -33,7 +37,6 @@ import 'package:paycool/services/shared_service.dart';
 import 'package:paycool/services/stoppable_service.dart';
 import 'package:paycool/services/vault_service.dart';
 import 'package:paycool/services/wallet_service.dart';
-import 'package:paycool/utils/wallet/local_kyc_util.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 //import 'package:showcaseview/showcaseview.dart';
 
@@ -91,14 +94,16 @@ class SettingsViewModel extends BaseViewModel with StoppableService {
   Map<String, String>? versionInfo;
   UserSettings userSettings = UserSettings();
   bool isUserSettingsEmpty = false;
-  bool kycStarted = false;
-  var kycCheckResult = UserDataContent();
+
+  var kycUser = KycUserModel();
   Locale? currentLang;
   bool _isBiometricAuth = false;
   get isBiometricAuth => _isBiometricAuth;
   final t = TextEditingController();
   bool _lockAppNow = false;
   get lockAppNow => _lockAppNow;
+  final kycService = locator<KycBaseService>();
+
   final Map<String, String> languages = {
     "en": "English",
     "zh": "简体中文",
@@ -117,6 +122,8 @@ class SettingsViewModel extends BaseViewModel with StoppableService {
     "ja": "JP",
     "hi": "IN",
   };
+
+  String routeArgs = '';
 
   @override
   void start() async {
@@ -145,7 +152,7 @@ class SettingsViewModel extends BaseViewModel with StoppableService {
 
   init() async {
     setBusy(true);
-
+    sharedService.context = context!;
     Future.delayed(Duration.zero, () async {
       currentLang = FlutterI18n.currentLocale(context!);
     });
@@ -166,22 +173,74 @@ class SettingsViewModel extends BaseViewModel with StoppableService {
     } catch (err) {
       log.e('CATCH selectDefaultWalletLanguage failed');
     }
-    await checkKycStatus();
+    var argsHolder = ModalRoute.of(context!)!.settings.arguments;
+    if (argsHolder is String) {
+      routeArgs = argsHolder;
+      if (routeArgs == 'logout') {
+        storageService.kycToken = '';
+        log.w('logoutReason = $routeArgs - token removed');
+      }
+    } else {
+      log.w('No logout reason provided.');
+    }
     setBusy(false);
   }
 
-  checkKycStatus() async {
-    setBusyForObject(kycStarted, true);
-    var result = await LocalKycUtil.checkKycStatus();
-    kycStarted = result['success'];
-    if (kycStarted) {
-      var res = result['data'] ?? {};
-      log.w('checkkycstatus res $res');
-      kycCheckResult = UserDataContent.fromJson(res['data']);
-      // kycCheckResult.kyc!.step = 8;
-      log.w('checkkycstatus kycCheckResult ${kycCheckResult.toJson()}');
+  String showKycStatus(BuildContext context) {
+    if (kycUser.kycLevel.toString() == '0' ||
+        kycUser.kycLevel.toString() == '1' ||
+        kycUser.kycLevel.toString() == '2' ||
+        kycUser.kycLevel.toString() == '3') {
+      return FlutterI18n.translate(context, "level") +
+          ' ' +
+          kycUser.kycLevel.toString();
+    } else {
+      return FlutterI18n.translate(context, "kycStarted");
     }
-    setBusyForObject(kycStarted, false);
+  }
+
+  onLoginFormSubmit(UserLoginModel user) async {
+    setBusy(true);
+
+    try {
+      final kycService = locator<KycBaseService>();
+
+      String url =
+          isProduction ? KycConstants.prodBaseUrl : KycConstants.testBaseUrl;
+      final Map<String, dynamic> res;
+
+      if (user.email!.isNotEmpty && user.password!.isNotEmpty) {
+        res = await kycService.login(url, user);
+        if (res['success']) {
+          storageService.kycToken = res['data']['token'];
+        }
+      } else {
+        res = {
+          'success': false,
+          'error': FlutterI18n.translate(
+              context!, 'pleaseFillAllTheTextFieldsCorrectly')
+        };
+      }
+      return res;
+    } catch (e) {
+      debugPrint('CATCH error $e');
+    }
+
+    setBusy(false);
+  }
+
+  checkKycStatusV2() async {
+    kycService.setPrimaryColor(primaryColor);
+    if (storageService.kycToken.isEmpty) {
+      log.e('kyc token is empty');
+      await sharedService
+          .navigateWithAnimation(KycLogin(onFormSubmit: onLoginFormSubmit));
+      return;
+    } else {
+      kycService.xAccessToken.value = storageService.kycToken;
+
+      navigationService.navigateToView(const KycStatus());
+    }
   }
 
   // changeLanguage() async {

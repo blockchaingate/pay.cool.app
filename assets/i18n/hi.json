@@ -612,11 +612,14 @@
     "resendCode": "कोड फिर से भेजें",
     "recordVideo": "वीडियो रिकॉर्ड करें",
     "selectVideoFromGallery": "गैलरी से वीडियो चुनें",
-    "kycStep-1": "ईमेल कोड भेजा गया",
     "incorrectPhoneNumber": "गलत फ़ोन नंबर",
     "kycStarted": "kycशुरू",
     "kycApproved": "kycमंजूर",
     "biometricAuthForPayment": "भुगतान के लिए जैविक पहचान",
     "payUsingBiometric": "जैविक पहचान का उपयोग करें पेमेंट के लिए",
-    "pleaseAuthenticateToProceed": "जारी रखने के लिए कृपया प्रमाणीकरण करें।"
+    "pleaseAuthenticateToProceed": "जारी रखने के लिए कृपया प्रमाणीकरण करें।",
+    "nextStep": "अगला कदम",
+    "kycStep-1": "फ़ोन नंबर की पुष्टि करें",
+    "kycLoginPasswordConditions": "पासवर्ड कम से कम 8 वर्णों की लंबाई में होना चाहिए और कम से कम एक नंबर, एक बड़ी अक्षर और एक छोटी अक्षर को सम्मिलित करना चाहिए।",
+    "failedToSendVerificationCode": "सत्यापन कोड भेजने में विफल हुआ"
 }
