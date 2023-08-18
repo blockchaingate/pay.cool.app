@@ -123,6 +123,8 @@ class SettingsViewModel extends BaseViewModel with StoppableService {
     "hi": "IN",
   };
 
+  String routeArgs = '';
+
   @override
   void start() async {
     super.start();
@@ -171,7 +173,16 @@ class SettingsViewModel extends BaseViewModel with StoppableService {
     } catch (err) {
       log.e('CATCH selectDefaultWalletLanguage failed');
     }
-
+    var argsHolder = ModalRoute.of(context!)!.settings.arguments;
+    if (argsHolder is String) {
+      routeArgs = argsHolder;
+      if (routeArgs == 'logout') {
+        storageService.kycToken = '';
+        log.w('logoutReason = $routeArgs - token removed');
+      }
+    } else {
+      log.w('No logout reason provided.');
+    }
     setBusy(false);
   }
 
@@ -219,13 +230,15 @@ class SettingsViewModel extends BaseViewModel with StoppableService {
   }
 
   checkKycStatusV2() async {
+    kycService.setPrimaryColor(primaryColor);
     if (storageService.kycToken.isEmpty) {
       log.e('kyc token is empty');
-      await sharedService.navigateWithAnimation(KycLogin(
-          onFormSubmit: onLoginFormSubmit, kycPrimaryColor: primaryColor));
+      await sharedService
+          .navigateWithAnimation(KycLogin(onFormSubmit: onLoginFormSubmit));
       return;
     } else {
       kycService.xAccessToken.value = storageService.kycToken;
+
       navigationService.navigateToView(const KycStatus());
     }
   }

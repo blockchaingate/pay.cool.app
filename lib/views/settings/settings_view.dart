@@ -467,7 +467,7 @@ class SettingsContainer extends StatelessWidget {
             ),
             UIHelper.verticalSpaceSmall,
             Container(
-              margin: EdgeInsets.symmetric(horizontal: 17),
+              margin: const EdgeInsets.symmetric(horizontal: 17),
               decoration: BoxDecoration(
                 color: white,
                 borderRadius: BorderRadius.circular(10),
@@ -480,10 +480,10 @@ class SettingsContainer extends StatelessWidget {
                 ],
               ),
               child: ListTile(
-                contentPadding: EdgeInsets.symmetric(horizontal: 5),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 5),
                 dense: true,
                 iconColor: black,
-                leading: Icon(
+                leading: const Icon(
                   FontAwesomeIcons.passport,
                   size: 18,
                 ),
@@ -492,7 +492,7 @@ class SettingsContainer extends StatelessWidget {
                   style: headText4,
                 ),
                 onTap: () => model.checkKycStatusV2(),
-                trailing: Icon(
+                trailing: const Icon(
                   Icons.arrow_forward_ios_sharp,
                   size: 18,
                 ),

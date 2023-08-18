@@ -617,5 +617,8 @@
     "payUsingBiometric": "Pagar usando biometría",
     "pleaseAuthenticateToProceed": "Por favor, autentíquese para continuar.",
     "nextStep": "Siguiente Paso",
-    "kycStep-1": "Verificar Número de Teléfono"
+    "kycStep-1": "Verificar Número de Teléfono",
+    "kycLoginPasswordConditions": "La contraseña debe tener al menos 8 caracteres y contener al menos un número, una letra mayúscula y una letra minúscula.",
+    "failedToSendVerificationCode": "Fallo al enviar el código de verificación"
+
 }

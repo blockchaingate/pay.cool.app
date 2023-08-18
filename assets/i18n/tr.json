@@ -622,5 +622,7 @@
   "payUsingBiometric": "Biyometrik Kimlik Doğrulama ile Öde",
   "pleaseAuthenticateToProceed": "Devam etmek için lütfen kimlik doğrulama yapın.",
   "nextStep": "Sonraki Adım",
-  "kycStep-1": "Telefon Numarasını Doğrula"
+  "kycStep-1": "Telefon Numarasını Doğrula",
+  "kycLoginPasswordConditions": "Şifre en az 8 karakter uzunluğunda olmalı ve en az bir rakam, bir büyük harf ve bir küçük harf içermelidir.",
+  "failedToSendVerificationCode": "Doğrulama kodunu gönderme başarısız oldu"
 }

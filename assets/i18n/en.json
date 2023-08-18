@@ -640,5 +640,7 @@
     "rentalLease": "Rental Lease",
     "selectFile": "Select File",
     "occupation": "Occupation",
-    "annualIncome": "Annual Income"
+    "annualIncome": "Annual Income",
+    "kycLoginPasswordConditions": "Password should be at least 8 characters long and contain at least one number, one uppercase letter, one lowercase letter",
+    "failedToSendVerificationCode": "Failed to send verification code"
 }
