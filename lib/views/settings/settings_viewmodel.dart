@@ -177,7 +177,7 @@ class SettingsViewModel extends BaseViewModel with StoppableService {
     if (argsHolder is String) {
       routeArgs = argsHolder;
       if (routeArgs == 'logout') {
-        storageService.kycToken = '';
+        storageService.bondToken = '';
         log.w('logoutReason = $routeArgs - token removed');
       }
     } else {
@@ -212,7 +212,7 @@ class SettingsViewModel extends BaseViewModel with StoppableService {
       if (user.email!.isNotEmpty && user.password!.isNotEmpty) {
         res = await kycService.login(url, user);
         if (res['success']) {
-          storageService.kycToken = res['data']['token'];
+          storageService.bondToken = res['data']['token'];
         }
       } else {
         res = {
@@ -231,13 +231,13 @@ class SettingsViewModel extends BaseViewModel with StoppableService {
 
   checkKycStatusV2() async {
     kycService.setPrimaryColor(primaryColor);
-    if (storageService.kycToken.isEmpty) {
+    if (storageService.bondToken.isEmpty) {
       log.e('kyc token is empty');
       await sharedService
           .navigateWithAnimation(KycLogin(onFormSubmit: onLoginFormSubmit));
       return;
     } else {
-      kycService.xAccessToken.value = storageService.kycToken;
+      kycService.xAccessToken.value = storageService.bondToken;
 
       navigationService.navigateToView(const KycStatus());
     }
