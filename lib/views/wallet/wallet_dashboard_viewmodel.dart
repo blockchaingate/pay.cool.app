@@ -156,8 +156,7 @@ class WalletDashboardViewModel extends BaseViewModel {
   init() async {
     setBusy(true);
     await getUserBondMeData();
-    await refreshBalancesV2().then((value) async {
-      for (var i = 0; i < value.length; i++) {
+
     await walletService.storeTokenListInDB();
     await refreshBalancesV2().then((walletBalances) async {
       for (var i = 0; i < walletBalances.length; i++) {
