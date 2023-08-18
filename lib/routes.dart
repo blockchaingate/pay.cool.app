@@ -205,8 +205,9 @@ class RouteGenerator {
 ----------------------------------------------------------------------*/
       case SettingViewRoute:
         return MaterialPageRoute(
-            settings: const RouteSettings(name: 'SettingsView'),
-            builder: (_) => const SettingsView());
+          settings: RouteSettings(name: 'SettingsView', arguments: args),
+          builder: (_) => const SettingsView(),
+        );
 
       default:
         return _errorRoute(routeSettings);

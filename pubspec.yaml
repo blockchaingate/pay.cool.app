@@ -64,7 +64,7 @@ dependencies:
     git:
       url: https://github.com/blockchaingate/exchangily-packages.git
       path: kyc
-      ref: main
+      ref: kyc-v2
   launch_review: ^3.0.1
   local_auth: ^2.1.6
   logger: ^1.1.0
