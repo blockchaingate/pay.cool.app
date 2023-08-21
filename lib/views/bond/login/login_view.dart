@@ -24,7 +24,7 @@ class _BondLoginViewState extends State<BondLoginView> {
         model.context = context;
         await model.init();
       },
-      viewModelBuilder: () => BondLoginViewModel(),
+      viewModelBuilder: () => BondLoginViewModel(context: context),
       builder: (context, model, _) => Scaffold(
         resizeToAvoidBottomInset: true,
         body: model.isBusy

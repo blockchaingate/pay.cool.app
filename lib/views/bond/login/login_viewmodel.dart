@@ -66,6 +66,9 @@ class BondLoginViewModel extends BaseViewModel with WidgetsBindingObserver {
       if (result != null) {
         storageService.bondToken = result.token!;
         navigationService.navigateTo(DashboardViewRoute);
+      } else {
+        var snackBar = SnackBar(content: Text('Login Failed'));
+        ScaffoldMessenger.of(_context!).showSnackBar(snackBar);
       }
     }
     setBusy(false);
