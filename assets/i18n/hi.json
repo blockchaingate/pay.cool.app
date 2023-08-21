@@ -621,5 +621,8 @@
     "nextStep": "अगला कदम",
     "kycStep-1": "फ़ोन नंबर की पुष्टि करें",
     "kycLoginPasswordConditions": "पासवर्ड कम से कम 8 वर्णों की लंबाई में होना चाहिए और कम से कम एक नंबर, एक बड़ी अक्षर और एक छोटी अक्षर को सम्मिलित करना चाहिए।",
-    "failedToSendVerificationCode": "सत्यापन कोड भेजने में विफल हुआ"
+    "failedToSendVerificationCode": "सत्यापन कोड भेजने में विफल हुआ",
+    "countryOfResidence": "आवास का देश",
+    "finishKycShortNote": "कृपया मंजूरी की प्रतीक्षा करें। इस बीच, आप ऐप्लिकेशन की खोज कर सकते हैं।",
+    "inputLevel": "इनपुट स्तर"
 }

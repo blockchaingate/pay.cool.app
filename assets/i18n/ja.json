@@ -624,5 +624,8 @@
     "nextStep": "次のステップ",
     "kycStep-1": "電話番号を確認",
     "kycLoginPasswordConditions": "パスワードは少なくとも8文字以上で、数字、大文字、小文字それぞれ1つ以上を含める必要があります。",
-    "failedToSendVerificationCode": "認証コードの送信に失敗しました"
+    "failedToSendVerificationCode": "認証コードの送信に失敗しました",
+    "countryOfResidence": "居住国",
+    "finishKycShortNote": "承認をお待ちください。その間、アプリをご探索いただけます。",
+    "inputLevel": "入力レベル"
 }

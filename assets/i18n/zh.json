@@ -624,5 +624,8 @@
     "nextStep": "下一步",
     "kycStep-1": "验证电话号码",
     "kycLoginPasswordConditions": "密码至少应为8个字符长，且包含至少一个数字、一个大写字母和一个小写字母。",
-    "failedToSendVerificationCode": "发送验证码失败"
+    "failedToSendVerificationCode": "发送验证码失败",
+    "countryOfResidence": "居住国家",
+    "finishKycShortNote": "请等待批准。同时，您可以探索应用程序。",
+    "inputLevel": "输入级别"
 }

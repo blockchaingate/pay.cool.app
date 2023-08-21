@@ -591,7 +591,7 @@
     "backSide": "Back Side",
     "uploadImageNote": "Please make sure that the image is clear and all the information is visible",
     "finishKycNote": "Congratulations! You have successfully completed the KYC process. Please wait for the approval. In the meantime, you can explore the app.",
-    "checkProgressInSettings": "Check progress in settings",
+    "checkProgressInSettings": "Check progress in Settings",
     "invalidToken": "Invalid Token",
     "successfullySubmitted": "Successfully Submitted",
     "checkKycStatus": "Check KYC Status",
@@ -642,5 +642,8 @@
     "occupation": "Occupation",
     "annualIncome": "Annual Income",
     "kycLoginPasswordConditions": "Password should be at least 8 characters long and contain at least one number, one uppercase letter, one lowercase letter",
-    "failedToSendVerificationCode": "Failed to send verification code"
+    "failedToSendVerificationCode": "Failed to send verification code",
+    "countryOfResidence": "Country of Residence",
+    "finishKycShortNote": "Please wait for the approval. In the meantime, you can explore the app.",
+    "inputLevel": "Input Level"
 }
