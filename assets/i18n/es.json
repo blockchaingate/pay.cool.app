@@ -619,6 +619,8 @@
     "nextStep": "Siguiente Paso",
     "kycStep-1": "Verificar Número de Teléfono",
     "kycLoginPasswordConditions": "La contraseña debe tener al menos 8 caracteres y contener al menos un número, una letra mayúscula y una letra minúscula.",
-    "failedToSendVerificationCode": "Fallo al enviar el código de verificación"
-
+    "failedToSendVerificationCode": "Fallo al enviar el código de verificación",
+    "countryOfResidence": "País de Residencia",
+    "finishKycShortNote": "Por favor, espere la aprobación. Mientras tanto, puede explorar la aplicación.",
+    "inputLevel": "Nivel de Entrada"
 }

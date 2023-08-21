@@ -624,5 +624,8 @@
   "nextStep": "Sonraki Adım",
   "kycStep-1": "Telefon Numarasını Doğrula",
   "kycLoginPasswordConditions": "Şifre en az 8 karakter uzunluğunda olmalı ve en az bir rakam, bir büyük harf ve bir küçük harf içermelidir.",
-  "failedToSendVerificationCode": "Doğrulama kodunu gönderme başarısız oldu"
+  "failedToSendVerificationCode": "Doğrulama kodunu gönderme başarısız oldu",
+  "countryOfResidence": "İkamet Ülkesi",
+  "finishKycShortNote": "Onay bekleyin. Bu arada, uygulamayı keşfedebilirsiniz.",
+  "inputLevel": "Giriş Seviyesi"
 }

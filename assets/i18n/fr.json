@@ -624,5 +624,8 @@
     "nextStep": "Étape suivante",
     "kycStep-1": "Vérifier le numéro de téléphone",
     "kycLoginPasswordConditions": "Le mot de passe doit comporter au moins 8 caractères et contenir au moins un chiffre, une lettre majuscule et une lettre minuscule.",
-    "failedToSendVerificationCode": "Échec de l'envoi du code de vérification"
+    "failedToSendVerificationCode": "Échec de l'envoi du code de vérification",
+    "countryOfResidence": "Pays de résidence",
+    "finishKycShortNote": "Veuillez attendre l'approbation. En attendant, vous pouvez explorer l'application.",
+    "inputLevel": "Niveau de saisie"
 }
