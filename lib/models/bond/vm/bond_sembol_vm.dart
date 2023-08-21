@@ -6,24 +6,6 @@ BondSembolVm bondSembolVmFromJson(String str) =>
 String bondSembolVmToJson(BondSembolVm data) => json.encode(data.toJson());
 
 class BondSembolVm {
-  BondInfo? bondInfo;
-
-  BondSembolVm({
-    this.bondInfo,
-  });
-
-  factory BondSembolVm.fromJson(Map<String, dynamic> json) => BondSembolVm(
-        bondInfo: json["bond_info"] == null
-            ? null
-            : BondInfo.fromJson(json["bond_info"]),
-      );
-
-  Map<String, dynamic> toJson() => {
-        "bond_info": bondInfo?.toJson(),
-      };
-}
-
-class BondInfo {
   String? id;
   String? symbol;
   int? v;
@@ -36,9 +18,8 @@ class BondInfo {
   int? maturity;
   String? name;
   int? redemptionPrice;
-  int? totalSupply;
 
-  BondInfo({
+  BondSembolVm({
     this.id,
     this.symbol,
     this.v,
@@ -51,15 +32,14 @@ class BondInfo {
     this.maturity,
     this.name,
     this.redemptionPrice,
-    this.totalSupply,
   });
 
-  factory BondInfo.fromJson(Map<String, dynamic> json) => BondInfo(
+  factory BondSembolVm.fromJson(Map<String, dynamic> json) => BondSembolVm(
         id: json["_id"],
         symbol: json["symbol"],
         v: json["__v"],
         couponFrequency: json["coupon_frequency"],
-        couponRate: json["coupon_rate"],
+        couponRate: json["coupon_rate"]?.toDouble(),
         description: json["description"],
         faceValue: json["face_value"],
         issuePrice: json["issue_price"],
@@ -67,7 +47,6 @@ class BondInfo {
         maturity: json["maturity"],
         name: json["name"],
         redemptionPrice: json["redemption_price"],
-        totalSupply: json["total_supply"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -83,6 +62,5 @@ class BondInfo {
         "maturity": maturity,
         "name": name,
         "redemption_price": redemptionPrice,
-        "total_supply": totalSupply,
       };
 }

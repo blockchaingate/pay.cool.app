@@ -23,6 +23,7 @@ import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/views/bond/buyBond/bond_sembol_view.dart';
 import 'package:paycool/views/bond/login/login_view.dart';
 import 'package:paycool/views/bond/register/bond_register_view.dart';
+import 'package:paycool/views/bond/txHistory/bond_history_view.dart';
 import 'package:paycool/views/wallet/wallet_dashboard_viewmodel.dart';
 import 'package:paycool/views/wallet/wallet_features/wallet_features_view.dart';
 import 'package:paycool/widgets/bottom_nav.dart';
@@ -642,7 +643,7 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
           ),
         ),
         Padding(
-          padding: EdgeInsets.fromLTRB(30, 50, 30, 0),
+          padding: EdgeInsets.fromLTRB(10, 50, 10, 0),
           child: model.bondMeVm.email == null
               ? SizedBox(
                   height: size.height,
@@ -740,8 +741,22 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
                   ),
                 )
               : Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    SizedBox(
+                      width: double.infinity,
+                      child: IconButton(
+                        alignment: Alignment.topRight,
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const BondHistoryView()));
+                        },
+                        icon: Icon(Icons.history),
+                      ),
+                    ),
+                    UIHelper.verticalSpaceLarge,
                     Image.asset(
                       "assets/images/salvador.png",
                       height: 100,
@@ -775,7 +790,7 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
                     ),
                     UIHelper.verticalSpaceLarge,
                     Container(
-                      width: size.width * 0.9,
+                      width: size.width * 0.8,
                       height: 45,
                       decoration: BoxDecoration(
                         gradient: buttoGradient,

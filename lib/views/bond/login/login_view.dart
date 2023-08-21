@@ -4,6 +4,7 @@ import 'package:paycool/constants/colors.dart';
 import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/views/bond/login/forgot_password_view.dart';
 import 'package:paycool/views/bond/login/login_viewmodel.dart';
+import 'package:paycool/views/bond/register/bond_register_view.dart';
 import 'package:stacked/stacked.dart';
 
 class BondLoginView extends StatefulWidget with WidgetsBindingObserver {
@@ -213,7 +214,13 @@ class _BondLoginViewState extends State<BondLoginView> {
                                           decoration: TextDecoration.underline,
                                         ),
                                         recognizer: TapGestureRecognizer()
-                                          ..onTap = () {},
+                                          ..onTap = () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        const BondRegisterView()));
+                                          },
                                       ),
                                     ],
                                   ),

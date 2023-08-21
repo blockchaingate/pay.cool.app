@@ -1,12 +1,14 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/constants.dart';
 import 'package:paycool/constants/route_names.dart';
 import 'package:paycool/environments/environment.dart';
+import 'package:paycool/models/bond/rm/order_bond_rm.dart';
+import 'package:paycool/models/bond/vm/bond_sembol_vm.dart';
 import 'package:paycool/models/bond/vm/me_vm.dart';
-import 'package:paycool/models/bond/vm/order_bond_vm.dart';
 import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/api_service.dart';
 import 'package:paycool/services/shared_service.dart';
@@ -17,9 +19,15 @@ import 'package:stacked_services/stacked_services.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SelectPaymentBondView extends StatefulWidget {
+  final int quantity;
+  final String symbol;
+  final int amount;
+  final BondSembolVm? bondSembolVm;
   final BondMeVm? bondMeVm;
-  final OrderBondVm? orderBondVm;
-  const SelectPaymentBondView(this.orderBondVm, this.bondMeVm, {super.key});
+
+  const SelectPaymentBondView(
+      this.bondMeVm, this.quantity, this.amount, this.symbol, this.bondSembolVm,
+      {super.key});
 
   @override
   State<SelectPaymentBondView> createState() => _SelectPaymentBondViewState();
@@ -42,6 +50,8 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
   int index = 0;
   bool isChainSelected = false;
 
+  bool loading = false;
+
   @override
   void initState() {
     _emailController.text = widget.bondMeVm!.email!;
@@ -55,10 +65,24 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
       onTap: () {
         FocusManager.instance.primaryFocus?.unfocus();
       },
-      child: AnnotatedRegion<SystemUiOverlayStyle>(
-        value: SystemUiOverlayStyle.light,
+      child: ModalProgressHUD(
+        inAsyncCall: loading,
+        progressIndicator: SizedBox(
+          height: 150,
+          width: 150,
+          child: Image.asset(
+            'assets/animations/loading.gif',
+            fit: BoxFit.fill,
+          ),
+        ),
         child: Scaffold(
           resizeToAvoidBottomInset: false,
+          extendBodyBehindAppBar: true,
+          appBar: AppBar(
+            backgroundColor: Colors.transparent,
+            systemOverlayStyle: SystemUiOverlayStyle.light,
+            elevation: 0,
+          ),
           body: SizedBox(
             width: size.width,
             height: size.height,
@@ -72,6 +96,9 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
                 padding: const EdgeInsets.all(20.0),
                 child: Column(
                   children: [
+                    SizedBox(
+                      height: size.height * 0.05,
+                    ),
                     SizedBox(
                       width: size.width,
                       child: Column(
@@ -208,28 +235,46 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
                     ),
                     UIHelper.verticalSpaceMedium,
                     txHash != null
-                        ? Align(
-                            alignment: Alignment.center,
-                            child: InkWell(
-                              onTap: () {
-                                selectedValueChain == "KANBAN"
-                                    ? _launchUrl(
-                                        "https://test.exchangily.com/explorer/tx-detail/$txHash")
-                                    : selectedValueChain == "ETH"
-                                        ? _launchUrl(
-                                            "https://goerli.etherscan.io/tx/$txHash")
-                                        : _launchUrl(
-                                            "https://testnet.bscscan.com/tx/$txHash");
-                              },
-                              child: Text(
-                                txHash!,
-                                style: TextStyle(
-                                  fontSize: 24.0,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
+                        ? Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              SizedBox(
+                                width: size.width * 0.7,
+                                child: InkWell(
+                                  onTap: () {
+                                    String link = environment["Bond"]
+                                                ["Endpoints"]
+                                            ["$selectedValueChain"] +
+                                        txHash;
+                                    _launchUrl(link);
+                                  },
+                                  child: RichText(
+                                    text: TextSpan(
+                                      text: txHash!,
+                                      style: TextStyle(
+                                          fontSize: 20.0,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          decoration: TextDecoration.underline),
+                                    ),
+                                  ),
                                 ),
                               ),
-                            ),
+                              IconButton(
+                                onPressed: () {
+                                  Clipboard.setData(
+                                      ClipboardData(text: txHash!));
+                                  var snackBar = SnackBar(
+                                      content: Text('Copied to Clipboard'));
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(snackBar);
+                                },
+                                icon: Icon(
+                                  Icons.copy,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
                           )
                         : SizedBox(),
                     Expanded(child: SizedBox()),
@@ -253,11 +298,22 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
                                   .showSnackBar(snackBar);
                               return;
                             }
-                            await apiService.confirmOrderBond(
-                                context,
-                                widget.orderBondVm!.bondOrder!.bondId
-                                    .toString());
-                            await bondApprove(size);
+
+                            var param = OrderBondRm(
+                                paymentAmount: widget.amount,
+                                quantity: widget.quantity,
+                                paymentCoin: selectedValueCoin,
+                                paymentChain: selectedValueChain,
+                                symbol: widget.symbol,
+                                paymentCoinAmount: widget.amount);
+
+                            await checkPolicy(
+                                    context, size, param, widget.bondMeVm!)
+                                .whenComplete(() {
+                              setState(() {
+                                loading = false;
+                              });
+                            });
                           } else {
                             navigationService.navigateTo(DashboardViewRoute);
                           }
@@ -306,7 +362,7 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
     var seed = await walletService.getSeedDialog(sharedService.context);
 
     if (selectedValueChain == 'ETH') {
-      amount = widget.orderBondVm!.bondOrder!.quantity! * 100 * 1e6;
+      amount = widget.quantity * 100 * 1e6;
 
       await paycoolService
           .encodeEthApproveAbiHex(
@@ -320,7 +376,7 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
         });
       });
     } else if (selectedValueChain == 'KANBAN') {
-      amount = widget.orderBondVm!.bondOrder!.quantity! * 100 * 1e18;
+      amount = widget.quantity * 100 * 1e18;
 
       await paycoolService
           .encodeKanbanApproveAbiHex(
@@ -336,7 +392,7 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
         });
       });
     } else if (selectedValueChain == 'BNB') {
-      amount = widget.orderBondVm!.bondOrder!.quantity! * 100 * 1e6;
+      amount = widget.quantity * 100 * 1e6;
 
       await paycoolService
           .encodeEthApproveAbiHex(
@@ -373,7 +429,7 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
     String? abiHex;
 
     if (selectedValueChain == 'ETH') {
-      amount = widget.orderBondVm!.bondOrder!.quantity! * 100 * 1e6;
+      amount = widget.quantity * 100 * 1e6;
 
       await paycoolService
           .encodeEthPurchaseAbiHex(
@@ -388,7 +444,7 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
         });
       });
     } else if (selectedValueChain == 'KANBAN') {
-      amount = widget.orderBondVm!.bondOrder!.quantity! * 100 * 1e18;
+      amount = widget.quantity * 100 * 1e18;
 
       await paycoolService
           .encodeKanbanPurchaseAbiHex(
@@ -403,7 +459,7 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
         });
       });
     } else if (selectedValueChain == 'BNB') {
-      amount = widget.orderBondVm!.bondOrder!.quantity! * 100 * 1e6;
+      amount = widget.quantity * 100 * 1e6;
 
       await paycoolService
           .encodeEthPurchaseAbiHex(
@@ -425,6 +481,7 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
         .then((value) async {
       setState(() {
         txHash = value;
+        loading = false;
       });
     });
   }
@@ -437,162 +494,153 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
     for (var element in coins) {
       dropdownItemsCoin.add(element["symbol"]);
     }
-    print(coins);
+  }
+
+  Future<void> checkPolicy(
+    BuildContext context,
+    Size size,
+    OrderBondRm orderBondRm,
+    BondMeVm bondMeVm,
+  ) async {
+    final scrollController = ScrollController();
+
+    showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (BuildContext dialogContext) {
+          return StatefulBuilder(builder: (context, StateSetter setState) {
+            return Dialog(
+                elevation: 0.0,
+                backgroundColor: Colors.transparent,
+                child: Scrollbar(
+                  interactive: true,
+                  controller: scrollController,
+                  thumbVisibility: true,
+                  radius: Radius.circular(10),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.white,
+                    ),
+                    height: MediaQuery.of(context).size.height * 0.8,
+                    width: MediaQuery.of(context).size.width * 0.8,
+                    child: SingleChildScrollView(
+                      controller: scrollController,
+                      child: Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "El Salvador Digital National Bond",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize: 16.0,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black),
+                              ),
+                              Text(
+                                  "DNB is a national bond guaranteed by the El Salvador government to repay the principal and interest obligations according to the terms of the bond.",
+                                  style: TextStyle(
+                                      fontSize: 12.0,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.black)),
+                              UIHelper.verticalSpaceMedium,
+                              Text("Order Information",
+                                  textAlign: TextAlign.left,
+                                  style: TextStyle(
+                                      fontSize: 16.0,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black)),
+                              Text("Bond Type: ${orderBondRm.symbol!}"),
+                              Text("Chain Name: ${orderBondRm.paymentChain!}"),
+                              Text("Coin Name: ${orderBondRm.paymentCoin!}"),
+                              Text("Quantity: ${orderBondRm.quantity!}"),
+                              UIHelper.verticalSpaceMedium,
+                              Text("Bond Information",
+                                  textAlign: TextAlign.left,
+                                  style: TextStyle(
+                                      fontSize: 16.0,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black)),
+                              Text("Name: ${widget.bondSembolVm!.name}"),
+                              Text(
+                                  "Face Value: ${widget.bondSembolVm!.faceValue}"),
+                              Text(
+                                  "Interest Rate: ${widget.bondSembolVm!.couponRate}% (per year)"),
+                              Text(
+                                  "Issue price: ${widget.bondSembolVm!.issuePrice}"),
+                              Text(
+                                  "Maturity: ${widget.bondSembolVm!.maturity} years"),
+                              UIHelper.verticalSpaceMedium,
+                              Text("Personal Information",
+                                  textAlign: TextAlign.left,
+                                  style: TextStyle(
+                                      fontSize: 16.0,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black)),
+                              Text("Email: ${bondMeVm.email!}"),
+                              Text("Referral Code: ${bondMeVm.referralCode!}"),
+                              UIHelper.verticalSpaceMedium,
+                              Container(
+                                width: MediaQuery.of(context).size.width * 0.8,
+                                height: 45,
+                                decoration: BoxDecoration(
+                                  gradient: buttoGradient,
+                                  borderRadius: BorderRadius.circular(40.0),
+                                ),
+                                child: ElevatedButton(
+                                  onPressed: () async {
+                                    Navigator.pop(dialogContext);
+                                    setState(() {
+                                      loading = true;
+                                    });
+                                    try {
+                                      await ApiService()
+                                          .orderBond(context, orderBondRm)
+                                          .then((value) async {
+                                        if (value != null) {
+                                          if (widget.bondMeVm!.kycLevel! < 2) {
+                                            await apiService
+                                                .confirmOrderBondWithoutKyc(
+                                                    context,
+                                                    value.bondOrder!.bondId
+                                                        .toString());
+                                          } else {
+                                            await apiService.confirmOrderBond(
+                                                context,
+                                                value.bondOrder!.bondId
+                                                    .toString());
+                                          }
+                                          await bondApprove(size);
+                                        }
+                                      });
+                                    } catch (e) {
+                                      setState(() {
+                                        loading = false;
+                                      });
+                                    }
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.transparent,
+                                    shadowColor: Colors.transparent,
+                                  ),
+                                  child: Text(
+                                    'Confirm Payment',
+                                    style: TextStyle(
+                                      fontSize: 16.0,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ]),
+                      ),
+                    ),
+                  ),
+                ));
+          });
+        });
   }
 }
-
-//bond address
-
-//    eth       // first email hex +  0x3908eaeeb2aee3f5fccbb01b35596a9acae87f7d + amount hex (token amount multiple by 1e6 * 200(price of bond))
-// kanban           // first email hex +  token type hex +  amount hex (token amount multiple by 1e18 * 200(price of bond))
-// String abiHex = Constants.bondAbiCodeKanban +
-//     fixLength(
-//         trimHexPrefix(Constants.bondAddress), 64);
-
-// apiService
-//     .confirmOrderBond(
-//         context,
-//         widget.orderBondVm!.bondOrder!.bondId
-//             .toString())
-//     .then((value) {
-//   print(value);
-//   if (value != null) {
-
-//   }
-// });
-
-//eth
-
-/**
- {
-    "inputs": [
-      {
-        "internalType": "string",
-        "name": "email",
-        "type": "string"
-      },
-      {
-        "internalType": "address",
-        "name": "_tokenAddr",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "purchase",
-    "outputs": [
-      
-    ],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  }
- **/
-
-//eth approve
-/** 
- {
-      "constant": false,
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "spender",   ---> bond 0x4a22a0733711329c374deb2e2f7d743f791a753b
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "value",    --->  amount hex (token amount multiple by 1e6 * 200(price of bond))
-          "type": "uint256"
-        }
-      ],
-      "name": "approve",
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "",
-          "type": "bool"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    }
-**/
-
-// kanban
-
-/** 
-  {
-    "inputs": [
-      {
-        "internalType": "string",
-        "name": "email",
-        "type": "string"
-      },
-      {
-        "internalType": "uint32",
-        "name": "_tokenType",
-        "type": "uint32"
-      },
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "purchase",
-    "outputs": [
-      
-    ],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  } 
-  **/
-
-/** 
-    getApproveFunc() {
-    const func = {
-      "constant": false,
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "spender",    -----> bond 0x4a22a0733711329c374deb2e2f7d743f791a753b
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "value",      ----->  amount hex (token amount multiple by 1e18 * 200(price of bond))
-          "type": "uint256"
-        }
-      ],
-      "name": "approve",
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "",
-          "type": "bool"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    };
-
-    return func;
-  }
-  **/
-
-// kanban approve same as in biswap
-
-/**
-Eth goeril testnet
-Test usd: 0x3908eaeeb2aee3f5fccbb01b35596a9acae87f7d
-You can give me your address, so that i can send you test usd.
-bond: 0x4a22a0733711329c374deb2e2f7d743f791a753b
-with
-governAddr = 0x7bEB109B9694940b744F176958eE6f701283Bcc8;
-recipientAddr = 0x6FCF05b1b57f862d3dE989801B456d730f3B2e86;
-acceptedTokens = 0x3908eaeeb2aee3f5fccbb01b35596a9acae87f7d
-**/

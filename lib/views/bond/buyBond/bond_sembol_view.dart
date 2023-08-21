@@ -2,9 +2,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
-import 'package:paycool/models/bond/rm/order_bond_rm.dart';
 import 'package:paycool/models/bond/vm/bond_sembol_vm.dart';
 import 'package:paycool/models/bond/vm/me_vm.dart';
 import 'package:paycool/models/bond/vm/order_bond_vm.dart';
@@ -37,6 +37,8 @@ class _BondSembolViewState extends State<BondSembolView>
   String selectedValue = 'DNB';
   List<String> dropdownItems = ['DNB', 'GDNB'];
 
+  bool loading = false;
+
   @override
   void initState() {
     WidgetsBinding.instance.addObserver(this);
@@ -59,17 +61,32 @@ class _BondSembolViewState extends State<BondSembolView>
   }
 
   Future<void> _getBondSembol() async {
-    await apiService.bondSembol(context, selectedValue).then((value) {
-      if (value != null) {
+    try {
+      setState(() {
+        loading = true;
+      });
+      await apiService.bondSembol(context, selectedValue).then((value) {
+        if (value != null) {
+          setState(() {
+            bondSembolVm = value;
+            amountText = TextEditingController();
+          });
+        } else {
+          setState(() {
+            bondSembolVm = null;
+            amountText = TextEditingController();
+          });
+        }
+      }).whenComplete(() {
         setState(() {
-          bondSembolVm = value;
+          loading = false;
         });
-      } else {
-        setState(() {
-          bondSembolVm = null;
-        });
-      }
-    });
+      });
+    } catch (e) {
+      setState(() {
+        loading = false;
+      });
+    }
   }
 
   @override
@@ -79,10 +96,24 @@ class _BondSembolViewState extends State<BondSembolView>
       onTap: () {
         FocusManager.instance.primaryFocus?.unfocus();
       },
-      child: AnnotatedRegion<SystemUiOverlayStyle>(
-        value: SystemUiOverlayStyle.light,
+      child: ModalProgressHUD(
+        inAsyncCall: loading,
+        progressIndicator: SizedBox(
+          height: 150,
+          width: 150,
+          child: Image.asset(
+            'assets/animations/loading.gif',
+            fit: BoxFit.fill,
+          ),
+        ),
         child: Scaffold(
           resizeToAvoidBottomInset: false,
+          extendBodyBehindAppBar: true,
+          appBar: AppBar(
+            backgroundColor: Colors.transparent,
+            systemOverlayStyle: SystemUiOverlayStyle.light,
+            elevation: 0,
+          ),
           body: SizedBox(
             width: size.width,
             height: size.height,
@@ -148,19 +179,19 @@ class _BondSembolViewState extends State<BondSembolView>
                               UIHelper.verticalSpaceLarge,
                               UIHelper.verticalSpaceLarge,
                               Text(
-                                "${bondSembolVm!.bondInfo!.issuer}",
+                                "${bondSembolVm!.issuer}",
                                 style: bondText1,
                               ),
                               Text(
-                                "Face Value: ${bondSembolVm!.bondInfo!.faceValue}",
+                                "Face Value: ${bondSembolVm!.faceValue}",
                                 style: bondText1,
                               ),
                               Text(
-                                "Issue Price: ${bondSembolVm!.bondInfo!.issuePrice}",
+                                "Issue Price: ${bondSembolVm!.issuePrice}",
                                 style: bondText1,
                               ),
                               Text(
-                                "Redemption Price: ${bondSembolVm!.bondInfo!.redemptionPrice}",
+                                "Redemption Price: ${bondSembolVm!.redemptionPrice}",
                                 style: bondText1,
                               ),
                               UIHelper.verticalSpaceMedium,
@@ -173,7 +204,7 @@ class _BondSembolViewState extends State<BondSembolView>
                                   if (value.isNotEmpty) {
                                     setState(() {
                                       lastPrice = (int.parse(value) *
-                                          bondSembolVm!.bondInfo!.faceValue!);
+                                          bondSembolVm!.faceValue!);
                                     });
                                   } else {
                                     setState(() {
@@ -231,24 +262,15 @@ class _BondSembolViewState extends State<BondSembolView>
                       child: ElevatedButton(
                         onPressed: () {
                           if (amountText.text.isNotEmpty) {
-                            var param = OrderBondRm(
-                                symbol: selectedValue,
-                                quantity: int.parse(amountText.text));
-
-                            apiService.orderBond(context, param).then((value) {
-                              if (value != null) {
-                                setState(() {
-                                  orderBondVm = value;
-                                });
-                              }
-                            }).whenComplete(() {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          SelectPaymentBondView(
-                                              orderBondVm!, widget.bondMeVm!)));
-                            });
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => SelectPaymentBondView(
+                                        widget.bondMeVm!,
+                                        int.parse(amountText.text),
+                                        lastPrice,
+                                        selectedValue,
+                                        bondSembolVm)));
                           } else {
                             var snackBar = SnackBar(
                                 content: Text('Please enter amount first'));

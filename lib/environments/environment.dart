@@ -119,6 +119,11 @@ Map devConfig = {
           {"id": "196632", "symbol": "USDC", "decimals": 18},
         ]
       }
+    },
+    "Endpoints": {
+      "ETH": "https://goerli.etherscan.io/tx/",
+      "BNB": "https://testnet.bscscan.com/tx/",
+      "KANBAN": "https://test.exchangily.com/explorer/tx-detail/",
     }
   },
   "CoinType": {
@@ -340,6 +345,11 @@ Map productionConfig = {
           {"id": "196632", "symbol": "USDC", "decimals": 18},
         ]
       }
+    },
+    "Endpoints": {
+      "ETH": "https://etherscan.io/tx/",
+      "BNB": "https://bscscan.com/tx/",
+      "KANBAN": "https://exchangily.com/explorer/tx-detail/",
     }
   },
   "CoinType": {

@@ -15,6 +15,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:paycool/constants/constants.dart';
+import 'package:paycool/models/bond/vm/bond_history_vm.dart';
 import 'package:paycool/models/bond/vm/bond_sembol_vm.dart';
 import 'package:paycool/models/bond/vm/get_captcha_vm.dart';
 import 'package:paycool/models/bond/vm/me_vm.dart';
@@ -1324,7 +1325,7 @@ class ApiService {
       if (!jsonDecode(response.body)["success"]) {
         return null;
       }
-      var json = jsonDecode(response.body)["data"];
+      var json = jsonDecode(response.body)["data"]["bond_info"];
       return BondSembolVm.fromJson(json);
     } catch (err) {
       return null;
@@ -1356,17 +1357,41 @@ class ApiService {
     }
   }
 
-  Future<OrderBondVm?> updatePaymentBond(
-      BuildContext context, String bondId, param) async {
-    String url = "${BaseBondApiRoute}bond/order/$bondId/updatePayment";
+  // Future<OrderBondVm?> updatePaymentBond(
+  //     BuildContext context, String bondId, param) async {
+  //   String url = "${BaseBondApiRoute}bond/order/$bondId/updatePayment";
+  //   var token = storageService.bondToken;
+  //   if (token.isEmpty || token == '') {
+  //     return null;
+  //   } else {
+  //     var jsonBody = json.encode(param);
+  //     try {
+  //       var response =
+  //           await client.post(Uri.parse(url), body: jsonBody, headers: {
+  //         'Content-Type': 'application/json',
+  //         'Accept': 'application/json',
+  //         'x-access-token': token,
+  //       });
+  //       if (!jsonDecode(response.body)["success"]) {
+  //         return null;
+  //       }
+  //       var json = jsonDecode(response.body)["data"];
+  //       return OrderBondVm.fromJson(json);
+  //     } catch (err) {
+  //       throw Exception(err);
+  //     }
+  //   }
+  // }
+
+  Future<OrderBondVm?> confirmOrderBond(
+      BuildContext context, String bondId) async {
+    String url = "${BaseBondApiRoute}bond/order/$bondId/confirmOrder";
     var token = storageService.bondToken;
     if (token.isEmpty || token == '') {
       return null;
     } else {
-      var jsonBody = json.encode(param);
       try {
-        var response =
-            await client.post(Uri.parse(url), body: jsonBody, headers: {
+        var response = await client.post(Uri.parse(url), headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
           'x-access-token': token,
@@ -1382,9 +1407,9 @@ class ApiService {
     }
   }
 
-  Future<OrderBondVm?> confirmOrderBond(
+  Future<OrderBondVm?> confirmOrderBondWithoutKyc(
       BuildContext context, String bondId) async {
-    String url = "${BaseBondApiRoute}bond/order/$bondId/confirmOrder";
+    String url = "${BaseBondApiRoute}bond/order/$bondId/confirmOrderWithoutKyc";
     var token = storageService.bondToken;
     if (token.isEmpty || token == '') {
       return null;
@@ -1424,6 +1449,55 @@ class ApiService {
         }
         var json = jsonDecode(response.body)["data"];
         return OrderBondVm.fromJson(json);
+      } catch (err) {
+        throw Exception(err);
+      }
+    }
+  }
+
+  // Future<bool?> complateOrderBond(BuildContext context, String bondId) async {
+  //   String url = "${BaseBondApiRoute}bond/order/$bondId/completeOrder";
+  //   var token = storageService.bondToken;
+  //   if (token.isEmpty || token == '') {
+  //     return null;
+  //   } else {
+  //     try {
+  //       var response = await client.delete(Uri.parse(url), headers: {
+  //         'Content-Type': 'application/json',
+  //         'Accept': 'application/json',
+  //         'x-access-token': token,
+  //       });
+  //       if (!jsonDecode(response.body)["success"]) {
+  //         return null;
+  //       }
+  //       return jsonDecode(response.body)["success"];
+  //     } catch (err) {
+  //       throw Exception(err);
+  //     }
+  //   }
+  // }
+
+  Future<List<BondHistoryVm>?> getBondHistory(
+      BuildContext context, int pageNum) async {
+    String url = "${BaseBondApiRoute}bond/order/all/10/$pageNum";
+    List<BondHistoryVm> getHistorydList = <BondHistoryVm>[];
+    var token = storageService.bondToken;
+    if (token.isEmpty || token == '') {
+      return null;
+    } else {
+      try {
+        var response = await client.get(Uri.parse(url), headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'x-access-token': token,
+        });
+        if (!jsonDecode(response.body)["success"]) {
+          return null;
+        }
+        jsonDecode(response.body)["data"]["bond_orders"].forEach((item) {
+          getHistorydList.add(BondHistoryVm.fromJson(item));
+        });
+        return getHistorydList;
       } catch (err) {
         throw Exception(err);
       }
