@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:paycool/constants/route_names.dart';
-import 'package:paycool/models/bond/rm/login_rm.dart';
-import 'package:paycool/models/bond/vm/register_email_vm.dart';
+import 'package:paycool/models/bond/rm/login_model.dart';
+import 'package:paycool/models/bond/vm/register_email_model.dart';
 import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/api_service.dart';
 import 'package:paycool/services/local_storage_service.dart';
@@ -58,10 +58,10 @@ class BondLoginViewModel extends BaseViewModel with WidgetsBindingObserver {
               "Enter password which is minimum 8 characters long and contains at least 1 uppercase, lowercase, number and a special character (e.g. (@#\$*~'%^()-_))"));
       ScaffoldMessenger.of(_context!).showSnackBar(snackBar);
     } else {
-      var param = LoginRm(
+      var param = LoginModel(
           email: emailController.text, password: passwordController.text);
 
-      final RegisterEmailVm? result =
+      final RegisterEmailModel? result =
           await apiService.loginWithEmail(context!, param);
       if (result != null) {
         storageService.bondToken = result.token!;

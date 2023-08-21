@@ -1,10 +1,11 @@
 import 'dart:convert';
 
-BondMeVm bondMeVmFromJson(String str) => BondMeVm.fromJson(json.decode(str));
+BondMeModel bondMeVmFromJson(String str) =>
+    BondMeModel.fromJson(json.decode(str));
 
-String bondMeVmToJson(BondMeVm data) => json.encode(data.toJson());
+String bondMeVmToJson(BondMeModel data) => json.encode(data.toJson());
 
-class BondMeVm {
+class BondMeModel {
   String? userid;
   int? kycLevel;
   String? email;
@@ -15,7 +16,7 @@ class BondMeVm {
   String? role;
   DateTime? createdAt;
 
-  BondMeVm({
+  BondMeModel({
     this.userid,
     this.kycLevel,
     this.email,
@@ -27,7 +28,7 @@ class BondMeVm {
     this.createdAt,
   });
 
-  factory BondMeVm.fromJson(Map<String, dynamic> json) => BondMeVm(
+  factory BondMeModel.fromJson(Map<String, dynamic> json) => BondMeModel(
         userid: json["userid"],
         kycLevel: json["kyc_level"],
         email: json["email"],

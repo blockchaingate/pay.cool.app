@@ -1,18 +1,18 @@
 import 'dart:convert';
 
-OrderBondVm orderBondVmFromJson(String str) =>
-    OrderBondVm.fromJson(json.decode(str));
+OrderBondModel orderBondVmFromJson(String str) =>
+    OrderBondModel.fromJson(json.decode(str));
 
-String orderBondVmToJson(OrderBondVm data) => json.encode(data.toJson());
+String orderBondVmToJson(OrderBondModel data) => json.encode(data.toJson());
 
-class OrderBondVm {
+class OrderBondModel {
   BondOrder? bondOrder;
 
-  OrderBondVm({
+  OrderBondModel({
     this.bondOrder,
   });
 
-  factory OrderBondVm.fromJson(Map<String, dynamic> json) => OrderBondVm(
+  factory OrderBondModel.fromJson(Map<String, dynamic> json) => OrderBondModel(
         bondOrder: json["bond_order"] == null
             ? null
             : BondOrder.fromJson(json["bond_order"]),

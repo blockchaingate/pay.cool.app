@@ -1,13 +1,13 @@
 import 'dart:convert';
 
-List<BondHistoryVm> bondHistoryVmFromJson(String str) =>
-    List<BondHistoryVm>.from(
-        json.decode(str).map((x) => BondHistoryVm.fromJson(x)));
+List<BondHistoryModel> bondHistoryVmFromJson(String str) =>
+    List<BondHistoryModel>.from(
+        json.decode(str).map((x) => BondHistoryModel.fromJson(x)));
 
-String bondHistoryVmToJson(List<BondHistoryVm> data) =>
+String bondHistoryVmToJson(List<BondHistoryModel> data) =>
     json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
-class BondHistoryVm {
+class BondHistoryModel {
   String? id;
   String? user;
   BondId? bondId;
@@ -20,7 +20,7 @@ class BondHistoryVm {
   DateTime? createdAt;
   int? v;
 
-  BondHistoryVm({
+  BondHistoryModel({
     this.id,
     this.user,
     this.bondId,
@@ -34,7 +34,8 @@ class BondHistoryVm {
     this.v,
   });
 
-  factory BondHistoryVm.fromJson(Map<String, dynamic> json) => BondHistoryVm(
+  factory BondHistoryModel.fromJson(Map<String, dynamic> json) =>
+      BondHistoryModel(
         id: json["_id"],
         user: json["user"],
         bondId: json["bondId"] == null ? null : BondId.fromJson(json["bondId"]),

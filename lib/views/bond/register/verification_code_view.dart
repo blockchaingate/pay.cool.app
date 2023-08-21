@@ -6,24 +6,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:paycool/constants/colors.dart';
-import 'package:paycool/models/bond/rm/verify_captcha_rm.dart';
-import 'package:paycool/models/bond/rm/verify_email_rm.dart';
-import 'package:paycool/models/bond/vm/register_email_vm.dart';
+import 'package:paycool/models/bond/rm/verify_captcha_model.dart';
+import 'package:paycool/models/bond/rm/verify_email_model.dart';
+import 'package:paycool/models/bond/vm/register_email_model.dart';
 import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/api_service.dart';
 import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/views/wallet/wallet_dashboard_view.dart';
 
-class VerificationCodePage extends StatefulWidget {
-  final RegisterEmailVm data;
+class VerificationCodeView extends StatefulWidget {
+  final RegisterEmailModel data;
 
-  const VerificationCodePage({Key? key, required this.data}) : super(key: key);
+  const VerificationCodeView({Key? key, required this.data}) : super(key: key);
 
   @override
-  State<VerificationCodePage> createState() => _VerificationCodePageState();
+  State<VerificationCodeView> createState() => _VerificationCodeViewState();
 }
 
-class _VerificationCodePageState extends State<VerificationCodePage> {
+class _VerificationCodeViewState extends State<VerificationCodeView> {
   TextEditingController verifyCaptchaController = TextEditingController();
   TextEditingController verifyEmailController = TextEditingController();
   ApiService apiService = locator<ApiService>();
@@ -278,7 +278,7 @@ class _VerificationCodePageState extends State<VerificationCodePage> {
               ),
               child: ElevatedButton(
                 onPressed: () async {
-                  var param = VerifyEmailRm(
+                  var param = VerifyEmailModel(
                     email: widget.data.email,
                     code: verifyEmailController.text,
                   );
@@ -398,7 +398,7 @@ class _VerificationCodePageState extends State<VerificationCodePage> {
               child: ElevatedButton(
                 onPressed: () async {
                   if (verifyCaptchaController.text.isNotEmpty) {
-                    var param = VerifyCaptchaRm(
+                    var param = VerifyCaptchaModel(
                       captchaResponse: verifyCaptchaController.text,
                     );
 

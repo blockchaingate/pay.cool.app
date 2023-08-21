@@ -6,9 +6,9 @@ import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/constants.dart';
 import 'package:paycool/constants/route_names.dart';
 import 'package:paycool/environments/environment.dart';
-import 'package:paycool/models/bond/rm/order_bond_rm.dart';
-import 'package:paycool/models/bond/vm/bond_sembol_vm.dart';
-import 'package:paycool/models/bond/vm/me_vm.dart';
+import 'package:paycool/models/bond/rm/order_bond_model.dart';
+import 'package:paycool/models/bond/vm/bond_symbol_model.dart';
+import 'package:paycool/models/bond/vm/me_model.dart';
 import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/api_service.dart';
 import 'package:paycool/services/shared_service.dart';
@@ -22,8 +22,8 @@ class SelectPaymentBondView extends StatefulWidget {
   final int quantity;
   final String symbol;
   final int amount;
-  final BondSembolVm? bondSembolVm;
-  final BondMeVm? bondMeVm;
+  final BondSembolModel? bondSembolVm;
+  final BondMeModel? bondMeVm;
 
   const SelectPaymentBondView(
       this.bondMeVm, this.quantity, this.amount, this.symbol, this.bondSembolVm,
@@ -299,7 +299,7 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
                               return;
                             }
 
-                            var param = OrderBondRm(
+                            var param = OrderBondModel(
                                 paymentAmount: widget.amount,
                                 quantity: widget.quantity,
                                 paymentCoin: selectedValueCoin,
@@ -499,8 +499,8 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
   Future<void> checkPolicy(
     BuildContext context,
     Size size,
-    OrderBondRm orderBondRm,
-    BondMeVm bondMeVm,
+    OrderBondModel orderBondRm,
+    BondMeModel bondMeVm,
   ) async {
     final scrollController = ScrollController();
 

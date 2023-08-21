@@ -1,26 +1,26 @@
 import 'dart:convert';
 
-RegisterEmailRm registerEmailRmFromJson(String str) =>
-    RegisterEmailRm.fromJson(json.decode(str));
+RegisterEmailModel registerEmailRmFromJson(String str) =>
+    RegisterEmailModel.fromJson(json.decode(str));
 
-String registerEmailRmToJson(RegisterEmailRm data) =>
+String registerEmailRmToJson(RegisterEmailModel data) =>
     json.encode(data.toJson());
 
-class RegisterEmailRm {
+class RegisterEmailModel {
   String? pidReferralCode;
   String? deviceId;
   String? email;
   String? password;
 
-  RegisterEmailRm({
+  RegisterEmailModel({
     this.pidReferralCode,
     this.deviceId,
     this.email,
     this.password,
   });
 
-  factory RegisterEmailRm.fromJson(Map<String, dynamic> json) =>
-      RegisterEmailRm(
+  factory RegisterEmailModel.fromJson(Map<String, dynamic> json) =>
+      RegisterEmailModel(
         pidReferralCode: json["pidReferralCode"],
         deviceId: json["deviceId"],
         email: json["email"],

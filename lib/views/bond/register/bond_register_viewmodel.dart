@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
-import 'package:paycool/models/bond/rm/register_email_rm.dart';
+import 'package:paycool/models/bond/rm/register_email_model.dart';
 import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/api_service.dart';
 import 'package:paycool/services/local_storage_service.dart';
@@ -58,7 +58,7 @@ class BondRegisterViewModel extends BaseViewModel {
               "Enter password which is minimum 8 characters long and contains at least 1 uppercase, lowercase, number and a special character (e.g. (@#\$*~'%^()-_))"));
       ScaffoldMessenger.of(_context!).showSnackBar(snackBar);
     } else {
-      var param = RegisterEmailRm(
+      var param = RegisterEmailModel(
           // deviceId: deviceId,
           pidReferralCode: referralController.text,
           email: emailController.text,
@@ -71,7 +71,7 @@ class BondRegisterViewModel extends BaseViewModel {
           Navigator.push(
               _context!,
               MaterialPageRoute(
-                  builder: (context) => VerificationCodePage(
+                  builder: (context) => VerificationCodeView(
                         data: value,
                       )));
         }

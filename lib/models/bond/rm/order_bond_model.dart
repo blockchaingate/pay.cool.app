@@ -1,11 +1,11 @@
 import 'dart:convert';
 
-OrderBondRm orderBondRmFromJson(String str) =>
-    OrderBondRm.fromJson(json.decode(str));
+OrderBondModel orderBondRmFromJson(String str) =>
+    OrderBondModel.fromJson(json.decode(str));
 
-String orderBondRmToJson(OrderBondRm data) => json.encode(data.toJson());
+String orderBondRmToJson(OrderBondModel data) => json.encode(data.toJson());
 
-class OrderBondRm {
+class OrderBondModel {
   String? symbol;
   int? quantity;
   String? paymentCoin;
@@ -13,7 +13,7 @@ class OrderBondRm {
   int? paymentAmount;
   int? paymentCoinAmount;
 
-  OrderBondRm({
+  OrderBondModel({
     this.symbol,
     this.quantity,
     this.paymentCoin,
@@ -22,7 +22,7 @@ class OrderBondRm {
     this.paymentCoinAmount,
   });
 
-  factory OrderBondRm.fromJson(Map<String, dynamic> json) => OrderBondRm(
+  factory OrderBondModel.fromJson(Map<String, dynamic> json) => OrderBondModel(
         symbol: json["symbol"],
         quantity: json["quantity"],
         paymentCoin: json["paymentCoin"],

@@ -179,7 +179,7 @@ class _BondLoginViewState extends State<BondLoginView> {
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) =>
-                                                const ForgotPasswordPage()));
+                                                const ForgotPasswordView()));
                                   },
                                   child: SizedBox(
                                     width: size.width * 0.9,

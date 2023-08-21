@@ -20,7 +20,7 @@ import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/constants/ui_var.dart';
 import 'package:paycool/models/wallet/wallet_balance.dart';
 import 'package:paycool/shared/ui_helpers.dart';
-import 'package:paycool/views/bond/buyBond/bond_sembol_view.dart';
+import 'package:paycool/views/bond/buyBond/bond_symbol_view.dart';
 import 'package:paycool/views/bond/login/login_view.dart';
 import 'package:paycool/views/bond/register/bond_register_view.dart';
 import 'package:paycool/views/bond/txHistory/bond_history_view.dart';
