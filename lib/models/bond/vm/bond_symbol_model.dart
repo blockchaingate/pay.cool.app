@@ -1,11 +1,11 @@
 import 'dart:convert';
 
-BondSembolVm bondSembolVmFromJson(String str) =>
-    BondSembolVm.fromJson(json.decode(str));
+BondSembolModel bondSembolVmFromJson(String str) =>
+    BondSembolModel.fromJson(json.decode(str));
 
-String bondSembolVmToJson(BondSembolVm data) => json.encode(data.toJson());
+String bondSembolVmToJson(BondSembolModel data) => json.encode(data.toJson());
 
-class BondSembolVm {
+class BondSembolModel {
   String? id;
   String? symbol;
   int? v;
@@ -19,7 +19,7 @@ class BondSembolVm {
   String? name;
   int? redemptionPrice;
 
-  BondSembolVm({
+  BondSembolModel({
     this.id,
     this.symbol,
     this.v,
@@ -34,7 +34,8 @@ class BondSembolVm {
     this.redemptionPrice,
   });
 
-  factory BondSembolVm.fromJson(Map<String, dynamic> json) => BondSembolVm(
+  factory BondSembolModel.fromJson(Map<String, dynamic> json) =>
+      BondSembolModel(
         id: json["_id"],
         symbol: json["symbol"],
         v: json["__v"],

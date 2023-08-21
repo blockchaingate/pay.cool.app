@@ -1,11 +1,11 @@
 import 'dart:convert';
 
-BondLoginVm bondLoginVmFromJson(String str) =>
-    BondLoginVm.fromJson(json.decode(str));
+BondLoginModel bondLoginModelFromJson(String str) =>
+    BondLoginModel.fromJson(json.decode(str));
 
-String bondLoginVmToJson(BondLoginVm data) => json.encode(data.toJson());
+String bondLoginModelToJson(BondLoginModel data) => json.encode(data.toJson());
 
-class BondLoginVm {
+class BondLoginModel {
   String? id;
   String? email;
   String? token;
@@ -13,7 +13,7 @@ class BondLoginVm {
   bool? isVerifiedEmail;
   int? kycLevel;
 
-  BondLoginVm({
+  BondLoginModel({
     this.id,
     this.email,
     this.token,
@@ -22,7 +22,7 @@ class BondLoginVm {
     this.kycLevel,
   });
 
-  factory BondLoginVm.fromJson(Map<String, dynamic> json) => BondLoginVm(
+  factory BondLoginModel.fromJson(Map<String, dynamic> json) => BondLoginModel(
         id: json["id"],
         email: json["email"],
         token: json["token"],

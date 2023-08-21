@@ -3,21 +3,21 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:paycool/constants/colors.dart';
-import 'package:paycool/models/bond/rm/forgot_password_rm.dart';
-import 'package:paycool/models/bond/rm/forgot_password_verify_rm.dart';
+import 'package:paycool/models/bond/rm/forgot_password_model.dart';
+import 'package:paycool/models/bond/rm/forgot_password_verify_model.dart';
 import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/api_service.dart';
 import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/utils/string_validator.dart';
 
-class ForgotPasswordPage extends StatefulWidget {
-  const ForgotPasswordPage({super.key});
+class ForgotPasswordView extends StatefulWidget {
+  const ForgotPasswordView({super.key});
 
   @override
-  State<ForgotPasswordPage> createState() => _ForgotPasswordPageState();
+  State<ForgotPasswordView> createState() => _ForgotPasswordViewState();
 }
 
-class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
+class _ForgotPasswordViewState extends State<ForgotPasswordView> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController verifyPasswordController = TextEditingController();
@@ -163,7 +163,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 onPressed: () async {
                   if (emailController.text.isNotEmpty &&
                       validateEmail(emailController.text)) {
-                    var param = ForgotPasswordRm(
+                    var param = ForgotPasswordModel(
                       email: emailController.text,
                     );
 
@@ -319,7 +319,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 onPressed: () async {
                   if (passwordController.text ==
                       verifyPasswordController.text) {
-                    var param = ForgotPasswordVerifyRm(
+                    var param = ForgotPasswordVerifyModel(
                       email: emailController.text,
                       password: passwordController.text,
                       code: codeController.text,

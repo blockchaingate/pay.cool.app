@@ -7,9 +7,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:paycool/constants/colors.dart';
-import 'package:paycool/models/bond/rm/verify_captcha_rm.dart';
-import 'package:paycool/models/bond/rm/verify_email_rm.dart';
-import 'package:paycool/models/bond/vm/register_email_vm.dart';
+import 'package:paycool/models/bond/rm/verify_captcha_model.dart';
+import 'package:paycool/models/bond/rm/verify_email_model.dart';
+import 'package:paycool/models/bond/vm/register_email_model.dart';
 import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/api_service.dart';
 import 'package:paycool/shared/ui_helpers.dart';
@@ -17,7 +17,7 @@ import 'package:paycool/views/bond/progressIndicator.dart';
 import 'package:paycool/views/wallet/wallet_dashboard_view.dart';
 
 class VerificationCodePage extends StatefulWidget {
-  final RegisterEmailVm data;
+  final RegisterEmailModel data;
 
   const VerificationCodePage({Key? key, required this.data}) : super(key: key);
 
@@ -293,7 +293,7 @@ class _VerificationCodePageState extends State<VerificationCodePage> {
                     loading = true;
                   });
 
-                  var param = VerifyEmailRm(
+                  var param = VerifyEmailModel(
                     email: widget.data.email,
                     code: verifyEmailController.text,
                   );
@@ -424,7 +424,7 @@ class _VerificationCodePageState extends State<VerificationCodePage> {
                 });
 
                 if (verifyCaptchaController.text.isNotEmpty) {
-                  var param = VerifyCaptchaRm(
+                  var param = VerifyCaptchaModel(
                     captchaResponse: verifyCaptchaController.text,
                   );
 

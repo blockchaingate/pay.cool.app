@@ -1,24 +1,24 @@
 import 'dart:convert';
 
-ForgotPasswordVerifyRm forgotPasswordVerifyRmFromJson(String str) =>
-    ForgotPasswordVerifyRm.fromJson(json.decode(str));
+ForgotPasswordVerifyModel forgotPasswordVerifyModelFromJson(String str) =>
+    ForgotPasswordVerifyModel.fromJson(json.decode(str));
 
-String forgotPasswordVerifyRmToJson(ForgotPasswordVerifyRm data) =>
+String forgotPasswordVerifyModelToJson(ForgotPasswordVerifyModel data) =>
     json.encode(data.toJson());
 
-class ForgotPasswordVerifyRm {
+class ForgotPasswordVerifyModel {
   String? email;
   String? code;
   String? password;
 
-  ForgotPasswordVerifyRm({
+  ForgotPasswordVerifyModel({
     this.email,
     this.code,
     this.password,
   });
 
-  factory ForgotPasswordVerifyRm.fromJson(Map<String, dynamic> json) =>
-      ForgotPasswordVerifyRm(
+  factory ForgotPasswordVerifyModel.fromJson(Map<String, dynamic> json) =>
+      ForgotPasswordVerifyModel(
         email: json["email"],
         code: json["code"],
         password: json["password"],

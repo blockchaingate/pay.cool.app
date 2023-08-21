@@ -5,9 +5,9 @@ import 'package:flutter/services.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
-import 'package:paycool/models/bond/vm/bond_sembol_vm.dart';
-import 'package:paycool/models/bond/vm/me_vm.dart';
-import 'package:paycool/models/bond/vm/order_bond_vm.dart';
+import 'package:paycool/models/bond/vm/bond_symbol_model.dart';
+import 'package:paycool/models/bond/vm/me_model.dart';
+import 'package:paycool/models/bond/vm/order_bond_model.dart';
 import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/api_service.dart';
 import 'package:paycool/shared/ui_helpers.dart';
@@ -15,7 +15,7 @@ import 'package:paycool/views/bond/buyBond/select_payment_bond_view.dart';
 import 'package:paycool/widgets/keyboard_down.dart';
 
 class BondSembolView extends StatefulWidget {
-  final BondMeVm? bondMeVm;
+  final BondMeModel? bondMeVm;
   const BondSembolView(this.bondMeVm, {super.key});
 
   @override
@@ -30,8 +30,8 @@ class _BondSembolViewState extends State<BondSembolView>
   bool isKeyboardOpen = false;
   double keyboardHeight = 0;
 
-  BondSembolVm? bondSembolVm;
-  OrderBondVm? orderBondVm;
+  BondSembolModel? bondSembolVm;
+  OrderBondModel? orderBondVm;
 
   int lastPrice = 0;
   String selectedValue = 'DNB';

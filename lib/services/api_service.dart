@@ -15,13 +15,13 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:paycool/constants/constants.dart';
-import 'package:paycool/models/bond/vm/bond_history_vm.dart';
+import 'package:paycool/models/bond/vm/bond_history_model.dart';
 import 'package:paycool/models/bond/vm/bond_login_vm.dart';
-import 'package:paycool/models/bond/vm/bond_sembol_vm.dart';
-import 'package:paycool/models/bond/vm/get_captcha_vm.dart';
-import 'package:paycool/models/bond/vm/me_vm.dart';
-import 'package:paycool/models/bond/vm/order_bond_vm.dart';
-import 'package:paycool/models/bond/vm/register_email_vm.dart';
+import 'package:paycool/models/bond/vm/bond_symbol_model.dart';
+import 'package:paycool/models/bond/vm/get_captcha_model.dart';
+import 'package:paycool/models/bond/vm/me_model.dart';
+import 'package:paycool/models/bond/vm/order_bond_model.dart';
+import 'package:paycool/models/bond/vm/register_email_model.dart';
 import 'package:paycool/models/wallet/wallet_transaction_history_model.dart';
 import 'package:paycool/views/lightning-remit/lightning_remit_transfer_history_model.dart';
 import 'package:paycool/views/wallet/wallet_features/transaction_history/transaction_history_model_v2.dart';
@@ -1116,7 +1116,7 @@ class ApiService {
 ----------------------------------------------------------------------*/
 
   // Get user info
-  Future<BondMeVm?> getBondMe() async {
+  Future<BondMeModel?> getBondMe() async {
     var token = storageService.bondToken;
     if (token.isEmpty || token == '') {
       return null;
@@ -1134,14 +1134,14 @@ class ApiService {
           return null;
         }
         var json = jsonDecode(response.body)["data"];
-        return BondMeVm.fromJson(json);
+        return BondMeModel.fromJson(json);
       } catch (err) {
         throw Exception(err);
       }
     }
   }
 
-  Future<RegisterEmailVm?> registerWithEmail(
+  Future<RegisterEmailModel?> registerWithEmail(
       BuildContext context, param) async {
     String url = "${BaseBondApiRoute}user/register/email";
     var jsonBody = json.encode(param);
@@ -1159,13 +1159,13 @@ class ApiService {
         return null;
       }
       var json = jsonDecode(response.body)["data"];
-      return RegisterEmailVm.fromJson(json);
+      return RegisterEmailModel.fromJson(json);
     } catch (err) {
       throw Exception(err);
     }
   }
 
-  Future<BondLoginVm?> loginWithEmail(BuildContext context, param) async {
+  Future<BondLoginModel?> loginWithEmail(BuildContext context, param) async {
     String url = "${BaseBondApiRoute}user/login";
     var jsonBody = json.encode(param);
 
@@ -1182,13 +1182,13 @@ class ApiService {
         return null;
       }
       var json = jsonDecode(response.body)["data"];
-      return BondLoginVm.fromJson(json);
+      return BondLoginModel.fromJson(json);
     } catch (err) {
       throw Exception(err);
     }
   }
 
-  Future<GetCaptchaVm?> getCaptcha(BuildContext context) async {
+  Future<GetCaptchaModel?> getCaptcha(BuildContext context) async {
     String url = "${BaseBondApiRoute}user/captcha";
 
     try {
@@ -1200,7 +1200,7 @@ class ApiService {
         return null;
       }
       var json = jsonDecode(response.body)["data"];
-      return GetCaptchaVm.fromJson(json);
+      return GetCaptchaModel.fromJson(json);
     } catch (err) {
       throw Exception(err);
     }
@@ -1326,7 +1326,7 @@ class ApiService {
     }
   }
 
-  Future<BondSembolVm?> bondSembol(
+  Future<BondSembolModel?> bondSembol(
       BuildContext context, String bondType) async {
     String url = "${BaseBondApiRoute}bond/$bondType";
 
@@ -1339,13 +1339,13 @@ class ApiService {
         return null;
       }
       var json = jsonDecode(response.body)["data"]["bond_info"];
-      return BondSembolVm.fromJson(json);
+      return BondSembolModel.fromJson(json);
     } catch (err) {
       return null;
     }
   }
 
-  Future<OrderBondVm?> orderBond(BuildContext context, param) async {
+  Future<OrderBondModel?> orderBond(BuildContext context, param) async {
     String url = "${BaseBondApiRoute}bond/order";
     var token = storageService.bondToken;
     if (token.isEmpty || token == '') {
@@ -1363,7 +1363,7 @@ class ApiService {
           return null;
         }
         var json = jsonDecode(response.body)["data"];
-        return OrderBondVm.fromJson(json);
+        return OrderBondModel.fromJson(json);
       } catch (err) {
         throw Exception(err);
       }
@@ -1396,7 +1396,7 @@ class ApiService {
   //   }
   // }
 
-  Future<OrderBondVm?> confirmOrderBond(
+  Future<OrderBondModel?> confirmOrderBond(
       BuildContext context, String bondId) async {
     String url = "${BaseBondApiRoute}bond/order/$bondId/confirmOrder";
     var token = storageService.bondToken;
@@ -1413,14 +1413,14 @@ class ApiService {
           return null;
         }
         var json = jsonDecode(response.body)["data"];
-        return OrderBondVm.fromJson(json);
+        return OrderBondModel.fromJson(json);
       } catch (err) {
         throw Exception(err);
       }
     }
   }
 
-  Future<OrderBondVm?> confirmOrderBondWithoutKyc(
+  Future<OrderBondModel?> confirmOrderBondWithoutKyc(
       BuildContext context, String bondId) async {
     String url = "${BaseBondApiRoute}bond/order/$bondId/confirmOrderWithoutKyc";
     var token = storageService.bondToken;
@@ -1437,14 +1437,14 @@ class ApiService {
           return null;
         }
         var json = jsonDecode(response.body)["data"];
-        return OrderBondVm.fromJson(json);
+        return OrderBondModel.fromJson(json);
       } catch (err) {
         throw Exception(err);
       }
     }
   }
 
-  Future<OrderBondVm?> deleteOrderBond(
+  Future<OrderBondModel?> deleteOrderBond(
       BuildContext context, String bondId) async {
     String url = "${BaseBondApiRoute}bond/order/$bondId/confirmOrder";
     var token = storageService.bondToken;
@@ -1461,7 +1461,7 @@ class ApiService {
           return null;
         }
         var json = jsonDecode(response.body)["data"];
-        return OrderBondVm.fromJson(json);
+        return OrderBondModel.fromJson(json);
       } catch (err) {
         throw Exception(err);
       }
@@ -1490,10 +1490,10 @@ class ApiService {
   //   }
   // }
 
-  Future<List<BondHistoryVm>?> getBondHistory(
+  Future<List<BondHistoryModel>?> getBondHistory(
       BuildContext context, int pageNum) async {
     String url = "${BaseBondApiRoute}bond/order/all/10/$pageNum";
-    List<BondHistoryVm> getHistorydList = <BondHistoryVm>[];
+    List<BondHistoryModel> getHistorydList = <BondHistoryModel>[];
     var token = storageService.bondToken;
     if (token.isEmpty || token == '') {
       return null;
@@ -1508,7 +1508,7 @@ class ApiService {
           return null;
         }
         jsonDecode(response.body)["data"]["bond_orders"].forEach((item) {
-          getHistorydList.add(BondHistoryVm.fromJson(item));
+          getHistorydList.add(BondHistoryModel.fromJson(item));
         });
         return getHistorydList;
       } catch (err) {

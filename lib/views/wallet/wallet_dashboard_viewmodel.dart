@@ -26,7 +26,7 @@ import 'package:paycool/constants/route_names.dart';
 import 'package:paycool/constants/ui_var.dart';
 import 'package:paycool/environments/coins.dart';
 import 'package:paycool/logger.dart';
-import 'package:paycool/models/bond/vm/me_vm.dart';
+import 'package:paycool/models/bond/vm/me_model.dart';
 import 'package:paycool/models/wallet/core_wallet_model.dart';
 import 'package:paycool/models/wallet/token_model.dart';
 import 'package:paycool/models/wallet/wallet.dart';
@@ -147,7 +147,7 @@ class WalletDashboardViewModel extends BaseViewModel {
 
   // bond page
 
-  BondMeVm bondMeVm = BondMeVm();
+  BondMeModel bondMeVm = BondMeModel();
 
 /*----------------------------------------------------------------------
                     INIT

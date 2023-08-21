@@ -1,22 +1,22 @@
 import 'dart:convert';
 
-BondUpdatePaymentRm bondUpdatePaymentRmFromJson(String str) =>
-    BondUpdatePaymentRm.fromJson(json.decode(str));
+BondUpdatePaymentModel bondUpdatePaymentModelFromJson(String str) =>
+    BondUpdatePaymentModel.fromJson(json.decode(str));
 
-String bondUpdatePaymentRmToJson(BondUpdatePaymentRm data) =>
+String bondUpdatePaymentModelToJson(BondUpdatePaymentModel data) =>
     json.encode(data.toJson());
 
-class BondUpdatePaymentRm {
+class BondUpdatePaymentModel {
   String? paymentMethod;
   String? paymentAccount;
 
-  BondUpdatePaymentRm({
+  BondUpdatePaymentModel({
     this.paymentMethod,
     this.paymentAccount,
   });
 
-  factory BondUpdatePaymentRm.fromJson(Map<String, dynamic> json) =>
-      BondUpdatePaymentRm(
+  factory BondUpdatePaymentModel.fromJson(Map<String, dynamic> json) =>
+      BondUpdatePaymentModel(
         paymentMethod: json["paymentMethod"],
         paymentAccount: json["paymentAccount"],
       );
