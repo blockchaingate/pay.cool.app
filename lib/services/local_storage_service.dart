@@ -54,6 +54,10 @@ class LocalStorageService {
     return _instance;
   }
 
+  void clearToken() {
+    _preferences!.remove(BondTokenKey);
+  }
+
   void clearStorage() {
     _preferences!.clear();
   }

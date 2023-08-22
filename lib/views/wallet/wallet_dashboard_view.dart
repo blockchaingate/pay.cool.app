@@ -18,7 +18,9 @@ import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/constants/ui_var.dart';
+import 'package:paycool/models/bond/vm/me_model.dart';
 import 'package:paycool/models/wallet/wallet_balance.dart';
+import 'package:paycool/services/local_storage_service.dart';
 import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/views/bond/buyBond/bond_symbol_view.dart';
 import 'package:paycool/views/bond/login/login_view.dart';
@@ -744,16 +746,30 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
                   children: [
                     SizedBox(
                       width: double.infinity,
-                      child: IconButton(
-                        alignment: Alignment.topRight,
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      const BondHistoryView()));
-                        },
-                        icon: Icon(Icons.history),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          IconButton(
+                            alignment: Alignment.topRight,
+                            onPressed: () {
+                              LocalStorageService().clearToken();
+                              model.bondMeVm = BondMeModel();
+                              setState(() {});
+                            },
+                            icon: Icon(Icons.logout),
+                          ),
+                          IconButton(
+                            alignment: Alignment.topRight,
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const BondHistoryView()));
+                            },
+                            icon: Icon(Icons.history),
+                          ),
+                        ],
                       ),
                     ),
                     UIHelper.verticalSpaceLarge,
@@ -817,6 +833,7 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
                         ),
                       ),
                     ),
+
                     // UIHelper.verticalSpaceMedium,
                     // model.bondMeVm.kycLevel != null &&
                     //         model.bondMeVm.kycLevel! < 2

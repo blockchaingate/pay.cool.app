@@ -32,7 +32,6 @@ class _BondLoginViewState extends State<BondLoginView> {
         inAsyncCall: model.isBusy,
         progressIndicator: CustomIndicator.indicator(),
         child: Scaffold(
-          resizeToAvoidBottomInset: false,
           body: GestureDetector(
             onTap: () {
               FocusManager.instance.primaryFocus?.unfocus();
@@ -59,173 +58,176 @@ class _BondLoginViewState extends State<BondLoginView> {
                       },
                     ),
                   ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      UIHelper.verticalSpaceLarge,
-                      Text(
-                        "Welcome to El Salvador Bond",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white),
-                      ),
-                      UIHelper.verticalSpaceLarge,
-                      Text(
-                        "Login",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white),
-                      ),
-                      UIHelper.verticalSpaceSmall,
-                      Text(
-                        "Emails that are not logged in will be automatically registered",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w200,
-                            color: Colors.white),
-                      ),
-                      UIHelper.verticalSpaceLarge,
-                      TextField(
-                        controller: model.emailController,
-                        style: TextStyle(color: Colors.white, fontSize: 13),
-                        decoration: InputDecoration(
-                          hintText: 'Please enter your e-mail address',
-                          hintStyle: TextStyle(
-                              color: inputText, fontWeight: FontWeight.w400),
-                          fillColor: Colors.transparent,
-                          filled: true,
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                            borderSide: BorderSide(
-                              color:
-                                  inputBorder, // Change the color to your desired border color
-                            ),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                            borderSide: BorderSide(
-                              color:
-                                  inputBorder, // Change the color to your desired border color
-                            ),
-                          ),
-                        ),
-                      ),
-                      UIHelper.verticalSpaceSmall,
-                      TextField(
-                        controller: model.passwordController,
-                        style: TextStyle(color: Colors.white, fontSize: 13),
-                        obscureText: true,
-                        keyboardType: TextInputType.visiblePassword,
-                        decoration: InputDecoration(
-                          hintText: 'Please enter your password',
-                          hintStyle: TextStyle(
-                              color: inputText, fontWeight: FontWeight.w400),
-                          fillColor: Colors.transparent,
-                          filled: true,
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                            borderSide: BorderSide(
-                              color:
-                                  inputBorder, // Change the color to your desired border color
-                            ),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                            borderSide: BorderSide(
-                              color:
-                                  inputBorder, // Change the color to your desired border color
-                            ),
-                          ),
-                        ),
-                      ),
-                      UIHelper.verticalSpaceSmall,
-                      Container(
-                        width: size.width * 0.9,
-                        height: 45,
-                        decoration: BoxDecoration(
-                          gradient: buttoGradient,
-                          borderRadius: BorderRadius.circular(40.0),
-                        ),
-                        child: ElevatedButton(
-                          onPressed: () {
-                            model.login();
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.transparent,
-                            shadowColor: Colors.transparent,
-                          ),
-                          child: Text(
-                            'Login',
-                            style: TextStyle(
-                              fontSize: 16.0,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        UIHelper.verticalSpaceLarge,
+                        Text(
+                          "Welcome to El Salvador Bond",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontSize: 24,
                               fontWeight: FontWeight.bold,
+                              color: Colors.white),
+                        ),
+                        UIHelper.verticalSpaceLarge,
+                        Text(
+                          "Login",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white),
+                        ),
+                        UIHelper.verticalSpaceSmall,
+                        Text(
+                          "Emails that are not logged in will be automatically registered",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w200,
+                              color: Colors.white),
+                        ),
+                        UIHelper.verticalSpaceLarge,
+                        TextField(
+                          controller: model.emailController,
+                          style: TextStyle(color: Colors.white, fontSize: 13),
+                          decoration: InputDecoration(
+                            hintText: 'Please enter your e-mail address',
+                            hintStyle: TextStyle(
+                                color: inputText, fontWeight: FontWeight.w400),
+                            fillColor: Colors.transparent,
+                            filled: true,
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                              borderSide: BorderSide(
+                                color:
+                                    inputBorder, // Change the color to your desired border color
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                              borderSide: BorderSide(
+                                color:
+                                    inputBorder, // Change the color to your desired border color
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      model.isKeyboardOpen
-                          ? SizedBox()
-                          : UIHelper.verticalSpaceMedium,
-                      model.isKeyboardOpen
-                          ? SizedBox()
-                          : InkWell(
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const ForgotPasswordView()));
-                              },
-                              child: SizedBox(
-                                width: size.width * 0.9,
-                                child: Text(
-                                  "Forgot Password?",
-                                  textAlign: TextAlign.end,
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 14.0),
+                        UIHelper.verticalSpaceSmall,
+                        TextField(
+                          controller: model.passwordController,
+                          style: TextStyle(color: Colors.white, fontSize: 13),
+                          obscureText: true,
+                          keyboardType: TextInputType.visiblePassword,
+                          decoration: InputDecoration(
+                            hintText: 'Please enter your password',
+                            hintStyle: TextStyle(
+                                color: inputText, fontWeight: FontWeight.w400),
+                            fillColor: Colors.transparent,
+                            filled: true,
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                              borderSide: BorderSide(
+                                color:
+                                    inputBorder, // Change the color to your desired border color
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                              borderSide: BorderSide(
+                                color:
+                                    inputBorder, // Change the color to your desired border color
+                              ),
+                            ),
+                          ),
+                        ),
+                        UIHelper.verticalSpaceSmall,
+                        Container(
+                          width: size.width * 0.9,
+                          height: 45,
+                          decoration: BoxDecoration(
+                            gradient: buttoGradient,
+                            borderRadius: BorderRadius.circular(40.0),
+                          ),
+                          child: ElevatedButton(
+                            onPressed: () {
+                              model.login();
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.transparent,
+                              shadowColor: Colors.transparent,
+                            ),
+                            child: Text(
+                              'Login',
+                              style: TextStyle(
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                        model.isKeyboardOpen
+                            ? SizedBox()
+                            : UIHelper.verticalSpaceMedium,
+                        model.isKeyboardOpen
+                            ? SizedBox()
+                            : InkWell(
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const ForgotPasswordView()));
+                                },
+                                child: SizedBox(
+                                  width: size.width * 0.9,
+                                  child: Text(
+                                    "Forgot Password?",
+                                    textAlign: TextAlign.end,
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 14.0),
+                                  ),
                                 ),
                               ),
-                            ),
-                      model.isKeyboardOpen
-                          ? SizedBox()
-                          : UIHelper.verticalSpaceLarge,
-                      model.isKeyboardOpen
-                          ? Container()
-                          : RichText(
-                              textAlign: TextAlign.center,
-                              text: TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: "Don't have an account? ",
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: Colors.white,
+                        model.isKeyboardOpen
+                            ? SizedBox()
+                            : UIHelper.verticalSpaceLarge,
+                        model.isKeyboardOpen
+                            ? Container()
+                            : RichText(
+                                textAlign: TextAlign.center,
+                                text: TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text: "Don't have an account? ",
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.white,
+                                      ),
                                     ),
-                                  ),
-                                  TextSpan(
-                                    text: ' Register now',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      decoration: TextDecoration.underline,
+                                    TextSpan(
+                                      text: ' Register now',
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        decoration: TextDecoration.underline,
+                                      ),
+                                      recognizer: TapGestureRecognizer()
+                                        ..onTap = () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      const BondRegisterView()));
+                                        },
                                     ),
-                                    recognizer: TapGestureRecognizer()
-                                      ..onTap = () {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    const BondRegisterView()));
-                                      },
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
-                            ),
-                    ],
+                      ],
+                    ),
                   ),
                 ],
               ),
