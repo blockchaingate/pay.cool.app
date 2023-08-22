@@ -13,8 +13,8 @@ import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 
 class BondRegisterViewModel extends BaseViewModel {
-  BondRegisterViewModel({BuildContext? context}) : _context = context;
-  final BuildContext? _context;
+  BondRegisterViewModel({BuildContext? context});
+  BuildContext? context;
   ApiService apiService = locator<ApiService>();
 
   SharedService sharedService = locator<SharedService>();
@@ -48,34 +48,43 @@ class BondRegisterViewModel extends BaseViewModel {
   }
 
   void startRegister() async {
-    if (emailController.text.isEmpty || !validateEmail(emailController.text)) {
-      var snackBar = SnackBar(content: Text('Please enter valid email'));
-      ScaffoldMessenger.of(_context!).showSnackBar(snackBar);
-    } else if (passwordController.text.isEmpty ||
-        !validatePassword(passwordController.text)) {
-      var snackBar = SnackBar(
-          content: Text(
-              "Enter password which is minimum 8 characters long and contains at least 1 uppercase, lowercase, number and a special character (e.g. (@#\$*~'%^()-_))"));
-      ScaffoldMessenger.of(_context!).showSnackBar(snackBar);
-    } else {
-      var param = RegisterEmailRm(
-          // deviceId: deviceId,
-          pidReferralCode: referralController.text,
-          email: emailController.text,
-          password: passwordController.text);
+    setBusy(true);
+    try {
+      if (emailController.text.isEmpty ||
+          !validateEmail(emailController.text)) {
+        var snackBar = SnackBar(content: Text('Please enter valid email'));
+        ScaffoldMessenger.of(context!).showSnackBar(snackBar);
+      } else if (passwordController.text.isEmpty ||
+          !validatePassword(passwordController.text)) {
+        var snackBar = SnackBar(
+            content: Text(
+                "Enter password which is minimum 8 characters long and contains at least 1 uppercase, lowercase, number and a special character (e.g. (@#\$*~'%^()-_))"));
+        ScaffoldMessenger.of(context!).showSnackBar(snackBar);
+      } else {
+        var param = RegisterEmailRm(
+            // deviceId: deviceId,
+            pidReferralCode: referralController.text,
+            email: emailController.text,
+            password: passwordController.text);
 
-      await apiService.registerWithEmail(_context!, param).then((value) async {
-        if (value != null) {
-          storageService.bondToken = value.token!;
+        await apiService.registerWithEmail(context!, param).then((value) async {
+          if (value != null) {
+            storageService.bondToken = value.token!;
 
-          Navigator.push(
-              _context!,
+            Navigator.push(
+              context!,
               MaterialPageRoute(
-                  builder: (context) => VerificationCodePage(
-                        data: value,
-                      )));
-        }
-      });
+                builder: (context) => VerificationCodePage(
+                  data: value,
+                ),
+              ),
+            );
+          }
+        });
+      }
+    } catch (e) {
+      setBusy(false);
     }
+    setBusy(false);
   }
 }

@@ -772,7 +772,7 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
                     ),
                     UIHelper.verticalSpaceSmall,
                     Text(
-                      "NATIONAL BOND PRE-SALE",
+                      "NATIONAL BOND SALE",
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           fontSize: 16,

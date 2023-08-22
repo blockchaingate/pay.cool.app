@@ -228,4 +228,6 @@ const String AssetsBalanceApiRoute = 'exchangily/getBalances/';
                           Bond
 ---------------------------------------------------------------------- */
 
-const String BaseBondApiRoute = 'https://testapi.fundark.com/api/';
+const String BaseBondApiRoute = isProduction
+    ? 'https://api.pay.cool/api/'
+    : 'https://testapi.fundark.com/api/';

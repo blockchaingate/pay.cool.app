@@ -16,6 +16,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:paycool/constants/constants.dart';
 import 'package:paycool/models/bond/vm/bond_history_vm.dart';
+import 'package:paycool/models/bond/vm/bond_login_vm.dart';
 import 'package:paycool/models/bond/vm/bond_sembol_vm.dart';
 import 'package:paycool/models/bond/vm/get_captcha_vm.dart';
 import 'package:paycool/models/bond/vm/me_vm.dart';
@@ -1152,6 +1153,9 @@ class ApiService {
         'Accept': 'application/json',
       });
       if (!jsonDecode(response.body)["success"]) {
+        var snackBar =
+            SnackBar(content: Text(jsonDecode(response.body)["message"]));
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
         return null;
       }
       var json = jsonDecode(response.body)["data"];
@@ -1161,7 +1165,7 @@ class ApiService {
     }
   }
 
-  Future<RegisterEmailVm?> loginWithEmail(BuildContext context, param) async {
+  Future<BondLoginVm?> loginWithEmail(BuildContext context, param) async {
     String url = "${BaseBondApiRoute}user/login";
     var jsonBody = json.encode(param);
 
@@ -1172,10 +1176,13 @@ class ApiService {
         'Accept': 'application/json',
       });
       if (!jsonDecode(response.body)["success"]) {
+        var snackBar =
+            SnackBar(content: Text(jsonDecode(response.body)["message"]));
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
         return null;
       }
       var json = jsonDecode(response.body)["data"];
-      return RegisterEmailVm.fromJson(json);
+      return BondLoginVm.fromJson(json);
     } catch (err) {
       throw Exception(err);
     }
@@ -1210,7 +1217,10 @@ class ApiService {
         'Accept': 'application/json',
       });
       if (!jsonDecode(response.body)["success"]) {
-        return null;
+        var snackBar =
+            SnackBar(content: Text(jsonDecode(response.body)["message"]));
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        return false;
       }
       var json = jsonDecode(response.body)["data"]["isHuman"];
       return json;
@@ -1258,6 +1268,9 @@ class ApiService {
           'x-access-token': token,
         });
         if (!jsonDecode(response.body)["success"]) {
+          var snackBar =
+              SnackBar(content: Text(jsonDecode(response.body)["message"]));
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
           return null;
         }
         var json = jsonDecode(response.body)["success"];

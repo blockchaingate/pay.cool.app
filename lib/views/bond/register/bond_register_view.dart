@@ -1,9 +1,11 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/views/bond/login/login_view.dart';
+import 'package:paycool/views/bond/progressIndicator.dart';
 import 'package:paycool/views/bond/register/bond_register_viewmodel.dart';
 import 'package:stacked/stacked.dart';
 
@@ -22,11 +24,13 @@ class _BondRegisterViewState extends State<BondRegisterView> {
         viewModelBuilder: () => BondRegisterViewModel(context: context),
         disposeViewModel: true,
         onViewModelReady: (model) async {
+          model.context = context;
           model.init();
         },
         builder: (context, BondRegisterViewModel model, child) {
-          return AnnotatedRegion<SystemUiOverlayStyle>(
-            value: SystemUiOverlayStyle.light,
+          return ModalProgressHUD(
+            inAsyncCall: model.isBusy,
+            progressIndicator: CustomIndicator.indicator(),
             child: Scaffold(
               body: Stack(
                 children: [
@@ -40,6 +44,7 @@ class _BondRegisterViewState extends State<BondRegisterView> {
                   AppBar(
                     backgroundColor: Colors.transparent,
                     elevation: 0,
+                    systemOverlayStyle: SystemUiOverlayStyle.light,
                     leading: IconButton(
                       icon: Icon(
                         Icons.arrow_back_ios,

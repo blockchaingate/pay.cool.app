@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:paycool/constants/route_names.dart';
 import 'package:paycool/models/bond/rm/login_rm.dart';
+import 'package:paycool/models/bond/vm/bond_login_vm.dart';
 import 'package:paycool/models/bond/vm/register_email_vm.dart';
 import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/api_service.dart';
 import 'package:paycool/services/local_storage_service.dart';
 import 'package:paycool/utils/string_validator.dart';
+import 'package:paycool/views/bond/register/verification_code_view.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 
 class BondLoginViewModel extends BaseViewModel with WidgetsBindingObserver {
-  BondLoginViewModel({BuildContext? context}) : _context = context;
-  final BuildContext? _context;
+  BondLoginViewModel({BuildContext? context});
   bool isVisible = true;
   bool isKeyboardOpen = false;
   String? deviceId;
@@ -47,27 +48,39 @@ class BondLoginViewModel extends BaseViewModel with WidgetsBindingObserver {
 
   Future<void> login() async {
     setBusy(true);
+    try {
+      if (emailController.text.isEmpty ||
+          !validateEmail(emailController.text)) {
+        var snackBar = SnackBar(content: Text('Please enter valid email'));
+        ScaffoldMessenger.of(context!).showSnackBar(snackBar);
+      } else {
+        var param = LoginRm(
+            email: emailController.text, password: passwordController.text);
+        final BondLoginVm? result =
+            await apiService.loginWithEmail(context!, param);
+        if (result != null) {
+          storageService.bondToken = result.token!;
+          if (result.isVerifiedEmail == true) {
+            navigationService.navigateTo(DashboardViewRoute);
+          } else {
+            var value = RegisterEmailVm(
+                id: result.id, token: result.token, email: result.email);
 
-    if (emailController.text.isEmpty || !validateEmail(emailController.text)) {
-      var snackBar = SnackBar(content: Text('Please enter valid email'));
-      ScaffoldMessenger.of(_context!).showSnackBar(snackBar);
-    } else if (passwordController.text.isEmpty ||
-        !validatePassword(passwordController.text)) {
-      var snackBar = SnackBar(
-          content: Text(
-              "Enter password which is minimum 8 characters long and contains at least 1 uppercase, lowercase, number and a special character (e.g. (@#\$*~'%^()-_))"));
-      ScaffoldMessenger.of(_context!).showSnackBar(snackBar);
-    } else {
-      var param = LoginRm(
-          email: emailController.text, password: passwordController.text);
-
-      final RegisterEmailVm? result =
-          await apiService.loginWithEmail(context!, param);
-      if (result != null) {
-        storageService.bondToken = result.token!;
-        navigationService.navigateTo(DashboardViewRoute);
+            Navigator.push(
+              context!,
+              MaterialPageRoute(
+                builder: (context) => VerificationCodePage(
+                  data: value,
+                ),
+              ),
+            );
+          }
+        }
       }
+    } catch (e) {
+      setBusy(false);
     }
+
     setBusy(false);
   }
 }

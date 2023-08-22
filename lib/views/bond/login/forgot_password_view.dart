@@ -34,75 +34,76 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
       onTap: () {
         FocusManager.instance.primaryFocus?.unfocus();
       },
-      child: AnnotatedRegion<SystemUiOverlayStyle>(
-        value: SystemUiOverlayStyle.light,
-        child: Stack(
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                    image: AssetImage("assets/images/bgImage.png"),
-                    fit: BoxFit.cover),
+      child: Scaffold(
+        body: Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+                image: AssetImage("assets/images/bgImage.png"),
+                fit: BoxFit.cover),
+          ),
+          child: Column(
+            children: [
+              AppBar(
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                systemOverlayStyle: SystemUiOverlayStyle.light,
+                leading: IconButton(
+                  icon: Icon(
+                    Icons.arrow_back_ios,
+                    color: Colors.white,
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
               ),
-            ),
-            // AppBar(
-            //   backgroundColor: Colors.transparent,
-            //   elevation: 0,
-            //   leading: IconButton(
-            //     icon: Icon(
-            //       Icons.arrow_back_ios,
-            //       color: Colors.white,
-            //     ),
-            //     onPressed: () {
-            //       Navigator.pop(context);
-            //     },
-            //   ),
-            // ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                UIHelper.verticalSpaceLarge,
-                UIHelper.verticalSpaceLarge,
-                Text(
-                  "Please verify captcha",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      decoration: TextDecoration.none,
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white),
-                ),
-                UIHelper.verticalSpaceLarge,
-                SizedBox(
-                  width: size.width,
-                  child: AnimatedSwitcher(
-                      duration: Duration(seconds: 2),
-                      transitionBuilder:
-                          (Widget child, Animation<double> animation) {
-                        final rotate =
-                            Tween(begin: pi, end: 0.0).animate(animation);
-                        return AnimatedBuilder(
-                            animation: rotate,
-                            child: child,
-                            builder: (BuildContext context, Widget? child) {
-                              final angle =
-                                  (ValueKey(_isFirstCard) != widget.key)
-                                      ? min(rotate.value, pi / 2)
-                                      : rotate.value;
-                              return Transform(
-                                transform: Matrix4.rotationY(angle),
-                                alignment: Alignment.center,
-                                child: child,
-                              );
-                            });
-                      },
-                      switchInCurve: Curves.bounceIn.flipped,
-                      switchOutCurve: Curves.easeOutCubic.flipped,
-                      child: _isFirstCard ? firstCard(size) : secondCard(size)),
-                ),
-              ],
-            ),
-          ],
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  UIHelper.verticalSpaceLarge,
+                  UIHelper.verticalSpaceLarge,
+                  Text(
+                    "Forgot Password",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        decoration: TextDecoration.none,
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white),
+                  ),
+                  UIHelper.verticalSpaceLarge,
+                  SizedBox(
+                    width: size.width,
+                    child: AnimatedSwitcher(
+                        duration: Duration(seconds: 2),
+                        transitionBuilder:
+                            (Widget child, Animation<double> animation) {
+                          final rotate =
+                              Tween(begin: pi, end: 0.0).animate(animation);
+                          return AnimatedBuilder(
+                              animation: rotate,
+                              child: child,
+                              builder: (BuildContext context, Widget? child) {
+                                final angle =
+                                    (ValueKey(_isFirstCard) != widget.key)
+                                        ? min(rotate.value, pi / 2)
+                                        : rotate.value;
+                                return Transform(
+                                  transform: Matrix4.rotationY(angle),
+                                  alignment: Alignment.center,
+                                  child: child,
+                                );
+                              });
+                        },
+                        switchInCurve: Curves.bounceIn.flipped,
+                        switchOutCurve: Curves.easeOutCubic.flipped,
+                        child:
+                            _isFirstCard ? firstCard(size) : secondCard(size)),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -160,26 +161,36 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
               ),
               child: ElevatedButton(
                 onPressed: () async {
-                  if (emailController.text.isNotEmpty ||
+                  if (emailController.text.isNotEmpty &&
                       validateEmail(emailController.text)) {
                     var param = ForgotPasswordRm(
                       email: emailController.text,
                     );
 
-                    apiService.forgotPassword(context, param).then((value) {
-                      if (value != null) {
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: Text(value),
-                        ));
-                        setState(() {
-                          _isFirstCard = !_isFirstCard;
-                        });
-                      } else {
-                        var snackBar =
-                            SnackBar(content: Text("Something went wrong!"));
-                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                      }
-                    });
+                    try {
+                      apiService.forgotPassword(context, param).then((value) {
+                        if (value != null) {
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: Text(value),
+                          ));
+                          setState(() {
+                            _isFirstCard = !_isFirstCard;
+                          });
+                        } else {
+                          var snackBar =
+                              SnackBar(content: Text("Something went wrong!"));
+                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                        }
+                      });
+                    } catch (e) {
+                      var snackBar =
+                          SnackBar(content: Text("An error occured!"));
+                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                    }
+                  } else {
+                    var snackBar =
+                        SnackBar(content: Text("Please enter valid email!"));
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
                   }
                 },
                 style: ElevatedButton.styleFrom(
@@ -187,7 +198,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   shadowColor: Colors.transparent,
                 ),
                 child: Text(
-                  'Verify',
+                  'Submit',
                   style: TextStyle(
                     fontSize: 16.0,
                     fontWeight: FontWeight.bold,
@@ -314,19 +325,21 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                       code: codeController.text,
                     );
 
-                    apiService.resetPassword(context, param).then((value) {
-                      if (value != null) {
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: Text(value),
-                        ));
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text("Error"),
-                          ),
-                        );
-                      }
-                    });
+                    try {
+                      apiService.resetPassword(context, param).then((value) {
+                        if (value != null) {
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: Text(value),
+                          ));
+                        }
+                      });
+                    } catch (e) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text("An error occured!"),
+                        ),
+                      );
+                    }
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
