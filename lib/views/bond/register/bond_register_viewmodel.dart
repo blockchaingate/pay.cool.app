@@ -71,7 +71,7 @@ class BondRegisterViewModel extends BaseViewModel {
           Navigator.push(
               context!,
               MaterialPageRoute(
-                  builder: (context) => VerificationCodePage(
+                  builder: (context) => VerificationCodeView(
                         data: value,
                       )));
         }

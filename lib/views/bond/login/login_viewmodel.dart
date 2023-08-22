@@ -69,7 +69,7 @@ class BondLoginViewModel extends BaseViewModel with WidgetsBindingObserver {
             Navigator.push(
               context!,
               MaterialPageRoute(
-                builder: (context) => VerificationCodePage(
+                builder: (context) => VerificationCodeView(
                   data: value,
                 ),
               ),

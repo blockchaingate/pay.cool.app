@@ -16,16 +16,16 @@ import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/views/bond/progressIndicator.dart';
 import 'package:paycool/views/wallet/wallet_dashboard_view.dart';
 
-class VerificationCodePage extends StatefulWidget {
+class VerificationCodeView extends StatefulWidget {
   final RegisterEmailModel data;
 
-  const VerificationCodePage({Key? key, required this.data}) : super(key: key);
+  const VerificationCodeView({Key? key, required this.data}) : super(key: key);
 
   @override
-  State<VerificationCodePage> createState() => _VerificationCodePageState();
+  State<VerificationCodeView> createState() => _VerificationCodeViewState();
 }
 
-class _VerificationCodePageState extends State<VerificationCodePage> {
+class _VerificationCodeViewState extends State<VerificationCodeView> {
   TextEditingController verifyCaptchaController = TextEditingController();
   TextEditingController verifyEmailController = TextEditingController();
   ApiService apiService = locator<ApiService>();
