@@ -670,9 +670,6 @@ class PayCoolService with ListenableServiceMixin {
         nonce = nonce + 1;
       }
 
-      print("========================>>>>>>>>>>>>>>");
-      print(abiHex);
-
       try {
         txKanbanHex = await signAbiHexWithPrivateKey(
             abiHex,

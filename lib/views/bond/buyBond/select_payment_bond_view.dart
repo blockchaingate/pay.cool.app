@@ -42,8 +42,9 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
   final TextEditingController _emailController = TextEditingController();
   String? txHash;
 
+  String? selectedValueChainValue;
   String? selectedValueChain;
-  List<String> dropdownItemsChain = ['ETH', 'KANBAN', "BNB"];
+  List<String> dropdownItemsChainNames = ['ETHEREUM', 'KANBAN', "BSC"];
 
   String? selectedValueCoin;
   List<String> dropdownItemsCoin = [];
@@ -93,7 +94,7 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
                     fit: BoxFit.cover),
               ),
               child: Padding(
-                padding: const EdgeInsets.all(20.0),
+                padding: EdgeInsets.fromLTRB(20, 20, 20, 40),
                 child: Column(
                   children: [
                     SizedBox(
@@ -141,7 +142,7 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
                               color: Colors.grey[200],
                             ),
                             child: DropdownButton<String>(
-                              value: selectedValueChain,
+                              value: selectedValueChainValue,
                               hint: Text(
                                 'Select Chain',
                                 style: TextStyle(color: Colors.black),
@@ -152,12 +153,14 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
                               iconEnabledColor: Colors.black,
                               onChanged: (String? newValue) {
                                 setState(() {
-                                  selectedValueChain = newValue;
+                                  selectedValueChainValue = newValue;
                                   isChainSelected = true;
+                                  selectedValueChain = setChainShort(newValue);
                                 });
                                 setCoins();
                               },
-                              items: dropdownItemsChain.map((String value) {
+                              items:
+                                  dropdownItemsChainNames.map((String value) {
                                 return DropdownMenuItem<String>(
                                   value: value,
                                   child: Text(value),
@@ -339,6 +342,18 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
         ),
       ),
     );
+  }
+
+  String setChainShort(String? chain) {
+    if (chain == "ETHEREUM") {
+      return "ETH";
+    } else if (chain == "KANBAN") {
+      return "KANBAN";
+    } else if (chain == "BSC") {
+      return "BNB";
+    } else {
+      return "";
+    }
   }
 
   Future<void> _launchUrl(String url) async {

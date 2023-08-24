@@ -301,13 +301,13 @@ Map productionConfig = {
     "KANBAN": {"chainId": 211, "gasPrice": 50000000, "gasLimit": 20000000}
   },
   "Bond": {
-    "CoinPool": "0x8d65fc45de848e650490f1ffcd51c6baf52ea595",
+    "CoinPool": "0x5932d8bf64067d31bf759e6e7f622c1d8da8707e",
     "Chains": {
       "ETH": {
         "bondAddress": "0x24344C80729E1D03F3B994aC7E2EE55b451287C3",
         "acceptedTokens": [
           {
-            "id": "0x3908eaeeb2aee3f5fccbb01b35596a9acae87f7d",
+            "id": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
             "symbol": "USDT",
             "decimals": 6
           },

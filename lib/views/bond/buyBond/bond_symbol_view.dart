@@ -12,6 +12,7 @@ import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/api_service.dart';
 import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/views/bond/buyBond/select_payment_bond_view.dart';
+import 'package:paycool/views/bond/progressIndicator.dart';
 import 'package:paycool/widgets/keyboard_down.dart';
 
 class BondSembolView extends StatefulWidget {
@@ -98,14 +99,7 @@ class _BondSembolViewState extends State<BondSembolView>
       },
       child: ModalProgressHUD(
         inAsyncCall: loading,
-        progressIndicator: SizedBox(
-          height: 150,
-          width: 150,
-          child: Image.asset(
-            'assets/animations/loading.gif',
-            fit: BoxFit.fill,
-          ),
-        ),
+        progressIndicator: CustomIndicator.indicator(),
         child: Scaffold(
           resizeToAvoidBottomInset: false,
           extendBodyBehindAppBar: true,

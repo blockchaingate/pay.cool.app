@@ -208,7 +208,8 @@ Future<Map<String, dynamic>> sendKanbanRawTransactionV2(
 // this one is the last one that works just ETH
 Future<Map<String, dynamic>> sendRawTransactionV3(
     String baseUrl, String rawKanbanTransaction, String chain) async {
-  var url = 'https://testapi.fundark.com/api/$chain/postrawtransaction';
+  var url = '$BaseBondApiRoute$chain/postrawtransaction';
+  // var url = 'https://testapi.fundark.com/api/$chain/postrawtransaction';
   var data = {'rawtx': rawKanbanTransaction};
 
   try {
