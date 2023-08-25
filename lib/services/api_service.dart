@@ -22,6 +22,7 @@ import 'package:paycool/models/bond/vm/get_captcha_model.dart';
 import 'package:paycool/models/bond/vm/me_model.dart';
 import 'package:paycool/models/bond/vm/order_bond_model.dart';
 import 'package:paycool/models/bond/vm/register_email_model.dart';
+import 'package:paycool/models/bond/vm/token_balance_model.dart';
 import 'package:paycool/models/wallet/wallet_transaction_history_model.dart';
 import 'package:paycool/views/lightning-remit/lightning_remit_transfer_history_model.dart';
 import 'package:paycool/views/wallet/wallet_features/transaction_history/transaction_history_model_v2.dart';
@@ -1514,6 +1515,29 @@ class ApiService {
       } catch (err) {
         throw Exception(err);
       }
+    }
+  }
+
+  Future<TokensBalanceModel?> getTokensBalance(
+      BuildContext context, String chain, param) async {
+    String url = chain == "KANBAN"
+        ? "$BaseBondApiRoute$chain/balanceold"
+        : "$BaseBondApiRoute$chain/balance";
+    var jsonBody = json.encode(param);
+
+    try {
+      var response =
+          await client.post(Uri.parse(url), body: jsonBody, headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      });
+      if (!jsonDecode(response.body)["success"]) {
+        return null;
+      }
+      var json = jsonDecode(response.body)["data"];
+      return TokensBalanceModel.fromJson(json);
+    } catch (err) {
+      throw Exception(err);
     }
   }
 }
