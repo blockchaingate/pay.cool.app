@@ -11,17 +11,14 @@
 *----------------------------------------------------------------------
 */
 
+import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/constants/ui_var.dart';
 import 'package:paycool/logger.dart';
-import 'package:paycool/models/wallet/wallet.dart';
-
 import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/utils/number_util.dart';
-
-import 'package:flutter/material.dart';
 import 'package:paycool/views/wallet/wallet_features/wallet_features_viewmodel.dart';
 import 'package:stacked/stacked.dart';
 

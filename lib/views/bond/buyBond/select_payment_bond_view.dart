@@ -9,11 +9,14 @@ import 'package:paycool/environments/environment.dart';
 import 'package:paycool/models/bond/rm/order_bond_model.dart';
 import 'package:paycool/models/bond/vm/bond_symbol_model.dart';
 import 'package:paycool/models/bond/vm/me_model.dart';
+import 'package:paycool/models/bond/vm/token_balance_model.dart';
 import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/api_service.dart';
+import 'package:paycool/services/coin_service.dart';
 import 'package:paycool/services/shared_service.dart';
 import 'package:paycool/services/wallet_service.dart';
 import 'package:paycool/shared/ui_helpers.dart';
+import 'package:paycool/views/bond/progressIndicator.dart';
 import 'package:paycool/views/paycool/paycool_service.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -39,6 +42,7 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
   final paycoolService = locator<PayCoolService>();
   WalletService walletService = locator<WalletService>();
   SharedService sharedService = locator<SharedService>();
+  final coinService = locator<CoinService>();
   final TextEditingController _emailController = TextEditingController();
   String? txHash;
 
@@ -52,6 +56,10 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
   bool isChainSelected = false;
 
   bool loading = false;
+
+  bool isBalanceOk = false;
+  bool isGasOk = false;
+  TokensBalanceModel? tokensBalanceModel;
 
   @override
   void initState() {
@@ -68,14 +76,7 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
       },
       child: ModalProgressHUD(
         inAsyncCall: loading,
-        progressIndicator: SizedBox(
-          height: 150,
-          width: 150,
-          child: Image.asset(
-            'assets/animations/loading.gif',
-            fit: BoxFit.fill,
-          ),
-        ),
+        progressIndicator: CustomIndicator.indicator(),
         child: Scaffold(
           resizeToAvoidBottomInset: false,
           extendBodyBehindAppBar: true,
@@ -151,12 +152,13 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
                               underline: SizedBox(),
                               isExpanded: true,
                               iconEnabledColor: Colors.black,
-                              onChanged: (String? newValue) {
+                              onChanged: (String? newValue) async {
                                 setState(() {
                                   selectedValueChainValue = newValue;
                                   isChainSelected = true;
                                   selectedValueChain = setChainShort(newValue);
                                 });
+                                await getBalance();
                                 setCoins();
                               },
                               items:
@@ -190,12 +192,13 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
                                 underline: SizedBox(),
                                 isExpanded: true,
                                 iconEnabledColor: Colors.black,
-                                onChanged: (String? newValue) {
+                                onChanged: (String? newValue) async {
                                   setState(() {
                                     selectedValueCoin = newValue!;
-                                    index =
-                                        selectedValueCoin!.indexOf(newValue);
+                                    index = dropdownItemsCoin.indexWhere(
+                                        (element) => element == newValue);
                                   });
+                                  checkBalance();
                                 },
                                 items: dropdownItemsCoin.map((String value) {
                                   return DropdownMenuItem<String>(
@@ -302,21 +305,30 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
                               return;
                             }
 
-                            var param = OrderBondModel(
-                                paymentAmount: widget.amount,
-                                quantity: widget.quantity,
-                                paymentCoin: selectedValueCoin,
-                                paymentChain: selectedValueChain,
-                                symbol: widget.symbol,
-                                paymentCoinAmount: widget.amount);
+                            if (isBalanceOk && isGasOk) {
+                              var param = OrderBondModel(
+                                  paymentAmount: widget.amount,
+                                  quantity: widget.quantity,
+                                  paymentCoin: selectedValueCoin,
+                                  paymentChain: selectedValueChain,
+                                  symbol: widget.symbol,
+                                  paymentCoinAmount: widget.amount);
 
-                            await checkPolicy(
-                                    context, size, param, widget.bondMeVm!)
-                                .whenComplete(() {
-                              setState(() {
-                                loading = false;
+                              await showDetails(
+                                      context, size, param, widget.bondMeVm!)
+                                  .whenComplete(() {
+                                setState(() {
+                                  loading = false;
+                                });
                               });
-                            });
+                            } else {
+                              var snackBar = SnackBar(
+                                  content: Text(
+                                      'Please check your balance and gas price'));
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(snackBar);
+                              return;
+                            }
                           } else {
                             navigationService.navigateTo(DashboardViewRoute);
                           }
@@ -511,7 +523,106 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
     }
   }
 
-  Future<void> checkPolicy(
+  Future<void> getBalance() async {
+    setState(() {
+      loading = true;
+    });
+
+    try {
+      List<String> tokenIds = [];
+
+      String? walletAddress = selectedValueChain == "KANBAN"
+          ? await CoinService().getCoinWalletAddress("FAB")
+          : await CoinService().getCoinWalletAddress("ETH");
+
+      var coins = environment["Bond"]["Chains"]["$selectedValueChain"]
+          ["acceptedTokens"];
+
+      for (var element in coins) {
+        tokenIds.add(element["id"]);
+      }
+
+      var param = {"native": walletAddress, "tokens": tokenIds};
+
+      await apiService
+          .getTokensBalance(context, selectedValueChain!, param)
+          .then((value) {
+        if (value != null) {
+          setState(() {
+            tokensBalanceModel = value;
+          });
+        }
+      }).whenComplete(() async {
+        await checkGasPrice();
+      });
+    } catch (e) {
+      setState(() {
+        loading = false;
+      });
+    }
+    setState(() {
+      loading = false;
+    });
+  }
+
+  Future<void> checkGasPrice() async {
+    int gasPrice = 0;
+
+    if (selectedValueChain == "KANBAN") {
+      gasPrice = environment["chains"]["KANBAN"]["gasPrice"] *
+          environment["chains"]["KANBAN"]["gasLimit"] *
+          2;
+    } else {
+      gasPrice = environment["Bond"]["Chains"]["ETH"]["gasPrice"] *
+          environment["Bond"]["Chains"]["ETH"]["gasLimit"] *
+          2;
+    }
+
+    if (int.parse(tokensBalanceModel!.native!) >= gasPrice) {
+      setState(() {
+        isGasOk = true;
+      });
+    } else {
+      var snackBar = SnackBar(content: Text('Insaufficient gas'));
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      setState(() {
+        isGasOk = false;
+      });
+    }
+  }
+
+  Future<void> checkBalance() async {
+    double balance;
+    var currentTokenIdIndex = tokensBalanceModel!.tokens!.ids!.indexWhere(
+        (element) =>
+            element ==
+            environment["Bond"]["Chains"]["$selectedValueChain"]
+                ["acceptedTokens"][index]["id"]);
+
+    if (selectedValueChain == "KANBAN") {
+      balance = double.parse(
+              tokensBalanceModel!.tokens!.balances![currentTokenIdIndex]) /
+          1e18;
+    } else {
+      balance = double.parse(
+              tokensBalanceModel!.tokens!.balances![currentTokenIdIndex]) /
+          1e6;
+    }
+
+    if (balance >= widget.amount) {
+      setState(() {
+        isBalanceOk = true;
+      });
+    } else {
+      var snackBar = SnackBar(content: Text('Insaufficient balance'));
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      setState(() {
+        isBalanceOk = false;
+      });
+    }
+  }
+
+  Future<void> showDetails(
     BuildContext context,
     Size size,
     OrderBondModel orderBondRm,

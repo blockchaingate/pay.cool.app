@@ -32,6 +32,7 @@ class _BondLoginViewState extends State<BondLoginView> {
         inAsyncCall: model.isBusy,
         progressIndicator: CustomIndicator.indicator(),
         child: Scaffold(
+          resizeToAvoidBottomInset: false,
           body: GestureDetector(
             onTap: () {
               FocusManager.instance.primaryFocus?.unfocus();
