@@ -1,24 +1,24 @@
 import 'dart:convert';
 
-RegisterEmailModel registerEmailVmFromJson(String str) =>
-    RegisterEmailModel.fromJson(json.decode(str));
+RegisterEmailViewModel registerEmailVmFromJson(String str) =>
+    RegisterEmailViewModel.fromJson(json.decode(str));
 
-String registerEmailVmToJson(RegisterEmailModel data) =>
+String registerEmailVmToJson(RegisterEmailViewModel data) =>
     json.encode(data.toJson());
 
-class RegisterEmailModel {
+class RegisterEmailViewModel {
   String? id;
   String? email;
   String? token;
 
-  RegisterEmailModel({
+  RegisterEmailViewModel({
     this.id,
     this.email,
     this.token,
   });
 
-  factory RegisterEmailModel.fromJson(Map<String, dynamic> json) =>
-      RegisterEmailModel(
+  factory RegisterEmailViewModel.fromJson(Map<String, dynamic> json) =>
+      RegisterEmailViewModel(
         id: json["id"],
         email: json["email"],
         token: json["token"],

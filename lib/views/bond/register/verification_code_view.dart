@@ -7,12 +7,14 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:paycool/constants/colors.dart';
+import 'package:paycool/models/bond/rm/register_email_model.dart';
 import 'package:paycool/models/bond/rm/verify_captcha_model.dart';
 import 'package:paycool/models/bond/rm/verify_email_model.dart';
-import 'package:paycool/models/bond/vm/register_email_model.dart';
 import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/api_service.dart';
+import 'package:paycool/services/local_storage_service.dart';
 import 'package:paycool/shared/ui_helpers.dart';
+import 'package:paycool/views/bond/helper.dart';
 import 'package:paycool/views/bond/progressIndicator.dart';
 import 'package:paycool/views/wallet/wallet_dashboard_view.dart';
 
@@ -28,6 +30,7 @@ class VerificationCodeView extends StatefulWidget {
 class _VerificationCodeViewState extends State<VerificationCodeView> {
   TextEditingController verifyCaptchaController = TextEditingController();
   TextEditingController verifyEmailController = TextEditingController();
+  final storageService = locator<LocalStorageService>();
   ApiService apiService = locator<ApiService>();
   String? captcha;
 
@@ -64,7 +67,7 @@ class _VerificationCodeViewState extends State<VerificationCodeView> {
   }
 
   Future<void> request() async {
-    apiService.getCaptcha(context).then((value) {
+    apiService.getCaptcha(context, widget.data.email!).then((value) {
       setState(() {
         captcha = value!.captcha!
             .replaceAll('width="100%"', 'width="150"')
@@ -201,20 +204,6 @@ class _VerificationCodeViewState extends State<VerificationCodeView> {
                           : SizedBox(),
                     ],
                   ),
-                  // SizedBox(
-                  //   width: size.width * 0.8,
-                  //   child: Text(
-                  //     "Only one account can be registered for the same IP.",
-                  //     textAlign: TextAlign.center,
-                  //     maxLines: 2,
-                  //     overflow: TextOverflow.ellipsis,
-                  //     style: TextStyle(
-                  //         decoration: TextDecoration.none,
-                  //         fontSize: 13,
-                  //         fontWeight: FontWeight.w300,
-                  //         color: Colors.white),
-                  //   ),
-                  // ),
                 ],
               ),
             ),
@@ -283,11 +272,8 @@ class _VerificationCodeViewState extends State<VerificationCodeView> {
             child: ElevatedButton(
               onPressed: () async {
                 if (verifyEmailController.text.isEmpty) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text("Please enter verification code"),
-                    ),
-                  );
+                  callSMessage(context, "Please enter verification code",
+                      duration: 2);
                 } else {
                   setState(() {
                     loading = true;
@@ -299,15 +285,11 @@ class _VerificationCodeViewState extends State<VerificationCodeView> {
                   );
 
                   try {
-                    apiService.verifyEmail(context, param).then((value) {
+                    await apiService.verifyEmail(context, param).then((value) {
                       if (value != null) {
                         if (value) {
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(
-                                SnackBar(
-                                  content: Text("Email verification success"),
-                                ),
-                              )
+                          callSMessage(context, "Email verification success",
+                                  duration: 1)
                               .closed
                               .then((value) {
                             Navigator.push(
@@ -323,11 +305,7 @@ class _VerificationCodeViewState extends State<VerificationCodeView> {
                     setState(() {
                       loading = false;
                     });
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text("An error occurred"),
-                      ),
-                    );
+                    callSMessage(context, "An error occurred", duration: 2);
                   }
                 }
 
@@ -372,17 +350,32 @@ class _VerificationCodeViewState extends State<VerificationCodeView> {
         children: [
           captcha == null
               ? SizedBox()
-              : Container(
-                  padding: EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(
-                        color: Colors.grey,
-                      )),
-                  child: SvgPicture.string(
-                    captcha!,
-                    width: 200,
-                  ),
+              : Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(
+                            color: Colors.grey,
+                          )),
+                      child: SvgPicture.string(
+                        captcha!,
+                        width: 200,
+                      ),
+                    ),
+                    Center(
+                      child: IconButton(
+                          onPressed: () {
+                            request();
+                          },
+                          icon: Icon(
+                            Icons.refresh,
+                            size: 34,
+                          )),
+                    ),
+                  ],
                 ),
           UIHelper.verticalSpaceSmall,
           TextField(
@@ -426,37 +419,38 @@ class _VerificationCodeViewState extends State<VerificationCodeView> {
                 if (verifyCaptchaController.text.isNotEmpty) {
                   var param = VerifyCaptchaModel(
                     captchaResponse: verifyCaptchaController.text,
+                    email: widget.data.email,
                   );
 
                   try {
-                    await apiService.verifyCaptcha(context, param).then(
-                      (value) {
-                        if (value!) {
-                          setState(() {
-                            _isFirstCard = !_isFirstCard;
-                          });
+                    await apiService
+                        .verifyCaptcha(context, param)
+                        .then((value) async {
+                      if (value!) {
+                        await apiService
+                            .registerWithEmail(context, widget.data)
+                            .then(
+                          (value) async {
+                            if (value != null) {
+                              storageService.bondToken = value.token!;
+                              setState(() {
+                                _isFirstCard = !_isFirstCard;
+                              });
 
-                          sendConfirmationCode(context);
-                        }
-                      },
-                    );
+                              await sendConfirmationCode(context);
+                            }
+                          },
+                        );
+                      }
+                    });
                   } catch (e) {
                     setState(() {
                       loading = false;
                     });
-
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('An error occurred'),
-                      ),
-                    );
+                    callSMessage(context, "An error occurred", duration: 2);
                   }
                 } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('Please enter captcha'),
-                    ),
-                  );
+                  callSMessage(context, "Please enter captcha", duration: 1);
                 }
                 setState(() {
                   loading = false;
@@ -483,12 +477,13 @@ class _VerificationCodeViewState extends State<VerificationCodeView> {
   Future<void> sendConfirmationCode(BuildContext context) async {
     apiService.sendEmail(context).then((value) {
       if (value != null) {
-        var snackBar = SnackBar(content: Text(value));
-        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        callSMessage(context, value, duration: 2);
         setState(() {
           _timeout = 120;
         });
         startTimer();
+      } else {
+        callSMessage(context, "An error occurred", duration: 2);
       }
     });
   }

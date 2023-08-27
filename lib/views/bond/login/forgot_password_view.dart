@@ -9,6 +9,7 @@ import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/api_service.dart';
 import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/utils/string_validator.dart';
+import 'package:paycool/views/bond/helper.dart';
 
 class ForgotPasswordView extends StatefulWidget {
   const ForgotPasswordView({super.key});
@@ -170,27 +171,22 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                     try {
                       apiService.forgotPassword(context, param).then((value) {
                         if (value != null) {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text(value),
-                          ));
+                          callSMessage(context, value, duration: 3);
+
                           setState(() {
                             _isFirstCard = !_isFirstCard;
                           });
                         } else {
-                          var snackBar =
-                              SnackBar(content: Text("Something went wrong!"));
-                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                          callSMessage(context, "An error occured!",
+                              duration: 2);
                         }
                       });
                     } catch (e) {
-                      var snackBar =
-                          SnackBar(content: Text("An error occured!"));
-                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                      callSMessage(context, "An error occured!", duration: 2);
                     }
                   } else {
-                    var snackBar =
-                        SnackBar(content: Text("Please enter valid email!"));
-                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                    callSMessage(context, "Please enter valid email!",
+                        duration: 2);
                   }
                 },
                 style: ElevatedButton.styleFrom(
@@ -334,18 +330,10 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                         }
                       });
                     } catch (e) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text("An error occured!"),
-                        ),
-                      );
+                      callSMessage(context, "An error occured!", duration: 2);
                     }
                   } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text("Password not match"),
-                      ),
-                    );
+                    callSMessage(context, "Password not match", duration: 2);
                   }
                 },
                 style: ElevatedButton.styleFrom(
