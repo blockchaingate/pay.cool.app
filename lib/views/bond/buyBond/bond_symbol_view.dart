@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
@@ -178,15 +179,15 @@ class _BondSembolViewState extends State<BondSembolView>
                                 style: bondText1,
                               ),
                               Text(
-                                "Face Value: ${bondSembolVm!.faceValue}",
+                                "${FlutterI18n.translate(context, "faceValue")}: ${bondSembolVm!.faceValue}",
                                 style: bondText1,
                               ),
                               Text(
-                                "Issue Price: ${bondSembolVm!.issuePrice}",
+                                "${FlutterI18n.translate(context, "issuePrice")}: ${bondSembolVm!.issuePrice}",
                                 style: bondText1,
                               ),
                               Text(
-                                "Redemption Price: ${bondSembolVm!.redemptionPrice}",
+                                "${FlutterI18n.translate(context, "redemptionPrice")}: ${bondSembolVm!.redemptionPrice}",
                                 style: bondText1,
                               ),
                               UIHelper.verticalSpaceMedium,
@@ -208,7 +209,8 @@ class _BondSembolViewState extends State<BondSembolView>
                                   }
                                 },
                                 decoration: InputDecoration(
-                                  hintText: 'Please enter amount',
+                                  hintText: FlutterI18n.translate(
+                                      context, "enterAmount"),
                                   hintStyle: TextStyle(
                                       color: inputText,
                                       fontWeight: FontWeight.w400),
@@ -232,7 +234,7 @@ class _BondSembolViewState extends State<BondSembolView>
                               ),
                               UIHelper.verticalSpaceMedium,
                               Text(
-                                "Last Price: $lastPrice",
+                                "${FlutterI18n.translate(context, "lastPrice")}: $lastPrice",
                                 style: bondText1,
                               ),
                             ],
@@ -241,7 +243,10 @@ class _BondSembolViewState extends State<BondSembolView>
                       )
                     : SizedBox(
                         child: Center(
-                            child: Text("Sorry this bond is not ready ")),
+                          child: Text(
+                            FlutterI18n.translate(context, "sorryBondNotReady"),
+                          ),
+                        ),
                       ),
                 Align(
                   alignment: Alignment.bottomCenter,
@@ -267,7 +272,8 @@ class _BondSembolViewState extends State<BondSembolView>
                                         selectedValue,
                                         bondSembolVm)));
                           } else {
-                            callSMessage(context, "Please enter amount first",
+                            callSMessage(context,
+                                FlutterI18n.translate(context, "enterQuantity"),
                                 duration: 2);
                           }
                         },
@@ -276,7 +282,7 @@ class _BondSembolViewState extends State<BondSembolView>
                           shadowColor: Colors.transparent,
                         ),
                         child: Text(
-                          'Order Now',
+                          FlutterI18n.translate(context, "orderNow"),
                           style: TextStyle(
                             fontSize: 16.0,
                             fontWeight: FontWeight.bold,

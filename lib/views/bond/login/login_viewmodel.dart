@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:paycool/constants/route_names.dart';
 import 'package:paycool/models/bond/rm/login_model.dart';
 import 'package:paycool/models/bond/vm/bond_login_vm.dart';
@@ -50,7 +51,9 @@ class BondLoginViewModel extends BaseViewModel with WidgetsBindingObserver {
     try {
       if (emailController.text.isEmpty ||
           !validateEmail(emailController.text)) {
-        callSMessage(context!, "Please enter valid email!", duration: 2);
+        callSMessage(
+            context!, FlutterI18n.translate(context!, "enterValidEmailAddress"),
+            duration: 2);
       } else {
         var param = LoginModel(
             email: emailController.text, password: passwordController.text);

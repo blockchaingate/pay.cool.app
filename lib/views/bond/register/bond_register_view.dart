@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/shared/ui_helpers.dart';
@@ -73,7 +74,8 @@ class _BondRegisterViewState extends State<BondRegisterView> {
                               children: [
                                 UIHelper.verticalSpaceMedium,
                                 Text(
-                                  "Create Account",
+                                  FlutterI18n.translate(
+                                      context, "createAccount"),
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                       fontSize: 22,
@@ -86,7 +88,8 @@ class _BondRegisterViewState extends State<BondRegisterView> {
                                   style: TextStyle(
                                       color: Colors.white, fontSize: 13),
                                   decoration: InputDecoration(
-                                    hintText: 'Enter your e-mail address',
+                                    hintText: FlutterI18n.translate(
+                                        context, "enterEmailAddress"),
                                     hintStyle: TextStyle(
                                         color: inputText,
                                         fontWeight: FontWeight.w400),
@@ -116,7 +119,8 @@ class _BondRegisterViewState extends State<BondRegisterView> {
                                   obscureText: true,
                                   keyboardType: TextInputType.visiblePassword,
                                   decoration: InputDecoration(
-                                    hintText: 'Enter your password',
+                                    hintText: FlutterI18n.translate(
+                                        context, "enterPassword"),
                                     hintStyle: TextStyle(
                                         color: inputText,
                                         fontWeight: FontWeight.w400),
@@ -146,7 +150,8 @@ class _BondRegisterViewState extends State<BondRegisterView> {
                                   obscureText: true,
                                   keyboardType: TextInputType.visiblePassword,
                                   decoration: InputDecoration(
-                                    hintText: 'Repeat your password',
+                                    hintText: FlutterI18n.translate(
+                                        context, "repeatPassword"),
                                     hintStyle: TextStyle(
                                         color: inputText,
                                         fontWeight: FontWeight.w400),
@@ -175,7 +180,8 @@ class _BondRegisterViewState extends State<BondRegisterView> {
                                         style: TextStyle(
                                             color: Colors.white, fontSize: 13),
                                         decoration: InputDecoration(
-                                          hintText: 'Referral Code',
+                                          hintText: FlutterI18n.translate(
+                                              context, "referralCode"),
                                           hintStyle: TextStyle(
                                               color: inputText,
                                               fontWeight: FontWeight.w400),
@@ -217,7 +223,8 @@ class _BondRegisterViewState extends State<BondRegisterView> {
                                       shadowColor: Colors.transparent,
                                     ),
                                     child: Text(
-                                      'Register',
+                                      FlutterI18n.translate(
+                                          context, "register"),
                                       style: TextStyle(
                                         fontSize: 16.0,
                                         fontWeight: FontWeight.bold,
@@ -235,7 +242,8 @@ class _BondRegisterViewState extends State<BondRegisterView> {
                                       });
                                     },
                                     child: Text(
-                                      "Do you have referral code?",
+                                      FlutterI18n.translate(
+                                          context, "doYouHaveReferralCode"),
                                       textAlign: TextAlign.end,
                                       style: TextStyle(
                                           color: Colors.white, fontSize: 14),
@@ -248,14 +256,16 @@ class _BondRegisterViewState extends State<BondRegisterView> {
                                   text: TextSpan(
                                     children: [
                                       TextSpan(
-                                        text: "Already have an account?",
+                                        text: FlutterI18n.translate(
+                                            context, "youHaveAccount"),
                                         style: TextStyle(
                                           fontSize: 12,
                                           color: Colors.white,
                                         ),
                                       ),
                                       TextSpan(
-                                        text: ' Login',
+                                        text:
+                                            " ${FlutterI18n.translate(context, "login")}",
                                         style: TextStyle(
                                           fontSize: 12,
                                           decoration: TextDecoration.underline,
@@ -322,7 +332,8 @@ class _BondRegisterViewState extends State<BondRegisterView> {
                                     SizedBox(
                                       width: size.width * 0.8,
                                       child: Text(
-                                        "I have read and agree to the Adifa Platform Service Agreement and Legal Notice and Privacy Policy",
+                                        FlutterI18n.translate(
+                                            context, "iHaveReadandAgree"),
                                         textAlign: TextAlign.start,
                                         maxLines: 2,
                                         overflow: TextOverflow.ellipsis,

@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:paycool/constants/colors.dart';
@@ -118,7 +119,7 @@ class _VerificationCodeViewState extends State<VerificationCodeView> {
                     children: [
                       UIHelper.verticalSpaceLarge,
                       Text(
-                        "Please verify captcha",
+                        FlutterI18n.translate(context, "verifyCapital"),
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             decoration: TextDecoration.none,
@@ -129,7 +130,7 @@ class _VerificationCodeViewState extends State<VerificationCodeView> {
                       UIHelper.verticalSpaceSmall,
                       !_isFirstCard
                           ? Text(
-                              "Sent to ${widget.data.email}",
+                              "${FlutterI18n.translate(context, "sendTo")} ${widget.data.email}",
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                   decoration: TextDecoration.none,
@@ -179,14 +180,16 @@ class _VerificationCodeViewState extends State<VerificationCodeView> {
                                 text: TextSpan(
                                   children: [
                                     TextSpan(
-                                      text: 'Didn\'t receive the code?',
+                                      text: FlutterI18n.translate(
+                                          context, "didntReceiveCode"),
                                       style: TextStyle(
                                         fontSize: 14,
                                         color: Colors.grey,
                                       ),
                                     ),
                                     TextSpan(
-                                      text: ' Resend Code',
+                                      text:
+                                          " ${FlutterI18n.translate(context, "resendCode")}",
                                       style: TextStyle(
                                         fontSize: 14,
                                         decoration: TextDecoration.underline,
@@ -241,7 +244,7 @@ class _VerificationCodeViewState extends State<VerificationCodeView> {
             style: TextStyle(color: Colors.white, fontSize: 13),
             readOnly: _timeout == 0,
             decoration: InputDecoration(
-              hintText: 'Validation Code *',
+              hintText: "${FlutterI18n.translate(context, "validationCode")} *",
               hintStyle:
                   TextStyle(color: inputText, fontWeight: FontWeight.w400),
               fillColor: Colors.transparent,
@@ -272,7 +275,8 @@ class _VerificationCodeViewState extends State<VerificationCodeView> {
             child: ElevatedButton(
               onPressed: () async {
                 if (verifyEmailController.text.isEmpty) {
-                  callSMessage(context, "Please enter verification code",
+                  callSMessage(context,
+                      FlutterI18n.translate(context, "enterValidationCode"),
                       duration: 2);
                 } else {
                   setState(() {
@@ -288,7 +292,10 @@ class _VerificationCodeViewState extends State<VerificationCodeView> {
                     await apiService.verifyEmail(context, param).then((value) {
                       if (value != null) {
                         if (value) {
-                          callSMessage(context, "Email verification success",
+                          callSMessage(
+                                  context,
+                                  FlutterI18n.translate(
+                                      context, "emailVerificationSuccess"),
                                   duration: 1)
                               .closed
                               .then((value) {
@@ -305,7 +312,9 @@ class _VerificationCodeViewState extends State<VerificationCodeView> {
                     setState(() {
                       loading = false;
                     });
-                    callSMessage(context, "An error occurred", duration: 2);
+                    callSMessage(context,
+                        FlutterI18n.translate(context, "anErrorOccurred"),
+                        duration: 2);
                   }
                 }
 
@@ -318,7 +327,7 @@ class _VerificationCodeViewState extends State<VerificationCodeView> {
                 shadowColor: Colors.transparent,
               ),
               child: Text(
-                'Verify',
+                FlutterI18n.translate(context, "verify"),
                 style: TextStyle(
                   fontSize: 16.0,
                   fontWeight: FontWeight.bold,
@@ -447,10 +456,14 @@ class _VerificationCodeViewState extends State<VerificationCodeView> {
                     setState(() {
                       loading = false;
                     });
-                    callSMessage(context, "An error occurred", duration: 2);
+                    callSMessage(context,
+                        FlutterI18n.translate(context, "anErrorOccurred"),
+                        duration: 2);
                   }
                 } else {
-                  callSMessage(context, "Please enter captcha", duration: 1);
+                  callSMessage(
+                      context, FlutterI18n.translate(context, "entercaptcha"),
+                      duration: 1);
                 }
                 setState(() {
                   loading = false;
@@ -461,7 +474,7 @@ class _VerificationCodeViewState extends State<VerificationCodeView> {
                 shadowColor: Colors.transparent,
               ),
               child: Text(
-                'Verify',
+                FlutterI18n.translate(context, "verify"),
                 style: TextStyle(
                   fontSize: 16.0,
                   fontWeight: FontWeight.bold,
@@ -483,7 +496,8 @@ class _VerificationCodeViewState extends State<VerificationCodeView> {
         });
         startTimer();
       } else {
-        callSMessage(context, "An error occurred", duration: 2);
+        callSMessage(context, FlutterI18n.translate(context, "anErrorOccurred"),
+            duration: 2);
       }
     });
   }

@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/models/bond/rm/forgot_password_model.dart';
 import 'package:paycool/models/bond/rm/forgot_password_verify_model.dart';
@@ -64,7 +65,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                   UIHelper.verticalSpaceLarge,
                   UIHelper.verticalSpaceLarge,
                   Text(
-                    "Forgot Password",
+                    FlutterI18n.translate(context, "forgotPassword"),
                     textAlign: TextAlign.center,
                     style: TextStyle(
                         decoration: TextDecoration.none,
@@ -132,7 +133,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
               controller: emailController,
               style: TextStyle(color: Colors.white, fontSize: 13),
               decoration: InputDecoration(
-                hintText: 'Email *',
+                hintText: "${FlutterI18n.translate(context, "email")} *",
                 hintStyle:
                     TextStyle(color: inputText, fontWeight: FontWeight.w400),
                 fillColor: Colors.transparent,
@@ -177,15 +178,21 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                             _isFirstCard = !_isFirstCard;
                           });
                         } else {
-                          callSMessage(context, "An error occured!",
+                          callSMessage(context,
+                              FlutterI18n.translate(context, "anErrorOccurred"),
                               duration: 2);
                         }
                       });
                     } catch (e) {
-                      callSMessage(context, "An error occured!", duration: 2);
+                      callSMessage(context,
+                          FlutterI18n.translate(context, "anErrorOccurred"),
+                          duration: 2);
                     }
                   } else {
-                    callSMessage(context, "Please enter valid email!",
+                    callSMessage(
+                        context,
+                        FlutterI18n.translate(
+                            context, "enterValidEmailAddress"),
                         duration: 2);
                   }
                 },
@@ -194,7 +201,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                   shadowColor: Colors.transparent,
                 ),
                 child: Text(
-                  'Submit',
+                  FlutterI18n.translate(context, "submit"),
                   style: TextStyle(
                     fontSize: 16.0,
                     fontWeight: FontWeight.bold,
@@ -231,7 +238,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
               controller: passwordController,
               style: TextStyle(color: Colors.white, fontSize: 13),
               decoration: InputDecoration(
-                hintText: 'password *',
+                hintText: "${FlutterI18n.translate(context, "password")} *",
                 hintStyle:
                     TextStyle(color: inputText, fontWeight: FontWeight.w400),
                 fillColor: Colors.transparent,
@@ -257,7 +264,8 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
               controller: verifyPasswordController,
               style: TextStyle(color: Colors.white, fontSize: 13),
               decoration: InputDecoration(
-                hintText: 'verify password *',
+                hintText:
+                    "${FlutterI18n.translate(context, "verifyPassword")} *",
                 hintStyle:
                     TextStyle(color: inputText, fontWeight: FontWeight.w400),
                 fillColor: Colors.transparent,
@@ -283,7 +291,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
               controller: verifyPasswordController,
               style: TextStyle(color: Colors.white, fontSize: 13),
               decoration: InputDecoration(
-                hintText: 'code *',
+                hintText: "${FlutterI18n.translate(context, "code")} *",
                 hintStyle:
                     TextStyle(color: inputText, fontWeight: FontWeight.w400),
                 fillColor: Colors.transparent,
@@ -330,10 +338,14 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                         }
                       });
                     } catch (e) {
-                      callSMessage(context, "An error occured!", duration: 2);
+                      callSMessage(context,
+                          FlutterI18n.translate(context, "anErrorOccurred"),
+                          duration: 2);
                     }
                   } else {
-                    callSMessage(context, "Password not match", duration: 2);
+                    callSMessage(context,
+                        FlutterI18n.translate(context, "passwordNotMatched"),
+                        duration: 2);
                   }
                 },
                 style: ElevatedButton.styleFrom(
@@ -341,7 +353,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                   shadowColor: Colors.transparent,
                 ),
                 child: Text(
-                  'Submit',
+                  FlutterI18n.translate(context, "submit"),
                   style: TextStyle(
                     fontSize: 16.0,
                     fontWeight: FontWeight.bold,
