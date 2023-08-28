@@ -2,12 +2,13 @@ import 'dart:io';
 
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:paycool/models/bond/rm/register_email_model.dart';
 import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/api_service.dart';
-import 'package:paycool/services/local_storage_service.dart';
 import 'package:paycool/services/shared_service.dart';
 import 'package:paycool/utils/string_validator.dart';
+import 'package:paycool/views/bond/helper.dart';
 import 'package:paycool/views/bond/register/verification_code_view.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
@@ -18,7 +19,7 @@ class BondRegisterViewModel extends BaseViewModel {
   ApiService apiService = locator<ApiService>();
 
   SharedService sharedService = locator<SharedService>();
-  final storageService = locator<LocalStorageService>();
+
   final NavigationService navigationService = locator<NavigationService>();
 
   DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
@@ -26,8 +27,11 @@ class BondRegisterViewModel extends BaseViewModel {
 
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  TextEditingController repeatPasswordController = TextEditingController();
   TextEditingController referralController = TextEditingController();
   bool isReferral = false;
+
+  bool checkBoxValue = false;
 
 /*----------------------------------------------------------------------
                     INIT
@@ -47,35 +51,37 @@ class BondRegisterViewModel extends BaseViewModel {
     }
   }
 
-  void startRegister() async {
+  Future<void> startRegister() async {
     if (emailController.text.isEmpty || !validateEmail(emailController.text)) {
-      var snackBar = SnackBar(content: Text('Please enter valid email'));
-      ScaffoldMessenger.of(context!).showSnackBar(snackBar);
+      callSMessage(context!, FlutterI18n.translate(context!, "enterValidEmail"),
+          duration: 3);
     } else if (passwordController.text.isEmpty ||
+        repeatPasswordController.text.isEmpty ||
         !validatePassword(passwordController.text)) {
-      var snackBar = SnackBar(
-          content: Text(
-              "Enter password which is minimum 8 characters long and contains at least 1 uppercase, lowercase, number and a special character (e.g. (@#\$*~'%^()-_))"));
-      ScaffoldMessenger.of(context!).showSnackBar(snackBar);
+      callSMessage(
+          context!, FlutterI18n.translate(context!, "setPasswordConditions"),
+          duration: 3);
+    } else if (passwordController.text != repeatPasswordController.text) {
+      callSMessage(context!,
+          FlutterI18n.translate(context!, "passwordandRepeatPassword"),
+          duration: 3);
+    } else if (checkBoxValue == false) {
+      callSMessage(
+          context!, FlutterI18n.translate(context!, "acceptTermsandConditions"),
+          duration: 3);
     } else {
       var param = RegisterEmailModel(
-          // deviceId: deviceId,
+          deviceId: deviceId,
           pidReferralCode: referralController.text,
           email: emailController.text,
           password: passwordController.text);
 
-      await apiService.registerWithEmail(context!, param).then((value) async {
-        if (value != null) {
-          storageService.bondToken = value.token!;
-
-          Navigator.push(
-              context!,
-              MaterialPageRoute(
-                  builder: (context) => VerificationCodeView(
-                        data: value,
-                      )));
-        }
-      });
+      Navigator.push(
+          context!,
+          MaterialPageRoute(
+              builder: (context) => VerificationCodeView(
+                    data: param,
+                  )));
     }
     setBusy(false);
   }

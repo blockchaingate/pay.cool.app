@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/shared/ui_helpers.dart';
@@ -66,7 +67,7 @@ class _BondLoginViewState extends State<BondLoginView> {
                       children: [
                         UIHelper.verticalSpaceLarge,
                         Text(
-                          "Welcome to El Salvador Bond",
+                          FlutterI18n.translate(context, "welcomeTo"),
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               fontSize: 24,
@@ -75,7 +76,7 @@ class _BondLoginViewState extends State<BondLoginView> {
                         ),
                         UIHelper.verticalSpaceLarge,
                         Text(
-                          "Login",
+                          FlutterI18n.translate(context, "login"),
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               fontSize: 16,
@@ -84,7 +85,7 @@ class _BondLoginViewState extends State<BondLoginView> {
                         ),
                         UIHelper.verticalSpaceSmall,
                         Text(
-                          "Emails that are not logged in will be automatically registered",
+                          FlutterI18n.translate(context, "emailsThatAre"),
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               fontSize: 16,
@@ -96,7 +97,8 @@ class _BondLoginViewState extends State<BondLoginView> {
                           controller: model.emailController,
                           style: TextStyle(color: Colors.white, fontSize: 13),
                           decoration: InputDecoration(
-                            hintText: 'Please enter your e-mail address',
+                            hintText: FlutterI18n.translate(
+                                context, "enterEmailAddress"),
                             hintStyle: TextStyle(
                                 color: inputText, fontWeight: FontWeight.w400),
                             fillColor: Colors.transparent,
@@ -124,7 +126,8 @@ class _BondLoginViewState extends State<BondLoginView> {
                           obscureText: true,
                           keyboardType: TextInputType.visiblePassword,
                           decoration: InputDecoration(
-                            hintText: 'Please enter your password',
+                            hintText:
+                                FlutterI18n.translate(context, "enterPassword"),
                             hintStyle: TextStyle(
                                 color: inputText, fontWeight: FontWeight.w400),
                             fillColor: Colors.transparent,
@@ -162,7 +165,7 @@ class _BondLoginViewState extends State<BondLoginView> {
                               shadowColor: Colors.transparent,
                             ),
                             child: Text(
-                              'Login',
+                              FlutterI18n.translate(context, "login"),
                               style: TextStyle(
                                 fontSize: 16.0,
                                 fontWeight: FontWeight.bold,
@@ -186,7 +189,8 @@ class _BondLoginViewState extends State<BondLoginView> {
                                 child: SizedBox(
                                   width: size.width * 0.9,
                                   child: Text(
-                                    "Forgot Password?",
+                                    FlutterI18n.translate(
+                                        context, "forgotPassword"),
                                     textAlign: TextAlign.end,
                                     style: TextStyle(
                                         color: Colors.white, fontSize: 14.0),
@@ -203,14 +207,16 @@ class _BondLoginViewState extends State<BondLoginView> {
                                 text: TextSpan(
                                   children: [
                                     TextSpan(
-                                      text: "Don't have an account? ",
+                                      text: FlutterI18n.translate(
+                                          context, "dontHaveAnAccount"),
                                       style: TextStyle(
                                         fontSize: 12,
                                         color: Colors.white,
                                       ),
                                     ),
                                     TextSpan(
-                                      text: ' Register now',
+                                      text:
+                                          " ${FlutterI18n.translate(context, "registerNow")}",
                                       style: TextStyle(
                                         fontSize: 12,
                                         decoration: TextDecoration.underline,

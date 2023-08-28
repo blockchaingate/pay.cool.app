@@ -617,11 +617,9 @@ class PayCoolService with ListenableServiceMixin {
 
       final address = credentials.address;
       final addressHex = address.hex;
-      var nonce = await _apiService.getEthNonce(addressHex);
-
-      if (incNonce) {
-        nonce = nonce + 1;
-      }
+      var nonce = incNonce
+          ? await _apiService.getEthNonce(addressHex) + 1
+          : await _apiService.getEthNonce(addressHex);
 
       try {
         txKanbanHex = await signAbiHexWithPrivateKey(
@@ -638,11 +636,7 @@ class PayCoolService with ListenableServiceMixin {
         log.e('err $err');
       }
       if (txKanbanHex != '' && txKanbanHex != null) {
-        var resBody =
-            await sendRawTransactionV3(paycoolBaseUrl, txKanbanHex, "eth");
-
-        print(resBody.toString());
-
+        var resBody = await sendRawTransactionV3(txKanbanHex, "eth");
         //{"ok":true,"_body":{"transactionHash":"0x855f2d8ec57418670dd4cb27ecb71c6794ada5686e771fe06c48e30ceafe0548","status":"0x1"}}
         //{"success":true,"data":{"txid":"0x9fe2100728cb211320b7057978c9a2beb405dcab89bda848db1322bfcee6d079"}}
 
@@ -686,11 +680,7 @@ class PayCoolService with ListenableServiceMixin {
         log.e('err $err');
       }
       if (txKanbanHex != '' && txKanbanHex != null) {
-        var resBody =
-            await sendRawTransactionV3(paycoolBaseUrl, txKanbanHex, "bnb");
-
-        print(resBody.toString());
-
+        var resBody = await sendRawTransactionV3(txKanbanHex, "bnb");
         if (!resBody["success"]) {
           return null;
         } else {
@@ -727,8 +717,7 @@ class PayCoolService with ListenableServiceMixin {
         log.e('err $err');
       }
       if (txKanbanHex != '') {
-        var resBody =
-            await sendRawTransactionV3(paycoolBaseUrl, txKanbanHex, 'kanban');
+        var resBody = await sendRawTransactionV3(txKanbanHex, 'kanban');
 
         if (!resBody["success"]) {
           return null;

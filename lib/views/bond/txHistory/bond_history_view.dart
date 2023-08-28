@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/views/bond/txHistory/bond_history_viewmodel.dart';
 import 'package:stacked/stacked.dart';
@@ -125,46 +126,46 @@ class _BondHistoryViewState extends State<BondHistoryView> {
                         child: Column(
                           children: [
                             UIHelper.verticalSpaceMedium,
-                            Row(children: const [
+                            Row(children: [
                               Expanded(
                                 flex: 1,
                                 child: Text(
-                                  "Bond Id",
+                                  FlutterI18n.translate(context, "bondId"),
                                   style: TextStyle(color: Colors.white),
                                 ),
                               ),
                               Expanded(
                                 flex: 1,
                                 child: Text(
-                                  "Quantity",
+                                  FlutterI18n.translate(context, "quantity"),
                                   style: TextStyle(color: Colors.white),
                                 ),
                               ),
                               Expanded(
                                 flex: 1,
                                 child: Text(
-                                  "Chain",
+                                  FlutterI18n.translate(context, "chain"),
                                   style: TextStyle(color: Colors.white),
                                 ),
                               ),
                               Expanded(
                                 flex: 1,
                                 child: Text(
-                                  "Coin",
+                                  FlutterI18n.translate(context, "coin"),
                                   style: TextStyle(color: Colors.white),
                                 ),
                               ),
                               Expanded(
                                 flex: 1,
                                 child: Text(
-                                  "Date",
+                                  FlutterI18n.translate(context, "date"),
                                   style: TextStyle(color: Colors.white),
                                 ),
                               ),
                               Expanded(
                                 flex: 1,
                                 child: Text(
-                                  "Status",
+                                  FlutterI18n.translate(context, "status"),
                                   style: TextStyle(color: Colors.white),
                                 ),
                               ),

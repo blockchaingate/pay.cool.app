@@ -160,7 +160,8 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
                               ),
                               SizedBox(
                                 child: Text(
-                                  "NATIONAL BOND SALE",
+                                  FlutterI18n.translate(
+                                      context, "nationalBondSale"),
                                   style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 18,
@@ -658,7 +659,7 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
                       ),
                       UIHelper.verticalSpaceLarge,
                       Text(
-                        "El Salvador Digital National Bond",
+                        FlutterI18n.translate(context, "elSalvadorDigital"),
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             fontSize: 24,
@@ -686,7 +687,7 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
                             shadowColor: Colors.transparent,
                           ),
                           child: Text(
-                            'Login',
+                            FlutterI18n.translate(context, "login"),
                             style: TextStyle(
                               fontSize: 16.0,
                               fontWeight: FontWeight.bold,
@@ -695,7 +696,7 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
                         ),
                       ),
                       Text(
-                        "You have a account?",
+                        FlutterI18n.translate(context, "youHaveAccount"),
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             fontSize: 14,
@@ -723,7 +724,7 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
                             shadowColor: Colors.transparent,
                           ),
                           child: Text(
-                            'Register',
+                            FlutterI18n.translate(context, "register"),
                             style: TextStyle(
                               fontSize: 16.0,
                               fontWeight: FontWeight.bold,
@@ -732,7 +733,7 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
                         ),
                       ),
                       Text(
-                        "You don't have a account?",
+                        FlutterI18n.translate(context, "youHaveAccount"),
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             fontSize: 14,
@@ -788,7 +789,7 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
                     ),
                     UIHelper.verticalSpaceSmall,
                     Text(
-                      "NATIONAL BOND SALE",
+                      FlutterI18n.translate(context, "nationalBondSale"),
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           fontSize: 16,
@@ -797,7 +798,7 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
                     ),
                     UIHelper.verticalSpaceSmall,
                     Text(
-                      "WITH UNIQUE NFTs",
+                      FlutterI18n.translate(context, "withUniqueNfd"),
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           fontSize: 16,
@@ -825,7 +826,7 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
                           shadowColor: Colors.transparent,
                         ),
                         child: Text(
-                          'Buy Now',
+                          FlutterI18n.translate(context, "buyNow"),
                           style: TextStyle(
                             fontSize: 16.0,
                             fontWeight: FontWeight.bold,

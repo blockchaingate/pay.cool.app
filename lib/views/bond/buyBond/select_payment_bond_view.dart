@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/constants.dart';
@@ -16,6 +17,7 @@ import 'package:paycool/services/coin_service.dart';
 import 'package:paycool/services/shared_service.dart';
 import 'package:paycool/services/wallet_service.dart';
 import 'package:paycool/shared/ui_helpers.dart';
+import 'package:paycool/views/bond/helper.dart';
 import 'package:paycool/views/bond/progressIndicator.dart';
 import 'package:paycool/views/paycool/paycool_service.dart';
 import 'package:stacked_services/stacked_services.dart';
@@ -111,7 +113,8 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
                             controller: _emailController,
                             style: TextStyle(color: Colors.white, fontSize: 13),
                             decoration: InputDecoration(
-                              hintText: 'Please enter your e-mail address',
+                              hintText: FlutterI18n.translate(
+                                  context, "enterEmailAddress"),
                               hintStyle: TextStyle(
                                   color: inputText,
                                   fontWeight: FontWeight.w400),
@@ -145,22 +148,26 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
                             child: DropdownButton<String>(
                               value: selectedValueChainValue,
                               hint: Text(
-                                'Select Chain',
+                                FlutterI18n.translate(context, "selectChain"),
                                 style: TextStyle(color: Colors.black),
                               ),
                               dropdownColor: Colors.white,
                               underline: SizedBox(),
                               isExpanded: true,
                               iconEnabledColor: Colors.black,
-                              onChanged: (String? newValue) async {
-                                setState(() {
-                                  selectedValueChainValue = newValue;
-                                  isChainSelected = true;
-                                  selectedValueChain = setChainShort(newValue);
-                                });
-                                await getBalance();
-                                setCoins();
-                              },
+                              onChanged: txHash != null
+                                  ? null
+                                  : (String? newValue) async {
+                                      setState(() {
+                                        selectedValueChainValue = newValue;
+                                        isChainSelected = true;
+                                        selectedValueCoin = null;
+                                        selectedValueChain =
+                                            setChainShort(newValue);
+                                      });
+                                      await getBalance();
+                                      setCoins();
+                                    },
                               items:
                                   dropdownItemsChainNames.map((String value) {
                                 return DropdownMenuItem<String>(
@@ -185,21 +192,23 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
                               child: DropdownButton<String>(
                                 value: selectedValueCoin,
                                 hint: Text(
-                                  'Select Coin',
+                                  FlutterI18n.translate(context, "selectCoin"),
                                   style: TextStyle(color: Colors.black),
                                 ),
                                 dropdownColor: Colors.white,
                                 underline: SizedBox(),
                                 isExpanded: true,
                                 iconEnabledColor: Colors.black,
-                                onChanged: (String? newValue) async {
-                                  setState(() {
-                                    selectedValueCoin = newValue!;
-                                    index = dropdownItemsCoin.indexWhere(
-                                        (element) => element == newValue);
-                                  });
-                                  checkBalance();
-                                },
+                                onChanged: txHash != null
+                                    ? null
+                                    : (String? newValue) async {
+                                        setState(() {
+                                          selectedValueCoin = newValue!;
+                                          index = dropdownItemsCoin.indexWhere(
+                                              (element) => element == newValue);
+                                        });
+                                        checkBalance();
+                                      },
                                 items: dropdownItemsCoin.map((String value) {
                                   return DropdownMenuItem<String>(
                                     value: value,
@@ -216,7 +225,8 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
                             text: TextSpan(
                               children: [
                                 TextSpan(
-                                  text: "For more detail visit: ",
+                                  text:
+                                      "${FlutterI18n.translate(context, "forMoreDetais")}:",
                                   style: TextStyle(
                                     fontSize: 14,
                                     color: Colors.white,
@@ -270,10 +280,11 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
                                 onPressed: () {
                                   Clipboard.setData(
                                       ClipboardData(text: txHash!));
-                                  var snackBar = SnackBar(
-                                      content: Text('Copied to Clipboard'));
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(snackBar);
+                                  callSMessage(
+                                      context,
+                                      FlutterI18n.translate(
+                                          context, "copiedToClipboard"),
+                                      duration: 2);
                                 },
                                 icon: Icon(
                                   Icons.copy,
@@ -297,11 +308,12 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
                             if (selectedValueCoin == null ||
                                 selectedValueChain == null ||
                                 _emailController.text.isEmpty) {
-                              var snackBar = SnackBar(
-                                  content: Text(
-                                      'Please select coin, chain and enter email address'));
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(snackBar);
+                              callSMessage(
+                                  context,
+                                  FlutterI18n.translate(
+                                      context, "selectCoinandChain"),
+                                  duration: 2);
+
                               return;
                             }
 
@@ -322,11 +334,12 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
                                 });
                               });
                             } else {
-                              var snackBar = SnackBar(
-                                  content: Text(
-                                      'Please check your balance and gas price'));
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(snackBar);
+                              callSMessage(
+                                  context,
+                                  FlutterI18n.translate(
+                                      context, "checkYourBalanceGas"),
+                                  duration: 2);
+
                               return;
                             }
                           } else {
@@ -338,7 +351,10 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
                           shadowColor: Colors.transparent,
                         ),
                         child: Text(
-                          txHash == null ? 'Confirm Payment' : "Done",
+                          txHash == null
+                              ? FlutterI18n.translate(
+                                  context, "confirmPurchase")
+                              : FlutterI18n.translate(context, "done"),
                           style: TextStyle(
                             fontSize: 16.0,
                             fontWeight: FontWeight.bold,
@@ -388,6 +404,13 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
 
     var seed = await walletService.getSeedDialog(sharedService.context);
 
+    if (seed == null) {
+      setState(() {
+        loading = false;
+      });
+      throw Exception("Seed is null");
+    }
+
     if (selectedValueChain == 'ETH') {
       amount = widget.quantity * 100 * 1e6;
 
@@ -436,7 +459,7 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
 
     await paycoolService
         .signSendTxBond(
-      seed!,
+      seed,
       abiHex!,
       toAddress,
       chain: selectedValueChain!,
@@ -445,7 +468,11 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
       if (value != null) {
         await bondPurchase(seed, size);
       }
-    }); //bond address
+    }).whenComplete(() {
+      setState(() {
+        loading = false;
+      });
+    });
   }
 
   Future<void> bondPurchase(Uint8List seed, Size size) async {
@@ -453,6 +480,11 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
 
     String toAddress =
         environment["Bond"]["Chains"]["$selectedValueChain"]["bondAddress"];
+
+    // if (selectedValueChain == "KANBAN") {
+    //   toAddress = environment["Bond"]["CoinPool"];
+    // }
+
     String? abiHex;
 
     if (selectedValueChain == 'ETH') {
@@ -508,6 +540,10 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
         .then((value) async {
       setState(() {
         txHash = value;
+        loading = false;
+      });
+    }).whenComplete(() {
+      setState(() {
         loading = false;
       });
     });
@@ -583,8 +619,9 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
         isGasOk = true;
       });
     } else {
-      var snackBar = SnackBar(content: Text('Insaufficient gas'));
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      callSMessage(context, FlutterI18n.translate(context, "insaufficientGas"),
+          duration: 2);
+
       setState(() {
         isGasOk = false;
       });
@@ -592,21 +629,26 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
   }
 
   Future<void> checkBalance() async {
-    double balance;
-    var currentTokenIdIndex = tokensBalanceModel!.tokens!.ids!.indexWhere(
-        (element) =>
-            element ==
-            environment["Bond"]["Chains"]["$selectedValueChain"]
-                ["acceptedTokens"][index]["id"]);
+    double balance = 0;
 
-    if (selectedValueChain == "KANBAN") {
-      balance = double.parse(
-              tokensBalanceModel!.tokens!.balances![currentTokenIdIndex]) /
-          1e18;
-    } else {
-      balance = double.parse(
-              tokensBalanceModel!.tokens!.balances![currentTokenIdIndex]) /
-          1e6;
+    try {
+      var currentTokenIdIndex = tokensBalanceModel!.tokens!.ids!.indexWhere(
+          (element) =>
+              element ==
+              environment["Bond"]["Chains"]["$selectedValueChain"]
+                  ["acceptedTokens"][index]["id"]);
+
+      if (selectedValueChain == "KANBAN") {
+        balance = double.parse(
+                tokensBalanceModel!.tokens!.balances![currentTokenIdIndex]) /
+            1e18;
+      } else {
+        balance = double.parse(
+                tokensBalanceModel!.tokens!.balances![currentTokenIdIndex]) /
+            1e6;
+      }
+    } catch (e) {
+      debugPrint(e.toString());
     }
 
     if (balance >= widget.amount) {
@@ -614,8 +656,10 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
         isBalanceOk = true;
       });
     } else {
-      var snackBar = SnackBar(content: Text('Insaufficient balance'));
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      callSMessage(
+          context, FlutterI18n.translate(context, "insaufficientBalance"),
+          duration: 2);
+
       setState(() {
         isBalanceOk = false;
       });
@@ -648,7 +692,6 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
                       borderRadius: BorderRadius.circular(10),
                       color: Colors.white,
                     ),
-                    height: MediaQuery.of(context).size.height * 0.8,
                     width: MediaQuery.of(context).size.width * 0.8,
                     child: SingleChildScrollView(
                       controller: scrollController,
@@ -659,7 +702,8 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "El Salvador Digital National Bond",
+                                FlutterI18n.translate(
+                                    context, "elSalvadorDigital"),
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                     fontSize: 16.0,
@@ -667,47 +711,72 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
                                     color: Colors.black),
                               ),
                               Text(
-                                  "DNB is a national bond guaranteed by the El Salvador government to repay the principal and interest obligations according to the terms of the bond.",
+                                  FlutterI18n.translate(
+                                      context, "dnbBondGuarantee"),
                                   style: TextStyle(
                                       fontSize: 12.0,
                                       fontWeight: FontWeight.w500,
                                       color: Colors.black)),
                               UIHelper.verticalSpaceMedium,
-                              Text("Order Information",
+                              Text(
+                                  FlutterI18n.translate(
+                                      context, "orderInformation"),
                                   textAlign: TextAlign.left,
                                   style: TextStyle(
                                       fontSize: 16.0,
                                       fontWeight: FontWeight.bold,
                                       color: Colors.black)),
-                              Text("Bond Type: ${orderBondRm.symbol!}"),
-                              Text("Chain Name: ${orderBondRm.paymentChain!}"),
-                              Text("Coin Name: ${orderBondRm.paymentCoin!}"),
-                              Text("Quantity: ${orderBondRm.quantity!}"),
+                              Text(
+                                "${FlutterI18n.translate(context, "bondType")}: ${orderBondRm.symbol!}",
+                              ),
+                              Text(
+                                "${FlutterI18n.translate(context, "chainName")}: ${orderBondRm.paymentChain!}",
+                              ),
+                              Text(
+                                "${FlutterI18n.translate(context, "coinName")}: ${orderBondRm.paymentCoin!}",
+                              ),
+                              Text(
+                                "${FlutterI18n.translate(context, "quantity")}: ${orderBondRm.quantity!}",
+                              ),
                               UIHelper.verticalSpaceMedium,
-                              Text("Bond Information",
+                              Text(
+                                  FlutterI18n.translate(
+                                      context, "bondInformation"),
                                   textAlign: TextAlign.left,
                                   style: TextStyle(
                                       fontSize: 16.0,
                                       fontWeight: FontWeight.bold,
                                       color: Colors.black)),
-                              Text("Name: ${widget.bondSembolVm!.name}"),
                               Text(
-                                  "Face Value: ${widget.bondSembolVm!.faceValue}"),
+                                "${FlutterI18n.translate(context, "name")}: ${widget.bondSembolVm!.name!}",
+                              ),
                               Text(
-                                  "Interest Rate: ${widget.bondSembolVm!.couponRate}% (per year)"),
+                                "${FlutterI18n.translate(context, "faceValue")}: ${widget.bondSembolVm!.faceValue!}",
+                              ),
                               Text(
-                                  "Issue price: ${widget.bondSembolVm!.issuePrice}"),
+                                "${FlutterI18n.translate(context, "interestRate")}: ${widget.bondSembolVm!.couponRate!}",
+                              ),
                               Text(
-                                  "Maturity: ${widget.bondSembolVm!.maturity} years"),
+                                "${FlutterI18n.translate(context, "issuePrice")}: ${widget.bondSembolVm!.issuePrice!}",
+                              ),
+                              Text(
+                                "${FlutterI18n.translate(context, "maturity")}: ${widget.bondSembolVm!.maturity!} ${FlutterI18n.translate(context, "year")}",
+                              ),
                               UIHelper.verticalSpaceMedium,
-                              Text("Personal Information",
+                              Text(
+                                  FlutterI18n.translate(
+                                      context, "personalInfo"),
                                   textAlign: TextAlign.left,
                                   style: TextStyle(
                                       fontSize: 16.0,
                                       fontWeight: FontWeight.bold,
                                       color: Colors.black)),
-                              Text("Email: ${bondMeVm.email!}"),
-                              Text("Referral Code: ${bondMeVm.referralCode!}"),
+                              Text(
+                                "${FlutterI18n.translate(context, "email")}: ${bondMeVm.email!}",
+                              ),
+                              Text(
+                                "${FlutterI18n.translate(context, "refferalCode")}: ${bondMeVm.referralCode!}",
+                              ),
                               UIHelper.verticalSpaceMedium,
                               Container(
                                 width: MediaQuery.of(context).size.width * 0.8,
@@ -743,9 +812,7 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
                                         }
                                       });
                                     } catch (e) {
-                                      setState(() {
-                                        loading = false;
-                                      });
+                                      loading = false;
                                     }
                                   },
                                   style: ElevatedButton.styleFrom(
@@ -753,7 +820,8 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
                                     shadowColor: Colors.transparent,
                                   ),
                                   child: Text(
-                                    'Confirm Payment',
+                                    FlutterI18n.translate(
+                                        context, "confirmPurchase"),
                                     style: TextStyle(
                                       fontSize: 16.0,
                                       fontWeight: FontWeight.bold,

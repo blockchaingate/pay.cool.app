@@ -724,7 +724,7 @@ class LightningRemitViewmodel extends FutureViewModel {
       }).catchError((error) {
         log.e(error);
         setBusy(false);
-        return false;
+        return;
       });
     } else {
       sharedService.alertDialog(

@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/models/bond/rm/forgot_password_model.dart';
 import 'package:paycool/models/bond/rm/forgot_password_verify_model.dart';
@@ -9,6 +10,7 @@ import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/api_service.dart';
 import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/utils/string_validator.dart';
+import 'package:paycool/views/bond/helper.dart';
 
 class ForgotPasswordView extends StatefulWidget {
   const ForgotPasswordView({super.key});
@@ -63,7 +65,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                   UIHelper.verticalSpaceLarge,
                   UIHelper.verticalSpaceLarge,
                   Text(
-                    "Forgot Password",
+                    FlutterI18n.translate(context, "forgotPassword"),
                     textAlign: TextAlign.center,
                     style: TextStyle(
                         decoration: TextDecoration.none,
@@ -131,7 +133,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
               controller: emailController,
               style: TextStyle(color: Colors.white, fontSize: 13),
               decoration: InputDecoration(
-                hintText: 'Email *',
+                hintText: "${FlutterI18n.translate(context, "email")} *",
                 hintStyle:
                     TextStyle(color: inputText, fontWeight: FontWeight.w400),
                 fillColor: Colors.transparent,
@@ -170,27 +172,28 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                     try {
                       apiService.forgotPassword(context, param).then((value) {
                         if (value != null) {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text(value),
-                          ));
+                          callSMessage(context, value, duration: 3);
+
                           setState(() {
                             _isFirstCard = !_isFirstCard;
                           });
                         } else {
-                          var snackBar =
-                              SnackBar(content: Text("Something went wrong!"));
-                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                          callSMessage(context,
+                              FlutterI18n.translate(context, "anErrorOccurred"),
+                              duration: 2);
                         }
                       });
                     } catch (e) {
-                      var snackBar =
-                          SnackBar(content: Text("An error occured!"));
-                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                      callSMessage(context,
+                          FlutterI18n.translate(context, "anErrorOccurred"),
+                          duration: 2);
                     }
                   } else {
-                    var snackBar =
-                        SnackBar(content: Text("Please enter valid email!"));
-                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                    callSMessage(
+                        context,
+                        FlutterI18n.translate(
+                            context, "enterValidEmailAddress"),
+                        duration: 2);
                   }
                 },
                 style: ElevatedButton.styleFrom(
@@ -198,7 +201,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                   shadowColor: Colors.transparent,
                 ),
                 child: Text(
-                  'Submit',
+                  FlutterI18n.translate(context, "submit"),
                   style: TextStyle(
                     fontSize: 16.0,
                     fontWeight: FontWeight.bold,
@@ -235,7 +238,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
               controller: passwordController,
               style: TextStyle(color: Colors.white, fontSize: 13),
               decoration: InputDecoration(
-                hintText: 'password *',
+                hintText: "${FlutterI18n.translate(context, "password")} *",
                 hintStyle:
                     TextStyle(color: inputText, fontWeight: FontWeight.w400),
                 fillColor: Colors.transparent,
@@ -261,7 +264,8 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
               controller: verifyPasswordController,
               style: TextStyle(color: Colors.white, fontSize: 13),
               decoration: InputDecoration(
-                hintText: 'verify password *',
+                hintText:
+                    "${FlutterI18n.translate(context, "verifyPassword")} *",
                 hintStyle:
                     TextStyle(color: inputText, fontWeight: FontWeight.w400),
                 fillColor: Colors.transparent,
@@ -287,7 +291,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
               controller: verifyPasswordController,
               style: TextStyle(color: Colors.white, fontSize: 13),
               decoration: InputDecoration(
-                hintText: 'code *',
+                hintText: "${FlutterI18n.translate(context, "code")} *",
                 hintStyle:
                     TextStyle(color: inputText, fontWeight: FontWeight.w400),
                 fillColor: Colors.transparent,
@@ -334,18 +338,14 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                         }
                       });
                     } catch (e) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text("An error occured!"),
-                        ),
-                      );
+                      callSMessage(context,
+                          FlutterI18n.translate(context, "anErrorOccurred"),
+                          duration: 2);
                     }
                   } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text("Password not match"),
-                      ),
-                    );
+                    callSMessage(context,
+                        FlutterI18n.translate(context, "passwordNotMatched"),
+                        duration: 2);
                   }
                 },
                 style: ElevatedButton.styleFrom(
@@ -353,7 +353,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                   shadowColor: Colors.transparent,
                 ),
                 child: Text(
-                  'Submit',
+                  FlutterI18n.translate(context, "submit"),
                   style: TextStyle(
                     fontSize: 16.0,
                     fontWeight: FontWeight.bold,

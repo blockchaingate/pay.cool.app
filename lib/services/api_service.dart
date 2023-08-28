@@ -24,6 +24,7 @@ import 'package:paycool/models/bond/vm/order_bond_model.dart';
 import 'package:paycool/models/bond/vm/register_email_model.dart';
 import 'package:paycool/models/bond/vm/token_balance_model.dart';
 import 'package:paycool/models/wallet/wallet_transaction_history_model.dart';
+import 'package:paycool/views/bond/helper.dart';
 import 'package:paycool/views/lightning-remit/lightning_remit_transfer_history_model.dart';
 import 'package:paycool/views/wallet/wallet_features/transaction_history/transaction_history_model_v2.dart';
 
@@ -1142,7 +1143,7 @@ class ApiService {
     }
   }
 
-  Future<RegisterEmailModel?> registerWithEmail(
+  Future<RegisterEmailViewModel?> registerWithEmail(
       BuildContext context, param) async {
     String url = "${BaseBondApiRoute}user/register/email";
     var jsonBody = json.encode(param);
@@ -1160,7 +1161,7 @@ class ApiService {
         return null;
       }
       var json = jsonDecode(response.body)["data"];
-      return RegisterEmailModel.fromJson(json);
+      return RegisterEmailViewModel.fromJson(json);
     } catch (err) {
       throw Exception(err);
     }
@@ -1189,11 +1190,32 @@ class ApiService {
     }
   }
 
-  Future<GetCaptchaModel?> getCaptcha(BuildContext context) async {
-    String url = "${BaseBondApiRoute}user/captcha";
+  // Future<GetCaptchaModel?> getCaptcha(BuildContext context) async {
+  //   String url = "${BaseBondApiRoute}user/captcha";
 
+  //   try {
+  //     var response = await client.get(Uri.parse(url), headers: {
+  //       'Content-Type': 'application/json',
+  //       'Accept': 'application/json',
+  //     });
+  //     if (!jsonDecode(response.body)["success"]) {
+  //       return null;
+  //     }
+  //     var json = jsonDecode(response.body)["data"];
+  //     return GetCaptchaModel.fromJson(json);
+  //   } catch (err) {
+  //     throw Exception(err);
+  //   }
+  // }
+
+  Future<GetCaptchaModel?> getCaptcha(
+      BuildContext context, String email) async {
+    String url = "${BaseBondApiRoute}user/captcha";
+    var param = {"email": email};
+    var jsonBody = json.encode(param);
     try {
-      var response = await client.get(Uri.parse(url), headers: {
+      var response =
+          await client.post(Uri.parse(url), body: jsonBody, headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
       });
@@ -1210,7 +1232,6 @@ class ApiService {
   Future<bool?> verifyCaptcha(BuildContext context, param) async {
     String url = "${BaseBondApiRoute}user/verifyCaptcha";
     var jsonBody = json.encode(param);
-
     try {
       var response =
           await client.post(Uri.parse(url), body: jsonBody, headers: {
@@ -1218,13 +1239,10 @@ class ApiService {
         'Accept': 'application/json',
       });
       if (!jsonDecode(response.body)["success"]) {
-        var snackBar =
-            SnackBar(content: Text(jsonDecode(response.body)["message"]));
-        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        callSMessage(context, jsonDecode(response.body)["message"]);
         return false;
       }
-      var json = jsonDecode(response.body)["data"]["isHuman"];
-      return json;
+      return jsonDecode(response.body)["data"]["isHuman"];
     } catch (err) {
       throw Exception(err);
     }
