@@ -1,11 +1,11 @@
 name: paycool
 description: Crypto payment application
-version: 2.4.135+200
+version: 2.4.138+203
 
 publish_to: "none"
 
 environment:
-  sdk: ">=2.19.0 <3.0.0"
+  sdk: ">=2.19.0 <3.0.0"  
 
 dependency_overrides:
   convert: ^3.1.0
