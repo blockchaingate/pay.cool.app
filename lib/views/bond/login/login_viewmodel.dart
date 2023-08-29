@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:paycool/constants/route_names.dart';
 import 'package:paycool/models/bond/rm/login_model.dart';
+import 'package:paycool/models/bond/rm/register_email_model.dart';
 import 'package:paycool/models/bond/vm/bond_login_vm.dart';
 import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/api_service.dart';
 import 'package:paycool/services/local_storage_service.dart';
 import 'package:paycool/utils/string_validator.dart';
 import 'package:paycool/views/bond/helper.dart';
+import 'package:paycool/views/bond/register/verification_code_view.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 
@@ -60,26 +62,26 @@ class BondLoginViewModel extends BaseViewModel with WidgetsBindingObserver {
         final BondLoginModel? result =
             await apiService.loginWithEmail(context!, param);
         if (result != null) {
-          storageService.bondToken = result.token!;
+          if (result.isVerifiedEmail == true) {
+            storageService.bondToken = result.token!;
 
-          navigationService.navigateTo(DashboardViewRoute);
+            navigationService.navigateTo(DashboardViewRoute);
+          } else {
+            var value = RegisterEmailModel(
+              email: emailController.text,
+              password: passwordController.text,
+            );
 
-          // if (result.isVerifiedEmail == true) {
-
-          // } else {
-          //TODO we need to decide if we want to use this or not
-          // var value = RegisterEmailViewModel(
-          //     id: result.id, token: result.token, email: result.email);
-
-          // Navigator.push(
-          //   context!,
-          //   MaterialPageRoute(
-          //     builder: (context) => VerificationCodeView(
-          //       data: value,
-          //     ),
-          //   ),
-          // );
-          // }
+            Navigator.push(
+              context!,
+              MaterialPageRoute(
+                builder: (context) => VerificationCodeView(
+                  data: value,
+                  justVerify: true,
+                ),
+              ),
+            );
+          }
         }
       }
     } catch (e) {

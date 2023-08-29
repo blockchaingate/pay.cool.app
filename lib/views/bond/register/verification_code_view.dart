@@ -21,8 +21,11 @@ import 'package:paycool/views/wallet/wallet_dashboard_view.dart';
 
 class VerificationCodeView extends StatefulWidget {
   final RegisterEmailModel data;
+  final bool justVerify;
 
-  const VerificationCodeView({Key? key, required this.data}) : super(key: key);
+  const VerificationCodeView(
+      {Key? key, required this.data, this.justVerify = false})
+      : super(key: key);
 
   @override
   State<VerificationCodeView> createState() => _VerificationCodeViewState();
@@ -44,7 +47,13 @@ class _VerificationCodeViewState extends State<VerificationCodeView> {
 
   @override
   void initState() {
-    request();
+    if (widget.justVerify) {
+      _isFirstCard = !_isFirstCard;
+      sendConfirmationCode(context);
+    } else {
+      request();
+    }
+
     super.initState();
   }
 
@@ -289,22 +298,16 @@ class _VerificationCodeViewState extends State<VerificationCodeView> {
                   );
 
                   try {
-                    await apiService.verifyEmail(context, param).then((value) {
+                    await apiService
+                        .verifyEmail(context, param)
+                        .then((value) async {
                       if (value != null) {
                         if (value) {
-                          callSMessage(
-                                  context,
-                                  FlutterI18n.translate(
-                                      context, "emailVerificationSuccess"),
-                                  duration: 1)
-                              .closed
-                              .then((value) {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        const WalletDashboardView()));
-                          });
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const WalletDashboardView()));
                         }
                       }
                     });

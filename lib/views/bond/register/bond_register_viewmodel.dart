@@ -71,7 +71,7 @@ class BondRegisterViewModel extends BaseViewModel {
           duration: 3);
     } else {
       var param = RegisterEmailModel(
-          deviceId: deviceId,
+          // deviceId: deviceId,
           pidReferralCode: referralController.text,
           email: emailController.text,
           password: passwordController.text);

@@ -48,7 +48,7 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
   final TextEditingController _emailController = TextEditingController();
   String? txHash;
 
-  String? selectedValueChainValue;
+  String? selectedChainValue;
   String? selectedValueChain;
   List<String> dropdownItemsChainNames = ['ETHEREUM', 'KANBAN', "BSC"];
 
@@ -146,7 +146,7 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
                               color: Colors.grey[200],
                             ),
                             child: DropdownButton<String>(
-                              value: selectedValueChainValue,
+                              value: selectedChainValue,
                               hint: Text(
                                 FlutterI18n.translate(context, "selectChain"),
                                 style: TextStyle(color: Colors.black),
@@ -159,7 +159,7 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
                                   ? null
                                   : (String? newValue) async {
                                       setState(() {
-                                        selectedValueChainValue = newValue;
+                                        selectedChainValue = newValue;
                                         isChainSelected = true;
                                         selectedValueCoin = null;
                                         selectedValueChain =
@@ -313,7 +313,6 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
                                   FlutterI18n.translate(
                                       context, "selectCoinandChain"),
                                   duration: 2);
-
                               return;
                             }
 
