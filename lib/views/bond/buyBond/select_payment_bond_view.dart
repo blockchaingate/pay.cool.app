@@ -162,11 +162,10 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
                                         selectedChainValue = newValue;
                                         isChainSelected = true;
                                         selectedValueCoin = null;
-                                        selectedValueChain =
-                                            setChainShort(newValue);
                                       });
-                                      await getBalance();
+                                      setChainShort(newValue);
                                       setCoins();
+                                      await getBalance();
                                     },
                               items:
                                   dropdownItemsChainNames.map((String value) {
@@ -371,15 +370,19 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
     );
   }
 
-  String setChainShort(String? chain) {
+  setChainShort(String? chain) {
     if (chain == "ETHEREUM") {
-      return "ETH";
+      setState(() {
+        selectedValueChain = "ETH";
+      });
     } else if (chain == "KANBAN") {
-      return "KANBAN";
+      setState(() {
+        selectedValueChain = "KANBAN";
+      });
     } else if (chain == "BSC") {
-      return "BNB";
-    } else {
-      return "";
+      setState(() {
+        selectedValueChain = "BNB";
+      });
     }
   }
 
