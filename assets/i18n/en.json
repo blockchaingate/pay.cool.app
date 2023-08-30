@@ -647,14 +647,14 @@
     "finishKycShortNote": "Please wait for the approval. In the meantime, you can explore the app.",
     "inputLevel": "Input Level",
 
-    "nationalBondSale": "National Bond Sale",
+    "nationalBondSale": "Digital National Bond Sale",
     "youHaveAccount": "You have an account?",
     "withUniqueNfd": "WITH UNIQUE NFTs",
     "buyNow": "Buy Now",
     "faceValue": "Face Value",
     "issuePrice" : "Issue Price",
     "redemptionPrice": "Redemption Price",
-    "lastPrice": "Last Price",
+    "totalCost": "Total Cost",
     "sorryBondNotReady": "Sorry, the bond is not ready yet",
     "enterQuantity": "Enter Quantity",
     "orderNow": "Order Now",
@@ -703,7 +703,9 @@
     "entercaptcha": "Enter captcha",
     "bondId": "Bond Id",
     "verify": "Verify",
-    "forMoreDetais": "For more details"
+    "forMoreDetais": "For more details",
+    "doYouLogout": "Do you want to log out?",
+    "usd": "USD"
     
 
 }

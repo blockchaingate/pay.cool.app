@@ -38,7 +38,7 @@ class _BondSembolViewState extends State<BondSembolView>
 
   int lastPrice = 0;
   String selectedValue = 'DNB';
-  List<String> dropdownItems = ['DNB', 'GDNB'];
+  List<String> dropdownItems = ['DNB', 'SDNB'];
 
   bool loading = false;
 
@@ -179,15 +179,19 @@ class _BondSembolViewState extends State<BondSembolView>
                                 style: bondText1,
                               ),
                               Text(
-                                "${FlutterI18n.translate(context, "faceValue")}: ${bondSembolVm!.faceValue}",
+                                "${FlutterI18n.translate(context, "faceValue")}: ${bondSembolVm!.faceValue} ${FlutterI18n.translate(context, "usd")}",
                                 style: bondText1,
                               ),
                               Text(
-                                "${FlutterI18n.translate(context, "issuePrice")}: ${bondSembolVm!.issuePrice}",
+                                "${FlutterI18n.translate(context, "issuePrice")}: ${bondSembolVm!.issuePrice} ${FlutterI18n.translate(context, "usd")}",
                                 style: bondText1,
                               ),
                               Text(
-                                "${FlutterI18n.translate(context, "redemptionPrice")}: ${bondSembolVm!.redemptionPrice}",
+                                "${FlutterI18n.translate(context, "redemptionPrice")}: ${bondSembolVm!.redemptionPrice} ${FlutterI18n.translate(context, "usd")}",
+                                style: bondText1,
+                              ),
+                              Text(
+                                "${FlutterI18n.translate(context, "interestRate")}: ${bondSembolVm!.couponRate} %",
                                 style: bondText1,
                               ),
                               UIHelper.verticalSpaceMedium,
@@ -234,7 +238,7 @@ class _BondSembolViewState extends State<BondSembolView>
                               ),
                               UIHelper.verticalSpaceMedium,
                               Text(
-                                "${FlutterI18n.translate(context, "lastPrice")}: $lastPrice",
+                                "${FlutterI18n.translate(context, "totalCost")}: $lastPrice ${FlutterI18n.translate(context, "usd")}",
                                 style: bondText1,
                               ),
                             ],
@@ -253,8 +257,8 @@ class _BondSembolViewState extends State<BondSembolView>
                   child: Padding(
                     padding: const EdgeInsets.only(bottom: 50),
                     child: Container(
-                      width: size.width * 0.9,
-                      height: 45,
+                      width: size.width * 0.8,
+                      height: 50,
                       decoration: BoxDecoration(
                         gradient: buttoGradient,
                         borderRadius: BorderRadius.circular(40.0),

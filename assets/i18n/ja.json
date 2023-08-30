@@ -629,14 +629,14 @@
     "finishKycShortNote": "承認をお待ちください。その間、アプリをご探索いただけます。",
     "inputLevel": "入力レベル",
 
-    "nationalBondSale": "国債の販売",
+    "nationalBondSale": "デジタル国債セール",
     "youHaveAccount": "アカウントをお持ちですか？",
     "withUniqueNfd": "ユニークなNFTで",
     "buyNow": "今すぐ購入",
     "faceValue": "額面価格",
     "issuePrice": "発行価格",
     "redemptionPrice": "償還価格",
-    "lastPrice": "最終価格",
+    "totalCost": "総費用",
     "sorryBondNotReady": "申し訳ありませんが、この債券はまだ準備ができていません",
     "enterQuantity": "数量を入力してください",
     "orderNow": "今すぐ注文",
@@ -685,6 +685,8 @@
     "enterCaptcha": "キャプチャを入力してください",
     "bondId": "債券ID",
     "verify": "確認する",
-    "forMoreDetais": "詳細はこちら"   
+    "forMoreDetais": "詳細はこちら",
+    "doYouLogout": "ログアウトしますか?",
+    "usd": "USD"  
   
 }

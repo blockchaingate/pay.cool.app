@@ -50,7 +50,7 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
 
   String? selectedChainValue;
   String? selectedValueChain;
-  List<String> dropdownItemsChainNames = ['ETHEREUM', 'KANBAN', "BSC"];
+  List<String> dropdownItemsChainNames = ['ETHEREUM', 'FAB / KANBAN', "BSC"];
 
   String? selectedValueCoin;
   List<String> dropdownItemsCoin = [];
@@ -295,8 +295,8 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
                         : SizedBox(),
                     Expanded(child: SizedBox()),
                     Container(
-                      width: size.width * 0.9,
-                      height: 45,
+                      width: size.width * 0.8,
+                      height: 50,
                       decoration: BoxDecoration(
                         gradient: buttoGradient,
                         borderRadius: BorderRadius.circular(40.0),
@@ -375,7 +375,7 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
       setState(() {
         selectedValueChain = "ETH";
       });
-    } else if (chain == "KANBAN") {
+    } else if (chain == "FAB / KANBAN") {
       setState(() {
         selectedValueChain = "KANBAN";
       });
@@ -482,10 +482,6 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
 
     String toAddress =
         environment["Bond"]["Chains"]["$selectedValueChain"]["bondAddress"];
-
-    // if (selectedValueChain == "KANBAN") {
-    //   toAddress = environment["Bond"]["CoinPool"];
-    // }
 
     String? abiHex;
 
@@ -603,7 +599,7 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
     });
   }
 
-  Future<void> checkGasPrice() async {
+  checkGasPrice() {
     int gasPrice = 0;
 
     if (selectedValueChain == "KANBAN") {
@@ -630,7 +626,7 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
     }
   }
 
-  Future<void> checkBalance() async {
+  checkBalance() {
     double balance = 0;
 
     try {
@@ -639,6 +635,8 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
               element ==
               environment["Bond"]["Chains"]["$selectedValueChain"]
                   ["acceptedTokens"][index]["id"]);
+
+      print(currentTokenIdIndex);
 
       if (selectedValueChain == "KANBAN") {
         balance = double.parse(
@@ -753,13 +751,13 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
                                 "${FlutterI18n.translate(context, "name")}: ${widget.bondSembolVm!.name!}",
                               ),
                               Text(
-                                "${FlutterI18n.translate(context, "faceValue")}: ${widget.bondSembolVm!.faceValue!}",
+                                "${FlutterI18n.translate(context, "faceValue")}: ${widget.bondSembolVm!.faceValue!} ${FlutterI18n.translate(context, "usd")}",
                               ),
                               Text(
-                                "${FlutterI18n.translate(context, "interestRate")}: ${widget.bondSembolVm!.couponRate!}",
+                                "${FlutterI18n.translate(context, "interestRate")}: ${widget.bondSembolVm!.couponRate!} %",
                               ),
                               Text(
-                                "${FlutterI18n.translate(context, "issuePrice")}: ${widget.bondSembolVm!.issuePrice!}",
+                                "${FlutterI18n.translate(context, "issuePrice")}: ${widget.bondSembolVm!.issuePrice!} ${FlutterI18n.translate(context, "usd")}",
                               ),
                               Text(
                                 "${FlutterI18n.translate(context, "maturity")}: ${widget.bondSembolVm!.maturity!} ${FlutterI18n.translate(context, "year")}",

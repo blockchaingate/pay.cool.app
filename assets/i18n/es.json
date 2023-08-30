@@ -624,14 +624,14 @@
     "finishKycShortNote": "Por favor, espere la aprobación. Mientras tanto, puede explorar la aplicación.",
     "inputLevel": "Nivel de Entrada",
 
-    "nationalBondSale": "Venta de Bonos Nacionales",
+    "nationalBondSale": "Venta de Bonos Nacionales Digitales",
     "youHaveAccount": "¿Tienes una cuenta?",
     "withUniqueNfd": "CON NFTs ÚNICOS",
     "buyNow": "Comprar Ahora",
     "faceValue": "Valor Nominal",
     "issuePrice": "Precio de Emisión",
     "redemptionPrice": "Precio de Redención",
-    "lastPrice": "Último Precio",
+    "totalCost": "Coste Total",
     "sorryBondNotReady": "Lo sentimos, el bono aún no está listo",
     "enterQuantity": "Ingrese la Cantidad",
     "orderNow": "Ordenar Ahora",
@@ -680,6 +680,8 @@
     "enterCaptcha": "Ingrese el captcha",
     "bondId": "Bond Id",
     "verify": "Verificar",
-    "forMoreDetais": "Para más detalles"   
+    "forMoreDetais": "Para más detalles",
+    "doYouLogout": "Quieres cerrar sesión?",
+    "usd": "USD"   
 
 }

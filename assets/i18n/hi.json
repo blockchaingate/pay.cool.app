@@ -626,14 +626,14 @@
     "finishKycShortNote": "कृपया मंजूरी की प्रतीक्षा करें। इस बीच, आप ऐप्लिकेशन की खोज कर सकते हैं।",
     "inputLevel": "इनपुट स्तर",
 
-    "nationalBondSale": "राष्ट्रीय बॉन्ड बेच",
+    "nationalBondSale": "डिजिटल राष्ट्रीय बांड बिक्री",
     "youHaveAccount": "क्या आपका खाता है?",
     "withUniqueNfd": "अनूठे NFT के साथ",
     "buyNow": "अभी खरीदें",
     "faceValue": "मूल मूल्य",
     "issuePrice": "इश्यू मूल्य",
     "redemptionPrice": "पुनर्प्राप्ति मूल्य",
-    "lastPrice": "आखिरी मूल्य",
+    "totalCost": "कुल लागत",
     "sorryBondNotReady": "माफ़ कीजिए, यह बॉन्ड अभी तैयार नहीं है",
     "enterQuantity": "मात्रा दर्ज करें",
     "orderNow": "अब आदेश दें",
@@ -682,6 +682,8 @@
     "enterCaptcha": "कैप्चा दर्ज करें",
     "bondId": "बॉन्ड आईडी",
     "verify": "सत्यापित करें",
-    "forMoreDetais": "अधिक जानकारी के लिए"   
+    "forMoreDetais": "अधिक जानकारी के लिए",
+    "doYouLogout": "क्या आप लॉग आउट करना चाहते हैं?",
+    "usd": "USD"   
     
 }

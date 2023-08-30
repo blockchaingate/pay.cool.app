@@ -629,14 +629,14 @@
     "finishKycShortNote": "Veuillez attendre l'approbation. En attendant, vous pouvez explorer l'application.",
     "inputLevel": "Niveau de saisie",
 
-    "nationalBondSale": "Vente d'obligations nationales",
+    "nationalBondSale": "Vente d'obligations nationales numériques",
     "youHaveAccount": "Vous avez un compte ?",
     "withUniqueNfd": "AVEC DES NFTs UNIQUES",
     "buyNow": "Acheter maintenant",
     "faceValue": "Valeur nominale",
     "issuePrice": "Prix d'Émission",
     "redemptionPrice": "Prix de rachat",
-    "lastPrice": "Dernier prix",
+    "totalCost": "Coût Total",
     "sorryBondNotReady": "Désolé, l'obligation n'est pas encore prête",
     "enterQuantity": "Entrez la quantité",
     "orderNow": "Commander maintenant",
@@ -685,6 +685,8 @@
     "enterCaptcha": "Entrez le captcha",
     "bondId": "Obligation Id",
     "verify": "Vérifier",
-    "forMoreDetais": "Pour plus de détails"   
+    "forMoreDetais": "Pour plus de détails",
+    "doYouLogout": "Voulez-vous vous déconnecter?",
+    "usd": "USD"   
     
 }

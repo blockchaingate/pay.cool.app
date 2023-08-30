@@ -27,18 +27,25 @@ class BondHistoryViewModel extends BaseViewModel with WidgetsBindingObserver {
   }
 
   Future<void> getRequest({bool isForward = true}) async {
-    await apiService.getBondHistory(context!, page).then((value) {
-      if (value == null || value.isEmpty) {
-        if (isForward) {
-          page--;
+    setBusy(true);
+
+    try {
+      await apiService.getBondHistory(context!, page).then((value) {
+        if (value == null || value.isEmpty) {
+          if (isForward) {
+            page--;
+          } else {
+            page++;
+          }
         } else {
-          page++;
+          bondHistoryVm = value;
+          notifyListeners();
+          // bondHistoryVm.addAll(value);
         }
-      } else {
-        bondHistoryVm = value;
-        notifyListeners();
-        // bondHistoryVm.addAll(value);
-      }
-    });
+      });
+    } catch (e) {
+      setBusy(false);
+    }
+    setBusy(false);
   }
 }

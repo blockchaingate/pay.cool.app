@@ -636,18 +636,15 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
 
   Widget bondPage(WalletDashboardViewModel model, BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    return Stack(
-      children: [
-        Container(
-          decoration: const BoxDecoration(
-            image: DecorationImage(
-                image: AssetImage("assets/images/bgImage.png"),
-                fit: BoxFit.cover),
-          ),
-        ),
-        Padding(
-          padding: EdgeInsets.fromLTRB(10, 50, 10, 0),
-          child: model.bondMeVm.email == null
+    return Container(
+      height: size.height,
+      decoration: const BoxDecoration(
+        image: DecorationImage(
+            image: AssetImage("assets/images/bgImage.png"), fit: BoxFit.cover),
+      ),
+      child: Column(
+        children: [
+          model.bondMeVm.email == null
               ? SizedBox(
                   height: size.height,
                   child: Column(
@@ -657,7 +654,7 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
                         "assets/images/salvador.png",
                         height: 100,
                       ),
-                      UIHelper.verticalSpaceLarge,
+                      UIHelper.verticalSpaceMedium,
                       Text(
                         FlutterI18n.translate(context, "elSalvadorDigital"),
                         textAlign: TextAlign.center,
@@ -667,6 +664,15 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
                             color: Colors.white),
                       ),
                       UIHelper.verticalSpaceLarge,
+                      Text(
+                        FlutterI18n.translate(context, "youHaveAccount"),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w200,
+                            color: Colors.white),
+                      ),
+                      UIHelper.verticalSpaceSmall,
                       Container(
                         width: size.width * 0.9,
                         height: 45,
@@ -695,8 +701,9 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
                           ),
                         ),
                       ),
+                      UIHelper.verticalSpaceSmall,
                       Text(
-                        FlutterI18n.translate(context, "youHaveAccount"),
+                        FlutterI18n.translate(context, "dontHaveAnAccount"),
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             fontSize: 14,
@@ -732,43 +739,120 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
                           ),
                         ),
                       ),
-                      Text(
-                        FlutterI18n.translate(context, "youHaveAccount"),
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w200,
-                            color: Colors.white),
-                      ),
                     ],
                   ),
                 )
               : Column(
                   children: [
+                    UIHelper.verticalSpaceLarge,
                     SizedBox(
-                      width: double.infinity,
+                      width: size.width,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           IconButton(
                             alignment: Alignment.topRight,
                             onPressed: () {
-                              LocalStorageService().clearToken();
-                              model.bondMeVm = BondMeModel();
-                              setState(() {});
+                              showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      elevation: 10,
+                                      titleTextStyle: headText5.copyWith(
+                                          fontWeight: FontWeight.bold),
+                                      contentTextStyle:
+                                          const TextStyle(color: white),
+                                      content: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Text(
+                                          FlutterI18n.translate(
+                                              context, "doYouLogout"),
+                                          style: const TextStyle(fontSize: 14),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
+                                      actions: <Widget>[
+                                        UIHelper.verticalSpaceSmall,
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Container(
+                                              decoration: BoxDecoration(
+                                                gradient: buttoGradient,
+                                                borderRadius:
+                                                    BorderRadius.circular(40.0),
+                                              ),
+                                              child: ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor:
+                                                      Colors.transparent,
+                                                  shadowColor:
+                                                      Colors.transparent,
+                                                ),
+                                                child: Text(
+                                                  FlutterI18n.translate(
+                                                      context, "no"),
+                                                  style: headText5,
+                                                ),
+                                                onPressed: () {
+                                                  Navigator.of(context)
+                                                      .pop(false);
+                                                },
+                                              ),
+                                            ),
+                                            UIHelper.horizontalSpaceMedium,
+                                            Container(
+                                              decoration: BoxDecoration(
+                                                gradient: buttoGradient,
+                                                borderRadius:
+                                                    BorderRadius.circular(40.0),
+                                              ),
+                                              child: ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor:
+                                                      Colors.transparent,
+                                                  shadowColor:
+                                                      Colors.transparent,
+                                                ),
+                                                child: Text(
+                                                    FlutterI18n.translate(
+                                                        context, "yes"),
+                                                    style: const TextStyle(
+                                                        color: white,
+                                                        fontSize: 12)),
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                  LocalStorageService()
+                                                      .clearToken();
+                                                  model.bondMeVm =
+                                                      BondMeModel();
+                                                  setState(() {});
+                                                },
+                                              ),
+                                            ),
+                                            UIHelper.verticalSpaceSmall,
+                                          ],
+                                        ),
+                                      ],
+                                    );
+                                  });
                             },
                             icon: Icon(Icons.logout),
                           ),
-                          IconButton(
-                            alignment: Alignment.topRight,
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const BondHistoryView()));
-                            },
-                            icon: Icon(Icons.history),
+                          Padding(
+                            padding: const EdgeInsets.only(right: 10),
+                            child: IconButton(
+                              alignment: Alignment.topRight,
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const BondHistoryView()));
+                              },
+                              icon: Icon(Icons.history),
+                            ),
                           ),
                         ],
                       ),
@@ -796,19 +880,10 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
                           fontWeight: FontWeight.bold,
                           color: Colors.white),
                     ),
-                    UIHelper.verticalSpaceSmall,
-                    Text(
-                      FlutterI18n.translate(context, "withUniqueNfd"),
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w200,
-                          color: Colors.white),
-                    ),
                     UIHelper.verticalSpaceLarge,
                     Container(
                       width: size.width * 0.8,
-                      height: 45,
+                      height: 50,
                       decoration: BoxDecoration(
                         gradient: buttoGradient,
                         borderRadius: BorderRadius.circular(40.0),
@@ -864,9 +939,9 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
                     //       )
                     //     : SizedBox()
                   ],
-                ),
-        ),
-      ],
+                )
+        ],
+      ),
     );
   }
 }

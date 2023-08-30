@@ -629,14 +629,14 @@
   "finishKycShortNote": "Onay bekleyin. Bu arada, uygulamayı keşfedebilirsiniz.",
   "inputLevel": "Giriş Seviyesi",
   
-  "nationalBondSale": "Uluslararası Tahvil Satışı",
+  "nationalBondSale": "Dijital Ulusal Tahvil Satışı",
   "youHaveAccount": "Hesabınız var mı?",
   "withUniqueNfd": "BENZERSİZ NFT'ler İLE",
   "buyNow": "Şimdi Satın Al",
   "faceValue": "Nominal Değer",
   "issuePrice": "Satış Fiyatı",
   "redemptionPrice": "İade Fiyatı",
-  "lastPrice": "Son Fiyat",
+  "totalCost": "Toplam Tutar",
   "sorryBondNotReady": "Üzgünüz, tahvil henüz hazır değil",
   "enterQuantity": "Miktarı Girin",
   "orderNow": "Şimdi Sipariş Ver",
@@ -685,6 +685,8 @@
   "enterCaptcha": "Captcha'yı girin",
   "bondId": "Tahvil Id",
   "verify": "Doğrula",
-  "forMoreDetais": "Daha fazla detay için"   
+  "forMoreDetais": "Daha fazla detay için",
+  "doYouLogout": "Oturumu kapatmak istiyor musunuz?",
+  "usd": "USD"   
   
 }
