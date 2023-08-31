@@ -687,6 +687,8 @@
     "verify": "確認する",
     "forMoreDetais": "詳細はこちら",
     "doYouLogout": "ログアウトしますか?",
-    "usd": "USD"  
+    "usd": "USD",
+    "gasBalance": "ガスバランス",
+    "coinBalance": "コイン残高"  
   
 }

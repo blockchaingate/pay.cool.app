@@ -705,7 +705,9 @@
     "verify": "Verify",
     "forMoreDetais": "For more details",
     "doYouLogout": "Do you want to log out?",
-    "usd": "USD"
+    "usd": "USD",
+    "gasBalance": "Gas Balance",
+    "coinBalance": "Coin Balance"
     
 
 }

@@ -687,6 +687,8 @@
     "verify": "Vérifier",
     "forMoreDetais": "Pour plus de détails",
     "doYouLogout": "Voulez-vous vous déconnecter?",
-    "usd": "USD"   
+    "usd": "USD",
+    "gasBalance": "Bilan de gaz",
+    "coinBalance": "Solde des pièces"   
     
 }

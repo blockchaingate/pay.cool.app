@@ -682,6 +682,8 @@
     "verify": "Verificar",
     "forMoreDetais": "Para más detalles",
     "doYouLogout": "Quieres cerrar sesión?",
-    "usd": "USD"   
+    "usd": "USD",
+    "gasBalance": "Gas Balance",
+    "coinBalance": "Coin Balance"   
 
 }

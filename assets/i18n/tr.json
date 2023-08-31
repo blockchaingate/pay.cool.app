@@ -687,6 +687,8 @@
   "verify": "Doğrula",
   "forMoreDetais": "Daha fazla detay için",
   "doYouLogout": "Oturumu kapatmak istiyor musunuz?",
-  "usd": "USD"   
+  "usd": "USD",
+  "gasBalance": "Gaz Bakiyesi",
+  "coinBalance": "Coin Bakiyesi"   
   
 }

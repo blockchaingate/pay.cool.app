@@ -59,9 +59,14 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
 
   bool loading = false;
 
-  bool isBalanceOk = false;
-  bool isGasOk = false;
   TokensBalanceModel? tokensBalanceModel;
+
+  double? coinBalance;
+  double? gasBalance;
+
+  int? needGasBalance;
+
+  bool isButtonEnabled = false;
 
   @override
   void initState() {
@@ -137,86 +142,143 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
                             ),
                           ),
                           UIHelper.verticalSpaceMedium,
-                          Container(
-                            width: MediaQuery.of(context).size.width *
-                                0.9, // Set the width to 80% of the screen width
-                            padding: EdgeInsets.symmetric(horizontal: 12),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8),
-                              color: Colors.grey[200],
-                            ),
-                            child: DropdownButton<String>(
-                              value: selectedChainValue,
-                              hint: Text(
-                                FlutterI18n.translate(context, "selectChain"),
-                                style: TextStyle(color: Colors.black),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              SizedBox(
+                                width: size.width,
+                                child: Text(
+                                  gasBalance != null
+                                      ? "${FlutterI18n.translate(context, "gasBalance")}: $gasBalance"
+                                      : "",
+                                  style: gasBalance != null &&
+                                          needGasBalance != null &&
+                                          gasBalance! > needGasBalance!
+                                      ? TextStyle(color: Colors.white)
+                                      : TextStyle(),
+                                  textAlign: TextAlign.end,
+                                ),
                               ),
-                              dropdownColor: Colors.white,
-                              underline: SizedBox(),
-                              isExpanded: true,
-                              iconEnabledColor: Colors.black,
-                              onChanged: txHash != null
-                                  ? null
-                                  : (String? newValue) async {
-                                      setState(() {
-                                        selectedChainValue = newValue;
-                                        isChainSelected = true;
-                                        selectedValueCoin = null;
-                                      });
-                                      setChainShort(newValue);
-                                      setCoins();
-                                      await getBalance();
-                                    },
-                              items:
-                                  dropdownItemsChainNames.map((String value) {
-                                return DropdownMenuItem<String>(
-                                  value: value,
-                                  child: Text(value),
-                                );
-                              }).toList(),
-                              style:
-                                  TextStyle(color: Colors.black, fontSize: 14),
-                            ),
+                              Container(
+                                width: MediaQuery.of(context).size.width *
+                                    0.9, // Set the width to 80% of the screen width
+                                padding: EdgeInsets.symmetric(horizontal: 12),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  color: Colors.grey[200],
+                                ),
+                                child: DropdownButton<String>(
+                                  value: selectedChainValue,
+                                  hint: Text(
+                                    FlutterI18n.translate(
+                                        context, "selectChain"),
+                                    style: TextStyle(color: Colors.black),
+                                  ),
+                                  dropdownColor: Colors.white,
+                                  underline: SizedBox(),
+                                  isExpanded: true,
+                                  iconEnabledColor: Colors.black,
+                                  onChanged: txHash != null
+                                      ? null
+                                      : (String? newValue) async {
+                                          setState(() {
+                                            selectedChainValue = newValue;
+                                            isChainSelected = true;
+                                            selectedValueCoin = null;
+                                            isButtonEnabled = false;
+                                          });
+                                          setChainShort(newValue);
+                                          setCoins();
+                                          await getBalance();
+                                        },
+                                  items: dropdownItemsChainNames
+                                      .map((String value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Text(value),
+                                    );
+                                  }).toList(),
+                                  style: TextStyle(
+                                      color: Colors.black, fontSize: 14),
+                                ),
+                              ),
+                            ],
                           ),
                           if (isChainSelected) UIHelper.verticalSpaceMedium,
                           if (isChainSelected)
-                            Container(
-                              width: MediaQuery.of(context).size.width *
-                                  0.9, // Set the width to 80% of the screen width
-                              padding: EdgeInsets.symmetric(horizontal: 12),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8),
-                                color: Colors.grey[200],
-                              ),
-                              child: DropdownButton<String>(
-                                value: selectedValueCoin,
-                                hint: Text(
-                                  FlutterI18n.translate(context, "selectCoin"),
-                                  style: TextStyle(color: Colors.black),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                SizedBox(
+                                  width: size.width,
+                                  child: Text(
+                                    coinBalance != null
+                                        ? "${FlutterI18n.translate(context, "coinBalance")}: $coinBalance"
+                                        : "",
+                                    style: coinBalance != null &&
+                                            coinBalance! > widget.amount
+                                        ? TextStyle(color: Colors.white)
+                                        : TextStyle(),
+                                    textAlign: TextAlign.end,
+                                  ),
                                 ),
-                                dropdownColor: Colors.white,
-                                underline: SizedBox(),
-                                isExpanded: true,
-                                iconEnabledColor: Colors.black,
-                                onChanged: txHash != null
-                                    ? null
-                                    : (String? newValue) async {
-                                        setState(() {
-                                          selectedValueCoin = newValue!;
-                                          index = dropdownItemsCoin.indexWhere(
-                                              (element) => element == newValue);
-                                        });
-                                        checkBalance();
-                                      },
-                                items: dropdownItemsCoin.map((String value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Text(value),
-                                  );
-                                }).toList(),
-                                style: TextStyle(
-                                    color: Colors.black, fontSize: 14),
-                              ),
+                                Container(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.9,
+                                  padding: EdgeInsets.symmetric(horizontal: 12),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
+                                    color: Colors.grey[200],
+                                  ),
+                                  child: DropdownButton<String>(
+                                    value: selectedValueCoin,
+                                    hint: Text(
+                                      FlutterI18n.translate(
+                                          context, "selectCoin"),
+                                      style: TextStyle(color: Colors.black),
+                                    ),
+                                    dropdownColor: Colors.white,
+                                    underline: SizedBox(),
+                                    isExpanded: true,
+                                    iconEnabledColor: Colors.black,
+                                    onChanged: txHash != null
+                                        ? null
+                                        : (String? newValue) async {
+                                            setState(() {
+                                              selectedValueCoin = newValue!;
+                                              index = dropdownItemsCoin
+                                                  .indexWhere((element) =>
+                                                      element == newValue);
+                                            });
+                                            checkBalance().whenComplete(() {
+                                              if (coinBalance! >=
+                                                      widget.amount &&
+                                                  gasBalance! >=
+                                                      needGasBalance! &&
+                                                  _emailController
+                                                      .text.isNotEmpty) {
+                                                setState(() {
+                                                  isButtonEnabled = true;
+                                                });
+                                              } else {
+                                                setState(() {
+                                                  isButtonEnabled = false;
+                                                });
+                                              }
+                                            });
+                                          },
+                                    items:
+                                        dropdownItemsCoin.map((String value) {
+                                      return DropdownMenuItem<String>(
+                                        value: value,
+                                        child: Text(value),
+                                      );
+                                    }).toList(),
+                                    style: TextStyle(
+                                        color: Colors.black, fontSize: 14),
+                                  ),
+                                ),
+                              ],
                             ),
                           UIHelper.verticalSpaceMedium,
                           RichText(
@@ -297,25 +359,21 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
                     Container(
                       width: size.width * 0.8,
                       height: 50,
-                      decoration: BoxDecoration(
-                        gradient: buttoGradient,
-                        borderRadius: BorderRadius.circular(40.0),
-                      ),
+                      decoration: isButtonEnabled
+                          ? BoxDecoration(
+                              gradient: buttoGradient,
+                              borderRadius: BorderRadius.circular(40.0),
+                            )
+                          : BoxDecoration(
+                              gradient: buttoGradientDisbale,
+                              borderRadius: BorderRadius.circular(40.0),
+                            ),
                       child: ElevatedButton(
                         onPressed: () async {
                           if (txHash == null) {
-                            if (selectedValueCoin == null ||
-                                selectedValueChain == null ||
-                                _emailController.text.isEmpty) {
-                              callSMessage(
-                                  context,
-                                  FlutterI18n.translate(
-                                      context, "selectCoinandChain"),
-                                  duration: 2);
-                              return;
-                            }
-
-                            if (isBalanceOk && isGasOk) {
+                            if (!isButtonEnabled) {
+                              null;
+                            } else {
                               var param = OrderBondModel(
                                   paymentAmount: widget.amount,
                                   quantity: widget.quantity,
@@ -331,14 +389,6 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
                                   loading = false;
                                 });
                               });
-                            } else {
-                              callSMessage(
-                                  context,
-                                  FlutterI18n.translate(
-                                      context, "checkYourBalanceGas"),
-                                  duration: 2);
-
-                              return;
                             }
                           } else {
                             navigationService.navigateTo(DashboardViewRoute);
@@ -349,15 +399,19 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
                           shadowColor: Colors.transparent,
                         ),
                         child: Text(
-                          txHash == null
-                              ? FlutterI18n.translate(
-                                  context, "confirmPurchase")
-                              : FlutterI18n.translate(context, "done"),
-                          style: TextStyle(
-                            fontSize: 16.0,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
+                            txHash == null
+                                ? FlutterI18n.translate(
+                                    context, "confirmPurchase")
+                                : FlutterI18n.translate(context, "done"),
+                            style: isButtonEnabled
+                                ? TextStyle(
+                                    fontSize: 16.0,
+                                    fontWeight: FontWeight.bold,
+                                  )
+                                : TextStyle(
+                                    fontSize: 16.0,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white38)),
                       ),
                     ),
                   ],
@@ -536,6 +590,7 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
         .signSendTxBond(seed, abiHex!, toAddress,
             chain: selectedValueChain!, incNonce: true)
         .then((value) async {
+      print(value);
       setState(() {
         txHash = value;
         loading = false;
@@ -584,10 +639,14 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
         if (value != null) {
           setState(() {
             tokensBalanceModel = value;
+            gasBalance = double.parse(tokensBalanceModel!.native!);
+
+            needGasBalance = environment["Bond"]["Chains"][selectedValueChain]
+                    ["gasPrice"] *
+                environment["Bond"]["Chains"][selectedValueChain]["gasLimit"] *
+                2;
           });
         }
-      }).whenComplete(() async {
-        await checkGasPrice();
       });
     } catch (e) {
       setState(() {
@@ -599,36 +658,7 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
     });
   }
 
-  checkGasPrice() {
-    int gasPrice = 0;
-
-    if (selectedValueChain == "KANBAN") {
-      gasPrice = environment["chains"]["KANBAN"]["gasPrice"] *
-          environment["chains"]["KANBAN"]["gasLimit"] *
-          2;
-    } else {
-      gasPrice = environment["Bond"]["Chains"]["ETH"]["gasPrice"] *
-          environment["Bond"]["Chains"]["ETH"]["gasLimit"] *
-          2;
-    }
-
-    if (int.parse(tokensBalanceModel!.native!) >= gasPrice) {
-      setState(() {
-        isGasOk = true;
-      });
-    } else {
-      callSMessage(context, FlutterI18n.translate(context, "insaufficientGas"),
-          duration: 2);
-
-      setState(() {
-        isGasOk = false;
-      });
-    }
-  }
-
-  checkBalance() {
-    double balance = 0;
-
+  Future<bool> checkBalance() async {
     try {
       var currentTokenIdIndex = tokensBalanceModel!.tokens!.ids!.indexWhere(
           (element) =>
@@ -636,34 +666,25 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
               environment["Bond"]["Chains"]["$selectedValueChain"]
                   ["acceptedTokens"][index]["id"]);
 
-      print(currentTokenIdIndex);
-
       if (selectedValueChain == "KANBAN") {
-        balance = double.parse(
-                tokensBalanceModel!.tokens!.balances![currentTokenIdIndex]) /
-            1e18;
+        setState(() {
+          coinBalance = double.parse(
+                  tokensBalanceModel!.tokens!.balances![currentTokenIdIndex]) /
+              1e18;
+        });
       } else {
-        balance = double.parse(
-                tokensBalanceModel!.tokens!.balances![currentTokenIdIndex]) /
-            1e6;
+        setState(() {
+          coinBalance = double.parse(
+                  tokensBalanceModel!.tokens!.balances![currentTokenIdIndex]) /
+              1e6;
+        });
       }
     } catch (e) {
-      debugPrint(e.toString());
-    }
-
-    if (balance >= widget.amount) {
       setState(() {
-        isBalanceOk = true;
-      });
-    } else {
-      callSMessage(
-          context, FlutterI18n.translate(context, "insaufficientBalance"),
-          duration: 2);
-
-      setState(() {
-        isBalanceOk = false;
+        coinBalance = 0;
       });
     }
+    return true;
   }
 
   Future<void> showDetails(

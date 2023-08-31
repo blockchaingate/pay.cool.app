@@ -684,6 +684,8 @@
     "verify": "सत्यापित करें",
     "forMoreDetais": "अधिक जानकारी के लिए",
     "doYouLogout": "क्या आप लॉग आउट करना चाहते हैं?",
-    "usd": "USD"   
+    "usd": "USD",
+    "gasBalance": "गैस संतुलन",
+    "coinBalance": "सिक्का बैलेंस"   
     
 }

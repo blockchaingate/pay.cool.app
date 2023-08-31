@@ -687,6 +687,8 @@
     "verify": "核实",
     "forMoreDetais": "了解更多详情",
     "doYouLogout": "您想退出吗？",
-    "usd": "美元"   
+    "usd": "美元",
+    "gasBalance": "气体平衡",
+    "coinBalance": "币余额"   
     
 }

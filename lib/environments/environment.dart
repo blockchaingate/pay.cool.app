@@ -117,7 +117,9 @@ Map devConfig = {
           {"id": "131073", "symbol": "USDT", "decimals": 18},
           {"id": "131074", "symbol": "DUSD", "decimals": 18},
           {"id": "196632", "symbol": "USDC", "decimals": 18},
-        ]
+        ],
+        "gasPrice": 50000000,
+        "gasLimit": 20000000
       }
     },
     "Endpoints": {
@@ -343,7 +345,9 @@ Map productionConfig = {
           {"id": "196609", "symbol": "USDT", "decimals": 18},
           {"id": "131074", "symbol": "DUSD", "decimals": 18},
           {"id": "196632", "symbol": "USDC", "decimals": 18},
-        ]
+        ],
+        "gasPrice": 50000000,
+        "gasLimit": 20000000
       }
     },
     "Endpoints": {

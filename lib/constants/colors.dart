@@ -32,6 +32,10 @@ const Color inputBorder = Color(0xff25273E);
 const Color inputText = Color(0xff7989A6);
 const LinearGradient buttoGradient =
     LinearGradient(colors: <Color>[Color(0xff57AAFF), Color(0xffC165FF)]);
+const LinearGradient buttoGradientDisbale = LinearGradient(colors: <Color>[
+  Color.fromARGB(255, 33, 33, 33),
+  Color.fromARGB(255, 14, 12, 15)
+]);
 
 // Design v2
 
