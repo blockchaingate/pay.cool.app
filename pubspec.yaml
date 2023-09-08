@@ -1,6 +1,6 @@
 name: paycool
 description: Crypto payment application
-version: 2.4.141+206
+version: 2.4.142+207
 
 publish_to: "none"
 
@@ -17,6 +17,8 @@ dependency_overrides:
   #   path: "../exchangily-packages/kyc"
   # pagination_widget:
   #   path: "../exchangily-packages/pagination_widget"
+  exchangily_ui:
+    path: ../exchangily-packages/exchangily_ui/
 
 dependencies:
   aukfa_version_checker:

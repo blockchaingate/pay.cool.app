@@ -15,6 +15,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:get_it/get_it.dart';
 import 'package:kyc/kyc.dart';
 import 'package:paycool/services/db/core_wallet_database_service.dart';
+import 'package:paycool/services/multisig_service.dart';
 import 'package:stacked_services/stacked_services.dart'
     show DialogService, NavigationService, BottomSheetService;
 
@@ -74,6 +75,7 @@ Future serviceLocator() async {
   locator.registerLazySingleton(() => UserSettingsDatabaseService());
   locator.registerLazySingleton(() => LocalAuthService());
   locator.registerLazySingleton(() => CoreWalletDatabaseService());
+  locator.registerLazySingleton(() => MultiSigService());
   // Shared
   locator.registerLazySingleton(() => ApiService());
   locator.registerLazySingleton(() => SharedService());

@@ -372,22 +372,22 @@ Uint8List uint8ListFromList(List<int> data) {
   return Uint8List.fromList(data);
 }
 
-Future signAbiHexWithPrivateKey(String abiHex, String privateKey,
-    String coinPoolAddress, int nonce, int gasPrice, int gasLimit,
+Future signAbiHexWithPrivateKey(String data, String privateKey,
+    String toAddress, int nonce, int gasPrice, int gasLimit,
     {String chainIdParam = "KANBAN"}) async {
   int? chainId = environment["chains"][chainIdParam]["chainId"];
 
-  abiHex = trimHexPrefix(abiHex);
+  data = trimHexPrefix(data);
 
   var credentials = EthPrivateKey.fromHex(privateKey);
 
   var transaction = Transaction(
-      to: EthereumAddress.fromHex(coinPoolAddress),
+      to: EthereumAddress.fromHex(toAddress),
       gasPrice: EtherAmount.fromInt(EtherUnit.wei, gasPrice),
       maxGas: gasLimit,
       nonce: nonce,
       value: EtherAmount.fromInt(EtherUnit.wei, 0),
-      data: Uint8List.fromList(HEX.decode(abiHex)));
+      data: Uint8List.fromList(HEX.decode(data)));
 
   final innerSignature =
       chainId == null ? null : MsgSignature(BigInt.zero, BigInt.zero, chainId);
@@ -402,18 +402,4 @@ Future signAbiHexWithPrivateKey(String abiHex, String privateKey,
   var finalString = '0x${HEX.encode(encodeList)}';
   // debugPrint('finalString===' + finalString);
   return finalString;
-  /*
-  var signed = await ethClient.signTransaction(
-    credentials,
-    Transaction(
-      to: EthereumAddress.fromHex(coinPoolAddress),
-      gasPrice: EtherAmount.fromUnitAndValue(EtherUnit.gwei, 4),
-      maxGas: 20000000,
-      nonce: nonce,
-      data: HEX.decode(abiHex)
-    ),
-  );
-  return HEX.encode(signed);
-
-   */
 }

@@ -23,6 +23,13 @@ import 'package:bs58check/bs58check.dart' as Base58;
 class StringUtils {
   static final Random _random = Random.secure();
 
+  static divide(String v1, String v2) {
+    Decimal d1 = Decimal.parse(v1);
+    Decimal d2 = Decimal.parse(v2);
+    Decimal result = (d1 / d2).toDecimal();
+    return result.toString();
+  }
+
   static String stringToHexUsingUint8List(String input) {
     Uint8List uint8List = Uint8List.fromList(input.codeUnits);
     return uint8List.map((c) => c.toRadixString(16).padLeft(2, '0')).join();
@@ -149,6 +156,7 @@ number2Buffer(numVal) {
 String convertFabAddressToHex(String fabAddress) {
   var decoded = Base58.decode(fabAddress);
   String hexString = HEX.encode(decoded);
+  debugPrint('string_util convertFabAddressToHex $hexString');
   return hexString;
 }
 

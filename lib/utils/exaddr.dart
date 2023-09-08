@@ -137,6 +137,8 @@ encodeAsLegacy(decoded) {
     buffer[i + 1] = decoded['hash'][i];
   }
   // buffer.set(decoded.hash, 1);
+  debugPrint('encodeAsLegacy=');
+  debugPrint(bs58check.encode(buffer));
   return bs58check.encode(buffer);
 }
 

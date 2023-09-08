@@ -15,6 +15,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:paycool/constants/constants.dart';
+import 'package:paycool/models/bond/rm/register_email_model.dart';
 import 'package:paycool/models/bond/vm/bond_history_model.dart';
 import 'package:paycool/models/bond/vm/bond_login_vm.dart';
 import 'package:paycool/models/bond/vm/bond_symbol_model.dart';
@@ -1123,7 +1124,7 @@ class ApiService {
     if (token.isEmpty || token == '') {
       return null;
     } else {
-      var url = "${BaseBondApiRoute}user/me";
+      var url = "${paycoolBaseUrlV2}user/me";
 
       try {
         var response = await client.get(Uri.parse(url), headers: {
@@ -1145,7 +1146,7 @@ class ApiService {
 
   Future<RegisterEmailViewModel?> registerWithEmail(
       BuildContext context, param) async {
-    String url = "${BaseBondApiRoute}user/register/email";
+    String url = "${paycoolBaseUrlV2}user/register/email";
     var jsonBody = json.encode(param);
 
     try {
@@ -1168,7 +1169,7 @@ class ApiService {
   }
 
   Future<BondLoginModel?> loginWithEmail(BuildContext context, param) async {
-    String url = "${BaseBondApiRoute}user/login";
+    String url = "${paycoolBaseUrlV2}user/login";
     var jsonBody = json.encode(param);
 
     try {
@@ -1190,27 +1191,9 @@ class ApiService {
     }
   }
 
-  // Future<GetCaptchaModel?> getCaptcha(BuildContext context) async {
-  //   String url = "${BaseBondApiRoute}user/captcha";
-
-  //   try {
-  //     var response = await client.get(Uri.parse(url), headers: {
-  //       'Content-Type': 'application/json',
-  //       'Accept': 'application/json',
-  //     });
-  //     if (!jsonDecode(response.body)["success"]) {
-  //       return null;
-  //     }
-  //     var json = jsonDecode(response.body)["data"];
-  //     return GetCaptchaModel.fromJson(json);
-  //   } catch (err) {
-  //     throw Exception(err);
-  //   }
-  // }
-
   Future<GetCaptchaModel?> getCaptcha(
       BuildContext context, String email) async {
-    String url = "${BaseBondApiRoute}user/captcha";
+    String url = "${paycoolBaseUrlV2}user/captcha";
     var param = {"email": email};
     var jsonBody = json.encode(param);
     try {
@@ -1230,7 +1213,7 @@ class ApiService {
   }
 
   Future<bool?> verifyCaptcha(BuildContext context, param) async {
-    String url = "${BaseBondApiRoute}user/verifyCaptcha";
+    String url = "${paycoolBaseUrlV2}user/verifyCaptcha";
     var jsonBody = json.encode(param);
     try {
       var response =
@@ -1249,7 +1232,7 @@ class ApiService {
   }
 
   Future<String?> sendEmail(BuildContext context) async {
-    String url = "${BaseBondApiRoute}user/sendEmailCode";
+    String url = "${paycoolBaseUrlV2}user/sendEmailCode";
     var token = storageService.bondToken;
     if (token.isEmpty || token == '') {
       return null;
@@ -1272,7 +1255,7 @@ class ApiService {
   }
 
   Future<bool?> verifyEmail(BuildContext context, param) async {
-    String url = "${BaseBondApiRoute}user/verifyEmail";
+    String url = "${paycoolBaseUrlV2}user/verifyEmail";
     var token = storageService.bondToken;
     if (token.isEmpty || token == '') {
       return null;
@@ -1301,7 +1284,7 @@ class ApiService {
   }
 
   Future<String?> forgotPassword(BuildContext context, param) async {
-    String url = "${BaseBondApiRoute}user/forgotPassword";
+    String url = "${paycoolBaseUrlV2}user/forgotPassword";
     var token = storageService.bondToken;
     if (token.isEmpty || token == '') {
       return null;
@@ -1326,7 +1309,7 @@ class ApiService {
   }
 
   Future<String?> resetPassword(BuildContext context, param) async {
-    String url = "${BaseBondApiRoute}user/resetPassword";
+    String url = "${paycoolBaseUrlV2}user/resetPassword";
     var jsonBody = json.encode(param);
 
     try {
@@ -1347,7 +1330,7 @@ class ApiService {
 
   Future<BondSembolModel?> bondSembol(
       BuildContext context, String bondType) async {
-    String url = "${BaseBondApiRoute}bond/$bondType";
+    String url = "${paycoolBaseUrlV2}bond/$bondType";
 
     try {
       var response = await client.get(Uri.parse(url), headers: {
@@ -1365,7 +1348,7 @@ class ApiService {
   }
 
   Future<OrderBondModel?> orderBond(BuildContext context, param) async {
-    String url = "${BaseBondApiRoute}bond/order";
+    String url = "${paycoolBaseUrlV2}bond/order";
     var token = storageService.bondToken;
     if (token.isEmpty || token == '') {
       return null;
@@ -1389,35 +1372,9 @@ class ApiService {
     }
   }
 
-  // Future<OrderBondVm?> updatePaymentBond(
-  //     BuildContext context, String bondId, param) async {
-  //   String url = "${BaseBondApiRoute}bond/order/$bondId/updatePayment";
-  //   var token = storageService.bondToken;
-  //   if (token.isEmpty || token == '') {
-  //     return null;
-  //   } else {
-  //     var jsonBody = json.encode(param);
-  //     try {
-  //       var response =
-  //           await client.post(Uri.parse(url), body: jsonBody, headers: {
-  //         'Content-Type': 'application/json',
-  //         'Accept': 'application/json',
-  //         'x-access-token': token,
-  //       });
-  //       if (!jsonDecode(response.body)["success"]) {
-  //         return null;
-  //       }
-  //       var json = jsonDecode(response.body)["data"];
-  //       return OrderBondVm.fromJson(json);
-  //     } catch (err) {
-  //       throw Exception(err);
-  //     }
-  //   }
-  // }
-
   Future<OrderBondModel?> confirmOrderBond(
       BuildContext context, String bondId) async {
-    String url = "${BaseBondApiRoute}bond/order/$bondId/confirmOrder";
+    String url = "${paycoolBaseUrlV2}bond/order/$bondId/confirmOrder";
     var token = storageService.bondToken;
     if (token.isEmpty || token == '') {
       return null;
@@ -1441,7 +1398,7 @@ class ApiService {
 
   Future<OrderBondModel?> confirmOrderBondWithoutKyc(
       BuildContext context, String bondId) async {
-    String url = "${BaseBondApiRoute}bond/order/$bondId/confirmOrderWithoutKyc";
+    String url = "${paycoolBaseUrlV2}bond/order/$bondId/confirmOrderWithoutKyc";
     var token = storageService.bondToken;
     if (token.isEmpty || token == '') {
       return null;
@@ -1465,7 +1422,7 @@ class ApiService {
 
   Future<OrderBondModel?> deleteOrderBond(
       BuildContext context, String bondId) async {
-    String url = "${BaseBondApiRoute}bond/order/$bondId/confirmOrder";
+    String url = "${paycoolBaseUrlV2}bond/order/$bondId/confirmOrder";
     var token = storageService.bondToken;
     if (token.isEmpty || token == '') {
       return null;
@@ -1487,31 +1444,9 @@ class ApiService {
     }
   }
 
-  // Future<bool?> complateOrderBond(BuildContext context, String bondId) async {
-  //   String url = "${BaseBondApiRoute}bond/order/$bondId/completeOrder";
-  //   var token = storageService.bondToken;
-  //   if (token.isEmpty || token == '') {
-  //     return null;
-  //   } else {
-  //     try {
-  //       var response = await client.delete(Uri.parse(url), headers: {
-  //         'Content-Type': 'application/json',
-  //         'Accept': 'application/json',
-  //         'x-access-token': token,
-  //       });
-  //       if (!jsonDecode(response.body)["success"]) {
-  //         return null;
-  //       }
-  //       return jsonDecode(response.body)["success"];
-  //     } catch (err) {
-  //       throw Exception(err);
-  //     }
-  //   }
-  // }
-
   Future<List<BondHistoryModel>?> getBondHistory(
       BuildContext context, int pageNum) async {
-    String url = "${BaseBondApiRoute}bond/order/all/10/$pageNum";
+    String url = "${paycoolBaseUrlV2}bond/order/all/10/$pageNum";
     List<BondHistoryModel> getHistorydList = <BondHistoryModel>[];
     var token = storageService.bondToken;
     if (token.isEmpty || token == '') {
@@ -1539,8 +1474,8 @@ class ApiService {
   Future<TokensBalanceModel?> getTokensBalance(
       BuildContext context, String chain, param) async {
     String url = chain == "KANBAN"
-        ? "$BaseBondApiRoute$chain/balanceold"
-        : "$BaseBondApiRoute$chain/balance";
+        ? "$paycoolBaseUrlV2$chain/balanceold"
+        : "$paycoolBaseUrlV2$chain/balance";
     var jsonBody = json.encode(param);
 
     try {

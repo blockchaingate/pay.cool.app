@@ -30,7 +30,20 @@ Map devConfig = {
       "gasPrice": 10,
       "gasPriceMax": 200,
       "gasLimit": 21000,
-      "gasLimitToken": 70000
+      "gasLimitToken": 70000,
+      'Safes': {
+        'SimulateTxAccessor': '0x3d4BA2E0884aa488718476ca2FB8Efc291A46199',
+        'SafeProxyFactory': '0x4e1DCf7AD4e460CfD30791CCC4F9c8a4f820ec67',
+        'TokenCallbackHandler': '0xeDCF620325E82e3B9836eaaeFdc4283E99Dd7562',
+        'CompatibilityFallbackHandler':
+            '0xfd0732Dc9E303f09fCEf3a7388Ad10A83459Ec99',
+        'CreateCall': '0x9b35Af71d77eaf8d7e40252370304687390A1A52',
+        'MultiSend': '0x38869bf66a61cF6bDB996A6aE40D5853Fd43B526',
+        'MultiSendCallOnly': '0x9641d764fc13c8B624c04430C7356C1C7C8102e2',
+        'SignMessageLib': '0xd53cd0aB83D845Ac265BE939c57F53AD838012c9',
+        'SafeL2': '0x29fcB43b46531BcA003ddC8FCB67FFE91900C762',
+        'Safe': '0x41675C099F32341bf84BFc5382aF534df5C7461a'
+      }
     },
     "BNB": {
       "chain": 'testnet',
@@ -41,7 +54,20 @@ Map devConfig = {
       "gasPrice": 10,
       "gasPriceMax": 100,
       "gasLimit": 210000,
-      "gasLimitToken": 70000
+      "gasLimitToken": 70000,
+      'Safes': {
+        'SimulateTxAccessor': '0x3d4BA2E0884aa488718476ca2FB8Efc291A46199',
+        'SafeProxyFactory': '0x4e1DCf7AD4e460CfD30791CCC4F9c8a4f820ec67',
+        'TokenCallbackHandler': '0xeDCF620325E82e3B9836eaaeFdc4283E99Dd7562',
+        'CompatibilityFallbackHandler':
+            '0xfd0732Dc9E303f09fCEf3a7388Ad10A83459Ec99',
+        'CreateCall': '0x9b35Af71d77eaf8d7e40252370304687390A1A52',
+        'MultiSend': '0x38869bf66a61cF6bDB996A6aE40D5853Fd43B526',
+        'MultiSendCallOnly': '0x9641d764fc13c8B624c04430C7356C1C7C8102e2',
+        'SignMessageLib': '0xd53cd0aB83D845Ac265BE939c57F53AD838012c9',
+        'SafeL2': '0x29fcB43b46531BcA003ddC8FCB67FFE91900C762',
+        'Safe': '0x41675C099F32341bf84BFc5382aF534df5C7461a'
+      }
     },
     "MATIC": {
       "chain": 'testnet',
@@ -68,7 +94,24 @@ Map devConfig = {
       "gasPrice": 40,
       "gasLimit": 500000
     },
-    "KANBAN": {"chainId": 212, "gasPrice": 50000000, "gasLimit": 20000000},
+    "KANBAN": {
+      "chainId": 212,
+      "gasPrice": 50000000,
+      "gasLimit": 20000000,
+      'Safes': {
+        'SimulateTxAccessor': '0x697694d0bef59bf6a6077368fc657275bac458be',
+        'SafeProxyFactory': '0x245e2c201f129034b0c357da08f044f1474d4cb0',
+        'TokenCallbackHandler': '0x443cc78fd2e8912492a0b415de5548baf3ef98d8',
+        'CompatibilityFallbackHandler':
+            '0x81bdb543f25f582404f4c0e4889b8e56d491c370',
+        'CreateCall': '0xdc2dafff2f57acd18daf7a0f78d6aef7dde60697',
+        'MultiSend': '0xedfbc7b1cc7a4d056da718b3451f616b3938acca',
+        'MultiSendCallOnly': '0x0b792260e544636fdc75ce8c55e2e11a38283013',
+        'SignMessageLib': '0xf052f9e650ffec988a740f78f1802ae72314a39a',
+        'SafeL2': '0x83681373c0ea8160580fb7d8a6e4ca23396a2d3b',
+        'Safe': '0xa8525bb37a3ea2ba6c61d00f05dc136fb9edc998'
+      }
+    },
     "KANBANBOND": {
       "native": {"gasPrice": 0.05, "gasLimit": 20000000},
       "token": {"gasPrice": 0.05, "gasLimit": 20000000},
