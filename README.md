@@ -34,4 +34,4 @@ then update     classpath 'com.android.tools.build:gradle:7.0.4' in android/buid
 https://developer.android.com/build/releases/gradle-plugin#updating-plugin
 then use above links for comaptible gradle version to update in graddle-wrapper.properties
 
-testing
+dart run build_runner build

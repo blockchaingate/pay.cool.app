@@ -4,14 +4,35 @@ import 'package:paycool/constants/api_routes.dart';
 import 'package:paycool/constants/constants.dart';
 import 'package:paycool/logger.dart';
 import 'package:paycool/utils/custom_http_util.dart';
-import 'package:paycool/views/multisig/multisig_model.dart';
+import 'package:paycool/views/multisig/multisig_wallet_model.dart';
 
 class MultiSigService {
   final log = getLogger('MultiSigService');
   final client = CustomHttpUtil.createLetsEncryptUpdatedCertClient();
 
+  // get txid data
+  //multisig/txid/
+  Future getTxidData(String txid) async {
+    var url = paycoolBaseUrlV2 + 'multisig/txid/$txid';
+    log.i('getTxidData url $url');
+    try {
+      var response =
+          await client.get(Uri.parse(url), headers: Constants.headersJson);
+      var json = jsonDecode(response.body);
+      if (json['success']) {
+        log.w('getTxidData $json}');
+        return json['data'];
+      } else {
+        log.e('getTxidData success false $json}');
+      }
+    } catch (err) {
+      log.e('getTxidData CATCH $err');
+      throw Exception(err);
+    }
+  }
+
   // get multisig data
-  Future createMultiSig(MultisigModel multisigModel) async {
+  Future createMultiSig(MultisigWalletModel multisigModel) async {
     // var body = {
     //   {
     //     "chain": multisigModel.chain,
@@ -31,7 +52,7 @@ class MultiSigService {
       var json = jsonDecode(response.body);
       if (json['success']) {
         log.w('createMultiSig $json}');
-        return json['data'];
+        return json['data']["txid"];
       } else {
         log.e('createMultiSig success false $json}');
       }

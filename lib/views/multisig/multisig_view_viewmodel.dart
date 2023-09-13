@@ -17,7 +17,7 @@ import 'package:paycool/utils/keypair_util.dart';
 import 'package:paycool/utils/number_util.dart';
 import 'package:paycool/utils/string_util.dart';
 import 'package:paycool/views/multisig/dashboard/multisig_dashboard_view.dart';
-import 'package:paycool/views/multisig/multisig_model.dart';
+import 'package:paycool/views/multisig/multisig_wallet_model.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:hex/hex.dart';
@@ -39,10 +39,8 @@ class MultisigViewModel extends BaseViewModel {
   int nextDropdownValue = 1;
   List<String> chains = ["Kanban", "ETH", "FAB"];
   String selectedChain = "Kanban";
-  Decimal gasPrice =
-      Decimal.parse(environment['chains']['KANBAN']['gasPrice'].toString());
-  Decimal gasLimit =
-      Decimal.parse(environment['chains']['KANBAN']['gasLimit'].toString());
+  int gasPrice = environment['chains']['KANBAN']['gasPrice'];
+  int gasLimit = environment['chains']['KANBAN']['gasLimit'];
   int kanbanChainId = environment['chains']['KANBAN']['chainId'];
 
   Future<void> init() async {
@@ -140,7 +138,7 @@ class MultisigViewModel extends BaseViewModel {
                         color: black,
                       ),
                       isDense: true,
-                      onChanged: (value) => gasPrice = Decimal.parse(value),
+                      onChanged: (value) => gasPrice = int.parse(value),
                       focusBorderColor: grey),
                   UIHelper.verticalSpaceSmall,
                   kTextField(
@@ -155,7 +153,7 @@ class MultisigViewModel extends BaseViewModel {
                         color: black,
                       ),
                       isDense: true,
-                      onChanged: (value) => gasLimit = Decimal.parse(value),
+                      onChanged: (value) => gasLimit = int.parse(value),
                       focusBorderColor: grey),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -307,35 +305,55 @@ class MultisigViewModel extends BaseViewModel {
     log.w('addresses: $addresses');
     var rawTxData = await multisigService.multisigData(
         addresses, selectedNumberOfOwners, selectedChain.toUpperCase());
-
-    var nonce = await multisigService.getKanbanNonce(addresses[0]);
+    String exgAddress =
+        await sharedService.getExgAddressFromCoreWalletDatabase();
+    var nonce = await multisigService.getKanbanNonce(exgAddress);
     log.w('nonce: $nonce');
     var seed = await walletService.getSeedDialog(sharedService.context);
     var keyPairKanban = getExgKeyPair(seed);
 
     var txKanbanHex = await signAbiHexWithPrivateKey(
-        rawTxData,
-        HEX.encode(keyPairKanban["privateKey"]),
-        environment["chains"][selectedChain.toUpperCase()]["Safes"]
-            ["SafeProxyFactory"],
-        nonce,
-        int.parse(gasPrice.toString()),
-        300000);
+      rawTxData,
+      HEX.encode(keyPairKanban["privateKey"]),
+      environment["chains"][selectedChain.toUpperCase()]["Safes"]
+          ["SafeProxyFactory"],
+      nonce,
+      gasPrice,
+      gasLimit,
+    );
 
     log.w('txKanbanHex: $txKanbanHex');
+    createMutlisigWallet(txKanbanHex, addresses);
+  }
+
+  createMutlisigWallet(String txKanbanHex, List<String> addresses) async {
     List<Owners> owners = [];
     for (var i = 0; i < ownerControllers.length; i++) {
       owners.add(Owners(name: ownerControllers[i].text, address: addresses[i]));
     }
-    MultisigModel multisigModel = MultisigModel(
+    MultisigWalletModel multisigWallet = MultisigWalletModel(
         chain: selectedChain.toUpperCase(),
         name: walletNameController.text,
         // fill owner name:Address in owners
         owners: owners,
         confirmations: selectedNumberOfOwners,
         signedRawtx: txKanbanHex);
-    log.i(multisigModel.toJson());
-    var txKanbanHash = await multisigService.createMultiSig(multisigModel);
-    log.w('txKanbanHash: $txKanbanHash');
+    debugPrint(multisigWallet.toJson().toString());
+    var txid = await multisigService.createMultiSig(multisigWallet);
+    log.w('txid: $txid');
+    if (txid != null) {
+      multisigWallet.txid = txid;
+
+      var walletData = await multisigService.getTxidData(txid);
+
+      multisigWallet.address = walletData["address"];
+      log.w('multisigModel: ${multisigWallet.toJson()}');
+
+      sharedService.sharedSimpleNotification("Multisig wallet created");
+      saveMultisigWallet(multisigWallet);
+      navigationService.navigateWithTransition(MultisigDashboardView());
+    }
   }
+
+  saveMultisigWallet(MultisigWalletModel multisigWallet) {}
 }

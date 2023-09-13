@@ -12,6 +12,8 @@ class Constants {
   static int tronUsdtFee = 40;
   static int tronFee = 1;
 
+  static String multisigWalletBox = 'multisigWallet';
+
   static const List<String> specialTokens = [
     'USDTX',
     'USDTM',
