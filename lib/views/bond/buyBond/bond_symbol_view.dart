@@ -38,7 +38,7 @@ class _BondSembolViewState extends State<BondSembolView>
 
   int lastPrice = 0;
   String selectedValue = 'DNB';
-  List<String> dropdownItems = ['DNB', 'SDNB'];
+  List<String> dropdownItems = ['DNB', 'XDNB'];
 
   bool loading = false;
 

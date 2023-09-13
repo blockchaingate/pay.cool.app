@@ -149,7 +149,7 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
                                 width: size.width,
                                 child: Text(
                                   gasBalance != null
-                                      ? "${FlutterI18n.translate(context, "gasBalance")}: $gasBalance"
+                                      ? "${FlutterI18n.translate(context, "gasBalance")}: ${gasBalance! / 1e18}"
                                       : "",
                                   style: gasBalance != null &&
                                           needGasBalance != null &&
@@ -213,7 +213,7 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
                                   width: size.width,
                                   child: Text(
                                     coinBalance != null
-                                        ? "${FlutterI18n.translate(context, "coinBalance")}: $coinBalance"
+                                        ? "${FlutterI18n.translate(context, "coinBalance")}: ${coinBalance! / 1e18}"
                                         : "",
                                     style: coinBalance != null &&
                                             coinBalance! > widget.amount
@@ -632,6 +632,12 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
       }
 
       var param = {"native": walletAddress, "tokens": tokenIds};
+      // var param = {
+      //   // "native": "0x592DeA18c6023C6FE12aBCc59AAE9Fb587B4CCE3", //ETH
+      //   // "native": "0x772De0B32771e33dfe05C1a7c2832dF09dabE43a", // BNB
+      //   // "native": "0x9d95ee21e4f1b05bbfd0094daf4ce110deb00931", // KANBAN
+      //   "tokens": tokenIds
+      // };
 
       await apiService
           .getTokensBalance(context, selectedValueChain!, param)
