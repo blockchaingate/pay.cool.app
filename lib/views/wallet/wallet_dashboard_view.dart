@@ -142,13 +142,11 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
+                              UIHelper.verticalSpaceSmall,
                               SizedBox(
-                                height: size.height * 0.05,
-                              ),
-                              SizedBox(
-                                  width: 50,
+                                  width: 75,
                                   child: Image.asset(
-                                      "assets/images/salvador.png")),
+                                      "assets/images/salvador1.png")),
                               SizedBox(
                                 child: Text(
                                   "EI SALVADOR",
@@ -652,7 +650,7 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
                     children: [
                       Image.asset(
                         "assets/images/salvador.png",
-                        height: 100,
+                        height: 200,
                       ),
                       UIHelper.verticalSpaceMedium,
                       Text(
@@ -860,7 +858,7 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
                     UIHelper.verticalSpaceLarge,
                     Image.asset(
                       "assets/images/salvador.png",
-                      height: 100,
+                      height: 200,
                     ),
                     UIHelper.verticalSpaceLarge,
                     Text(
