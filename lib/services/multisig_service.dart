@@ -10,9 +10,29 @@ class MultiSigService {
   final log = getLogger('MultiSigService');
   final client = CustomHttpUtil.createLetsEncryptUpdatedCertClient();
 
+  Future<void> getKanbanBalance(String exgAddress) async {
+    var url = paycoolBaseUrlV2 + 'kanban/balanceold';
+    log.i('getKanbanBalance url $url');
+    try {
+      var response = await client.post(Uri.parse(url),
+          body: jsonEncode({"native": exgAddress}),
+          headers: Constants.headersJson);
+      var json = jsonDecode(response.body);
+      if (json['success']) {
+        log.w('getKanbanBalance $json}');
+        return json['data'];
+      } else {
+        log.e('getKanbanBalance success false $json}');
+      }
+    } catch (err) {
+      log.e('getKanbanBalance CATCH $err');
+      throw Exception(err);
+    }
+  }
+
   // get txid data
   //multisig/txid/
-  Future getTxidData(String txid) async {
+  Future<MultisigWalletModel> getTxidData(String txid) async {
     var url = paycoolBaseUrlV2 + 'multisig/txid/$txid';
     log.i('getTxidData url $url');
     try {
@@ -21,10 +41,11 @@ class MultiSigService {
       var json = jsonDecode(response.body);
       if (json['success']) {
         log.w('getTxidData $json}');
-        return json['data'];
+        return MultisigWalletModel.fromJson(json['data']);
       } else {
         log.e('getTxidData success false $json}');
       }
+      return MultisigWalletModel(txid: '');
     } catch (err) {
       log.e('getTxidData CATCH $err');
       throw Exception(err);

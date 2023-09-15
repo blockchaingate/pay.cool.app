@@ -3,6 +3,8 @@ import 'dart:ffi';
 import 'package:decimal/decimal.dart';
 import 'package:exchangily_ui/exchangily_ui.dart';
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:paycool/constants/constants.dart';
 import 'package:paycool/environments/environment.dart';
 import 'package:paycool/environments/environment_type.dart';
 import 'package:paycool/logger.dart';
@@ -42,7 +44,8 @@ class MultisigViewModel extends BaseViewModel {
   int gasPrice = environment['chains']['KANBAN']['gasPrice'];
   int gasLimit = environment['chains']['KANBAN']['gasLimit'];
   int kanbanChainId = environment['chains']['KANBAN']['chainId'];
-
+  Box<MultisigWalletModel> multisigWallets =
+      Hive.box<MultisigWalletModel>(Constants.multisigWalletBox);
   Future<void> init() async {
     log.i('MultisigViewModel init');
     addOwner();
@@ -346,14 +349,26 @@ class MultisigViewModel extends BaseViewModel {
 
       var walletData = await multisigService.getTxidData(txid);
 
-      multisigWallet.address = walletData["address"];
+      multisigWallet.address = walletData.address;
       log.w('multisigModel: ${multisigWallet.toJson()}');
 
       sharedService.sharedSimpleNotification("Multisig wallet created");
-      saveMultisigWallet(multisigWallet);
-      navigationService.navigateWithTransition(MultisigDashboardView());
+      saveData(multisigWallet);
+      log.e('is in the box ${multisigWallet.isInBox}');
+      log.w('box ${multisigWallet.box}');
+      Future.delayed(Duration(milliseconds: 750), () {
+        navigationService.navigateWithTransition(
+            MultisigDashboardView(txid: txid),
+            transitionStyle: Transition.rightToLeftWithFade,
+            duration: Duration(milliseconds: 750));
+      });
     }
   }
 
-  saveMultisigWallet(MultisigWalletModel multisigWallet) {}
+  saveData(MultisigWalletModel multisigWallet) async {
+    var res = await multisigWallets.add(multisigWallet);
+    log.w('res: $res');
+    print('Number of wallets: ${multisigWallets.length}');
+    print("first key: ${multisigWallets.keys}");
+  }
 }

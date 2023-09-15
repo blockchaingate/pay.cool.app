@@ -2,7 +2,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 part 'multisig_wallet_model.g.dart';
 
 @HiveType(typeId: 0)
-class MultisigWalletModel {
+class MultisigWalletModel extends HiveObject {
   @HiveField(0)
   String? chain;
   @HiveField(1)
@@ -19,6 +19,8 @@ class MultisigWalletModel {
   String? address;
   @HiveField(7)
   String? creator;
+  @HiveField(8)
+  String? status;
 
   MultisigWalletModel(
       {this.chain,
@@ -28,7 +30,8 @@ class MultisigWalletModel {
       this.signedRawtx,
       this.txid,
       this.address,
-      this.creator});
+      this.creator,
+      this.status});
 
   MultisigWalletModel.fromJson(Map<String, dynamic> json) {
     chain = json['chain'];
@@ -44,6 +47,7 @@ class MultisigWalletModel {
     txid = json['txid'];
     address = json['address'];
     creator = json['creator'];
+    status = json['status'];
   }
 
   Map<String, dynamic> toJson() {
@@ -54,16 +58,20 @@ class MultisigWalletModel {
       data['owners'] = owners!.map((v) => v.toJson()).toList();
     }
     data['confirmations'] = confirmations;
-    data['rawtx'] = signedRawtx;
     data['txid'] = txid;
     data['address'] = address;
     data['creator'] = creator;
+    data['status'] = status;
+    data['rawtx'] = signedRawtx;
     return data;
   }
 }
 
+@HiveType(typeId: 1)
 class Owners {
+  @HiveField(0)
   String? name;
+  @HiveField(1)
   String? address;
 
   Owners({this.name, this.address});

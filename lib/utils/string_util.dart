@@ -41,6 +41,17 @@ class StringUtils {
         .join();
   }
 
+  String generateRandomString(int length) {
+    final random = Random();
+    const availableChars =
+        'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
+    final randomString = List.generate(length,
+            (index) => availableChars[random.nextInt(availableChars.length)])
+        .join();
+
+    return randomString;
+  }
+
   static String createCryptoRandomString([int length = 64]) {
     var val = List<int>.generate(length, (index) => _random.nextInt(256));
     return base64Url.encode(val);

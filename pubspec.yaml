@@ -37,6 +37,7 @@ dependencies:
       path: open_source_packages/bitcoin_flutter
   cached_network_image: ^3.2.3
   card_swiper: null
+  crypto: ^3.0.3
   cupertino_icons: ^1.0.5
   decimal: ^2.2.0
   device_info: ^2.0.2

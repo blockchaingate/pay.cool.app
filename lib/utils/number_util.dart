@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:math';
 import 'package:decimal/decimal.dart';
 import 'package:flutter/widgets.dart';
@@ -5,6 +6,8 @@ import 'package:paycool/constants/constants.dart';
 import 'package:paycool/logger.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:crypto/crypto.dart';
+
 import 'package:paycool/utils/string_validator.dart';
 
 class NumberUtil {
@@ -250,6 +253,22 @@ class NumberUtil {
   // check decimal places more than 6
   checkDecimal(double value) {
     String valueToString = value.toString();
+  }
+
+  // md5 hashing a random number
+  String md5RandomString() {
+    final randomNumber = Random().nextDouble();
+    final randomBytes = utf8.encode(randomNumber.toString());
+    final randomString = md5.convert(randomBytes).toString();
+    return randomString;
+  }
+
+// sha1 hashing a random number
+  String sha1RandomString() {
+    final randomNumber = Random().nextDouble();
+    final randomBytes = utf8.encode(randomNumber.toString());
+    final randomString = sha1.convert(randomBytes).toString();
+    return randomString;
   }
 }
 

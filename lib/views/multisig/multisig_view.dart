@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/shared/ui_helpers.dart';
+import 'package:paycool/views/multisig/dashboard/multisig_dashboard_view.dart';
 import 'package:stacked/stacked.dart';
 
 import 'multisig_view_viewmodel.dart';
@@ -159,7 +160,7 @@ class MultisigView extends StatelessWidget {
                                     child: Row(
                                       children: [
                                         Text(
-                                          '${model.chains[index]}',
+                                          model.chains[index],
                                           style: headText4,
                                         ),
                                       ],
@@ -185,7 +186,7 @@ class MultisigView extends StatelessWidget {
                             controller: model.walletNameController,
                             //   hintText: 'Wallet name',
                             labelText: "Enter wallet name",
-                            labelStyle: headText4,
+                            labelStyle: headText5,
                             cursorColor: green,
                             cursorHeight: 14,
                             fillColor: Colors.transparent,
@@ -328,6 +329,25 @@ class MultisigView extends StatelessWidget {
                       ),
                     ),
                   ),
+                  // Container(
+                  //   alignment: Alignment.center,
+                  //   child: ElevatedButton(
+                  //     style: ButtonStyle(
+                  //         padding: MaterialStateProperty.all(
+                  //             const EdgeInsets.symmetric(
+                  //                 horizontal: 30, vertical: 10)),
+                  //         backgroundColor:
+                  //             MaterialStateProperty.all(primaryColor)),
+                  //     onPressed: () => model.navigationService
+                  //         .navigateWithTransition(MultisigDashboardView(
+                  //             txid:
+                  //                 '')),
+                  //     child: Text(
+                  //       "Dashboard",
+                  //       style: headText3.copyWith(color: white),
+                  //     ),
+                  //   ),
+                  // ),
                   UIHelper.verticalSpaceLarge
                 ],
               ),
