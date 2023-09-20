@@ -26,6 +26,7 @@ import 'package:paycool/views/bond/buyBond/bond_symbol_view.dart';
 import 'package:paycool/views/bond/login/login_view.dart';
 import 'package:paycool/views/bond/register/bond_register_view.dart';
 import 'package:paycool/views/bond/txHistory/bond_history_view.dart';
+import 'package:paycool/views/bond/walletConncet/wallet_connect_view.dart';
 import 'package:paycool/views/wallet/wallet_dashboard_viewmodel.dart';
 import 'package:paycool/views/wallet/wallet_features/wallet_features_view.dart';
 import 'package:paycool/widgets/bottom_nav.dart';
@@ -78,8 +79,6 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
     // GlobalKey _two = GlobalKey(debugLabel: "two");
     final key1 = GlobalKey<ScaffoldState>();
     final key = GlobalKey<ScaffoldState>();
-
-    Size size = MediaQuery.of(context).size;
 
     // RefreshController _refreshController =
     //     RefreshController(initialRefresh: false);
@@ -635,6 +634,7 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
   Widget bondPage(WalletDashboardViewModel model, BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Container(
+      width: size.width,
       height: size.height,
       decoration: const BoxDecoration(
         image: DecorationImage(
@@ -838,19 +838,37 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
                             },
                             icon: Icon(Icons.logout),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(right: 10),
-                            child: IconButton(
-                              alignment: Alignment.topRight,
-                              onPressed: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const BondHistoryView()));
-                              },
-                              icon: Icon(Icons.history),
-                            ),
+                          Row(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(right: 10),
+                                child: IconButton(
+                                  alignment: Alignment.topRight,
+                                  onPressed: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                const WalletConnectView()));
+                                  },
+                                  icon: Icon(Icons.qr_code_scanner),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(right: 10),
+                                child: IconButton(
+                                  alignment: Alignment.topRight,
+                                  onPressed: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                const BondHistoryView()));
+                                  },
+                                  icon: Icon(Icons.history),
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
