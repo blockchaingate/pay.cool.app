@@ -54,6 +54,9 @@ class WalletConnectViewModel extends BaseViewModel {
     fabAddress = await CoinService().getCoinWalletAddress("FAB");
     ethAddress = await CoinService().getCoinWalletAddress("ETH");
 
+    print("fabAddress: $fabAddress");
+    print("ethAddress: $ethAddress");
+
     web3Wallet = await Web3Wallet.createInstance(
         projectId: "3acbabd1deb4672edfd4ca48226cfc0f",
         metadata: PairingMetadata(
