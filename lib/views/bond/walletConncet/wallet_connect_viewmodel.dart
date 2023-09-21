@@ -163,6 +163,8 @@ class WalletConnectViewModel extends BaseViewModel {
   Future<bool> approveFunction(SessionRequestEvent? args) async {
     bool? userApproved = await showConfirmationDialog(context!, args!);
 
+    setBusy(true);
+
     if (userApproved!) {
       var seed = await walletService.getSeedDialog(context!);
 
@@ -176,6 +178,7 @@ class WalletConnectViewModel extends BaseViewModel {
         print("==============txHash======================");
         txHash = value;
         print("==============txHash======================");
+        setBusy(false);
         await purchaseFunction(eventList[1]);
       });
     } else {
@@ -191,6 +194,8 @@ class WalletConnectViewModel extends BaseViewModel {
     if (userApproved!) {
       var seed = await walletService.getSeedDialog(context!);
 
+      setBusy(true);
+
       selectedValueChain = setChainShort(int.parse(args.chainId.substring(7)));
 
       await paycoolService
@@ -201,6 +206,7 @@ class WalletConnectViewModel extends BaseViewModel {
         print("==============txHash======================");
         txHash = value;
         print("==============txHash======================");
+        setBusy(false);
       });
     } else {
       // The user pressed "No" or closed the dialog, handle accordingly.
@@ -220,10 +226,14 @@ class WalletConnectViewModel extends BaseViewModel {
       scanAreaScale: 0.7,
     );
 
-    if (uri != null && uri != "-1") {
-      await web3Wallet!.core.pairing.pair(uri: Uri.parse(uri));
-      isConnected = true;
-      notifyListeners();
+    try {
+      if (uri != null && uri != "-1") {
+        await web3Wallet!.core.pairing.pair(uri: Uri.parse(uri));
+        isConnected = true;
+        notifyListeners();
+      }
+    } catch (e) {
+      openQr();
     }
   }
 

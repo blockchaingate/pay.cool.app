@@ -925,35 +925,31 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
                         ),
                       ),
                     ),
-
-                    // UIHelper.verticalSpaceMedium,
-                    // model.bondMeVm.kycLevel != null &&
-                    //         model.bondMeVm.kycLevel! < 2
-                    //     ? Container(
-                    //         width: size.width * 0.9,
-                    //         height: 45,
-                    //         decoration: BoxDecoration(
-                    //           gradient: buttoGradient,
-                    //           borderRadius: BorderRadius.circular(40.0),
-                    //         ),
-                    //         child: ElevatedButton(
-                    //           onPressed: () {
-                    //             print(" kyc");
-                    //           },
-                    //           style: ElevatedButton.styleFrom(
-                    //             backgroundColor: Colors.transparent,
-                    //             shadowColor: Colors.transparent,
-                    //           ),
-                    //           child: Text(
-                    //             ' KYC',
-                    //             style: TextStyle(
-                    //               fontSize: 16.0,
-                    //               fontWeight: FontWeight.bold,
-                    //             ),
-                    //           ),
-                    //         ),
-                    //       )
-                    //     : SizedBox()
+                    UIHelper.verticalSpaceMedium,
+                    Container(
+                      width: size.width * 0.8,
+                      height: 50,
+                      decoration: BoxDecoration(
+                        gradient: buttoGradient,
+                        borderRadius: BorderRadius.circular(40.0),
+                      ),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          model.checkKycStatusV2();
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.transparent,
+                          shadowColor: Colors.transparent,
+                        ),
+                        child: Text(
+                          "KYC",
+                          style: TextStyle(
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
                   ],
                 )
         ],
