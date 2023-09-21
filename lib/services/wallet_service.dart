@@ -592,7 +592,7 @@ class WalletService with ListenableServiceMixin {
     return seed;
   }
 
-  generateBip32Root(Uint8List seed) {
+  bip32.BIP32 generateBip32Root(Uint8List seed) {
     var root = bip32.BIP32.fromSeed(seed);
     return root;
   }

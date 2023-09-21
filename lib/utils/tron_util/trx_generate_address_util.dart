@@ -4,8 +4,8 @@ import 'package:bs58check/bs58check.dart' as bs58check;
 // import 'package:bip32/src/utils/ecurve.dart' as ecc;
 // import 'package:pointycastle/src/utils.dart';
 import 'package:bip32/bip32.dart' as bip32;
-import 'package:bitcoin_flutter/bitcoin_flutter.dart' as BitcoinFlutter;
-import 'package:web3dart/crypto.dart' as CryptoWeb3;
+import 'package:bitcoin_flutter/bitcoin_flutter.dart' as bitcoin_flutter;
+import 'package:web3dart/crypto.dart' as crypto_web3;
 
 import '../../service_locator.dart';
 import '../../services/wallet_service.dart';
@@ -41,7 +41,7 @@ generateTrxAddress(String mnemonic) {
   //  var pubKey = node.publicKey;
   //  log.w('pub key $pubKey -- length ${pubKey.length}');
   var uncompressedPubKey =
-      BitcoinFlutter.ECPair.fromPrivateKey(privKey, compressed: false)
+      bitcoin_flutter.ECPair.fromPrivateKey(privKey, compressed: false)
           .publicKey;
   // debugPrint('uncompressedPubKey  length ${uncompressedPubKey.length}');
   // debugPrint('uncompressedPubKey ${StringUtil.uint8ListToHex(uncompressedPubKey)}');
@@ -52,7 +52,7 @@ generateTrxAddress(String mnemonic) {
     //     'uncompressedPubKey > 65 ${StringUtil.uint8ListToHex(uncompressedPubKey)} -- length ${uncompressedPubKey.length}');
   }
 
-  var hash = CryptoWeb3.keccak256(uncompressedPubKey);
+  var hash = crypto_web3.keccak256(uncompressedPubKey);
   // debugPrint('hash $hash');
 
   // debugPrint('hex ${StringUtil.uint8ListToHex(hash)}');
@@ -95,7 +95,7 @@ computeAddress(String pubBytes) {
   if (pubBytes.length == 65) pubBytes = pubBytes.substring(1);
   // var signature = sign(keccak256(concat), privateKey);
   // debugPrint('1 $pubBytes');
-  var hash = CryptoWeb3.keccakUtf8(pubBytes);
+  var hash = crypto_web3.keccakUtf8(pubBytes);
   // debugPrint('hash $hash');
   //   var addressHex = "41" + hash.substring(24);
   //   debugPrint('address hex $addressHex');

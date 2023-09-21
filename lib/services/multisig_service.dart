@@ -4,19 +4,69 @@ import 'package:paycool/constants/api_routes.dart';
 import 'package:paycool/constants/constants.dart';
 import 'package:paycool/logger.dart';
 import 'package:paycool/utils/custom_http_util.dart';
+import 'package:paycool/views/multisig/dashboard/multisig_balance_model.dart';
 import 'package:paycool/views/multisig/multisig_wallet_model.dart';
+import 'package:paycool/views/multisig/transfer/multisig_transaction_hash_model.dart';
+import 'package:hex/hex.dart';
 
 class MultiSigService {
   final log = getLogger('MultiSigService');
   final client = CustomHttpUtil.createLetsEncryptUpdatedCertClient();
 
-  Future<void> getKanbanBalance(String exgAddress) async {
-    var url = paycoolBaseUrlV2 + 'kanban/balanceold';
-    log.i('getKanbanBalance url $url');
+  Future multisigtransferTxHash(MultisigTransactionHashModel body) async {
+    var url = paycoolBaseUrlV2 + 'multisig/getTransactionHash';
+    log.i('multisigtransferTxHash url $url - body ${body.toJson()}');
     try {
       var response = await client.post(Uri.parse(url),
-          body: jsonEncode({"native": exgAddress}),
-          headers: Constants.headersJson);
+          body: jsonEncode(body.toJson()), headers: Constants.headersJson);
+      var json = jsonDecode(response.body);
+      if (json['success']) {
+        log.w('multisigtransferTxHash $json}');
+        return json['data'];
+      } else {
+        log.e('multisigtransferTxHash success false $json}');
+      }
+    } catch (err) {
+      log.e('multisigtransferTxHash CATCH $err');
+      throw Exception(err);
+    }
+  }
+
+  Future<void> getQueuetransaction(String address,
+      {int pageSize = 10, int pageNumber = 0}) async {
+    var url = paycoolBaseUrlV2 + 'multisigproposal/queue';
+    if (pageNumber != 0) {
+      pageNumber = pageNumber - 1;
+    }
+    url = '$url/$pageSize/$pageNumber';
+    log.i('getQueuetransaction url $url');
+    try {
+      var response =
+          await client.get(Uri.parse(url), headers: Constants.headersJson);
+      var json = jsonDecode(response.body);
+      if (json['success']) {
+        log.w('getQueuetransaction $json}');
+        return json['data'];
+      } else {
+        log.e('getQueuetransaction success false $json}');
+      }
+    } catch (err) {
+      log.e('getQueuetransaction CATCH $err');
+      throw Exception(err);
+    }
+  }
+
+  Future<void> getmultisigTransactions(String address,
+      {int pageSize = 10, int pageNumber = 0}) async {
+    var url = paycoolBaseUrlV2 + 'multisigtransaction/address';
+    if (pageNumber != 0) {
+      pageNumber = pageNumber - 1;
+    }
+    url = '$url/$pageSize/$pageNumber';
+    log.i('getKanbanBalance url $url');
+    try {
+      var response =
+          await client.get(Uri.parse(url), headers: Constants.headersJson);
       var json = jsonDecode(response.body);
       if (json['success']) {
         log.w('getKanbanBalance $json}');
@@ -30,24 +80,64 @@ class MultiSigService {
     }
   }
 
+  Future<MultisigBalanceModel> getBalance(String address,
+      {required String chain, List<String>? ids}) async {
+    String endpoint = '';
+    switch (chain.toLowerCase()) {
+      case 'kanban':
+        endpoint = 'kanban/balanceold';
+        break;
+      case 'eth':
+        endpoint = 'eth/balance';
+        break;
+      case 'bnb':
+        endpoint = 'bnb/balance';
+        break;
+      default:
+        endpoint = 'kanban/balanceold';
+    }
+    var url = paycoolBaseUrlV2 + endpoint;
+    log.i('get $endpoint Balance url $url');
+    try {
+      var response = await client.post(Uri.parse(url),
+          body: jsonEncode({"native": address, "ids": ids}),
+          headers: Constants.headersJson);
+      var json = jsonDecode(response.body);
+      var data = MultisigBalanceModel();
+      if (json['success']) {
+        log.w('get $endpoint Balance $json}');
+        data = MultisigBalanceModel.fromJson(json['data']);
+        return data;
+      } else {
+        log.e('get $endpoint Balance success false $json}');
+      }
+      return data;
+    } catch (err) {
+      log.e('get $endpoint Balance CATCH $err');
+      throw Exception(err);
+    }
+  }
+
   // get txid data
   //multisig/txid/
-  Future<MultisigWalletModel> getTxidData(String txid) async {
-    var url = paycoolBaseUrlV2 + 'multisig/txid/$txid';
-    log.i('getTxidData url $url');
+  Future<MultisigWalletModel> getWalletData(String value,
+      {required bool isTxid}) async {
+    String apiRoute = isTxid ? 'multisig/txid' : 'multisig/address';
+    var url = paycoolBaseUrlV2 + '$apiRoute/$value';
+    log.i('getWalletData url $url');
     try {
       var response =
           await client.get(Uri.parse(url), headers: Constants.headersJson);
       var json = jsonDecode(response.body);
       if (json['success']) {
-        log.w('getTxidData $json}');
+        log.w('getWalletData $json}');
         return MultisigWalletModel.fromJson(json['data']);
       } else {
-        log.e('getTxidData success false $json}');
+        log.e('getWalletData success false $json}');
       }
       return MultisigWalletModel(txid: '');
     } catch (err) {
-      log.e('getTxidData CATCH $err');
+      log.e('getWalletData CATCH $err');
       throw Exception(err);
     }
   }
@@ -109,6 +199,23 @@ class MultiSigService {
     }
   }
 
+  Future getTransferNonce(String address) async {
+    var url = paycoolBaseUrlV2 + 'multisig/nonce/' + address;
+
+    log.i('getTransferNonce url $url');
+    try {
+      var response =
+          await client.get(Uri.parse(url), headers: Constants.headersJson);
+      var json = jsonDecode(response.body);
+      log.i('getTransferNonce $json');
+
+      return int.parse(json['data']);
+    } catch (e) {
+      log.e('getTransferNonce CATCH $e');
+    }
+    return null;
+  }
+
   Future getKanbanNonce(String address) async {
     var url = paycoolBaseUrlV2 + 'kanban/nonce';
     var body = {"native": address};
@@ -127,5 +234,83 @@ class MultiSigService {
       log.e('getKanbanNonce CATCH $e');
     }
     return null;
+  }
+
+  String adjustVInSignature({
+    required String signingMethod,
+    required String signature,
+    String? safeTxHash,
+    String? signerAddress,
+  }) {
+    final List<int> ethereumVValues = [0, 1, 27, 28];
+    const int minValidVValueForSafeEcdsa = 27;
+    int signatureV =
+        int.parse(signature.substring(signature.length - 2), radix: 16);
+
+    if (!ethereumVValues.contains(signatureV)) {
+      throw Exception('Invalid signature');
+    }
+
+    if (signingMethod == 'eth_sign') {
+      if (signatureV < minValidVValueForSafeEcdsa) {
+        signatureV += minValidVValueForSafeEcdsa;
+      }
+
+      String adjustedSignature = signature.substring(0, signature.length - 2) +
+          signatureV.toRadixString(16);
+      bool signatureHasPrefix = isTxHashSignedWithPrefix(
+          safeTxHash!, adjustedSignature, signerAddress!);
+
+      if (signatureHasPrefix) {
+        signatureV += 4;
+      }
+    }
+
+    if (signingMethod == 'eth_signTypedData') {
+      if (signatureV < minValidVValueForSafeEcdsa) {
+        signatureV += minValidVValueForSafeEcdsa;
+      }
+    }
+
+    signature = signature.substring(0, signature.length - 2) +
+        signatureV.toRadixString(16);
+    return signature;
+  }
+
+  bool isTxHashSignedWithPrefix(
+    String txHash,
+    String signature,
+    String ownerAddress,
+  ) {
+    bool hasPrefix;
+    try {
+      final rsvSig = {
+        'r': HEX.decode(signature.substring(2, 66)),
+        's': HEX.decode(signature.substring(66, 130)),
+        'v': int.parse(signature.substring(130, 132), radix: 16),
+      };
+
+      // final recoveredData = ecrecover(
+      //   HEX.decode(txHash.substring(2)),
+      //   rsvSig['v'],
+      //   rsvSig['r'],
+      //   rsvSig['s'],
+      // );
+
+      final recoveredAddress = '';
+      //bufferToHex(pubToAddress(recoveredData));
+      hasPrefix = !sameString(recoveredAddress, ownerAddress);
+    } catch (e) {
+      hasPrefix = true;
+    }
+    return hasPrefix;
+  }
+
+  bool sameString(String a, String b) {
+    return a == b;
+  }
+
+  String bufferToHex(List<int> buffer) {
+    return '0x' + HEX.encode(buffer);
   }
 }

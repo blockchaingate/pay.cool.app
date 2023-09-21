@@ -329,25 +329,25 @@ class MultisigView extends StatelessWidget {
                       ),
                     ),
                   ),
-                  // Container(
-                  //   alignment: Alignment.center,
-                  //   child: ElevatedButton(
-                  //     style: ButtonStyle(
-                  //         padding: MaterialStateProperty.all(
-                  //             const EdgeInsets.symmetric(
-                  //                 horizontal: 30, vertical: 10)),
-                  //         backgroundColor:
-                  //             MaterialStateProperty.all(primaryColor)),
-                  //     onPressed: () => model.navigationService
-                  //         .navigateWithTransition(MultisigDashboardView(
-                  //             txid:
-                  //                 '')),
-                  //     child: Text(
-                  //       "Dashboard",
-                  //       style: headText3.copyWith(color: white),
-                  //     ),
-                  //   ),
-                  // ),
+                  Container(
+                    alignment: Alignment.center,
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                          padding: MaterialStateProperty.all(
+                              const EdgeInsets.symmetric(
+                                  horizontal: 30, vertical: 10)),
+                          backgroundColor:
+                              MaterialStateProperty.all(primaryColor)),
+                      onPressed: () => model.navigationService
+                          .navigateWithTransition(MultisigDashboardView(
+                              txid:
+                                  '0x77bf7ad3753a3ecc4402765b7b2a9ca73d07f0e78488de036940d8d073313edf')),
+                      child: Text(
+                        "Dashboard",
+                        style: headText3.copyWith(color: white),
+                      ),
+                    ),
+                  ),
                   UIHelper.verticalSpaceLarge
                 ],
               ),

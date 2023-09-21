@@ -347,7 +347,7 @@ class MultisigViewModel extends BaseViewModel {
     if (txid != null) {
       multisigWallet.txid = txid;
 
-      var walletData = await multisigService.getTxidData(txid);
+      var walletData = await multisigService.getWalletData(txid, isTxid: true);
 
       multisigWallet.address = walletData.address;
       log.w('multisigModel: ${multisigWallet.toJson()}');
