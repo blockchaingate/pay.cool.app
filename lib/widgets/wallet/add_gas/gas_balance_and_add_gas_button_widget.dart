@@ -53,7 +53,7 @@ class GasBalanceAndAddGasButtonWidget extends StatelessWidget {
             ),
             UIHelper.horizontalSpaceSmall,
             MaterialButton(
-              minWidth: 70.0,
+              minWidth: 68.0,
               height: 24,
               color: primaryColor,
               padding: const EdgeInsets.all(0),

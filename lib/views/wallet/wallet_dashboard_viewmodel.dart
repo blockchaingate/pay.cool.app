@@ -18,6 +18,7 @@ import 'package:aukfa_version_checker/aukfa_version_checker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:kyc/kyc.dart';
 // import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:paycool/constants/colors.dart';
@@ -25,6 +26,7 @@ import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/constants/route_names.dart';
 import 'package:paycool/constants/ui_var.dart';
 import 'package:paycool/environments/coins.dart';
+import 'package:paycool/environments/environment_type.dart';
 import 'package:paycool/logger.dart';
 import 'package:paycool/models/bond/vm/me_model.dart';
 import 'package:paycool/models/wallet/core_wallet_model.dart';
@@ -148,6 +150,7 @@ class WalletDashboardViewModel extends BaseViewModel {
   // bond page
 
   BondMeModel bondMeVm = BondMeModel();
+  final kycService = locator<KycBaseService>();
 
 /*----------------------------------------------------------------------
                     INIT
@@ -205,6 +208,50 @@ class WalletDashboardViewModel extends BaseViewModel {
     // Future.delayed(const Duration(seconds: 2), () async {
     //   await walletService.updateTokenListDb();
     // });
+  }
+
+  checkKycStatusV2() async {
+    kycService.setPrimaryColor(primaryColor);
+    if (storageService.bondToken.isEmpty) {
+      log.e('kyc token is empty');
+      await sharedService
+          .navigateWithAnimation(KycLogin(onFormSubmit: onLoginFormSubmit));
+      return;
+    } else {
+      kycService.xAccessToken.value = storageService.bondToken;
+
+      navigationService.navigateToView(const KycStatus());
+    }
+  }
+
+  onLoginFormSubmit(UserLoginModel user) async {
+    setBusy(true);
+
+    try {
+      final kycService = locator<KycBaseService>();
+
+      String url =
+          isProduction ? KycConstants.prodBaseUrl : KycConstants.testBaseUrl;
+      final Map<String, dynamic> res;
+
+      if (user.email!.isNotEmpty && user.password!.isNotEmpty) {
+        res = await kycService.login(url, user);
+        if (res['success']) {
+          storageService.bondToken = res['data']['token'];
+        }
+      } else {
+        res = {
+          'success': false,
+          'error': FlutterI18n.translate(
+              _context!, 'pleaseFillAllTheTextFieldsCorrectly')
+        };
+      }
+      return res;
+    } catch (e) {
+      debugPrint('CATCH error $e');
+    }
+
+    setBusy(false);
   }
 
   Future<void> getUserBondMeData() async {
