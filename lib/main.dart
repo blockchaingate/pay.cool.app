@@ -6,16 +6,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:hive/hive.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+
 import 'package:logger/logger.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:package_info/package_info.dart';
-import 'package:paycool/constants/constants.dart';
 import 'package:paycool/routes.dart';
 import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/hive_service.dart';
-import 'package:paycool/views/multisig/multisig_wallet_model.dart';
 import 'package:stacked_services/stacked_services.dart';
 
 import 'constants/colors.dart';
@@ -63,7 +60,6 @@ Future<void> main() async {
       log.e('dot env can not find local.env, loading default');
       dotenv.load();
     });
-
     await HiveService.init();
 
     runApp(MyApp(flutterI18nDelegate, packageInfo));
