@@ -646,8 +646,45 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
               ? SizedBox(
                   height: size.height,
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
+                      UIHelper.verticalSpaceLarge,
+                      SizedBox(
+                        width: size.width,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(right: 10),
+                              child: IconButton(
+                                alignment: Alignment.topRight,
+                                onPressed: () {
+                                  _pageController.animateToPage(1,
+                                      duration: Duration(seconds: 2),
+                                      curve: Curves.easeInOut);
+                                },
+                                icon: Icon(Icons.arrow_back),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(right: 10),
+                              child: IconButton(
+                                alignment: Alignment.topRight,
+                                onPressed: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const WalletConnectView()));
+                                },
+                                icon: Image.asset(
+                                  "assets/images/walletconnect.png",
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                       Image.asset(
                         "assets/images/salvador.png",
                         height: 200,
@@ -851,7 +888,9 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
                                             builder: (context) =>
                                                 const WalletConnectView()));
                                   },
-                                  icon: Icon(Icons.qr_code_scanner),
+                                  icon: Image.asset(
+                                    "assets/images/walletconnect.png",
+                                  ),
                                 ),
                               ),
                               Padding(

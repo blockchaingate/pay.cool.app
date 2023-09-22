@@ -40,13 +40,12 @@ class TransactionHistoryView extends StatelessWidget {
               },
               child: Scaffold(
                 appBar: AppBar(
-                  leading: Container(
-                      child: IconButton(
-                          icon: const Icon(
-                            Icons.arrow_back,
-                            color: black,
-                          ),
-                          onPressed: () => Navigator.of(context).pop())),
+                  leading: IconButton(
+                      icon: const Icon(
+                        Icons.arrow_back,
+                        color: black,
+                      ),
+                      onPressed: () => Navigator.of(context).pop()),
                   centerTitle: true,
                   actions: [
                     IconButton(
