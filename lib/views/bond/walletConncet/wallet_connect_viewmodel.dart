@@ -15,6 +15,8 @@ class WalletConnectViewModel extends BaseViewModel {
   WalletService walletService = locator<WalletService>();
   final paycoolService = locator<PayCoolService>();
 
+  TextEditingController controller = TextEditingController();
+
   Web3Wallet? web3Wallet;
   SessionProposalEvent? proposal;
   SessionRequestEvent? request;
@@ -45,12 +47,11 @@ class WalletConnectViewModel extends BaseViewModel {
           topic: topic!,
           reason: WalletConnectError(code: 6000, message: "user Disconnected"));
     }
+    controller.dispose();
     super.dispose();
   }
 
   Future<void> setWalletConnect() async {
-    print("step1");
-
     fabAddress = await CoinService().getCoinWalletAddress("FAB");
     ethAddress = await CoinService().getCoinWalletAddress("ETH");
 
@@ -231,12 +232,20 @@ class WalletConnectViewModel extends BaseViewModel {
 
     try {
       if (uri != null && uri != "-1") {
-        await web3Wallet!.core.pairing.pair(uri: Uri.parse(uri));
-        isConnected = true;
-        notifyListeners();
+        await pair(uri);
       }
     } catch (e) {
-      openQr();
+      print(e.toString());
+    }
+  }
+
+  Future<void> pair(String uri) async {
+    try {
+      await web3Wallet!.core.pairing.pair(uri: Uri.parse(uri));
+      isConnected = true;
+      notifyListeners();
+    } catch (e) {
+      print(e.toString());
     }
   }
 
