@@ -112,13 +112,46 @@ class _WalletConnectViewState extends State<WalletConnectView> {
                                         ),
                                       ],
                                     )
-                                  : Text(
-                                      "Proceed to sign the transaction in your wallet",
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          fontSize: 24,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.white),
+                                  : Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          "Please check web application to start transaction",
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              fontSize: 24,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.white),
+                                        ),
+                                        UIHelper.verticalSpaceLarge,
+                                        Container(
+                                          width: size.width * 0.9,
+                                          height: 45,
+                                          decoration: BoxDecoration(
+                                            gradient: buttoGradient,
+                                            borderRadius:
+                                                BorderRadius.circular(40.0),
+                                          ),
+                                          child: ElevatedButton(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor:
+                                                  Colors.transparent,
+                                              shadowColor: Colors.transparent,
+                                            ),
+                                            child: Text(
+                                              "Back",
+                                              style: TextStyle(
+                                                fontSize: 16.0,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                             ),
                           )

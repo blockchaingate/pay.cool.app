@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
 import 'package:majascan/majascan.dart';
 import 'package:paycool/service_locator.dart';
@@ -34,7 +37,9 @@ class WalletConnectViewModel extends BaseViewModel {
   String? txHash;
   String? selectedValueChain;
 
-  List<SessionRequestEvent> eventList = [];
+  bool stopper = false;
+
+  final Queue<SessionRequestEvent> _requestQueue = Queue<SessionRequestEvent>();
 
   init() async {
     setWalletConnect();
@@ -95,45 +100,51 @@ class WalletConnectViewModel extends BaseViewModel {
     return await showDialog<bool>(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('DNB'),
-          content: SingleChildScrollView(
-            child: Column(
-              children: [
-                Text('Do you want to continue?'),
-                Text(
-                  "To: ${args.params[0]["to"]}",
-                  style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white),
-                ),
-                Text(
-                  "Data: ${args.params[0]["data"]}",
-                  style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white),
-                ),
-              ],
+        return WillPopScope(
+          onWillPop: () async {
+            // Return false to prevent dialog dismissal via back button
+            return false;
+          },
+          child: AlertDialog(
+            title: Text('DNB'),
+            content: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Text('Do you want to continue?'),
+                  Text(
+                    "To: ${args.params[0]["to"]}",
+                    style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white),
+                  ),
+                  Text(
+                    "Data: ${args.params[0]["data"]}",
+                    style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white),
+                  ),
+                ],
+              ),
             ),
+            actions: <Widget>[
+              TextButton(
+                child: Text('No'),
+                onPressed: () {
+                  Navigator.of(context)
+                      .pop(false); // Return false if "No" is pressed.
+                },
+              ),
+              TextButton(
+                child: Text('Yes'),
+                onPressed: () {
+                  Navigator.of(context)
+                      .pop(true); // Return true if "Yes" is pressed.
+                },
+              ),
+            ],
           ),
-          actions: <Widget>[
-            TextButton(
-              child: Text('No'),
-              onPressed: () {
-                Navigator.of(context)
-                    .pop(false); // Return false if "No" is pressed.
-              },
-            ),
-            TextButton(
-              child: Text('Yes'),
-              onPressed: () {
-                Navigator.of(context)
-                    .pop(true); // Return true if "Yes" is pressed.
-              },
-            ),
-          ],
         );
       },
     );
@@ -151,72 +162,60 @@ class WalletConnectViewModel extends BaseViewModel {
     return "KANBAN";
   }
 
-  Future<void> _onSessionRequest(SessionRequestEvent? args) async {
-    print("step4");
+  bool _isProcessing = false;
 
-    eventList.add(args!);
-    request = args;
+  Future<void> _onSessionRequest(SessionRequestEvent? args,
+      {bool repeat = false}) async {
+    if (!repeat) _requestQueue.add(args!); // Add the request to the queue
+
+    if (!_isProcessing) {
+      _isProcessing = true;
+
+      _requestQueue.first;
+
+      request = _requestQueue.first;
+      await eventFunction(request).whenComplete(() async {
+        if (_requestQueue.isNotEmpty) {
+          _isProcessing = false;
+          await _onSessionRequest(_requestQueue.first, repeat: true);
+        }
+      });
+
+      _isProcessing = false;
+    }
 
     notifyListeners();
-
-    if (eventList.length == 2) {
-      approveFunction(eventList[0]);
-    }
   }
 
-  Future<bool> approveFunction(SessionRequestEvent? args) async {
+  Future<void> eventFunction(SessionRequestEvent? args) async {
     bool? userApproved = await showConfirmationDialog(context!, args!);
 
     setBusy(true);
 
-    if (userApproved!) {
-      var seed = await walletService.getSeedDialog(context!);
+    try {
+      if (userApproved!) {
+        var seed = await walletService.getSeedDialog(context!);
 
-      selectedValueChain = setChainShort(int.parse(args.chainId.substring(7)));
+        selectedValueChain =
+            setChainShort(int.parse(args.chainId.substring(7)));
 
-      await paycoolService
-          .signSendTxBond(seed!, args.params[0]["data"], args.params[0]["to"],
-              chain: selectedValueChain!)
-          .then((value) async {
-        print(value);
-        print("==============txHash======================");
-        txHash = value;
-        print("==============txHash======================");
+        await paycoolService
+            .signSendTxBond(seed!, args.params[0]["data"], args.params[0]["to"],
+                chain: selectedValueChain!)
+            .then((value) async {
+          txHash = value;
+
+          setBusy(false);
+        });
+        _requestQueue.removeFirst(); // Remove the processed request
+      } else {
         setBusy(false);
-        await purchaseFunction(eventList[1]);
-      });
-    } else {
-      // The user pressed "No" or closed the dialog, handle accordingly.
-      print('User did not approve.');
+        _requestQueue.clear();
+        print('User did not approve.');
+      }
+    } catch (e) {
+      setBusy(false);
     }
-    return true;
-  }
-
-  Future<bool> purchaseFunction(SessionRequestEvent? args) async {
-    bool? userApproved = await showConfirmationDialog(context!, args!);
-
-    if (userApproved!) {
-      var seed = await walletService.getSeedDialog(context!);
-
-      setBusy(true);
-
-      selectedValueChain = setChainShort(int.parse(args.chainId.substring(7)));
-
-      await paycoolService
-          .signSendTxBond(seed!, args.params[0]["data"], args.params[0]["to"],
-              chain: selectedValueChain!)
-          .then((value) async {
-        print(value);
-        print("==============txHash======================");
-        txHash = value;
-        print("==============txHash======================");
-        setBusy(false);
-      });
-    } else {
-      // The user pressed "No" or closed the dialog, handle accordingly.
-      print('User did not approve.');
-    }
-    return true;
   }
 
   Future<void> openQr() async {
@@ -250,25 +249,30 @@ class WalletConnectViewModel extends BaseViewModel {
   }
 
   Future<void> handleConnect() async {
+    var chains = proposal!.params.requiredNamespaces["eip155"]!.chains;
+    var methods = proposal!.params.requiredNamespaces["eip155"]!.methods;
+    var events = proposal!.params.requiredNamespaces["eip155"]!.events;
+
+    List<String>? accounts = [];
+
+    for (var i = 0; i < chains!.length; i++) {
+      if (chains[i].contains("eip155:1")) {
+        accounts.add("${chains[i]}:$ethAddress");
+      } else if (chains[i].contains("eip155:211")) {
+        accounts.add("${chains[i]}:$fabAddress");
+      } else if (chains[i].contains("eip155:56")) {
+        accounts.add("${chains[i]}:$ethAddress");
+      }
+    }
+
     print("step3");
     try {
       Map<String, Namespace> namespaces = {};
       for (var key in proposal!.params.requiredNamespaces.keys) {
         final namespace = Namespace(
-          accounts: [
-            "eip155:1:$ethAddress",
-            "eip155:211:$fabAddress",
-            "eip155:56:$ethAddress",
-          ],
-          methods: [
-            'eth_sendTransaction',
-            'eth_signTransaction',
-            'personal_sign',
-            'eth_sign',
-            "kanban_sendTransaction",
-            "personal_sign"
-          ],
-          events: ['accountsChanged', 'chainChanged'],
+          accounts: accounts,
+          methods: methods,
+          events: events,
         );
         namespaces[key] = namespace;
       }
