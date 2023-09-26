@@ -61,7 +61,7 @@ class _WalletConnectViewState extends State<WalletConnectView> {
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: model.isConnected && model.request != null
+                    child: model.approveResponse != null && model.isConnected
                         ? SizedBox(
                             width: size.width,
                             height: size.height * 0.7,
@@ -169,7 +169,7 @@ class _WalletConnectViewState extends State<WalletConnectView> {
                               ),
                               UIHelper.verticalSpaceLarge,
                               Text(
-                                "Please scan the QR code with your wallet to connect",
+                                "Please scan the QR code or paste url to connect",
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                     fontSize: 16,

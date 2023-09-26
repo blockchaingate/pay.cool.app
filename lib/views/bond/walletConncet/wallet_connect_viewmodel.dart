@@ -23,12 +23,11 @@ class WalletConnectViewModel extends BaseViewModel {
   Web3Wallet? web3Wallet;
   SessionProposalEvent? proposal;
   SessionRequestEvent? request;
-  SessionData? sessionData;
+  ApproveResponse? approveResponse;
 
   String? method;
   String? chainId;
 
-  String? topic;
   bool isConnected = false;
 
   String? fabAddress;
@@ -47,9 +46,9 @@ class WalletConnectViewModel extends BaseViewModel {
 
   @override
   void dispose() {
-    if (topic != null) {
+    if (approveResponse != null) {
       web3Wallet!.disconnectSession(
-          topic: topic!,
+          topic: approveResponse!.topic,
           reason: WalletConnectError(code: 6000, message: "user Disconnected"));
     }
     controller.dispose();
@@ -59,9 +58,6 @@ class WalletConnectViewModel extends BaseViewModel {
   Future<void> setWalletConnect() async {
     fabAddress = await CoinService().getCoinWalletAddress("FAB");
     ethAddress = await CoinService().getCoinWalletAddress("ETH");
-
-    print("fabAddress: $fabAddress");
-    print("ethAddress: $ethAddress");
 
     web3Wallet = await Web3Wallet.createInstance(
         projectId: "3acbabd1deb4672edfd4ca48226cfc0f",
@@ -88,7 +84,6 @@ class WalletConnectViewModel extends BaseViewModel {
   }
 
   void _onSessionProposal(SessionProposalEvent? args) async {
-    print("step2");
     if (args != null) {
       proposal = args;
       notifyListeners();
@@ -110,7 +105,6 @@ class WalletConnectViewModel extends BaseViewModel {
             content: SingleChildScrollView(
               child: Column(
                 children: [
-                  Text('Do you want to continue?'),
                   Text(
                     "To: ${args.params[0]["to"]}",
                     style: TextStyle(
@@ -265,7 +259,6 @@ class WalletConnectViewModel extends BaseViewModel {
       }
     }
 
-    print("step3");
     try {
       Map<String, Namespace> namespaces = {};
       for (var key in proposal!.params.requiredNamespaces.keys) {
@@ -277,11 +270,8 @@ class WalletConnectViewModel extends BaseViewModel {
         namespaces[key] = namespace;
       }
 
-      var result = await web3Wallet!
+      approveResponse = await web3Wallet!
           .approveSession(id: proposal!.id, namespaces: namespaces);
-
-      topic = result.topic;
-      sessionData = result.session;
     } catch (e) {
       ScaffoldMessenger.of(context!).showSnackBar(
         SnackBar(
