@@ -61,7 +61,7 @@ class _WalletConnectViewState extends State<WalletConnectView> {
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: model.isConnected && model.request != null
+                    child: model.approveResponse != null && model.isConnected
                         ? SizedBox(
                             width: size.width,
                             height: size.height * 0.7,
@@ -112,13 +112,46 @@ class _WalletConnectViewState extends State<WalletConnectView> {
                                         ),
                                       ],
                                     )
-                                  : Text(
-                                      "Proceed to sign the transaction in your wallet",
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          fontSize: 24,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.white),
+                                  : Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          "Please check web application to start transaction",
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              fontSize: 24,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.white),
+                                        ),
+                                        UIHelper.verticalSpaceLarge,
+                                        Container(
+                                          width: size.width * 0.9,
+                                          height: 45,
+                                          decoration: BoxDecoration(
+                                            gradient: buttoGradient,
+                                            borderRadius:
+                                                BorderRadius.circular(40.0),
+                                          ),
+                                          child: ElevatedButton(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor:
+                                                  Colors.transparent,
+                                              shadowColor: Colors.transparent,
+                                            ),
+                                            child: Text(
+                                              "Back",
+                                              style: TextStyle(
+                                                fontSize: 16.0,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                             ),
                           )
@@ -136,7 +169,7 @@ class _WalletConnectViewState extends State<WalletConnectView> {
                               ),
                               UIHelper.verticalSpaceLarge,
                               Text(
-                                "Please scan the QR code with your wallet to connect",
+                                "Please scan the QR code or paste url to connect",
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                     fontSize: 16,
@@ -145,30 +178,93 @@ class _WalletConnectViewState extends State<WalletConnectView> {
                               ),
                               UIHelper.verticalSpaceLarge,
                               !model.isConnected
-                                  ? Container(
-                                      width: size.width * 0.9,
-                                      height: 45,
-                                      decoration: BoxDecoration(
-                                        gradient: buttoGradient,
-                                        borderRadius:
-                                            BorderRadius.circular(40.0),
-                                      ),
-                                      child: ElevatedButton(
-                                        onPressed: () {
-                                          model.openQr();
-                                        },
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: Colors.transparent,
-                                          shadowColor: Colors.transparent,
-                                        ),
-                                        child: Text(
-                                          "Scan QR Code",
+                                  ? Column(
+                                      children: [
+                                        TextField(
+                                          controller: model.controller,
                                           style: TextStyle(
-                                            fontSize: 16.0,
-                                            fontWeight: FontWeight.bold,
+                                              color: Colors.white,
+                                              fontSize: 13),
+                                          keyboardType: TextInputType.text,
+                                          onChanged: (value) {
+                                            setState(() {});
+                                          },
+                                          decoration: InputDecoration(
+                                            hintText: FlutterI18n.translate(
+                                                context, "Code"),
+                                            hintStyle: TextStyle(
+                                                color: inputText,
+                                                fontWeight: FontWeight.w400),
+                                            fillColor: Colors.transparent,
+                                            filled: true,
+                                            suffixIcon: IconButton(
+                                                onPressed: () async {
+                                                  final clipboardData =
+                                                      await Clipboard.getData(
+                                                          'text/plain');
+                                                  if (clipboardData != null &&
+                                                      clipboardData.text !=
+                                                          null) {}
+                                                  setState(() {
+                                                    model.controller.text =
+                                                        clipboardData!.text!;
+                                                  });
+                                                },
+                                                icon: Icon(Icons.paste)),
+                                            enabledBorder: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10.0),
+                                              borderSide: BorderSide(
+                                                color:
+                                                    inputBorder, // Change the color to your desired border color
+                                              ),
+                                            ),
+                                            focusedBorder: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10.0),
+                                              borderSide: BorderSide(
+                                                color:
+                                                    inputBorder, // Change the color to your desired border color
+                                              ),
+                                            ),
                                           ),
                                         ),
-                                      ),
+                                        UIHelper.verticalSpaceMedium,
+                                        Container(
+                                          width: size.width * 0.9,
+                                          height: 45,
+                                          decoration: BoxDecoration(
+                                            gradient: buttoGradient,
+                                            borderRadius:
+                                                BorderRadius.circular(40.0),
+                                          ),
+                                          child: ElevatedButton(
+                                            onPressed: model
+                                                    .controller.text.isNotEmpty
+                                                ? () {
+                                                    model.pair(
+                                                        model.controller.text);
+                                                  }
+                                                : () {
+                                                    model.openQr();
+                                                  },
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor:
+                                                  Colors.transparent,
+                                              shadowColor: Colors.transparent,
+                                            ),
+                                            child: Text(
+                                              model.controller.text.isEmpty
+                                                  ? "Scan QR Code"
+                                                  : "Connect",
+                                              style: TextStyle(
+                                                fontSize: 16.0,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     )
                                   : Container(
                                       width: size.width * 0.9,

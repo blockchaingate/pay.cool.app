@@ -220,9 +220,6 @@ class _BondSembolViewState extends State<BondSembolView> {
                         }
                       },
                       decoration: InputDecoration(
-                        hintText: FlutterI18n.translate(context, "amount"),
-                        hintStyle: TextStyle(
-                            color: inputText, fontWeight: FontWeight.w400),
                         fillColor: Colors.transparent,
                         filled: true,
                         enabledBorder: OutlineInputBorder(
