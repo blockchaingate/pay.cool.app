@@ -18,9 +18,9 @@ import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 
 class MultisigDashboardViewModel extends BaseViewModel {
-  final String txid;
+  final String data;
   final BuildContext? context;
-  MultisigDashboardViewModel({this.context, required this.txid});
+  MultisigDashboardViewModel({this.context, required this.data});
   final log = getLogger('MultisigDashboardViewModel');
 
   final multisigService = locator<MultiSigService>();
@@ -36,18 +36,21 @@ class MultisigDashboardViewModel extends BaseViewModel {
   MultisigWalletModel multisigWallet = MultisigWalletModel();
   final fabUtils = FabUtils();
   double? gasBalance = 0.0;
+  String fabAddress = '';
 
   init() async {
+    setBusy(true);
     sharedService.context = context!;
     multisigWallets = await hiveService.getAllMultisigWallets();
     log.i(
         'init MultisigDashboardViewModel multisigWallets ${multisigWallets.length}');
-    await getWalletByTxid(value: txid);
+    await getWalletByTxid(value: data);
     setBusyForObject(multisigBalance, true);
-
+    fabAddress = await sharedService.getFabAddressFromCoreWalletDatabase();
     Future.delayed(Duration(milliseconds: 500), () {
       getBalance();
     });
+    setBusy(false);
   }
 
   navigateToTransferView(int index) {
@@ -89,13 +92,22 @@ class MultisigDashboardViewModel extends BaseViewModel {
     setBusyForObject(multisigBalance, false);
   }
 
-  getWalletByTxid({required String value}) async {
-    var walletByTxid = hiveService.findMultisigWalletByTxid(value);
+  getWalletByTxid({required String value, bool isAddress = true}) async {
+    var walletByTxid = MultisigWalletModel();
+
+    try {
+      walletByTxid = isAddress
+          ? hiveService.findMultisigWalletByAddress(value)
+          : hiveService.findMultisigWalletByTxid(value);
+    } catch (e) {
+      log.e('error $e');
+    }
     if (walletByTxid.txid != null && walletByTxid.txid!.isNotEmpty) {
       multisigWallet = walletByTxid;
     } else {
       getWalletDataFromApi(value);
     }
+    rebuildUi();
   }
 
   // get txid data

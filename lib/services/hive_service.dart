@@ -19,7 +19,9 @@ class HiveService {
   // Function find multisig wallet by txid
   MultisigWalletModel findMultisigWalletByTxid(String txid) =>
       multisigWallets.values.firstWhere((element) => element.txid == txid);
-
+  MultisigWalletModel findMultisigWalletByAddress(String address) =>
+      multisigWallets.values
+          .firstWhere((element) => element.address == address);
   // msw = MultisigWallet
   Future<void> addMultisigWallet(MultisigWalletModel msw) async {
     final box = Hive.box<MultisigWalletModel>(Constants.multisigWalletBox);

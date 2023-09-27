@@ -77,26 +77,29 @@ class MultisigTransferView extends StatelessWidget {
                   ),
                   Container(
                     alignment: Alignment.center,
-                    child: ElevatedButton.icon(
-                      style: ButtonStyle(
-                          padding: MaterialStateProperty.all(
-                              const EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 5)),
-                          backgroundColor:
-                              MaterialStateProperty.all(primaryColor)),
-                      icon: Icon(
-                        Icons.send,
-                        size: 18,
-                      ),
-                      onPressed: () {
-                        model.transfer(
-                            multisigBalance.tokens!, multisigWallet, context);
-                      },
-                      label: Text(
-                        'Transfer',
-                        style: headText5.copyWith(color: white),
-                      ),
-                    ),
+                    child: model.isBusy
+                        ? model.sharedService.loadingIndicator()
+                        : ElevatedButton.icon(
+                            style: ButtonStyle(
+                                padding: MaterialStateProperty.all(
+                                    const EdgeInsets.symmetric(
+                                        horizontal: 10, vertical: 5)),
+                                backgroundColor:
+                                    MaterialStateProperty.all(primaryColor)),
+                            icon: Icon(
+                              Icons.send,
+                              size: 18,
+                            ),
+                            onPressed: () {
+                              if (!model.isBusy)
+                                model.transfer(multisigBalance.tokens!,
+                                    multisigWallet, context);
+                            },
+                            label: Text(
+                              'Transfer',
+                              style: headText5.copyWith(color: white),
+                            ),
+                          ),
                   ),
                   UIHelper.verticalSpaceMedium,
                 ],

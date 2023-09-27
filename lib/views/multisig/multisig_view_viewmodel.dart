@@ -358,7 +358,7 @@ class MultisigViewModel extends BaseViewModel {
       log.w('box ${multisigWallet.box}');
       Future.delayed(Duration(milliseconds: 750), () {
         navigationService.navigateWithTransition(
-            MultisigDashboardView(txid: txid),
+            MultisigDashboardView(data: txid),
             transitionStyle: Transition.rightToLeftWithFade,
             duration: Duration(milliseconds: 750));
       });

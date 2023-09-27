@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:paycool/constants/api_routes.dart';
 import 'package:paycool/constants/constants.dart';
 import 'package:paycool/logger.dart';
+import 'package:paycool/service_locator.dart';
+import 'package:paycool/services/db/core_wallet_database_service.dart';
 import 'package:paycool/utils/custom_http_util.dart';
 import 'package:paycool/views/multisig/dashboard/multisig_balance_model.dart';
 import 'package:paycool/views/multisig/multisig_wallet_model.dart';
@@ -12,6 +14,25 @@ import 'package:hex/hex.dart';
 class MultiSigService {
   final log = getLogger('MultiSigService');
   final client = CustomHttpUtil.createLetsEncryptUpdatedCertClient();
+
+  Future createProposal(body) async {
+    var url = paycoolBaseUrlV2 + 'multisigproposal';
+    log.i('createProposal url $url - body ${jsonEncode(body)}');
+    try {
+      var response = await client.post(Uri.parse(url),
+          body: jsonEncode(body), headers: Constants.headersJson);
+      var json = jsonDecode(response.body);
+      if (json['success']) {
+        log.w('createProposal $json}');
+        return json['data'];
+      } else {
+        log.e('createProposal success false $json}');
+      }
+    } catch (err) {
+      log.e('createProposal CATCH $err');
+      throw Exception(err);
+    }
+  }
 
   Future multisigtransferTxHash(MultisigTransactionHashModel body) async {
     var url = paycoolBaseUrlV2 + 'multisig/getTransactionHash';
@@ -32,9 +53,9 @@ class MultiSigService {
     }
   }
 
-  Future<void> getQueuetransaction(String address,
+  Future getQueuetransaction(String address,
       {int pageSize = 10, int pageNumber = 0}) async {
-    var url = paycoolBaseUrlV2 + 'multisigproposal/queue';
+    var url = paycoolBaseUrlV2 + 'multisigproposal/queue/$address';
     if (pageNumber != 0) {
       pageNumber = pageNumber - 1;
     }
@@ -58,24 +79,24 @@ class MultiSigService {
 
   Future<void> getmultisigTransactions(String address,
       {int pageSize = 10, int pageNumber = 0}) async {
-    var url = paycoolBaseUrlV2 + 'multisigtransaction/address';
+    var url = paycoolBaseUrlV2 + 'multisigtransaction/address/$address';
     if (pageNumber != 0) {
       pageNumber = pageNumber - 1;
     }
     url = '$url/$pageSize/$pageNumber';
-    log.i('getKanbanBalance url $url');
+    log.i('getmultisigTransactions url $url');
     try {
       var response =
           await client.get(Uri.parse(url), headers: Constants.headersJson);
       var json = jsonDecode(response.body);
       if (json['success']) {
-        log.w('getKanbanBalance $json}');
+        log.w('getmultisigTransactions $json}');
         return json['data'];
       } else {
-        log.e('getKanbanBalance success false $json}');
+        log.e('getmultisigTransactions success false $json}');
       }
     } catch (err) {
-      log.e('getKanbanBalance CATCH $err');
+      log.e('getmultisigTransactions CATCH $err');
       throw Exception(err);
     }
   }
@@ -236,12 +257,12 @@ class MultiSigService {
     return null;
   }
 
-  String adjustVInSignature({
+  Future<String> adjustVInSignature({
     required String signingMethod,
     required String signature,
     String? safeTxHash,
     String? signerAddress,
-  }) {
+  }) async {
     final List<int> ethereumVValues = [0, 1, 27, 28];
     const int minValidVValueForSafeEcdsa = 27;
     int signatureV =
@@ -256,10 +277,10 @@ class MultiSigService {
         signatureV += minValidVValueForSafeEcdsa;
       }
 
-      String adjustedSignature = signature.substring(0, signature.length - 2) +
-          signatureV.toRadixString(16);
-      bool signatureHasPrefix = isTxHashSignedWithPrefix(
-          safeTxHash!, adjustedSignature, signerAddress!);
+      // String adjustedSignature = signature.substring(0, signature.length - 2) +
+      //     signatureV.toRadixString(16);
+
+      bool signatureHasPrefix = sameString(signerAddress!, signerAddress);
 
       if (signatureHasPrefix) {
         signatureV += 4;

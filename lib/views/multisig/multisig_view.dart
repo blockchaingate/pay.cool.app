@@ -340,8 +340,8 @@ class MultisigView extends StatelessWidget {
                               MaterialStateProperty.all(primaryColor)),
                       onPressed: () => model.navigationService
                           .navigateWithTransition(MultisigDashboardView(
-                              txid:
-                                  '0x77bf7ad3753a3ecc4402765b7b2a9ca73d07f0e78488de036940d8d073313edf')),
+                        data: '0x178172c85480785ea008d53c0332da1dac2af8f0',
+                      )),
                       child: Text(
                         "Dashboard",
                         style: headText3.copyWith(color: white),

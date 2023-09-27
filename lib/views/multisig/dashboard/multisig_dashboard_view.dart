@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -16,14 +14,14 @@ import 'package:stacked_services/stacked_services.dart';
 import 'multisig_dashboard_viewmodel.dart';
 
 class MultisigDashboardView extends StatelessWidget {
-  final String txid;
-  const MultisigDashboardView({Key? key, required this.txid}) : super(key: key);
+  final String data;
+  const MultisigDashboardView({Key? key, required this.data}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<MultisigDashboardViewModel>.reactive(
       viewModelBuilder: () =>
-          MultisigDashboardViewModel(context: context, txid: txid),
+          MultisigDashboardViewModel(context: context, data: data),
       onViewModelReady: (model) => model.init(),
       builder: (
         BuildContext context,
@@ -39,50 +37,56 @@ class MultisigDashboardView extends StatelessWidget {
                   UIHelper.verticalSpaceMedium,
 
                   UIHelper.verticalSpaceMedium,
-                  // wallet name and switch wallet arrow
-                  DropdownButton(
-                      underline: const SizedBox.shrink(),
-                      elevation: 15,
-                      isExpanded: false,
-                      icon: const Padding(
-                        padding: EdgeInsets.only(right: 8.0),
-                        child: Icon(
-                          Icons.arrow_drop_down,
-                          color: black,
-                        ),
-                      ),
-                      iconEnabledColor: primaryColor,
-                      iconDisabledColor:
-                          model.multisigWallets.isEmpty ? secondaryColor : grey,
-                      iconSize: 30,
-                      value: model.txid,
-                      onChanged: (newValue) {
-                        model.getWalletByTxid(value: newValue.toString());
-                      },
-                      items: model.multisigWallets.map(
-                        (wallet) {
-                          return DropdownMenuItem(
-                            value: wallet.txid,
-                            child: Container(
-                              color: secondaryColor,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  customText(
-                                      text: wallet.name.toString(),
-                                      textAlign: TextAlign.center,
-                                      letterSpace: 1.2,
-                                      style: headText4.copyWith(
-                                          fontWeight: FontWeight.bold)),
-                                  Container(
-                                    width: 5,
-                                  )
-                                ],
-                              ),
+                  model.isBusy
+                      ? model.sharedService.loadingIndicator()
+                      :
+                      // wallet name and switch wallet arrow
+                      DropdownButton(
+                          underline: const SizedBox.shrink(),
+                          elevation: 15,
+                          isExpanded: false,
+                          icon: const Padding(
+                            padding: EdgeInsets.only(right: 8.0),
+                            child: Icon(
+                              Icons.arrow_drop_down,
+                              color: black,
                             ),
-                          );
-                        },
-                      ).toList()),
+                          ),
+                          iconEnabledColor: primaryColor,
+                          iconDisabledColor: model.multisigWallets.isEmpty
+                              ? secondaryColor
+                              : grey,
+                          iconSize: 30,
+                          value: model.multisigWallet.address,
+                          onChanged: (newValue) {
+                            model.getWalletByTxid(
+                              value: newValue.toString(),
+                            );
+                          },
+                          items: model.multisigWallets.map(
+                            (wallet) {
+                              return DropdownMenuItem(
+                                value: wallet.address,
+                                child: Container(
+                                  color: secondaryColor,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      customText(
+                                          text: wallet.name.toString(),
+                                          textAlign: TextAlign.center,
+                                          letterSpace: 1.2,
+                                          style: headText4.copyWith(
+                                              fontWeight: FontWeight.bold)),
+                                      Container(
+                                        width: 5,
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          ).toList()),
                   // chain name
                   UIHelper.verticalSpaceMedium,
                   Container(
@@ -195,7 +199,7 @@ class MultisigDashboardView extends StatelessWidget {
                       ),
                       onTap: () => model.navigationService
                           .navigateWithTransition(
-                              HistoryQueueView(
+                              MultisigHistoryQueueView(
                                   address:
                                       model.multisigWallet.address.toString()),
                               transitionStyle: Transition.downToUp),
@@ -308,10 +312,20 @@ class MultisigDashboardView extends StatelessWidget {
                                               style: headText5.copyWith())),
                                       Expanded(
                                           flex: 2,
-                                          child: Text(
-                                              model.multisigBalance.native
-                                                  .toString(),
-                                              style: headText5.copyWith()))
+                                          child: Row(
+                                            children: [
+                                              Text(
+                                                  model.multisigBalance.native
+                                                      .toString(),
+                                                  style: headText5.copyWith()),
+                                              UIHelper.horizontalSpaceMedium,
+                                              model.fabAddress ==
+                                                      model.multisigWallet
+                                                          .address
+                                                  ? Text('Send')
+                                                  : Container()
+                                            ],
+                                          ))
                                     ],
                                   ),
                                 ),
@@ -392,14 +406,25 @@ class MultisigDashboardView extends StatelessWidget {
                                                         headText5.copyWith())),
                                             Expanded(
                                                 flex: 2,
-                                                child: Text(
-                                                    model
-                                                        .multisigBalance
-                                                        .tokens!
-                                                        .balances![index]
-                                                        .toString(),
-                                                    style:
-                                                        headText5.copyWith()))
+                                                child: Row(
+                                                  children: [
+                                                    Text(
+                                                        model
+                                                            .multisigBalance
+                                                            .tokens!
+                                                            .balances![index]
+                                                            .toString(),
+                                                        style: headText5
+                                                            .copyWith()),
+                                                    UIHelper
+                                                        .horizontalSpaceMedium,
+                                                    model.fabAddress ==
+                                                            model.multisigWallet
+                                                                .address
+                                                        ? Text('Send')
+                                                        : Container()
+                                                  ],
+                                                ))
                                           ],
                                         ),
                                       ),
