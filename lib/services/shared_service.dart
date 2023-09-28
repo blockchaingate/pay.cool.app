@@ -658,6 +658,10 @@ class SharedService {
     return await Clipboard.getData(Clipboard.kTextPlain);
   }
 
+  Future<String> pasteClipboardData() async {
+    var res = await Clipboard.getData(Clipboard.kTextPlain);
+    return res!.text!;
+  }
   /*--------------------------------------------------------------------------------------------------------------------------------------------------------------
                   Save and Share PNG
   --------------------------------------------------------------------------------------------------------------------------------------------------------------*/

@@ -141,8 +141,8 @@ class MultiSigService {
 
   // get txid data
   //multisig/txid/
-  Future<MultisigWalletModel> getWalletData(String value,
-      {required bool isTxid}) async {
+  Future<MultisigWalletModel> importMultisigWallet(String value,
+      {bool isTxid = false}) async {
     String apiRoute = isTxid ? 'multisig/txid' : 'multisig/address';
     var url = paycoolBaseUrlV2 + '$apiRoute/$value';
     log.i('getWalletData url $url');

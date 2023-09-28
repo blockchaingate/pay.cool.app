@@ -7,18 +7,18 @@ import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/views/multisig/dashboard/multisig_dashboard_view.dart';
 import 'package:stacked/stacked.dart';
 
-import 'multisig_view_viewmodel.dart';
+import 'create_multisig_wallet_viewmodel.dart';
 
-class MultisigView extends StatelessWidget {
+class CreateMultisigWalletView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ViewModelBuilder<MultisigViewModel>.reactive(
-      viewModelBuilder: () => MultisigViewModel(),
-      onViewModelReady: (MultisigViewModel model) async {
+    return ViewModelBuilder<CreateMultisigWalletViewModel>.reactive(
+      viewModelBuilder: () => CreateMultisigWalletViewModel(),
+      onViewModelReady: (CreateMultisigWalletViewModel model) async {
         model.sharedService.context = context;
         await model.init();
       },
-      onDispose: (MultisigViewModel model) {
+      onDispose: (CreateMultisigWalletViewModel model) {
         for (var controller in model.ownerControllers) {
           controller.dispose();
         }
@@ -28,7 +28,7 @@ class MultisigView extends StatelessWidget {
       },
       builder: (
         BuildContext context,
-        MultisigViewModel model,
+        CreateMultisigWalletViewModel model,
         Widget? child,
       ) {
         Widget _buildDynamicFields() {

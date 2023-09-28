@@ -112,7 +112,7 @@ class MultisigDashboardViewModel extends BaseViewModel {
 
   // get txid data
   getWalletDataFromApi(String value) async {
-    var data = await multisigService.getWalletData(value, isTxid: true);
+    var data = await multisigService.importMultisigWallet(value);
     multisigWallet = data;
     log.w('multisigWallet ${multisigWallet.toJson()}');
   }

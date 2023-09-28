@@ -47,6 +47,7 @@ class HiveService {
     final box = Hive.box<MultisigWalletModel>(Constants.multisigWalletBox);
 
     log.w('getAllMultisigWallets ${box.values.map((e) => e.name)}');
-    return box.values.toList();
+
+    return box.values.toSet().toList();
   }
 }

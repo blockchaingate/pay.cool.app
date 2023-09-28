@@ -23,10 +23,10 @@ import 'package:paycool/views/multisig/multisig_wallet_model.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:hex/hex.dart';
-import '../../services/api_service.dart';
+import '../../../services/api_service.dart';
 
-class MultisigViewModel extends BaseViewModel {
-  final log = getLogger('MultisigViewModel');
+class CreateMultisigWalletViewModel extends BaseViewModel {
+  final log = getLogger('CreateMultisigWalletViewModel');
   final sharedService = locator<SharedService>();
   final navigationService = locator<NavigationService>();
   final apiService = locator<ApiService>();
@@ -347,7 +347,8 @@ class MultisigViewModel extends BaseViewModel {
     if (txid != null) {
       multisigWallet.txid = txid;
 
-      var walletData = await multisigService.getWalletData(txid, isTxid: true);
+      var walletData =
+          await multisigService.importMultisigWallet(txid, isTxid: true);
 
       multisigWallet.address = walletData.address;
       log.w('multisigModel: ${multisigWallet.toJson()}');

@@ -19,7 +19,8 @@ import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/environments/environment_type.dart';
 import 'package:paycool/shared/ui_helpers.dart';
-import 'package:paycool/views/multisig/multisig_view.dart';
+import 'package:paycool/views/multisig/create_multisig_wallet/create_multisig_wallet_view.dart';
+import 'package:paycool/views/multisig/welcome_multisig_view.dart';
 import 'package:paycool/views/settings/settings_viewmodel.dart';
 import 'package:paycool/widgets/bottom_nav.dart';
 import 'package:flutter/material.dart';
@@ -495,7 +496,7 @@ class SettingsContainer extends StatelessWidget {
                   style: headText5,
                 ),
                 onTap: () => model.navigationService
-                    .navigateWithTransition(MultisigView()),
+                    .navigateWithTransition(WelcomeMultisigView()),
                 trailing: Padding(
                   padding: const EdgeInsets.only(right: 8.0),
                   child: const Icon(
