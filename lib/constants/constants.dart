@@ -49,6 +49,7 @@ class Constants {
   static const String payCoolCancelAbi = "0x5806abae";
   static const String payCoolSignOrderAbi = "0x09953d6d";
   static const String payCoolCreateAccountAbiCode = "0x9859387b";
+  static const String multisigTransferAbiCode = "0x6a761202";
 
   static const String bondAbiCodeKanban = "0x85d7b238";
   static const String bondAbiCodeEth = "0xd13a00ba";

@@ -25,7 +25,11 @@ class HiveService {
   // msw = MultisigWallet
   Future<void> addMultisigWallet(MultisigWalletModel msw) async {
     final box = Hive.box<MultisigWalletModel>(Constants.multisigWalletBox);
-    await box.add(msw);
+    if (isUniqueEntry(msw)) {
+      await box.add(msw);
+    } else {
+      log.w('duplicate wallet ${msw.name}-- ${msw.address}');
+    }
   }
 
   Future<void> updateMultisigWallet(MultisigWalletModel msw) async {
@@ -38,6 +42,13 @@ class HiveService {
     await box.deleteAt(index);
   }
 
+  Future<void> deleteMultisigWalletByAddress(String address) async {
+    final box = Hive.box<MultisigWalletModel>(Constants.multisigWalletBox);
+    var index =
+        box.values.toList().indexWhere((element) => element.address == address);
+    await box.deleteAt(index).then((value) => log.e('deleted $address'));
+  }
+
   MultisigWalletModel getMultisigWallet(int index) {
     final box = Hive.box<MultisigWalletModel>(Constants.multisigWalletBox);
     return box.getAt(index)!;
@@ -48,6 +59,33 @@ class HiveService {
 
     log.w('getAllMultisigWallets ${box.values.map((e) => e.name)}');
 
-    return box.values.toSet().toList();
+    List<MultisigWalletModel> uniquelist = [];
+    box.values.toList().forEach((savedWallet) {
+      var data = uniquelist.firstWhere(
+          (element) => element.address == savedWallet.address,
+          orElse: () => MultisigWalletModel(address: ''));
+      if (data.address!.isEmpty) {
+        uniquelist.add(savedWallet);
+      } else
+        log.w('duplicate ${savedWallet.name}');
+    });
+    log.e('-------------------------------');
+    log.e(uniquelist);
+    return uniquelist;
+  }
+
+  bool isUniqueEntry(MultisigWalletModel wallet) {
+    bool isUnique = true;
+    final box = Hive.box<MultisigWalletModel>(Constants.multisigWalletBox);
+
+    isUnique = box.values
+        .toList()
+        .firstWhere(
+          (element) => element.address == wallet.address,
+          orElse: () => MultisigWalletModel(address: ''),
+        )
+        .address!
+        .isEmpty;
+    return isUnique;
   }
 }

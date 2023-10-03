@@ -74,7 +74,7 @@ class CreatePasswordViewModel extends BaseViewModel {
         .createOfflineWalletsV1(
             randomMnemonicFromRoute, passTextController.text)
         .then((data) {
-      navigationService.pushNamedAndRemoveUntil(PayCoolViewRoute);
+      navigationService.pushNamedAndRemoveUntil(DashboardViewRoute);
       storageService.showPaycoolClub = false;
       randomMnemonicFromRoute = '';
       passTextController.text = '';

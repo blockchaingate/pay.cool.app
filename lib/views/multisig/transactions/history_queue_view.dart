@@ -49,7 +49,7 @@ class MultisigHistoryQueueView extends StatelessWidget {
                       ),
                     ),
                     Container(
-                      height: 500,
+                      height: MediaQuery.of(context).size.height * 0.85,
                       margin: EdgeInsets.all(20),
                       child: model.isBusy || !model.dataReady
                           ? model.sharedService.loadingIndicator()
@@ -84,141 +84,187 @@ class MultisigHistoryQueueView extends StatelessWidget {
                                     child: ListView.builder(
                                         itemCount: model.queue.length,
                                         itemBuilder: (context, index) {
-                                          return ListTile(
-                                            contentPadding: EdgeInsets.all(0),
-                                            title: Column(
-                                              children: [
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.start,
+                                          return Column(
+                                            children: [
+                                              ListTile(
+                                                contentPadding:
+                                                    EdgeInsets.all(10),
+                                                title: Column(
                                                   children: [
-                                                    Text(
-                                                      'Created on ',
-                                                      style: headText5,
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Text(
+                                                          'Created on ',
+                                                          style: headText5,
+                                                        ),
+                                                        Text(
+                                                          formatStringDateV3(model
+                                                                          .queue[
+                                                                      index][
+                                                                  'dateCreated'])
+                                                              .toString(),
+                                                          style: headText5,
+                                                        )
+                                                      ],
                                                     ),
-                                                    Text(
-                                                      formatStringDateV3(model
-                                                                  .queue[index]
-                                                              ['dateCreated'])
-                                                          .toString(),
-                                                      style: headText5,
-                                                    )
-                                                  ],
-                                                ),
-                                                UIHelper.verticalSpaceMedium,
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      model.queue[index]
-                                                              ['request']
-                                                              ['type']
-                                                          .toString(),
-                                                      style: headText4.copyWith(
-                                                          color: black),
-                                                    ),
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              left: 8.0,
-                                                              right: 2.0),
-                                                      child: Text(
-                                                        model.queue[index]
-                                                                ['request']
-                                                                ['amount']
-                                                            .toString(),
-                                                        style:
-                                                            headText4.copyWith(
-                                                                color: black),
-                                                      ),
-                                                    ),
-                                                    Text(
-                                                      model.queue[index]
-                                                              ['request']
-                                                              ['tokenName']
-                                                          .toString(),
-                                                      style: headText4.copyWith(
-                                                          color: black),
-                                                    )
-                                                  ],
-                                                ),
-                                              ],
-                                            ),
-                                            subtitle: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Row(
-                                                  children: const [
                                                     UIHelper
-                                                        .horizontalSpaceLarge,
-                                                    Padding(
-                                                      padding: EdgeInsets.only(
-                                                          top: 8.0),
-                                                      child: Icon(
-                                                        Icons
-                                                            .arrow_downward_rounded,
-                                                        color: black,
-                                                      ),
+                                                        .verticalSpaceMedium,
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Text(
+                                                          model.queue[index]
+                                                                  ['request']
+                                                                  ['type']
+                                                              .toString(),
+                                                          style: headText4
+                                                              .copyWith(
+                                                                  color: black),
+                                                        ),
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .only(
+                                                                  left: 8.0,
+                                                                  right: 2.0),
+                                                          child: Text(
+                                                            model.queue[index]
+                                                                    ['request']
+                                                                    ['amount']
+                                                                .toString(),
+                                                            style: headText4
+                                                                .copyWith(
+                                                                    color:
+                                                                        black),
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          model.queue[index]
+                                                                  ['request']
+                                                                  ['tokenName']
+                                                              .toString(),
+                                                          style: headText4
+                                                              .copyWith(
+                                                                  color: black),
+                                                        )
+                                                      ],
                                                     ),
                                                   ],
                                                 ),
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.start,
+                                                subtitle: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
                                                   children: [
-                                                    Text(
-                                                      StringUtils
-                                                          .showPartialAddress(
+                                                    Row(
+                                                      children: const [
+                                                        UIHelper
+                                                            .horizontalSpaceLarge,
+                                                        Padding(
+                                                          padding:
+                                                              EdgeInsets.only(
+                                                                  top: 8.0),
+                                                          child: Icon(
+                                                            Icons
+                                                                .arrow_downward_rounded,
+                                                            color: black,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Text(
+                                                          StringUtils.showPartialAddress(
                                                               address: model
                                                                   .queue[index][
                                                                       'request']
                                                                       ['to']
                                                                   .toString()),
-                                                      style: headText4.copyWith(
-                                                          color: black),
+                                                          style: headText4
+                                                              .copyWith(
+                                                                  color: black),
+                                                        ),
+                                                        IconButton(
+                                                            onPressed: () => model
+                                                                .sharedService
+                                                                .copyAddress(
+                                                                    context,
+                                                                    model.queue[
+                                                                            index]
+                                                                            [
+                                                                            'request']
+                                                                            [
+                                                                            'to']
+                                                                        .toString()),
+                                                            icon: Icon(
+                                                              Icons.copy,
+                                                              color:
+                                                                  primaryColor,
+                                                              size: 18,
+                                                            ))
+                                                      ],
                                                     ),
-                                                    IconButton(
-                                                        onPressed: () => model
-                                                            .sharedService
-                                                            .copyAddress(
-                                                                context,
-                                                                model.queue[
-                                                                        index][
-                                                                        'request']
-                                                                        ['to']
-                                                                    .toString()),
-                                                        icon: Icon(
-                                                          Icons.copy,
-                                                          color: primaryColor,
-                                                          size: 18,
-                                                        ))
                                                   ],
                                                 ),
-                                              ],
-                                            ),
-                                            trailing: model.hasConfirmedByMe(
-                                                    model.queue[index])
-                                                ? Text('Confirmed by me')
-                                                : model.isShowApproveButton(
-                                                        model.queue[index])
-                                                    ? ElevatedButton(
-                                                        onPressed: () {
-                                                          model
-                                                              .approveTransaction(
-                                                                  '');
-                                                        },
-                                                        child: Text('Approve'),
+                                                // TODO: remove ! in below condition
+                                                trailing: !model
+                                                        .hasConfirmedByMe(
+                                                            model.queue[index])
+                                                    ? SizedBox(
+                                                        width: 110,
+                                                        child: Text(
+                                                          'Confirmed by current wallet',
+                                                          style: headText5
+                                                              .copyWith(
+                                                                  color: green,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w400,
+                                                                  letterSpacing:
+                                                                      0.1,
+                                                                  wordSpacing:
+                                                                      0.5),
+                                                          maxLines: 4,
+                                                        ),
                                                       )
-                                                    : ElevatedButton(
-                                                        style: ButtonStyle(
-                                                            backgroundColor:
-                                                                MaterialStateProperty
-                                                                    .all(grey)),
-                                                        onPressed: () {},
-                                                        child: Text('Approve'),
-                                                      ),
+                                                    : model.isShowApproveButton(
+                                                            model.queue[index])
+                                                        ? ElevatedButton(
+                                                            style: ButtonStyle(
+                                                                backgroundColor:
+                                                                    MaterialStateProperty
+                                                                        .all(
+                                                                            primaryColor)),
+                                                            onPressed: () {
+                                                              model.approveTransaction(
+                                                                  model.queue[
+                                                                      index],
+                                                                  context);
+                                                            },
+                                                            child:
+                                                                Text('Approve'),
+                                                          )
+                                                        : ElevatedButton(
+                                                            style: ButtonStyle(
+                                                                backgroundColor:
+                                                                    MaterialStateProperty
+                                                                        .all(
+                                                                            grey)),
+                                                            onPressed: () {},
+                                                            child:
+                                                                Text('Approve'),
+                                                          ),
+                                              ),
+                                              UIHelper.divider
+                                            ],
                                           );
                                         })),
                               ],

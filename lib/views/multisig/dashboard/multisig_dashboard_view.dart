@@ -8,6 +8,8 @@ import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/utils/exaddr.dart';
 import 'package:paycool/utils/string_util.dart';
 import 'package:paycool/views/multisig/transactions/history_queue_view.dart';
+import 'package:paycool/views/multisig/transfer/mutlisig_transfer_view.dart';
+import 'package:paycool/views/settings/settings_view.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 
@@ -35,9 +37,51 @@ class MultisigDashboardView extends StatelessWidget {
               child: Column(
                 children: [
                   UIHelper.verticalSpaceMedium,
-
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        child: Stack(
+                          children: [
+                            IconButton(
+                              padding: EdgeInsets.zero,
+                              icon: Icon(
+                                Icons.settings,
+                                color: primaryColor,
+                              ),
+                              onPressed: () {
+                                model.navigationService
+                                    .navigateWithTransition(SettingsView());
+                              },
+                            ),
+                            Positioned(
+                              top: 5,
+                              left: 5,
+                              child: Text(
+                                'Go to settings',
+                                style: headText6.copyWith(fontSize: 6),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        alignment: Alignment.topRight,
+                        child: IconButton(
+                          icon: Icon(
+                            Icons.logout,
+                            color: red,
+                            size: 22,
+                          ),
+                          onPressed: () {
+                            model.logout();
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
                   UIHelper.verticalSpaceMedium,
-                  model.isBusy
+                  model.isBusy || model.busy(model.multisigWallet)
                       ? model.sharedService.loadingIndicator()
                       :
                       // wallet name and switch wallet arrow
@@ -58,10 +102,11 @@ class MultisigDashboardView extends StatelessWidget {
                               : grey,
                           iconSize: 30,
                           value: model.multisigWallet.address,
-                          onChanged: (newValue) {
-                            model.getWalletByTxid(
-                              value: newValue.toString(),
+                          onChanged: (newValue) async {
+                            await model.importWallet(
+                              addressOrTxid: newValue.toString(),
                             );
+                            await model.getBalance();
                           },
                           items: model.multisigWallets.map(
                             (wallet) {
@@ -109,47 +154,53 @@ class MultisigDashboardView extends StatelessWidget {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Text(
-                                  StringUtils.showPartialAddress(
-                                      address: toKbpayAddress(model.fabUtils
-                                          .exgToFabAddress(model
-                                              .multisigWallet.address
-                                              .toString()))),
-                                  style: headText5.copyWith(
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                UIHelper.horizontalSpaceSmall,
-                                InkWell(
-                                  onTap: () {
-                                    model.sharedService.copyAddress(
-                                        context,
-                                        toKbpayAddress(model.fabUtils
-                                            .exgToFabAddress(model
-                                                .multisigWallet.address!)));
-                                  },
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: const Icon(
-                                      Icons.copy,
-                                      color: primaryColor,
-                                    ),
+                            model.busy(model.multisigWallet)
+                                ? Text(
+                                    'Wallet Address',
+                                    style: headText5,
+                                  )
+                                : Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        StringUtils.showPartialAddress(
+                                            address: toKbpayAddress(
+                                                model.fabUtils.exgToFabAddress(
+                                                    model.multisigWallet.address
+                                                        .toString()))),
+                                        style: headText5.copyWith(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      UIHelper.horizontalSpaceSmall,
+                                      InkWell(
+                                        onTap: () {
+                                          model.sharedService.copyAddress(
+                                              context,
+                                              toKbpayAddress(model.fabUtils
+                                                  .exgToFabAddress(model
+                                                      .multisigWallet
+                                                      .address!)));
+                                        },
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: const Icon(
+                                            Icons.copy,
+                                            color: primaryColor,
+                                          ),
+                                        ),
+                                      ),
+                                      InkWell(
+                                        onTap: () {},
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: const Icon(
+                                            Icons.qr_code,
+                                            color: primaryColor,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ),
-                                InkWell(
-                                  onTap: () {},
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: const Icon(
-                                      Icons.qr_code,
-                                      color: primaryColor,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
                             InkWell(
                               onTap: () {},
                               child: Padding(
@@ -251,6 +302,10 @@ class MultisigDashboardView extends StatelessWidget {
                                 style: headText5.copyWith(
                                     fontWeight: FontWeight.bold)),
                           ),
+                          Expanded(
+                            flex: 1,
+                            child: Container(),
+                          )
                         ],
                       )
                     ]),
@@ -268,7 +323,9 @@ class MultisigDashboardView extends StatelessWidget {
                             children: [
                               UIHelper.verticalSpaceMedium,
                               InkWell(
-                                onTap: () => model.navigateToTransferView(-1),
+                                onTap: () => model.canTransferAssets
+                                    ? model.navigateToTransferView(-1)
+                                    : debugPrint('Incorrect Owner'),
                                 child: Container(
                                   alignment: Alignment.center,
                                   margin: EdgeInsets.only(bottom: 5),
@@ -312,20 +369,30 @@ class MultisigDashboardView extends StatelessWidget {
                                               style: headText5.copyWith())),
                                       Expanded(
                                           flex: 2,
-                                          child: Row(
-                                            children: [
-                                              Text(
-                                                  model.multisigBalance.native
-                                                      .toString(),
-                                                  style: headText5.copyWith()),
-                                              UIHelper.horizontalSpaceMedium,
-                                              model.fabAddress ==
-                                                      model.multisigWallet
-                                                          .address
-                                                  ? Text('Send')
-                                                  : Container()
-                                            ],
-                                          ))
+                                          child: Text(
+                                              model.multisigBalance.native
+                                                  .toString(),
+                                              style: headText5.copyWith())),
+                                      Expanded(
+                                          flex: 1,
+                                          child: model.canTransferAssets
+                                              ? TextButton(
+                                                  onPressed: () => model
+                                                      .navigationService
+                                                      .navigateWithTransition(
+                                                          MultisigTransferView(
+                                                              multisigBalance: model
+                                                                  .multisigBalance,
+                                                              multisigWallet: model
+                                                                  .multisigWallet)),
+                                                  child: Text(
+                                                    'Send',
+                                                    style: headText5.copyWith(
+                                                        color: primaryColor,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ))
+                                              : Container())
                                     ],
                                   ),
                                 ),
@@ -333,12 +400,16 @@ class MultisigDashboardView extends StatelessWidget {
                               ListView.builder(
                                   padding: EdgeInsets.zero,
                                   itemCount:
-                                      model.multisigBalance.tokens!.ids!.length,
+                                      model.multisigBalance.tokens == null
+                                          ? 0
+                                          : model.multisigBalance.tokens!.ids!
+                                              .length,
                                   shrinkWrap: true,
                                   itemBuilder: ((context, index) {
                                     return InkWell(
-                                      onTap: () =>
-                                          model.navigateToTransferView(index),
+                                      onTap: () => model.canTransferAssets
+                                          ? model.navigateToTransferView(index)
+                                          : debugPrint('Incorrect Owner'),
                                       child: Container(
                                         alignment: Alignment.center,
                                         margin: EdgeInsets.only(bottom: 5),
@@ -406,25 +477,38 @@ class MultisigDashboardView extends StatelessWidget {
                                                         headText5.copyWith())),
                                             Expanded(
                                                 flex: 2,
-                                                child: Row(
-                                                  children: [
-                                                    Text(
-                                                        model
-                                                            .multisigBalance
-                                                            .tokens!
-                                                            .balances![index]
-                                                            .toString(),
-                                                        style: headText5
-                                                            .copyWith()),
-                                                    UIHelper
-                                                        .horizontalSpaceMedium,
-                                                    model.fabAddress ==
-                                                            model.multisigWallet
-                                                                .address
-                                                        ? Text('Send')
-                                                        : Container()
-                                                  ],
-                                                ))
+                                                child: Text(
+                                                    model
+                                                        .multisigBalance
+                                                        .tokens!
+                                                        .balances![index]
+                                                        .toString(),
+                                                    style:
+                                                        headText5.copyWith())),
+                                            Expanded(
+                                                flex: 1,
+                                                child: model.canTransferAssets
+                                                    ? TextButton(
+                                                        onPressed: () => model
+                                                            .navigationService
+                                                            .navigateWithTransition(
+                                                                MultisigTransferView(
+                                                                    multisigBalance:
+                                                                        model
+                                                                            .multisigBalance,
+                                                                    multisigWallet:
+                                                                        model
+                                                                            .multisigWallet)),
+                                                        child: Text(
+                                                          'Send',
+                                                          style: headText5.copyWith(
+                                                              color:
+                                                                  primaryColor,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold),
+                                                        ))
+                                                    : Container())
                                           ],
                                         ),
                                       ),

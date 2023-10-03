@@ -15,7 +15,46 @@ class MultiSigService {
   final log = getLogger('MultiSigService');
   final client = CustomHttpUtil.createLetsEncryptUpdatedCertClient();
 
-  Future createProposal(body) async {
+  Future submitMultisigTransaction(body) async {
+    var url = paycoolBaseUrlV2 + 'multisigproposal/execute';
+    log.i('submitMultisigTransaction url $url - body ${jsonEncode(body)}');
+    try {
+      var response = await client.post(Uri.parse(url),
+          body: jsonEncode(body), headers: Constants.headersJson);
+      var json = jsonDecode(response.body);
+      if (json['success']) {
+        log.w('submitMultisigTransaction $json}');
+        return json['data'];
+      } else {
+        log.e('submitMultisigTransaction success false $json}');
+      }
+    } catch (err) {
+      log.e('submitMultisigTransaction CATCH $err');
+      throw Exception(err);
+    }
+  }
+
+  Future approveProposal(body) async {
+    var url = paycoolBaseUrlV2 + 'multisigproposal/confirm';
+    log.i('approveProposal url $url - body ${jsonEncode(body)}');
+    try {
+      var response = await client.post(Uri.parse(url),
+          body: jsonEncode(body), headers: Constants.headersJson);
+      var json = jsonDecode(response.body);
+      if (json['success']) {
+        log.w('approveProposal $json}');
+        return json['data'];
+      } else {
+        log.e('approveProposal success false $json}');
+      }
+    } catch (err) {
+      log.e('approveProposal CATCH $err');
+      throw Exception(err);
+    }
+  }
+
+  Future<bool> createProposal(body) async {
+    bool result = false;
     var url = paycoolBaseUrlV2 + 'multisigproposal';
     log.i('createProposal url $url - body ${jsonEncode(body)}');
     try {
@@ -24,10 +63,12 @@ class MultiSigService {
       var json = jsonDecode(response.body);
       if (json['success']) {
         log.w('createProposal $json}');
-        return json['data'];
+        result = true;
+        return result;
       } else {
         log.e('createProposal success false $json}');
       }
+      return result;
     } catch (err) {
       log.e('createProposal CATCH $err');
       throw Exception(err);

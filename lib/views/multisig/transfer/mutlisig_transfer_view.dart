@@ -21,8 +21,8 @@ class MultisigTransferView extends StatelessWidget {
   Widget build(BuildContext context) {
     return ViewModelBuilder<MultisigTransferViewModel>.reactive(
       viewModelBuilder: () => MultisigTransferViewModel(),
-      onViewModelReady: (viewModel) => viewModel
-          .getSmartContractAddress(multisigBalance.tokens!.tickers![0]),
+      onViewModelReady: (viewModel) =>
+          viewModel.init(multisigBalance.tokens!.tickers![0]),
       builder: (
         BuildContext context,
         MultisigTransferViewModel model,
@@ -52,6 +52,29 @@ class MultisigTransferView extends StatelessWidget {
                     cursorColor: green,
                     cursorHeight: 14,
                     fillColor: Colors.transparent,
+                    suffixWidget: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: Icon(
+                            Icons.paste,
+                            color: black,
+                          ),
+                          onPressed: () {
+                            model.onPaste();
+                          },
+                        ),
+                        IconButton(
+                          icon: Icon(
+                            Icons.qr_code_scanner,
+                            color: black,
+                          ),
+                          onPressed: () {
+                            // model.sharedService.scanQRCode(context);
+                          },
+                        ),
+                      ],
+                    ),
                     leadingWidget: Icon(
                       Icons.abc,
                       color: black,

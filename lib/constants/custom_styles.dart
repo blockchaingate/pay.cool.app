@@ -122,6 +122,20 @@ var outlinedButtonStyles1 = OutlinedButton.styleFrom(
       side: const BorderSide(color: primaryColor)),
   textStyle: const TextStyle(color: Colors.white),
 );
+kOutlinedButtonStyles(
+        {double radius = 10,
+        Color borderColor = primaryColor,
+        double borderWidth = 2,
+        double hPadding = 10,
+        double vPadding = 10}) =>
+    OutlinedButton.styleFrom(
+      side: BorderSide(color: borderColor, width: borderWidth),
+      padding: EdgeInsets.symmetric(horizontal: hPadding, vertical: vPadding),
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(radius),
+          side: BorderSide(color: green)),
+      textStyle: const TextStyle(color: Colors.white),
+    );
 
 var outlinedButtonStyles2 = OutlinedButton.styleFrom(
   padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 5),
@@ -190,9 +204,11 @@ Decoration circularGradientBoxDecoration() {
 }
 
 Decoration rectangularGradientBoxDecoration(
-    {Color colorOne = Colors.redAccent, Color colorTwo = Colors.yellow}) {
+    {Color colorOne = Colors.redAccent,
+    Color colorTwo = Colors.yellow,
+    double radius = 10}) {
   return BoxDecoration(
-    // borderRadius: BorderRadius.all(Radius.circular(25)),
+    borderRadius: BorderRadius.all(Radius.circular(radius)),
     gradient: LinearGradient(
       colors: [colorOne, colorTwo],
       begin: FractionalOffset.topLeft,

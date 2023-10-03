@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import 'package:paycool/constants/constants.dart';
 import 'package:paycool/logger.dart';
-import 'package:paycool/models/wallet/exchange_balance_model.dart';
 import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/api_service.dart';
 import 'package:paycool/services/db/token_list_database_service.dart';
@@ -36,21 +33,20 @@ class MultisigDashboardViewModel extends BaseViewModel {
   MultisigWalletModel multisigWallet = MultisigWalletModel();
   final fabUtils = FabUtils();
   double? gasBalance = 0.0;
-  String fabAddress = '';
+  String exgAddress = '';
+  bool canTransferAssets = false;
 
   init() async {
-    setBusy(true);
     sharedService.context = context!;
+    exgAddress = await sharedService.getExgAddressFromCoreWalletDatabase();
+    await importWallet(addressOrTxid: data);
     multisigWallets = await hiveService.getAllMultisigWallets();
     log.i(
         'init MultisigDashboardViewModel multisigWallets ${multisigWallets.length}');
-    await getWalletByTxid(value: data);
-    setBusyForObject(multisigBalance, true);
-    fabAddress = await sharedService.getFabAddressFromCoreWalletDatabase();
-    Future.delayed(Duration(milliseconds: 500), () {
-      getBalance();
-    });
-    setBusy(false);
+
+    //Future.delayed(Duration(milliseconds: 500), () {
+    await getBalance();
+    // });
   }
 
   navigateToTransferView(int index) {
@@ -61,7 +57,7 @@ class MultisigDashboardViewModel extends BaseViewModel {
               ? [multisigBalance.native.toString()]
               : [multisigBalance.tokens!.balances![index]],
           tickers: index == -1
-              ? ['Kanban']
+              ? ['kanban']
               : [multisigBalance.tokens!.tickers![index]],
           decimals: index == -1
               ? ["18"]
@@ -92,28 +88,43 @@ class MultisigDashboardViewModel extends BaseViewModel {
     setBusyForObject(multisigBalance, false);
   }
 
-  getWalletByTxid({required String value, bool isAddress = true}) async {
-    var walletByTxid = MultisigWalletModel();
+  importWallet({required String addressOrTxid, bool isAddress = true}) async {
+    var wallet = MultisigWalletModel();
 
+    setBusyForObject(multisigWallet, true);
     try {
-      walletByTxid = isAddress
-          ? hiveService.findMultisigWalletByAddress(value)
-          : hiveService.findMultisigWalletByTxid(value);
+      wallet = isAddress
+          ? hiveService.findMultisigWalletByAddress(addressOrTxid)
+          : hiveService.findMultisigWalletByTxid(addressOrTxid);
     } catch (e) {
       log.e('error $e');
     }
-    if (walletByTxid.txid != null && walletByTxid.txid!.isNotEmpty) {
-      multisigWallet = walletByTxid;
+    if (wallet.txid != null && wallet.txid!.isNotEmpty) {
+      multisigWallet = wallet;
     } else {
-      getWalletDataFromApi(value);
+      multisigWallet =
+          await multisigService.importMultisigWallet(addressOrTxid);
+
+      log.w('multisigWallet ${multisigWallet.toJson()}');
+
+      await hiveService.addMultisigWallet(multisigWallet);
     }
+    for (var element in multisigWallet.owners!) {
+      if (element.address == exgAddress) {
+        canTransferAssets = true;
+      } else {
+        canTransferAssets = false;
+      }
+    }
+
+    setBusyForObject(multisigWallet, false);
     rebuildUi();
   }
 
-  // get txid data
-  getWalletDataFromApi(String value) async {
-    var data = await multisigService.importMultisigWallet(value);
-    multisigWallet = data;
-    log.w('multisigWallet ${multisigWallet.toJson()}');
+  logout() async {
+    hiveService.deleteMultisigWalletByAddress(multisigWallet.address!);
+    multisigWallets = await hiveService.getAllMultisigWallets();
+    importWallet(addressOrTxid: multisigWallets[0].address!);
+    rebuildUi();
   }
 }

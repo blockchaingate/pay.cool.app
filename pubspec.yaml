@@ -96,7 +96,7 @@ dependencies:
   upgrader: ^6.0.1
   url_launcher: ^6.1.12
   version: ^3.0.2
-  web3dart: null
+  web3dart: ^2.0.0
   webview_flutter: ^4.0.2
   modal_progress_hud_nsn: ^0.4.0
   walletconnect_flutter_v2: ^2.1.4
