@@ -6,8 +6,10 @@ import 'package:majascan/majascan.dart';
 import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/coin_service.dart';
 import 'package:paycool/services/wallet_service.dart';
+import 'package:paycool/utils/fab_util.dart';
 import 'package:paycool/views/paycool/paycool_service.dart';
 import 'package:stacked/stacked.dart';
+import 'package:stacked_services/stacked_services.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:walletconnect_flutter_v2/walletconnect_flutter_v2.dart';
 
@@ -17,6 +19,7 @@ class WalletConnectViewModel extends BaseViewModel {
   BuildContext? context;
   WalletService walletService = locator<WalletService>();
   final paycoolService = locator<PayCoolService>();
+  final NavigationService navigationService = locator<NavigationService>();
 
   TextEditingController controller = TextEditingController();
 
@@ -56,7 +59,8 @@ class WalletConnectViewModel extends BaseViewModel {
   }
 
   Future<void> setWalletConnect() async {
-    fabAddress = await CoinService().getCoinWalletAddress("FAB");
+    fabAddress = FabUtils()
+        .fabToExgAddress(await CoinService().getCoinWalletAddress("FAB"));
     ethAddress = await CoinService().getCoinWalletAddress("ETH");
 
     web3Wallet = await Web3Wallet.createInstance(

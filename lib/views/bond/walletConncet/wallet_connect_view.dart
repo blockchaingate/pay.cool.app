@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:paycool/constants/colors.dart';
+import 'package:paycool/constants/route_names.dart';
 import 'package:paycool/environments/environment.dart';
 import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/views/bond/helper.dart';
@@ -67,47 +68,84 @@ class _WalletConnectViewState extends State<WalletConnectView> {
                             height: size.height * 0.7,
                             child: Center(
                               child: model.txHash != null
-                                  ? Row(
+                                  ? Column(
                                       mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                          MainAxisAlignment.center,
                                       children: [
-                                        SizedBox(
-                                          width: size.width * 0.7,
-                                          child: InkWell(
-                                            onTap: () {
-                                              String link = environment["Bond"]
-                                                          ["Endpoints"][
-                                                      model
-                                                          .selectedValueChain] +
-                                                  model.txHash;
-                                              model.launchUrlFunc(link);
-                                            },
-                                            child: RichText(
-                                              text: TextSpan(
-                                                text: model.txHash!,
-                                                style: TextStyle(
-                                                    fontSize: 20.0,
-                                                    color: Colors.white,
-                                                    fontWeight: FontWeight.bold,
-                                                    decoration: TextDecoration
-                                                        .underline),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            SizedBox(
+                                              width: size.width * 0.7,
+                                              child: InkWell(
+                                                onTap: () {
+                                                  String link = environment[
+                                                                  "Bond"]
+                                                              ["Endpoints"][
+                                                          model
+                                                              .selectedValueChain] +
+                                                      model.txHash;
+                                                  model.launchUrlFunc(link);
+                                                },
+                                                child: RichText(
+                                                  text: TextSpan(
+                                                    text: model.txHash!,
+                                                    style: TextStyle(
+                                                        fontSize: 20.0,
+                                                        color: Colors.white,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        decoration:
+                                                            TextDecoration
+                                                                .underline),
+                                                  ),
+                                                ),
                                               ),
                                             ),
-                                          ),
+                                            IconButton(
+                                              onPressed: () {
+                                                Clipboard.setData(ClipboardData(
+                                                    text: model.txHash!));
+                                                callSMessage(
+                                                    context,
+                                                    FlutterI18n.translate(
+                                                        context,
+                                                        "copiedToClipboard"),
+                                                    duration: 2);
+                                              },
+                                              icon: Icon(
+                                                Icons.copy,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                        IconButton(
-                                          onPressed: () {
-                                            Clipboard.setData(ClipboardData(
-                                                text: model.txHash!));
-                                            callSMessage(
-                                                context,
-                                                FlutterI18n.translate(context,
-                                                    "copiedToClipboard"),
-                                                duration: 2);
-                                          },
-                                          icon: Icon(
-                                            Icons.copy,
-                                            color: Colors.white,
+                                        UIHelper.verticalSpaceLarge,
+                                        Container(
+                                          width: size.width * 0.9,
+                                          height: 45,
+                                          decoration: BoxDecoration(
+                                            gradient: buttoGradient,
+                                            borderRadius:
+                                                BorderRadius.circular(40.0),
+                                          ),
+                                          child: ElevatedButton(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor:
+                                                  Colors.transparent,
+                                              shadowColor: Colors.transparent,
+                                            ),
+                                            child: Text(
+                                              "Done",
+                                              style: TextStyle(
+                                                fontSize: 16.0,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
                                           ),
                                         ),
                                       ],
@@ -135,7 +173,9 @@ class _WalletConnectViewState extends State<WalletConnectView> {
                                           ),
                                           child: ElevatedButton(
                                             onPressed: () {
-                                              Navigator.pop(context);
+                                              model.navigationService
+                                                  .navigateTo(
+                                                      DashboardViewRoute);
                                             },
                                             style: ElevatedButton.styleFrom(
                                               backgroundColor:
