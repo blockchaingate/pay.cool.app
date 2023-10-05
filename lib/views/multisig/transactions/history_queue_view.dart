@@ -61,22 +61,81 @@ class MultisigHistoryQueueView extends StatelessWidget {
                                         itemCount: model.history.length,
                                         itemBuilder: (context, index) {
                                           return ListTile(
-                                            leading: Text(dateFromMilliseconds(
-                                                    model.history[index]
-                                                        ['timestamp'])
-                                                .toString()
-                                                .split(' ')[0]),
-                                            title: Text(
-                                              model.history[index]['type']
-                                                  .toString(),
-                                              style: headText4.copyWith(
-                                                  color: black),
+                                            leading: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Text(
+                                                  convertTimeStampToDate(
+                                                          model.history[index]
+                                                              ['timestamp'])
+                                                      .toString()
+                                                      .split('.')[0]
+                                                      .split(' ')[0]
+                                                      .toString(),
+                                                  style: headText5.copyWith(
+                                                      fontWeight:
+                                                          FontWeight.w400),
+                                                ),
+                                                Text(
+                                                  convertTimeStampToDate(
+                                                          model.history[index]
+                                                              ['timestamp'])
+                                                      .toString()
+                                                      .split('.')[0]
+                                                      .split(' ')[1]
+                                                      .toString(),
+                                                  style: headText6.copyWith(
+                                                      fontWeight:
+                                                          FontWeight.w400),
+                                                ),
+                                              ],
+                                            ),
+                                            title: Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 8.0),
+                                              child: Text(
+                                                model.history[index]['type']
+                                                    .toString(),
+                                                style: headText4.copyWith(
+                                                    color: black,
+                                                    fontWeight:
+                                                        FontWeight.w400),
+                                              ),
                                             ),
                                             titleAlignment:
                                                 ListTileTitleAlignment.center,
-                                            trailing: Text(model.history[index]
-                                                    ['memo']
-                                                .toString()),
+                                            trailing: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                Text(
+                                                  model.history[index]['memo']
+                                                      .toString(),
+                                                  style: headText5,
+                                                  textAlign: TextAlign.start,
+                                                ),
+                                                model.history[index]
+                                                            ['status'] ==
+                                                        '0x0'
+                                                    ? Text(
+                                                        'Failed',
+                                                        style:
+                                                            headText6.copyWith(
+                                                                color: red),
+                                                      )
+                                                    : Text(
+                                                        'Success',
+                                                        style:
+                                                            headText6.copyWith(
+                                                                color: green),
+                                                      ),
+                                              ],
+                                            ),
                                           );
                                         })),
                                 Container(
@@ -214,8 +273,7 @@ class MultisigHistoryQueueView extends StatelessWidget {
                                                     ),
                                                   ],
                                                 ),
-                                                // TODO: remove ! in below condition
-                                                trailing: !model
+                                                trailing: model
                                                         .hasConfirmedByMe(
                                                             model.queue[index])
                                                     ? SizedBox(

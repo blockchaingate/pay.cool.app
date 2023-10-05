@@ -278,8 +278,8 @@ class MultiSigService {
     return null;
   }
 
-  Future getKanbanNonce(String address) async {
-    var url = paycoolBaseUrlV2 + 'kanban/nonce';
+  Future getChainNonce(String chain, String address) async {
+    var url = paycoolBaseUrlV2 + '$chain/nonce';
     var body = {"native": address};
     log.i('getKanbanNonce url $url - body ${jsonEncode(body)}');
     try {

@@ -33,7 +33,10 @@ class ImportMultisigViewmodel extends FutureViewModel {
     } else {
       isAddressEmpty = false;
     }
-    rebuildUi();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      notifyListeners();
+    });
+
     return isAddressEmpty;
   }
 }

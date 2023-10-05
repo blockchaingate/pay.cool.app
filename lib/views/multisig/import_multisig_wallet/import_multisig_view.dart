@@ -53,42 +53,48 @@ class WelcomeMultisigView extends StatelessWidget {
                                   style: headText4.copyWith(color: grey),
                                 ),
                               ),
-                        !model.dataReady
-                            ? model.sharedService.loadingIndicator()
-                            : SizedBox(
-                                height: 250,
-                                child: ListView.builder(
-                                  itemCount: model.multisigWallets.length,
-                                  itemBuilder: ((context, index) => Container(
-                                      margin: const EdgeInsets.symmetric(
-                                          vertical: 5),
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 5),
-                                      decoration:
-                                          rectangularGradientBoxDecoration(
-                                              colorOne: primaryColor,
-                                              colorTwo: secondaryColor),
-                                      child: ListTile(
-                                        title: Text(model
-                                            .multisigWallets[index].name
-                                            .toString()),
-                                        subtitle: Text(model
-                                            .multisigWallets[index].address
-                                            .toString()),
-                                        trailing: TextButton(
-                                          child: Text('Select'),
-                                          onPressed: () => model
-                                              .navigationService
-                                              .navigateWithTransition(
-                                                  MultisigDashboardView(
-                                                      data: model
-                                                          .multisigWallets[
-                                                              index]
-                                                          .address!)),
-                                        ),
-                                      ))),
-                                ),
-                              ),
+                        model.multisigWallets.isEmpty
+                            ? Container()
+                            : !model.dataReady
+                                ? model.sharedService.loadingIndicator()
+                                : SizedBox(
+                                    height: 250,
+                                    child: ListView.builder(
+                                      itemCount: model.multisigWallets.length,
+                                      itemBuilder: ((context, index) =>
+                                          Container(
+                                              margin:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 5),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 5),
+                                              decoration:
+                                                  rectangularGradientBoxDecoration(
+                                                      colorOne: primaryColor,
+                                                      colorTwo: secondaryColor),
+                                              child: ListTile(
+                                                title: Text(model
+                                                    .multisigWallets[index].name
+                                                    .toString()),
+                                                subtitle: Text(model
+                                                    .multisigWallets[index]
+                                                    .address
+                                                    .toString()),
+                                                trailing: TextButton(
+                                                  child: Text('Select'),
+                                                  onPressed: () => model
+                                                      .navigationService
+                                                      .navigateWithTransition(
+                                                          MultisigDashboardView(
+                                                              data: model
+                                                                  .multisigWallets[
+                                                                      index]
+                                                                  .address!)),
+                                                ),
+                                              ))),
+                                    ),
+                                  ),
                         UIHelper.verticalSpaceMedium,
                         UIHelper.verticalSpaceLarge,
                         Center(
@@ -164,7 +170,10 @@ class WelcomeMultisigView extends StatelessWidget {
                             alignment: Alignment.center,
                             child: OutlinedButton(
                               style: kOutlinedButtonStyles(
-                                  hPadding: 30, vPadding: 10, radius: 8),
+                                  borderColor: black,
+                                  hPadding: 30,
+                                  vPadding: 10,
+                                  radius: 8),
                               onPressed: () async {
                                 var res = await model.multiSigService
                                     .importMultisigWallet(

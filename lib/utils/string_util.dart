@@ -134,13 +134,6 @@ hex2Buffer(hexString) {
   return buffer;
 }
 
-trimHexPrefix(String str) {
-  if (str.startsWith('0x')) {
-    str = str.substring(2);
-  }
-  return str.trim();
-}
-
 number2Buffer(numVal) {
   List<int> buffer = [];
   var neg = (numVal < 0);
@@ -193,6 +186,13 @@ bigIntString2Double(bigInt) {
   return (Decimal.parse(bigInt.toString()) / Decimal.parse('1000000000000000000')).toDouble();
 }
 */
+trimHexPrefix(String str) {
+  if (str.startsWith('0x')) {
+    str = str.substring(2);
+  }
+  return str.trim();
+}
+
 fixLength(String str, int length) {
   var retStr = '';
   int len = str.length;
@@ -207,6 +207,14 @@ fixLength(String str, int length) {
     return str.substring(0, length - 1);
   } else {
     return str;
+  }
+}
+
+String fixLengthV2(String input, int length) {
+  if (input.length >= length) {
+    return input.substring(input.length - length);
+  } else {
+    return input.padLeft(length, '0');
   }
 }
 

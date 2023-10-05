@@ -4,10 +4,13 @@ import 'package:paycool/logger.dart';
 import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/shared_service.dart';
 import 'package:paycool/services/wallet_service.dart';
+import 'package:paycool/utils/abi_util.dart';
+import 'package:paycool/utils/keypair_util.dart';
 import 'package:paycool/views/multisig/multisig_util.dart';
 import 'package:stacked/stacked.dart';
 import 'package:bip32/bip32.dart' as bip32;
 import '../../../services/multisig_service.dart';
+import 'package:hex/hex.dart';
 
 class MultisigHistoryQueueViewModel extends FutureViewModel {
   final String address;
@@ -96,8 +99,11 @@ class MultisigHistoryQueueViewModel extends FutureViewModel {
     var transaction = currentQueue['transaction'];
 
     var seed = await walletService.getSeedDialog(context);
-
-    bip32.BIP32 root = walletService.generateBip32Root(seed!);
+    if (seed == null) {
+      setBusy(false);
+      return;
+    }
+    bip32.BIP32 root = walletService.generateBip32Root(seed);
     var ss =
         await MultisigUtil.signature(currentQueue["transactionHash"], root);
 
@@ -122,7 +128,7 @@ class MultisigHistoryQueueViewModel extends FutureViewModel {
     // check if confirmations <= signatures length then submit transaction to blockchain
     if (multisigData['confirmations'] <= approvedSignatures.length) {
       String signatures = '0x';
-      for (var signature in signaturesData) {
+      for (var signature in signaturesData.reversed) {
         String data = signature['data'];
         signatures += data.substring(2);
       }
@@ -138,23 +144,49 @@ class MultisigHistoryQueueViewModel extends FutureViewModel {
       }
 
       log.w('Gas Price Big int: $gasPriceBig');
-      var txParam = {
-        "to": multisigData["address"],
-        "nonce": '0x' + nonce.toString(16),
-        "value": '0x0',
-        "data": abiHex,
-        "gasPrice": '0x' + gasPriceBig.toRadixString(16),
-        "gas": environment['chains'][chain]['gasLimitToken'].toString()
-      };
+      var gas = environment['chains'][chain]['gasLimitToken'] ??
+          environment['chains'][chain]['gasLimit'];
+      var nonce = await multisigService.getChainNonce(chain.toLowerCase(),
+          chain.toLowerCase() == 'kanban' ? exgAddress : ethAddress);
+      // var txParam = {
+      //   "to": multisigData["address"],
+      //   "nonce": '0x' + nonce.toString(16),
+      //   "value": '0x0',
+      //   "gasPrice": '0x' + gasPriceBig.toRadixString(16),
+      //   "gas": gas.toString(),
+      //   "data": abiHex,
+      // };
+      // log.i('txParam $txParam');
+
+      var keyPairKanban = getExgKeyPair(seed);
+      var txKanbanHex = await signAbiHexWithPrivateKey(
+        abiHex,
+        HEX.encode(keyPairKanban["privateKey"]),
+        environment["chains"][chain.toUpperCase()]["Safes"]["SafeProxyFactory"],
+        nonce,
+        int.parse(gasPriceString),
+        gas,
+      );
 
       var bodyExecute = {
         "_id": currentQueue["_id"],
         "chain": chain,
-        "rawTx": rawTx
+        "rawtx": txKanbanHex
       };
-      // var submitTransactionResult =
-      //     await multisigService.submitMultisigTransaction(bodyExecute);
-      // log.w('submitTransactionResult $submitTransactionResult');
+
+      var submitTransactionResult =
+          await multisigService.submitMultisigTransaction(bodyExecute);
+      log.w('submitTransactionResult $submitTransactionResult');
+      var txid = submitTransactionResult['txid'];
+      if (txid != null) {
+        log.w('txid $txid');
+        sharedService.sharedSimpleNotification(
+            'Transaction submitted successfully',
+            isError: false);
+        onTap(1);
+      } else {
+        sharedService.sharedSimpleNotification('Transaction submitted failed');
+      }
     }
     setBusy(false);
   }

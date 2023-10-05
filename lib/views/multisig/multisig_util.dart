@@ -30,21 +30,40 @@ class MultisigUtil {
     String signatures,
   ) {
     var abiHex = Constants.multisigTransferAbiCode;
-    abiHex += fixLength(trimHexPrefix(transaction["to"]), 64);
-    abiHex += fixLength(transaction["value"], 64);
-    abiHex += transaction["data"];
-    abiHex += fixLength(transaction["operation"].toString(), 64);
-    abiHex += fixLength(transaction["safeTxGas"], 64);
-    abiHex += fixLength(transaction["baseGas"], 64);
-    abiHex += fixLength(transaction["gasPrice"], 64);
-    abiHex += fixLength(transaction["gasToken"], 64);
-    abiHex += fixLength(transaction["refundReceiver"], 64);
-    abiHex += signatures;
+
+    var to = trimHexPrefix(transaction["to"]);
+    debugPrint('to: $to');
+    abiHex += fixLengthV2(to, 64);
+
+    var value = transaction["value"] == "0x0" ? "0" : transaction["value"];
+    abiHex += fixLengthV2(value, 64);
+
+    var data = trimHexPrefix(transaction["data"]);
+    abiHex += data;
+
+    var operation =
+        int.parse(transaction["operation"].toString()).toRadixString(16);
+    abiHex += fixLengthV2(operation, 64);
+
+    var safeTxGas = trimHexPrefix(transaction["safeTxGas"]);
+    abiHex += fixLengthV2(safeTxGas, 64);
+
+    var baseGas = trimHexPrefix(transaction["baseGas"]);
+    abiHex += fixLengthV2(baseGas, 64);
+
+    var gasPrice = trimHexPrefix(transaction["gasPrice"]);
+    abiHex += fixLengthV2(gasPrice, 64);
+
+    var gasToken = trimHexPrefix(transaction["gasToken"]);
+    abiHex += fixLengthV2(gasToken, 64);
+
+    var refundReceiver = trimHexPrefix(transaction["refundReceiver"]);
+    abiHex += fixLengthV2(refundReceiver, 64);
+
+    abiHex += trimHexPrefix(signatures);
+
     debugPrint('rawTx abiHex $abiHex');
-    // abiHex += fixLength(amountHex, 64);
-    // abiHex += fixLength(trimHexPrefix(addressInKanban), 64);
-    // abiHex += trimHexPrefix(signedMessage["r"]);
-    // abiHex += trimHexPrefix(signedMessage["s"]);
+
     return abiHex;
   }
 }

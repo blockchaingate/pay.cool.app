@@ -1,6 +1,3 @@
-import 'dart:ffi';
-
-import 'package:decimal/decimal.dart';
 import 'package:exchangily_ui/exchangily_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -310,7 +307,10 @@ class CreateMultisigWalletViewModel extends BaseViewModel {
         addresses, selectedNumberOfOwners, selectedChain.toUpperCase());
     String exgAddress =
         await sharedService.getExgAddressFromCoreWalletDatabase();
-    var nonce = await multisigService.getKanbanNonce(exgAddress);
+    String ethAddress =
+        await sharedService.getCoinAddressFromCoreWalletDatabase('ETH');
+    var nonce = await multisigService.getChainNonce(selectedChain.toLowerCase(),
+        selectedChain.toLowerCase() == 'kanban' ? exgAddress : ethAddress);
     log.w('nonce: $nonce');
     var seed = await walletService.getSeedDialog(sharedService.context);
     var keyPairKanban = getExgKeyPair(seed);
