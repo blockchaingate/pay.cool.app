@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/shared/ui_helpers.dart';
+import 'package:paycool/utils/exaddr.dart';
 import 'package:paycool/utils/string_util.dart';
+import 'package:paycool/views/multisig/multisig_util.dart';
 import 'package:paycool/views/multisig/transactions/history_queue_viewmodel.dart';
 import 'package:stacked/stacked.dart';
 
@@ -242,10 +244,12 @@ class MultisigHistoryQueueView extends StatelessWidget {
                                                       children: [
                                                         Text(
                                                           StringUtils.showPartialAddress(
-                                                              address: model
-                                                                  .queue[index][
-                                                                      'request']
-                                                                      ['to']
+                                                              address: MultisigUtil.exgToBinpdpayAddress(
+                                                                      model.queue[index]
+                                                                              [
+                                                                              'request']
+                                                                          [
+                                                                          'to'])
                                                                   .toString()),
                                                           style: headText4
                                                               .copyWith(
@@ -321,7 +325,8 @@ class MultisigHistoryQueueView extends StatelessWidget {
                                                                 Text('Approve'),
                                                           ),
                                               ),
-                                              UIHelper.divider
+                                              UIHelper.divider,
+                                              UIHelper.verticalSpaceLarge,
                                             ],
                                           );
                                         })),

@@ -58,7 +58,9 @@ class WelcomeMultisigView extends StatelessWidget {
                             : !model.dataReady
                                 ? model.sharedService.loadingIndicator()
                                 : SizedBox(
-                                    height: 250,
+                                    height: model.multisigWallets.length == 1
+                                        ? 150
+                                        : 250,
                                     child: ListView.builder(
                                       itemCount: model.multisigWallets.length,
                                       itemBuilder: ((context, index) =>

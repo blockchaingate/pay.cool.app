@@ -7,6 +7,7 @@ import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/utils/exaddr.dart';
 import 'package:paycool/utils/string_util.dart';
+import 'package:paycool/views/multisig/multisig_util.dart';
 import 'package:paycool/views/multisig/transactions/history_queue_view.dart';
 import 'package:paycool/views/multisig/transfer/mutlisig_transfer_view.dart';
 import 'package:paycool/views/settings/settings_view.dart';
@@ -176,10 +177,9 @@ class MultisigDashboardView extends StatelessWidget {
                                         onTap: () {
                                           model.sharedService.copyAddress(
                                               context,
-                                              toKbpayAddress(model.fabUtils
-                                                  .exgToFabAddress(model
-                                                      .multisigWallet
-                                                      .address!)));
+                                              MultisigUtil.exgToBinpdpayAddress(
+                                                  model.multisigWallet
+                                                      .address!));
                                         },
                                         child: Padding(
                                           padding: const EdgeInsets.all(8.0),

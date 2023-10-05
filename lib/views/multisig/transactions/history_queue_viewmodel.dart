@@ -123,8 +123,7 @@ class MultisigHistoryQueueViewModel extends FutureViewModel {
 
     var approveProposalResult = await multisigService.approveProposal(body);
     log.w('approveProposalResult $approveProposalResult');
-    var approvedSignatures = [1, 2];
-    // approveProposalResult['signatures'];
+    var approvedSignatures = approveProposalResult['signatures'] as List;
     // check if confirmations <= signatures length then submit transaction to blockchain
     if (multisigData['confirmations'] <= approvedSignatures.length) {
       String signatures = '0x';

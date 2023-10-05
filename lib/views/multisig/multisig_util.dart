@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:paycool/environments/environment.dart';
 import 'package:bip32/bip32.dart' as bip32;
+import 'package:paycool/utils/exaddr.dart';
 import '../../constants/constants.dart';
 import '../../utils/coin_util.dart';
 import '../../utils/string_util.dart';
@@ -8,6 +9,10 @@ import 'package:hex/hex.dart';
 import 'package:web3dart/web3dart.dart' as web3;
 
 class MultisigUtil {
+  static String exgToBinpdpayAddress(String exgAddress) {
+    return toKbpayAddress(fabUtils.exgToFabAddress(exgAddress));
+  }
+
   static signature(String hash, bip32.BIP32 root) async {
     var coinType = environment["CoinType"]["FAB"];
     final fabCoinChild = root.derivePath("m/44'/$coinType'/0'/0/0");
