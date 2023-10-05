@@ -13,6 +13,8 @@ class BondHistoryViewModel extends BaseViewModel with WidgetsBindingObserver {
   List<BondHistoryModel> bondHistoryVm = [];
   List<Card> txHistoryListWidgets = [];
 
+  bool hideForward = false;
+
   int page = 0;
 
   init() async {
@@ -38,9 +40,14 @@ class BondHistoryViewModel extends BaseViewModel with WidgetsBindingObserver {
             page++;
           }
         } else {
+          if (value.length < 10) {
+            hideForward = true;
+          } else {
+            hideForward = false;
+          }
+
           bondHistoryVm = value;
           notifyListeners();
-          // bondHistoryVm.addAll(value);
         }
       });
     } catch (e) {

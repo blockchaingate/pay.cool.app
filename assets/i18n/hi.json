@@ -686,6 +686,9 @@
     "doYouLogout": "क्या आप लॉग आउट करना चाहते हैं?",
     "usd": "USD",
     "gasBalance": "गैस संतुलन",
-    "coinBalance": "सिक्का बैलेंस"   
+    "coinBalance": "सिक्का बैलेंस",
+    "payNow": "अब भुगतान करें",
+    "orderType": "आदेश प्रकार",
+    "total": "कुल"    
     
 }

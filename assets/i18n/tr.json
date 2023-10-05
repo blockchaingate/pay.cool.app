@@ -689,6 +689,9 @@
   "doYouLogout": "Oturumu kapatmak istiyor musunuz?",
   "usd": "USD",
   "gasBalance": "Gaz Bakiyesi",
-  "coinBalance": "Coin Bakiyesi"   
+  "coinBalance": "Coin Bakiyesi",
+  "payNow": "Hemen Öde",
+  "orderType": "Sipariş Türü",
+  "total": "Toplam"    
   
 }

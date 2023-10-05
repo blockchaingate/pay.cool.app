@@ -684,6 +684,9 @@
     "doYouLogout": "Quieres cerrar sesión?",
     "usd": "USD",
     "gasBalance": "Gas Balance",
-    "coinBalance": "Coin Balance"   
+    "coinBalance": "Coin Balance",
+    "payNow": "Pagar Ahora",
+    "orderType": "Tipo de Orden",
+    "total": "Total"  
 
 }
