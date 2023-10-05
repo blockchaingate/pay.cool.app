@@ -204,15 +204,19 @@ class _BondHistoryViewState extends State<BondHistoryView> {
                                 (model.page + 1).toString(),
                                 style: TextStyle(color: Colors.white),
                               ),
-                              IconButton(
-                                icon: Icon(Icons.arrow_forward_ios),
-                                onPressed: () async {
-                                  setState(() {
-                                    model.page++;
-                                  });
-                                  await model.getRequest(isForward: true);
-                                },
-                              ),
+                              !model.hideForward
+                                  ? IconButton(
+                                      icon: Icon(Icons.arrow_forward_ios),
+                                      onPressed: () async {
+                                        setState(() {
+                                          model.page++;
+                                        });
+                                        await model.getRequest(isForward: true);
+                                      },
+                                    )
+                                  : SizedBox(
+                                      width: 50,
+                                    )
                             ],
                           ),
                         )

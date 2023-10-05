@@ -1302,26 +1302,21 @@ class ApiService {
 
   Future<String?> forgotPassword(BuildContext context, param) async {
     String url = "${BaseBondApiRoute}user/forgotPassword";
-    var token = storageService.bondToken;
-    if (token.isEmpty || token == '') {
-      return null;
-    } else {
-      var jsonBody = json.encode(param);
-      try {
-        var response =
-            await client.post(Uri.parse(url), body: jsonBody, headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'x-access-token': token,
-        });
-        if (!jsonDecode(response.body)["success"]) {
-          return null;
-        }
-        var json = jsonDecode(response.body)["message"];
-        return json;
-      } catch (err) {
+
+    var jsonBody = json.encode(param);
+    try {
+      var response =
+          await client.post(Uri.parse(url), body: jsonBody, headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      });
+      if (!jsonDecode(response.body)["success"]) {
         return null;
       }
+      var json = jsonDecode(response.body)["message"];
+      return json;
+    } catch (err) {
+      return null;
     }
   }
 

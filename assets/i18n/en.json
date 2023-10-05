@@ -707,7 +707,10 @@
     "doYouLogout": "Do you want to log out?",
     "usd": "USD",
     "gasBalance": "Gas Balance",
-    "coinBalance": "Coin Balance"
+    "coinBalance": "Coin Balance",
+    "payNow": "Pay Now",
+    "orderType": "Order Type",
+    "total": "Total"
     
 
 }

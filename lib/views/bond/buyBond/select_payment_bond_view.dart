@@ -88,6 +88,10 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
           resizeToAvoidBottomInset: false,
           extendBodyBehindAppBar: true,
           appBar: AppBar(
+            title: Text(
+              FlutterI18n.translate(context, "payment"),
+              style: TextStyle(color: Colors.white, fontSize: 16),
+            ),
             backgroundColor: Colors.transparent,
             systemOverlayStyle: SystemUiOverlayStyle.light,
             elevation: 0,
@@ -114,29 +118,69 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           UIHelper.verticalSpaceLarge,
-                          TextField(
-                            controller: _emailController,
-                            style: TextStyle(color: Colors.white, fontSize: 13),
-                            decoration: InputDecoration(
-                              hintText: FlutterI18n.translate(
-                                  context, "enterEmailAddress"),
-                              hintStyle: TextStyle(
-                                  color: inputText,
-                                  fontWeight: FontWeight.w400),
-                              fillColor: Colors.transparent,
-                              filled: true,
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                                borderSide: BorderSide(
-                                  color: Colors
-                                      .white54, // Change the color to your desired border color
-                                ),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                                borderSide: BorderSide(
-                                  color: Colors
-                                      .white54, // Change the color to your desired border color
+                          SizedBox(
+                            width: size.width,
+                            child: CustomPaint(
+                              painter: DottedBorderPainter(),
+                              child: Padding(
+                                padding: const EdgeInsets.all(10),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    TextField(
+                                      controller: _emailController,
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 13),
+                                      decoration: InputDecoration(
+                                        hintText: FlutterI18n.translate(
+                                            context, "enterEmailAddress"),
+                                        hintStyle: TextStyle(
+                                            color: inputText,
+                                            fontWeight: FontWeight.w400),
+                                        fillColor: Colors.transparent,
+                                        filled: true,
+                                        enabledBorder: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10.0),
+                                          borderSide: BorderSide(
+                                            color: Colors
+                                                .white12, // Change the color to your desired border color
+                                          ),
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10.0),
+                                          borderSide: BorderSide(
+                                            color: Colors
+                                                .white54, // Change the color to your desired border color
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    UIHelper.verticalSpaceSmall,
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                            "${FlutterI18n.translate(context, "orderType")}: ${widget.symbol}",
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 13)),
+                                        Text(
+                                            "${FlutterI18n.translate(context, "total")}: ${String.fromCharCodes(Runes('\u0024'))}${widget.amount}",
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 13)),
+                                        SizedBox()
+                                      ],
+                                    ),
+                                    UIHelper.verticalSpaceSmall,
+                                    Text(
+                                        "${FlutterI18n.translate(context, "amount")}: ${widget.quantity}",
+                                        style: TextStyle(
+                                            color: Colors.white, fontSize: 13)),
+                                  ],
                                 ),
                               ),
                             ),
@@ -149,7 +193,7 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
                                 width: size.width,
                                 child: Text(
                                   gasBalance != null
-                                      ? "${FlutterI18n.translate(context, "gasBalance")}: ${gasBalance! / 1e18}"
+                                      ? "${FlutterI18n.translate(context, "gasBalance")}:${makeShort((gasBalance! / 1e18).toString())}"
                                       : "",
                                   style: gasBalance != null &&
                                           needGasBalance != null &&
@@ -186,6 +230,7 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
                                             isChainSelected = true;
                                             selectedValueCoin = null;
                                             isButtonEnabled = false;
+                                            coinBalance = null;
                                           });
                                           setChainShort(newValue);
                                           setCoins();
@@ -213,7 +258,7 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
                                   width: size.width,
                                   child: Text(
                                     coinBalance != null
-                                        ? "${FlutterI18n.translate(context, "coinBalance")}: ${coinBalance! / 1e18}"
+                                        ? "${FlutterI18n.translate(context, "coinBalance")}:${makeShort((coinBalance! / 1e18).toString())}"
                                         : "",
                                     style: coinBalance != null &&
                                             coinBalance! > widget.amount
@@ -400,8 +445,7 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
                         ),
                         child: Text(
                             txHash == null
-                                ? FlutterI18n.translate(
-                                    context, "confirmPurchase")
+                                ? FlutterI18n.translate(context, "payNow")
                                 : FlutterI18n.translate(context, "done"),
                             style: isButtonEnabled
                                 ? TextStyle(
@@ -447,7 +491,7 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
   }
 
   Future<void> bondApprove(Size size) async {
-    var amount;
+    double amount;
 
     String toAddress = environment["Bond"]["Chains"]["$selectedValueChain"]
         ["acceptedTokens"][index]["id"];
@@ -532,7 +576,7 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
   }
 
   Future<void> bondPurchase(Uint8List seed, Size size) async {
-    var amount;
+    double amount;
 
     String toAddress =
         environment["Bond"]["Chains"]["$selectedValueChain"]["bondAddress"];
@@ -590,7 +634,6 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
         .signSendTxBond(seed, abiHex!, toAddress,
             chain: selectedValueChain!, incNonce: true)
         .then((value) async {
-      print(value);
       setState(() {
         txHash = value;
         loading = false;
@@ -863,5 +906,58 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
                 ));
           });
         });
+  }
+}
+
+class DottedBorderPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = Colors.white
+      ..strokeWidth = 1
+      ..style = PaintingStyle.stroke;
+
+    const double dashWidth = 10; // Width of each dash
+    const double dashSpace = 10; // Space between each dash
+
+    double startX = 0;
+    while (startX < size.width) {
+      canvas.drawLine(Offset(startX, 0), Offset(startX + dashWidth, 0), paint);
+      startX += dashWidth + dashSpace;
+    }
+
+    // Draw right border
+    double startY = 0;
+    while (startY < size.height) {
+      canvas.drawLine(
+        Offset(size.width, startY),
+        Offset(size.width, startY + dashWidth),
+        paint,
+      );
+      startY += dashWidth + dashSpace;
+    }
+
+    // Draw bottom border
+    startX = 0;
+    while (startX < size.width) {
+      canvas.drawLine(
+        Offset(startX, size.height),
+        Offset(startX + dashWidth, size.height),
+        paint,
+      );
+      startX += dashWidth + dashSpace;
+    }
+
+    // Draw left border
+    startY = 0;
+    while (startY < size.height) {
+      canvas.drawLine(Offset(0, startY), Offset(0, startY + dashWidth), paint);
+      startY += dashWidth + dashSpace;
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return false;
   }
 }

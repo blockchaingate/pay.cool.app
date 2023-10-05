@@ -689,6 +689,9 @@
     "doYouLogout": "您想退出吗？",
     "usd": "美元",
     "gasBalance": "气体平衡",
-    "coinBalance": "币余额"   
+    "coinBalance": "币余额",
+    "payNow": "现在付款",
+    "orderType": "订单类型",
+    "total": "全部的"       
     
 }
