@@ -689,6 +689,9 @@
     "doYouLogout": "ログアウトしますか?",
     "usd": "USD",
     "gasBalance": "ガスバランス",
-    "coinBalance": "コイン残高"  
+    "coinBalance": "コイン残高",
+    "payNow": "今払う",
+    "orderType": "注文タイプ",
+    "total": "合計"  
   
 }

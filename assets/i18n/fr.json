@@ -689,6 +689,9 @@
     "doYouLogout": "Voulez-vous vous déconnecter?",
     "usd": "USD",
     "gasBalance": "Bilan de gaz",
-    "coinBalance": "Solde des pièces"   
+    "coinBalance": "Solde des pièces",
+    "payNow": "Payez Maintenant",
+    "orderType": "Type de Commande",
+    "total": "Total"    
     
 }
