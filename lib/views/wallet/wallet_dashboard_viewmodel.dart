@@ -218,7 +218,7 @@ class WalletDashboardViewModel extends BaseViewModel {
           .navigateWithAnimation(KycLogin(onFormSubmit: onLoginFormSubmit));
       return;
     } else {
-      kycService.xAccessToken.value = storageService.bondToken;
+      kycService.updateXAccessToken(storageService.bondToken);
 
       navigationService.navigateToView(const KycStatus());
     }

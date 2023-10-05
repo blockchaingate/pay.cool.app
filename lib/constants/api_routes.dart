@@ -29,6 +29,10 @@ const String exchangilyUrl = 'https://www.exchangily.com/';
 // General
 const String coinPoolAddressRoute = 'exchangily/getCoinPoolAddress';
 
+const String paycoolBaseUrlV2 = isProduction
+    ? 'https://api.pay.cool/api/'
+    : 'https://testapi.fundark.com/api/';
+
 const String paycoolWebsiteUrl = "https://www.pay.cool/";
 /*----------------------------------------------------------------------
                         Pay.cool Club
@@ -227,7 +231,3 @@ const String AssetsBalanceApiRoute = 'exchangily/getBalances/';
 /* ---------------------------------------------------------------------
                           Bond
 ---------------------------------------------------------------------- */
-
-const String paycoolBaseUrlV2 = isProduction
-    ? 'https://api.pay.cool/api/'
-    : 'https://testapi.fundark.com/api/';
