@@ -689,6 +689,9 @@
     "coinBalance": "सिक्का बैलेंस",
     "payNow": "अब भुगतान करें",
     "orderType": "आदेश प्रकार",
-    "total": "कुल"    
-    
+    "total": "कुल",
+    "kycNotStarted": "KYC शुरू नहीं हुआ", 
+    "notStarted": "शुरू नहीं हुआ",
+    "multisigWallet": "मल्टीसिग वॉलेट"
+
 }

@@ -692,6 +692,9 @@
   "coinBalance": "Coin Bakiyesi",
   "payNow": "Hemen Öde",
   "orderType": "Sipariş Türü",
-  "total": "Toplam"    
-  
+  "total": "Toplam",
+  "kycNotStarted": "KYC başlamadı",
+  "notStarted": "Başlamadı",
+  "multisigWallet": "Çok İmzalı Cüzdan"
+
 }
