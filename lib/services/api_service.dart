@@ -1384,31 +1384,30 @@ class ApiService {
     }
   }
 
-  // Future<OrderBondVm?> updatePaymentBond(
-  //     BuildContext context, String bondId, param) async {
-  //   String url = "${paycoolBaseUrlV2}bond/order/$bondId/updatePayment";
-  //   var token = storageService.bondToken;
-  //   if (token.isEmpty || token == '') {
-  //     return null;
-  //   } else {
-  //     var jsonBody = json.encode(param);
-  //     try {
-  //       var response =
-  //           await client.post(Uri.parse(url), body: jsonBody, headers: {
-  //         'Content-Type': 'application/json',
-  //         'Accept': 'application/json',
-  //         'x-access-token': token,
-  //       });
-  //       if (!jsonDecode(response.body)["success"]) {
-  //         return null;
-  //       }
-  //       var json = jsonDecode(response.body)["data"];
-  //       return OrderBondVm.fromJson(json);
-  //     } catch (err) {
-  //       throw Exception(err);
-  //     }
-  //   }
-  // }
+  Future<String?> updatePaymentBond(
+      BuildContext context, String bondId, param) async {
+    String url = "${paycoolBaseUrlV2}bond/order/$bondId/updatePayment";
+    var token = storageService.bondToken;
+    if (token.isEmpty || token == '') {
+      return null;
+    } else {
+      var jsonBody = json.encode(param);
+      try {
+        var response =
+            await client.post(Uri.parse(url), body: jsonBody, headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'x-access-token': token,
+        });
+        if (!jsonDecode(response.body)["success"]) {
+          return null;
+        }
+        return jsonDecode(response.body)["message"];
+      } catch (err) {
+        throw Exception(err);
+      }
+    }
+  }
 
   Future<OrderBondModel?> confirmOrderBond(
       BuildContext context, String bondId) async {

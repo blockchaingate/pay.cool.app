@@ -8,6 +8,7 @@ import 'package:paycool/constants/constants.dart';
 import 'package:paycool/constants/route_names.dart';
 import 'package:paycool/environments/environment.dart';
 import 'package:paycool/models/bond/rm/order_bond_model.dart';
+import 'package:paycool/models/bond/rm/update_order_request_model.dart';
 import 'package:paycool/models/bond/vm/bond_symbol_model.dart';
 import 'package:paycool/models/bond/vm/me_model.dart';
 import 'package:paycool/models/bond/vm/token_balance_model.dart';
@@ -27,11 +28,12 @@ class SelectPaymentBondView extends StatefulWidget {
   final int quantity;
   final String symbol;
   final int amount;
+  final String orderNumber;
   final BondSembolModel? bondSembolVm;
   final BondMeModel? bondMeVm;
 
-  const SelectPaymentBondView(
-      this.bondMeVm, this.quantity, this.amount, this.symbol, this.bondSembolVm,
+  const SelectPaymentBondView(this.bondMeVm, this.quantity, this.amount,
+      this.symbol, this.orderNumber, this.bondSembolVm,
       {super.key});
 
   @override
@@ -127,36 +129,10 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    TextField(
-                                      controller: _emailController,
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 13),
-                                      decoration: InputDecoration(
-                                        hintText: FlutterI18n.translate(
-                                            context, "enterEmailAddress"),
-                                        hintStyle: TextStyle(
-                                            color: inputText,
-                                            fontWeight: FontWeight.w400),
-                                        fillColor: Colors.transparent,
-                                        filled: true,
-                                        enabledBorder: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10.0),
-                                          borderSide: BorderSide(
-                                            color: Colors
-                                                .white12, // Change the color to your desired border color
-                                          ),
-                                        ),
-                                        focusedBorder: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10.0),
-                                          borderSide: BorderSide(
-                                            color: Colors
-                                                .white54, // Change the color to your desired border color
-                                          ),
-                                        ),
-                                      ),
-                                    ),
+                                    Text(
+                                        "${FlutterI18n.translate(context, "orderNumber")}: ${widget.orderNumber}",
+                                        style: TextStyle(
+                                            color: Colors.white, fontSize: 13)),
                                     UIHelper.verticalSpaceSmall,
                                     Row(
                                       mainAxisAlignment:
@@ -204,8 +180,7 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
                                 ),
                               ),
                               Container(
-                                width: MediaQuery.of(context).size.width *
-                                    0.9, // Set the width to 80% of the screen width
+                                width: MediaQuery.of(context).size.width * 0.9,
                                 padding: EdgeInsets.symmetric(horizontal: 12),
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(8),
@@ -861,22 +836,26 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
                                     setState(() {
                                       loading = true;
                                     });
+
+                                    var param = UpdateOrderRequestModel(
+                                        paymentChain: selectedChainValue,
+                                        paymentCoin: selectedValueCoin,
+                                        paymentCoinAmount: widget.quantity);
+
                                     try {
                                       await ApiService()
-                                          .orderBond(context, orderBondRm)
+                                          .updatePaymentBond(context,
+                                              widget.orderNumber, param)
                                           .then((value) async {
                                         if (value != null) {
                                           if (widget.bondMeVm!.kycLevel! < 2) {
                                             await apiService
                                                 .confirmOrderBondWithoutKyc(
                                                     context,
-                                                    value.bondOrder!.bondId
-                                                        .toString());
+                                                    widget.orderNumber);
                                           } else {
                                             await apiService.confirmOrderBond(
-                                                context,
-                                                value.bondOrder!.bondId
-                                                    .toString());
+                                                context, widget.orderNumber);
                                           }
                                           await bondApprove(size);
                                         }

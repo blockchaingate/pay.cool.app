@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:paycool/constants/colors.dart';
+import 'package:paycool/models/bond/rm/order_bond_request_model.dart';
 import 'package:paycool/models/bond/vm/bond_symbol_model.dart';
 import 'package:paycool/models/bond/vm/me_model.dart';
 import 'package:paycool/models/bond/vm/order_bond_model.dart';
@@ -260,18 +261,38 @@ class _BondSembolViewState extends State<BondSembolView> {
                             borderRadius: BorderRadius.circular(40.0),
                           ),
                           child: ElevatedButton(
-                            onPressed: () {
+                            onPressed: () async {
                               if (amountText.text.isNotEmpty) {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            SelectPaymentBondView(
-                                                widget.bondMeVm!,
-                                                int.parse(amountText.text),
-                                                lastPrice,
-                                                selectedValue,
-                                                bondSembolVm)));
+                                loading = true;
+                                var param = OrderBondRequestModel(
+                                    paymentAmount: lastPrice,
+                                    quantity: int.parse(amountText.text),
+                                    symbol: selectedValue);
+
+                                try {
+                                  await ApiService()
+                                      .orderBond(context, param)
+                                      .then((value) async {
+                                    if (value != null) {
+                                      loading = false;
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  SelectPaymentBondView(
+                                                      widget.bondMeVm!,
+                                                      int.parse(
+                                                          amountText.text),
+                                                      lastPrice,
+                                                      selectedValue,
+                                                      value.bondOrder!.id
+                                                          .toString(),
+                                                      bondSembolVm)));
+                                    }
+                                  });
+                                } catch (e) {
+                                  loading = false;
+                                }
                               } else {
                                 callSMessage(
                                     context,

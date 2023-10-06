@@ -1,9 +1,9 @@
 import 'dart:convert';
 
-OrderBondModel orderBondVmFromJson(String str) =>
+OrderBondModel orderBondModelFromJson(String str) =>
     OrderBondModel.fromJson(json.decode(str));
 
-String orderBondVmToJson(OrderBondModel data) => json.encode(data.toJson());
+String orderBondModelToJson(OrderBondModel data) => json.encode(data.toJson());
 
 class OrderBondModel {
   BondOrder? bondOrder;
@@ -27,36 +27,44 @@ class BondOrder {
   String? user;
   String? bondId;
   int? quantity;
-  bool? kyCverified;
+  int? paymentAmount;
   String? status;
   DateTime? createdAt;
+  String? id;
+  int? v;
 
   BondOrder({
     this.user,
     this.bondId,
     this.quantity,
-    this.kyCverified,
+    this.paymentAmount,
     this.status,
     this.createdAt,
+    this.id,
+    this.v,
   });
 
   factory BondOrder.fromJson(Map<String, dynamic> json) => BondOrder(
         user: json["user"],
         bondId: json["bondId"],
         quantity: json["quantity"],
-        kyCverified: json["KYCverified"],
+        paymentAmount: json["paymentAmount"],
         status: json["status"],
         createdAt: json["created_at"] == null
             ? null
             : DateTime.parse(json["created_at"]),
+        id: json["_id"],
+        v: json["__v"],
       );
 
   Map<String, dynamic> toJson() => {
         "user": user,
         "bondId": bondId,
         "quantity": quantity,
-        "KYCverified": kyCverified,
+        "paymentAmount": paymentAmount,
         "status": status,
         "created_at": createdAt?.toIso8601String(),
+        "_id": id,
+        "__v": v,
       };
 }
