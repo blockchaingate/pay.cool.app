@@ -692,6 +692,9 @@
     "coinBalance": "Solde des pièces",
     "payNow": "Payez Maintenant",
     "orderType": "Type de Commande",
-    "total": "Total"    
-    
+    "total": "Total",
+    "kycNotStarted": "KYC non commencé",
+    "notStarted": "Non commencé",
+    "multisigWallet": "Portefeuille Multisig"
+
 }

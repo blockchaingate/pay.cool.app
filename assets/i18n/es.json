@@ -687,6 +687,9 @@
     "coinBalance": "Coin Balance",
     "payNow": "Pagar Ahora",
     "orderType": "Tipo de Orden",
-    "total": "Total"  
+    "total": "Total",
+    "kycNotStarted": "KYC no iniciado",
+    "notStarted": "No iniciado",
+    "multisigWallet": "Monedero Multifirma"
 
 }

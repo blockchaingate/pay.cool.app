@@ -692,6 +692,8 @@
     "coinBalance": "币余额",
     "payNow": "现在付款",
     "orderType": "订单类型",
-    "total": "全部的"       
-    
+    "total": "全部的",
+    "kycNotStarted": "KYC未开始",
+    "notStarted": "未开始",
+    "multisigWallet": "多重签名钱包"
 }
