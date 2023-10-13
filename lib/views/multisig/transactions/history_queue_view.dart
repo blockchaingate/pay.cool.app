@@ -277,53 +277,98 @@ class MultisigHistoryQueueView extends StatelessWidget {
                                                     ),
                                                   ],
                                                 ),
-                                                trailing: model
-                                                        .hasConfirmedByMe(
-                                                            model.queue[index])
-                                                    ? SizedBox(
-                                                        width: 110,
+                                                trailing: Column(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Container(
+                                                        margin: EdgeInsets.only(
+                                                            bottom: 5),
+                                                        width: 120,
                                                         child: Text(
-                                                          'Confirmed by current wallet',
+                                                          StringUtils.showPartialAddress(
+                                                              address: model
+                                                                  .queue[index][
+                                                                      'transactionHash']
+                                                                  .toString()),
                                                           style: headText5
                                                               .copyWith(
-                                                                  color: green,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w400,
-                                                                  letterSpacing:
-                                                                      0.1,
-                                                                  wordSpacing:
-                                                                      0.5),
-                                                          maxLines: 4,
-                                                        ),
-                                                      )
-                                                    : model.isShowApproveButton(
+                                                                  color: black),
+                                                        )),
+                                                    model.hasConfirmedByMe(
                                                             model.queue[index])
-                                                        ? ElevatedButton(
-                                                            style: ButtonStyle(
-                                                                backgroundColor:
-                                                                    MaterialStateProperty
-                                                                        .all(
-                                                                            primaryColor)),
-                                                            onPressed: () {
-                                                              model.approveTransaction(
-                                                                  model.queue[
-                                                                      index],
-                                                                  context);
-                                                            },
-                                                            child:
-                                                                Text('Approve'),
+                                                        ? SizedBox(
+                                                            width: 110,
+                                                            child: model
+                                                                    .pendingExecution
+                                                                ? ElevatedButton(
+                                                                    style: ButtonStyle(
+                                                                        backgroundColor:
+                                                                            MaterialStateProperty.all(yellow)),
+                                                                    onPressed:
+                                                                        () {
+                                                                      model.approveTransaction(
+                                                                          model.queue[
+                                                                              index],
+                                                                          context,
+                                                                          isExecution:
+                                                                              true);
+                                                                    },
+                                                                    child: Text(
+                                                                      'Execute',
+                                                                      style: headText5.copyWith(
+                                                                          color:
+                                                                              black),
+                                                                    ),
+                                                                  )
+                                                                : Text(
+                                                                    'Confirmed by current wallet',
+                                                                    style: headText5.copyWith(
+                                                                        color:
+                                                                            green,
+                                                                        fontWeight:
+                                                                            FontWeight
+                                                                                .w400,
+                                                                        letterSpacing:
+                                                                            0.1,
+                                                                        wordSpacing:
+                                                                            0.5),
+                                                                    maxLines: 4,
+                                                                  ),
                                                           )
-                                                        : ElevatedButton(
-                                                            style: ButtonStyle(
-                                                                backgroundColor:
-                                                                    MaterialStateProperty
-                                                                        .all(
+                                                        : model.isShowApproveButton(
+                                                                model.queue[
+                                                                    index])
+                                                            ? ElevatedButton(
+                                                                style: ButtonStyle(
+                                                                    backgroundColor:
+                                                                        MaterialStateProperty.all(
+                                                                            primaryColor)),
+                                                                onPressed: () {
+                                                                  model.approveTransaction(
+                                                                      model.queue[
+                                                                          index],
+                                                                      context);
+                                                                },
+                                                                child: Text(
+                                                                    'Approve'),
+                                                              )
+                                                            : ElevatedButton(
+                                                                style: ButtonStyle(
+                                                                    backgroundColor:
+                                                                        MaterialStateProperty.all(
                                                                             grey)),
-                                                            onPressed: () {},
-                                                            child:
-                                                                Text('Approve'),
-                                                          ),
+                                                                onPressed:
+                                                                    () {},
+                                                                child: Text(
+                                                                    'Approve'),
+                                                              ),
+                                                  ],
+                                                ),
                                               ),
                                               UIHelper.divider,
                                               UIHelper.verticalSpaceLarge,

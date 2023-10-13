@@ -20,6 +20,7 @@ class MultisigHistoryQueueViewModel extends FutureViewModel {
   final walletService = locator<WalletService>();
   List history = [];
   List queue = [];
+  bool pendingExecution = false;
 
   final log = getLogger('HistoryQueueViewModel');
   final multisigService = locator<MultiSigService>();
@@ -50,12 +51,17 @@ class MultisigHistoryQueueViewModel extends FutureViewModel {
 
   // show confirmed by me if current wallet is one of the owners and also the signer
   bool hasConfirmedByMe(currentQueue) {
+    pendingExecution = false;
     var multisigData = currentQueue['multisig'];
-    var signaturesData = currentQueue['signatures'];
+    var signaturesData = currentQueue['signatures'] as List;
     for (var walletOwner in multisigData['owners']) {
       if (walletOwner['address'] == exgAddress) {
         for (var signature in signaturesData) {
           if (signature['signer'] == exgAddress) {
+            if (signaturesData.length == multisigData['confirmations'] &&
+                signaturesData.last['signer'] == exgAddress) {
+              pendingExecution = true;
+            }
             return true;
           }
         }
@@ -92,7 +98,8 @@ class MultisigHistoryQueueViewModel extends FutureViewModel {
   }
 
   // approve transaction
-  approveTransaction(currentQueue, BuildContext context) async {
+  approveTransaction(currentQueue, BuildContext context,
+      {bool isExecution = false}) async {
     setBusy(true);
     var multisigData = currentQueue['multisig'];
     var signaturesData = currentQueue['signatures'] as List;
@@ -121,11 +128,16 @@ class MultisigHistoryQueueViewModel extends FutureViewModel {
       "data": sig
     };
 
-    var approveProposalResult = await multisigService.approveProposal(body);
-    log.w('approveProposalResult $approveProposalResult');
-    var approvedSignatures = approveProposalResult['signatures'] as List;
+    var approvedSignatures = [];
+    if (!isExecution) {
+      var approveProposalResult = await multisigService.approveProposal(body);
+      log.w('approveProposalResult $approveProposalResult');
+      approvedSignatures = approveProposalResult['signatures'];
+    }
+    int sigLength =
+        isExecution ? signaturesData.length : approvedSignatures.length;
     // check if confirmations <= signatures length then submit transaction to blockchain
-    if (multisigData['confirmations'] <= approvedSignatures.length) {
+    if (multisigData['confirmations'] <= sigLength) {
       String signatures = '0x';
       for (var signature in signaturesData.reversed) {
         String data = signature['data'];
