@@ -45,7 +45,6 @@ class BondHistoryViewModel extends BaseViewModel with WidgetsBindingObserver {
           } else {
             hideForward = false;
           }
-
           bondHistoryVm = value;
           notifyListeners();
         }

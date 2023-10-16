@@ -174,7 +174,18 @@ class _BondSembolViewState extends State<BondSembolView> {
                                                   MainAxisAlignment
                                                       .spaceBetween,
                                               children: [
-                                                SizedBox(),
+                                                Text(
+                                                    bondSembolVmList[index]
+                                                                .symbol! ==
+                                                            "DNB"
+                                                        ? "Type:  DFT"
+                                                        : "Type:  FT",
+                                                    style: TextStyle(
+                                                      fontSize: 14.0,
+                                                      color: Colors.grey,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    )),
                                                 selectedValue ==
                                                         bondSembolVmList[index]
                                                             .symbol
@@ -182,8 +193,11 @@ class _BondSembolViewState extends State<BondSembolView> {
                                                         Icons
                                                             .check_circle_outline,
                                                         color: Colors.green,
+                                                        size: 24,
                                                       )
-                                                    : SizedBox()
+                                                    : SizedBox(
+                                                        height: 24,
+                                                      )
                                               ],
                                             ),
                                           ],
@@ -207,7 +221,15 @@ class _BondSembolViewState extends State<BondSembolView> {
                     TextField(
                       controller: amountText,
                       style: TextStyle(color: Colors.white, fontSize: 13),
-                      keyboardType: TextInputType.number,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(
+                          RegExp(
+                            r'^[0-9]*?[0-9]*',
+                          ),
+                        ),
+                      ],
+                      keyboardType: TextInputType.numberWithOptions(
+                          decimal: false, signed: false),
                       onChanged: (value) {
                         if (value.isNotEmpty) {
                           setState(() {
@@ -263,7 +285,10 @@ class _BondSembolViewState extends State<BondSembolView> {
                           child: ElevatedButton(
                             onPressed: () async {
                               if (amountText.text.isNotEmpty) {
-                                loading = true;
+                                setState(() {
+                                  loading = true;
+                                });
+
                                 var param = OrderBondRequestModel(
                                     paymentAmount: lastPrice,
                                     quantity: int.parse(amountText.text),
@@ -274,7 +299,9 @@ class _BondSembolViewState extends State<BondSembolView> {
                                       .orderBond(context, param)
                                       .then((value) async {
                                     if (value != null) {
-                                      loading = false;
+                                      setState(() {
+                                        loading = false;
+                                      });
                                       Navigator.push(
                                           context,
                                           MaterialPageRoute(
