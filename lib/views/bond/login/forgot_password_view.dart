@@ -288,7 +288,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
             ),
             UIHelper.verticalSpaceSmall,
             TextField(
-              controller: verifyPasswordController,
+              controller: codeController,
               style: TextStyle(color: Colors.white, fontSize: 13),
               decoration: InputDecoration(
                 hintText: "${FlutterI18n.translate(context, "code")} *",

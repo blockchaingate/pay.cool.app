@@ -692,9 +692,10 @@
     "coinBalance": "コイン残高",
     "payNow": "今払う",
     "orderType": "注文タイプ",
+    "orderNumber": "注文番号",
     "total": "合計",
     "kycNotStarted": "KYCが開始されていません",
     "notStarted": "開始されていません",
-    "multisigWallet": "マルチシグウォレット"
-
+    "multisigWallet": "マルチシグウォレット",
+    "noRecord": "レコードが見つかりませんでした"
 }

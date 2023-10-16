@@ -710,8 +710,10 @@
     "coinBalance": "Coin Balance",
     "payNow": "Pay Now",
     "orderType": "Order Type",
+    "orderNumber": "Order Number",
     "total": "Total",
     "kycNotStarted": "KYC not started",
     "notStarted": "Not Started",
-    "multisigWallet": "Multisig Wallet"
+    "multisigWallet": "Multisig Wallet",
+    "noRecord": "No Record Found"
 }

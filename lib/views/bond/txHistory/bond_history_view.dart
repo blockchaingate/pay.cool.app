@@ -118,112 +118,124 @@ class _BondHistoryViewState extends State<BondHistoryView> {
                       image: AssetImage("assets/images/bgImage.png"),
                       fit: BoxFit.cover),
                 ),
-                child: Padding(
-                  padding: EdgeInsets.fromLTRB(size.width * 0.05,
-                      size.height * 0.1, size.width * 0.05, size.height * 0.05),
-                  child: SizedBox(
-                    height: size.height,
-                    child: Column(
-                      children: [
-                        UIHelper.verticalSpaceMedium,
-                        Row(children: [
-                          Expanded(
-                            flex: 1,
-                            child: Text(
-                              FlutterI18n.translate(context, "bondId"),
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                          Expanded(
-                            flex: 1,
-                            child: Text(
-                              FlutterI18n.translate(context, "quantity"),
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                          Expanded(
-                            flex: 1,
-                            child: Text(
-                              FlutterI18n.translate(context, "chain"),
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                          Expanded(
-                            flex: 1,
-                            child: Text(
-                              FlutterI18n.translate(context, "coin"),
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                          Expanded(
-                            flex: 1,
-                            child: Text(
-                              FlutterI18n.translate(context, "date"),
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                          Expanded(
-                            flex: 1,
-                            child: Text(
-                              FlutterI18n.translate(context, "status"),
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                        ]),
-                        UIHelper.verticalSpaceMedium,
-                        Expanded(
-                          child: RefreshIndicator(
-                            onRefresh: model.getRequest,
-                            child: Scrollbar(
-                              child: SingleChildScrollView(
-                                physics: AlwaysScrollableScrollPhysics(),
-                                child: Column(
-                                  children: model.txHistoryListWidgets,
-                                ),
-                              ),
-                            ),
-                          ),
+                child: model.bondHistoryVm.isEmpty
+                    ? Center(
+                        child: Text(
+                          FlutterI18n.translate(context, "noRecord"),
+                          style: TextStyle(color: Colors.white),
                         ),
-                        SizedBox(
-                          width: size.width,
-                          height: 40,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
+                      )
+                    : Padding(
+                        padding: EdgeInsets.fromLTRB(
+                            size.width * 0.05,
+                            size.height * 0.1,
+                            size.width * 0.05,
+                            size.height * 0.05),
+                        child: SizedBox(
+                          height: size.height,
+                          child: Column(
                             children: [
-                              if (model.page != 0)
-                                IconButton(
-                                  icon: Icon(Icons.arrow_back_ios),
-                                  onPressed: () async {
-                                    setState(() {
-                                      model.page--;
-                                    });
-                                    await model.getRequest(isForward: false);
-                                  },
+                              UIHelper.verticalSpaceMedium,
+                              Row(children: [
+                                Expanded(
+                                  flex: 1,
+                                  child: Text(
+                                    FlutterI18n.translate(context, "bondId"),
+                                    style: TextStyle(color: Colors.white),
+                                  ),
                                 ),
-                              Text(
-                                (model.page + 1).toString(),
-                                style: TextStyle(color: Colors.white),
+                                Expanded(
+                                  flex: 1,
+                                  child: Text(
+                                    FlutterI18n.translate(context, "quantity"),
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 1,
+                                  child: Text(
+                                    FlutterI18n.translate(context, "chain"),
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 1,
+                                  child: Text(
+                                    FlutterI18n.translate(context, "coin"),
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 1,
+                                  child: Text(
+                                    FlutterI18n.translate(context, "date"),
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 1,
+                                  child: Text(
+                                    FlutterI18n.translate(context, "status"),
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                              ]),
+                              UIHelper.verticalSpaceMedium,
+                              Expanded(
+                                child: RefreshIndicator(
+                                  onRefresh: model.getRequest,
+                                  child: Scrollbar(
+                                    child: SingleChildScrollView(
+                                      physics: AlwaysScrollableScrollPhysics(),
+                                      child: Column(
+                                        children: model.txHistoryListWidgets,
+                                      ),
+                                    ),
+                                  ),
+                                ),
                               ),
-                              !model.hideForward
-                                  ? IconButton(
-                                      icon: Icon(Icons.arrow_forward_ios),
-                                      onPressed: () async {
-                                        setState(() {
-                                          model.page++;
-                                        });
-                                        await model.getRequest(isForward: true);
-                                      },
-                                    )
-                                  : SizedBox(
-                                      width: 50,
-                                    )
+                              SizedBox(
+                                width: size.width,
+                                height: 40,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    if (model.page != 0)
+                                      IconButton(
+                                        icon: Icon(Icons.arrow_back_ios),
+                                        onPressed: () async {
+                                          setState(() {
+                                            model.page--;
+                                          });
+                                          await model.getRequest(
+                                              isForward: false);
+                                        },
+                                      ),
+                                    Text(
+                                      (model.page + 1).toString(),
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                    !model.hideForward
+                                        ? IconButton(
+                                            icon: Icon(Icons.arrow_forward_ios),
+                                            onPressed: () async {
+                                              setState(() {
+                                                model.page++;
+                                              });
+                                              await model.getRequest(
+                                                  isForward: true);
+                                            },
+                                          )
+                                        : SizedBox(
+                                            width: 50,
+                                          )
+                                  ],
+                                ),
+                              )
                             ],
                           ),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
+                        ),
+                      ),
               ),
             ),
           );
