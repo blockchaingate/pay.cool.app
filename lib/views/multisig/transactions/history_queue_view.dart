@@ -315,7 +315,7 @@ class MultisigHistoryQueueView extends StatelessWidget {
                                                                           model.queue[
                                                                               index],
                                                                           context,
-                                                                          isExecution:
+                                                                          requiredExecution:
                                                                               true);
                                                                     },
                                                                     child: Text(

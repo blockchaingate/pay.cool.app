@@ -40,6 +40,7 @@ class MultiSigService {
     try {
       var response = await client.post(Uri.parse(url),
           body: jsonEncode(body), headers: Constants.headersJson);
+      log.w('resopnse ${response.body}');
       var json = jsonDecode(response.body);
       if (json['success']) {
         log.w('approveProposal $json}');
@@ -56,10 +57,11 @@ class MultiSigService {
   Future<bool> createProposal(body) async {
     bool result = false;
     var url = paycoolBaseUrlV2 + 'multisigproposal';
-    log.i('createProposal url $url - body ${jsonEncode(body)}');
+    var jsonBody = jsonEncode(body);
+    log.i('createProposal url $url - body $jsonBody');
     try {
       var response = await client.post(Uri.parse(url),
-          body: jsonEncode(body), headers: Constants.headersJson);
+          body: jsonBody, headers: Constants.headersJson);
       var json = jsonDecode(response.body);
       if (json['success']) {
         log.w('createProposal $json}');
@@ -77,10 +79,11 @@ class MultiSigService {
 
   Future multisigtransferTxHash(MultisigTransactionHashModel body) async {
     var url = paycoolBaseUrlV2 + 'multisig/getTransactionHash';
-    log.i('multisigtransferTxHash url $url - body ${body.toJson()}');
+    var jsonBody = jsonEncode(body.toJson());
+    log.i('multisigtransferTxHash url $url - jsonBody $jsonBody');
     try {
       var response = await client.post(Uri.parse(url),
-          body: jsonEncode(body.toJson()), headers: Constants.headersJson);
+          body: jsonBody, headers: Constants.headersJson);
       var json = jsonDecode(response.body);
       if (json['success']) {
         log.w('multisigtransferTxHash $json}');

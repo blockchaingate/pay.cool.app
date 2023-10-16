@@ -15,6 +15,7 @@ import 'package:paycool/utils/fab_util.dart';
 import 'package:paycool/utils/number_util.dart';
 import 'package:paycool/utils/string_util.dart';
 import 'package:paycool/views/multisig/dashboard/multisig_balance_model.dart';
+import 'package:paycool/views/multisig/multisig_util.dart';
 import 'package:paycool/views/multisig/multisig_wallet_model.dart';
 import 'package:paycool/views/multisig/transfer/multisig_transaction_hash_model.dart';
 import 'package:stacked/stacked.dart';
@@ -32,18 +33,18 @@ class MultisigTransferViewModel extends BaseViewModel {
   TextEditingController toController = TextEditingController();
   TextEditingController amountController = TextEditingController();
   TextEditingController nonceController = TextEditingController();
-  String smartContractAddress = '';
+  // String smartContractAddress = '';
   int decimals = 18;
   String ethAddress = '';
   String exgAddress = '';
 
   init(String ticker) async {
-    try {
-      smartContractAddress = environment['addresses']['smartContract'][ticker];
-      log.w('smart contract address $smartContractAddress');
-    } catch (e) {
-      log.e('getSmartContractAddress error $e');
-    }
+    // try {
+    //   smartContractAddress = environment['addresses']['smartContract'][ticker];
+    //   log.w('smart contract address $smartContractAddress');
+    // } catch (e) {
+    //   log.e('getSmartContractAddress error $e');
+    // }
     ethAddress =
         await coreWalletDatabaseService.getWalletAddressByTickerName('ETH');
     exgAddress = await sharedService.getExgAddressFromCoreWalletDatabase();
@@ -86,11 +87,11 @@ class MultisigTransferViewModel extends BaseViewModel {
       BuildContext context) async {
     setBusy(true);
     log.i('transfer');
-    log.w('smart contract address $smartContractAddress');
+    //log.w('smart contract address $smartContractAddress');
     int nonce = await multisigService.getTransferNonce(multisigWallet.address!);
     log.w('nonce $nonce');
     String toHex = toController.text;
-    if (multisigWallet.chain!.toLowerCase() == 'kanban') {
+    if (MultisigUtil.isChainKanban(multisigWallet.chain!)) {
       var legacyAddress = toLegacyAddress(toHex);
       toHex = FabUtils().fabToExgAddress(legacyAddress);
     }
@@ -100,46 +101,49 @@ class MultisigTransferViewModel extends BaseViewModel {
     var body = MultisigTransactionHashModel(
         to: toHex,
         amount: amountDecimal,
-        nonce: nonce,
+        nonce: nonce.toString(),
         decimals: int.parse(token.decimals![0]),
         chain: multisigWallet.chain,
         address: multisigWallet.address,
         tokenId: tokenId);
-    log.e('body ${body.toJson()}');
+
     // then call multisigService.multisigtransferTxHash
-    var res = await multisigService.multisigtransferTxHash(body);
-    log.w('res $res');
+    var transferHashResult = await multisigService.multisigtransferTxHash(body);
+
     var seed = await walletService.getSeedDialog(context);
-    var hash = res['hash'];
-    var transaction = res['transaction'];
-    log.e('hash ${res['hash']}');
+    if (seed == null) {
+      setBusy(false);
+      return;
+    }
+    var hash = transferHashResult['hash'];
+    var transaction = transferHashResult['transaction'];
 
-    bip32.BIP32 root = walletService.generateBip32Root(seed!);
+    bip32.BIP32 root = walletService.generateBip32Root(seed);
 
-    var coinType = environment["CoinType"]["FAB"];
-    final fabCoinChild = root.derivePath("m/44'/$coinType'/0'/0/0");
+    var fabCoinType = environment["CoinType"]["FAB"];
+    final fabCoinChild = root.derivePath("m/44'/$fabCoinType'/0'/0/0");
     var privateKey = fabCoinChild.privateKey;
 
-    var chainId = environment["chains"]["ETH"]["chainId"];
+    var ethChainId = environment["chains"]["ETH"]["chainId"];
 
-    debugPrint('chainId==$chainId');
+    debugPrint('ethchainId==$ethChainId');
 
     var signedMess = await signPersonalMessageWith(
         Constants.EthMessagePrefix, privateKey!, stringToUint8List(hash),
-        chainId: chainId);
+        chainId: ethChainId);
     String ss = HEX.encode(signedMess);
 
     var sig = await multisigService.adjustVInSignature(
       signingMethod: 'eth_sign',
       signature: ss,
-      signerAddress: multisigWallet.chain!.toLowerCase() == 'kanban'
+      signerAddress: MultisigUtil.isChainKanban(multisigWallet.chain!)
           ? exgAddress
           : ethAddress,
     );
     log.e('sig $sig');
 // create purposal
     var purposalBody = {
-      "from": multisigWallet.chain!.toLowerCase() == 'kanban'
+      "from": MultisigUtil.isChainKanban(multisigWallet.chain!)
           ? exgAddress
           : ethAddress,
       "address": multisigWallet.address,
@@ -154,18 +158,19 @@ class MultisigTransferViewModel extends BaseViewModel {
       "transactionHash": hash,
       "signatures": [
         {
-          "signer": multisigWallet.chain!.toLowerCase() == 'kanban'
+          "signer": MultisigUtil.isChainKanban(multisigWallet.chain!)
               ? exgAddress
               : ethAddress,
           "data": sig
         }
       ]
     };
-    log.w('purposalBody $purposalBody');
+
     await multisigService.createProposal(purposalBody).then((res) {
       log.i('createProposal res $res');
       if (res) {
-        sharedService.sharedSimpleNotification('Proposal created successfully');
+        sharedService.sharedSimpleNotification('Proposal created successfully',
+            isError: false);
       }
     }).catchError((e) {
       log.e('createProposal error $e');

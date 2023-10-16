@@ -378,13 +378,12 @@ class MultisigDashboardView extends StatelessWidget {
                                           child: model.canTransferAssets
                                               ? TextButton(
                                                   onPressed: () => model
-                                                      .navigationService
-                                                      .navigateWithTransition(
-                                                          MultisigTransferView(
-                                                              multisigBalance: model
-                                                                  .multisigBalance,
-                                                              multisigWallet: model
-                                                                  .multisigWallet)),
+                                                          .canTransferAssets
+                                                      ? model
+                                                          .navigateToTransferView(
+                                                              -1)
+                                                      : debugPrint(
+                                                          'Incorrect Owner'),
                                                   child: Text(
                                                     'Send',
                                                     style: headText5.copyWith(
@@ -490,15 +489,12 @@ class MultisigDashboardView extends StatelessWidget {
                                                 child: model.canTransferAssets
                                                     ? TextButton(
                                                         onPressed: () => model
-                                                            .navigationService
-                                                            .navigateWithTransition(
-                                                                MultisigTransferView(
-                                                                    multisigBalance:
-                                                                        model
-                                                                            .multisigBalance,
-                                                                    multisigWallet:
-                                                                        model
-                                                                            .multisigWallet)),
+                                                                .canTransferAssets
+                                                            ? model
+                                                                .navigateToTransferView(
+                                                                    index)
+                                                            : debugPrint(
+                                                                'Incorrect Owner'),
                                                         child: Text(
                                                           'Send',
                                                           style: headText5.copyWith(

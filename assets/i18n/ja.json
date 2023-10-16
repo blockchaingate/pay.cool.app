@@ -695,6 +695,8 @@
     "total": "合計",
     "kycNotStarted": "KYCが開始されていません",
     "notStarted": "開始されていません",
-    "multisigWallet": "マルチシグウォレット"
+    "multisigWallet": "マルチシグウォレット",
+    "personalInformation": "個人情報"
+
 
 }

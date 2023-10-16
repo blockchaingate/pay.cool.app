@@ -695,6 +695,7 @@
     "total": "Total",
     "kycNotStarted": "KYC non commencé",
     "notStarted": "Non commencé",
-    "multisigWallet": "Portefeuille Multisig"
+    "multisigWallet": "Portefeuille Multisig",
+    "personalInformation": "Informations Personnelles"
 
 }

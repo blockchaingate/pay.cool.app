@@ -690,6 +690,7 @@
     "total": "Total",
     "kycNotStarted": "KYC no iniciado",
     "notStarted": "No iniciado",
-    "multisigWallet": "Monedero Multifirma"
+    "multisigWallet": "Monedero Multifirma",
+    "personalInformation": "Información Personal"
 
 }

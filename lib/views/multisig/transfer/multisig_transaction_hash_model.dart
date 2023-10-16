@@ -2,7 +2,7 @@ import 'package:decimal/decimal.dart';
 
 class MultisigTransactionHashModel {
   String? chain;
-  int? nonce;
+  String? nonce;
   String? to;
   String? tokenId;
   Decimal? amount;

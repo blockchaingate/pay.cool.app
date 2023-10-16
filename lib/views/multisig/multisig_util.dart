@@ -8,6 +8,10 @@ import '../../utils/string_util.dart';
 import 'package:hex/hex.dart';
 
 class MultisigUtil {
+  static isChainKanban(String chain) {
+    return chain.toLowerCase() == 'kanban';
+  }
+
   static String exgToBinpdpayAddress(String exgAddress) {
     return toKbpayAddress(fabUtils.exgToFabAddress(exgAddress));
   }
