@@ -64,19 +64,20 @@ class MultisigTransferViewModel extends BaseViewModel {
     //    transfer Kanban gas in ETH or BNB wallet, will use
     //    tokenId: "BNB".  tokenId: "ETH"
     String tickerName = tokens.tickers![0];
+    String chainLowercase = multisigWallet.chain!.toLowerCase();
     int cointype = await coinService.getCoinTypeByTickerName(tickerName);
-    if (multisigWallet.chain!.toLowerCase() == 'kanban') {
+    if (chainLowercase == 'kanban') {
       if (tickerName.toLowerCase() == 'kanban') {
         tokenId = 'KANBAN';
       } else {
         tokenId = cointype.toString();
       }
-    } else if (multisigWallet.chain!.toLowerCase() == 'eth' ||
-        multisigWallet.chain!.toLowerCase() == 'bnb') {
+    } else if (chainLowercase == 'eth' || chainLowercase == 'bnb') {
       if (tickerName.toLowerCase() == 'kanban') {
         tokenId = multisigWallet.chain!.toUpperCase();
       } else {
-        tokenId = cointype.toString();
+        tokenId = (await coinService
+            .getSmartContractAddressByTickerName(tickerName))!;
       }
     }
     log.i('tokenId $tokenId');
@@ -91,6 +92,8 @@ class MultisigTransferViewModel extends BaseViewModel {
     int nonce = await multisigService.getTransferNonce(multisigWallet.address!);
     log.w('nonce $nonce');
     String toHex = toController.text;
+    // TODO: Check if this condition needed in ETH and BNB wallet or not
+    // may have to remove this condition all together
     if (MultisigUtil.isChainKanban(multisigWallet.chain!)) {
       var legacyAddress = toLegacyAddress(toHex);
       toHex = FabUtils().fabToExgAddress(legacyAddress);
@@ -120,22 +123,12 @@ class MultisigTransferViewModel extends BaseViewModel {
 
     bip32.BIP32 root = walletService.generateBip32Root(seed);
 
-    var fabCoinType = environment["CoinType"]["FAB"];
-    final fabCoinChild = root.derivePath("m/44'/$fabCoinType'/0'/0/0");
-    var privateKey = fabCoinChild.privateKey;
-
-    var ethChainId = environment["chains"]["ETH"]["chainId"];
-
-    debugPrint('ethchainId==$ethChainId');
-
-    var signedMess = await signPersonalMessageWith(
-        Constants.EthMessagePrefix, privateKey!, stringToUint8List(hash),
-        chainId: ethChainId);
-    String ss = HEX.encode(signedMess);
+    var signedMess = await MultisigUtil.signature(hash, root);
+    debugPrint('signedMess==$signedMess');
 
     var sig = await multisigService.adjustVInSignature(
       signingMethod: 'eth_sign',
-      signature: ss,
+      signature: signedMess,
       signerAddress: MultisigUtil.isChainKanban(multisigWallet.chain!)
           ? exgAddress
           : ethAddress,
@@ -165,16 +158,16 @@ class MultisigTransferViewModel extends BaseViewModel {
         }
       ]
     };
-
-    await multisigService.createProposal(purposalBody).then((res) {
-      log.i('createProposal res $res');
-      if (res) {
-        sharedService.sharedSimpleNotification('Proposal created successfully',
-            isError: false);
-      }
-    }).catchError((e) {
-      log.e('createProposal error $e');
-    });
+    log.w('purposalBody $purposalBody');
+    // await multisigService.createProposal(purposalBody).then((res) {
+    //   log.i('createProposal res $res');
+    //   if (res) {
+    //     sharedService.sharedSimpleNotification('Proposal created successfully',
+    //         isError: false);
+    //   }
+    // }).catchError((e) {
+    //   log.e('createProposal error $e');
+    // });
 
     setBusy(false);
   }

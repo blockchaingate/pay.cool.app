@@ -117,7 +117,7 @@ class MultisigHistoryQueueViewModel extends FutureViewModel {
 
     String signerAddress =
         MultisigUtil.isChainKanban(chain) ? exgAddress : ethAddress;
-    var sig = await multisigService.adjustVInSignature(
+    var sig = MultisigUtil.adjustVInSignature(
       signingMethod: 'eth_sign',
       signature: ss,
       signerAddress: signerAddress,

@@ -23,7 +23,7 @@ import 'package:paycool/utils/ltc_util.dart';
 import 'package:paycool/utils/number_util.dart';
 import 'package:paycool/utils/wallet_coin_address_utils/doge_util.dart';
 import './eth_util.dart';
-
+import 'package:hex/hex.dart';
 //import '../packages/bip32/bip32_base.dart' as bip32;
 
 //import '../packages/bip32/utils/ecurve.dart' as ecc;
@@ -543,6 +543,47 @@ Future<Uint8List> signDogeMessageWith(originalMessage, Uint8List privateKey,
   //debugPrint(v);
   // https://github.com/ethereumjs/ethereumjs-util/blob/8ffe697fafb33cefc7b7ec01c11e3a7da787fe0e/src/signature.ts#L63
   return uint8ListFromList(r + s + v);
+}
+
+Uint8List bigIntToBytes(BigInt bigInt, int length) {
+  List<int> bytes = List.generate(length, (index) => 0);
+
+  for (int i = 0; i < length; i++) {
+    bytes[length - 1 - i] = (bigInt >> (8 * i)).toUnsigned(8).toInt();
+  }
+
+  return Uint8List.fromList(bytes);
+}
+
+Future<Uint8List> signPersonalMessageWithV2(
+    String messagePrefix, Uint8List privateKey, Uint8List payload,
+    {int? chainId}) async {
+  final prefix = messagePrefix + payload.length.toString();
+  final prefixBytes = ascii.encode(prefix);
+
+  // Concatenate prefix and payload
+  final concat = uint8ListFromList(prefixBytes + payload);
+
+  // Hash concatenated data and sign with private key
+  var signature =
+      signMessageWithPrivateKey(web3_dart.keccak256(concat), privateKey);
+
+  // Adjust v for Chain ID
+  final chainIdV = signature.v + 27;
+  signature = web3_dart.MsgSignature(signature.r, signature.s, chainIdV);
+
+  // Convert components to hexadecimal format
+  final r = _padTo32(bigIntToBytes(signature.r, 32));
+  final s = _padTo32(bigIntToBytes(signature.s, 32));
+  final v = _padTo32(bigIntToBytes(BigInt.from(signature.v), 1));
+
+  // Combine components into a single hexadecimal string
+  final signatureHex = r + s + v;
+
+  // Convert the hexadecimal string to Uint8List
+  final signatureUint8 = Uint8List.fromList(signatureHex);
+
+  return signatureUint8;
 }
 
 Future<Uint8List> signPersonalMessageWith(
