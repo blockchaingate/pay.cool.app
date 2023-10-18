@@ -126,7 +126,7 @@ class MultisigTransferViewModel extends BaseViewModel {
     var signedMess = await MultisigUtil.signature(hash, root);
     debugPrint('signedMess==$signedMess');
 
-    var sig = await multisigService.adjustVInSignature(
+    var sig = MultisigUtil.adjustVInSignature(
       signingMethod: 'eth_sign',
       signature: signedMess,
       signerAddress: MultisigUtil.isChainKanban(multisigWallet.chain!)
