@@ -178,8 +178,8 @@ class _BondSembolViewState extends State<BondSembolView> {
                                                     bondSembolVmList[index]
                                                                 .symbol! ==
                                                             "DNB"
-                                                        ? "Type:  DFT"
-                                                        : "Type:  FT",
+                                                        ? "Type:  ERC721"
+                                                        : "Type:  ERC20",
                                                     style: TextStyle(
                                                       fontSize: 14.0,
                                                       color: Colors.grey,

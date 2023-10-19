@@ -127,12 +127,7 @@ Map devConfig = {
             "id": "0x3908eaeeb2aee3f5fccbb01b35596a9acae87f7d",
             "symbol": "USDT",
             "decimals": 6
-          },
-          {
-            "id": "0x3908eaeeb2aee3f5fccbb01b35596a9acae87f7w",
-            "symbol": "USDC",
-            "decimals": 6
-          },
+          }
         ],
         "gasPrice": 10000000000,
         "gasLimit": 200000
