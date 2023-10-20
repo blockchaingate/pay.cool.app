@@ -123,7 +123,8 @@ class MultisigTransferViewModel extends BaseViewModel {
 
     bip32.BIP32 root = walletService.generateBip32Root(seed);
 
-    var customHash = hashCustomMessage(hash, prefix: Constants.EthChainPrefix);
+    var customHash =
+        hashCustomMessage(hash, prefix: Constants.EthMessagePrefix);
     log.w('customHash ${HEX.encode(customHash)}');
     var signedMess = MultisigUtil.signature(customHash, root);
     var sig = MultisigUtil.adjustVInSignature(

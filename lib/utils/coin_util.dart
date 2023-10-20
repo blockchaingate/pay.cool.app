@@ -48,6 +48,34 @@ final ECDomainParameters _params = ECCurve_secp256k1();
 final BigInt _halfCurveOrder = _params.n >> 1;
 final log = getLogger('coin_util');
 var fabUtils = FabUtils();
+hashMultisigMessage(String hexMessage,
+    {String prefix = Constants.EthMessagePrefix}) {
+  List<int> messagePrefix = utf8.encode(prefix);
+  log.w('hashCustomMessage prefix=== $messagePrefix');
+
+  var messageHexToBytes = web3_dart.hexToBytes(hexMessage);
+  debugPrint('hashCustomMessage $messageHexToBytes');
+  var messageLengthToAscii = ascii.encode(messageHexToBytes.length.toString());
+  var messageBuffer = Uint8List(messageHexToBytes.length);
+
+  int preamble = messagePrefix.length +
+      messageHexToBytes.length +
+      messageLengthToAscii.length;
+
+  Uint8List preambleBuffer = Uint8List(preamble);
+
+  preambleBuffer.setRange(0, messagePrefix.length + messageLengthToAscii.length,
+      messagePrefix + messageLengthToAscii);
+
+  int bufferStart = messagePrefix.length;
+  int bufferEnd = preamble;
+
+  preambleBuffer.setRange(
+      bufferStart + messageLengthToAscii.length, bufferEnd, messageHexToBytes);
+
+  log.w('hashCustomMessage buffer $preambleBuffer');
+  return web3_dart.keccak256(preambleBuffer);
+}
 
 hashCustomMessage(String hexMessage,
     {String prefix = Constants.KanbanMessagePrefix}) {
