@@ -109,7 +109,7 @@ class PayCoolTransactionHistoryViewModel extends FutureViewModel {
     log.i('randomId $randomId');
     //var id = "89d7e2530fc14714db77bc40b53c65ec27e4c39544278c90f4355a1e10dd8376";
 
-    var hash = hashKanbanMessage(randomId);
+    var hash = hashCustomMessage(randomId);
     log.w('hashKanbanMessage $hash');
 
     await dialogService

@@ -467,7 +467,7 @@ class SettingsContainer extends StatelessWidget {
                 ],
               ),
             ),
-            UIHelper.verticalSpaceSmall,
+            // UIHelper.verticalSpaceSmall,
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 16),
               decoration: BoxDecoration(
@@ -492,7 +492,7 @@ class SettingsContainer extends StatelessWidget {
                 horizontalTitleGap: 0,
                 minLeadingWidth: 25,
                 title: Text(
-                  'Multisig Wallet',
+                  FlutterI18n.translate(context, "multisigWallet"),
                   style: headText5,
                 ),
                 onTap: () => model.navigationService

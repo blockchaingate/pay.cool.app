@@ -123,9 +123,9 @@ class MultisigTransferViewModel extends BaseViewModel {
 
     bip32.BIP32 root = walletService.generateBip32Root(seed);
 
-    var signedMess = await MultisigUtil.signature(hash, root);
-    debugPrint('signedMess==$signedMess');
-
+    var customHash = hashCustomMessage(hash, prefix: Constants.EthChainPrefix);
+    log.w('customHash ${HEX.encode(customHash)}');
+    var signedMess = MultisigUtil.signature(customHash, root);
     var sig = MultisigUtil.adjustVInSignature(
       signingMethod: 'eth_sign',
       signature: signedMess,
@@ -154,7 +154,7 @@ class MultisigTransferViewModel extends BaseViewModel {
           "signer": MultisigUtil.isChainKanban(multisigWallet.chain!)
               ? exgAddress
               : ethAddress,
-          "data": sig
+          "data": '0x' + sig
         }
       ]
     };

@@ -49,18 +49,20 @@ final BigInt _halfCurveOrder = _params.n >> 1;
 final log = getLogger('coin_util');
 var fabUtils = FabUtils();
 
-hashKanbanMessage(String hexMessage) {
-  List<int> messagePrefix = utf8.encode(Constants.KanbanMessagePrefix);
-  log.w('hashKanbanMessage prefix=== $messagePrefix');
+hashCustomMessage(String hexMessage,
+    {String prefix = Constants.KanbanMessagePrefix}) {
+  List<int> messagePrefix = utf8.encode(prefix);
+  log.w('hashCustomMessage prefix=== $messagePrefix');
 
   var messageHexToBytes = web3_dart.hexToBytes(hexMessage);
-  debugPrint('messageHexToBytes $messageHexToBytes');
+  debugPrint('hashCustomMessage $messageHexToBytes');
   var messageLengthToAscii = ascii.encode(messageHexToBytes.length.toString());
   var messageBuffer = Uint8List(messageHexToBytes.length);
 
   int preamble = messagePrefix.length +
       messageHexToBytes.length +
       messageLengthToAscii.length;
+
   Uint8List preambleBuffer = Uint8List(preamble);
 
   preambleBuffer.setRange(0, messagePrefix.length + messageLengthToAscii.length,
@@ -72,7 +74,7 @@ hashKanbanMessage(String hexMessage) {
   preambleBuffer.setRange(
       bufferStart + messageLengthToAscii.length, bufferEnd, messageHexToBytes);
 
-  log.w('hashKanbanMessage buffer $preambleBuffer');
+  log.w('hashCustomMessage buffer $preambleBuffer');
   return web3_dart.keccak256(preambleBuffer);
 }
 
@@ -355,8 +357,9 @@ web3_dart.MsgSignature signMessageWithPrivateKey(
   final key = ECPrivateKey(NumberUtil.decodeBigIntV1(privateKey), _params);
 
   signer.init(true, PrivateKeyParameter(key));
+  debugPrint('signMessageWithPrivateKey: before generating sig');
   var sig = signer.generateSignature(messageHash) as ECSignature;
-
+  debugPrint('signMessageWithPrivateKey: After generating sig');
   debugPrint('sig =============');
   debugPrint(sig.r.toString());
   debugPrint(sig.s.toString());
@@ -555,40 +558,9 @@ Uint8List bigIntToBytes(BigInt bigInt, int length) {
   return Uint8List.fromList(bytes);
 }
 
-Future<Uint8List> signPersonalMessageWithV2(
+Uint8List signPersonalMessageWith(
     String messagePrefix, Uint8List privateKey, Uint8List payload,
-    {int? chainId}) async {
-  final prefix = messagePrefix + payload.length.toString();
-  final prefixBytes = ascii.encode(prefix);
-
-  // Concatenate prefix and payload
-  final concat = uint8ListFromList(prefixBytes + payload);
-
-  // Hash concatenated data and sign with private key
-  var signature =
-      signMessageWithPrivateKey(web3_dart.keccak256(concat), privateKey);
-
-  // Adjust v for Chain ID
-  final chainIdV = signature.v + 27;
-  signature = web3_dart.MsgSignature(signature.r, signature.s, chainIdV);
-
-  // Convert components to hexadecimal format
-  final r = _padTo32(bigIntToBytes(signature.r, 32));
-  final s = _padTo32(bigIntToBytes(signature.s, 32));
-  final v = _padTo32(bigIntToBytes(BigInt.from(signature.v), 1));
-
-  // Combine components into a single hexadecimal string
-  final signatureHex = r + s + v;
-
-  // Convert the hexadecimal string to Uint8List
-  final signatureUint8 = Uint8List.fromList(signatureHex);
-
-  return signatureUint8;
-}
-
-Future<Uint8List> signPersonalMessageWith(
-    String messagePrefix, Uint8List privateKey, Uint8List payload,
-    {int? chainId}) async {
+    {int? chainId}) {
   final prefix = messagePrefix + payload.length.toString();
   final prefixBytes = ascii.encode(prefix);
 
@@ -626,14 +598,13 @@ Future<Uint8List> signPersonalMessageWith(
 Uint8List magicHash(String message, [NetworkType? network]) {
   network = network ?? bitcoin;
   List<int> messagePrefix = utf8.encode(network.messagePrefix);
-  debugPrint('messagePrefix===');
-  debugPrint(messagePrefix.toString());
+
   int messageVISize = encodingLength(message.length);
-  debugPrint('messageVISize===');
-  debugPrint(messageVISize.toString());
+
   int length = messagePrefix.length + messageVISize + message.length;
   Uint8List buffer = Uint8List(length);
   buffer.setRange(0, messagePrefix.length, messagePrefix);
+
   encode(message.length, buffer, messagePrefix.length);
   buffer.setRange(
       messagePrefix.length + messageVISize, length, utf8.encode(message));
