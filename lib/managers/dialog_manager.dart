@@ -43,6 +43,7 @@ class _DialogManagerState extends State<DialogManager> {
   final _vaultService = locator<VaultService>();
   final navigationService = locator<NavigationService>();
   TextEditingController controller = TextEditingController();
+  bool hidePassword = true;
 
   @override
   void initState() {
@@ -183,34 +184,49 @@ class _DialogManagerState extends State<DialogManager> {
           //if (!Platform.isIOS)
           debugPrint('popped');
         },
-        content: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              UIHelper.verticalSpaceSmall,
-              TextField(
-                autofocus: true,
-                style: const TextStyle(color: black),
-                controller: controller,
-                obscureText: true,
-                decoration: InputDecoration(
-                  labelStyle: headText6,
-                  focusedBorder: const UnderlineInputBorder(
-                      borderSide: BorderSide(color: primaryColor)),
-                  enabledBorder: const UnderlineInputBorder(
-                      borderSide: BorderSide(color: grey)),
-                  icon: const Icon(
-                    Icons.security,
-                    color: primaryColor,
+        content: StatefulBuilder(
+          builder: (context, setState) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  UIHelper.verticalSpaceSmall,
+                  TextField(
+                    autofocus: true,
+                    style: const TextStyle(color: black),
+                    controller: controller,
+                    obscureText: hidePassword,
+                    decoration: InputDecoration(
+                      suffixIcon: IconButton(
+                        icon: !hidePassword
+                            ? Icon(Icons.remove_red_eye, color: primaryColor)
+                            : Icon(Icons.remove_red_eye_outlined,
+                                color: primaryColor),
+                        onPressed: () {
+                          setState(() {
+                            hidePassword = !hidePassword;
+                          });
+                        },
+                      ),
+                      labelStyle: headText6,
+                      focusedBorder: const UnderlineInputBorder(
+                          borderSide: BorderSide(color: primaryColor)),
+                      enabledBorder: const UnderlineInputBorder(
+                          borderSide: BorderSide(color: grey)),
+                      icon: const Icon(
+                        Icons.security,
+                        color: primaryColor,
+                      ),
+                      labelText: FlutterI18n.translate(
+                          context, "typeYourWalletPassword"),
+                    ),
                   ),
-                  labelText:
-                      FlutterI18n.translate(context, "typeYourWalletPassword"),
-                ),
+                ],
               ),
-            ],
-          ),
+            );
+          },
         ),
         buttons: [
           DialogButton(
