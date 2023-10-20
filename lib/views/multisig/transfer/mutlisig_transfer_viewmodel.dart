@@ -123,9 +123,9 @@ class MultisigTransferViewModel extends BaseViewModel {
 
     bip32.BIP32 root = walletService.generateBip32Root(seed);
 
-    var customHash =
-        hashCustomMessage(hash, prefix: Constants.EthMessagePrefix);
-    log.w('customHash ${HEX.encode(customHash)}');
+    var customHash = hashMultisigMessage(hash);
+    log.w('customHash $customHash');
+
     var signedMess = MultisigUtil.signature(customHash, root);
     var sig = MultisigUtil.adjustVInSignature(
       signingMethod: 'eth_sign',
@@ -155,20 +155,20 @@ class MultisigTransferViewModel extends BaseViewModel {
           "signer": MultisigUtil.isChainKanban(multisigWallet.chain!)
               ? exgAddress
               : ethAddress,
-          "data": '0x' + sig
+          "data": sig
         }
       ]
     };
     log.w('purposalBody $purposalBody');
-    // await multisigService.createProposal(purposalBody).then((res) {
-    //   log.i('createProposal res $res');
-    //   if (res) {
-    //     sharedService.sharedSimpleNotification('Proposal created successfully',
-    //         isError: false);
-    //   }
-    // }).catchError((e) {
-    //   log.e('createProposal error $e');
-    // });
+    await multisigService.createProposal(purposalBody).then((res) {
+      log.i('createProposal res $res');
+      if (res) {
+        sharedService.sharedSimpleNotification('Proposal created successfully',
+            isError: false);
+      }
+    }).catchError((e) {
+      log.e('createProposal error $e');
+    });
 
     setBusy(false);
   }

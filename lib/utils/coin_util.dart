@@ -22,6 +22,7 @@ import 'package:paycool/utils/fab_util.dart';
 import 'package:paycool/utils/ltc_util.dart';
 import 'package:paycool/utils/number_util.dart';
 import 'package:paycool/utils/wallet_coin_address_utils/doge_util.dart';
+import 'package:web3dart/crypto.dart';
 import './eth_util.dart';
 import 'package:hex/hex.dart';
 //import '../packages/bip32/bip32_base.dart' as bip32;
@@ -48,33 +49,22 @@ final ECDomainParameters _params = ECCurve_secp256k1();
 final BigInt _halfCurveOrder = _params.n >> 1;
 final log = getLogger('coin_util');
 var fabUtils = FabUtils();
-hashMultisigMessage(String hexMessage,
-    {String prefix = Constants.EthMessagePrefix}) {
-  List<int> messagePrefix = utf8.encode(prefix);
-  log.w('hashCustomMessage prefix=== $messagePrefix');
 
-  var messageHexToBytes = web3_dart.hexToBytes(hexMessage);
-  debugPrint('hashCustomMessage $messageHexToBytes');
-  var messageLengthToAscii = ascii.encode(messageHexToBytes.length.toString());
-  var messageBuffer = Uint8List(messageHexToBytes.length);
+Uint8List hashMultisigMessage(String data) {
+  List<int> messageBytes = web3_dart.hexToBytes(data);
 
-  int preamble = messagePrefix.length +
-      messageHexToBytes.length +
-      messageLengthToAscii.length;
+  String preamble =
+      '\x19Ethereum Signed Message:\n${messageBytes.length.toString()}';
+  debugPrint('preamble $preamble');
+  List<int> preambleBuffer = utf8.encode(preamble);
+  Uint8List ethMessage =
+      Uint8List.fromList([...preambleBuffer, ...messageBytes]);
 
-  Uint8List preambleBuffer = Uint8List(preamble);
+  print('ethMessage: ${web3_dart.bytesToHex(ethMessage)}');
+  debugPrint('payload ${HEX.encode(messageBytes)}');
+  debugPrint('concat ${HEX.encode(ethMessage)}');
 
-  preambleBuffer.setRange(0, messagePrefix.length + messageLengthToAscii.length,
-      messagePrefix + messageLengthToAscii);
-
-  int bufferStart = messagePrefix.length;
-  int bufferEnd = preamble;
-
-  preambleBuffer.setRange(
-      bufferStart + messageLengthToAscii.length, bufferEnd, messageHexToBytes);
-
-  log.w('hashCustomMessage buffer $preambleBuffer');
-  return web3_dart.keccak256(preambleBuffer);
+  return web3_dart.keccak256(ethMessage);
 }
 
 hashCustomMessage(String hexMessage,
@@ -106,9 +96,23 @@ hashCustomMessage(String hexMessage,
   return web3_dart.keccak256(preambleBuffer);
 }
 
-Future<Map<String, String>> signHashKanbanMessage(
-    Uint8List seed, Uint8List hash,
-    {isMsgSignatureType = false}) async {
+fixSignature(MsgSignature signature) {
+  final chainIdV = signature.v + 27;
+  debugPrint('chainIdV=$chainIdV');
+  signature = web3_dart.MsgSignature(signature.r, signature.s, chainIdV);
+  log.w('signature ${signature.toString()}');
+  final r = _padTo32(NumberUtil.encodeBigIntV1(signature.r));
+  final s = _padTo32(NumberUtil.encodeBigIntV1(signature.s));
+  final v = NumberUtil.encodeBigIntV1(BigInt.from(signature.v));
+  final hexr = web3_dart.bytesToHex(r.toList(), include0x: true);
+  final hexs = web3_dart.bytesToHex(s.toList());
+  final hexv = web3_dart.bytesToHex(v);
+  var rsv = {"r": hexr, "s": hexs, "v": hexv};
+  return rsv;
+}
+
+Map<String, String> signHashKanbanMessage(Uint8List seed, Uint8List hash,
+    {isMsgSignatureType = false}) {
   var network = environment["chains"]["BTC"]["network"];
 
   final root2 = bip_32.BIP32.fromSeed(

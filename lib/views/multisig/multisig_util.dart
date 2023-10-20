@@ -94,7 +94,7 @@ class MultisigUtil {
     return signature;
   }
 
-  static signature(String hash, bip32.BIP32 root) async {
+  static signature(Uint8List hash, bip32.BIP32 root, {String tHash = ''}) {
     var coinType = environment["CoinType"]["FAB"];
     final fabCoinChild = root.derivePath("m/44'/$coinType'/0'/0/0");
     var privateKey = fabCoinChild.privateKey;
@@ -102,13 +102,19 @@ class MultisigUtil {
     var ethChainId = environment["chains"]["ETH"]["chainId"];
     debugPrint('chainId==$ethChainId');
 
-    var signedMess = await signPersonalMessageWith(
-        Constants.EthMessagePrefix, privateKey!, stringToUint8List(hash),
-        chainId: ethChainId);
-    String ss = HEX.encode(signedMess);
-    log.w('hexSignature $ss');
+    var signedMess = signMessageWithPrivateKey(
+      hash,
+      privateKey!,
+    );
+    var hexSig = fixSignature(signedMess);
+    // String ss = HEX.encode(signedMess);
+    // log.w('hexSignature $ss');
 
-    return ss;
+    debugPrint('finalSig   =$hexSig');
+
+    var finalSig = hexSig['r'] + hexSig['s'] + hexSig['v'];
+    debugPrint('finalSig before adjusting   =$finalSig');
+    return finalSig;
   }
 
   static transferABI(

@@ -5,6 +5,7 @@ import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/shared_service.dart';
 import 'package:paycool/services/wallet_service.dart';
 import 'package:paycool/utils/abi_util.dart';
+import 'package:paycool/utils/coin_util.dart';
 import 'package:paycool/utils/keypair_util.dart';
 import 'package:paycool/views/multisig/multisig_util.dart';
 import 'package:stacked/stacked.dart';
@@ -112,8 +113,8 @@ class MultisigHistoryQueueViewModel extends FutureViewModel {
       return;
     }
     bip32.BIP32 root = walletService.generateBip32Root(seed);
-    var ss =
-        await MultisigUtil.signature(currentQueue["transactionHash"], root);
+    var customHash = hashMultisigMessage(currentQueue["transactionHash"]);
+    var ss = await MultisigUtil.signature(customHash, root);
 
     String signerAddress =
         MultisigUtil.isChainKanban(chain) ? exgAddress : ethAddress;
@@ -132,7 +133,7 @@ class MultisigHistoryQueueViewModel extends FutureViewModel {
     if (!requiredExecution) {
       try {
         var approveProposalResult = await multisigService.approveProposal(body);
-        log.w('approveProposalResult $approveProposalResult');
+
         approvedSignatures = approveProposalResult['signatures'];
         log.w('approvedSignatures $approvedSignatures');
       } catch (e) {
