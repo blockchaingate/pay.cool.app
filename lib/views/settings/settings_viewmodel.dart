@@ -191,9 +191,7 @@ class SettingsViewModel extends BaseViewModel with StoppableService {
         kycUser.kycLevel.toString() == '1' ||
         kycUser.kycLevel.toString() == '2' ||
         kycUser.kycLevel.toString() == '3') {
-      return FlutterI18n.translate(context, "level") +
-          ' ' +
-          kycUser.kycLevel.toString();
+      return '${FlutterI18n.translate(context, "level")} ${kycUser.kycLevel}';
     } else {
       return FlutterI18n.translate(context, "kycStarted");
     }

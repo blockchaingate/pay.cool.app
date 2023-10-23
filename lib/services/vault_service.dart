@@ -11,11 +11,9 @@
 *----------------------------------------------------------------------
 */
 
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:encrypt/encrypt.dart' as encrypt;
-import 'package:encrypt/encrypt.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../logger.dart';
@@ -36,16 +34,11 @@ class VaultService {
     } else {
       fixed32CharKey = userTypedKey.substring(0, 32);
     }
-
     final key = encrypt.Key.fromUtf8(fixed32CharKey);
 
-    final b64key = Key.fromUtf8(base64Url.encode(key.bytes).substring(0, 32));
-
-    final fernet = Fernet(b64key);
-    final encrypter = Encrypter(fernet);
-
-    final encrypted = encrypter.encrypt(dataToEncrypt);
-
+    final iv = encrypt.IV.fromLength(16);
+    final encrypter = encrypt.Encrypter(encrypt.AES(key));
+    final encrypted = encrypter.encrypt(dataToEncrypt, iv: iv);
     return encrypted.base64;
   }
 
@@ -65,16 +58,12 @@ class VaultService {
       if (userKeyLength < 32) {
         fixed32CharKey = NumberUtil.fixed32Chars(userTypedKey, userKeyLength);
       }
+      final key = encrypt.Key.fromUtf8(
+          fixed32CharKey.isEmpty ? userTypedKey : fixed32CharKey);
 
-      final key = encrypt.Key.fromUtf8(fixed32CharKey);
-
-      final b64key = Key.fromUtf8(base64Url.encode(key.bytes).substring(0, 32));
-
-      final fernet = Fernet(b64key);
-      final encrypter = Encrypter(fernet);
-
-      final decrypted = encrypter.decrypt(encryptedText);
-
+      final iv = encrypt.IV.fromLength(16);
+      final encrypter = encrypt.Encrypter(encrypt.AES(key));
+      final decrypted = encrypter.decrypt(encryptedText, iv: iv);
       return decrypted;
     } catch (e) {
       log.e(

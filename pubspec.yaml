@@ -38,7 +38,7 @@ dependencies:
   cupertino_icons: ^1.0.5
   decimal: ^2.2.0
   device_info: ^2.0.2
-  encrypt: ^5.0.3
+  encrypt: 5.0.1
   exchangily_ui:
     git:
       url: https://github.com/blockchaingate/exchangily-packages.git
