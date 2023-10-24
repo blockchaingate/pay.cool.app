@@ -39,7 +39,7 @@ class PaycoolReferralDetailsView extends StatelessWidget {
                   height: 500,
                   child: Center(
                       child: model.sharedService.loadingIndicator(
-                          isCustom: true, width: 40, height: 40)))
+                          isCustomWidthHeight: true, width: 40, height: 40)))
               : model.referalRoute.referrals == null ||
                       model.referalRoute.referrals!.isEmpty
                   ? SizedBox(

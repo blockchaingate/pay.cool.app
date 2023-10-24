@@ -258,9 +258,9 @@ class SharedService {
   Widget loadingIndicator(
       {double width = 30,
       double height = 30,
-      bool isCustom = false,
+      bool isCustomWidthHeight = false,
       double strokeWidth = 5}) {
-    if (!isCustom && Platform.isAndroid) {
+    if (!isCustomWidthHeight && Platform.isAndroid) {
       width = 20;
       height = 20;
     }

@@ -66,7 +66,7 @@ class TransactionHistoryView extends StatelessWidget {
                         width: double.infinity,
                         height: 300,
                         child: model.sharedService
-                            .loadingIndicator(isCustom: true))
+                            .loadingIndicator(isCustomWidthHeight: true))
                     : model.transactionsToDisplay.isEmpty
                         ? Container(
                             margin: const EdgeInsets.only(top: 20),

@@ -45,7 +45,7 @@ class ReferralView extends StatelessWidget {
                   height: 500,
                   child: Center(
                       child: model.sharedService.loadingIndicator(
-                          isCustom: true, width: 40, height: 40)))
+                          isCustomWidthHeight: true, width: 40, height: 40)))
               : Container(
                   decoration: BoxDecoration(image: blurBackgroundImage()),
                   child: Column(
@@ -94,7 +94,8 @@ class ReferralView extends StatelessWidget {
                                           Text(
                                             FlutterI18n.translate(
                                                 context, "referrals"),
-                                            style: const TextStyle(color: green),
+                                            style:
+                                                const TextStyle(color: green),
                                           ),
                                           UIHelper.horizontalSpaceSmall,
                                           model.idReferralsMap.containsKey(

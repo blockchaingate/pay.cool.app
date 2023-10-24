@@ -117,7 +117,7 @@ class MultisigUtil {
     return finalSig;
   }
 
-  static transferABI(
+  static transferABIHex(
     transaction,
     String signatures,
   ) {

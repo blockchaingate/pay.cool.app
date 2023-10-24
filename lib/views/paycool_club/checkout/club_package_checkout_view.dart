@@ -45,7 +45,9 @@ class ClubPackageCheckoutView extends StatelessWidget {
                           height: MediaQuery.of(context).size.height - 100,
                           width: MediaQuery.of(context).size.width - 100,
                           child: model.sharedService.loadingIndicator(
-                              isCustom: true, height: 40, width: 40)))
+                              isCustomWidthHeight: true,
+                              height: 40,
+                              width: 40)))
                   : Container(),
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,

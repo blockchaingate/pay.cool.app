@@ -23,9 +23,15 @@ class MultisigHistoryQueueView extends StatelessWidget {
         Widget? child,
       ) {
         return Scaffold(
-            appBar: customAppBarWithTitleNB(
-              '',
-            ),
+            appBar: customAppBarWithTitleNB('',
+                trailing: !model.dataReady
+                    ? Container()
+                    : IconButton(
+                        onPressed: () => model.getQueueTransactions(),
+                        icon: Icon(
+                          Icons.refresh,
+                          color: black,
+                        ))),
             body: SingleChildScrollView(
                 child: Container(
               // create 2 tabs History and Queue

@@ -3,13 +3,10 @@ import 'dart:convert';
 import 'package:paycool/constants/api_routes.dart';
 import 'package:paycool/constants/constants.dart';
 import 'package:paycool/logger.dart';
-import 'package:paycool/service_locator.dart';
-import 'package:paycool/services/db/core_wallet_database_service.dart';
 import 'package:paycool/utils/custom_http_util.dart';
 import 'package:paycool/views/multisig/dashboard/multisig_balance_model.dart';
 import 'package:paycool/views/multisig/multisig_wallet_model.dart';
 import 'package:paycool/views/multisig/transfer/multisig_transaction_hash_model.dart';
-import 'package:hex/hex.dart';
 
 class MultiSigService {
   final log = getLogger('MultiSigService');

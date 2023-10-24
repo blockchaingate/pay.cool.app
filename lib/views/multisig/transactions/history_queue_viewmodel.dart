@@ -1,3 +1,5 @@
+import 'dart:js_interop';
+
 import 'package:flutter/widgets.dart';
 import 'package:paycool/environments/environment.dart';
 import 'package:paycool/logger.dart';
@@ -136,13 +138,24 @@ class MultisigHistoryQueueViewModel extends FutureViewModel {
 
         approvedSignatures = approveProposalResult['signatures'];
         log.w('approvedSignatures $approvedSignatures');
+
+        sharedService.sharedSimpleNotification(
+            'Transaction approved successfully',
+            isError: false);
+        queue = await getQueueTransactions();
+        if (queue.first['_id'] == approveProposalResult['_id']) {
+          log.i('latest queue ID matched');
+          approvedSignatures = queue.first['signatures'] as List;
+        }
       } catch (e) {
         log.e('approveProposalResult $e');
+        sharedService.sharedSimpleNotification(
+            'Transaction approved failed, please try again');
         setBusy(false);
         return;
       }
     }
-
+// refactor execute code
     var finalSig = requiredExecution ? signaturesData : approvedSignatures;
     log.e('requiredExecution $requiredExecution');
     log.w('finalSig $finalSig');
@@ -153,7 +166,8 @@ class MultisigHistoryQueueViewModel extends FutureViewModel {
         String data = signature['data'];
         signatures += data.substring(2);
       }
-      var abiHex = MultisigUtil.transferABI(transaction, signatures);
+      log.w('signatures $signatures');
+      var abiHex = MultisigUtil.transferABIHex(transaction, signatures);
 
       String gasPriceString =
           environment['chains'][chain]['gasPrice'].toString();

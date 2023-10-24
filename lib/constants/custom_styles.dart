@@ -52,8 +52,16 @@ AppBar customAppBarWithTitle(String title, {Color color = primaryColor}) =>
       centerTitle: true,
     );
 
-AppBar customAppBarWithTitleNB(String title, {String subTitle = ''}) => AppBar(
+AppBar customAppBarWithTitleNB(String title,
+        {String subTitle = '', Widget? trailing}) =>
+    AppBar(
       iconTheme: const IconThemeData(color: black),
+      actions: [
+        trailing ??
+            Container(
+              width: 0,
+            )
+      ],
       title: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
