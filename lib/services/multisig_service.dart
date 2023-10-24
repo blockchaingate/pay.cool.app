@@ -40,6 +40,7 @@ class MultiSigService {
     try {
       var response = await client.post(Uri.parse(url),
           body: jsonEncode(body), headers: Constants.headersJson);
+      log.w('resopnse ${response.body}');
       var json = jsonDecode(response.body);
       if (json['success']) {
         log.w('approveProposal $json}');
@@ -56,10 +57,11 @@ class MultiSigService {
   Future<bool> createProposal(body) async {
     bool result = false;
     var url = paycoolBaseUrlV2 + 'multisigproposal';
-    log.i('createProposal url $url - body ${jsonEncode(body)}');
+    var jsonBody = jsonEncode(body);
+    log.i('createProposal url $url - body $jsonBody');
     try {
       var response = await client.post(Uri.parse(url),
-          body: jsonEncode(body), headers: Constants.headersJson);
+          body: jsonBody, headers: Constants.headersJson);
       var json = jsonDecode(response.body);
       if (json['success']) {
         log.w('createProposal $json}');
@@ -77,10 +79,11 @@ class MultiSigService {
 
   Future multisigtransferTxHash(MultisigTransactionHashModel body) async {
     var url = paycoolBaseUrlV2 + 'multisig/getTransactionHash';
-    log.i('multisigtransferTxHash url $url - body ${body.toJson()}');
+    var jsonBody = jsonEncode(body.toJson());
+    log.i('multisigtransferTxHash url $url - jsonBody $jsonBody');
     try {
       var response = await client.post(Uri.parse(url),
-          body: jsonEncode(body.toJson()), headers: Constants.headersJson);
+          body: jsonBody, headers: Constants.headersJson);
       var json = jsonDecode(response.body);
       if (json['success']) {
         log.w('multisigtransferTxHash $json}');
@@ -296,83 +299,5 @@ class MultiSigService {
       log.e('getKanbanNonce CATCH $e');
     }
     return null;
-  }
-
-  Future<String> adjustVInSignature({
-    required String signingMethod,
-    required String signature,
-    String? safeTxHash,
-    String? signerAddress,
-  }) async {
-    final List<int> ethereumVValues = [0, 1, 27, 28];
-    const int minValidVValueForSafeEcdsa = 27;
-    int signatureV =
-        int.parse(signature.substring(signature.length - 2), radix: 16);
-
-    if (!ethereumVValues.contains(signatureV)) {
-      throw Exception('Invalid signature');
-    }
-
-    if (signingMethod == 'eth_sign') {
-      if (signatureV < minValidVValueForSafeEcdsa) {
-        signatureV += minValidVValueForSafeEcdsa;
-      }
-
-      // String adjustedSignature = signature.substring(0, signature.length - 2) +
-      //     signatureV.toRadixString(16);
-
-      bool signatureHasPrefix = sameString(signerAddress!, signerAddress);
-
-      if (signatureHasPrefix) {
-        signatureV += 4;
-      }
-    }
-
-    if (signingMethod == 'eth_signTypedData') {
-      if (signatureV < minValidVValueForSafeEcdsa) {
-        signatureV += minValidVValueForSafeEcdsa;
-      }
-    }
-
-    signature = signature.substring(0, signature.length - 2) +
-        signatureV.toRadixString(16);
-    return signature;
-  }
-
-  bool isTxHashSignedWithPrefix(
-    String txHash,
-    String signature,
-    String ownerAddress,
-  ) {
-    bool hasPrefix;
-    try {
-      final rsvSig = {
-        'r': HEX.decode(signature.substring(2, 66)),
-        's': HEX.decode(signature.substring(66, 130)),
-        'v': int.parse(signature.substring(130, 132), radix: 16),
-      };
-
-      // final recoveredData = ecrecover(
-      //   HEX.decode(txHash.substring(2)),
-      //   rsvSig['v'],
-      //   rsvSig['r'],
-      //   rsvSig['s'],
-      // );
-
-      final recoveredAddress = '';
-      //bufferToHex(pubToAddress(recoveredData));
-      hasPrefix = !sameString(recoveredAddress, ownerAddress);
-    } catch (e) {
-      hasPrefix = true;
-    }
-    return hasPrefix;
-  }
-
-  bool sameString(String a, String b) {
-    return a == b;
-  }
-
-  String bufferToHex(List<int> buffer) {
-    return '0x' + HEX.encode(buffer);
   }
 }

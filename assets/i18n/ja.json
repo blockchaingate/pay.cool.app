@@ -697,5 +697,6 @@
     "kycNotStarted": "KYCが開始されていません",
     "notStarted": "開始されていません",
     "multisigWallet": "マルチシグウォレット",
+    "personalInformation": "個人情報",
     "noRecord": "レコードが見つかりませんでした"
 }

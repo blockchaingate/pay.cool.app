@@ -20,6 +20,7 @@ class MultisigHistoryQueueViewModel extends FutureViewModel {
   final walletService = locator<WalletService>();
   List history = [];
   List queue = [];
+  bool pendingExecution = false;
 
   final log = getLogger('HistoryQueueViewModel');
   final multisigService = locator<MultiSigService>();
@@ -27,7 +28,7 @@ class MultisigHistoryQueueViewModel extends FutureViewModel {
   String ethAddress = '';
   @override
   Future futureToRun() async =>
-      await multisigService.getmultisigTransactions(address);
+      await multisigService.getmultisigTransactions(address, pageSize: 30);
 
   @override
   void onData(data) async {
@@ -50,12 +51,17 @@ class MultisigHistoryQueueViewModel extends FutureViewModel {
 
   // show confirmed by me if current wallet is one of the owners and also the signer
   bool hasConfirmedByMe(currentQueue) {
+    pendingExecution = false;
     var multisigData = currentQueue['multisig'];
-    var signaturesData = currentQueue['signatures'];
+    var signaturesData = currentQueue['signatures'] as List;
     for (var walletOwner in multisigData['owners']) {
       if (walletOwner['address'] == exgAddress) {
         for (var signature in signaturesData) {
           if (signature['signer'] == exgAddress) {
+            if (signaturesData.length == multisigData['confirmations'] &&
+                signaturesData.last['signer'] == exgAddress) {
+              pendingExecution = true;
+            }
             return true;
           }
         }
@@ -92,9 +98,11 @@ class MultisigHistoryQueueViewModel extends FutureViewModel {
   }
 
   // approve transaction
-  approveTransaction(currentQueue, BuildContext context) async {
+  approveTransaction(currentQueue, BuildContext context,
+      {bool requiredExecution = false}) async {
     setBusy(true);
     var multisigData = currentQueue['multisig'];
+    String chain = multisigData['chain'];
     var signaturesData = currentQueue['signatures'] as List;
     var transaction = currentQueue['transaction'];
 
@@ -107,10 +115,9 @@ class MultisigHistoryQueueViewModel extends FutureViewModel {
     var ss =
         await MultisigUtil.signature(currentQueue["transactionHash"], root);
 
-    String chain = multisigData['chain'];
     String signerAddress =
-        chain.toLowerCase() == 'kanban' ? exgAddress : ethAddress;
-    var sig = await multisigService.adjustVInSignature(
+        MultisigUtil.isChainKanban(chain) ? exgAddress : ethAddress;
+    var sig = MultisigUtil.adjustVInSignature(
       signingMethod: 'eth_sign',
       signature: ss,
       signerAddress: signerAddress,
@@ -121,13 +128,27 @@ class MultisigHistoryQueueViewModel extends FutureViewModel {
       "data": sig
     };
 
-    var approveProposalResult = await multisigService.approveProposal(body);
-    log.w('approveProposalResult $approveProposalResult');
-    var approvedSignatures = approveProposalResult['signatures'] as List;
+    var approvedSignatures = [];
+    if (!requiredExecution) {
+      try {
+        var approveProposalResult = await multisigService.approveProposal(body);
+        log.w('approveProposalResult $approveProposalResult');
+        approvedSignatures = approveProposalResult['signatures'];
+        log.w('approvedSignatures $approvedSignatures');
+      } catch (e) {
+        log.e('approveProposalResult $e');
+        setBusy(false);
+        return;
+      }
+    }
+
+    var finalSig = requiredExecution ? signaturesData : approvedSignatures;
+    log.e('requiredExecution $requiredExecution');
+    log.w('finalSig $finalSig');
     // check if confirmations <= signatures length then submit transaction to blockchain
-    if (multisigData['confirmations'] <= approvedSignatures.length) {
+    if (multisigData['confirmations'] <= finalSig.length) {
       String signatures = '0x';
-      for (var signature in signaturesData.reversed) {
+      for (var signature in finalSig.reversed) {
         String data = signature['data'];
         signatures += data.substring(2);
       }
@@ -138,15 +159,17 @@ class MultisigHistoryQueueViewModel extends FutureViewModel {
 
       BigInt gasPriceBig = BigInt.parse(gasPriceString);
 
-      if (chain.toUpperCase() != 'KANBAN') {
+      if (MultisigUtil.isChainKanban(chain)) {
         gasPriceBig = gasPriceBig * BigInt.from(10).pow(9);
       }
 
       log.w('Gas Price Big int: $gasPriceBig');
       var gas = environment['chains'][chain]['gasLimitToken'] ??
           environment['chains'][chain]['gasLimit'];
-      var nonce = await multisigService.getChainNonce(chain.toLowerCase(),
-          chain.toLowerCase() == 'kanban' ? exgAddress : ethAddress);
+      var nonceAddress =
+          MultisigUtil.isChainKanban(chain) ? exgAddress : ethAddress;
+      var nonce = await multisigService.getChainNonce(
+          chain.toLowerCase(), nonceAddress);
       // var txParam = {
       //   "to": multisigData["address"],
       //   "nonce": '0x' + nonce.toString(16),
@@ -167,14 +190,14 @@ class MultisigHistoryQueueViewModel extends FutureViewModel {
         gas,
       );
 
-      var bodyExecute = {
+      var executionBody = {
         "_id": currentQueue["_id"],
         "chain": chain,
         "rawtx": txKanbanHex
       };
 
       var submitTransactionResult =
-          await multisigService.submitMultisigTransaction(bodyExecute);
+          await multisigService.submitMultisigTransaction(executionBody);
       log.w('submitTransactionResult $submitTransactionResult');
       var txid = submitTransactionResult['txid'];
       if (txid != null) {
@@ -186,6 +209,10 @@ class MultisigHistoryQueueViewModel extends FutureViewModel {
       } else {
         sharedService.sharedSimpleNotification('Transaction submitted failed');
       }
+    } else {
+      log.e(
+          'confirmations <= finalSig.length -- ${multisigData['confirmations']} <= ${finalSig.length}');
+      log.i('Not enough signatures to submit transaction');
     }
     setBusy(false);
   }

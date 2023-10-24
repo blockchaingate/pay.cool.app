@@ -112,6 +112,7 @@ class MultisigDashboardViewModel extends BaseViewModel {
     for (var element in multisigWallet.owners!) {
       if (element.address == exgAddress) {
         canTransferAssets = true;
+        return;
       } else {
         canTransferAssets = false;
       }

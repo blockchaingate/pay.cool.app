@@ -23,7 +23,7 @@ import 'package:paycool/utils/ltc_util.dart';
 import 'package:paycool/utils/number_util.dart';
 import 'package:paycool/utils/wallet_coin_address_utils/doge_util.dart';
 import './eth_util.dart';
-
+import 'package:hex/hex.dart';
 //import '../packages/bip32/bip32_base.dart' as bip32;
 
 //import '../packages/bip32/utils/ecurve.dart' as ecc;
@@ -48,19 +48,20 @@ final ECDomainParameters _params = ECCurve_secp256k1();
 final BigInt _halfCurveOrder = _params.n >> 1;
 final log = getLogger('coin_util');
 var fabUtils = FabUtils();
-
-hashKanbanMessage(String hexMessage) {
-  List<int> messagePrefix = utf8.encode(Constants.KanbanMessagePrefix);
-  log.w('hashKanbanMessage prefix=== $messagePrefix');
+hashMultisigMessage(String hexMessage,
+    {String prefix = Constants.EthMessagePrefix}) {
+  List<int> messagePrefix = utf8.encode(prefix);
+  log.w('hashCustomMessage prefix=== $messagePrefix');
 
   var messageHexToBytes = web3_dart.hexToBytes(hexMessage);
-  debugPrint('messageHexToBytes $messageHexToBytes');
+  debugPrint('hashCustomMessage $messageHexToBytes');
   var messageLengthToAscii = ascii.encode(messageHexToBytes.length.toString());
   var messageBuffer = Uint8List(messageHexToBytes.length);
 
   int preamble = messagePrefix.length +
       messageHexToBytes.length +
       messageLengthToAscii.length;
+
   Uint8List preambleBuffer = Uint8List(preamble);
 
   preambleBuffer.setRange(0, messagePrefix.length + messageLengthToAscii.length,
@@ -72,7 +73,36 @@ hashKanbanMessage(String hexMessage) {
   preambleBuffer.setRange(
       bufferStart + messageLengthToAscii.length, bufferEnd, messageHexToBytes);
 
-  log.w('hashKanbanMessage buffer $preambleBuffer');
+  log.w('hashCustomMessage buffer $preambleBuffer');
+  return web3_dart.keccak256(preambleBuffer);
+}
+
+hashCustomMessage(String hexMessage,
+    {String prefix = Constants.KanbanMessagePrefix}) {
+  List<int> messagePrefix = utf8.encode(prefix);
+  log.w('hashCustomMessage prefix=== $messagePrefix');
+
+  var messageHexToBytes = web3_dart.hexToBytes(hexMessage);
+  debugPrint('hashCustomMessage $messageHexToBytes');
+  var messageLengthToAscii = ascii.encode(messageHexToBytes.length.toString());
+  var messageBuffer = Uint8List(messageHexToBytes.length);
+
+  int preamble = messagePrefix.length +
+      messageHexToBytes.length +
+      messageLengthToAscii.length;
+
+  Uint8List preambleBuffer = Uint8List(preamble);
+
+  preambleBuffer.setRange(0, messagePrefix.length + messageLengthToAscii.length,
+      messagePrefix + messageLengthToAscii);
+
+  int bufferStart = messagePrefix.length;
+  int bufferEnd = preamble;
+
+  preambleBuffer.setRange(
+      bufferStart + messageLengthToAscii.length, bufferEnd, messageHexToBytes);
+
+  log.w('hashCustomMessage buffer $preambleBuffer');
   return web3_dart.keccak256(preambleBuffer);
 }
 
@@ -355,8 +385,9 @@ web3_dart.MsgSignature signMessageWithPrivateKey(
   final key = ECPrivateKey(NumberUtil.decodeBigIntV1(privateKey), _params);
 
   signer.init(true, PrivateKeyParameter(key));
+  debugPrint('signMessageWithPrivateKey: before generating sig');
   var sig = signer.generateSignature(messageHash) as ECSignature;
-
+  debugPrint('signMessageWithPrivateKey: After generating sig');
   debugPrint('sig =============');
   debugPrint(sig.r.toString());
   debugPrint(sig.s.toString());
@@ -545,9 +576,19 @@ Future<Uint8List> signDogeMessageWith(originalMessage, Uint8List privateKey,
   return uint8ListFromList(r + s + v);
 }
 
-Future<Uint8List> signPersonalMessageWith(
+Uint8List bigIntToBytes(BigInt bigInt, int length) {
+  List<int> bytes = List.generate(length, (index) => 0);
+
+  for (int i = 0; i < length; i++) {
+    bytes[length - 1 - i] = (bigInt >> (8 * i)).toUnsigned(8).toInt();
+  }
+
+  return Uint8List.fromList(bytes);
+}
+
+Uint8List signPersonalMessageWith(
     String messagePrefix, Uint8List privateKey, Uint8List payload,
-    {int? chainId}) async {
+    {int? chainId}) {
   final prefix = messagePrefix + payload.length.toString();
   final prefixBytes = ascii.encode(prefix);
 
@@ -585,14 +626,13 @@ Future<Uint8List> signPersonalMessageWith(
 Uint8List magicHash(String message, [NetworkType? network]) {
   network = network ?? bitcoin;
   List<int> messagePrefix = utf8.encode(network.messagePrefix);
-  debugPrint('messagePrefix===');
-  debugPrint(messagePrefix.toString());
+
   int messageVISize = encodingLength(message.length);
-  debugPrint('messageVISize===');
-  debugPrint(messageVISize.toString());
+
   int length = messagePrefix.length + messageVISize + message.length;
   Uint8List buffer = Uint8List(length);
   buffer.setRange(0, messagePrefix.length, messagePrefix);
+
   encode(message.length, buffer, messagePrefix.length);
   buffer.setRange(
       messagePrefix.length + messageVISize, length, utf8.encode(message));

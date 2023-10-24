@@ -6,11 +6,92 @@ import '../../constants/constants.dart';
 import '../../utils/coin_util.dart';
 import '../../utils/string_util.dart';
 import 'package:hex/hex.dart';
-import 'package:web3dart/web3dart.dart' as web3;
 
 class MultisigUtil {
+  static isChainKanban(String chain) {
+    return chain.toLowerCase() == 'kanban';
+  }
+
   static String exgToBinpdpayAddress(String exgAddress) {
     return toKbpayAddress(fabUtils.exgToFabAddress(exgAddress));
+  }
+
+  static bool sameString(String a, String b) {
+    return a == b;
+  }
+
+  String bufferToHex(List<int> buffer) {
+    return '0x' + HEX.encode(buffer);
+  }
+
+  bool isTxHashSignedWithPrefix(
+    String txHash,
+    String signature,
+    String ownerAddress,
+  ) {
+    bool hasPrefix;
+    try {
+      final rsvSig = {
+        'r': HEX.decode(signature.substring(2, 66)),
+        's': HEX.decode(signature.substring(66, 130)),
+        'v': int.parse(signature.substring(130, 132), radix: 16),
+      };
+
+      // final recoveredData = ecrecover(
+      //   HEX.decode(txHash.substring(2)),
+      //   rsvSig['v'],
+      //   rsvSig['r'],
+      //   rsvSig['s'],
+      // );
+
+      final recoveredAddress = '';
+      //bufferToHex(pubToAddress(recoveredData));
+      hasPrefix = !sameString(recoveredAddress, ownerAddress);
+    } catch (e) {
+      hasPrefix = true;
+    }
+    return hasPrefix;
+  }
+
+  static String adjustVInSignature({
+    required String signingMethod,
+    required String signature,
+    String? safeTxHash,
+    String? signerAddress,
+  }) {
+    final List<int> ethereumVValues = [0, 1, 27, 28];
+    const int minValidVValueForSafeEcdsa = 27;
+    int signatureV =
+        int.parse(signature.substring(signature.length - 2), radix: 16);
+
+    if (!ethereumVValues.contains(signatureV)) {
+      throw Exception('Invalid signature');
+    }
+
+    if (signingMethod == 'eth_sign') {
+      if (signatureV < minValidVValueForSafeEcdsa) {
+        signatureV += minValidVValueForSafeEcdsa;
+      }
+
+      // String adjustedSignature = signature.substring(0, signature.length - 2) +
+      //     signatureV.toRadixString(16);
+
+      bool signatureHasPrefix = sameString(signerAddress!, signerAddress);
+
+      if (signatureHasPrefix) {
+        signatureV += 4;
+      }
+    }
+
+    if (signingMethod == 'eth_signTypedData') {
+      if (signatureV < minValidVValueForSafeEcdsa) {
+        signatureV += minValidVValueForSafeEcdsa;
+      }
+    }
+
+    signature = signature.substring(0, signature.length - 2) +
+        signatureV.toRadixString(16);
+    return signature;
   }
 
   static signature(String hash, bip32.BIP32 root) async {
@@ -18,14 +99,14 @@ class MultisigUtil {
     final fabCoinChild = root.derivePath("m/44'/$coinType'/0'/0/0");
     var privateKey = fabCoinChild.privateKey;
 
-    var chainId = environment["chains"]["ETH"]["chainId"];
-    debugPrint('chainId==$chainId');
+    var ethChainId = environment["chains"]["ETH"]["chainId"];
+    debugPrint('chainId==$ethChainId');
 
     var signedMess = await signPersonalMessageWith(
         Constants.EthMessagePrefix, privateKey!, stringToUint8List(hash),
-        chainId: chainId);
+        chainId: ethChainId);
     String ss = HEX.encode(signedMess);
-    log.e('sig $ss');
+    log.w('hexSignature $ss');
 
     return ss;
   }

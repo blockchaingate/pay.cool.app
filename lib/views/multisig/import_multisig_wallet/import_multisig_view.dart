@@ -7,6 +7,7 @@ import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/views/multisig/create_multisig_wallet/create_multisig_wallet_view.dart';
 import 'package:paycool/views/multisig/dashboard/multisig_dashboard_view.dart';
 import 'package:paycool/views/multisig/import_multisig_wallet/import_multisig_viewmodel.dart';
+import 'package:paycool/views/multisig/multisig_util.dart';
 import 'package:paycool/views/settings/settings_view.dart';
 import 'package:stacked/stacked.dart';
 
@@ -79,10 +80,11 @@ class WelcomeMultisigView extends StatelessWidget {
                                                 title: Text(model
                                                     .multisigWallets[index].name
                                                     .toString()),
-                                                subtitle: Text(model
-                                                    .multisigWallets[index]
-                                                    .address
-                                                    .toString()),
+                                                subtitle: Text(MultisigUtil
+                                                    .exgToBinpdpayAddress(model
+                                                        .multisigWallets[index]
+                                                        .address
+                                                        .toString())),
                                                 trailing: TextButton(
                                                   child: Text('Select'),
                                                   onPressed: () => model
@@ -135,37 +137,6 @@ class WelcomeMultisigView extends StatelessWidget {
                                       color: black,
                                     )),
                               ),
-                              suffixWidget: model.isImportAddressEmpty() ?? true
-                                  ? Container(
-                                      width: 0,
-                                    )
-                                  : Container(
-                                      width: 50,
-                                      child: IconButton(
-                                          onPressed: () async {
-                                            var res = await model
-                                                .multiSigService
-                                                .importMultisigWallet(
-                                              model.importWalletController.text,
-                                            );
-
-                                            if (res.txid!.isNotEmpty) {
-                                              model.navigationService
-                                                  .navigateWithTransition(
-                                                      MultisigDashboardView(
-                                                data: res.address!,
-                                              ));
-                                            }
-                                          },
-                                          icon: Icon(
-                                            Icons.check_box,
-                                            color: green,
-                                            size: 28,
-                                          )),
-                                    ),
-                              onChanged: (value) {
-                                model.isImportAddressEmpty();
-                              },
                               onTap: () => debugPrint('Name VALUE')),
                         ),
                         Container(
