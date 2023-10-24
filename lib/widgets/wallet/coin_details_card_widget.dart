@@ -211,61 +211,61 @@ class CoinDetailsCardWidget extends StackedView<WalletDashboardViewModel> {
                       ),
 
                       // Deposit and Withdraw Container Row
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget>[
-                          InkWell(
-                              child: Padding(
-                                padding: const EdgeInsets.only(top: 8.0),
-                                child: Column(
-                                  children: [
-                                    Text(
-                                      FlutterI18n.translate(context, "deposit"),
-                                      style: subText2.copyWith(fontSize: 8),
-                                    ),
-                                    const Icon(
-                                      Icons.arrow_downward,
-                                      color: green,
-                                      size: 16,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              onTap: () {
-                                model.routeWithWalletInfoArgs(
-                                    wallets[index], DepositViewRoute);
-                              }),
-                          // DepositWidget(
-                          //     model: model,
-                          //     index: index,
-                          //     tickerName: finalTickerName),
-                          const Divider(
-                            endIndent: 5,
-                          ),
-                          InkWell(
-                              child: Padding(
-                                padding: const EdgeInsets.only(top: 8.0),
-                                child: Column(
-                                  children: [
-                                    Text(
-                                      FlutterI18n.translate(
-                                          context, "withdraw"),
-                                      style: subText2.copyWith(fontSize: 8),
-                                    ),
-                                    const Icon(
-                                      Icons.arrow_upward,
-                                      color: red,
-                                      size: 16,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              onTap: () {
-                                model.routeWithWalletInfoArgs(
-                                    wallets[index], WithdrawViewRoute);
-                              }),
-                        ],
-                      ),
+                      // Row(
+                      //   mainAxisAlignment: MainAxisAlignment.start,
+                      //   children: <Widget>[
+                      //     InkWell(
+                      //         child: Padding(
+                      //           padding: const EdgeInsets.only(top: 8.0),
+                      //           child: Column(
+                      //             children: [
+                      //               Text(
+                      //                 FlutterI18n.translate(context, "deposit"),
+                      //                 style: subText2.copyWith(fontSize: 8),
+                      //               ),
+                      //               const Icon(
+                      //                 Icons.arrow_downward,
+                      //                 color: green,
+                      //                 size: 16,
+                      //               ),
+                      //             ],
+                      //           ),
+                      //         ),
+                      //         onTap: () {
+                      //           model.routeWithWalletInfoArgs(
+                      //               wallets[index], DepositViewRoute);
+                      //         }),
+                      //     // DepositWidget(
+                      //     //     model: model,
+                      //     //     index: index,
+                      //     //     tickerName: finalTickerName),
+                      //     const Divider(
+                      //       endIndent: 5,
+                      //     ),
+                      //     InkWell(
+                      //         child: Padding(
+                      //           padding: const EdgeInsets.only(top: 8.0),
+                      //           child: Column(
+                      //             children: [
+                      //               Text(
+                      //                 FlutterI18n.translate(
+                      //                     context, "withdraw"),
+                      //                 style: subText2.copyWith(fontSize: 8),
+                      //               ),
+                      //               const Icon(
+                      //                 Icons.arrow_upward,
+                      //                 color: red,
+                      //                 size: 16,
+                      //               ),
+                      //             ],
+                      //           ),
+                      //         ),
+                      //         onTap: () {
+                      //           model.routeWithWalletInfoArgs(
+                      //               wallets[index], WithdrawViewRoute);
+                      //         }),
+                      //   ],
+                      // ),
                       wallets[index].coin == 'FAB' &&
                               wallets[index].unconfirmedBalance != 0
                           ? Row(
