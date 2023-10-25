@@ -13,7 +13,9 @@
 
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:paycool/constants/constants.dart';
 import 'package:paycool/models/bond/vm/bond_history_model.dart';
 import 'package:paycool/models/bond/vm/bond_login_vm.dart';
@@ -24,11 +26,13 @@ import 'package:paycool/models/bond/vm/order_bond_model.dart';
 import 'package:paycool/models/bond/vm/register_email_model.dart';
 import 'package:paycool/models/bond/vm/token_balance_model.dart';
 import 'package:paycool/models/wallet/wallet_transaction_history_model.dart';
+import 'package:paycool/services/local_dialog_service.dart';
 import 'package:paycool/views/bond/helper.dart';
 import 'package:paycool/views/lightning-remit/lightning_remit_transfer_history_model.dart';
 import 'package:paycool/views/wallet/wallet_features/transaction_history/transaction_history_model_v2.dart';
 
 import '../constants/api_routes.dart';
+import '../environments/environment.dart';
 import '../logger.dart';
 import '../models/shared/pair_decimal_config_model.dart';
 import '../models/wallet/exchange_balance_model.dart';
@@ -38,12 +42,10 @@ import '../models/wallet/wallet_balance.dart';
 import '../service_locator.dart';
 import '../utils/custom_http_util.dart';
 import '../utils/string_util.dart' as string_utils;
-import '../environments/environment.dart';
 import 'config_service.dart';
 import 'db/core_wallet_database_service.dart';
 import 'local_storage_service.dart';
 import 'shared_service.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 /// The service responsible for networking requests
 class ApiService {
@@ -52,6 +54,7 @@ class ApiService {
   final client = CustomHttpUtil.createLetsEncryptUpdatedCertClient();
   ConfigService configService = locator<ConfigService>();
   SharedService sharedService = locator<SharedService>();
+  final dialogService = locator<LocalDialogService>();
   LocalStorageService storageService = locator<LocalStorageService>();
   CoreWalletDatabaseService coreWalletDatabaseService =
       locator<CoreWalletDatabaseService>();
@@ -1190,24 +1193,6 @@ class ApiService {
     }
   }
 
-  // Future<GetCaptchaModel?> getCaptcha(BuildContext context) async {
-  //   String url = "${paycoolBaseUrlV2}user/captcha";
-
-  //   try {
-  //     var response = await client.get(Uri.parse(url), headers: {
-  //       'Content-Type': 'application/json',
-  //       'Accept': 'application/json',
-  //     });
-  //     if (!jsonDecode(response.body)["success"]) {
-  //       return null;
-  //     }
-  //     var json = jsonDecode(response.body)["data"];
-  //     return GetCaptchaModel.fromJson(json);
-  //   } catch (err) {
-  //     throw Exception(err);
-  //   }
-  // }
-
   Future<GetCaptchaModel?> getCaptcha(
       BuildContext context, String email) async {
     String url = "${paycoolBaseUrlV2}user/captcha";
@@ -1400,6 +1385,9 @@ class ApiService {
           'x-access-token': token,
         });
         if (!jsonDecode(response.body)["success"]) {
+          var snackBar =
+              SnackBar(content: Text(jsonDecode(response.body)["message"]));
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
           return null;
         }
         return jsonDecode(response.body)["message"];
@@ -1481,28 +1469,6 @@ class ApiService {
     }
   }
 
-  // Future<bool?> complateOrderBond(BuildContext context, String bondId) async {
-  //   String url = "${paycoolBaseUrlV2}bond/order/$bondId/completeOrder";
-  //   var token = storageService.bondToken;
-  //   if (token.isEmpty || token == '') {
-  //     return null;
-  //   } else {
-  //     try {
-  //       var response = await client.delete(Uri.parse(url), headers: {
-  //         'Content-Type': 'application/json',
-  //         'Accept': 'application/json',
-  //         'x-access-token': token,
-  //       });
-  //       if (!jsonDecode(response.body)["success"]) {
-  //         return null;
-  //       }
-  //       return jsonDecode(response.body)["success"];
-  //     } catch (err) {
-  //       throw Exception(err);
-  //     }
-  //   }
-  // }
-
   Future<List<BondHistoryModel>?> getBondHistory(
       BuildContext context, int pageNum) async {
     String url = "${paycoolBaseUrlV2}bond/order/all/10/$pageNum";
@@ -1550,6 +1516,28 @@ class ApiService {
       return TokensBalanceModel.fromJson(json);
     } catch (err) {
       throw Exception(err);
+    }
+  }
+
+  Future<bool?> updateTxid(BuildContext context, String bondOrderId) async {
+    String url = "${paycoolBaseUrlV2}bond/order/$bondOrderId/txid";
+    var token = storageService.bondToken;
+    if (token.isEmpty || token == '') {
+      return null;
+    } else {
+      try {
+        var response = await client.post(Uri.parse(url), headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'x-access-token': token,
+        });
+        if (!jsonDecode(response.body)["success"]) {
+          return null;
+        }
+        return jsonDecode(response.body)["success"];
+      } catch (err) {
+        throw Exception(err);
+      }
     }
   }
 }

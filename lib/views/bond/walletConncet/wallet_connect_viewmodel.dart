@@ -209,7 +209,7 @@ class WalletConnectViewModel extends BaseViewModel {
       } else {
         setBusy(false);
         _requestQueue.clear();
-        print('User did not approve.');
+        debugPrint('User did not approve.');
       }
     } catch (e) {
       setBusy(false);
@@ -232,7 +232,7 @@ class WalletConnectViewModel extends BaseViewModel {
         await pair(uri);
       }
     } catch (e) {
-      print(e.toString());
+      debugPrint(e.toString());
     }
   }
 
@@ -242,7 +242,7 @@ class WalletConnectViewModel extends BaseViewModel {
       isConnected = true;
       notifyListeners();
     } catch (e) {
-      print(e.toString());
+      debugPrint(e.toString());
     }
   }
 

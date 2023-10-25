@@ -640,6 +640,7 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
       setState(() {
         loading = false;
       });
+      // await apiService.updateTxid(context, widget.bondSembolVm!.id!);
     });
   }
 
@@ -674,7 +675,7 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
 
       var param = {"native": walletAddress, "tokens": tokenIds};
       // var param = {
-      //   // "native": "0x592DeA18c6023C6FE12aBCc59AAE9Fb587B4CCE3", //ETH
+      //   // "native": "0x2F62CEACb04eAbF8Fc53C195C5916DDDfa4BED02", //ETH
       //   // "native": "0x772De0B32771e33dfe05C1a7c2832dF09dabE43a", // BNB
       //   // "native": "0x9d95ee21e4f1b05bbfd0094daf4ce110deb00931", // KANBAN
       //   "tokens": tokenIds
@@ -735,7 +736,7 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
   }
 
   Future<void> showDetails(
-    BuildContext context,
+    BuildContext contexta,
     Size size,
     OrderBondModel orderBondRm,
     BondMeModel bondMeVm,
@@ -867,7 +868,7 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
 
                                     try {
                                       await ApiService()
-                                          .updatePaymentBond(context,
+                                          .updatePaymentBond(contexta,
                                               widget.orderNumber, param)
                                           .then((value) async {
                                         if (value != null) {
