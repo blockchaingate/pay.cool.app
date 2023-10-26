@@ -1,6 +1,6 @@
 name: paycool
 description: Crypto payment application
-version: 2.4.148+220
+version: 2.4.149+221
 
 publish_to: "none"
 
@@ -20,6 +20,7 @@ dependency_overrides:
   #   path: "../exchangily-packages/pagination_widget"
 
 dependencies:
+
   aukfa_version_checker:
     git:
       url: https://github.com/blockchaingate/exchangily-packages.git
@@ -39,6 +40,11 @@ dependencies:
   cupertino_icons: ^1.0.5
   decimal: ^2.2.0
   device_info: ^2.0.2
+  eth_abi_codec:
+    git:
+      url: https://github.com/blockchaingate/exchangily-packages.git
+      path: open_source_packages/dart_eth_abi_codec
+
   exchangily_ui:
     git:
       url: https://github.com/blockchaingate/exchangily-packages.git
@@ -66,7 +72,6 @@ dependencies:
     git:
       url: https://github.com/blockchaingate/exchangily-packages.git
       path: kyc
-      ref: kyc-v2
   launch_review: ^3.0.1
   local_auth: ^2.1.6
   logger: ^1.1.0

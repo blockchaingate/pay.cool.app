@@ -1,5 +1,3 @@
-import 'dart:js_interop';
-
 import 'package:flutter/widgets.dart';
 import 'package:paycool/environments/environment.dart';
 import 'package:paycool/logger.dart';
@@ -167,8 +165,12 @@ class MultisigHistoryQueueViewModel extends FutureViewModel {
         signatures += data.substring(2);
       }
       log.w('signatures $signatures');
-      var abiHex = MultisigUtil.transferABIHex(transaction, signatures);
 
+      var abiHex = MultisigUtil.encodeContractCall(transaction, signatures);
+      if (true) {
+        setBusy(false);
+        return;
+      }
       String gasPriceString =
           environment['chains'][chain]['gasPrice'].toString();
 

@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:eth_abi_codec/eth_abi_codec.dart';
 import 'package:flutter/foundation.dart';
 import 'package:paycool/environments/environment.dart';
 import 'package:bip32/bip32.dart' as bip32;
@@ -6,6 +9,8 @@ import '../../constants/constants.dart';
 import '../../utils/coin_util.dart';
 import '../../utils/string_util.dart';
 import 'package:hex/hex.dart';
+
+import 'package:convert/convert.dart';
 
 class MultisigUtil {
   static isChainKanban(String chain) {
@@ -22,6 +27,74 @@ class MultisigUtil {
 
   String bufferToHex(List<int> buffer) {
     return '0x' + HEX.encode(buffer);
+  }
+
+  decodeContractCall(String hexData) {
+    var abi =
+        ContractABI.fromJson(jsonDecode(Constants.multisigTransferAbiCode));
+    var data = hex.decode('hex string of contract call result');
+    var res = abi.decomposeCall(data as Uint8List);
+    log.w('decodeContractCall res $res');
+    return res;
+  }
+
+  static encodeContractCall(
+    transaction,
+    String signatures,
+  ) {
+    String jsonData = '${Constants.exuctionAbiJson}';
+    var jsonList = json.decode(jsonData);
+    var abi = ContractABI.fromJson(List.from(jsonList));
+    var to = fixLengthV2(trimHexPrefix(transaction["to"]), 64);
+    debugPrint('to: $to');
+    var value = transaction["value"] == "0x0" ? "0" : transaction["value"];
+    value = fixLengthV2(value, 64);
+    log.w('value $value');
+    var data = trimHexPrefix(transaction["data"]);
+    log.i('data $data');
+    data = Uint8List.fromList(hex.decode(data));
+    log.e('data in bytes $data');
+    var operation =
+        int.parse(transaction["operation"].toString()).toRadixString(16);
+    operation = fixLengthV2(operation, 64);
+    log.w('operation $operation');
+    var safeTxGas = trimHexPrefix(transaction["safeTxGas"]);
+    safeTxGas = fixLengthV2(safeTxGas, 64);
+    log.i('safetxgas $safeTxGas');
+    var baseGas = trimHexPrefix(transaction["baseGas"]);
+    baseGas = fixLengthV2(baseGas, 64);
+    log.w('basegas $baseGas');
+    var gasPrice = trimHexPrefix(transaction["gasPrice"]);
+    gasPrice = fixLengthV2(gasPrice, 64);
+    log.i('gasPrice $gasPrice');
+    var gasToken = trimHexPrefix(transaction["gasToken"]);
+    gasToken = fixLengthV2(gasToken, 64);
+    log.w('gastoken $gasToken');
+    var refundReceiver = trimHexPrefix(transaction["refundReceiver"]);
+    refundReceiver = fixLengthV2(refundReceiver, 64);
+    log.i('refund receiver $refundReceiver');
+    var sig = trimHexPrefix(signatures);
+    log.w('sig $sig');
+    sig = Uint8List.fromList(hex.decode(sig));
+    log.e('sig in bytes $sig');
+    var call = ContractCall('execTransaction')
+      ..setCallParam('calls', [
+        [
+          to,
+          value,
+          data,
+          operation,
+          safeTxGas,
+          baseGas,
+          gasPrice,
+          gasToken,
+          refundReceiver,
+          sig
+        ],
+      ]);
+    log.e('call $call');
+    var finalAbi = hex.encode(call.toBinary(abi));
+    log.w('finalAbi $finalAbi');
   }
 
   bool isTxHashSignedWithPrefix(
