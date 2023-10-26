@@ -12,8 +12,9 @@
 */
 
 import 'dart:io';
-import 'package:path_provider/path_provider.dart';
+
 import 'package:encrypt/encrypt.dart' as encrypt;
+import 'package:path_provider/path_provider.dart';
 
 import '../logger.dart';
 import '../utils/number_util.dart';

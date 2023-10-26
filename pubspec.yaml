@@ -1,6 +1,6 @@
 name: paycool
 description: Crypto payment application
-version: 2.4.148+219
+version: 2.4.148+220
 
 publish_to: "none"
 
@@ -39,7 +39,6 @@ dependencies:
   cupertino_icons: ^1.0.5
   decimal: ^2.2.0
   device_info: ^2.0.2
-
   exchangily_ui:
     git:
       url: https://github.com/blockchaingate/exchangily-packages.git

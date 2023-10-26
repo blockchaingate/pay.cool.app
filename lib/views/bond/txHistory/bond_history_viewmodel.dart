@@ -54,4 +54,11 @@ class BondHistoryViewModel extends BaseViewModel with WidgetsBindingObserver {
     }
     setBusy(false);
   }
+
+  String setStatus(string) {
+    if (string == "Confirmed by User") {
+      return "Pending";
+    } else
+      return string;
+  }
 }

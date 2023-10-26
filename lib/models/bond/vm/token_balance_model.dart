@@ -29,7 +29,7 @@ class TokensBalanceModel {
 
 class Tokens {
   List<String>? ids;
-  List<String>? balances;
+  List<dynamic>? balances;
 
   Tokens({
     this.ids,
@@ -42,7 +42,7 @@ class Tokens {
             : List<String>.from(json["ids"]!.map((x) => x)),
         balances: json["balances"] == null
             ? []
-            : List<String>.from(json["balances"]!.map((x) => x)),
+            : List<dynamic>.from(json["balances"]!.map((x) => x)),
       );
 
   Map<String, dynamic> toJson() => {

@@ -11,6 +11,8 @@
 *----------------------------------------------------------------------
 */
 import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:kyc/kyc.dart';
@@ -19,11 +21,8 @@ import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/environments/environment_type.dart';
 import 'package:paycool/shared/ui_helpers.dart';
-import 'package:paycool/views/multisig/create_multisig_wallet/create_multisig_wallet_view.dart';
-import 'package:paycool/views/multisig/import_multisig_wallet/import_multisig_view.dart';
 import 'package:paycool/views/settings/settings_viewmodel.dart';
 import 'package:paycool/widgets/bottom_nav.dart';
-import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 
 class SettingsView extends StatelessWidget {
@@ -42,35 +41,38 @@ class SettingsView extends StatelessWidget {
           model.onBackButtonPressed();
           return Future(() => false);
         },
-        child: Scaffold(
-          extendBodyBehindAppBar: true,
-          // When the keyboard appears, the Flutter widgets resize to avoid that we use resizeToAvoidBottomInset: false
-          resizeToAvoidBottomInset: false,
+        child: AnnotatedRegion<SystemUiOverlayStyle>(
+          value: SystemUiOverlayStyle.dark,
+          child: Scaffold(
+            extendBodyBehindAppBar: true,
+            // When the keyboard appears, the Flutter widgets resize to avoid that we use resizeToAvoidBottomInset: false
+            resizeToAvoidBottomInset: false,
 
-          body: model.isBusy
-              ? Center(child: model.sharedService.loadingIndicator())
-              // : model.isShowCaseOnce == false
-              //     ? ShowCaseWidget(
-              //         onStart: (index, key) {
-              //           debugPrint('onStart: $index, $key');
-              //         },
-              //         onComplete: (index, key) {
-              //           debugPrint('onComplete: $index, $key');
-              //         },
-              //         onFinish: () async {
-              //           // debugPrint('FINISH, set isShowCaseOnce to true as we have shown user the showcase dialogs');
-              //           // await model.getStoredDataByKeys('isShowCaseOnce',
-              //           //     isSetData: true, value: true);
-              //         },
-              //         // autoPlay: true,
-              //         // autoPlayDelay: Duration(seconds: 3),
-              //         // autoPlayLockEnable: true,
-              //         builder: Builder(
-              //           builder: (context) => SettingsWidget(model: model),
-              //         ),
-              //       )
-              : SettingsContainer(model: model),
-          bottomNavigationBar: BottomNavBar(count: 4),
+            body: model.isBusy
+                ? Center(child: model.sharedService.loadingIndicator())
+                // : model.isShowCaseOnce == false
+                //     ? ShowCaseWidget(
+                //         onStart: (index, key) {
+                //           debugPrint('onStart: $index, $key');
+                //         },
+                //         onComplete: (index, key) {
+                //           debugPrint('onComplete: $index, $key');
+                //         },
+                //         onFinish: () async {
+                //           // debugPrint('FINISH, set isShowCaseOnce to true as we have shown user the showcase dialogs');
+                //           // await model.getStoredDataByKeys('isShowCaseOnce',
+                //           //     isSetData: true, value: true);
+                //         },
+                //         // autoPlay: true,
+                //         // autoPlayDelay: Duration(seconds: 3),
+                //         // autoPlayLockEnable: true,
+                //         builder: Builder(
+                //           builder: (context) => SettingsWidget(model: model),
+                //         ),
+                //       )
+                : SettingsContainer(model: model),
+            bottomNavigationBar: BottomNavBar(count: 4),
+          ),
         ),
       ),
     );
