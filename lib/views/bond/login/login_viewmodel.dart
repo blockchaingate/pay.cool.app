@@ -15,8 +15,6 @@ import 'package:stacked_services/stacked_services.dart';
 
 class BondLoginViewModel extends BaseViewModel with WidgetsBindingObserver {
   BondLoginViewModel({BuildContext? context});
-  bool isVisible = true;
-  bool isKeyboardOpen = false;
   String? deviceId;
 
   ApiService apiService = locator<ApiService>();
@@ -37,16 +35,16 @@ class BondLoginViewModel extends BaseViewModel with WidgetsBindingObserver {
     super.dispose();
   }
 
-  @override
-  void didChangeMetrics() {
-    final mediaQuery = MediaQuery.of(context!);
-    final keyboardHeight = mediaQuery.viewInsets.bottom;
+  // @override
+  // void didChangeMetrics() {
+  //   final mediaQuery = MediaQuery.of(context!);
+  //   final keyboardHeight = mediaQuery.viewInsets.bottom;
 
-    isKeyboardOpen = keyboardHeight > 1;
+  //   isKeyboardOpen = keyboardHeight > 1;
 
-    notifyListeners();
-    super.didChangeMetrics();
-  }
+  //   notifyListeners();
+  //   super.didChangeMetrics();
+  // }
 
   Future<void> login() async {
     setBusy(true);

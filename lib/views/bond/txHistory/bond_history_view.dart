@@ -83,7 +83,7 @@ class _BondHistoryViewState extends State<BondHistoryView> {
                           child: Container(
                             alignment: Alignment.center,
                             child: AutoSizeText(
-                              item.status.toString(),
+                              model.setStatus(item.status.toString()),
                               textAlign: TextAlign.center,
                               minFontSize: 8,
                               maxLines: 2,

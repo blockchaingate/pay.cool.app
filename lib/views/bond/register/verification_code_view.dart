@@ -63,7 +63,9 @@ class _VerificationCodeViewState extends State<VerificationCodeView> {
     super.dispose();
   }
 
-  void startTimer() {
+  void startTimer(bool isReset) {
+    if (isReset) _timer?.cancel();
+
     const oneSec = Duration(seconds: 1);
     _timer = Timer.periodic(oneSec, (Timer timer) {
       if (_timeout == 0) {
@@ -206,7 +208,8 @@ class _VerificationCodeViewState extends State<VerificationCodeView> {
                                       ),
                                       recognizer: TapGestureRecognizer()
                                         ..onTap = () {
-                                          sendConfirmationCode(context);
+                                          sendConfirmationCode(context,
+                                              isReset: true);
                                         },
                                     ),
                                   ],
@@ -490,14 +493,16 @@ class _VerificationCodeViewState extends State<VerificationCodeView> {
     );
   }
 
-  Future<void> sendConfirmationCode(BuildContext context) async {
+  Future<void> sendConfirmationCode(BuildContext context,
+      {bool isReset = false}) async {
     apiService.sendEmail(context).then((value) {
       if (value != null) {
         callSMessage(context, value, duration: 2);
         setState(() {
           _timeout = 120;
         });
-        startTimer();
+
+        startTimer(isReset);
       } else {
         callSMessage(context, FlutterI18n.translate(context, "anErrorOccurred"),
             duration: 2);

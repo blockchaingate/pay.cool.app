@@ -173,66 +173,57 @@ class _BondLoginViewState extends State<BondLoginView> {
                             ),
                           ),
                         ),
-                        model.isKeyboardOpen
-                            ? SizedBox()
-                            : UIHelper.verticalSpaceMedium,
-                        model.isKeyboardOpen
-                            ? SizedBox()
-                            : InkWell(
-                                onTap: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const ForgotPasswordView()));
-                                },
-                                child: SizedBox(
-                                  width: size.width * 0.9,
-                                  child: Text(
-                                    FlutterI18n.translate(
-                                        context, "forgotPassword"),
-                                    textAlign: TextAlign.end,
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 14.0),
-                                  ),
+                        UIHelper.verticalSpaceMedium,
+                        InkWell(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const ForgotPasswordView()));
+                          },
+                          child: SizedBox(
+                            width: size.width * 0.9,
+                            child: Text(
+                              FlutterI18n.translate(context, "forgotPassword"),
+                              textAlign: TextAlign.end,
+                              style: TextStyle(
+                                  color: Colors.white, fontSize: 14.0),
+                            ),
+                          ),
+                        ),
+                        UIHelper.verticalSpaceLarge,
+                        RichText(
+                          textAlign: TextAlign.center,
+                          text: TextSpan(
+                            children: [
+                              TextSpan(
+                                text: FlutterI18n.translate(
+                                    context, "dontHaveAnAccount"),
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.white,
                                 ),
                               ),
-                        model.isKeyboardOpen
-                            ? SizedBox()
-                            : UIHelper.verticalSpaceLarge,
-                        model.isKeyboardOpen
-                            ? Container()
-                            : RichText(
-                                textAlign: TextAlign.center,
-                                text: TextSpan(
-                                  children: [
-                                    TextSpan(
-                                      text: FlutterI18n.translate(
-                                          context, "dontHaveAnAccount"),
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                    TextSpan(
-                                      text:
-                                          " ${FlutterI18n.translate(context, "registerNow")}",
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        decoration: TextDecoration.underline,
-                                      ),
-                                      recognizer: TapGestureRecognizer()
-                                        ..onTap = () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      const BondRegisterView()));
-                                        },
-                                    ),
-                                  ],
+                              TextSpan(
+                                text:
+                                    " ${FlutterI18n.translate(context, "registerNow")}",
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  decoration: TextDecoration.underline,
                                 ),
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                const BondRegisterView()));
+                                  },
                               ),
+                            ],
+                          ),
+                        ),
                       ],
                     ),
                   ),

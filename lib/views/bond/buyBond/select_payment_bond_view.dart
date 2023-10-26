@@ -199,7 +199,7 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
                                 width: size.width,
                                 child: Text(
                                   gasBalance != null
-                                      ? "${FlutterI18n.translate(context, "gasBalance")}:${makeShort((gasBalance! / 1e18).toString())}"
+                                      ? "${FlutterI18n.translate(context, "gasBalance")}: ${makeShort((gasBalance! / 1e18))}"
                                       : "",
                                   style: gasBalance != null &&
                                           needGasBalance != null &&
@@ -264,7 +264,7 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
                                 width: size.width,
                                 child: Text(
                                   coinBalance != null
-                                      ? "${FlutterI18n.translate(context, "coinBalance")}:${makeShort((coinBalance! / 1e18).toString())}"
+                                      ? "${FlutterI18n.translate(context, "coinBalance")}: ${makeShort(coinBalance!)}"
                                       : "",
                                   style: coinBalance != null &&
                                           coinBalance! > widget.amount
@@ -591,7 +591,7 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
               environment["Bond"]["Chains"]["$selectedValueChain"]
                   ["acceptedTokens"][index]["id"],
               amount)
-          .then((value) async {
+          .then((value) {
         setState(() {
           abiHex = Constants.bondAbiCodeEth + value.toString();
         });
@@ -606,7 +606,7 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
               environment["Bond"]["Chains"]["$selectedValueChain"]
                   ["acceptedTokens"][index]["id"],
               amount)
-          .then((value) async {
+          .then((value) {
         setState(() {
           abiHex = Constants.bondAbiCodeKanban + value.toString();
         });
@@ -621,7 +621,7 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
               environment["Bond"]["Chains"]["$selectedValueChain"]
                   ["acceptedTokens"][index]["id"],
               amount)
-          .then((value) async {
+          .then((value) {
         setState(() {
           abiHex = Constants.bondAbiCodeEth + value.toString();
         });
@@ -636,11 +636,11 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
         txHash = value;
         loading = false;
       });
+      await apiService.updateTxid(context, txHash!);
     }).whenComplete(() {
       setState(() {
         loading = false;
       });
-      // await apiService.updateTxid(context, widget.bondSembolVm!.id!);
     });
   }
 
