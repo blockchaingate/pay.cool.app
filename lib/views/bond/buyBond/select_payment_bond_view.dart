@@ -636,7 +636,7 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
         txHash = value;
         loading = false;
       });
-      await apiService.updateTxid(context, txHash!);
+      await apiService.updateTxid(context, widget.orderNumber, txHash!);
     }).whenComplete(() {
       setState(() {
         loading = false;

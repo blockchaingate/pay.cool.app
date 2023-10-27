@@ -1158,9 +1158,7 @@ class ApiService {
         'Accept': 'application/json',
       });
       if (!jsonDecode(response.body)["success"]) {
-        var snackBar =
-            SnackBar(content: Text(jsonDecode(response.body)["message"]));
-        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        callSMessage(context, jsonDecode(response.body)["message"]);
         return null;
       }
       var json = jsonDecode(response.body)["data"];
@@ -1181,9 +1179,7 @@ class ApiService {
         'Accept': 'application/json',
       });
       if (!jsonDecode(response.body)["success"]) {
-        var snackBar =
-            SnackBar(content: Text(jsonDecode(response.body)["message"]));
-        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        callSMessage(context, jsonDecode(response.body)["message"]);
         return null;
       }
       var json = jsonDecode(response.body)["data"];
@@ -1205,6 +1201,7 @@ class ApiService {
         'Accept': 'application/json',
       });
       if (!jsonDecode(response.body)["success"]) {
+        callSMessage(context, jsonDecode(response.body)["message"]);
         return null;
       }
       var json = jsonDecode(response.body)["data"];
@@ -1246,6 +1243,7 @@ class ApiService {
           'x-access-token': token,
         });
         if (!jsonDecode(response.body)["success"]) {
+          callSMessage(context, jsonDecode(response.body)["message"]);
           return null;
         }
         var json = jsonDecode(response.body)["message"];
@@ -1272,9 +1270,7 @@ class ApiService {
           'x-access-token': token,
         });
         if (!jsonDecode(response.body)["success"]) {
-          var snackBar =
-              SnackBar(content: Text(jsonDecode(response.body)["message"]));
-          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          callSMessage(context, jsonDecode(response.body)["message"]);
           return null;
         }
         var json = jsonDecode(response.body)["success"];
@@ -1296,6 +1292,7 @@ class ApiService {
         'Accept': 'application/json',
       });
       if (!jsonDecode(response.body)["success"]) {
+        callSMessage(context, jsonDecode(response.body)["message"]);
         return null;
       }
       var json = jsonDecode(response.body)["message"];
@@ -1316,6 +1313,7 @@ class ApiService {
         'Accept': 'application/json',
       });
       if (!jsonDecode(response.body)["success"]) {
+        callSMessage(context, jsonDecode(response.body)["message"]);
         return null;
       }
       var json = jsonDecode(response.body)["message"];
@@ -1335,6 +1333,7 @@ class ApiService {
         'Accept': 'application/json',
       });
       if (!jsonDecode(response.body)["success"]) {
+        callSMessage(context, jsonDecode(response.body)["message"]);
         return null;
       }
       var json = jsonDecode(response.body)["data"]["bond_info"];
@@ -1359,6 +1358,7 @@ class ApiService {
           'x-access-token': token,
         });
         if (!jsonDecode(response.body)["success"]) {
+          callSMessage(context, jsonDecode(response.body)["message"]);
           return null;
         }
         var json = jsonDecode(response.body)["data"];
@@ -1385,9 +1385,7 @@ class ApiService {
           'x-access-token': token,
         });
         if (!jsonDecode(response.body)["success"]) {
-          var snackBar =
-              SnackBar(content: Text(jsonDecode(response.body)["message"]));
-          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          callSMessage(context, jsonDecode(response.body)["message"]);
           return null;
         }
         return jsonDecode(response.body)["message"];
@@ -1411,6 +1409,7 @@ class ApiService {
           'x-access-token': token,
         });
         if (!jsonDecode(response.body)["success"]) {
+          callSMessage(context, jsonDecode(response.body)["message"]);
           return null;
         }
         var json = jsonDecode(response.body)["data"];
@@ -1435,6 +1434,7 @@ class ApiService {
           'x-access-token': token,
         });
         if (!jsonDecode(response.body)["success"]) {
+          callSMessage(context, jsonDecode(response.body)["message"]);
           return null;
         }
         var json = jsonDecode(response.body)["data"];
@@ -1459,6 +1459,7 @@ class ApiService {
           'x-access-token': token,
         });
         if (!jsonDecode(response.body)["success"]) {
+          callSMessage(context, jsonDecode(response.body)["message"]);
           return null;
         }
         var json = jsonDecode(response.body)["data"];
@@ -1484,6 +1485,7 @@ class ApiService {
           'x-access-token': token,
         });
         if (!jsonDecode(response.body)["success"]) {
+          callSMessage(context, jsonDecode(response.body)["message"]);
           return null;
         }
         jsonDecode(response.body)["data"]["bond_orders"].forEach((item) {
@@ -1510,6 +1512,7 @@ class ApiService {
         'Accept': 'application/json',
       });
       if (!jsonDecode(response.body)["success"]) {
+        callSMessage(context, jsonDecode(response.body)["message"]);
         return null;
       }
       var json = jsonDecode(response.body)["data"];
@@ -1519,19 +1522,24 @@ class ApiService {
     }
   }
 
-  Future<bool?> updateTxid(BuildContext context, String bondOrderId) async {
+  Future<bool?> updateTxid(
+      BuildContext context, String bondOrderId, String txId) async {
     String url = "${paycoolBaseUrlV2}bond/order/$bondOrderId/txid";
+    var param = {"txid": txId};
+    var jsonBody = json.encode(param);
     var token = storageService.bondToken;
     if (token.isEmpty || token == '') {
       return null;
     } else {
       try {
-        var response = await client.post(Uri.parse(url), headers: {
+        var response =
+            await client.post(Uri.parse(url), body: jsonBody, headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
           'x-access-token': token,
         });
         if (!jsonDecode(response.body)["success"]) {
+          callSMessage(context, jsonDecode(response.body)["message"]);
           return null;
         }
         return jsonDecode(response.body)["success"];
