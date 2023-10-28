@@ -720,5 +720,6 @@
     "notStarted": "未开始",
     "multisigWallet": "多重签名钱包",
     "personalInformation": "个人信息",
-    "noRecord": "没有找到记录"
+    "noRecord": "没有找到记录",
+    "sendCode": "发送代码"
 }

@@ -8,25 +8,21 @@ String forgotPasswordVerifyModelToJson(ForgotPasswordVerifyModel data) =>
 
 class ForgotPasswordVerifyModel {
   String? email;
-  String? code;
   String? password;
 
   ForgotPasswordVerifyModel({
     this.email,
-    this.code,
     this.password,
   });
 
   factory ForgotPasswordVerifyModel.fromJson(Map<String, dynamic> json) =>
       ForgotPasswordVerifyModel(
         email: json["email"],
-        code: json["code"],
         password: json["password"],
       );
 
   Map<String, dynamic> toJson() => {
         "email": email,
-        "code": code,
         "password": password,
       };
 }

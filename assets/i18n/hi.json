@@ -717,5 +717,6 @@
     "notStarted": "शुरू नहीं हुआ",
     "multisigWallet": "मल्टीसिग वॉलेट",
     "personalInformation": "व्यक्तिगत जानकारी",
-    "noRecord": "कोई रिकॉर्ड नहीं मिला"
+    "noRecord": "कोई रिकॉर्ड नहीं मिला",
+    "sendCode": "कोड भेजो"
 }

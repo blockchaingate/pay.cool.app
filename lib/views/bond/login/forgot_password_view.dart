@@ -11,6 +11,7 @@ import 'package:paycool/services/api_service.dart';
 import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/utils/string_validator.dart';
 import 'package:paycool/views/bond/helper.dart';
+import 'package:paycool/views/bond/login/login_view.dart';
 
 class ForgotPasswordView extends StatefulWidget {
   const ForgotPasswordView({super.key});
@@ -155,6 +156,93 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
               ),
             ),
             UIHelper.verticalSpaceSmall,
+            SizedBox(
+              width: size.width,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  SizedBox(
+                    width: size.width * 0.6,
+                    child: TextField(
+                      controller: codeController,
+                      style: TextStyle(color: Colors.white, fontSize: 13),
+                      decoration: InputDecoration(
+                        hintText: "${FlutterI18n.translate(context, "code")} *",
+                        hintStyle: TextStyle(
+                            color: inputText, fontWeight: FontWeight.w400),
+                        fillColor: Colors.transparent,
+                        filled: true,
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                          borderSide: BorderSide(
+                            color:
+                                inputBorder, // Change the color to your desired border color
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                          borderSide: BorderSide(
+                            color:
+                                inputBorder, // Change the color to your desired border color
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    width: size.width * 0.25,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20.0),
+                      border: Border.all(color: Colors.white),
+                    ),
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        if (emailController.text.isNotEmpty &&
+                            validateEmail(emailController.text)) {
+                          var param = ForgotPasswordModel(
+                            email: emailController.text,
+                          );
+
+                          try {
+                            apiService
+                                .forgotPassword(context, param)
+                                .then((value) {
+                              if (value != null) {
+                                callSMessage(context, value, duration: 3);
+                              }
+                            });
+                          } catch (e) {
+                            callSMessage(
+                                context,
+                                FlutterI18n.translate(
+                                    context, "anErrorOccurred"),
+                                duration: 2);
+                          }
+                        } else {
+                          callSMessage(
+                              context,
+                              FlutterI18n.translate(
+                                  context, "enterValidEmailAddress"),
+                              duration: 2);
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.transparent,
+                        shadowColor: Colors.transparent,
+                      ),
+                      child: Text(
+                        FlutterI18n.translate(context, "sendCode"),
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            UIHelper.verticalSpaceSmall,
             Container(
               width: size.width * 0.9,
               decoration: BoxDecoration(
@@ -165,22 +253,19 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                 onPressed: () async {
                   if (emailController.text.isNotEmpty &&
                       validateEmail(emailController.text)) {
-                    var param = ForgotPasswordModel(
-                      email: emailController.text,
-                    );
+                    var param = {
+                      "email": emailController.text,
+                      "code": codeController.text,
+                    };
 
                     try {
-                      apiService.forgotPassword(context, param).then((value) {
+                      apiService.verifyEmailCode(context, param).then((value) {
                         if (value != null) {
-                          callSMessage(context, value, duration: 3);
+                          callSMessage(context, value, duration: 2);
 
                           setState(() {
                             _isFirstCard = !_isFirstCard;
                           });
-                        } else {
-                          callSMessage(context,
-                              FlutterI18n.translate(context, "anErrorOccurred"),
-                              duration: 2);
                         }
                       });
                     } catch (e) {
@@ -287,32 +372,6 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
               ),
             ),
             UIHelper.verticalSpaceSmall,
-            TextField(
-              controller: codeController,
-              style: TextStyle(color: Colors.white, fontSize: 13),
-              decoration: InputDecoration(
-                hintText: "${FlutterI18n.translate(context, "code")} *",
-                hintStyle:
-                    TextStyle(color: inputText, fontWeight: FontWeight.w400),
-                fillColor: Colors.transparent,
-                filled: true,
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                  borderSide: BorderSide(
-                    color:
-                        inputBorder, // Change the color to your desired border color
-                  ),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                  borderSide: BorderSide(
-                    color:
-                        inputBorder, // Change the color to your desired border color
-                  ),
-                ),
-              ),
-            ),
-            UIHelper.verticalSpaceSmall,
             Container(
               width: size.width * 0.9,
               decoration: BoxDecoration(
@@ -326,15 +385,24 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                     var param = ForgotPasswordVerifyModel(
                       email: emailController.text,
                       password: passwordController.text,
-                      code: codeController.text,
                     );
 
                     try {
                       apiService.resetPassword(context, param).then((value) {
                         if (value != null) {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text(value),
-                          ));
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(SnackBar(
+                                content: Text(value),
+                                duration: Duration(seconds: 1),
+                              ))
+                              .closed
+                              .then((value) {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const BondLoginView()));
+                          });
                         }
                       });
                     } catch (e) {

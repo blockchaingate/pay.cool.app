@@ -1302,6 +1302,27 @@ class ApiService {
     }
   }
 
+  Future<String?> verifyEmailCode(BuildContext context, param) async {
+    String url = "${paycoolBaseUrlV2}user/verifyEmailCode";
+
+    var jsonBody = json.encode(param);
+    try {
+      var response =
+          await client.post(Uri.parse(url), body: jsonBody, headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      });
+      if (!jsonDecode(response.body)["success"]) {
+        callSMessage(context, jsonDecode(response.body)["message"]);
+        return null;
+      }
+      var json = jsonDecode(response.body)["message"];
+      return json;
+    } catch (err) {
+      return null;
+    }
+  }
+
   Future<String?> resetPassword(BuildContext context, param) async {
     String url = "${paycoolBaseUrlV2}user/resetPassword";
     var jsonBody = json.encode(param);

@@ -720,5 +720,6 @@
     "notStarted": "Non commencé",
     "multisigWallet": "Portefeuille Multisig",
     "personalInformation": "Informations Personnelles",
-    "noRecord": "Aucun Enregistrement Trouvé"
+    "noRecord": "Aucun Enregistrement Trouvé",
+    "sendCode": "Envoyer le Code"
 }

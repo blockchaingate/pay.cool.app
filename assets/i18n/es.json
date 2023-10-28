@@ -715,5 +715,6 @@
     "notStarted": "No iniciado",
     "multisigWallet": "Monedero Multifirma",
     "personalInformation": "Información Personal",
-    "noRecord": "No se Encontraron Registros"
+    "noRecord": "No se Encontraron Registros",
+    "sendCode": "Enviar Código"
 }

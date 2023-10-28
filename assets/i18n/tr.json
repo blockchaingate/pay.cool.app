@@ -720,5 +720,6 @@
   "notStarted": "Başlamadı",
   "multisigWallet": "Çok İmzalı Cüzdan",
   "personalInformation": "Kişisel Bilgiler",
-  "noRecord": "Kayıt Bulunamadı"
+  "noRecord": "Kayıt Bulunamadı",
+  "sendCode": "Kodu Gönder"
 }

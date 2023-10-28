@@ -720,5 +720,6 @@
     "notStarted": "開始されていません",
     "multisigWallet": "マルチシグウォレット",
     "personalInformation": "個人情報",
-    "noRecord": "レコードが見つかりませんでした"
+    "noRecord": "レコードが見つかりませんでした",
+    "sendCode": "コードを送信する"
 }
