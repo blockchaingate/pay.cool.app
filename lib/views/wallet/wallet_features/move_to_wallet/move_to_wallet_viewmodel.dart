@@ -1088,11 +1088,21 @@ class MoveToWalletViewmodel extends BaseViewModel {
     setBusy(true);
 
     String smartContractAddress = '';
+    String ticker = '';
+    if (WalletUtil.isSpecialUsdt(walletInfo.tickerName!) ||
+        walletInfo.tickerName == 'USDT') {
+      ticker = 'USDTX';
+    } else if (walletInfo.tickerName == 'USDC' ||
+        WalletUtil.isSpecialUsdc(walletInfo.tickerName!)) {
+      ticker = 'USDCX';
+    } else {
+      ticker = walletInfo.tickerName!;
+    }
     log.e(
         'getFabChainBalance tokenlist db empty, in else now-- getting data from api');
     await apiService.getTokenListUpdates().then((tokens) {
       smartContractAddress = tokens
-          .firstWhere((element) => element.tickerName == walletInfo.tickerName)
+          .firstWhere((element) => element.tickerName == ticker)
           .contract!;
     });
 
