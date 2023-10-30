@@ -59,6 +59,29 @@ class Constants {
   static const String EthMessagePrefix = '\u0019Ethereum Signed Message:\n';
   static const String BtcMessagePrefix = '\x18Bitcoin Signed Message:\n';
   static const String KanbanMessagePrefix = '\u0017Kanban Signed Message:\n';
+  static const testAbi = [
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "components": [
+            {"name": "target", "type": "address"},
+            {"name": "callData", "type": "bytes"}
+          ],
+          "name": "calls",
+          "type": "tuple[]"
+        }
+      ],
+      "name": "aggregate",
+      "outputs": [
+        {"name": "blockNumber", "type": "uint256"},
+        {"name": "returnData", "type": "bytes[]"}
+      ],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ];
 
   static const exuctionAbiJson = [
     {
@@ -66,26 +89,24 @@ class Constants {
         {
           "components": [
             {"internalType": "address", "name": "to", "type": "address"},
-            {"internalType": "uint256", "name": "value", "type": "uint256"},
-            {"internalType": "bytes", "name": "data", "type": "bytes"},
-            {
-              "internalType": "enum Enum.Operation",
-              "name": "operation",
-              "type": "uint8"
-            },
-            {"internalType": "uint256", "name": "safeTxGas", "type": "uint256"},
-            {"internalType": "uint256", "name": "baseGas", "type": "uint256"},
-            {"internalType": "uint256", "name": "gasPrice", "type": "uint256"},
-            {"internalType": "address", "name": "gasToken", "type": "address"},
-            {
-              "internalType": "address payable",
-              "name": "refundReceiver",
-              "type": "address"
-            },
-            {"internalType": "bytes", "name": "signatures", "type": "bytes"}
+            // {"internalType": "uint256", "name": "value", "type": "uint256"},
+            // {"internalType": "bytes", "name": "data", "type": "bytes"},
+            // {
+            //   "internalType": "enum Enum.Operation",
+            //   "name": "operation",
+            //   "type": "uint8"
+            // },
+            // {"internalType": "uint256", "name": "safeTxGas", "type": "uint256"},
+            // {"internalType": "uint256", "name": "baseGas", "type": "uint256"},
+            // {"internalType": "uint256", "name": "gasPrice", "type": "uint256"},
+            // {"internalType": "address", "name": "gasToken", "type": "address"},
+            // {
+            //   "internalType": "address payable",
+            //   "name": "refundReceiver",
+            //   "type": "address"
+            // },
+            // {"internalType": "bytes", "name": "signatures", "type": "bytes"}
           ],
-          "name": "calls",
-          "type": "tuple[]"
         }
       ],
       "name": "execTransaction",

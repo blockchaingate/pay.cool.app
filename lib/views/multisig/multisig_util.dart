@@ -42,10 +42,12 @@ class MultisigUtil {
     transaction,
     String signatures,
   ) {
-    String jsonData = '${Constants.exuctionAbiJson}';
-    var jsonList = json.decode(jsonData);
-    var abi = ContractABI.fromJson(List.from(jsonList));
-    var to = fixLengthV2(trimHexPrefix(transaction["to"]), 64);
+    var jsonAbi = Constants.exuctionAbiJson;
+    // var jsonData = json.decode(jsonAbi);
+    ;
+    log.e('jsonList $jsonAbi');
+    var abi = ContractABI.fromJson(jsonAbi);
+    var to = transaction["to"];
     debugPrint('to: $to');
     var value = transaction["value"] == "0x0" ? "0" : transaction["value"];
     value = fixLengthV2(value, 64);
@@ -78,20 +80,34 @@ class MultisigUtil {
     sig = Uint8List.fromList(hex.decode(sig));
     log.e('sig in bytes $sig');
     var call = ContractCall('execTransaction')
-      ..setCallParam('calls', [
-        [
-          to,
-          value,
-          data,
-          operation,
-          safeTxGas,
-          baseGas,
-          gasPrice,
-          gasToken,
-          refundReceiver,
-          sig
-        ],
-      ]);
+          ..setCallParam('to',
+              to) //0000000000000000000000008d65fc45de848e650490f1ffcd51c6baf52ea595
+        // ..setCallParam('value', value) //0000000000000000000000000000000000000000000000000000000000000000
+        // //[
+        // // 63, 175, 10, 102, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 140, 73, 98, 169, 189, 90, 191, 45, 178,
+        // // 40, 47, 135, 13, 219, 38, 217, 155, 238, 139, 253, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        // // 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        // // 0, 0, 0, 0, 0, 0, 0, 0, 0, 16, 218, 15, 106, 150, 193, 192, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        // // 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+        // // ]
+        // ..setCallParam('data', data)
+        // ..setCallParam('operation', operation)//0000000000000000000000000000000000000000000000000000000000000000
+        // ..setCallParam('safeTxGas', safeTxGas)//0000000000000000000000000000000000000000000000000000000000000000
+        // ..setCallParam('baseGas', baseGas)//0000000000000000000000000000000000000000000000000000000000000000
+        // ..setCallParam('gasPrice', gasPrice)//0000000000000000000000000000000000000000000000000000000000000000
+        // ..setCallParam('gasToken', gasToken)//0000000000000000000000000000000000000000000000000000000000000000
+        // ..setCallParam('refundReceiver', refundReceiver)//0000000000000000000000000000000000000000000000000000000000000000
+        // //[
+        // // 246, 64, 108, 193, 110, 94, 10, 229, 75, 47, 44, 107, 130, 193, 123, 1, 97, 142, 56, 85, 112, 204,
+        // // 15, 255, 136, 233, 112, 38, 150, 157, 213, 132, 22, 123, 234, 255, 62, 146, 238, 50, 202, 124, 234,
+        // // 102, 180, 178, 238, 33, 216, 4, 113, 245, 19, 14, 62, 138, 157, 61, 153, 72, 28, 26, 135, 101, 31,
+        // // 107, 253, 20, 153, 198, 197, 5, 190, 211, 126, 139, 210, 39, 71, 21, 160, 107, 228, 60, 77, 60, 71,
+        // // 125, 71, 47, 132, 94, 141, 175, 220, 94, 22, 46, 182, 124, 69, 48, 52, 199, 165, 158, 143, 15, 49,
+        // // 54, 70, 4, 182, 191, 146, 228, 214, 219, 31, 65, 166, 65, 249, 129, 32, 113, 30, 253, 109, 32
+        // // ]
+        // ..setCallParam('signatures', sig)
+        ;
+
     log.e('call $call');
     var finalAbi = hex.encode(call.toBinary(abi));
     log.w('finalAbi $finalAbi');
