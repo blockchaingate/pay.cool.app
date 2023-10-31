@@ -1146,27 +1146,27 @@ class ApiService {
     }
   }
 
-  Future<RegisterEmailViewModel?> registerWithEmail(
-      BuildContext context, param) async {
-    String url = "${paycoolBaseUrlV2}user/register/email";
-    var jsonBody = json.encode(param);
+  // Future<RegisterEmailViewModel?> registerWithEmail(
+  //     BuildContext context, param) async {
+  //   String url = "${paycoolBaseUrlV2}user/register/email";
+  //   var jsonBody = json.encode(param);
 
-    try {
-      var response =
-          await client.post(Uri.parse(url), body: jsonBody, headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      });
-      if (!jsonDecode(response.body)["success"]) {
-        callSMessage(context, jsonDecode(response.body)["message"]);
-        return null;
-      }
-      var json = jsonDecode(response.body)["data"];
-      return RegisterEmailViewModel.fromJson(json);
-    } catch (err) {
-      throw Exception(err);
-    }
-  }
+  //   try {
+  //     var response =
+  //         await client.post(Uri.parse(url), body: jsonBody, headers: {
+  //       'Content-Type': 'application/json',
+  //       'Accept': 'application/json',
+  //     });
+  //     if (!jsonDecode(response.body)["success"]) {
+  //       callSMessage(context, jsonDecode(response.body)["message"]);
+  //       return null;
+  //     }
+  //     var json = jsonDecode(response.body)["data"];
+  //     return RegisterEmailViewModel.fromJson(json);
+  //   } catch (err) {
+  //     throw Exception(err);
+  //   }
+  // }
 
   Future<BondLoginModel?> loginWithEmail(BuildContext context, param) async {
     String url = "${paycoolBaseUrlV2}user/login";
@@ -1230,29 +1230,29 @@ class ApiService {
     }
   }
 
-  Future<String?> sendEmail(BuildContext context) async {
-    String url = "${paycoolBaseUrlV2}user/sendEmailCode";
-    var token = storageService.bondToken;
-    if (token.isEmpty || token == '') {
-      return null;
-    } else {
-      try {
-        var response = await client.get(Uri.parse(url), headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'x-access-token': token,
-        });
-        if (!jsonDecode(response.body)["success"]) {
-          callSMessage(context, jsonDecode(response.body)["message"]);
-          return null;
-        }
-        var json = jsonDecode(response.body)["message"];
-        return json;
-      } catch (err) {
-        throw Exception(err);
-      }
-    }
-  }
+  // Future<String?> sendEmail(BuildContext context) async {
+  //   String url = "${paycoolBaseUrlV2}user/sendEmailCode";
+  //   var token = storageService.bondToken;
+  //   if (token.isEmpty || token == '') {
+  //     return null;
+  //   } else {
+  //     try {
+  //       var response = await client.get(Uri.parse(url), headers: {
+  //         'Content-Type': 'application/json',
+  //         'Accept': 'application/json',
+  //         'x-access-token': token,
+  //       });
+  //       if (!jsonDecode(response.body)["success"]) {
+  //         callSMessage(context, jsonDecode(response.body)["message"]);
+  //         return null;
+  //       }
+  //       var json = jsonDecode(response.body)["message"];
+  //       return json;
+  //     } catch (err) {
+  //       throw Exception(err);
+  //     }
+  //   }
+  // }
 
   Future<bool?> verifyEmail(BuildContext context, param) async {
     String url = "${paycoolBaseUrlV2}user/verifyEmail";
@@ -1567,6 +1567,68 @@ class ApiService {
       } catch (err) {
         throw Exception(err);
       }
+    }
+  }
+
+  Future<bool> registerV2(BuildContext context, String email) async {
+    String url = "${paycoolBaseUrlV2}user/V2/register?email=$email";
+
+    try {
+      var response = await client.get(Uri.parse(url), headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      });
+      if (!jsonDecode(response.body)["success"] ||
+          jsonDecode(response.body)["data"]['exists']) {
+        callSMessage(context, jsonDecode(response.body)["message"]);
+        return true;
+      }
+      var json = jsonDecode(response.body)["data"]['exists'];
+      return json;
+    } catch (err) {
+      throw Exception(err);
+    }
+  }
+
+  Future<String?> sendVerificationCode(
+      BuildContext context, String email) async {
+    String url = "${paycoolBaseUrlV2}user/V2/sendEmailCode?email=$email";
+
+    try {
+      var response = await client.get(Uri.parse(url), headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      });
+      if (!jsonDecode(response.body)["success"]) {
+        callSMessage(context, jsonDecode(response.body)["message"]);
+        return null;
+      }
+      var json = jsonDecode(response.body)["message"];
+      return json;
+    } catch (err) {
+      throw Exception(err);
+    }
+  }
+
+  Future<RegisterEmailViewModel?> registerWithEmail(
+      BuildContext context, param) async {
+    String url = "${paycoolBaseUrlV2}user/V2/register/email";
+    var jsonBody = json.encode(param);
+
+    try {
+      var response =
+          await client.post(Uri.parse(url), body: jsonBody, headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      });
+      if (!jsonDecode(response.body)["success"]) {
+        callSMessage(context, jsonDecode(response.body)["message"]);
+        return null;
+      }
+      var json = jsonDecode(response.body)["data"];
+      return RegisterEmailViewModel.fromJson(json);
+    } catch (err) {
+      throw Exception(err);
     }
   }
 }

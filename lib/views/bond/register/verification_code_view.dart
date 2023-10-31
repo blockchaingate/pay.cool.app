@@ -301,6 +301,24 @@ class _VerificationCodeViewState extends State<VerificationCodeView> {
                   );
 
                   try {
+                    if (!widget.justVerify) {
+                      RegisterEmailModel param = RegisterEmailModel(
+                        pidReferralCode: widget.data.pidReferralCode,
+                        deviceId: widget.data.deviceId,
+                        email: widget.data.email,
+                        password: widget.data.password,
+                        code: verifyEmailController.text,
+                      );
+
+                      await apiService.registerWithEmail(context, param).then(
+                        (value) async {
+                          if (value != null) {
+                            storageService.bondToken = value.token!;
+                          }
+                        },
+                      );
+                    }
+
                     await apiService
                         .verifyEmail(context, param)
                         .then((value) async {
@@ -442,20 +460,11 @@ class _VerificationCodeViewState extends State<VerificationCodeView> {
                         .verifyCaptcha(context, param)
                         .then((value) async {
                       if (value!) {
-                        await apiService
-                            .registerWithEmail(context, widget.data)
-                            .then(
-                          (value) async {
-                            if (value != null) {
-                              storageService.bondToken = value.token!;
-                              setState(() {
-                                _isFirstCard = !_isFirstCard;
-                              });
+                        setState(() {
+                          _isFirstCard = !_isFirstCard;
+                        });
 
-                              await sendConfirmationCode(context);
-                            }
-                          },
-                        );
+                        await sendConfirmationCode(context);
                       }
                     });
                   } catch (e) {
@@ -495,7 +504,7 @@ class _VerificationCodeViewState extends State<VerificationCodeView> {
 
   Future<void> sendConfirmationCode(BuildContext context,
       {bool isReset = false}) async {
-    apiService.sendEmail(context).then((value) {
+    apiService.sendVerificationCode(context, widget.data.email!).then((value) {
       if (value != null) {
         callSMessage(context, value, duration: 2);
         setState(() {

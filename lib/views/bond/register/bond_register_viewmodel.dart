@@ -70,18 +70,24 @@ class BondRegisterViewModel extends BaseViewModel {
           context!, FlutterI18n.translate(context!, "acceptTermsandConditions"),
           duration: 3);
     } else {
-      var param = RegisterEmailModel(
-          // deviceId: deviceId,
-          pidReferralCode: referralController.text,
-          email: emailController.text,
-          password: passwordController.text);
+      await ApiService()
+          .registerV2(context!, emailController.text)
+          .then((value) {
+        if (!value) {
+          var param = RegisterEmailModel(
+              deviceId: deviceId,
+              pidReferralCode: referralController.text,
+              email: emailController.text,
+              password: passwordController.text);
 
-      Navigator.push(
-          context!,
-          MaterialPageRoute(
-              builder: (context) => VerificationCodeView(
-                    data: param,
-                  )));
+          Navigator.push(
+              context!,
+              MaterialPageRoute(
+                  builder: (context) => VerificationCodeView(
+                        data: param,
+                      )));
+        }
+      });
     }
     setBusy(false);
   }
