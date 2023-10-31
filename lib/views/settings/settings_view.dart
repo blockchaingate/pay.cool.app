@@ -510,7 +510,7 @@ class SettingsContainer extends StatelessWidget {
             //     ),
             //   ),
             // ),
-            UIHelper.verticalSpaceSmall,
+            UIHelper.verticalSpaceMedium,
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 16),
               decoration: BoxDecoration(
