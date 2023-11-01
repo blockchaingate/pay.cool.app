@@ -414,7 +414,7 @@ class MoveToExchangeViewModel extends BaseViewModel {
             FlutterI18n.translate(context, "dialogManagerTypeSamePasswordNote"),
         buttonTitle: FlutterI18n.translate(context, "confirm"));
     if (res.confirmed) {
-      var seed;
+      Uint8List? seed;
       String mnemonic = res.returnedText;
       if (walletInfo.tickerName != 'TRX' && walletInfo.tickerName != 'USDTX') {
         seed = walletService.generateSeed(mnemonic);

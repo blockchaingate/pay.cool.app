@@ -6,7 +6,6 @@ import 'package:paycool/constants/route_names.dart';
 import 'package:paycool/logger.dart';
 import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/local_storage_service.dart';
-import 'package:paycool/services/navigation_service.dart';
 import 'package:paycool/services/shared_service.dart';
 import 'package:paycool/utils/number_util.dart';
 import 'package:paycool/views/paycool_club/club_dashboard_model.dart';

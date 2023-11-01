@@ -1,7 +1,5 @@
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
-import 'package:paycool/constants/constants.dart';
-import 'package:paycool/environments/environment.dart';
 import 'package:paycool/logger.dart';
 import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/coin_service.dart';
@@ -12,14 +10,11 @@ import 'package:paycool/services/wallet_service.dart';
 import 'package:paycool/utils/coin_util.dart';
 import 'package:paycool/utils/exaddr.dart';
 import 'package:paycool/utils/fab_util.dart';
-import 'package:paycool/utils/number_util.dart';
-import 'package:paycool/utils/string_util.dart';
 import 'package:paycool/views/multisig/dashboard/multisig_balance_model.dart';
 import 'package:paycool/views/multisig/multisig_util.dart';
 import 'package:paycool/views/multisig/multisig_wallet_model.dart';
 import 'package:paycool/views/multisig/transfer/multisig_transaction_hash_model.dart';
 import 'package:stacked/stacked.dart';
-import 'package:hex/hex.dart';
 import 'package:bip32/bip32.dart' as bip32;
 
 class MultisigTransferViewModel extends BaseViewModel {

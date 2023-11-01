@@ -93,7 +93,7 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
         },
         builder: (context, WalletDashboardViewModel model, child) {
           return AnnotatedRegion<SystemUiOverlayStyle>(
-            value: SystemUiOverlayStyle.light,
+            value: SystemUiOverlayStyle.dark,
             child: WillPopScope(
               onWillPop: () {
                 model.onBackButtonPressed();

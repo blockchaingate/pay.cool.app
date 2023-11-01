@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:bitbox/bitbox.dart' as bitbox;
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:flutter/material.dart';
-import 'package:kyc/kyc.dart';
 import 'package:observable_ish/observable_ish.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'dart:async';

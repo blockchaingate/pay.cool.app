@@ -11,12 +11,9 @@
 *----------------------------------------------------------------------
 */
 
-import 'dart:convert';
 import 'dart:io';
 
-import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:kyc/kyc.dart';
 import 'package:local_auth/local_auth.dart';

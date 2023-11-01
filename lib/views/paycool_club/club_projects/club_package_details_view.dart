@@ -7,7 +7,6 @@ import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/constants/route_names.dart';
 import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/local_storage_service.dart';
-import 'package:paycool/services/navigation_service.dart';
 import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/views/paycool_club/club_projects/models/club_project_model.dart';
 import 'package:stacked_services/stacked_services.dart';

@@ -21,7 +21,6 @@ import 'package:paycool/services/api_service.dart';
 import 'package:paycool/services/coin_service.dart';
 import 'package:paycool/services/db/token_list_database_service.dart';
 import 'package:paycool/services/local_storage_service.dart';
-import 'package:paycool/services/navigation_service.dart';
 import 'package:paycool/services/shared_service.dart';
 import 'package:paycool/services/wallet_service.dart';
 import 'package:flutter/material.dart';

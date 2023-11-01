@@ -44,7 +44,6 @@ class MultisigUtil {
   ) {
     var jsonAbi = Constants.exuctionAbiJson;
     // var jsonData = json.decode(jsonAbi);
-    ;
     log.e('jsonList $jsonAbi');
     var abi = ContractABI.fromJson(jsonAbi);
     var to = transaction["to"];
@@ -109,6 +108,8 @@ class MultisigUtil {
         ;
 
     log.e('call $call');
+    var toBinary = call.toBinary(abi);
+    log.w('toBinary $toBinary');
     var finalAbi = hex.encode(call.toBinary(abi));
     log.w('finalAbi $finalAbi');
   }
@@ -133,7 +134,7 @@ class MultisigUtil {
       //   rsvSig['s'],
       // );
 
-      final recoveredAddress = '';
+      const recoveredAddress = '';
       //bufferToHex(pubToAddress(recoveredData));
       hasPrefix = !sameString(recoveredAddress, ownerAddress);
     } catch (e) {

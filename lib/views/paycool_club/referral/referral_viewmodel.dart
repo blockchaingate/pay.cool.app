@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:pagination_widget/pagination_widget.dart';
 import 'package:paycool/logger.dart';
 import 'package:paycool/service_locator.dart';
-import 'package:paycool/services/navigation_service.dart';
 import 'package:paycool/services/shared_service.dart';
 import 'package:paycool/views/paycool_club/club_dashboard_model.dart';
 import 'package:paycool/views/paycool_club/referral/referral_model.dart';

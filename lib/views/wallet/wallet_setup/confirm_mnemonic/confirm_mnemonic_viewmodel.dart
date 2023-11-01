@@ -21,7 +21,6 @@ import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/constants/route_names.dart';
 import 'package:paycool/environments/environment_type.dart';
 import 'package:paycool/service_locator.dart';
-import 'package:paycool/services/navigation_service.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 

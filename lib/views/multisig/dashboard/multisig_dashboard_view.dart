@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:paycool/constants/api_routes.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
@@ -9,7 +8,6 @@ import 'package:paycool/utils/exaddr.dart';
 import 'package:paycool/utils/string_util.dart';
 import 'package:paycool/views/multisig/multisig_util.dart';
 import 'package:paycool/views/multisig/transactions/history_queue_view.dart';
-import 'package:paycool/views/multisig/transfer/mutlisig_transfer_view.dart';
 import 'package:paycool/views/settings/settings_view.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';

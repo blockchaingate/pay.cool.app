@@ -28,7 +28,6 @@ import 'package:hex/hex.dart';
 //import '../packages/bip32/bip32_base.dart' as bip32;
 
 //import '../packages/bip32/utils/ecurve.dart' as ecc;
-import 'package:hex/hex.dart';
 import '../utils/string_util.dart';
 import '../environments/environment.dart';
 import './btc_util.dart';
@@ -707,7 +706,7 @@ signedMessage(
     // var signedMessOrig = await credentials
     //    .signPersonalMessage(stringToUint8List(originalMessage), chainId: chainId);
 
-    signedMess = await signPersonalMessageWith(Constants.EthMessagePrefix,
+    signedMess = signPersonalMessageWith(Constants.EthMessagePrefix,
         privateKey!, stringToUint8List(originalMessage),
         chainId: chainId);
     String ss = HEX.encode(signedMess);
@@ -743,7 +742,7 @@ signedMessage(
     // var signedMessOrig = await credentials
     //    .signPersonalMessage(stringToUint8List(originalMessage), chainId: chainId);
 
-    signedMess = await signPersonalMessageWith(Constants.EthMessagePrefix,
+    signedMess = signPersonalMessageWith(Constants.EthMessagePrefix,
         privateKey!, stringToUint8List(originalMessage),
         chainId: chainId);
     String ss = HEX.encode(signedMess);

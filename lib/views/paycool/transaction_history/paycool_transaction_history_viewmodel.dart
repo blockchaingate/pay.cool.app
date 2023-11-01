@@ -134,7 +134,7 @@ class PayCoolTransactionHistoryViewModel extends FutureViewModel {
         //  var nonce = await getNonce(exgAddress);
         try {
           signature =
-              await signHashKanbanMessage(seed, hash, isMsgSignatureType: true);
+              signHashKanbanMessage(seed, hash, isMsgSignatureType: true);
 
           log.i(' KanbanHex signature $signature');
         } catch (err) {

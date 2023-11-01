@@ -14,8 +14,8 @@ dependency_overrides:
   encrypt: 5.0.1
 
   image_picker_android: 0.8.4+13
-  # kyc:
-  #   path: "../exchangily-packages/kyc"
+  kyc:
+    path: "../exchangily-packages/kyc"
   # eth_abi_codec:
   #    path: "../exchangily-packages/open_source_packages/dart_eth_abi_codec"
 
@@ -72,6 +72,7 @@ dependencies:
     git:
       url: https://github.com/blockchaingate/exchangily-packages.git
       path: kyc
+      ref: main
   launch_review: ^3.0.1
   local_auth: ^2.1.6
   logger: ^1.1.0
