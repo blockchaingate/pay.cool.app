@@ -130,7 +130,9 @@ class _VerificationCodeViewState extends State<VerificationCodeView> {
                     children: [
                       UIHelper.verticalSpaceLarge,
                       Text(
-                        FlutterI18n.translate(context, "verifyCapital"),
+                        _isFirstCard
+                            ? FlutterI18n.translate(context, "verifyCaptcha")
+                            : FlutterI18n.translate(context, "verify"),
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             decoration: TextDecoration.none,
@@ -451,7 +453,7 @@ class _VerificationCodeViewState extends State<VerificationCodeView> {
 
                 if (verifyCaptchaController.text.isNotEmpty) {
                   var param = VerifyCaptchaModel(
-                    captchaResponse: verifyCaptchaController.text,
+                    captchaResponse: verifyCaptchaController.text.toLowerCase(),
                     email: widget.data.email,
                   );
 

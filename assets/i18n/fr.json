@@ -698,7 +698,7 @@
     "iHaveReadandAgree": "J'ai lu et j'accepte l'Accord de Service de la Plateforme Adifa ainsi que l'Avis Légal et la Politique de Confidentialité",
     "passwordandRepeatPassword": "Le mot de passe et la répétition du mot de passe doivent être identiques",
     "acceptTermsandConditions": "Accepter les termes et conditions",
-    "verifyCapital": "Vérifier le capital",
+    "verifyCaptcha": "Vérifier le Captcha",
     "sendTo": "Envoyer à",
     "didntReceiveCode": "Vous n'avez pas reçu le code?",
     "validationCode": "Code de Validation",

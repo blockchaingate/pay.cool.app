@@ -698,7 +698,7 @@
     "iHaveReadandAgree": "私はアディファプラットフォームのサービス契約、法的通知、およびプライバシーポリシーを読み、同意しました",
     "passwordandRepeatPassword": "パスワードと繰り返しパスワードは同じである必要があります",
     "acceptTermsandConditions": "利用規約を承諾する",
-    "verifyCapital": "資本を確認する",
+    "verifyCaptcha": "キャプチャの検証",
     "sendTo": "送信先",
     "didntReceiveCode": "コードが届かない場合",
     "validationCode": "検証コード",

@@ -1146,28 +1146,6 @@ class ApiService {
     }
   }
 
-  // Future<RegisterEmailViewModel?> registerWithEmail(
-  //     BuildContext context, param) async {
-  //   String url = "${paycoolBaseUrlV2}user/register/email";
-  //   var jsonBody = json.encode(param);
-
-  //   try {
-  //     var response =
-  //         await client.post(Uri.parse(url), body: jsonBody, headers: {
-  //       'Content-Type': 'application/json',
-  //       'Accept': 'application/json',
-  //     });
-  //     if (!jsonDecode(response.body)["success"]) {
-  //       callSMessage(context, jsonDecode(response.body)["message"]);
-  //       return null;
-  //     }
-  //     var json = jsonDecode(response.body)["data"];
-  //     return RegisterEmailViewModel.fromJson(json);
-  //   } catch (err) {
-  //     throw Exception(err);
-  //   }
-  // }
-
   Future<BondLoginModel?> loginWithEmail(BuildContext context, param) async {
     String url = "${paycoolBaseUrlV2}user/login";
     var jsonBody = json.encode(param);
@@ -1229,30 +1207,6 @@ class ApiService {
       throw Exception(err);
     }
   }
-
-  // Future<String?> sendEmail(BuildContext context) async {
-  //   String url = "${paycoolBaseUrlV2}user/sendEmailCode";
-  //   var token = storageService.bondToken;
-  //   if (token.isEmpty || token == '') {
-  //     return null;
-  //   } else {
-  //     try {
-  //       var response = await client.get(Uri.parse(url), headers: {
-  //         'Content-Type': 'application/json',
-  //         'Accept': 'application/json',
-  //         'x-access-token': token,
-  //       });
-  //       if (!jsonDecode(response.body)["success"]) {
-  //         callSMessage(context, jsonDecode(response.body)["message"]);
-  //         return null;
-  //       }
-  //       var json = jsonDecode(response.body)["message"];
-  //       return json;
-  //     } catch (err) {
-  //       throw Exception(err);
-  //     }
-  //   }
-  // }
 
   Future<bool?> verifyEmail(BuildContext context, param) async {
     String url = "${paycoolBaseUrlV2}user/verifyEmail";
@@ -1564,6 +1518,60 @@ class ApiService {
           return null;
         }
         return jsonDecode(response.body)["success"];
+      } catch (err) {
+        throw Exception(err);
+      }
+    }
+  }
+
+  Future<String?> sendPhoneCode(
+      BuildContext context, String countryOfResidency, String phone) async {
+    String url = "${paycoolBaseUrlV2}user/sendPhoneCode";
+    var param = {"countryOfResidency": countryOfResidency, "phone": phone};
+    var jsonBody = json.encode(param);
+    var token = storageService.bondToken;
+    if (token.isEmpty || token == '') {
+      return null;
+    } else {
+      try {
+        var response =
+            await client.post(Uri.parse(url), body: jsonBody, headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'x-access-token': token,
+        });
+        if (!jsonDecode(response.body)["success"]) {
+          callSMessage(context, jsonDecode(response.body)["message"]);
+          return null;
+        }
+        return jsonDecode(response.body)["message"];
+      } catch (err) {
+        throw Exception(err);
+      }
+    }
+  }
+
+  Future<String?> verifyPhone(
+      BuildContext context, String phone, String phoneCode) async {
+    String url = "${paycoolBaseUrlV2}user/sendPhoneCode";
+    var param = {"phone": phone, "phoneCode": phoneCode};
+    var jsonBody = json.encode(param);
+    var token = storageService.bondToken;
+    if (token.isEmpty || token == '') {
+      return null;
+    } else {
+      try {
+        var response =
+            await client.post(Uri.parse(url), body: jsonBody, headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'x-access-token': token,
+        });
+        if (!jsonDecode(response.body)["success"]) {
+          callSMessage(context, jsonDecode(response.body)["message"]);
+          return null;
+        }
+        return jsonDecode(response.body)["message"];
       } catch (err) {
         throw Exception(err);
       }

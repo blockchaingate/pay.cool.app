@@ -698,7 +698,7 @@
     "iHaveReadandAgree": "我已阅读并同意Adifa平台服务协议、法律声明和隐私政策",
     "passwordandRepeatPassword": "密码和重复密码必须相同",
     "acceptTermsandConditions": "接受条款和条件",
-    "verifyCapital": "验证资金",
+    "verifyCaptcha": "验证验证码",
     "sendTo": "发送到",
     "didntReceiveCode": "没有收到验证码？",
     "validationCode": "验证码",

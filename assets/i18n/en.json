@@ -699,7 +699,7 @@
     "iHaveReadandAgree": "I have read and agree to the Adifa Platform Service Agreement and Legal Notice and Privacy Policy",
     "passwordandRepeatPassword": "Password and Repeat Password must be same",
     "acceptTermsandConditions": "Accept terms and conditions",
-    "verifyCapital": "Verify Capital",
+    "verifyCaptcha": "Verify Captcha",
     "sendTo": "Send to",
     "didntReceiveCode": "Didn't receive code?",
     "validationCode": "Validation Code",

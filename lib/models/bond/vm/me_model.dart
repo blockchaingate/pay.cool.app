@@ -1,18 +1,20 @@
 import 'dart:convert';
 
-BondMeModel bondMeVmFromJson(String str) =>
+BondMeModel bondMeModelFromJson(String str) =>
     BondMeModel.fromJson(json.decode(str));
 
-String bondMeVmToJson(BondMeModel data) => json.encode(data.toJson());
+String bondMeModelToJson(BondMeModel data) => json.encode(data.toJson());
 
 class BondMeModel {
   String? userid;
   int? kycLevel;
   String? email;
+  bool? isEmailVerified;
+  String? phone;
+  bool? isPhoneVerified;
   String? referralCode;
   int? level1ReferralCount;
   int? level2ReferralCount;
-  bool? isVerifiedEmail;
   String? role;
   DateTime? createdAt;
 
@@ -20,10 +22,12 @@ class BondMeModel {
     this.userid,
     this.kycLevel,
     this.email,
+    this.isEmailVerified,
+    this.phone,
+    this.isPhoneVerified,
     this.referralCode,
     this.level1ReferralCount,
     this.level2ReferralCount,
-    this.isVerifiedEmail,
     this.role,
     this.createdAt,
   });
@@ -32,10 +36,12 @@ class BondMeModel {
         userid: json["userid"],
         kycLevel: json["kyc_level"],
         email: json["email"],
+        isEmailVerified: json["isEmailVerified"],
+        phone: json["phone"],
+        isPhoneVerified: json["isPhoneVerified"],
         referralCode: json["referral_code"],
         level1ReferralCount: json["level1_referral_count"],
         level2ReferralCount: json["level2_referral_count"],
-        isVerifiedEmail: json["isVerifiedEmail"],
         role: json["role"],
         createdAt: json["created_at"] == null
             ? null
@@ -46,10 +52,12 @@ class BondMeModel {
         "userid": userid,
         "kyc_level": kycLevel,
         "email": email,
+        "isEmailVerified": isEmailVerified,
+        "phone": phone,
+        "isPhoneVerified": isPhoneVerified,
         "referral_code": referralCode,
         "level1_referral_count": level1ReferralCount,
         "level2_referral_count": level2ReferralCount,
-        "isVerifiedEmail": isVerifiedEmail,
         "role": role,
         "created_at": createdAt?.toIso8601String(),
       };

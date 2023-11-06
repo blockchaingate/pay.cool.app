@@ -35,17 +35,6 @@ class BondLoginViewModel extends BaseViewModel with WidgetsBindingObserver {
     super.dispose();
   }
 
-  // @override
-  // void didChangeMetrics() {
-  //   final mediaQuery = MediaQuery.of(context!);
-  //   final keyboardHeight = mediaQuery.viewInsets.bottom;
-
-  //   isKeyboardOpen = keyboardHeight > 1;
-
-  //   notifyListeners();
-  //   super.didChangeMetrics();
-  // }
-
   Future<void> login() async {
     setBusy(true);
     try {
@@ -60,7 +49,7 @@ class BondLoginViewModel extends BaseViewModel with WidgetsBindingObserver {
         final BondLoginModel? result =
             await apiService.loginWithEmail(context!, param);
         if (result != null) {
-          if (result.isVerifiedEmail == true) {
+          if (result.isEmailVerified == true) {
             storageService.bondToken = result.token!;
 
             navigationService.navigateTo(DashboardViewRoute);

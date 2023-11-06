@@ -698,7 +698,7 @@
   "iHaveReadandAgree": "Adifa Platformu Hizmet Anlaşması ve Hukuki Bildirim ile Gizlilik Politikasını okudum ve kabul ediyorum",
   "passwordandRepeatPassword": "Parola ve Tekrar Parola aynı olmalıdır",
   "acceptTermsandConditions": "Şartlar ve Koşulları Kabul Ediyorum",
-  "verifyCapital": "Sermeyi Doğrula",
+  "verifyCaptcha": "Captcha Doğrula",
   "sendTo": "Gönder",
   "didntReceiveCode": "Kodu almadınız mı?",
   "validationCode": "Doğrulama Kodu",

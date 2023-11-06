@@ -43,7 +43,7 @@ class WalletConnectViewModel extends BaseViewModel {
 
   final Queue<SessionRequestEvent> _requestQueue = Queue<SessionRequestEvent>();
 
-  init() async {
+  init() {
     setWalletConnect();
   }
 
@@ -72,6 +72,7 @@ class WalletConnectViewModel extends BaseViewModel {
             icons: []));
 
     web3Wallet!.onSessionProposal.subscribe(_onSessionProposal);
+    web3Wallet!.onSessionRequest.subscribe(_onSessionRequest);
     web3Wallet!.registerRequestHandler(
         chainId: "eip155:211",
         method: "kanban_sendTransaction",
@@ -84,7 +85,6 @@ class WalletConnectViewModel extends BaseViewModel {
         chainId: "eip155:56",
         method: "eth_sendTransaction",
         handler: signRequestHandler);
-    web3Wallet!.onSessionRequest.subscribe(_onSessionRequest);
   }
 
   void _onSessionProposal(SessionProposalEvent? args) async {
@@ -209,7 +209,6 @@ class WalletConnectViewModel extends BaseViewModel {
       } else {
         setBusy(false);
         _requestQueue.clear();
-        debugPrint('User did not approve.');
       }
     } catch (e) {
       setBusy(false);
@@ -247,23 +246,23 @@ class WalletConnectViewModel extends BaseViewModel {
   }
 
   Future<void> handleConnect() async {
-    var chains = proposal!.params.requiredNamespaces["eip155"]!.chains;
-    var methods = proposal!.params.requiredNamespaces["eip155"]!.methods;
-    var events = proposal!.params.requiredNamespaces["eip155"]!.events;
-
-    List<String>? accounts = [];
-
-    for (var i = 0; i < chains!.length; i++) {
-      if (chains[i].contains("eip155:1")) {
-        accounts.add("${chains[i]}:$ethAddress");
-      } else if (chains[i].contains("eip155:211")) {
-        accounts.add("${chains[i]}:$fabAddress");
-      } else if (chains[i].contains("eip155:56")) {
-        accounts.add("${chains[i]}:$ethAddress");
-      }
-    }
-
     try {
+      var chains = proposal!.params.requiredNamespaces["eip155"]!.chains;
+      var methods = proposal!.params.requiredNamespaces["eip155"]!.methods;
+      var events = proposal!.params.requiredNamespaces["eip155"]!.events;
+
+      List<String>? accounts = [];
+
+      for (var i = 0; i < chains!.length; i++) {
+        if (chains[i].contains("eip155:1")) {
+          accounts.add("${chains[i]}:$ethAddress");
+        } else if (chains[i].contains("eip155:211")) {
+          accounts.add("${chains[i]}:$fabAddress");
+        } else if (chains[i].contains("eip155:56")) {
+          accounts.add("${chains[i]}:$ethAddress");
+        }
+      }
+
       Map<String, Namespace> namespaces = {};
       for (var key in proposal!.params.requiredNamespaces.keys) {
         final namespace = Namespace(
@@ -279,7 +278,7 @@ class WalletConnectViewModel extends BaseViewModel {
     } catch (e) {
       ScaffoldMessenger.of(context!).showSnackBar(
         SnackBar(
-          content: Text("Check QR Code, its not valid"),
+          content: Text("Check QR Code, its not valid $e"),
         ),
       );
       isConnected = false;
@@ -293,5 +292,8 @@ class WalletConnectViewModel extends BaseViewModel {
     }
   }
 
-  Future<void> signRequestHandler(String topic, dynamic parameters) async {}
+  Future<void> signRequestHandler(String topic, dynamic parameters) async {
+    print(topic);
+    print(parameters);
+  }
 }
