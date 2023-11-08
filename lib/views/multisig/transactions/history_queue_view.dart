@@ -284,7 +284,7 @@ class MultisigHistoryQueueView extends StatelessWidget {
                                                 ),
                                                 trailing: Column(
                                                   mainAxisSize:
-                                                      MainAxisSize.min,
+                                                      MainAxisSize.max,
                                                   mainAxisAlignment:
                                                       MainAxisAlignment.start,
                                                   crossAxisAlignment:
@@ -308,6 +308,7 @@ class MultisigHistoryQueueView extends StatelessWidget {
                                                             model.queue[index])
                                                         ? SizedBox(
                                                             width: 110,
+                                                            height: 36,
                                                             child: model
                                                                     .pendingExecution
                                                                 ? ElevatedButton(
@@ -348,29 +349,38 @@ class MultisigHistoryQueueView extends StatelessWidget {
                                                         : model.isShowApproveButton(
                                                                 model.queue[
                                                                     index])
-                                                            ? ElevatedButton(
-                                                                style: ButtonStyle(
-                                                                    backgroundColor:
-                                                                        MaterialStateProperty.all(
-                                                                            primaryColor)),
-                                                                onPressed: () {
-                                                                  model.approveTransaction(
-                                                                      model.queue[
-                                                                          index],
-                                                                      context);
-                                                                },
-                                                                child: Text(
-                                                                    'Approve'),
+                                                            ? SizedBox(
+                                                                height: 36,
+                                                                child:
+                                                                    ElevatedButton(
+                                                                  style: ButtonStyle(
+                                                                      backgroundColor:
+                                                                          MaterialStateProperty.all(
+                                                                              primaryColor)),
+                                                                  onPressed:
+                                                                      () {
+                                                                    model.approveTransaction(
+                                                                        model.queue[
+                                                                            index],
+                                                                        context);
+                                                                  },
+                                                                  child: Text(
+                                                                      'Approve'),
+                                                                ),
                                                               )
-                                                            : ElevatedButton(
-                                                                style: ButtonStyle(
-                                                                    backgroundColor:
-                                                                        MaterialStateProperty.all(
-                                                                            grey)),
-                                                                onPressed:
-                                                                    () {},
-                                                                child: Text(
-                                                                    'Approve'),
+                                                            : SizedBox(
+                                                                height: 36,
+                                                                child:
+                                                                    ElevatedButton(
+                                                                  style: ButtonStyle(
+                                                                      backgroundColor:
+                                                                          MaterialStateProperty.all(
+                                                                              grey)),
+                                                                  onPressed:
+                                                                      () {},
+                                                                  child: Text(
+                                                                      'Approve'),
+                                                                ),
                                                               ),
                                                   ],
                                                 ),

@@ -167,10 +167,7 @@ class MultisigHistoryQueueViewModel extends FutureViewModel {
       log.w('signatures $signatures');
 
       var abiHex = MultisigUtil.encodeContractCall(transaction, signatures);
-      if (true) {
-        setBusy(false);
-        return;
-      }
+
       String gasPriceString =
           environment['chains'][chain]['gasPrice'].toString();
 
@@ -201,12 +198,13 @@ class MultisigHistoryQueueViewModel extends FutureViewModel {
       var txKanbanHex = await signAbiHexWithPrivateKey(
         abiHex,
         HEX.encode(keyPairKanban["privateKey"]),
-        environment["chains"][chain.toUpperCase()]["Safes"]["SafeProxyFactory"],
+        multisigData["address"],
         nonce,
         int.parse(gasPriceString),
         gas,
       );
 
+      log.w('txKanbanHex $txKanbanHex');
       var executionBody = {
         "_id": currentQueue["_id"],
         "chain": chain,

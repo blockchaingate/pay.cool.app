@@ -1,6 +1,6 @@
 name: paycool
 description: Crypto payment application
-version: 2.4.150+225
+version: 2.4.151+226
 
 publish_to: "none"
 
@@ -16,8 +16,8 @@ dependency_overrides:
   image_picker_android: 0.8.4+13
   kyc:
     path: "../exchangily-packages/kyc"
-  # eth_abi_codec:
-  #    path: "../exchangily-packages/open_source_packages/dart_eth_abi_codec"
+  eth_abi_codec:
+     path: "../exchangily-packages/open_source_packages/dart_eth_abi_codec"
 
 dependencies:
 
