@@ -1553,7 +1553,7 @@ class ApiService {
 
   Future<String?> verifyPhone(
       BuildContext context, String phone, String phoneCode) async {
-    String url = "${paycoolBaseUrlV2}user/sendPhoneCode";
+    String url = "${paycoolBaseUrlV2}user/verifyPhone";
     var param = {"phone": phone, "phoneCode": phoneCode};
     var jsonBody = json.encode(param);
     var token = storageService.bondToken;

@@ -24,6 +24,7 @@ import 'package:paycool/services/local_storage_service.dart';
 import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/views/bond/buyBond/bond_symbol_view.dart';
 import 'package:paycool/views/bond/login/login_view.dart';
+import 'package:paycool/views/bond/personalInfo/personal_view.dart';
 // import 'package:paycool/views/bond/personalInfo/personal_view.dart';
 import 'package:paycool/views/bond/register/bond_register_view.dart';
 import 'package:paycool/views/bond/txHistory/bond_history_view.dart';
@@ -908,20 +909,20 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
                                   icon: Icon(Icons.history),
                                 ),
                               ),
-                              // Padding(
-                              //   padding: const EdgeInsets.only(right: 10),
-                              //   child: IconButton(
-                              //     alignment: Alignment.topRight,
-                              //     onPressed: () {
-                              //       Navigator.push(
-                              //           context,
-                              //           MaterialPageRoute(
-                              //               builder: (context) =>
-                              //                   const PersonalInfoView()));
-                              //     },
-                              //     icon: Icon(Icons.person),
-                              //   ),
-                              // ),
+                              Padding(
+                                padding: const EdgeInsets.only(right: 10),
+                                child: IconButton(
+                                  alignment: Alignment.topRight,
+                                  onPressed: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                const PersonalInfoView()));
+                                  },
+                                  icon: Icon(Icons.person),
+                                ),
+                              ),
                             ],
                           ),
                         ],

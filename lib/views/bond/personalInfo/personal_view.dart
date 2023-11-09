@@ -46,6 +46,13 @@ class _PersonalInfoViewState extends State<PersonalInfoView> {
                     backgroundColor: Colors.transparent,
                     elevation: 0,
                     systemOverlayStyle: SystemUiOverlayStyle.light,
+                    title: Text(
+                      FlutterI18n.translate(context, "personalInfo"),
+                      style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white),
+                    ),
                     leading: IconButton(
                       icon: Icon(
                         Icons.arrow_back_ios,
@@ -65,19 +72,188 @@ class _PersonalInfoViewState extends State<PersonalInfoView> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                UIHelper.verticalSpaceLarge,
+                                Container(
+                                  padding: EdgeInsets.all(10),
+                                  width: size.width,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: Colors.white,
+                                    ),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        FlutterI18n.translate(context, "email"),
+                                        style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white38),
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            model.bondMeVm!.email!,
+                                            style: TextStyle(
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.white),
+                                          ),
+                                          SizedBox(
+                                            width: size.width * 0.35,
+                                            child: RichText(
+                                              textAlign: TextAlign.start,
+                                              text: TextSpan(
+                                                text:
+                                                    "${FlutterI18n.translate(context, "status")}:  ",
+                                                style: TextStyle(
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.white),
+                                                children: <TextSpan>[
+                                                  TextSpan(
+                                                    text: model.bondMeVm!
+                                                            .isEmailVerified!
+                                                        ? FlutterI18n.translate(
+                                                            context, "verified")
+                                                        : FlutterI18n.translate(
+                                                            context,
+                                                            "notVerified"),
+                                                    style: TextStyle(
+                                                      color: model.bondMeVm!
+                                                              .isEmailVerified!
+                                                          ? Colors.green
+                                                          : Colors.red,
+                                                      fontSize: 12,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      if (!model.bondMeVm!.isEmailVerified!)
+                                        Align(
+                                          alignment: Alignment.center,
+                                          child: TextButton(
+                                            onPressed: () {},
+                                            child: Text(
+                                              FlutterI18n.translate(
+                                                  context, "verify"),
+                                              style: TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.blue),
+                                            ),
+                                          ),
+                                        ),
+                                    ],
+                                  ),
+                                ),
+                                UIHelper.verticalSpaceMedium,
+                                Container(
+                                  padding: EdgeInsets.all(10),
+                                  width: size.width,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: Colors.white,
+                                    ),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        FlutterI18n.translate(
+                                            context, "phoneNumber"),
+                                        style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white38),
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            model.bondMeVm!.phone!,
+                                            style: TextStyle(
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.white),
+                                          ),
+                                          SizedBox(
+                                            width: size.width * 0.35,
+                                            child: RichText(
+                                              text: TextSpan(
+                                                text:
+                                                    "${FlutterI18n.translate(context, "status")}:  ",
+                                                style: TextStyle(
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.white),
+                                                children: <TextSpan>[
+                                                  TextSpan(
+                                                    text: model.bondMeVm!
+                                                            .isPhoneVerified!
+                                                        ? FlutterI18n.translate(
+                                                            context, "verified")
+                                                        : FlutterI18n.translate(
+                                                            context,
+                                                            "notVerified"),
+                                                    style: TextStyle(
+                                                      color: model.bondMeVm!
+                                                              .isPhoneVerified!
+                                                          ? Colors.green
+                                                          : Colors.red,
+                                                      fontSize: 12,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      if (!model.bondMeVm!.isPhoneVerified!)
+                                        Align(
+                                          alignment: Alignment.center,
+                                          child: TextButton(
+                                            onPressed: () {
+                                              model.showBottomSheet();
+                                            },
+                                            child: Text(
+                                              FlutterI18n.translate(
+                                                  context, "verify"),
+                                              style: TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.blue),
+                                            ),
+                                          ),
+                                        ),
+                                    ],
+                                  ),
+                                ),
+                                UIHelper.verticalSpaceLarge,
                                 Text(
-                                  FlutterI18n.translate(
-                                      context, "personalInfo"),
+                                  "KYC",
                                   style: TextStyle(
                                       fontSize: 20,
                                       fontWeight: FontWeight.bold,
                                       color: Colors.white),
                                 ),
-                                UIHelper.verticalSpaceLarge,
+                                UIHelper.verticalSpaceMedium,
                                 Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 10),
+                                  padding: EdgeInsets.all(10),
                                   width: size.width,
-                                  height: 50,
                                   decoration: BoxDecoration(
                                     border: Border.all(
                                       color: Colors.white,
@@ -86,50 +262,53 @@ class _PersonalInfoViewState extends State<PersonalInfoView> {
                                   ),
                                   child: Row(
                                     mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                        MainAxisAlignment.spaceAround,
                                     children: [
-                                      Text(
-                                        "${FlutterI18n.translate(context, "email")}: ${model.bondMeVm!.email!}",
-                                        style: TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.white),
+                                      Column(
+                                        children: [
+                                          Text(
+                                            FlutterI18n.translate(
+                                                context, "L1"),
+                                            style: TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.white),
+                                          ),
+                                          UIHelper.verticalSpaceSmall,
+                                          Text(
+                                            model.bondMeVm!
+                                                        .level2ReferralCount! ==
+                                                    0
+                                                ? FlutterI18n.translate(
+                                                    context, "notCertifeid")
+                                                : FlutterI18n.translate(
+                                                    context, "Certifeid"),
+                                            style: TextStyle(
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.white),
+                                          ),
+                                        ],
                                       ),
-                                      model.bondMeVm!.isEmailVerified!
-                                          ? Icon(
-                                              Icons.verified,
-                                              color: Colors.green,
-                                            )
-                                          : InkWell(
-                                              onTap: () {
-                                                print("go to verify email");
-                                              },
-                                              child: Container(
-                                                padding: EdgeInsets.all(5),
-                                                decoration: BoxDecoration(
-                                                  border: Border.all(
-                                                    color: Colors.white,
-                                                  ),
-                                                ),
-                                                child: Text(
-                                                  FlutterI18n.translate(
-                                                      context, "verify"),
-                                                  style: TextStyle(
-                                                      fontSize: 16,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: Colors.white),
-                                                ),
-                                              ),
-                                            )
+                                      SizedBox(
+                                        width: size.width * 0.3,
+                                        child: Text(
+                                          "Personal Information Authentication",
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.white38),
+                                        ),
+                                      ),
+                                      SizedBox()
                                     ],
                                   ),
                                 ),
-                                UIHelper.verticalSpaceLarge,
+                                UIHelper.verticalSpaceMedium,
                                 Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 10),
+                                  padding: EdgeInsets.all(10),
                                   width: size.width,
-                                  height: 50,
                                   decoration: BoxDecoration(
                                     border: Border.all(
                                       color: Colors.white,
@@ -138,69 +317,47 @@ class _PersonalInfoViewState extends State<PersonalInfoView> {
                                   ),
                                   child: Row(
                                     mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                        MainAxisAlignment.spaceAround,
                                     children: [
-                                      Text(
-                                        "${FlutterI18n.translate(context, "phoneNumber")}: ${model.bondMeVm!.phone!}",
-                                        style: TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.white),
+                                      Column(
+                                        children: [
+                                          Text(
+                                            FlutterI18n.translate(
+                                                context, "L2"),
+                                            style: TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.white),
+                                          ),
+                                          UIHelper.verticalSpaceSmall,
+                                          Text(
+                                            model.bondMeVm!
+                                                        .level2ReferralCount! ==
+                                                    0
+                                                ? FlutterI18n.translate(
+                                                    context, "notCertifeid")
+                                                : FlutterI18n.translate(
+                                                    context, "Certifeid"),
+                                            style: TextStyle(
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.white),
+                                          ),
+                                        ],
                                       ),
-                                      model.bondMeVm!.isPhoneVerified!
-                                          ? Icon(
-                                              Icons.verified,
-                                              color: Colors.green,
-                                            )
-                                          : InkWell(
-                                              onTap: () {
-                                                model.showBottomSheet();
-                                              },
-                                              child: Container(
-                                                padding: EdgeInsets.all(5),
-                                                decoration: BoxDecoration(
-                                                  border: Border.all(
-                                                    color: Colors.white,
-                                                  ),
-                                                ),
-                                                child: Text(
-                                                  FlutterI18n.translate(
-                                                      context, "verify"),
-                                                  style: TextStyle(
-                                                      fontSize: 16,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: Colors.white),
-                                                ),
-                                              ),
-                                            )
+                                      SizedBox(
+                                        width: size.width * 0.3,
+                                        child: Text(
+                                          "Address Authentication",
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.white38),
+                                        ),
+                                      ),
+                                      SizedBox()
                                     ],
-                                  ),
-                                ),
-                                UIHelper.verticalSpaceLarge,
-                                Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 10),
-                                  width: size.width,
-                                  height: 50,
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                      color: Colors.white,
-                                    ),
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  child: InkWell(
-                                    onTap: () {
-                                      print("go to change password");
-                                    },
-                                    child: Center(
-                                      child: Text(
-                                        "${FlutterI18n.translate(context, "change")} ${FlutterI18n.translate(context, "password")}",
-                                        style: TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.white),
-                                      ),
-                                    ),
                                   ),
                                 ),
                               ],
