@@ -719,7 +719,12 @@
   "kycNotStarted": "KYC başlamadı",
   "notStarted": "Başlamadı",
   "multisigWallet": "Çok İmzalı Cüzdan",
-  "personalInformation": "Kişisel Bilgiler",
   "noRecord": "Kayıt Bulunamadı",
-  "sendCode": "Kodu Gönder"
+  "sendCode": "Kodu Gönder",
+  "verifed": "Doğrulandı",
+  "notVerifed": "Doğrulanmadı",
+  "certified": "Sertifikalı",
+  "notCertified": "Sertifikalı Değil",
+  "personalInfoAuth": "Kişisel Bilgi Doğrulama",
+  "addressAuth": "Adres Doğrulama"
 }

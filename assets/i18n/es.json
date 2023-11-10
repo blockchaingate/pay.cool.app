@@ -714,7 +714,12 @@
     "kycNotStarted": "KYC no iniciado",
     "notStarted": "No iniciado",
     "multisigWallet": "Monedero Multifirma",
-    "personalInformation": "Información Personal",
     "noRecord": "No se Encontraron Registros",
-    "sendCode": "Enviar Código"
+    "sendCode": "Enviar Código",
+    "verifed": "Verificado",
+    "notVerifed": "No verificado",
+    "certified": "Certificado",
+    "notCertified": "No certificado",
+    "personalInfoAuth": "Autenticación de información personal",
+    "addressAuth": "Autenticación de dirección"
 }

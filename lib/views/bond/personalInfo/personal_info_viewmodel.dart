@@ -1,13 +1,18 @@
-import 'package:exchangily_ui/exchangily_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:kyc/kyc.dart';
 import 'package:paycool/constants/colors.dart';
+import 'package:paycool/constants/custom_styles.dart';
+import 'package:paycool/environments/environment_type.dart';
 import 'package:paycool/models/bond/vm/me_model.dart';
 import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/api_service.dart';
+import 'package:paycool/services/local_storage_service.dart';
 import 'package:paycool/services/shared_service.dart';
+import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/views/bond/helper.dart';
 import 'package:stacked/stacked.dart';
+import 'package:stacked_services/stacked_services.dart';
 
 class PersonalInfoViewModel extends BaseViewModel {
   PersonalInfoViewModel({BuildContext? context});
@@ -15,6 +20,9 @@ class PersonalInfoViewModel extends BaseViewModel {
   BuildContext? context;
   ApiService apiService = locator<ApiService>();
   SharedService sharedService = locator<SharedService>();
+  final kycService = locator<KycBaseService>();
+  var storageService = locator<LocalStorageService>();
+  final NavigationService navigationService = locator<NavigationService>();
 
   BondMeModel? bondMeVm;
 
@@ -64,23 +72,24 @@ class PersonalInfoViewModel extends BaseViewModel {
                     ),
                   ],
                 ),
-              SizedBox(
-                height: 50,
-                child: Row(children: const <Widget>[
-                  Expanded(
-                      child: Divider(
-                    color: Colors.black,
-                  )),
-                  Text(
-                    "OR",
-                    style: TextStyle(color: Colors.black),
-                  ),
-                  Expanded(
-                      child: Divider(
-                    color: Colors.black,
-                  )),
-                ]),
-              ),
+              if (bondMeVm!.phone != null && bondMeVm!.phone!.isNotEmpty)
+                SizedBox(
+                  height: 50,
+                  child: Row(children: const <Widget>[
+                    Expanded(
+                        child: Divider(
+                      color: Colors.black,
+                    )),
+                    Text(
+                      "OR",
+                      style: TextStyle(color: Colors.black),
+                    ),
+                    Expanded(
+                        child: Divider(
+                      color: Colors.black,
+                    )),
+                  ]),
+                ),
               StatefulBuilder(
                 builder: (context, setState) {
                   return SizedBox(
@@ -382,5 +391,48 @@ class PersonalInfoViewModel extends BaseViewModel {
       isSameNumber = false;
       notifyListeners();
     });
+  }
+
+  checkKycStatusV2() async {
+    kycService.setPrimaryColor(primaryColor);
+    if (storageService.bondToken.isEmpty) {
+      await sharedService
+          .navigateWithAnimation(KycLogin(onFormSubmit: onLoginFormSubmit));
+      return;
+    } else {
+      kycService.updateXAccessToken(storageService.bondToken);
+
+      navigationService.navigateToView(const KycStatus());
+    }
+  }
+
+  onLoginFormSubmit(UserLoginModel user) async {
+    setBusy(true);
+
+    try {
+      final kycService = locator<KycBaseService>();
+
+      String url =
+          isProduction ? KycConstants.prodBaseUrl : KycConstants.testBaseUrl;
+      final Map<String, dynamic> res;
+
+      if (user.email!.isNotEmpty && user.password!.isNotEmpty) {
+        res = await kycService.login(url, user);
+        if (res['success']) {
+          storageService.bondToken = res['data']['token'];
+        }
+      } else {
+        res = {
+          'success': false,
+          'error': FlutterI18n.translate(
+              context!, 'pleaseFillAllTheTextFieldsCorrectly')
+        };
+      }
+      return res;
+    } catch (e) {
+      debugPrint('CATCH error $e');
+    }
+
+    setBusy(false);
   }
 }

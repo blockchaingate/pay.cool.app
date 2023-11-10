@@ -716,7 +716,12 @@
     "kycNotStarted": "KYC शुरू नहीं हुआ", 
     "notStarted": "शुरू नहीं हुआ",
     "multisigWallet": "मल्टीसिग वॉलेट",
-    "personalInformation": "व्यक्तिगत जानकारी",
     "noRecord": "कोई रिकॉर्ड नहीं मिला",
-    "sendCode": "कोड भेजो"
+    "sendCode": "कोड भेजो",
+    "verifed": "सत्यापित",
+    "notVerifed": "सत्यापित नहीं",
+    "certified": "प्रमाणित",
+    "notCertified": "प्रमाणित नहीं",
+    "personalInfoAuth": "व्यक्तिगत जानकारी प्रमाणीकरण",
+    "addressAuth": "पता प्रमाणीकरण"
 }

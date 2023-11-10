@@ -719,7 +719,12 @@
     "kycNotStarted": "KYC未开始",
     "notStarted": "未开始",
     "multisigWallet": "多重签名钱包",
-    "personalInformation": "个人信息",
     "noRecord": "没有找到记录",
-    "sendCode": "发送代码"
+    "sendCode": "发送代码",
+    "verifed": "已验证",
+    "notVerifed": "未验证",
+    "certified": "已认证",
+    "notCertified": "未认证",
+    "personalInfoAuth": "个人信息认证",
+    "addressAuth": "地址认证"
 }

@@ -719,7 +719,12 @@
     "kycNotStarted": "KYCが開始されていません",
     "notStarted": "開始されていません",
     "multisigWallet": "マルチシグウォレット",
-    "personalInformation": "個人情報",
     "noRecord": "レコードが見つかりませんでした",
-    "sendCode": "コードを送信する"
+    "sendCode": "コードを送信する",
+    "verifed": "確認済み",
+    "notVerifed": "未確認",
+    "certified": "認定済み",
+    "notCertified": "未認定",
+    "personalInfoAuth": "個人情報認証",
+    "addressAuth": "住所認証"
 }

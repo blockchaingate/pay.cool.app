@@ -720,7 +720,12 @@
     "kycNotStarted": "KYC not started",
     "notStarted": "Not Started",
     "multisigWallet": "Multisig Wallet",
-    "personalInformation": "Personal Information",
     "noRecord": "No Record Found",
-    "sendCode": "Send Code"
+    "sendCode": "Send Code",
+    "verifed": "Verified",
+    "notVerifed": "Not Verified",
+    "certified": "Certified",
+    "notCertified": "Not Certified",
+    "personalInfoAuth": "Personal Information Authentication",
+    "addressAuth": "Address Authentication"
 }
