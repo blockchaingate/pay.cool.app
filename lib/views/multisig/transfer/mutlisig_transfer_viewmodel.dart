@@ -121,7 +121,8 @@ class MultisigTransferViewModel extends BaseViewModel {
     var customHash = hashMultisigMessage(hash);
     log.w('customHash $customHash');
 
-    var signedMess = MultisigUtil.signature(customHash, root);
+    var signedMess = MultisigUtil.signature(customHash, root,
+        isChainKanban: MultisigUtil.isChainKanban(multisigWallet.chain!));
     var sig = MultisigUtil.adjustVInSignature(
       signingMethod: 'eth_sign',
       signature: signedMess,

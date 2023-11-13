@@ -154,8 +154,10 @@ class MultisigUtil {
     return signature;
   }
 
-  static signature(Uint8List hash, bip32.BIP32 root, {String tHash = ''}) {
-    var coinType = environment["CoinType"]["FAB"];
+  static signature(Uint8List hash, bip32.BIP32 root,
+      {String tHash = '', bool isChainKanban = true}) {
+    String selectedChain = isChainKanban ? 'FAB' : 'ETH';
+    var coinType = environment["CoinType"][selectedChain];
     final fabCoinChild = root.derivePath("m/44'/$coinType'/0'/0/0");
     var privateKey = fabCoinChild.privateKey;
 

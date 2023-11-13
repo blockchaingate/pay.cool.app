@@ -118,7 +118,34 @@ class MultiSigService {
     }
   }
 
-  Future<void> getmultisigTransactions(String address,
+  Future<int> getTotalCount(String address, {required bool isQueue}) async {
+    String route =
+        isQueue ? 'multisigproposal/queue/' : 'multisigtransaction/address/';
+
+    var url = paycoolBaseUrlV2 + route + '$address/totalCount';
+    int transactionCount = 0;
+    log.i('getTotalCount url $url');
+    try {
+      var response = await client.get(Uri.parse(url));
+
+      var json = jsonDecode(response.body);
+
+      // log.w('getChildrenByAddress json $json');
+      if (json['data'] != null) {
+        transactionCount = json['data'];
+        log.i('getTotalCount count $transactionCount');
+        return transactionCount;
+      } else {
+        log.e("getTotalCount error: ${response.body}");
+        return 0;
+      }
+    } catch (err) {
+      log.e('In getTotalCount catch $err');
+      return 0;
+    }
+  }
+
+  Future getmultisigTransactions(String address,
       {int pageSize = 10, int pageNumber = 0}) async {
     var url = paycoolBaseUrlV2 + 'multisigtransaction/address/$address';
     if (pageNumber != 0) {
