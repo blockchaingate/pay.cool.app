@@ -14,7 +14,6 @@ import 'package:paycool/utils/exaddr.dart';
 import 'package:paycool/utils/fab_util.dart';
 import 'package:paycool/utils/keypair_util.dart';
 import 'package:paycool/utils/number_util.dart';
-import 'package:paycool/utils/string_util.dart';
 import 'package:paycool/views/multisig/dashboard/multisig_dashboard_view.dart';
 import 'package:paycool/views/multisig/multisig_wallet_model.dart';
 import 'package:stacked/stacked.dart';
@@ -104,9 +103,9 @@ class CreateMultisigWalletViewModel extends BaseViewModel {
       return;
     }
 
-    addressControllers.forEach((element) {
+    for (var element in addressControllers) {
       log.w(element.text);
-    });
+    }
     reviewDialog();
   }
 

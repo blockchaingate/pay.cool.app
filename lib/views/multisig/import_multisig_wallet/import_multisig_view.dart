@@ -122,7 +122,7 @@ class WelcomeMultisigView extends StatelessWidget {
                               isDense: true,
                               focusBorderColor: primaryColor,
                               enabledBorderColor: white,
-                              leadingWidget: Container(
+                              leadingWidget: SizedBox(
                                 width: 50,
                                 child: IconButton(
                                     onPressed: () async {

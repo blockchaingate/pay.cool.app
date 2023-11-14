@@ -43,74 +43,45 @@ class MultisigUtil {
     String signatures,
   ) {
     var jsonAbi = Constants.exuctionAbiJson;
-    // var jsonData = json.decode(jsonAbi);
-    ;
-    log.e('jsonList $jsonAbi');
     var abi = ContractABI.fromJson(jsonAbi);
-    var to = transaction["to"];
-    debugPrint('to: $to');
+    var to = trimHexPrefix(transaction["to"]);
     var value = transaction["value"] == "0x0" ? "0" : transaction["value"];
     value = fixLengthV2(value, 64);
-    log.w('value $value');
     var data = trimHexPrefix(transaction["data"]);
-    log.i('data $data');
     data = Uint8List.fromList(hex.decode(data));
-    log.e('data in bytes $data');
     var operation =
         int.parse(transaction["operation"].toString()).toRadixString(16);
     operation = fixLengthV2(operation, 64);
-    log.w('operation $operation');
     var safeTxGas = trimHexPrefix(transaction["safeTxGas"]);
     safeTxGas = fixLengthV2(safeTxGas, 64);
-    log.i('safetxgas $safeTxGas');
     var baseGas = trimHexPrefix(transaction["baseGas"]);
     baseGas = fixLengthV2(baseGas, 64);
-    log.w('basegas $baseGas');
     var gasPrice = trimHexPrefix(transaction["gasPrice"]);
     gasPrice = fixLengthV2(gasPrice, 64);
-    log.i('gasPrice $gasPrice');
     var gasToken = trimHexPrefix(transaction["gasToken"]);
-    gasToken = fixLengthV2(gasToken, 64);
-    log.w('gastoken $gasToken');
     var refundReceiver = trimHexPrefix(transaction["refundReceiver"]);
-    refundReceiver = fixLengthV2(refundReceiver, 64);
-    log.i('refund receiver $refundReceiver');
     var sig = trimHexPrefix(signatures);
-    log.w('sig $sig');
     sig = Uint8List.fromList(hex.decode(sig));
-    log.e('sig in bytes $sig');
     var call = ContractCall('execTransaction')
-          ..setCallParam('to',
-              to) //0000000000000000000000008d65fc45de848e650490f1ffcd51c6baf52ea595
-        // ..setCallParam('value', value) //0000000000000000000000000000000000000000000000000000000000000000
-        // //[
-        // // 63, 175, 10, 102, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 140, 73, 98, 169, 189, 90, 191, 45, 178,
-        // // 40, 47, 135, 13, 219, 38, 217, 155, 238, 139, 253, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        // // 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        // // 0, 0, 0, 0, 0, 0, 0, 0, 0, 16, 218, 15, 106, 150, 193, 192, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        // // 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-        // // ]
-        // ..setCallParam('data', data)
-        // ..setCallParam('operation', operation)//0000000000000000000000000000000000000000000000000000000000000000
-        // ..setCallParam('safeTxGas', safeTxGas)//0000000000000000000000000000000000000000000000000000000000000000
-        // ..setCallParam('baseGas', baseGas)//0000000000000000000000000000000000000000000000000000000000000000
-        // ..setCallParam('gasPrice', gasPrice)//0000000000000000000000000000000000000000000000000000000000000000
-        // ..setCallParam('gasToken', gasToken)//0000000000000000000000000000000000000000000000000000000000000000
-        // ..setCallParam('refundReceiver', refundReceiver)//0000000000000000000000000000000000000000000000000000000000000000
-        // //[
-        // // 246, 64, 108, 193, 110, 94, 10, 229, 75, 47, 44, 107, 130, 193, 123, 1, 97, 142, 56, 85, 112, 204,
-        // // 15, 255, 136, 233, 112, 38, 150, 157, 213, 132, 22, 123, 234, 255, 62, 146, 238, 50, 202, 124, 234,
-        // // 102, 180, 178, 238, 33, 216, 4, 113, 245, 19, 14, 62, 138, 157, 61, 153, 72, 28, 26, 135, 101, 31,
-        // // 107, 253, 20, 153, 198, 197, 5, 190, 211, 126, 139, 210, 39, 71, 21, 160, 107, 228, 60, 77, 60, 71,
-        // // 125, 71, 47, 132, 94, 141, 175, 220, 94, 22, 46, 182, 124, 69, 48, 52, 199, 165, 158, 143, 15, 49,
-        // // 54, 70, 4, 182, 191, 146, 228, 214, 219, 31, 65, 166, 65, 249, 129, 32, 113, 30, 253, 109, 32
-        // // ]
-        // ..setCallParam('signatures', sig)
-        ;
+      ..setCallParam('to', to)
+      ..setCallParam('value', value)
+      ..setCallParam('data', data)
+      ..setCallParam('operation', operation)
+      ..setCallParam('safeTxGas', safeTxGas)
+      ..setCallParam('baseGas', baseGas)
+      ..setCallParam('gasPrice', gasPrice)
+      ..setCallParam('gasToken', gasToken)
+      ..setCallParam('refundReceiver', refundReceiver)
+      ..setCallParam('signatures', sig);
 
-    log.e('call $call');
-    var finalAbi = hex.encode(call.toBinary(abi));
+    log.w("Call Params: $call");
+
+    var toBinary = call.toBinary(abi);
+    var finalAbi = hex.encode(toBinary);
     log.w('finalAbi $finalAbi');
+    // remove first 4 bytes from the finalAbi and replace it with 0x6a761202
+    var finalAbiHex = '0x6a761202' + finalAbi.substring(8);
+    return finalAbiHex;
   }
 
   bool isTxHashSignedWithPrefix(
@@ -133,7 +104,7 @@ class MultisigUtil {
       //   rsvSig['s'],
       // );
 
-      final recoveredAddress = '';
+      const recoveredAddress = '';
       //bufferToHex(pubToAddress(recoveredData));
       hasPrefix = !sameString(recoveredAddress, ownerAddress);
     } catch (e) {
@@ -183,8 +154,10 @@ class MultisigUtil {
     return signature;
   }
 
-  static signature(Uint8List hash, bip32.BIP32 root, {String tHash = ''}) {
-    var coinType = environment["CoinType"]["FAB"];
+  static signature(Uint8List hash, bip32.BIP32 root,
+      {String tHash = '', bool isChainKanban = true}) {
+    String selectedChain = isChainKanban ? 'FAB' : 'ETH';
+    var coinType = environment["CoinType"][selectedChain];
     final fabCoinChild = root.derivePath("m/44'/$coinType'/0'/0/0");
     var privateKey = fabCoinChild.privateKey;
 

@@ -18,7 +18,6 @@ import 'package:paycool/models/wallet/user_settings_model.dart';
 import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/db/user_settings_database_service.dart';
 import 'package:paycool/services/local_storage_service.dart';
-import 'package:paycool/services/navigation_service.dart';
 import 'package:paycool/services/wallet_service.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';

@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:pagination_widget/pagination_widget.dart';
 import 'package:paycool/environments/environment.dart';
 import 'package:paycool/logger.dart';
 import 'package:paycool/service_locator.dart';
@@ -16,38 +17,76 @@ import 'package:hex/hex.dart';
 class MultisigHistoryQueueViewModel extends FutureViewModel {
   final String address;
   MultisigHistoryQueueViewModel({required this.address});
-
+  final log = getLogger('HistoryQueueViewModel');
   final sharedService = locator<SharedService>();
   final walletService = locator<WalletService>();
   List history = [];
   List queue = [];
   bool pendingExecution = false;
 
-  final log = getLogger('HistoryQueueViewModel');
   final multisigService = locator<MultiSigService>();
   String exgAddress = '';
   String ethAddress = '';
+  PaginationModel paginationModel = PaginationModel();
+  int tabIndex = 0;
   @override
-  Future futureToRun() async =>
-      await multisigService.getmultisigTransactions(address, pageSize: 30);
+  Future futureToRun() async {
+    int totalCount =
+        await multisigService.getTotalCount(address, isQueue: tabIndex == 1);
+    paginationModel.totalPages = (totalCount / paginationModel.pageSize).ceil();
+    if (tabIndex == 0)
+      return await getHistoryTransactions(
+          pageNumber: paginationModel.pageNumber);
+    else
+      return await getQueueTransactions(pageNumber: paginationModel.pageNumber);
+  }
 
   @override
   void onData(data) async {
-    history = data;
-    log.i('history $history');
-    exgAddress = await sharedService.getExgAddressFromCoreWalletDatabase();
-    ethAddress =
-        await sharedService.getCoinAddressFromCoreWalletDatabase('ETH');
+    //  history = data;
+    log.i('data $data');
+
+    if (exgAddress.isEmpty)
+      exgAddress = await sharedService.getExgAddressFromCoreWalletDatabase();
+    if (ethAddress.isEmpty)
+      ethAddress =
+          await sharedService.getCoinAddressFromCoreWalletDatabase('ETH');
   }
 
   onTap(int index) async {
-    log.i('onTap $index');
-    if (index == 0) {
-      await futureToRun();
-    } else {
-      await getQueueTransactions();
-    }
-    notifyListeners();
+    setBusy(true);
+    paginationModel.pageNumber = 1;
+    tabIndex = index;
+    await futureToRun();
+    setBusy(false);
+  }
+
+  paginationData(int pageNumber) async {
+    setBusy(true);
+    paginationModel.pageNumber = pageNumber;
+
+    await futureToRun();
+
+    setBusy(false);
+  }
+
+  // get history transactions
+  getHistoryTransactions({int pageNumber = 0}) async {
+    history = await multisigService.getmultisigTransactions(address,
+        pageNumber: paginationModel.pageNumber,
+        pageSize: paginationModel.pageSize);
+    log.i('getHistoryTransactions length ${history.length}');
+
+    return history;
+  }
+
+  // get queue transactions
+  getQueueTransactions({int pageNumber = 0}) async {
+    queue = await multisigService.getQueuetransaction(address,
+        pageNumber: paginationModel.pageNumber,
+        pageSize: paginationModel.pageSize);
+    log.i(
+        'getQueueTransactions length ${queue.length} -- data ${queue[0]['request']['amount']}');
   }
 
   // show confirmed by me if current wallet is one of the owners and also the signer
@@ -88,16 +127,6 @@ class MultisigHistoryQueueViewModel extends FutureViewModel {
     return false;
   }
 
-  // get queue transactions
-  getQueueTransactions() async {
-    setBusy(true);
-    queue = await multisigService.getQueuetransaction(address);
-    // log.i(
-    //     'getQueueTransactions length ${queue.length} -- data ${queue[0]['request']['amount']}');
-
-    setBusy(false);
-  }
-
   // approve transaction
   approveTransaction(currentQueue, BuildContext context,
       {bool requiredExecution = false}) async {
@@ -114,7 +143,8 @@ class MultisigHistoryQueueViewModel extends FutureViewModel {
     }
     bip32.BIP32 root = walletService.generateBip32Root(seed);
     var customHash = hashMultisigMessage(currentQueue["transactionHash"]);
-    var ss = await MultisigUtil.signature(customHash, root);
+    var ss = await MultisigUtil.signature(customHash, root,
+        isChainKanban: MultisigUtil.isChainKanban(chain));
 
     String signerAddress =
         MultisigUtil.isChainKanban(chain) ? exgAddress : ethAddress;
@@ -140,7 +170,7 @@ class MultisigHistoryQueueViewModel extends FutureViewModel {
         sharedService.sharedSimpleNotification(
             'Transaction approved successfully',
             isError: false);
-        queue = await getQueueTransactions();
+        await getQueueTransactions();
         if (queue.first['_id'] == approveProposalResult['_id']) {
           log.i('latest queue ID matched');
           approvedSignatures = queue.first['signatures'] as List;
@@ -167,10 +197,7 @@ class MultisigHistoryQueueViewModel extends FutureViewModel {
       log.w('signatures $signatures');
 
       var abiHex = MultisigUtil.encodeContractCall(transaction, signatures);
-      if (true) {
-        setBusy(false);
-        return;
-      }
+
       String gasPriceString =
           environment['chains'][chain]['gasPrice'].toString();
 
@@ -201,12 +228,13 @@ class MultisigHistoryQueueViewModel extends FutureViewModel {
       var txKanbanHex = await signAbiHexWithPrivateKey(
         abiHex,
         HEX.encode(keyPairKanban["privateKey"]),
-        environment["chains"][chain.toUpperCase()]["Safes"]["SafeProxyFactory"],
+        multisigData["address"],
         nonce,
         int.parse(gasPriceString),
         gas,
       );
 
+      log.w('txKanbanHex $txKanbanHex');
       var executionBody = {
         "_id": currentQueue["_id"],
         "chain": chain,

@@ -15,7 +15,6 @@ import 'package:paycool/views/paycool_club/club_projects/models/club_package_che
 import 'package:paycool/views/paycool_club/club_projects/models/club_project_model.dart';
 import 'package:stacked/stacked.dart';
 import 'package:paycool/service_locator.dart';
-import 'package:paycool/services/navigation_service.dart';
 import 'package:paycool/services/shared_service.dart';
 import 'package:paycool/views/paycool_club/paycool_club_service.dart';
 import 'package:stacked_services/stacked_services.dart';
