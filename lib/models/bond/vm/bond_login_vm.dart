@@ -10,7 +10,7 @@ class BondLoginModel {
   String? email;
   String? token;
   String? role;
-  bool? isVerifiedEmail;
+  bool? isEmailVerified;
   int? kycLevel;
 
   BondLoginModel({
@@ -18,7 +18,7 @@ class BondLoginModel {
     this.email,
     this.token,
     this.role,
-    this.isVerifiedEmail,
+    this.isEmailVerified,
     this.kycLevel,
   });
 
@@ -27,7 +27,7 @@ class BondLoginModel {
         email: json["email"],
         token: json["token"],
         role: json["role"],
-        isVerifiedEmail: json["isVerifiedEmail"],
+        isEmailVerified: json["isEmailVerified"],
         kycLevel: json["kyc_level"],
       );
 
@@ -36,7 +36,7 @@ class BondLoginModel {
         "email": email,
         "token": token,
         "role": role,
-        "isVerifiedEmail": isVerifiedEmail,
+        "isEmailVerified": isEmailVerified,
         "kyc_level": kycLevel,
       };
 }

@@ -60,7 +60,7 @@ class BondLoginViewModel extends BaseViewModel with WidgetsBindingObserver {
         final BondLoginModel? result =
             await apiService.loginWithEmail(context!, param);
         if (result != null) {
-          if (result.isVerifiedEmail == true) {
+          if (result.isEmailVerified == true) {
             storageService.bondToken = result.token!;
 
             navigationService.navigateTo(DashboardViewRoute);
