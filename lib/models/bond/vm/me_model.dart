@@ -12,7 +12,7 @@ class BondMeModel {
   String? referralCode;
   int? level1ReferralCount;
   int? level2ReferralCount;
-  bool? isVerifiedEmail;
+  bool? isEmailVerified;
   String? role;
   DateTime? createdAt;
 
@@ -23,7 +23,7 @@ class BondMeModel {
     this.referralCode,
     this.level1ReferralCount,
     this.level2ReferralCount,
-    this.isVerifiedEmail,
+    this.isEmailVerified,
     this.role,
     this.createdAt,
   });
@@ -35,7 +35,7 @@ class BondMeModel {
         referralCode: json["referral_code"],
         level1ReferralCount: json["level1_referral_count"],
         level2ReferralCount: json["level2_referral_count"],
-        isVerifiedEmail: json["isVerifiedEmail"],
+        isEmailVerified: json["isEmailVerified"],
         role: json["role"],
         createdAt: json["created_at"] == null
             ? null
@@ -49,7 +49,7 @@ class BondMeModel {
         "referral_code": referralCode,
         "level1_referral_count": level1ReferralCount,
         "level2_referral_count": level2ReferralCount,
-        "isVerifiedEmail": isVerifiedEmail,
+        "isEmailVerified": isEmailVerified,
         "role": role,
         "created_at": createdAt?.toIso8601String(),
       };
