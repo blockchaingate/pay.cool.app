@@ -470,45 +470,45 @@ class SettingsContainer extends StatelessWidget {
                 ],
               ),
             ),
-            UIHelper.verticalSpaceSmall,
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: 16),
-              decoration: BoxDecoration(
-                color: white,
-                borderRadius: BorderRadius.circular(5),
-                boxShadow: [
-                  BoxShadow(
-                    color: primaryColor.withOpacity(0.7),
-                    blurRadius: 5,
-                    offset: const Offset(0, 3), // changes position of shadow
-                  ),
-                ],
-              ),
-              child: ListTile(
-                contentPadding: const EdgeInsets.symmetric(horizontal: 8),
-                dense: true,
-                iconColor: black,
-                leading: const Icon(
-                  FontAwesomeIcons.wallet,
-                  size: 16,
-                ),
-                horizontalTitleGap: 0,
-                minLeadingWidth: 25,
-                title: Text(
-                  FlutterI18n.translate(context, "multisigWallet"),
-                  style: headText5,
-                ),
-                onTap: () => model.navigationService
-                    .navigateWithTransition(WelcomeMultisigView()),
-                trailing: Padding(
-                  padding: const EdgeInsets.only(right: 8.0),
-                  child: const Icon(
-                    Icons.arrow_forward_ios_sharp,
-                    size: 16,
-                  ),
-                ),
-              ),
-            ),
+            // UIHelper.verticalSpaceSmall,
+            // Container(
+            //   margin: const EdgeInsets.symmetric(horizontal: 16),
+            //   decoration: BoxDecoration(
+            //     color: white,
+            //     borderRadius: BorderRadius.circular(5),
+            //     boxShadow: [
+            //       BoxShadow(
+            //         color: primaryColor.withOpacity(0.7),
+            //         blurRadius: 5,
+            //         offset: const Offset(0, 3), // changes position of shadow
+            //       ),
+            //     ],
+            //   ),
+            //   child: ListTile(
+            //     contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+            //     dense: true,
+            //     iconColor: black,
+            //     leading: const Icon(
+            //       FontAwesomeIcons.wallet,
+            //       size: 16,
+            //     ),
+            //     horizontalTitleGap: 0,
+            //     minLeadingWidth: 25,
+            //     title: Text(
+            //       FlutterI18n.translate(context, "multisigWallet"),
+            //       style: headText5,
+            //     ),
+            //     onTap: () => model.navigationService
+            //         .navigateWithTransition(WelcomeMultisigView()),
+            //     trailing: Padding(
+            //       padding: const EdgeInsets.only(right: 8.0),
+            //       child: const Icon(
+            //         Icons.arrow_forward_ios_sharp,
+            //         size: 16,
+            //       ),
+            //     ),
+            //   ),
+            // ),
             UIHelper.verticalSpaceMedium,
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 16),
