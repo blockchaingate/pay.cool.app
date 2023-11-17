@@ -1,4 +1,6 @@
+import 'package:bip32/bip32.dart' as bip32;
 import 'package:flutter/widgets.dart';
+import 'package:hex/hex.dart';
 import 'package:pagination_widget/pagination_widget.dart';
 import 'package:paycool/environments/environment.dart';
 import 'package:paycool/logger.dart';
@@ -10,9 +12,8 @@ import 'package:paycool/utils/coin_util.dart';
 import 'package:paycool/utils/keypair_util.dart';
 import 'package:paycool/views/multisig/multisig_util.dart';
 import 'package:stacked/stacked.dart';
-import 'package:bip32/bip32.dart' as bip32;
+
 import '../../../services/multisig_service.dart';
-import 'package:hex/hex.dart';
 
 class MultisigHistoryQueueViewModel extends FutureViewModel {
   final String address;

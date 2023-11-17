@@ -158,8 +158,7 @@ class BackupMnemonicWalletView extends StatelessWidget {
                         childAspectRatio: 2.2,
                         children: List.generate(model.count, (i) {
                           var sw = model.randomMnemonicList[i];
-                          return Container(
-                              child: TextField(
+                          return TextField(
                             textAlign: TextAlign.center,
                             textAlignVertical: const TextAlignVertical(y: 0.7),
                             enableInteractiveSelection: false, // readonly
@@ -182,7 +181,7 @@ class BackupMnemonicWalletView extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(30.0),
                               ),
                             ),
-                          ));
+                          );
                         }),
                       ),
                     ),

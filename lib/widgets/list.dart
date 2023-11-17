@@ -15,7 +15,7 @@ class _ExgListState extends State<ExgList> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
         child: Row(
-          children: [
+          children: const [
             // IconButton(
             //   icon: FaIcon(
             //     FontAwesomeIcons.coins,
@@ -23,16 +23,15 @@ class _ExgListState extends State<ExgList> {
             //   ),
             //   onPressed: () {},
             // ),
-            const FaIcon(FontAwesomeIcons.coins, color: Color(0xFF7F00FF)),
-            const SizedBox(
+            FaIcon(FontAwesomeIcons.coins, color: Color(0xFF7F00FF)),
+            SizedBox(
               width: 20,
             ),
-            Container(
-                child: const Text("活动收益",
-                    style: TextStyle(
-                        color: Color(0xff333333),
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold))),
+            Text("活动收益",
+                style: TextStyle(
+                    color: Color(0xff333333),
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold)),
           ],
         ),
       ),

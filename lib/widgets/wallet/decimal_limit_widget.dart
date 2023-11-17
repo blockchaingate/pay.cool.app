@@ -9,16 +9,14 @@ class DecimalLimitWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text('${FlutterI18n.translate(context, "decimalLimit")}: ',
-              style: headText6),
-          Text(decimalLimit.toString(), style: headText6),
-        ],
-      ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text('${FlutterI18n.translate(context, "decimalLimit")}: ',
+            style: headText6),
+        Text(decimalLimit.toString(), style: headText6),
+      ],
     );
   }
 }

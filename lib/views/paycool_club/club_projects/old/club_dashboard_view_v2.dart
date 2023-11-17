@@ -488,296 +488,160 @@ class ClubDashboardView extends StatelessWidget {
 
                                 model.isValidMember
                                     ? SliverToBoxAdapter(
-                                        child: Container(
-                                          child: Column(
-                                            children: [
-                                              UIHelper.verticalSpaceLarge,
-                                              // !model.isValidMember
-                                              //     ? Container()
-                                              //     : topPaycoolWidget(
-                                              //         context, model),
-                                              //display myReferralCode when this user is a basic or VIP member
-                                              Container(
-                                                decoration:
-                                                    roundedBoxDecoration(
-                                                        color: secondaryColor),
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        vertical: 10,
-                                                        horizontal: 2),
-                                                margin:
-                                                    const EdgeInsets.symmetric(
-                                                        vertical: 2,
-                                                        horizontal: 15),
-                                                // color: secondaryColor,
-                                                child: Column(
-                                                  children: [
-                                                    Visibility(
-                                                      visible:
-                                                          model.isValidMember,
-                                                      child: ListTile(
-                                                        horizontalTitleGap: 0,
-                                                        leading: Image.asset(
-                                                          'assets/images/club/user.png',
-                                                          width: 30,
-                                                        ),
-                                                        title: Text(
-                                                          FlutterI18n.translate(
-                                                              context,
-                                                              "myReferralCode"),
-                                                          style: headText4,
-                                                        ),
-                                                        subtitle: Text(
-                                                          model.fabAddress,
-                                                          style: bodyText1,
-                                                        ),
-                                                        trailing: Row(
-                                                          mainAxisSize:
-                                                              MainAxisSize.min,
-                                                          children: [
-                                                            IconButton(
-                                                              icon: const Icon(
-                                                                Icons.copy,
-                                                                size: 19,
-                                                                color: black,
-                                                              ),
-                                                              onPressed: () => model
-                                                                  .sharedService
-                                                                  .copyAddress(
-                                                                      context,
-                                                                      model
-                                                                          .fabAddress),
-                                                            ),
-                                                            IconButton(
-                                                              icon: const Icon(
-                                                                Icons
-                                                                    .share_outlined,
-                                                                size: 19,
-                                                                color:
-                                                                    primaryColor,
-                                                              ),
-                                                              onPressed: () => model
-                                                                  .showBarcode(),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    ),
-
-                                                    // member type tile
-                                                    Container(
-                                                      margin: const EdgeInsets
-                                                              .symmetric(
-                                                          vertical: 4),
-                                                      decoration:
-                                                          rectangularGradientBoxDecoration(
-                                                              colorOne:
-                                                                  primaryColor
-                                                                      .withAlpha(
-                                                                          100),
-                                                              colorTwo:
-                                                                  primaryColor),
-                                                      child: ListTile(
-                                                        horizontalTitleGap: 0,
-                                                        leading:
-                                                            model.isValidMember
-                                                                ? Image.asset(
-                                                                    'assets/images/club/member.png',
-                                                                    width: 30,
-                                                                  )
-                                                                : const Padding(
-                                                                    padding:
-                                                                        EdgeInsets.all(
-                                                                            8.0),
-                                                                    child: Icon(
-                                                                      FontAwesomeIcons
-                                                                          .user,
-                                                                      color:
-                                                                          primaryColor,
-                                                                      size: 18,
-                                                                    ),
-                                                                  ),
-                                                        title: Column(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
-                                                          mainAxisSize:
-                                                              MainAxisSize.min,
-                                                          children: [
-                                                            Text(
-                                                              FlutterI18n
-                                                                  .translate(
-                                                                      context,
-                                                                      "appTitle"),
-                                                              style: headText6.copyWith(
-                                                                  color:
-                                                                      secondaryColor,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold),
-                                                            ),
-                                                            Text(
-                                                              model
-                                                                  .assignPaycoolMemberType(),
-                                                              style: headText4.copyWith(
-                                                                  color:
-                                                                      secondaryColor,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                        subtitle: Row(
-                                                          children: [
-                                                            Text(
-                                                              FlutterI18n.translate(
-                                                                  context,
-                                                                  "joinedProjects"),
-                                                              style: headText5,
-                                                            ),
-                                                            UIHelper
-                                                                .horizontalSpaceSmall,
-                                                            Text(
-                                                              model
-                                                                  .joinedProjects
-                                                                  .length
-                                                                  .toString(),
-                                                              style: headText5,
-                                                            ),
-                                                          ],
-                                                        ),
-                                                        trailing: const Row(
-                                                          mainAxisSize:
-                                                              MainAxisSize.min,
-                                                          children: [
-                                                            UIHelper
-                                                                .horizontalSpaceSmall,
-                                                            Icon(
-                                                              Icons
-                                                                  .arrow_forward_ios,
-                                                              color: white,
-                                                              size: 16,
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    // joined date tile
-                                                    // ListTile(
-                                                    //   horizontalTitleGap: 0,
-                                                    //   leading: const Icon(
-                                                    //     Icons
-                                                    //         .stacked_line_chart_sharp,
-                                                    //     color: black,
-                                                    //     size: 18,
-                                                    //   ),
-                                                    //   title: Text(
-                                                    //     FlutterI18n.translate(
-                                                    //         context, "joinedDate"),
-                                                    //     style: headText4,
-                                                    //   ),
-                                                    //   trailing: Text(
-                                                    //       model.dashboard
-                                                    //           .dateCreated,
-                                                    //       style: headText5),
-                                                    // ),
-                                                    // asset value tile
-
-                                                    ListTile(
-                                                      onTap: () => model.navigationService.navigateTo(
-                                                          clubRewardsViewRoute,
-                                                          arguments: ClubRewardsArgs(
-                                                              summary: model
-                                                                  .dashboardSummary
-                                                                  .summary!,
-                                                              rewardTokenPriceMap:
-                                                                  model
-                                                                      .rewardTokenPriceMap,
-                                                              totalRewardsDollarValue:
-                                                                  Decimal
-                                                                      .zero)),
+                                        child: Column(
+                                          children: [
+                                            UIHelper.verticalSpaceLarge,
+                                            // !model.isValidMember
+                                            //     ? Container()
+                                            //     : topPaycoolWidget(
+                                            //         context, model),
+                                            //display myReferralCode when this user is a basic or VIP member
+                                            Container(
+                                              decoration: roundedBoxDecoration(
+                                                  color: secondaryColor),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 10,
+                                                      horizontal: 2),
+                                              margin:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 2,
+                                                      horizontal: 15),
+                                              // color: secondaryColor,
+                                              child: Column(
+                                                children: [
+                                                  Visibility(
+                                                    visible:
+                                                        model.isValidMember,
+                                                    child: ListTile(
                                                       horizontalTitleGap: 0,
                                                       leading: Image.asset(
-                                                        'assets/images/club/gift.png',
-                                                        width: 28,
+                                                        'assets/images/club/user.png',
+                                                        width: 30,
                                                       ),
                                                       title: Text(
                                                         FlutterI18n.translate(
-                                                            context, "rewards"),
+                                                            context,
+                                                            "myReferralCode"),
                                                         style: headText4,
                                                       ),
-                                                      subtitle: SizedBox(
-                                                        width: 50,
-                                                        child: Container(
-                                                          margin:
-                                                              const EdgeInsets
-                                                                  .only(top: 4),
-                                                          child: Row(
-                                                            mainAxisSize:
-                                                                MainAxisSize
-                                                                    .min,
-                                                            children: [
-                                                              Column(
-                                                                mainAxisSize:
-                                                                    MainAxisSize
-                                                                        .min,
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .start,
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .center,
-                                                                children: [
-                                                                  Text(
-                                                                      'FAB ${model.dashboardSummary.totalFabRewards()['FAB']}',
-                                                                      style:
-                                                                          headText5),
-                                                                  Padding(
-                                                                    padding: const EdgeInsets
-                                                                            .symmetric(
-                                                                        vertical:
-                                                                            4.0),
-                                                                    child: model.dashboardSummary.totalFabRewards()["FET"] != null &&
-                                                                            model
-                                                                                .rewardTokenPriceMap.isNotEmpty &&
-                                                                            model.rewardTokenPriceMap['FET'] !=
-                                                                                null
-                                                                        ? Row(
-                                                                            mainAxisSize:
-                                                                                MainAxisSize.min,
-                                                                            children: [
-                                                                              Text('FET ${NumberUtil.decimalLimiter(Decimal.parse(model.dashboardSummary.totalFabRewards()["FET"].toString()), decimalPlaces: 8)}', style: headText5),
-                                                                              Text('  \$${NumberUtil.decimalLimiter(Decimal.parse(model.dashboardSummary.totalFabRewards()["FET"]!.toString()) * Decimal.parse(model.rewardTokenPriceMap['FET'].toString()))}', maxLines: 2, style: headText5.copyWith(color: green, fontWeight: FontWeight.bold))
-                                                                            ],
-                                                                          )
-                                                                        : Container(),
-                                                                  ),
-                                                                  model.dashboardSummary.totalFabRewards()[
-                                                                                  "FETLP"] !=
-                                                                              null &&
-                                                                          model
-                                                                              .rewardTokenPriceMap
-                                                                              .isNotEmpty &&
-                                                                          model.rewardTokenPriceMap['FETDUSD-LP'] !=
-                                                                              null
-                                                                      ? Row(
-                                                                          mainAxisSize:
-                                                                              MainAxisSize.min,
-                                                                          children: [
-                                                                            Text('FETDUSD-LP ${NumberUtil.decimalLimiter(Decimal.parse(model.dashboardSummary.totalFabRewards()["FETLP"]!.toString()), decimalPlaces: 8)}',
-                                                                                style: headText5),
-                                                                            Text('  \$${NumberUtil.decimalLimiter(model.dashboardSummary.totalFabRewards()["FETLP"]! * Decimal.parse(model.rewardTokenPriceMap['FETDUSD-LP']!.toString()))}',
-                                                                                maxLines: 2,
-                                                                                style: headText5.copyWith(color: green, fontWeight: FontWeight.bold)),
-                                                                          ],
-                                                                        )
-                                                                      : Container(),
-                                                                ],
-                                                              ),
-                                                            ],
+                                                      subtitle: Text(
+                                                        model.fabAddress,
+                                                        style: bodyText1,
+                                                      ),
+                                                      trailing: Row(
+                                                        mainAxisSize:
+                                                            MainAxisSize.min,
+                                                        children: [
+                                                          IconButton(
+                                                            icon: const Icon(
+                                                              Icons.copy,
+                                                              size: 19,
+                                                              color: black,
+                                                            ),
+                                                            onPressed: () => model
+                                                                .sharedService
+                                                                .copyAddress(
+                                                                    context,
+                                                                    model
+                                                                        .fabAddress),
                                                           ),
-                                                        ),
+                                                          IconButton(
+                                                            icon: const Icon(
+                                                              Icons
+                                                                  .share_outlined,
+                                                              size: 19,
+                                                              color:
+                                                                  primaryColor,
+                                                            ),
+                                                            onPressed: () => model
+                                                                .showBarcode(),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+
+                                                  // member type tile
+                                                  Container(
+                                                    margin: const EdgeInsets
+                                                        .symmetric(vertical: 4),
+                                                    decoration:
+                                                        rectangularGradientBoxDecoration(
+                                                            colorOne:
+                                                                primaryColor
+                                                                    .withAlpha(
+                                                                        100),
+                                                            colorTwo:
+                                                                primaryColor),
+                                                    child: ListTile(
+                                                      horizontalTitleGap: 0,
+                                                      leading: model
+                                                              .isValidMember
+                                                          ? Image.asset(
+                                                              'assets/images/club/member.png',
+                                                              width: 30,
+                                                            )
+                                                          : const Padding(
+                                                              padding:
+                                                                  EdgeInsets
+                                                                      .all(8.0),
+                                                              child: Icon(
+                                                                FontAwesomeIcons
+                                                                    .user,
+                                                                color:
+                                                                    primaryColor,
+                                                                size: 18,
+                                                              ),
+                                                            ),
+                                                      title: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        mainAxisSize:
+                                                            MainAxisSize.min,
+                                                        children: [
+                                                          Text(
+                                                            FlutterI18n
+                                                                .translate(
+                                                                    context,
+                                                                    "appTitle"),
+                                                            style: headText6.copyWith(
+                                                                color:
+                                                                    secondaryColor,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold),
+                                                          ),
+                                                          Text(
+                                                            model
+                                                                .assignPaycoolMemberType(),
+                                                            style: headText4.copyWith(
+                                                                color:
+                                                                    secondaryColor,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      subtitle: Row(
+                                                        children: [
+                                                          Text(
+                                                            FlutterI18n.translate(
+                                                                context,
+                                                                "joinedProjects"),
+                                                            style: headText5,
+                                                          ),
+                                                          UIHelper
+                                                              .horizontalSpaceSmall,
+                                                          Text(
+                                                            model.joinedProjects
+                                                                .length
+                                                                .toString(),
+                                                            style: headText5,
+                                                          ),
+                                                        ],
                                                       ),
                                                       trailing: const Row(
                                                         mainAxisSize:
@@ -788,91 +652,181 @@ class ClubDashboardView extends StatelessWidget {
                                                           Icon(
                                                             Icons
                                                                 .arrow_forward_ios,
-                                                            color: grey,
+                                                            color: white,
                                                             size: 16,
                                                           ),
                                                         ],
                                                       ),
                                                     ),
+                                                  ),
+                                                  // joined date tile
+                                                  // ListTile(
+                                                  //   horizontalTitleGap: 0,
+                                                  //   leading: const Icon(
+                                                  //     Icons
+                                                  //         .stacked_line_chart_sharp,
+                                                  //     color: black,
+                                                  //     size: 18,
+                                                  //   ),
+                                                  //   title: Text(
+                                                  //     FlutterI18n.translate(
+                                                  //         context, "joinedDate"),
+                                                  //     style: headText4,
+                                                  //   ),
+                                                  //   trailing: Text(
+                                                  //       model.dashboard
+                                                  //           .dateCreated,
+                                                  //       style: headText5),
+                                                  // ),
+                                                  // asset value tile
 
-                                                    InkWell(
-                                                      onTap: () {
-                                                        if (model.joinedProjects
-                                                                .length ==
-                                                            1) {
-                                                          model
-                                                              .navigationService
-                                                              .navigateTo(
-                                                                  referralDetailsViewRoute,
-                                                                  arguments:
-                                                                      ReferalRoute(
-                                                                    project: model
-                                                                        .joinedProjects[0],
-                                                                  ));
-                                                        } else {
-                                                          model
-                                                              .navigationService
-                                                              .navigateTo(
-                                                                  referralViewRoute,
-                                                                  arguments: model
-                                                                      .joinedProjects);
-                                                        }
-                                                      },
-                                                      child: ListTile(
-                                                        horizontalTitleGap: 0,
-                                                        leading: Image.asset(
-                                                          'assets/images/club/network.png',
-                                                          width: 30,
-                                                        ),
-                                                        title: Text(
-                                                          FlutterI18n.translate(
-                                                              context,
-                                                              "myReferralsDetails"),
-                                                          style: headText4
-                                                              .copyWith(
-                                                                  color: black),
-                                                        ),
-                                                        trailing: Row(
+                                                  ListTile(
+                                                    onTap: () => model.navigationService.navigateTo(
+                                                        clubRewardsViewRoute,
+                                                        arguments: ClubRewardsArgs(
+                                                            summary: model
+                                                                .dashboardSummary
+                                                                .summary!,
+                                                            rewardTokenPriceMap:
+                                                                model
+                                                                    .rewardTokenPriceMap,
+                                                            totalRewardsDollarValue:
+                                                                Decimal.zero)),
+                                                    horizontalTitleGap: 0,
+                                                    leading: Image.asset(
+                                                      'assets/images/club/gift.png',
+                                                      width: 28,
+                                                    ),
+                                                    title: Text(
+                                                      FlutterI18n.translate(
+                                                          context, "rewards"),
+                                                      style: headText4,
+                                                    ),
+                                                    subtitle: SizedBox(
+                                                      width: 50,
+                                                      child: Container(
+                                                        margin: const EdgeInsets
+                                                            .only(top: 4),
+                                                        child: Row(
                                                           mainAxisSize:
                                                               MainAxisSize.min,
                                                           children: [
-                                                            Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                      .all(8.0),
-                                                              child: Text(
-                                                                  model.referralCount
-                                                                          .toString() ??
-                                                                      '0',
-                                                                  style:
-                                                                      headText5),
-                                                            ),
-                                                            const Icon(
-                                                              Icons
-                                                                  .arrow_forward_ios,
-                                                              color: grey,
-                                                              size: 16,
+                                                            Column(
+                                                              mainAxisSize:
+                                                                  MainAxisSize
+                                                                      .min,
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .start,
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .center,
+                                                              children: [
+                                                                Text(
+                                                                    'FAB ${model.dashboardSummary.totalFabRewards()['FAB']}',
+                                                                    style:
+                                                                        headText5),
+                                                                Padding(
+                                                                  padding: const EdgeInsets
+                                                                          .symmetric(
+                                                                      vertical:
+                                                                          4.0),
+                                                                  child: model.dashboardSummary.totalFabRewards()[
+                                                                                  "FET"] !=
+                                                                              null &&
+                                                                          model
+                                                                              .rewardTokenPriceMap
+                                                                              .isNotEmpty &&
+                                                                          model.rewardTokenPriceMap['FET'] !=
+                                                                              null
+                                                                      ? Row(
+                                                                          mainAxisSize:
+                                                                              MainAxisSize.min,
+                                                                          children: [
+                                                                            Text('FET ${NumberUtil.decimalLimiter(Decimal.parse(model.dashboardSummary.totalFabRewards()["FET"].toString()), decimalPlaces: 8)}',
+                                                                                style: headText5),
+                                                                            Text('  \$${NumberUtil.decimalLimiter(Decimal.parse(model.dashboardSummary.totalFabRewards()["FET"]!.toString()) * Decimal.parse(model.rewardTokenPriceMap['FET'].toString()))}',
+                                                                                maxLines: 2,
+                                                                                style: headText5.copyWith(color: green, fontWeight: FontWeight.bold))
+                                                                          ],
+                                                                        )
+                                                                      : Container(),
+                                                                ),
+                                                                model.dashboardSummary.totalFabRewards()[
+                                                                                "FETLP"] !=
+                                                                            null &&
+                                                                        model
+                                                                            .rewardTokenPriceMap
+                                                                            .isNotEmpty &&
+                                                                        model.rewardTokenPriceMap['FETDUSD-LP'] !=
+                                                                            null
+                                                                    ? Row(
+                                                                        mainAxisSize:
+                                                                            MainAxisSize.min,
+                                                                        children: [
+                                                                          Text(
+                                                                              'FETDUSD-LP ${NumberUtil.decimalLimiter(Decimal.parse(model.dashboardSummary.totalFabRewards()["FETLP"]!.toString()), decimalPlaces: 8)}',
+                                                                              style: headText5),
+                                                                          Text(
+                                                                              '  \$${NumberUtil.decimalLimiter(model.dashboardSummary.totalFabRewards()["FETLP"]! * Decimal.parse(model.rewardTokenPriceMap['FETDUSD-LP']!.toString()))}',
+                                                                              maxLines: 2,
+                                                                              style: headText5.copyWith(color: green, fontWeight: FontWeight.bold)),
+                                                                        ],
+                                                                      )
+                                                                    : Container(),
+                                                              ],
                                                             ),
                                                           ],
                                                         ),
                                                       ),
                                                     ),
-                                                    // Joined projects
-                                                    ListTile(
+                                                    trailing: const Row(
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      children: [
+                                                        UIHelper
+                                                            .horizontalSpaceSmall,
+                                                        Icon(
+                                                          Icons
+                                                              .arrow_forward_ios,
+                                                          color: grey,
+                                                          size: 16,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+
+                                                  InkWell(
+                                                    onTap: () {
+                                                      if (model.joinedProjects
+                                                              .length ==
+                                                          1) {
+                                                        model.navigationService
+                                                            .navigateTo(
+                                                                referralDetailsViewRoute,
+                                                                arguments:
+                                                                    ReferalRoute(
+                                                                  project: model
+                                                                      .joinedProjects[0],
+                                                                ));
+                                                      } else {
+                                                        model.navigationService
+                                                            .navigateTo(
+                                                                referralViewRoute,
+                                                                arguments: model
+                                                                    .joinedProjects);
+                                                      }
+                                                    },
+                                                    child: ListTile(
                                                       horizontalTitleGap: 0,
-                                                      onTap: () => Navigator.push(
-                                                          context,
-                                                          CupertinoPageRoute(
-                                                              builder: (context) =>
-                                                                  const PurchasedPackageView())),
                                                       leading: Image.asset(
-                                                        'assets/images/club/packages.png',
+                                                        'assets/images/club/network.png',
                                                         width: 30,
                                                       ),
                                                       title: Text(
                                                         FlutterI18n.translate(
                                                             context,
-                                                            "stackedPackages"),
+                                                            "myReferralsDetails"),
                                                         style:
                                                             headText4.copyWith(
                                                                 color: black),
@@ -886,9 +840,11 @@ class ClubDashboardView extends StatelessWidget {
                                                                 const EdgeInsets
                                                                     .all(8.0),
                                                             child: Text(
-                                                              " modelpurchasedPackagesCount.toString()",
-                                                              style: headText5,
-                                                            ),
+                                                                model.referralCount
+                                                                        .toString() ??
+                                                                    '0',
+                                                                style:
+                                                                    headText5),
                                                           ),
                                                           const Icon(
                                                             Icons
@@ -899,11 +855,52 @@ class ClubDashboardView extends StatelessWidget {
                                                         ],
                                                       ),
                                                     ),
-                                                  ],
-                                                ),
+                                                  ),
+                                                  // Joined projects
+                                                  ListTile(
+                                                    horizontalTitleGap: 0,
+                                                    onTap: () => Navigator.push(
+                                                        context,
+                                                        CupertinoPageRoute(
+                                                            builder: (context) =>
+                                                                const PurchasedPackageView())),
+                                                    leading: Image.asset(
+                                                      'assets/images/club/packages.png',
+                                                      width: 30,
+                                                    ),
+                                                    title: Text(
+                                                      FlutterI18n.translate(
+                                                          context,
+                                                          "stackedPackages"),
+                                                      style: headText4.copyWith(
+                                                          color: black),
+                                                    ),
+                                                    trailing: Row(
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      children: [
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(8.0),
+                                                          child: Text(
+                                                            " modelpurchasedPackagesCount.toString()",
+                                                            style: headText5,
+                                                          ),
+                                                        ),
+                                                        const Icon(
+                                                          Icons
+                                                              .arrow_forward_ios,
+                                                          color: grey,
+                                                          size: 16,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
-                                            ],
-                                          ),
+                                            ),
+                                          ],
                                         ),
                                       )
                                     : SliverToBoxAdapter(

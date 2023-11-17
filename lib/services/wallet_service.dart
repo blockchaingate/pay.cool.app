@@ -1,25 +1,38 @@
+import 'dart:async';
 import 'dart:convert';
+import 'dart:typed_data';
+
+import 'package:bip32/bip32.dart' as bip32;
+import 'package:bip39/bip39.dart' as bip39;
 import 'package:bitbox/bitbox.dart' as bitbox;
-import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:bitcoin_flutter/bitcoin_flutter.dart' as bitcoin_flutter;
+import 'package:bitcoin_flutter/src/utils/script.dart' as script;
+import 'package:bs58check/bs58check.dart' as bs58check;
+import 'package:crypto/crypto.dart' as CryptoHash;
+import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:hex/hex.dart';
 import 'package:observable_ish/observable_ish.dart';
 import 'package:overlay_support/overlay_support.dart';
-import 'dart:async';
-import 'package:bip39/bip39.dart' as bip39;
-import 'package:bip32/bip32.dart' as bip32;
-import 'package:hex/hex.dart';
 import 'package:paycool/constants/api_routes.dart';
 import 'package:paycool/services/config_service.dart';
 import 'package:paycool/services/local_dialog_service.dart';
 import 'package:paycool/utils/string_util.dart';
+import 'package:paycool/utils/tron_util/trx_generate_address_util.dart'
+    as TronAddressUtil;
+import 'package:paycool/utils/tron_util/trx_transaction_util.dart'
+    as TronTransactionUtil;
 import 'package:paycool/utils/wallet/erc20_util.dart';
 import 'package:paycool/utils/wallet/wallet_util.dart';
 import 'package:stacked/stacked.dart';
-import 'dart:typed_data';
+import 'package:web3dart/crypto.dart' as CryptoWeb3;
 import 'package:web3dart/web3dart.dart';
+
 import '../constants/colors.dart';
 import '../constants/constants.dart';
 import '../environments/coins.dart' as coin_list;
+import '../environments/environment.dart';
 import '../logger.dart';
 import '../models/wallet/core_wallet_model.dart';
 import '../models/wallet/token_model.dart';
@@ -30,42 +43,27 @@ import '../service_locator.dart';
 import '../shared/ui_helpers.dart';
 import '../utils/abi_util.dart';
 import '../utils/btc_util.dart';
+import '../utils/coin_util.dart' as coin_util;
 import '../utils/custom_http_util.dart';
+import '../utils/eth_util.dart';
 import '../utils/exaddr.dart';
+import '../utils/fab_util.dart';
+import '../utils/kanban.util.dart';
+import '../utils/keypair_util.dart';
 import '../utils/ltc_util.dart';
 import '../utils/number_util.dart';
 import '../utils/string_util.dart' as string_utils;
-import '../utils/kanban.util.dart';
-import '../utils/keypair_util.dart';
-import '../utils/eth_util.dart';
-import '../utils/fab_util.dart';
-import '../utils/coin_util.dart' as coin_util;
-
-import 'package:bitcoin_flutter/src/utils/script.dart' as script;
-import '../environments/environment.dart';
-import 'package:bs58check/bs58check.dart' as bs58check;
-import 'package:decimal/decimal.dart';
-
-import 'package:bitcoin_flutter/bitcoin_flutter.dart' as bitcoin_flutter;
 import '../utils/wallet_coin_address_utils/doge_util.dart';
 import 'api_service.dart';
 import 'coin_service.dart';
 import 'db/core_wallet_database_service.dart';
 import 'db/token_list_database_service.dart';
 import 'db/transaction_history_database_service.dart';
-import 'package:web3dart/crypto.dart' as CryptoWeb3;
-import 'package:crypto/crypto.dart' as CryptoHash;
-
 import 'db/user_settings_database_service.dart';
 import 'db/wallet_database_service.dart';
 import 'local_storage_service.dart';
 import 'shared_service.dart';
 import 'vault_service.dart';
-
-import 'package:paycool/utils/tron_util/trx_generate_address_util.dart'
-    as TronAddressUtil;
-import 'package:paycool/utils/tron_util/trx_transaction_util.dart'
-    as TronTransactionUtil;
 
 class WalletService with ListenableServiceMixin {
   final log = getLogger('Wallet Service');
@@ -513,7 +511,9 @@ class WalletService with ListenableServiceMixin {
         log.i('language $languageFromDb found');
       }
       (context as Element).markNeedsBuild();
-    }).catchError((err) => log.e('user setting db empty'));
+    }).catchError((err) {
+      log.e('user setting db empty');
+    });
   }
 
   updateUserSettingsDb(UserSettings userSettings, isUserSettingsEmpty) async {
@@ -658,17 +658,17 @@ class WalletService with ListenableServiceMixin {
     return address;
   }
 
-  computeAddress(String pubBytes) {
-    if (pubBytes.length == 65) pubBytes = pubBytes.substring(1);
-    // var signature = sign(keccak256(concat), privateKey);
+  // computeAddress(String pubBytes) {
+  //   if (pubBytes.length == 65) pubBytes = pubBytes.substring(1);
+  //   // var signature = sign(keccak256(concat), privateKey);
 
-    var hash = CryptoWeb3.keccakUtf8(pubBytes);
+  //   var hash = CryptoWeb3.keccakUtf8(pubBytes);
 
-    //   var addressHex = "41" + hash.substring(24);
-    //   debugPrint('address hex $addressHex');
-    //var output = hex.encode(outputHashData);
-    //  return hexStr2byteArray(addressHex);
-  }
+  //   //   var addressHex = "41" + hash.substring(24);
+  //   //   debugPrint('address hex $addressHex');
+  //   //var output = hex.encode(outputHashData);
+  //   //  return hexStr2byteArray(addressHex);
+  // }
 
 // Get address From Private Key
   getAddressFromPrivKey(privKey) {
@@ -686,7 +686,7 @@ class WalletService with ListenableServiceMixin {
     var coinType = environment["CoinType"][tickerName].toString();
     final accountDerivationPath = "m/44'/$coinType'/0'/0";
     final accountNode = masterNode.derivePath(accountDerivationPath);
-    final accountXPriv = accountNode.toXPriv();
+    // final accountXPriv = accountNode.toXPriv();
     final childNode = accountNode.derive(0);
     final address = childNode.toCashAddress();
     // final address = cashAddress.split(":")[1];
@@ -741,17 +741,17 @@ class WalletService with ListenableServiceMixin {
 /*----------------------------------------------------------------------
                     Get Coin Address
 ----------------------------------------------------------------------*/
-  Future getCoinAddresses(String mnemonic) async {
-    var seed = generateSeed(mnemonic);
-    var root = bip32.BIP32.fromSeed(seed);
-    for (int i = 0; i < coinTickers.length; i++) {
-      var tickerName = coinTickers[i];
-      var addr = await coin_util.getAddressForCoin(root, tickerName,
-          tokenType: tokenType[i]);
-      log.w('name $tickerName - address $addr');
-      return addr;
-    }
-  }
+  // Future getCoinAddresses(String mnemonic) async {
+  //   var seed = generateSeed(mnemonic);
+  //   var root = bip32.BIP32.fromSeed(seed);
+  //   for (int i = 0; i < coinTickers.length; i++) {
+  //     var tickerName = coinTickers[i];
+  //     var addr = await coin_util.getAddressForCoin(root, tickerName,
+  //         tokenType: tokenType[i]);
+  //     log.w('name $tickerName - address $addr');
+  //     return addr;
+  //   }
+  // }
 /*----------------------------------------------------------------------
                 Future Get Coin Balance By Address
 ----------------------------------------------------------------------*/
@@ -1014,7 +1014,6 @@ class WalletService with ListenableServiceMixin {
   // WITHDRAW TX status
   checkWithdrawTxStatus(TransactionHistory transaction) async {
     int baseTime = 30;
-    List result = [];
     String? kanbanTxId = transaction.kanbanTxId;
     TransactionHistory transactionByTxid = TransactionHistory();
     Timer.periodic(Duration(seconds: baseTime), (Timer t) async {
@@ -1326,7 +1325,7 @@ class WalletService with ListenableServiceMixin {
       var res = await _apiService.getAssetsBalance(exgAddress);
       log.w('assetsBalance exchange $res');
       for (var i = 0; i < res!.length; i++) {
-        var tempBal = res[i];
+        // var tempBal = res[i];
         var coinType = res[i].coinType;
         var unlockedAmount = res[i].unlockedAmount;
         var lockedAmount = res[i].lockedAmount;

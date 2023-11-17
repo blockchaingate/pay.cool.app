@@ -19,7 +19,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:kyc/kyc.dart';
-// import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
@@ -41,7 +40,6 @@ import 'package:paycool/services/db/decimal_config_database_service.dart';
 import 'package:paycool/services/db/token_list_database_service.dart';
 import 'package:paycool/services/db/user_settings_database_service.dart';
 import 'package:paycool/services/db/wallet_database_service.dart';
-//import 'package:paycool/services/dialog_service.dart';
 import 'package:paycool/services/local_storage_service.dart';
 import 'package:paycool/services/shared_service.dart';
 import 'package:paycool/services/wallet_service.dart';
@@ -51,17 +49,14 @@ import 'package:paycool/utils/number_util.dart';
 import 'package:paycool/utils/tron_util/trx_generate_address_util.dart'
     as tron_address_util;
 import 'package:paycool/utils/wallet/wallet_util.dart';
-// import 'package:showcaseview/showcaseview.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 
 import '../../services/local_dialog_service.dart';
-//import 'package:aukfa_version_checker
-//import 'package:json_diff/json_diff.dart';
 
 class WalletDashboardViewModel extends BaseViewModel {
-  WalletDashboardViewModel({BuildContext? context}) : _context = context;
-  final BuildContext? _context;
+  WalletDashboardViewModel({BuildContext? context});
+  BuildContext? context;
   final log = getLogger('WalletDashboardViewModel');
 
   WalletService walletService = locator<WalletService>();
@@ -196,7 +191,7 @@ class WalletDashboardViewModel extends BaseViewModel {
     try {
       await versionChecker
           .check(
-        _context!,
+        context!,
         //test: true, testVersion: "2.3.126"
       )
           .timeout(const Duration(seconds: 2), onTimeout: () {
@@ -243,7 +238,7 @@ class WalletDashboardViewModel extends BaseViewModel {
         res = {
           'success': false,
           'error': FlutterI18n.translate(
-              _context!, 'pleaseFillAllTheTextFieldsCorrectly')
+              context!, 'pleaseFillAllTheTextFieldsCorrectly')
         };
       }
       return res;
@@ -298,8 +293,8 @@ class WalletDashboardViewModel extends BaseViewModel {
   routeWithWalletInfoArgs(WalletBalance wallet, String routeName) async {
     // assign address from local DB to walletinfo object
 
-    if (MediaQuery.of(_context!).size.width < largeSize) {
-      FocusScope.of(_context!).requestFocus(FocusNode());
+    if (MediaQuery.of(context!).size.width < largeSize) {
+      FocusScope.of(context!).requestFocus(FocusNode());
       var walletInfo =
           await walletUtil.getWalletInfoObjFromWalletBalance(wallet);
 
@@ -494,7 +489,7 @@ class WalletDashboardViewModel extends BaseViewModel {
 
   showUpdateWalletDialog() {
     showDialog(
-      context: _context!,
+      context: context!,
       barrierDismissible: false,
       builder: (BuildContext context) {
         return Platform.isIOS
@@ -567,10 +562,10 @@ class WalletDashboardViewModel extends BaseViewModel {
     String mnemonic = '';
     await dialogService
         .showDialog(
-            title: FlutterI18n.translate(_context!, "enterPassword"),
+            title: FlutterI18n.translate(context!, "enterPassword"),
             description: FlutterI18n.translate(
-                _context!, "dialogManagerTypeSamePasswordNote"),
-            buttonTitle: FlutterI18n.translate(_context!, "confirm"))
+                context!, "dialogManagerTypeSamePasswordNote"),
+            buttonTitle: FlutterI18n.translate(context!, "confirm"))
         .then((res) async {
       if (res.confirmed) {
         mnemonic = res.returnedText;
@@ -624,8 +619,8 @@ class WalletDashboardViewModel extends BaseViewModel {
 ----------------------------------------------------------------------*/
 
   onSingleCoinCardClick(index) async {
-    if (MediaQuery.of(_context!).size.width < largeSize) {
-      FocusScope.of(_context!).requestFocus(FocusNode());
+    if (MediaQuery.of(context!).size.width < largeSize) {
+      FocusScope.of(context!).requestFocus(FocusNode());
       navigationService.navigateTo(walletFeaturesViewRoute,
           arguments: wallets[index]);
       searchCoinTextController.clear();
@@ -690,8 +685,8 @@ class WalletDashboardViewModel extends BaseViewModel {
 
         if (localAppVersion['name']!.compareTo(apiAppVersion) == -1) {
           sharedService.alertDialog(
-              FlutterI18n.translate(_context!, "appUpdateNotice"),
-              '${FlutterI18n.translate(_context!, "pleaseUpdateYourAppFrom")} $localAppVersion ${FlutterI18n.translate(_context!, "toLatestBuild")} $apiAppVersion ${FlutterI18n.translate(_context!, "inText")} $store ${FlutterI18n.translate(_context!, "clickOnWebsiteButton")}',
+              FlutterI18n.translate(context!, "appUpdateNotice"),
+              '${FlutterI18n.translate(context!, "pleaseUpdateYourAppFrom")} $localAppVersion ${FlutterI18n.translate(context!, "toLatestBuild")} $apiAppVersion ${FlutterI18n.translate(context!, "inText")} $store ${FlutterI18n.translate(context!, "clickOnWebsiteButton")}',
               isUpdate: true,
               isLater: true,
               isWebsite: true,
@@ -717,7 +712,7 @@ class WalletDashboardViewModel extends BaseViewModel {
           isFreeFabNotUsed = res['ok'];
           debugPrint(res['_body']['question'].toString());
           showDialog(
-              context: _context!,
+              context: context!,
               builder: (context) {
                 return Center(
                   child: SizedBox(
@@ -904,11 +899,11 @@ class WalletDashboardViewModel extends BaseViewModel {
           debugPrint(isFreeFabNotUsed.toString());
 
           walletService.showInfoFlushbar(
-              FlutterI18n.translate(_context!, "notice"),
-              FlutterI18n.translate(_context!, "freeFabUsedAlready"),
+              FlutterI18n.translate(context!, "notice"),
+              FlutterI18n.translate(context!, "freeFabUsedAlready"),
               Icons.notification_important,
               yellow,
-              _context!);
+              context!);
         }
       }
     });
@@ -1028,7 +1023,7 @@ class WalletDashboardViewModel extends BaseViewModel {
         if (pendingDepositCoins.isNotEmpty) {
           showSimpleNotification(
               Text(
-                '${FlutterI18n.translate(_context!, "requireRedeposit")}: $f',
+                '${FlutterI18n.translate(context!, "requireRedeposit")}: $f',
                 textAlign: TextAlign.center,
                 style: headText4.copyWith(color: secondaryColor),
               ),
@@ -1048,13 +1043,13 @@ class WalletDashboardViewModel extends BaseViewModel {
     log.w('in showDialogWarning isConfirmDeposit $isConfirmDeposit');
     if (gasAmount == 0.0) {
       sharedService.alertDialog(
-          FlutterI18n.translate(_context!, "insufficientGasAmount"),
-          FlutterI18n.translate(_context!, "pleaseAddGasToTrade"));
+          FlutterI18n.translate(context!, "insufficientGasAmount"),
+          FlutterI18n.translate(context!, "pleaseAddGasToTrade"));
     }
     if (isConfirmDeposit) {
       sharedService.alertDialog(
-          FlutterI18n.translate(_context!, "pendingConfirmDeposit"),
-          '${FlutterI18n.translate(_context!, "pleaseConfirmYour")} ${confirmDepositCoinWallet.tickerName} ${FlutterI18n.translate(_context!, "deposit")}',
+          FlutterI18n.translate(context!, "pendingConfirmDeposit"),
+          '${FlutterI18n.translate(context!, "pleaseConfirmYour")} ${confirmDepositCoinWallet.tickerName} ${FlutterI18n.translate(context!, "deposit")}',
           path: '/walletFeatures',
           arguments: confirmDepositCoinWallet,
           isWarning: true);
@@ -1221,13 +1216,13 @@ class WalletDashboardViewModel extends BaseViewModel {
   debugVersionPopup() async {
     // await _showNotification();
 
-    sharedService.alertDialog(FlutterI18n.translate(_context!, "notice"),
-        FlutterI18n.translate(_context!, "testVersion"),
+    sharedService.alertDialog(FlutterI18n.translate(context!, "notice"),
+        FlutterI18n.translate(context!, "testVersion"),
         isWarning: false);
   }
 
   onBackButtonPressed() async {
-    sharedService.context = _context!;
+    sharedService.context = context!;
     await sharedService.closeApp();
   }
 

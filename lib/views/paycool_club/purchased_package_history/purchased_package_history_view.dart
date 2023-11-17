@@ -262,14 +262,12 @@ class DisplayQrCode extends StatelessWidget {
           ],
         ),
       ),
-      body: Container(
-        child: Center(
-          child: QrImageView(
-              data: qr,
-              version: QrVersions.auto,
-              size: 200.0,
-              foregroundColor: Colors.white),
-        ),
+      body: Center(
+        child: QrImageView(
+            data: qr,
+            version: QrVersions.auto,
+            size: 200.0,
+            foregroundColor: Colors.white),
       ),
     );
   }

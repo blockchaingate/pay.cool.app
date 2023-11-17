@@ -18,17 +18,9 @@ import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/constants/ui_var.dart';
-import 'package:paycool/models/bond/vm/me_model.dart';
 import 'package:paycool/models/wallet/wallet_balance.dart';
-import 'package:paycool/services/local_storage_service.dart';
 import 'package:paycool/shared/ui_helpers.dart';
-import 'package:paycool/views/bond/buyBond/bond_symbol_view.dart';
-import 'package:paycool/views/bond/login/login_view.dart';
-import 'package:paycool/views/bond/personalInfo/personal_view.dart';
-// import 'package:paycool/views/bond/personalInfo/personal_view.dart';
-import 'package:paycool/views/bond/register/bond_register_view.dart';
-import 'package:paycool/views/bond/txHistory/bond_history_view.dart';
-import 'package:paycool/views/bond/walletConncet/wallet_connect_view.dart';
+import 'package:paycool/views/bond/bond_dashboard.dart';
 import 'package:paycool/views/wallet/wallet_dashboard_viewmodel.dart';
 import 'package:paycool/views/wallet/wallet_features/wallet_features_view.dart';
 import 'package:paycool/widgets/bottom_nav.dart';
@@ -36,7 +28,6 @@ import 'package:paycool/widgets/shimmer_layouts/shimmer_layout.dart';
 import 'package:paycool/widgets/wallet/add_gas/gas_balance_and_add_gas_button_widget.dart';
 import 'package:paycool/widgets/wallet/coin_details_card_widget.dart';
 import 'package:paycool/widgets/wallet/total_balance_card_widget.dart';
-// import 'package:showcaseview/showcaseview.dart';
 import 'package:stacked/stacked.dart';
 
 class WalletDashboardView extends StatefulWidget {
@@ -77,165 +68,111 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
 
   @override
   Widget build(BuildContext context) {
-    // GlobalKey _one = GlobalKey(debugLabel: "one");
-    // GlobalKey _two = GlobalKey(debugLabel: "two");
-    final key1 = GlobalKey<ScaffoldState>();
     final key = GlobalKey<ScaffoldState>();
+    Size size = MediaQuery.of(context).size;
 
-    // RefreshController _refreshController =
-    //     RefreshController(initialRefresh: false);
     return ViewModelBuilder<WalletDashboardViewModel>.reactive(
-        viewModelBuilder: () => WalletDashboardViewModel(context: context),
-        disposeViewModel: true,
         onViewModelReady: (model) async {
-          newModel = model;
-
-          model.sharedService.context = context;
-          model.init();
+          model.context = context;
+          await model.init();
         },
+        viewModelBuilder: () => WalletDashboardViewModel(),
         builder: (context, WalletDashboardViewModel model, child) {
-          return AnnotatedRegion<SystemUiOverlayStyle>(
-            value: SystemUiOverlayStyle.dark,
-            child: WillPopScope(
-              onWillPop: () {
-                model.onBackButtonPressed();
-                return Future(() => false);
+          return Scaffold(
+            key: key,
+            body: Builder(
+                builder: (context) => mainWidgets(size, model, context)),
+            bottomNavigationBar: BottomNavBar(count: 1),
+            floatingActionButton: FloatingActionButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const BondDashboard()));
               },
-              child: PageView(
-                controller: _pageController,
-                scrollDirection: Axis.vertical,
-                children: [
-                  Scaffold(
-                    key: key1,
-                    body: GestureDetector(
-                      onTap: () {
-                        FocusScope.of(context).requestFocus(FocusNode());
-                      },
-                      child: Builder(
-                          builder: (context) => bondPage(model, context)),
-                      // ),
-                    ),
-                  ),
-                  Scaffold(
-                    key: key,
-                    appBar: PreferredSize(
-                      preferredSize: const Size.fromHeight(140),
-                      child: InkWell(
-                        onTap: () {
-                          _pageController.animateToPage(0,
-                              duration: Duration(seconds: 2),
-                              curve: Curves.easeInOut);
-                        },
-                        child: Container(
-                          decoration: const BoxDecoration(
-                            image: DecorationImage(
-                                opacity: 0.8,
-                                image: AssetImage("assets/images/bondBg.jpeg"),
-                                fit: BoxFit.cover),
-                            border: Border(
-                              bottom: BorderSide(
-                                color: Colors.white,
-                                width: 2.0,
-                              ),
-                            ),
-                          ),
-                          width: double.infinity,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              UIHelper.verticalSpaceSmall,
-                              SizedBox(
-                                  width: 75,
-                                  child: Image.asset(
-                                      "assets/images/salvador1.png")),
-                              SizedBox(
-                                child: Text(
-                                  "EI SALVADOR",
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 22,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                              SizedBox(
-                                child: Text(
-                                  FlutterI18n.translate(
-                                      context, "nationalBondSale"),
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    body: GestureDetector(
-                      onTap: () {
-                        FocusScope.of(context).requestFocus(FocusNode());
-                      },
-                      child: Builder(
-                          builder: (context) => mainWidgets(model, context)),
-                      // ),
-                    ),
-                    bottomNavigationBar: BottomNavBar(count: 1),
-                  )
-                ],
+              elevation: 1,
+              backgroundColor: Colors.transparent,
+              child: Image.asset(
+                "assets/images/new-design/pay_cool_icon.png",
+                fit: BoxFit.cover,
               ),
             ),
+            extendBody: true,
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.centerDocked,
           );
         });
   }
 
-  Widget mainWidgets(WalletDashboardViewModel model, BuildContext context) {
-    return Column(
-      children: <Widget>[
-        LayoutBuilder(builder: (BuildContext ctx, BoxConstraints constraints) {
-          if (constraints.maxWidth < largeSize) {
-            return Container(
-              height: MediaQuery.of(context).padding.top,
-            );
-          } else {
-            return Column(
-              children: <Widget>[
-                topWidget(model, context),
-                amountAndGas(model, context),
-              ],
-            );
-          }
-        }),
-        //   !Platform.isAndroid
-        //      ?
-        Expanded(
-          child: LayoutBuilder(
-              builder: (BuildContext ctx, BoxConstraints constraints) {
-            if (constraints.maxWidth < largeSize) {
-              return coinList(model, ctx);
-            } else {
-              if (model.rightWalletInfo == null ||
-                  model.rightWalletInfo!.address!.isEmpty) {
-                model.updateRightWallet();
-              }
-              return Row(
+  Widget mainWidgets(
+      Size size, WalletDashboardViewModel model, BuildContext context) {
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        child: Column(
+          children: <Widget>[
+            AppBar(
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              systemOverlayStyle: SystemUiOverlayStyle.dark,
+              leading: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SizedBox(
-                      width: 300,
-                      height: double.infinity,
-                      child: coinList(model, ctx)),
-                  Expanded(
-                    child: model.rightWalletInfo == null ||
-                            model.rightWalletInfo!.address!.isEmpty
-                        ? Container()
-                        : WalletFeaturesView(),
+                  Image.asset(
+                    "assets/images/new-design/menu_icon.png",
+                    scale: 2.4,
+                  ),
+                  UIHelper.horizontalSpaceSmall,
+                  Text(
+                    "All Chains",
+                    style: TextStyle(
+                        color: Colors.black, fontWeight: FontWeight.w600),
                   )
                 ],
-              );
-            }
-          }),
+              ),
+              leadingWidth: (size.width * 0.3),
+              actions: [
+                Image.asset(
+                  "assets/images/new-design/wc_icon.png",
+                  scale: 2.2,
+                ),
+                Image.asset(
+                  "assets/images/new-design/scan_icon.png",
+                  scale: 2.2,
+                ),
+              ],
+            ),
+            Expanded(
+              child: LayoutBuilder(
+                  builder: (BuildContext ctx, BoxConstraints constraints) {
+                if (constraints.maxWidth < largeSize) {
+                  return coinList(model, ctx);
+                } else {
+                  if (model.rightWalletInfo == null ||
+                      model.rightWalletInfo!.address!.isEmpty) {
+                    model.updateRightWallet();
+                  }
+                  return Row(
+                    children: [
+                      SizedBox(
+                          width: 300,
+                          height: double.infinity,
+                          child: coinList(model, ctx)),
+                      Expanded(
+                        child: model.rightWalletInfo == null ||
+                                model.rightWalletInfo!.address!.isEmpty
+                            ? Container()
+                            : WalletFeaturesView(),
+                      )
+                    ],
+                  );
+                }
+              }),
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 
@@ -496,7 +433,6 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
   }
 
   Widget coinList(WalletDashboardViewModel model, BuildContext context) {
-    // var top = 0.0;
     return DefaultTabController(
         length: 6,
         initialIndex: model.selectedTabIndex,
@@ -633,384 +569,384 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
     );
   }
 
-  Widget bondPage(WalletDashboardViewModel model, BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-    return Container(
-      width: size.width,
-      height: size.height,
-      decoration: const BoxDecoration(
-        image: DecorationImage(
-            image: AssetImage("assets/images/bgImage.png"), fit: BoxFit.cover),
-      ),
-      child: Column(
-        children: [
-          model.bondMeVm.email == null
-              ? SizedBox(
-                  height: size.height,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      UIHelper.verticalSpaceLarge,
-                      SizedBox(
-                        width: size.width,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(right: 10),
-                              child: IconButton(
-                                alignment: Alignment.topRight,
-                                onPressed: () {
-                                  _pageController.animateToPage(1,
-                                      duration: Duration(seconds: 2),
-                                      curve: Curves.easeInOut);
-                                },
-                                icon: Icon(Icons.arrow_back),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(right: 10),
-                              child: IconButton(
-                                alignment: Alignment.topRight,
-                                onPressed: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const WalletConnectView()));
-                                },
-                                icon: Image.asset(
-                                  "assets/images/walletconnect.png",
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Image.asset(
-                        "assets/images/salvador.png",
-                        height: 200,
-                      ),
-                      UIHelper.verticalSpaceMedium,
-                      Text(
-                        FlutterI18n.translate(context, "elSalvadorDigital"),
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white),
-                      ),
-                      UIHelper.verticalSpaceLarge,
-                      Text(
-                        FlutterI18n.translate(context, "youHaveAccount"),
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w200,
-                            color: Colors.white),
-                      ),
-                      UIHelper.verticalSpaceSmall,
-                      Container(
-                        width: size.width * 0.9,
-                        height: 45,
-                        decoration: BoxDecoration(
-                          gradient: buttoGradient,
-                          borderRadius: BorderRadius.circular(40.0),
-                        ),
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        const BondLoginView()));
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.transparent,
-                            shadowColor: Colors.transparent,
-                          ),
-                          child: Text(
-                            FlutterI18n.translate(context, "login"),
-                            style: TextStyle(
-                              fontSize: 16.0,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ),
-                      UIHelper.verticalSpaceSmall,
-                      Text(
-                        FlutterI18n.translate(context, "dontHaveAnAccount"),
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w200,
-                            color: Colors.white),
-                      ),
-                      UIHelper.verticalSpaceSmall,
-                      Container(
-                        width: size.width * 0.9,
-                        height: 45,
-                        decoration: BoxDecoration(
-                          gradient: buttoGradient,
-                          borderRadius: BorderRadius.circular(40.0),
-                        ),
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        const BondRegisterView()));
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.transparent,
-                            shadowColor: Colors.transparent,
-                          ),
-                          child: Text(
-                            FlutterI18n.translate(context, "register"),
-                            style: TextStyle(
-                              fontSize: 16.0,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                )
-              : Column(
-                  children: [
-                    UIHelper.verticalSpaceLarge,
-                    SizedBox(
-                      width: size.width,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          IconButton(
-                            alignment: Alignment.topRight,
-                            onPressed: () {
-                              showDialog(
-                                  context: context,
-                                  builder: (context) {
-                                    return AlertDialog(
-                                      elevation: 10,
-                                      titleTextStyle: headText5.copyWith(
-                                          fontWeight: FontWeight.bold),
-                                      contentTextStyle:
-                                          const TextStyle(color: white),
-                                      content: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Text(
-                                          FlutterI18n.translate(
-                                              context, "doYouLogout"),
-                                          style: const TextStyle(fontSize: 14),
-                                          textAlign: TextAlign.center,
-                                        ),
-                                      ),
-                                      actions: <Widget>[
-                                        UIHelper.verticalSpaceSmall,
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Container(
-                                              decoration: BoxDecoration(
-                                                gradient: buttoGradient,
-                                                borderRadius:
-                                                    BorderRadius.circular(40.0),
-                                              ),
-                                              child: ElevatedButton(
-                                                style: ElevatedButton.styleFrom(
-                                                  backgroundColor:
-                                                      Colors.transparent,
-                                                  shadowColor:
-                                                      Colors.transparent,
-                                                ),
-                                                child: Text(
-                                                  FlutterI18n.translate(
-                                                      context, "no"),
-                                                  style: headText5,
-                                                ),
-                                                onPressed: () {
-                                                  Navigator.of(context)
-                                                      .pop(false);
-                                                },
-                                              ),
-                                            ),
-                                            UIHelper.horizontalSpaceMedium,
-                                            Container(
-                                              decoration: BoxDecoration(
-                                                gradient: buttoGradient,
-                                                borderRadius:
-                                                    BorderRadius.circular(40.0),
-                                              ),
-                                              child: ElevatedButton(
-                                                style: ElevatedButton.styleFrom(
-                                                  backgroundColor:
-                                                      Colors.transparent,
-                                                  shadowColor:
-                                                      Colors.transparent,
-                                                ),
-                                                child: Text(
-                                                    FlutterI18n.translate(
-                                                        context, "yes"),
-                                                    style: const TextStyle(
-                                                        color: white,
-                                                        fontSize: 12)),
-                                                onPressed: () {
-                                                  Navigator.pop(context);
-                                                  LocalStorageService()
-                                                      .clearToken();
-                                                  model.bondMeVm =
-                                                      BondMeModel();
-                                                  setState(() {});
-                                                },
-                                              ),
-                                            ),
-                                            UIHelper.verticalSpaceSmall,
-                                          ],
-                                        ),
-                                      ],
-                                    );
-                                  });
-                            },
-                            icon: Icon(Icons.logout),
-                          ),
-                          Row(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(right: 10),
-                                child: IconButton(
-                                  alignment: Alignment.topRight,
-                                  onPressed: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                const WalletConnectView()));
-                                  },
-                                  icon: Image.asset(
-                                    "assets/images/walletconnect.png",
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(right: 10),
-                                child: IconButton(
-                                  alignment: Alignment.topRight,
-                                  onPressed: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                const BondHistoryView()));
-                                  },
-                                  icon: Icon(Icons.history),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(right: 10),
-                                child: IconButton(
-                                  alignment: Alignment.topRight,
-                                  onPressed: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                const PersonalInfoView()));
-                                  },
-                                  icon: Icon(Icons.person),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    UIHelper.verticalSpaceLarge,
-                    Image.asset(
-                      "assets/images/salvador.png",
-                      height: 200,
-                    ),
-                    UIHelper.verticalSpaceLarge,
-                    Text(
-                      "El Salvador",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white),
-                    ),
-                    UIHelper.verticalSpaceSmall,
-                    Text(
-                      FlutterI18n.translate(context, "nationalBondSale"),
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white),
-                    ),
-                    UIHelper.verticalSpaceLarge,
-                    Container(
-                      width: size.width * 0.8,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        gradient: buttoGradient,
-                        borderRadius: BorderRadius.circular(40.0),
-                      ),
-                      child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      BondSembolView(model.bondMeVm)));
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.transparent,
-                          shadowColor: Colors.transparent,
-                        ),
-                        child: Text(
-                          FlutterI18n.translate(context, "buyNow"),
-                          style: TextStyle(
-                            fontSize: 16.0,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                    UIHelper.verticalSpaceMedium,
-                    Container(
-                      width: size.width * 0.8,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        gradient: buttoGradient,
-                        borderRadius: BorderRadius.circular(40.0),
-                      ),
-                      child: ElevatedButton(
-                        onPressed: () {
-                          model.checkKycStatusV2();
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.transparent,
-                          shadowColor: Colors.transparent,
-                        ),
-                        child: Text(
-                          "KYC",
-                          style: TextStyle(
-                            fontSize: 16.0,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                )
-        ],
-      ),
-    );
-  }
+  // Widget bondPage(WalletDashboardViewModel model, BuildContext context) {
+  //   Size size = MediaQuery.of(context).size;
+  //   return Container(
+  //     width: size.width,
+  //     height: size.height,
+  //     decoration: const BoxDecoration(
+  //       image: DecorationImage(
+  //           image: AssetImage("assets/images/bgImage.png"), fit: BoxFit.cover),
+  //     ),
+  //     child: Column(
+  //       children: [
+  //         model.bondMeVm.email == null
+  //             ? SizedBox(
+  //                 height: size.height,
+  //                 child: Column(
+  //                   mainAxisAlignment: MainAxisAlignment.start,
+  //                   children: [
+  //                     UIHelper.verticalSpaceLarge,
+  //                     SizedBox(
+  //                       width: size.width,
+  //                       child: Row(
+  //                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                         children: [
+  //                           Padding(
+  //                             padding: const EdgeInsets.only(right: 10),
+  //                             child: IconButton(
+  //                               alignment: Alignment.topRight,
+  //                               onPressed: () {
+  //                                 _pageController.animateToPage(1,
+  //                                     duration: Duration(seconds: 2),
+  //                                     curve: Curves.easeInOut);
+  //                               },
+  //                               icon: Icon(Icons.arrow_back),
+  //                             ),
+  //                           ),
+  //                           Padding(
+  //                             padding: const EdgeInsets.only(right: 10),
+  //                             child: IconButton(
+  //                               alignment: Alignment.topRight,
+  //                               onPressed: () {
+  //                                 Navigator.push(
+  //                                     context,
+  //                                     MaterialPageRoute(
+  //                                         builder: (context) =>
+  //                                             const WalletConnectView()));
+  //                               },
+  //                               icon: Image.asset(
+  //                                 "assets/images/walletconnect.png",
+  //                               ),
+  //                             ),
+  //                           ),
+  //                         ],
+  //                       ),
+  //                     ),
+  //                     Image.asset(
+  //                       "assets/images/salvador.png",
+  //                       height: 200,
+  //                     ),
+  //                     UIHelper.verticalSpaceMedium,
+  //                     Text(
+  //                       FlutterI18n.translate(context, "elSalvadorDigital"),
+  //                       textAlign: TextAlign.center,
+  //                       style: TextStyle(
+  //                           fontSize: 24,
+  //                           fontWeight: FontWeight.bold,
+  //                           color: Colors.white),
+  //                     ),
+  //                     UIHelper.verticalSpaceLarge,
+  //                     Text(
+  //                       FlutterI18n.translate(context, "youHaveAccount"),
+  //                       textAlign: TextAlign.center,
+  //                       style: TextStyle(
+  //                           fontSize: 14,
+  //                           fontWeight: FontWeight.w200,
+  //                           color: Colors.white),
+  //                     ),
+  //                     UIHelper.verticalSpaceSmall,
+  //                     Container(
+  //                       width: size.width * 0.9,
+  //                       height: 45,
+  //                       decoration: BoxDecoration(
+  //                         gradient: buttoGradient,
+  //                         borderRadius: BorderRadius.circular(40.0),
+  //                       ),
+  //                       child: ElevatedButton(
+  //                         onPressed: () {
+  //                           Navigator.push(
+  //                               context,
+  //                               MaterialPageRoute(
+  //                                   builder: (context) =>
+  //                                       const BondLoginView()));
+  //                         },
+  //                         style: ElevatedButton.styleFrom(
+  //                           backgroundColor: Colors.transparent,
+  //                           shadowColor: Colors.transparent,
+  //                         ),
+  //                         child: Text(
+  //                           FlutterI18n.translate(context, "login"),
+  //                           style: TextStyle(
+  //                             fontSize: 16.0,
+  //                             fontWeight: FontWeight.bold,
+  //                           ),
+  //                         ),
+  //                       ),
+  //                     ),
+  //                     UIHelper.verticalSpaceSmall,
+  //                     Text(
+  //                       FlutterI18n.translate(context, "dontHaveAnAccount"),
+  //                       textAlign: TextAlign.center,
+  //                       style: TextStyle(
+  //                           fontSize: 14,
+  //                           fontWeight: FontWeight.w200,
+  //                           color: Colors.white),
+  //                     ),
+  //                     UIHelper.verticalSpaceSmall,
+  //                     Container(
+  //                       width: size.width * 0.9,
+  //                       height: 45,
+  //                       decoration: BoxDecoration(
+  //                         gradient: buttoGradient,
+  //                         borderRadius: BorderRadius.circular(40.0),
+  //                       ),
+  //                       child: ElevatedButton(
+  //                         onPressed: () {
+  //                           Navigator.push(
+  //                               context,
+  //                               MaterialPageRoute(
+  //                                   builder: (context) =>
+  //                                       const BondRegisterView()));
+  //                         },
+  //                         style: ElevatedButton.styleFrom(
+  //                           backgroundColor: Colors.transparent,
+  //                           shadowColor: Colors.transparent,
+  //                         ),
+  //                         child: Text(
+  //                           FlutterI18n.translate(context, "register"),
+  //                           style: TextStyle(
+  //                             fontSize: 16.0,
+  //                             fontWeight: FontWeight.bold,
+  //                           ),
+  //                         ),
+  //                       ),
+  //                     ),
+  //                   ],
+  //                 ),
+  //               )
+  //             : Column(
+  //                 children: [
+  //                   UIHelper.verticalSpaceLarge,
+  //                   SizedBox(
+  //                     width: size.width,
+  //                     child: Row(
+  //                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                       children: [
+  //                         IconButton(
+  //                           alignment: Alignment.topRight,
+  //                           onPressed: () {
+  //                             showDialog(
+  //                                 context: context,
+  //                                 builder: (context) {
+  //                                   return AlertDialog(
+  //                                     elevation: 10,
+  //                                     titleTextStyle: headText5.copyWith(
+  //                                         fontWeight: FontWeight.bold),
+  //                                     contentTextStyle:
+  //                                         const TextStyle(color: white),
+  //                                     content: Padding(
+  //                                       padding: const EdgeInsets.all(8.0),
+  //                                       child: Text(
+  //                                         FlutterI18n.translate(
+  //                                             context, "doYouLogout"),
+  //                                         style: const TextStyle(fontSize: 14),
+  //                                         textAlign: TextAlign.center,
+  //                                       ),
+  //                                     ),
+  //                                     actions: <Widget>[
+  //                                       UIHelper.verticalSpaceSmall,
+  //                                       Row(
+  //                                         mainAxisAlignment:
+  //                                             MainAxisAlignment.center,
+  //                                         children: [
+  //                                           Container(
+  //                                             decoration: BoxDecoration(
+  //                                               gradient: buttoGradient,
+  //                                               borderRadius:
+  //                                                   BorderRadius.circular(40.0),
+  //                                             ),
+  //                                             child: ElevatedButton(
+  //                                               style: ElevatedButton.styleFrom(
+  //                                                 backgroundColor:
+  //                                                     Colors.transparent,
+  //                                                 shadowColor:
+  //                                                     Colors.transparent,
+  //                                               ),
+  //                                               child: Text(
+  //                                                 FlutterI18n.translate(
+  //                                                     context, "no"),
+  //                                                 style: headText5,
+  //                                               ),
+  //                                               onPressed: () {
+  //                                                 Navigator.of(context)
+  //                                                     .pop(false);
+  //                                               },
+  //                                             ),
+  //                                           ),
+  //                                           UIHelper.horizontalSpaceMedium,
+  //                                           Container(
+  //                                             decoration: BoxDecoration(
+  //                                               gradient: buttoGradient,
+  //                                               borderRadius:
+  //                                                   BorderRadius.circular(40.0),
+  //                                             ),
+  //                                             child: ElevatedButton(
+  //                                               style: ElevatedButton.styleFrom(
+  //                                                 backgroundColor:
+  //                                                     Colors.transparent,
+  //                                                 shadowColor:
+  //                                                     Colors.transparent,
+  //                                               ),
+  //                                               child: Text(
+  //                                                   FlutterI18n.translate(
+  //                                                       context, "yes"),
+  //                                                   style: const TextStyle(
+  //                                                       color: white,
+  //                                                       fontSize: 12)),
+  //                                               onPressed: () {
+  //                                                 Navigator.pop(context);
+  //                                                 LocalStorageService()
+  //                                                     .clearToken();
+  //                                                 model.bondMeVm =
+  //                                                     BondMeModel();
+  //                                                 setState(() {});
+  //                                               },
+  //                                             ),
+  //                                           ),
+  //                                           UIHelper.verticalSpaceSmall,
+  //                                         ],
+  //                                       ),
+  //                                     ],
+  //                                   );
+  //                                 });
+  //                           },
+  //                           icon: Icon(Icons.logout),
+  //                         ),
+  //                         Row(
+  //                           children: [
+  //                             Padding(
+  //                               padding: const EdgeInsets.only(right: 10),
+  //                               child: IconButton(
+  //                                 alignment: Alignment.topRight,
+  //                                 onPressed: () {
+  //                                   Navigator.push(
+  //                                       context,
+  //                                       MaterialPageRoute(
+  //                                           builder: (context) =>
+  //                                               const WalletConnectView()));
+  //                                 },
+  //                                 icon: Image.asset(
+  //                                   "assets/images/walletconnect.png",
+  //                                 ),
+  //                               ),
+  //                             ),
+  //                             Padding(
+  //                               padding: const EdgeInsets.only(right: 10),
+  //                               child: IconButton(
+  //                                 alignment: Alignment.topRight,
+  //                                 onPressed: () {
+  //                                   Navigator.push(
+  //                                       context,
+  //                                       MaterialPageRoute(
+  //                                           builder: (context) =>
+  //                                               const BondHistoryView()));
+  //                                 },
+  //                                 icon: Icon(Icons.history),
+  //                               ),
+  //                             ),
+  //                             Padding(
+  //                               padding: const EdgeInsets.only(right: 10),
+  //                               child: IconButton(
+  //                                 alignment: Alignment.topRight,
+  //                                 onPressed: () {
+  //                                   Navigator.push(
+  //                                       context,
+  //                                       MaterialPageRoute(
+  //                                           builder: (context) =>
+  //                                               const PersonalInfoView()));
+  //                                 },
+  //                                 icon: Icon(Icons.person),
+  //                               ),
+  //                             ),
+  //                           ],
+  //                         ),
+  //                       ],
+  //                     ),
+  //                   ),
+  //                   UIHelper.verticalSpaceLarge,
+  //                   Image.asset(
+  //                     "assets/images/salvador.png",
+  //                     height: 200,
+  //                   ),
+  //                   UIHelper.verticalSpaceLarge,
+  //                   Text(
+  //                     "El Salvador",
+  //                     textAlign: TextAlign.center,
+  //                     style: TextStyle(
+  //                         fontSize: 24,
+  //                         fontWeight: FontWeight.bold,
+  //                         color: Colors.white),
+  //                   ),
+  //                   UIHelper.verticalSpaceSmall,
+  //                   Text(
+  //                     FlutterI18n.translate(context, "nationalBondSale"),
+  //                     textAlign: TextAlign.center,
+  //                     style: TextStyle(
+  //                         fontSize: 16,
+  //                         fontWeight: FontWeight.bold,
+  //                         color: Colors.white),
+  //                   ),
+  //                   UIHelper.verticalSpaceLarge,
+  //                   Container(
+  //                     width: size.width * 0.8,
+  //                     height: 50,
+  //                     decoration: BoxDecoration(
+  //                       gradient: buttoGradient,
+  //                       borderRadius: BorderRadius.circular(40.0),
+  //                     ),
+  //                     child: ElevatedButton(
+  //                       onPressed: () {
+  //                         Navigator.push(
+  //                             context,
+  //                             MaterialPageRoute(
+  //                                 builder: (context) =>
+  //                                     BondSembolView(model.bondMeVm)));
+  //                       },
+  //                       style: ElevatedButton.styleFrom(
+  //                         backgroundColor: Colors.transparent,
+  //                         shadowColor: Colors.transparent,
+  //                       ),
+  //                       child: Text(
+  //                         FlutterI18n.translate(context, "buyNow"),
+  //                         style: TextStyle(
+  //                           fontSize: 16.0,
+  //                           fontWeight: FontWeight.bold,
+  //                         ),
+  //                       ),
+  //                     ),
+  //                   ),
+  //                   UIHelper.verticalSpaceMedium,
+  //                   Container(
+  //                     width: size.width * 0.8,
+  //                     height: 50,
+  //                     decoration: BoxDecoration(
+  //                       gradient: buttoGradient,
+  //                       borderRadius: BorderRadius.circular(40.0),
+  //                     ),
+  //                     child: ElevatedButton(
+  //                       onPressed: () {
+  //                         model.checkKycStatusV2();
+  //                       },
+  //                       style: ElevatedButton.styleFrom(
+  //                         backgroundColor: Colors.transparent,
+  //                         shadowColor: Colors.transparent,
+  //                       ),
+  //                       child: Text(
+  //                         "KYC",
+  //                         style: TextStyle(
+  //                           fontSize: 16.0,
+  //                           fontWeight: FontWeight.bold,
+  //                         ),
+  //                       ),
+  //                     ),
+  //                   ),
+  //                 ],
+  //               )
+  //       ],
+  //     ),
+  //   );
+  // }
 }
 // FAB TAB
 

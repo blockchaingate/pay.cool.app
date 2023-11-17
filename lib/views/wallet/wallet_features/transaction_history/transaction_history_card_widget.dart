@@ -173,11 +173,10 @@ class TxHisotryCardWidget extends StatelessWidget {
               transaction.tag != model.send
                   ? Expanded(
                       flex: 1,
-                      child: Container(
-                          child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
+                      child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
                             // If deposit is success in both Ticker chain and kanabn chain then show completed
                             if (transaction.tag.toUpperCase() ==
                                     model.deposit.toUpperCase() &&
@@ -278,17 +277,16 @@ class TxHisotryCardWidget extends StatelessWidget {
                                   overflow: TextOverflow.ellipsis,
                                 ),
                               )
-                          ])))
+                          ]))
                   : Expanded(
                       flex: 1,
-                      child: Container(
-                          child: Text(
-                              firstCharToUppercase(
-                                FlutterI18n.translate(context, "sent"),
-                              ),
-                              textAlign: TextAlign.start,
-                              style: TextStyle(
-                                  fontSize: customFontSize, color: buyPrice))),
+                      child: Text(
+                          firstCharToUppercase(
+                            FlutterI18n.translate(context, "sent"),
+                          ),
+                          textAlign: TextAlign.start,
+                          style: TextStyle(
+                              fontSize: customFontSize, color: buyPrice)),
                     ),
               Expanded(
                 flex: 1,

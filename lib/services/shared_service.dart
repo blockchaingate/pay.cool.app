@@ -150,8 +150,9 @@ class SharedService {
             }
           }
         }
-        // ignore: invalid_return_type_for_catch_error
-      }).catchError((err) => log.e('getSinglePairDecimalConfig CATCH $err'));
+      }).catchError((err) {
+        log.e('getSinglePairDecimalConfig CATCH $err');
+      });
     }
     return singlePairDecimalConfig;
   }
@@ -165,7 +166,7 @@ class SharedService {
     log.e('decimal configs length in db ${result.length}');
     if (result.isEmpty) {
       await apiService.getPairDecimalConfig().then((res) async {
-        if (res == null) {
+        if (res.isEmpty) {
           return null;
         } else {
           result = res;

@@ -49,13 +49,12 @@ class VerifyMnemonicWalletView extends StatelessWidget {
     );
   }
 
-  List<Container> _buildTextGrid(int count, controller) =>
+  List<Widget> _buildTextGrid(int count, controller) =>
       List.generate(count, (i) {
         var hintMnemonicWordNumber = i + 1;
         // FocusNode focusNode = FocusNode();
         controller.add(TextEditingController());
-        return Container(
-            child: TextField(
+        return TextField(
           inputFormatters: [
             LowerCaseTextFormatter(),
             FilteringTextInputFormatter.allow(RegExp("[a-zA-Z]")),
@@ -83,7 +82,7 @@ class VerifyMnemonicWalletView extends StatelessWidget {
               borderRadius: BorderRadius.circular(30.0),
             ),
           ),
-        ));
+        );
       });
 }
 

@@ -456,46 +456,41 @@ class WalletFeaturesView extends StatelessWidget {
                       arguments: model.walletInfo!);
                 }
               : null,
-          child: Container(
-            // color: model.features[index].shadowColor.withOpacity(0.2),
-            // padding: EdgeInsets.symmetric(vertical: 5, horizontal: 2),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                Container(
-                    width: 60,
-                    height: 60,
-                    decoration: BoxDecoration(
-                        color:
-                            model.features[index].shadowColor.withOpacity(1.0),
-                        borderRadius: BorderRadius.circular(50),
-                        boxShadow: [
-                          BoxShadow(
-                              color: model.features[index].shadowColor
-                                  .withOpacity(0.2),
-                              offset: const Offset(0, 9),
-                              blurRadius: 10,
-                              spreadRadius: 3)
-                        ]),
-                    child: Center(
-                      child: Image.asset(
-                        "assets/images/paycool/${model.iconImg[index]}",
-                        width: 40,
-                        height: 40,
-                      ),
-                    )
-                    // Icon(
-                    //   model.features[index].icon,
-                    //   size: 40,
-                    //   color: white,
-                    // )
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              Container(
+                  width: 60,
+                  height: 60,
+                  decoration: BoxDecoration(
+                      color: model.features[index].shadowColor.withOpacity(1.0),
+                      borderRadius: BorderRadius.circular(50),
+                      boxShadow: [
+                        BoxShadow(
+                            color: model.features[index].shadowColor
+                                .withOpacity(0.2),
+                            offset: const Offset(0, 9),
+                            blurRadius: 10,
+                            spreadRadius: 3)
+                      ]),
+                  child: Center(
+                    child: Image.asset(
+                      "assets/images/paycool/${model.iconImg[index]}",
+                      width: 40,
+                      height: 40,
                     ),
-                Text(
-                  model.features[index].name,
-                  style: subText1,
-                )
-              ],
-            ),
+                  )
+                  // Icon(
+                  //   model.features[index].icon,
+                  //   size: 40,
+                  //   color: white,
+                  // )
+                  ),
+              Text(
+                model.features[index].name,
+                style: subText1,
+              )
+            ],
           ),
         ),
       );
