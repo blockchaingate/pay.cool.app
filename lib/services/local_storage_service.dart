@@ -42,6 +42,10 @@ class LocalStorageService {
   static const String BiometricAuthDataKey = 'biometricAuthDataKey';
   static const String BiometricPaymentKey = 'biometricPaymentKey';
   static const String BondTokenKey = 'bondTokenKey';
+  static const String MultisigEthWalletTokensKey = 'multisigEthWalletTokens';
+  static const String MultisigBscWalletTokensKey = 'multisigBscWalletTokens';
+  static const String MultisigKanbanWalletTokensKey =
+      'multisigKanbanWalletTokens';
 
 /*----------------------------------------------------------------------
                         Instance
@@ -123,6 +127,29 @@ class LocalStorageService {
 
   set customTokens(String value) => _saveToDisk(CustomTokensKey, value);
 
+  //Multisig  Wallet tokens
+
+  String get multisigEthWalletTokens =>
+      _getFromDisk(MultisigEthWalletTokensKey) ?? '';
+
+  set multisigEthWalletTokens(String value) =>
+      _saveToDisk(MultisigEthWalletTokensKey, value);
+
+  String get multisigBscWalletTokens =>
+      _getFromDisk(MultisigBscWalletTokensKey) ?? '';
+
+  set multisigBscWalletTokens(String value) =>
+      _saveToDisk(MultisigBscWalletTokensKey, value);
+
+  String get multisigKanbanWalletTokens =>
+      _getFromDisk(MultisigKanbanWalletTokensKey) ?? '';
+
+  set multisigKanbanWalletTokens(String value) =>
+      _saveToDisk(MultisigKanbanWalletTokensKey, value);
+
+/*----------------------------------------------------------------------
+                Testing Log String List
+----------------------------------------------------------------------  */
   String get testingLogStringList =>
       _getFromDisk(TestingLogStringListKey) ?? '';
 

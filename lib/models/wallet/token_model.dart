@@ -11,6 +11,8 @@
 *----------------------------------------------------------------------
 */
 
+import 'package:decimal/decimal.dart';
+
 class TokenModel {
   int? id;
   int? decimal;
@@ -80,13 +82,13 @@ class TokenModel {
   }
 }
 
-class TokenList {
+class TokenModelList {
   final List<TokenModel> tokens;
-  TokenList({required this.tokens});
+  TokenModelList({required this.tokens});
 
-  factory TokenList.fromJson(List<dynamic> parsedJson) {
+  factory TokenModelList.fromJson(List<dynamic> parsedJson) {
     List<TokenModel> tokens = <TokenModel>[];
     tokens = parsedJson.map((i) => TokenModel.fromJson(i)).toList();
-    return TokenList(tokens: tokens);
+    return TokenModelList(tokens: tokens);
   }
 }

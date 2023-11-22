@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:observable_ish/observable_ish.dart';
 import 'package:paycool/constants/api_routes.dart';
 import 'package:paycool/constants/constants.dart';
 import 'package:paycool/logger.dart';
@@ -7,10 +8,23 @@ import 'package:paycool/utils/custom_http_util.dart';
 import 'package:paycool/views/multisig/dashboard/multisig_balance_model.dart';
 import 'package:paycool/views/multisig/multisig_wallet_model.dart';
 import 'package:paycool/views/multisig/transfer/multisig_transaction_hash_model.dart';
+import 'package:stacked/stacked.dart';
 
-class MultiSigService {
+class MultiSigService with ListenableServiceMixin {
   final log = getLogger('MultiSigService');
   final client = CustomHttpUtil.createLetsEncryptUpdatedCertClient();
+
+  final RxValue<bool> _hasUpdatedTokenList = RxValue<bool>(false);
+  bool get hasUpdatedTokenList => _hasUpdatedTokenList.value;
+  MultiSigService() {
+    listenToReactiveValues([_hasUpdatedTokenList]);
+  }
+
+  hasUpdatedTokenListFunc(bool value) {
+    _hasUpdatedTokenList.value = value;
+    log.w(' _hasUpdatedTokenList ${_hasUpdatedTokenList.value}');
+    notifyListeners();
+  }
 
   Future submitMultisigTransaction(body) async {
     var url = paycoolBaseUrlV2 + 'multisigproposal/execute';
@@ -170,7 +184,7 @@ class MultiSigService {
   }
 
   Future<MultisigBalanceModel> getBalance(String address,
-      {required String chain, List<String>? ids}) async {
+      {required String chain, List<String>? tokenIds}) async {
     String endpoint = '';
     switch (chain.toLowerCase()) {
       case 'kanban':
@@ -186,15 +200,18 @@ class MultiSigService {
         endpoint = 'kanban/balanceold';
     }
     var url = paycoolBaseUrlV2 + endpoint;
-    log.i('get $endpoint Balance url $url');
+    log.i('get $endpoint Balance url $url -- body ${jsonEncode({
+          "native": address,
+          "tokens": tokenIds ?? []
+        })}}');
     try {
       var response = await client.post(Uri.parse(url),
-          body: jsonEncode({"native": address, "ids": ids}),
+          body: jsonEncode({"native": address, "tokens": tokenIds}),
           headers: Constants.headersJson);
       var json = jsonDecode(response.body);
       var data = MultisigBalanceModel();
       if (json['success']) {
-        log.w('get $endpoint Balance $json}');
+        log.w('get $endpoint $json}');
         data = MultisigBalanceModel.fromJson(json['data']);
         return data;
       } else {
@@ -213,20 +230,22 @@ class MultiSigService {
       {bool isTxid = false}) async {
     String apiRoute = isTxid ? 'multisig/txid' : 'multisig/address';
     var url = paycoolBaseUrlV2 + '$apiRoute/$value';
-    log.i('getWalletData url $url');
+    log.i('importMultisigWallet url $url');
     try {
       var response =
           await client.get(Uri.parse(url), headers: Constants.headersJson);
       var json = jsonDecode(response.body);
       if (json['success']) {
-        log.w('getWalletData $json}');
-        return MultisigWalletModel.fromJson(json['data']);
+        log.w('importMultisigWallet $json}');
+        var res = MultisigWalletModel.fromJson(json['data']);
+        log.w('importMultisigWallet - address ${res.address}');
+        return res;
       } else {
-        log.e('getWalletData success false $json}');
+        log.e('importMultisigWallet success false $json}');
       }
       return MultisigWalletModel(txid: '');
     } catch (err) {
-      log.e('getWalletData CATCH $err');
+      log.e('importMultisigWallet CATCH $err');
       throw Exception(err);
     }
   }

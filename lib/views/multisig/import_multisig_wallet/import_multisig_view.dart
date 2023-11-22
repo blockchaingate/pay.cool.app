@@ -1,5 +1,6 @@
 import 'package:exchangily_ui/exchangily_ui.dart' show kTextField;
 import 'package:flutter/material.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
@@ -11,8 +12,8 @@ import 'package:paycool/views/multisig/multisig_util.dart';
 import 'package:paycool/views/settings/settings_view.dart';
 import 'package:stacked/stacked.dart';
 
-class WelcomeMultisigView extends StatelessWidget {
-  const WelcomeMultisigView({super.key});
+class ImportMultisigView extends StatelessWidget {
+  const ImportMultisigView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +39,8 @@ class WelcomeMultisigView extends StatelessWidget {
                         UIHelper.verticalSpaceLarge,
                         Center(
                           child: Text(
-                            'Welcome to MultiSig Wallet',
+                            FlutterI18n.translate(
+                                context, "welcomeToMultisigWallet"),
                             textAlign: TextAlign.center,
                             style: headText2.copyWith(
                                 color: black, fontWeight: FontWeight.bold),
@@ -49,19 +51,22 @@ class WelcomeMultisigView extends StatelessWidget {
                             ? Container()
                             : Center(
                                 child: Text(
-                                  'Select from existing wallets',
+                                  '${model.multisigWallets.length} ${FlutterI18n.translate(context, "existingWallets")}',
                                   textAlign: TextAlign.center,
                                   style: headText4.copyWith(color: grey),
                                 ),
                               ),
+                        UIHelper.verticalSpaceSmall,
                         model.multisigWallets.isEmpty
                             ? Container()
-                            : !model.dataReady
+                            : !model.dataReady || model.isBusy
                                 ? model.sharedService.loadingIndicator()
                                 : SizedBox(
                                     height: model.multisigWallets.length == 1
                                         ? 150
-                                        : 250,
+                                        : model.multisigWallets.length == 21
+                                            ? 270
+                                            : 350,
                                     child: ListView.builder(
                                       itemCount: model.multisigWallets.length,
                                       itemBuilder: ((context, index) =>
@@ -80,13 +85,37 @@ class WelcomeMultisigView extends StatelessWidget {
                                                 title: Text(model
                                                     .multisigWallets[index].name
                                                     .toString()),
-                                                subtitle: Text(MultisigUtil
-                                                    .exgToBinpdpayAddress(model
-                                                        .multisigWallets[index]
-                                                        .address
-                                                        .toString())),
+                                                subtitle: model
+                                                            .multisigWallets[
+                                                                index]
+                                                            .chain!
+                                                            .toUpperCase() ==
+                                                        'KANBAN'
+                                                    ? Text(
+                                                        MultisigUtil
+                                                            .exgToBinpdpayAddress(model
+                                                                .multisigWallets[
+                                                                    index]
+                                                                .address
+                                                                .toString()),
+                                                        style:
+                                                            headText6.copyWith(
+                                                                color: white),
+                                                      )
+                                                    : Text(
+                                                        model
+                                                            .multisigWallets[
+                                                                index]
+                                                            .address
+                                                            .toString(),
+                                                        style:
+                                                            headText6.copyWith(
+                                                                color: white),
+                                                      ),
                                                 trailing: TextButton(
-                                                  child: Text('Select'),
+                                                  child: Text(
+                                                      FlutterI18n.translate(
+                                                          context, "select")),
                                                   onPressed: () => model
                                                       .navigationService
                                                       .navigateWithTransition(
@@ -100,10 +129,9 @@ class WelcomeMultisigView extends StatelessWidget {
                                     ),
                                   ),
                         UIHelper.verticalSpaceMedium,
-                        UIHelper.verticalSpaceLarge,
                         Center(
                           child: Text(
-                            'You can import an existing wallet by typing/pasting the address below',
+                            '',
                             textAlign: TextAlign.center,
                             style: headText5.copyWith(color: black),
                           ),
@@ -113,8 +141,10 @@ class WelcomeMultisigView extends StatelessWidget {
                           child: kTextField(
                               controller: model.importWalletController,
                               contentPadding: 5,
-                              labelText: 'Import Wallet',
-                              hintText: 'Type or paste wallet address',
+                              labelText: FlutterI18n.translate(
+                                  context, "importWallet"),
+                              hintText: FlutterI18n.translate(
+                                  context, "typeOrPasteMultisigAddress"),
                               labelStyle: headText5.copyWith(color: grey),
                               cursorColor: green,
                               cursorHeight: 14,
@@ -162,12 +192,11 @@ class WelcomeMultisigView extends StatelessWidget {
                                 }
                               },
                               child: Text(
-                                'Import',
+                                FlutterI18n.translate(context, "import"),
                                 style: headText4.copyWith(color: black),
                               ),
                             )),
                         UIHelper.verticalSpaceMedium,
-                        UIHelper.verticalSpaceLarge,
                         Container(
                           padding: EdgeInsets.all(20),
                           decoration: roundedBoxDecoration(
@@ -178,7 +207,8 @@ class WelcomeMultisigView extends StatelessWidget {
                             children: [
                               Center(
                                 child: Text(
-                                  'If you don\'t have a wallet or just want to create another one, you can create one by tapping the button below',
+                                  FlutterI18n.translate(
+                                      context, "createMultsigWallet"),
                                   textAlign: TextAlign.center,
                                   style: headText5.copyWith(color: black),
                                 ),
@@ -197,7 +227,7 @@ class WelcomeMultisigView extends StatelessWidget {
                                       .navigateWithTransition(
                                           CreateMultisigWalletView()),
                                   child: Text(
-                                    "Create",
+                                    FlutterI18n.translate(context, "create"),
                                     style: headText3.copyWith(color: black),
                                   ),
                                 ),

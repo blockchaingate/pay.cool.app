@@ -158,11 +158,8 @@ class MultisigUtil {
       {String tHash = '', bool isChainKanban = true}) {
     String selectedChain = isChainKanban ? 'FAB' : 'ETH';
     var coinType = environment["CoinType"][selectedChain];
-    final fabCoinChild = root.derivePath("m/44'/$coinType'/0'/0/0");
-    var privateKey = fabCoinChild.privateKey;
-
-    var ethChainId = environment["chains"]["ETH"]["chainId"];
-    debugPrint('chainId==$ethChainId');
+    final coinChild = root.derivePath("m/44'/$coinType'/0'/0/0");
+    var privateKey = coinChild.privateKey;
 
     var signedMess = signMessageWithPrivateKey(
       hash,

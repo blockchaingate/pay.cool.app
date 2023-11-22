@@ -466,7 +466,7 @@ class ApiService {
       var json = jsonDecode(response.body);
       var data = json['data'];
       var parsedTokenList = data as List;
-      TokenList tokenList = TokenList.fromJson(parsedTokenList);
+      TokenModelList tokenList = TokenModelList.fromJson(parsedTokenList);
       log.w('getTokenListUpdates length -- API --  ${tokenList.tokens.length}');
       return tokenList.tokens;
     } catch (err) {
@@ -488,7 +488,7 @@ class ApiService {
       var data = json['data'];
       var parsedTokenList = data['tokenList'] as List;
 
-      TokenList tokenList = TokenList.fromJson(parsedTokenList);
+      TokenModelList tokenList = TokenModelList.fromJson(parsedTokenList);
       log.w('getTokenList length -- API --  ${tokenList.tokens.length}');
       return tokenList.tokens;
     } catch (err) {

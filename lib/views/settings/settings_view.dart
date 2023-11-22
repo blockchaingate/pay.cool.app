@@ -499,7 +499,7 @@ class SettingsContainer extends StatelessWidget {
                   style: headText5,
                 ),
                 onTap: () => model.navigationService
-                    .navigateWithTransition(WelcomeMultisigView()),
+                    .navigateWithTransition(ImportMultisigView()),
                 trailing: Padding(
                   padding: const EdgeInsets.only(right: 8.0),
                   child: const Icon(

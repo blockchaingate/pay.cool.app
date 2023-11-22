@@ -15,11 +15,13 @@ import 'package:paycool/utils/fab_util.dart';
 import 'package:paycool/utils/keypair_util.dart';
 import 'package:paycool/utils/number_util.dart';
 import 'package:paycool/views/multisig/dashboard/multisig_dashboard_view.dart';
+import 'package:paycool/views/multisig/multisig_util.dart';
 import 'package:paycool/views/multisig/multisig_wallet_model.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:hex/hex.dart';
 import '../../../services/api_service.dart';
+import 'package:bip32/bip32.dart' as bip32;
 
 class CreateMultisigWalletViewModel extends BaseViewModel {
   final log = getLogger('CreateMultisigWalletViewModel');
@@ -30,15 +32,17 @@ class CreateMultisigWalletViewModel extends BaseViewModel {
   final walletService = locator<WalletService>();
   TextEditingController walletNameController = TextEditingController();
   TextEditingController feeController = TextEditingController();
+  TextEditingController gasPriceController = TextEditingController();
+  TextEditingController gasLimitController = TextEditingController();
   List<TextEditingController> ownerControllers = [];
   List<TextEditingController> addressControllers = [];
   Map<String, String> ownerAddress = {};
   int selectedNumberOfOwners = 1;
   int nextDropdownValue = 1;
-  List<String> chains = ["Kanban", "ETH", "FAB"];
+  List<String> chains = ["Kanban", "ETH", "BSC"];
   String selectedChain = "Kanban";
-  int gasPrice = environment['chains']['KANBAN']['gasPrice'];
-  int gasLimit = environment['chains']['KANBAN']['gasLimit'];
+  int gasPrice = 50000000;
+  int gasLimit = 300000;
   int kanbanChainId = environment['chains']['KANBAN']['chainId'];
   Box<MultisigWalletModel> multisigWallets =
       Hive.box<MultisigWalletModel>(Constants.multisigWalletBox);
@@ -46,12 +50,29 @@ class CreateMultisigWalletViewModel extends BaseViewModel {
     log.i('MultisigViewModel init');
     addOwner();
     addOwner();
+
     setFee();
   }
 
-  setFee() => feeController.text =
-      NumberUtil.rawStringToDecimal((gasPrice * gasLimit).toString())
-          .toString();
+  setFee() {
+    gasPriceController.text = gasPrice.toString();
+    gasLimitController.text = gasLimit.toString();
+    if (selectedChain.toUpperCase() == 'ETH') {
+      gasPrice = isProduction ? 50000000 : gasPrice;
+    } else if (selectedChain.toUpperCase() == 'BSC') {
+      gasPrice = isProduction ? 5000000 : gasPrice;
+    }
+
+    double result = NumberUtil.rawStringToDecimal(
+            (gasPrice * gasLimit).toString(),
+            decimalPrecision:
+                MultisigUtil.isChainKanban(selectedChain) ? 18 : 9)
+        .toDouble();
+    feeController.text = result.toString();
+    log.w('feeController: ${feeController.text}');
+    notifyListeners();
+  }
+
   addOwner() {
     ownerControllers.add(TextEditingController());
     addressControllers.add(TextEditingController());
@@ -110,6 +131,7 @@ class CreateMultisigWalletViewModel extends BaseViewModel {
   }
 
   showGasBottomSheet() {
+    setFee();
     showModalBottomSheet(
         context: sharedService.context,
         isScrollControlled: true,
@@ -123,6 +145,7 @@ class CreateMultisigWalletViewModel extends BaseViewModel {
               child: Column(
                 children: [
                   kTextField(
+                      controller: gasPriceController,
                       hintText: NumberUtil.rawStringToDecimal(
                               gasPrice.toString(),
                               decimalPrecision: 8)
@@ -141,6 +164,7 @@ class CreateMultisigWalletViewModel extends BaseViewModel {
                       focusBorderColor: grey),
                   UIHelper.verticalSpaceSmall,
                   kTextField(
+                      controller: gasLimitController,
                       hintText: gasLimit.toString(),
                       labelText: "Gas limit",
                       labelStyle: headText5.copyWith(color: black),
@@ -152,7 +176,10 @@ class CreateMultisigWalletViewModel extends BaseViewModel {
                         color: black,
                       ),
                       isDense: true,
-                      onChanged: (value) => gasLimit = int.parse(value),
+                      onChanged: (value) {
+                        gasLimit = int.parse(value);
+                        setFee();
+                      },
                       focusBorderColor: grey),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -291,6 +318,10 @@ class CreateMultisigWalletViewModel extends BaseViewModel {
     log.w('gasPrice: $gasPrice');
     log.w('gasLimit: $gasLimit');
     var fabUtil = FabUtils();
+    String exgAddress =
+        await sharedService.getExgAddressFromCoreWalletDatabase();
+    String ethAddress =
+        await sharedService.getCoinAddressFromCoreWalletDatabase('ETH');
     // remove empty value from address controller
     addressControllers.removeWhere((element) => element.text.isEmpty);
     addressControllers.removeWhere((element) => element.text.isEmpty);
@@ -298,30 +329,37 @@ class CreateMultisigWalletViewModel extends BaseViewModel {
     var addresses = addressControllers
         .asMap()
         .entries
-        .map((e) => fabUtil.fabToExgAddress(toLegacyAddress(e.value.text)))
+        .map((e) => selectedChain.toUpperCase() == 'KANBAN'
+            ? fabUtil.fabToExgAddress(toLegacyAddress(e.value.text))
+            : e.value.text)
         .toList();
 
     log.w('addresses: $addresses');
     var rawTxData = await multisigService.multisigData(
         addresses, selectedNumberOfOwners, selectedChain.toUpperCase());
-    String exgAddress =
-        await sharedService.getExgAddressFromCoreWalletDatabase();
-    String ethAddress =
-        await sharedService.getCoinAddressFromCoreWalletDatabase('ETH');
+
     var nonce = await multisigService.getChainNonce(selectedChain.toLowerCase(),
         selectedChain.toLowerCase() == 'kanban' ? exgAddress : ethAddress);
     log.w('nonce: $nonce');
     var seed = await walletService.getSeedDialog(sharedService.context);
+
     var keyPairKanban = getExgKeyPair(seed);
+
+    bip32.BIP32 root = walletService.generateBip32Root(seed!);
+    final ethCoinChild =
+        root.derivePath("m/44'/${environment["CoinType"]["ETH"]}'/0'/0/0");
 
     var txKanbanHex = await signAbiHexWithPrivateKey(
       rawTxData,
-      HEX.encode(keyPairKanban["privateKey"]),
+      HEX.encode(selectedChain.toUpperCase() == 'KANBAN'
+          ? keyPairKanban["privateKey"]
+          : ethCoinChild.privateKey!.toList()),
       environment["chains"][selectedChain.toUpperCase()]["Safes"]
           ["SafeProxyFactory"],
       nonce,
       gasPrice,
       gasLimit,
+      chainIdParam: selectedChain.toUpperCase(),
     );
 
     log.w('txKanbanHex: $txKanbanHex');
@@ -343,6 +381,7 @@ class CreateMultisigWalletViewModel extends BaseViewModel {
     debugPrint(multisigWallet.toJson().toString());
     var txid = await multisigService.createMultiSig(multisigWallet);
     log.w('txid: $txid');
+    debugPrint('txid: $txid');
     if (txid != null) {
       multisigWallet.txid = txid;
 
@@ -350,9 +389,17 @@ class CreateMultisigWalletViewModel extends BaseViewModel {
           await multisigService.importMultisigWallet(txid, isTxid: true);
 
       multisigWallet.address = walletData.address;
-      log.w('multisigModel: ${multisigWallet.toJson()}');
+      log.w('multisigModel after address added: ${multisigWallet.toJson()}');
 
-      sharedService.sharedSimpleNotification("Multisig wallet created");
+      sharedService.sharedSimpleNotification(
+          "${multisigWallet.chain} Multisig wallet created",
+          isError: false);
+      if (multisigWallet.address == null || multisigWallet.address!.isEmpty) {
+        var importedWallet =
+            await multisigService.importMultisigWallet(txid, isTxid: true);
+        multisigWallet.address = importedWallet.address;
+      }
+      log.w('saving data to box -- ${multisigWallet.toJson()}');
       saveData(multisigWallet);
       log.e('is in the box ${multisigWallet.isInBox}');
       log.w('box ${multisigWallet.box}');

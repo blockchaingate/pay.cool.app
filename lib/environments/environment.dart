@@ -296,7 +296,20 @@ Map productionConfig = {
       "gasPrice": 90,
       "gasPriceMax": 200,
       "gasLimit": 21000,
-      "gasLimitToken": 70000
+      "gasLimitToken": 70000,
+      "Safes": {
+        "SimulateTxAccessor": "0x3d4BA2E0884aa488718476ca2FB8Efc291A46199",
+        "SafeProxyFactory": "0x4e1DCf7AD4e460CfD30791CCC4F9c8a4f820ec67",
+        "TokenCallbackHandler": "",
+        "CompatibilityFallbackHandler":
+            "0xfd0732Dc9E303f09fCEf3a7388Ad10A83459Ec99",
+        "CreateCall": "0x9b35Af71d77eaf8d7e40252370304687390A1A52",
+        "MultiSend": "0x38869bf66a61cF6bDB996A6aE40D5853Fd43B526",
+        "MultiSendCallOnly": "0x9641d764fc13c8B624c04430C7356C1C7C8102e2",
+        "SignMessageLib": "0xd53cd0aB83D845Ac265BE939c57F53AD838012c9",
+        "SafeL2": "0x29fcB43b46531BcA003ddC8FCB67FFE91900C762",
+        "Safe": "0x41675C099F32341bf84BFc5382aF534df5C7461"
+      }
     },
     "BNB": {
       "chain": 'mainnet',
@@ -307,7 +320,20 @@ Map productionConfig = {
       "gasPrice": 10,
       "gasPriceMax": 200,
       "gasLimit": 21000,
-      "gasLimitToken": 200000
+      "gasLimitToken": 200000,
+      "Safes": {
+        "SimulateTxAccessor": "0x3d4BA2E0884aa488718476ca2FB8Efc291A46199",
+        "SafeProxyFactory": "0x4e1DCf7AD4e460CfD30791CCC4F9c8a4f820ec67",
+        "TokenCallbackHandler": "0xeDCF620325E82e3B9836eaaeFdc4283E99Dd7562",
+        "CompatibilityFallbackHandler":
+            "0xfd0732Dc9E303f09fCEf3a7388Ad10A83459Ec99",
+        "CreateCall": "0x9b35Af71d77eaf8d7e40252370304687390A1A52",
+        "MultiSend": "0x38869bf66a61cF6bDB996A6aE40D5853Fd43B526",
+        "MultiSendCallOnly": "0x9641d764fc13c8B624c04430C7356C1C7C8102e2",
+        "SignMessageLib": "0xd53cd0aB83D845Ac265BE939c57F53AD838012c9",
+        "SafeL2": "0x29fcB43b46531BcA003ddC8FCB67FFE91900C762",
+        "Safe": "0x41675C099F32341bf84BFc5382aF534df5C7461"
+      }
     },
     "MATICM": {
       "chain": "mainnet",
@@ -385,7 +411,20 @@ Map productionConfig = {
           {"id": "196632", "symbol": "USDC", "decimals": 18},
         ],
         "gasPrice": 50000000,
-        "gasLimit": 20000000
+        "gasLimit": 20000000,
+        "Safes": {
+          "SimulateTxAccessor": "0x1a5fafd1525fb85223f0decffda3df03992a40b9",
+          "SafeProxyFactory": "0x1907a90db1d3a9ec5916b071ffb6990d39e914ce",
+          "TokenCallbackHandler": "0x89619afac0f4631ca40c2848301a30c0f95fe6ee",
+          "CompatibilityFallbackHandler":
+              "0xead13823efdf2fefb10e36ff6a3f6f34944569b0",
+          "CreateCall": "0x4da06f0120ea702aa0cd457aaa1256615bb8a208",
+          "MultiSend": "0x554ee38572c69da84fab588b27f67adbbf4cd6ad",
+          "MultiSendCallOnly": "0x17efecd54478cb0b970e91957ef6445d768dd2c8",
+          "SignMessageLib": "0x5e63d91e8c5fd4e879cc87d52cf5680229d9853a",
+          "SafeL2": "0xb05745f3b27cc575633cd7238f3c42d53b1836ce",
+          "Safe": "0xb9de13dcbb1466762532f8b985cc508935ca1c2"
+        }
       }
     },
     "Endpoints": {

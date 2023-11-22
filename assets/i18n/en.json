@@ -422,7 +422,7 @@
     "customTokens": "Custom Tokens",
     "totalSupply": "Total Supply",
     "add": "Add",
-    "remove": "remove",
+    "remove": "Remove",
     "restore": "Restore",
     "existingWalletFound": "Existing wallet found",
     "askWalletRestore": "Do you want to restore existing wallet",
@@ -722,5 +722,23 @@
     "multisigWallet": "Multisig Wallet",
     "personalInformation": "Personal Information",
     "noRecord": "No Record Found",
-    "sendCode": "Send Code"
+    "sendCode": "Send Code",
+    "createMultisigWallet": "Create Multisig Wallet",
+    "owner": "Owner",
+    "enterWalletName": "Enter Wallet Name",
+    "setOwners": "Set Owners",
+    "addOwner": "Add Owner",
+    "minimumSignatures": "Minimum Signatures",
+    "estimatedFee": "Estimated Fee",
+    "kanbanFee": "Kanban Fee",
+    "edit": "Edit",
+    "welcomeToMultisigWallet": "Welcome to Multisig Wallet",
+    "existingWallets": "Existing Wallets",
+    "multisigImportNote": "You can import an existing wallet by typing/pasting the multisig wallet address below",
+    "select": "Select",
+    "typeOrPasteMultisigAddress": "Type or paste multisig address",
+    "create": "Create",
+    "import": "Import",
+    "createMultsigWallet": "If you don/'t have a wallet or just want to create another one, you can create one by tapping the button below"
+ 
 }
