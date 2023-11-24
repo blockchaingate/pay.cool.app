@@ -24,6 +24,7 @@ import 'package:paycool/services/local_storage_service.dart';
 import 'package:paycool/services/shared_service.dart';
 import 'package:paycool/services/wallet_service.dart';
 import 'package:flutter/material.dart';
+import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/utils/wallet/wallet_util.dart';
 import 'package:stacked/stacked.dart';
 import 'package:paycool/constants/route_names.dart';
@@ -90,6 +91,51 @@ class WalletFeaturesViewModel extends ReactiveViewModel {
         setBusy(false);
       }
     }
+  }
+
+  Widget getRecords(
+    Size size,
+  ) {
+    return Container(
+      width: size.width,
+      height: size.height * 0.1,
+      padding: EdgeInsets.symmetric(horizontal: 20),
+      child: Row(
+        children: [
+          Container(
+            width: 50,
+            height: 50,
+            decoration:
+                BoxDecoration(shape: BoxShape.circle, color: Colors.grey[200]),
+            child: Icon(
+              Icons.arrow_upward,
+              color: Colors.black,
+            ),
+          ),
+          UIHelper.horizontalSpaceSmall,
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: const [
+              Text(
+                "0xgtfr....hy65",
+                style: TextStyle(color: Colors.black),
+              ),
+              UIHelper.verticalSpaceSmall,
+              Text(
+                "08/09 12:43:32",
+                style: TextStyle(color: Colors.black38),
+              ),
+            ],
+          ),
+          Expanded(child: SizedBox()),
+          Text(
+            "- 10.008 ETH",
+            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+          ),
+        ],
+      ),
+    );
   }
 
   updateFavWalletCoinsList(String tickerName) {
@@ -203,26 +249,7 @@ class WalletFeaturesViewModel extends ReactiveViewModel {
           currentUsdValue, availableBalance!, lockedBalance!);
       log.w(walletInfo!.toJson());
       unconfirmedBalance = walletBalance[0].unconfirmedBalance!;
-    })
-        // await walletService
-        //     .coinBalanceByAddress(
-        //         walletInfo!.tickerName, walletInfo!.address, walletInfo!.tokenType)
-        //     .then((data) async {
-        //   if (data != null) {
-        //     log.e('data $data');
-
-        //     walletBalance = data['tokenBalanceIe18'];
-        //     double walletLockedBal = data['lockbalance'];
-        //     walletInfo!.availableBalance = walletBalance;
-        //     double currentUsdValue = await walletService
-        //         .getCoinMarketPriceByTickerName(walletInfo!.tickerName);
-        //     walletService.calculateCoinUsdBalance(
-        //         currentUsdValue, walletBalance, walletLockedBal);
-        //     walletInfo!.usdValue = walletService.coinUsdBalance;
-        //   }
-        //   await getExchangeBal();
-        // })
-        .catchError((err) {
+    }).catchError((err) {
       log.e(err);
       setBusy(false);
       throw Exception(err);

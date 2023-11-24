@@ -15,6 +15,7 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/logger.dart';
@@ -23,6 +24,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:paycool/shared/ui_helpers.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/utils/fab_util.dart';
@@ -43,13 +45,6 @@ class _ReceiveWalletScreenState extends State<ReceiveWalletScreen> {
   @override
   void initState() {
     super.initState();
-    // log.w(widget.walletInfo.toJson());
-    // if (widget.walletInfo.tokenType == 'FAB') {
-    //   convertedToFabAddress =
-    //       fabUtils.exgToFabAddress(widget.walletInfo.address);
-    //   log.w(
-    //       'convertedToFabAddress from ${widget.walletInfo.address} to $convertedToFabAddress');
-    // }
   }
 
   final log = getLogger('Receive');
@@ -58,137 +53,139 @@ class _ReceiveWalletScreenState extends State<ReceiveWalletScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
       key: scaffoldKey,
-      appBar:
-          customAppBarWithTitleNB(FlutterI18n.translate(context, "receive")),
-      body: SingleChildScrollView(
-        child: Container(
-          margin: const EdgeInsets.all(10.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              Container(
-                width: double.infinity,
-                height: 150,
-                color: secondaryColor,
-                padding: const EdgeInsets.all(10),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Text(
+      backgroundColor: bgGrey,
+      appBar: customAppBarWithIcon(
+        title: FlutterI18n.translate(context, "receive"),
+        leading: IconButton(
+            onPressed: () => Navigator.pop(context),
+            icon: Icon(
+              Icons.arrow_back_ios,
+              color: Colors.black,
+              size: 20,
+            )),
+      ),
+      body: Column(
+        children: [
+          Container(
+            width: size.width,
+            height: size.height * 0.5,
+            margin: EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(30),
+              child: Column(
+                children: [
+                  RepaintBoundary(
+                    key: _globalKey,
+                    child: QrImageView(
+                        backgroundColor: white,
+                        data: convertedToFabAddress == ''
+                            ? widget.walletInfo.address!
+                            : convertedToFabAddress,
+                        version: QrVersions.auto,
+                        gapless: true,
+                        errorStateBuilder: (context, err) {
+                          return Center(
+                            child: Text(
+                                FlutterI18n.translate(
+                                    context, "somethingWentWrong"),
+                                textAlign: TextAlign.center),
+                          );
+                        }),
+                  ),
+                  UIHelper.verticalSpaceMedium,
+                  Text("Wallet Address",
+                      style: TextStyle(
+                          color: textHintGrey,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold)),
+                  UIHelper.verticalSpaceSmall,
+                  FittedBox(
+                    child: Text(
                         convertedToFabAddress == ''
                             ? widget.walletInfo.address!
                             : convertedToFabAddress,
-                        style: Theme.of(context).textTheme.bodyMedium),
-                    SizedBox(
-                      width: 200,
-                      child: OutlinedButton(
-                        style: outlinedButtonStyles2,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            const Padding(
-                              padding: EdgeInsets.only(right: 4.0),
-                              child: Icon(
-                                Icons.content_copy,
-                                size: 16,
-                              ),
-                            ),
-                            Text(
-                              FlutterI18n.translate(context, "copyAddress"),
-                              style: headText5.copyWith(
-                                  fontWeight: FontWeight.w400),
-                            ),
-                          ],
-                        ),
-                        onPressed: () {
-                          copyAddress(context);
-                        },
+                        style: TextStyle(
+                            color: black,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold)),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Row(
+            children: [
+              Expanded(
+                flex: 1,
+                child: Container(
+                  height: 50,
+                  margin: EdgeInsets.symmetric(horizontal: 10),
+                  child: ElevatedButton.icon(
+                    icon: Image.asset(
+                      "assets/images/new-design/copy_icon.png",
+                      scale: 2.7,
+                    ),
+                    label: Text("Copy Address"),
+                    onPressed: () {
+                      copyAddress(context);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                    )
-                  ],
+                      backgroundColor: buttonGreen,
+                    ),
+                  ),
                 ),
               ),
-              Container(
-                width: double.infinity,
-                height: 350,
-                color: secondaryColor,
-                padding: const EdgeInsets.all(10),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Container(
-                        width: 250,
-                        height: 250,
-                        decoration: BoxDecoration(
-                            border:
-                                Border.all(width: 1.0, color: primaryColor)),
-                        child: Center(
-                          child: Container(
-                            child: RepaintBoundary(
-                              key: _globalKey,
-                              child: QrImageView(
-                                  backgroundColor: white,
-                                  data: convertedToFabAddress == ''
-                                      ? widget.walletInfo.address!
-                                      : convertedToFabAddress,
-                                  version: QrVersions.auto,
-                                  size: 300,
-                                  gapless: true,
-                                  errorStateBuilder: (context, err) {
-                                    return Container(
-                                      child: Center(
-                                        child: Text(
-                                            FlutterI18n.translate(
-                                                context, "somethingWentWrong"),
-                                            textAlign: TextAlign.center),
-                                      ),
-                                    );
-                                  }),
-                            ),
-                          ),
-                        )),
-                    Container(
-                      padding: const EdgeInsets.all(10.0),
-                      child: ElevatedButton(
-                          style: generalButtonStyle1,
-                          child: Text(
-                              FlutterI18n.translate(
-                                  context, "saveAndShareQrCode"),
-                              style: headText4.copyWith(
-                                  color: secondaryColor,
-                                  fontWeight: FontWeight.w400)),
-                          onPressed: () {
-                            String receiveFileName = 'qr-code.png';
-                            getApplicationDocumentsDirectory().then((dir) {
-                              String filePath = "${dir.path}/$receiveFileName";
-                              File file = File(filePath);
+              Expanded(
+                flex: 1,
+                child: Container(
+                  height: 50,
+                  margin: EdgeInsets.symmetric(horizontal: 10),
+                  child: ElevatedButton.icon(
+                    icon: Image.asset(
+                      "assets/images/new-design/share_icon.png",
+                      scale: 2.7,
+                    ),
+                    label: Text("Share QR Code"),
+                    onPressed: () {
+                      String receiveFileName = 'qr-code.png';
+                      getApplicationDocumentsDirectory().then((dir) {
+                        String filePath = "${dir.path}/$receiveFileName";
+                        File file = File(filePath);
 
-                              Future.delayed(const Duration(milliseconds: 30),
-                                  () {
-                                _capturePng().then((byteData) {
-                                  file.writeAsBytes(byteData!).then((onFile) {
-                                    Share.shareXFiles([XFile(onFile.path)],
-                                        subject: convertedToFabAddress == ''
-                                            ? widget.walletInfo.address
-                                            : convertedToFabAddress);
-                                  });
-                                });
-                              });
+                        Future.delayed(const Duration(milliseconds: 30), () {
+                          _capturePng().then((byteData) {
+                            file.writeAsBytes(byteData!).then((onFile) {
+                              Share.shareXFiles([XFile(onFile.path)],
+                                  subject: convertedToFabAddress == ''
+                                      ? widget.walletInfo.address
+                                      : convertedToFabAddress);
                             });
-                          }),
-                    )
-                  ],
+                          });
+                        });
+                      });
+                    },
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      backgroundColor: buttonPurple,
+                    ),
+                  ),
                 ),
-              )
+              ),
             ],
           ),
-        ),
+        ],
       ),
     );
   }

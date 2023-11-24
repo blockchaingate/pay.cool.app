@@ -40,7 +40,6 @@ class CoinDetailsCardWidget extends StackedView<WalletDashboardViewModel> {
     } else {
       return Card(
         color: secondaryColor,
-        elevation: 4,
         child: InkWell(
           splashColor: Colors.blue.withAlpha(30),
           onDoubleTap: () => FocusScope.of(context).requestFocus(FocusNode()),
@@ -55,22 +54,11 @@ class CoinDetailsCardWidget extends StackedView<WalletDashboardViewModel> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 UIHelper.horizontalSpaceSmall,
-                // Card logo container
+
                 Container(
                   padding: const EdgeInsets.all(8),
-                  //asset('assets/images/wallet-page/$tickerName.png'),
-                  width: 35,
-                  height: 35,
-                  // decoration: BoxDecoration(
-                  //     color: walletCardColor,
-                  //     borderRadius: BorderRadius.circular(50),
-                  //     boxShadow: const [
-                  //       BoxShadow(
-                  //           color: fabLogoColor,
-                  //           offset: Offset(1.0, 5.0),
-                  //           blurRadius: 10.0,
-                  //           spreadRadius: 1.0),
-                  //     ]),
+                  width: 60,
+                  height: 60,
 
                   // Todo Error handling when image not found or url not found
                   child: CachedNetworkImage(
@@ -273,24 +261,19 @@ class CoinDetailsCardWidget extends StackedView<WalletDashboardViewModel> {
                               children: [
                                 Container(
                                   padding: const EdgeInsets.symmetric(
-                                      horizontal: 5.0, vertical: 5.0),
+                                      horizontal: 0, vertical: 5.0),
                                   child: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
                                     children: <Widget>[
                                       Text(
-                                          //  '${model.specialTicker} '.toUpperCase() +
                                           FlutterI18n.translate(
                                               context, "unConfirmedBalance"),
-                                          style:
-                                              subText2.copyWith(color: yellow)),
+                                          style: subText2.copyWith(color: red)),
                                       Text(
                                           '${NumberUtil.roundDouble(wallets[index].unconfirmedBalance!, decimalPlaces: 8)}  FAB',
                                           textAlign: TextAlign.start,
-                                          style:
-                                              subText2.copyWith(color: yellow)),
+                                          style: subText2.copyWith(color: red)),
                                     ],
                                   ),
                                 ),

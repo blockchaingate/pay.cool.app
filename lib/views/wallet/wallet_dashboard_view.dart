@@ -11,7 +11,6 @@
 *----------------------------------------------------------------------
 */
 
-import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
@@ -22,12 +21,11 @@ import 'package:paycool/models/wallet/wallet_balance.dart';
 import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/views/bond/bond_dashboard.dart';
 import 'package:paycool/views/wallet/wallet_dashboard_viewmodel.dart';
-import 'package:paycool/views/wallet/wallet_features/wallet_features_view.dart';
 import 'package:paycool/widgets/bottom_nav.dart';
 import 'package:paycool/widgets/shimmer_layouts/shimmer_layout.dart';
 import 'package:paycool/widgets/wallet/add_gas/gas_balance_and_add_gas_button_widget.dart';
 import 'package:paycool/widgets/wallet/coin_details_card_widget.dart';
-import 'package:paycool/widgets/wallet/total_balance_card_widget.dart';
+import 'package:paycool/widgets/wallet/wallet_card_widget.dart';
 import 'package:stacked/stacked.dart';
 
 class WalletDashboardView extends StatefulWidget {
@@ -46,7 +44,7 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
   @override
   initState() {
     super.initState();
-    _tabController = TabController(length: 6, vsync: this);
+    _tabController = TabController(length: 2, vsync: this);
     _tabController!.addListener(() {
       _handleTabSelection();
     });
@@ -78,100 +76,154 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
         },
         viewModelBuilder: () => WalletDashboardViewModel(),
         builder: (context, WalletDashboardViewModel model, child) {
-          return Scaffold(
-            key: key,
-            body: Builder(
-                builder: (context) => mainWidgets(size, model, context)),
-            bottomNavigationBar: BottomNavBar(count: 1),
-            floatingActionButton: FloatingActionButton(
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const BondDashboard()));
-              },
-              elevation: 1,
-              backgroundColor: Colors.transparent,
-              child: Image.asset(
-                "assets/images/new-design/pay_cool_icon.png",
-                fit: BoxFit.cover,
+          return GestureDetector(
+            onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
+            child: Scaffold(
+              key: key,
+              appBar: AppBar(
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                systemOverlayStyle: SystemUiOverlayStyle.dark,
+                leading: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      "assets/images/new-design/menu_icon.png",
+                      scale: 2.7,
+                    ),
+                    UIHelper.horizontalSpaceSmall,
+                    Text(
+                      "All Chains",
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14),
+                    )
+                  ],
+                ),
+                leadingWidth: (size.width * 0.3),
+                actions: [
+                  Image.asset(
+                    "assets/images/new-design/wc_icon.png",
+                    scale: 2.7,
+                  ),
+                  Image.asset(
+                    "assets/images/new-design/scan_icon.png",
+                    scale: 2.7,
+                  ),
+                ],
               ),
+              body: Builder(
+                  builder: (context) => mainWidgets(size, model, context)),
+              bottomNavigationBar: BottomNavBar(count: 1),
+              floatingActionButton: FloatingActionButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const BondDashboard()));
+                },
+                elevation: 1,
+                backgroundColor: Colors.transparent,
+                child: Image.asset(
+                  "assets/images/new-design/pay_cool_icon.png",
+                  fit: BoxFit.cover,
+                ),
+              ),
+              extendBody: true,
+              floatingActionButtonLocation:
+                  FloatingActionButtonLocation.centerDocked,
             ),
-            extendBody: true,
-            floatingActionButtonLocation:
-                FloatingActionButtonLocation.centerDocked,
           );
         });
   }
 
   Widget mainWidgets(
       Size size, WalletDashboardViewModel model, BuildContext context) {
-    return GestureDetector(
-      onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
-        child: Column(
-          children: <Widget>[
-            AppBar(
-              backgroundColor: Colors.transparent,
-              elevation: 0,
-              systemOverlayStyle: SystemUiOverlayStyle.dark,
-              leading: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset(
-                    "assets/images/new-design/menu_icon.png",
-                    scale: 2.4,
-                  ),
-                  UIHelper.horizontalSpaceSmall,
-                  Text(
-                    "All Chains",
-                    style: TextStyle(
-                        color: Colors.black, fontWeight: FontWeight.w600),
-                  )
-                ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      child: Column(
+        children: <Widget>[
+          WalletCardWidget(),
+          Row(
+            children: [
+              Expanded(
+                flex: 4,
+                child: TabBar(
+                  controller: _tabController,
+                  labelColor: primaryColor,
+                  unselectedLabelColor: grey,
+                  indicatorColor: primaryColor,
+                  indicatorSize: TabBarIndicatorSize.tab,
+                  tabs: const [
+                    Tab(
+                      text: "Token",
+                    ),
+                    Tab(
+                      text: "NFT",
+                    ),
+                  ],
+                ),
               ),
-              leadingWidth: (size.width * 0.3),
-              actions: [
-                Image.asset(
-                  "assets/images/new-design/wc_icon.png",
-                  scale: 2.2,
+              Expanded(
+                flex: 6,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: size.width * 0.45,
+                      height: size.height * 0.045,
+                      child: TextField(
+                        decoration: InputDecoration(
+                          hintText: "Search",
+                          prefixIcon: Padding(
+                            padding: const EdgeInsets.only(),
+                            child: Icon(
+                              Icons.search,
+                              color: Colors.grey,
+                              size: 18,
+                            ),
+                          ),
+                          contentPadding:
+                              EdgeInsets.zero, // Adjust vertical padding
+                          hintStyle: TextStyle(
+                            color: grey,
+                            fontSize: 14,
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide.none,
+                          ),
+                          filled: true,
+                          fillColor: Colors.grey[200],
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(0, 0, 5, 5),
+                      child: Icon(
+                        Icons.add_circle_outline,
+                        color: Colors.black87,
+                        size: 26,
+                      ),
+                    ),
+                  ],
                 ),
-                Image.asset(
-                  "assets/images/new-design/scan_icon.png",
-                  scale: 2.2,
-                ),
+              )
+            ],
+          ),
+          Expanded(
+            child: TabBarView(
+              controller: _tabController,
+              physics: AlwaysScrollableScrollPhysics(),
+              children: [
+                buildListView(model),
+                buildListView(model),
               ],
             ),
-            Expanded(
-              child: LayoutBuilder(
-                  builder: (BuildContext ctx, BoxConstraints constraints) {
-                if (constraints.maxWidth < largeSize) {
-                  return coinList(model, ctx);
-                } else {
-                  if (model.rightWalletInfo == null ||
-                      model.rightWalletInfo!.address!.isEmpty) {
-                    model.updateRightWallet();
-                  }
-                  return Row(
-                    children: [
-                      SizedBox(
-                          width: 300,
-                          height: double.infinity,
-                          child: coinList(model, ctx)),
-                      Expanded(
-                        child: model.rightWalletInfo == null ||
-                                model.rightWalletInfo!.address!.isEmpty
-                            ? Container()
-                            : WalletFeaturesView(),
-                      )
-                    ],
-                  );
-                }
-              }),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -179,96 +231,97 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
 /*-------------------------------------------------------------------------------------
                 Build Background, Logo Container with balance card
 -------------------------------------------------------------------------------------*/
-  Widget topWidget(WalletDashboardViewModel model, BuildContext context) {
-    return Container(
-      height: 180,
-      decoration: const BoxDecoration(
-          image: DecorationImage(
-              image: AssetImage('assets/images/paycool/walletBg8.jpg'),
-              fit: BoxFit.cover)),
-      child: Stack(children: <Widget>[
-        Container(
-            decoration: BoxDecoration(
-                color: Colors.white,
-                gradient: LinearGradient(
-                    begin: FractionalOffset.topCenter,
-                    end: FractionalOffset.bottomCenter,
-                    colors: [
-                      secondaryColor.withOpacity(0.0),
-                      secondaryColor.withOpacity(0.4),
-                      secondaryColor
-                    ],
-                    stops: const [
-                      0.0,
-                      0.5,
-                      1.0
-                    ]))),
+  // Widget topWidget(WalletDashboardViewModel model, BuildContext context) {
+  //   return WalletCardWidget();
+  // return Container(
+  //   height: 180,
+  //   decoration: const BoxDecoration(
+  //       image: DecorationImage(
+  //           image: AssetImage('assets/images/paycool/walletBg8.jpg'),
+  //           fit: BoxFit.cover)),
+  //   child: Stack(children: <Widget>[
+  //     Container(
+  //         decoration: BoxDecoration(
+  //             color: Colors.white,
+  //             gradient: LinearGradient(
+  //                 begin: FractionalOffset.topCenter,
+  //                 end: FractionalOffset.bottomCenter,
+  //                 colors: [
+  //                   secondaryColor.withOpacity(0.0),
+  //                   secondaryColor.withOpacity(0.4),
+  //                   secondaryColor
+  //                 ],
+  //                 stops: const [
+  //                   0.0,
+  //                   0.5,
+  //                   1.0
+  //                 ]))),
 
-        Positioned(
-          top: 30,
-          left: 0,
-          right: 0,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 4, left: 4),
-                child: Text(
-                  FlutterI18n.translate(context, "myWallet"),
-                  style: const TextStyle(
-                      fontSize: 23,
-                      color: white,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'WorkSans-Thin'),
-                ),
-              )
-            ],
-          ),
-        ),
+  //     Positioned(
+  //       top: 30,
+  //       left: 0,
+  //       right: 0,
+  //       child: Row(
+  //         mainAxisAlignment: MainAxisAlignment.center,
+  //         children: [
+  //           Padding(
+  //             padding: const EdgeInsets.only(top: 4, left: 4),
+  //             child: Text(
+  //               FlutterI18n.translate(context, "myWallet"),
+  //               style: const TextStyle(
+  //                   fontSize: 23,
+  //                   color: white,
+  //                   fontWeight: FontWeight.bold,
+  //                   fontFamily: 'WorkSans-Thin'),
+  //             ),
+  //           )
+  //         ],
+  //       ),
+  //     ),
 
-        Swiper(
-          itemBuilder: (BuildContext context, int index) {
-            if (index == 0) {
-              return TotalBalanceCardWidget(model: model);
-            } else {
-              return TotalBalanceCardWidget2(model: model);
-            }
-          },
-          itemCount: 2,
-          itemWidth: 500,
-          itemHeight: 180.0,
-          layout: SwiperLayout.TINDER,
-          pagination: const SwiperPagination(
-            margin: EdgeInsets.fromLTRB(5, 10, 5, 0),
-            builder: DotSwiperPaginationBuilder(
-              color: Color(0xccffffff),
-            ),
-          ),
-          autoplay: true,
-          autoplayDelay: 7000,
-        ),
+  //     Swiper(
+  //       itemBuilder: (BuildContext context, int index) {
+  //         if (index == 0) {
+  //           return TotalBalanceCardWidget(model: model);
+  //         } else {
+  //           return TotalBalanceCardWidget2(model: model);
+  //         }
+  //       },
+  //       itemCount: 2,
+  //       itemWidth: 500,
+  //       itemHeight: 180.0,
+  //       layout: SwiperLayout.TINDER,
+  //       pagination: const SwiperPagination(
+  //         margin: EdgeInsets.fromLTRB(5, 10, 5, 0),
+  //         builder: DotSwiperPaginationBuilder(
+  //           color: Color(0xccffffff),
+  //         ),
+  //       ),
+  //       autoplay: true,
+  //       autoplayDelay: 7000,
+  //     ),
 
-        //Refresh BalancesV2
-        Positioned(
-            top: 15,
-            right: 5,
-            child: IconButton(
-                onPressed: () {
-                  model.refreshBalancesV2();
-                },
-                icon: model.isBusy
-                    ? Container(
-                        margin: const EdgeInsets.only(left: 3.0),
-                        child: model.sharedService.loadingIndicator(),
-                      )
-                    : const Icon(
-                        Icons.refresh,
-                        color: Color(0xbbffffff),
-                        size: 22,
-                      ))),
-      ]),
-    );
-  }
+  //     //Refresh BalancesV2
+  //     Positioned(
+  //         top: 15,
+  //         right: 5,
+  //         child: IconButton(
+  //             onPressed: () {
+  //               model.refreshBalancesV2();
+  //             },
+  //             icon: model.isBusy
+  //                 ? Container(
+  //                     margin: const EdgeInsets.only(left: 3.0),
+  //                     child: model.sharedService.loadingIndicator(),
+  //                   )
+  //                 : const Icon(
+  //                     Icons.refresh,
+  //                     color: Color(0xbbffffff),
+  //                     size: 22,
+  //                   ))),
+  //   ]),
+  // );
+  // }
 
   /*-----------------------------------------------------------------
                             Hide Small Amount Row
@@ -400,9 +453,6 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
                           ),
                           focusedBorder: UnderlineInputBorder(
                               borderSide: BorderSide(color: primaryColor)),
-                          // helperText: 'Search',
-                          // helperStyle:
-                          //     Theme.of(context).textTheme.bodyText1,
                           suffixIcon: Icon(
                             Icons.search,
                             color: primaryColor,
@@ -440,19 +490,6 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
           controller: model.walletsScrollController,
           headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
             return <Widget>[
-              MediaQuery.of(context).size.width < largeSize
-                  ? SliverToBoxAdapter(
-                      child: SizedBox(
-                          // color: Colors.lightBlue,
-                          height: 180,
-                          width: MediaQuery.of(context).size.width,
-                          child: topWidget(model, context)),
-                    )
-                  : const SliverToBoxAdapter(),
-              SliverToBoxAdapter(
-                  child: MediaQuery.of(context).size.width < largeSize
-                      ? amountAndGas(model, context)
-                      : Container()),
               SliverPersistentHeader(
                   pinned: true,
                   delegate: _SliverAppBarDelegate(

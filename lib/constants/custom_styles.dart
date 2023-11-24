@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'colors.dart';
 
@@ -81,6 +82,21 @@ AppBar customAppBarWithTitleNB(String title,
       backgroundColor: Colors.transparent,
       centerTitle: true,
       elevation: 0,
+    );
+
+AppBar customAppBarWithIcon(
+        {String? title, Widget? leading, List<Widget>? actions}) =>
+    AppBar(
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      systemOverlayStyle: SystemUiOverlayStyle.dark,
+      title: Text(
+        title ?? '',
+        style: headText3,
+      ),
+      centerTitle: true,
+      leading: leading,
+      actions: actions,
     );
 
 buttonRoundShape(Color color) {

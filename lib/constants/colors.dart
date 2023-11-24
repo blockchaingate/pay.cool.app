@@ -9,6 +9,12 @@ const Color primaryColor = Color.fromARGB(255, 118, 125, 255);
 //const Color secondaryColor = Color(0xff02193d);
 const Color secondaryColor = Colors.white;
 
+const Color buttonGreen = Color(0xff2DBD85);
+const Color buttonPurple = Color(0xff333FEA);
+const Color buttonOrange = Color(0xffF7931A);
+const Color bgGrey = Color(0xffF7F8FA);
+const Color textHintGrey = Color(0xff9CA1B3);
+
 const Color tertiaryColor = Color(0xff4285f4);
 const Color walletCardColor = Color(0xff042144);
 const Color iconBackgroundColor = Color.fromRGBO(83, 74, 223, 1);

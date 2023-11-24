@@ -293,16 +293,15 @@ class WalletDashboardViewModel extends BaseViewModel {
   routeWithWalletInfoArgs(WalletBalance wallet, String routeName) async {
     // assign address from local DB to walletinfo object
 
-    if (MediaQuery.of(context!).size.width < largeSize) {
-      FocusScope.of(context!).requestFocus(FocusNode());
-      var walletInfo =
-          await walletUtil.getWalletInfoObjFromWalletBalance(wallet);
+    // if (MediaQuery.of(context!).size.width < largeSize) {
+    // FocusScope.of(context!).requestFocus(FocusNode());
+    var walletInfo = await walletUtil.getWalletInfoObjFromWalletBalance(wallet);
 
-      log.w('routeWithWalletInfoArgs walletInfo ${walletInfo.toJson()}');
-      searchCoinTextController.clear();
-      // navigate accordingly
-      navigationService.navigateTo(routeName);
-    }
+    log.w('routeWithWalletInfoArgs walletInfo ${walletInfo.toJson()}');
+    searchCoinTextController.clear();
+    // navigate accordingly
+    navigationService.navigateTo(routeName);
+    // }
     setWalletDetails(wallet);
   }
 

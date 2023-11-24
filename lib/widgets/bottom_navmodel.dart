@@ -4,12 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/services/local_storage_service.dart';
+import 'package:paycool/services/shared_service.dart';
 import 'package:stacked/stacked.dart';
 
 import '../service_locator.dart';
 
 class BottomNavViewmodel extends BaseViewModel {
   final storageService = locator<LocalStorageService>();
+  final SharedService sharedService = locator<SharedService>();
 
   final double iconSize = 40;
   late BuildContext context;
@@ -34,11 +36,12 @@ class BottomNavViewmodel extends BaseViewModel {
     ),
   ];
 
+  late String currentRouteName;
+
   init(count) async {
     setBusy(true);
     log("init BottomNavmodel");
     storageService.showPaycool = true;
-    // log("Display Pay.cool: "+ storageService.showPaycool.toString());
     await countItemNum(count).then((value) async {
       selectedIndex = value;
       log("BottomNav model selected Index: $selectedIndex");
@@ -47,6 +50,7 @@ class BottomNavViewmodel extends BaseViewModel {
         setBusy(false);
       });
     });
+    currentRouteName = sharedService.getCurrentRouteName(context);
   }
 
   Future<int> countItemNum(selectedIndex) async {

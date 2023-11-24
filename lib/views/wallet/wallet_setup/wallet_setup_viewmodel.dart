@@ -16,11 +16,13 @@ import 'dart:io' show Platform;
 import 'package:aukfa_version_checker/aukfa_version_checker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:paycool/constants/api_routes.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/constants/route_names.dart';
 import 'package:paycool/logger.dart';
 import 'package:paycool/models/wallet/user_settings_model.dart';
+import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/db/core_wallet_database_service.dart';
 import 'package:paycool/services/db/token_list_database_service.dart';
 import 'package:paycool/services/db/transaction_history_database_service.dart';
@@ -37,9 +39,6 @@ import 'package:paycool/widgets/web_view_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
-
-import '../../../constants/api_routes.dart';
-import '../../../service_locator.dart';
 
 class WalletSetupViewmodel extends BaseViewModel {
   final log = getLogger('WalletSetupViewModel');
@@ -121,9 +120,6 @@ class WalletSetupViewmodel extends BaseViewModel {
             BoxConstraints(maxHeight: MediaQuery.of(context).size.height - 120),
         isDismissible: false,
         enableDrag: false,
-        // shape: RoundedRectangleBorder(
-        //   borderRadius: BorderRadius.circular(25.0),
-        //   ),
         backgroundColor: const Color(0xffedeff0),
         context: context,
         builder: (BuildContext context) {
@@ -140,7 +136,6 @@ class WalletSetupViewmodel extends BaseViewModel {
                 ),
                 UIHelper.verticalSpaceSmall,
                 Container(
-                  // margin: const EdgeInsets.all(5),
                   color: const Color(0xffedeff0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
