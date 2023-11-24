@@ -171,14 +171,16 @@ class MultisigDashboardView extends StatelessWidget {
                                           MainAxisAlignment.start,
                                       children: [
                                         Text(
-                                          model.displayWalletAddress,
+                                          StringUtils.showPartialData(
+                                              data: model.displayWalletAddress),
                                           style: headText5.copyWith(
                                               fontWeight: FontWeight.bold),
                                         ),
                                         UIHelper.horizontalSpaceSmall,
                                         InkWell(
-                                          onTap: () =>
-                                              model.copyWalletAddress(),
+                                          onTap: () => model.sharedService
+                                              .copyAddress(context,
+                                                  model.displayWalletAddress),
                                           child: Padding(
                                             padding: const EdgeInsets.all(8.0),
                                             child: const Icon(
@@ -188,7 +190,9 @@ class MultisigDashboardView extends StatelessWidget {
                                           ),
                                         ),
                                         InkWell(
-                                          onTap: () {},
+                                          onTap: () {
+                                            model.generateQrCode(context);
+                                          },
                                           child: Padding(
                                             padding: const EdgeInsets.all(8.0),
                                             child: const Icon(
@@ -200,7 +204,9 @@ class MultisigDashboardView extends StatelessWidget {
                                       ],
                                     ),
                               InkWell(
-                                onTap: () {},
+                                onTap: () {
+                                  model.openLinkInBrowser();
+                                },
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: const Icon(

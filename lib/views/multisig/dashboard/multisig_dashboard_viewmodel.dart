@@ -1,7 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:paycool/constants/colors.dart';
+import 'package:paycool/environments/environment_type.dart';
 import 'package:paycool/logger.dart';
 import 'package:paycool/models/wallet/token_model.dart';
 import 'package:paycool/service_locator.dart';
@@ -69,13 +71,6 @@ class MultisigDashboardViewModel extends ReactiveViewModel {
     displayWalletAddress = MultisigUtil.displayWalletAddress(
         multisigWallet.address!, multisigWallet.chain!);
     setBusy(false);
-  }
-
-  copyWalletAddress() {
-    var address = multisigWallet.chain!.toUpperCase() == 'KANBAN'
-        ? MultisigUtil.exgToBinpdpayAddress(multisigWallet.address!)
-        : multisigWallet.address;
-    sharedService.copyAddress(context, address);
   }
 
   navigateToTransferView(int index) {
@@ -169,6 +164,61 @@ class MultisigDashboardViewModel extends ReactiveViewModel {
         }
     }
     setBusyForObject(multisigBalance, false);
+  }
+
+  openLinkInBrowser() async {
+    String url = '';
+
+    String address = multisigWallet.address!;
+// convert below code to dart
+    switch (multisigWallet.chain) {
+      case 'KANBAN':
+        url = 'https://' +
+            (isProduction ? '' : 'test.') +
+            'exchangily.com/explorer/address-detail/' +
+            address;
+        break;
+      case 'ETH':
+        url = 'https://' +
+            (isProduction ? '' : 'goerli.') +
+            'etherscan.io/address/' +
+            address;
+        break;
+      case 'BNB':
+        url = 'https://' +
+            (isProduction ? '' : 'testnet.') +
+            'bscscan.com/address/' +
+            address;
+        break;
+    }
+
+    await sharedService.launchInBrowser(Uri.parse(url));
+  }
+
+  generateQrCode(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              contentPadding: EdgeInsets.all(10),
+              content: Container(
+                height: 400,
+                width: 400,
+                child: Image.network(
+                  'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${displayWalletAddress}',
+                  width: 390,
+                  height: 390,
+                ),
+              ),
+              actions: [
+                Center(
+                  child: TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text(FlutterI18n.translate(context, "close"))),
+                )
+              ],
+            ));
   }
 
   importWallet({required String data, bool isAddress = true}) async {

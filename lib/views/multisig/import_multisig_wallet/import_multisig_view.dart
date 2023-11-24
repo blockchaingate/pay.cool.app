@@ -120,18 +120,18 @@ class ImportMultisigView extends StatelessWidget {
                                                       MainAxisSize.min,
                                                   children: [
                                                     Text(
-                                                      model.multisigWallets[
+                                                      model
+                                                              .multisigWallets[
                                                                   index]
                                                               .isAddressEmpty()
-                                                          ? StringUtils
-                                                              .showPartialData(
-                                                                  data: model
-                                                                      .multisigWallets[
-                                                                          index]
-                                                                      .txid
-                                                                      .toString())
-                                                          : MultisigUtil
-                                                              .displayWalletAddress(
+                                                          ? StringUtils.showPartialData(
+                                                              data: model
+                                                                  .multisigWallets[
+                                                                      index]
+                                                                  .txid
+                                                                  .toString())
+                                                          : StringUtils.showPartialData(
+                                                              data: MultisigUtil.displayWalletAddress(
                                                                   model
                                                                       .multisigWallets[
                                                                           index]
@@ -139,7 +139,7 @@ class ImportMultisigView extends StatelessWidget {
                                                                   model
                                                                       .multisigWallets[
                                                                           index]
-                                                                      .chain!),
+                                                                      .chain!)),
                                                       style: headText6.copyWith(
                                                           color: white),
                                                     ),
