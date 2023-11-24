@@ -304,11 +304,11 @@ class ClubDashboardView extends StatelessWidget {
                                                                             FontWeight.bold),
                                                                   ),
                                                                   customText(
-                                                                    text: StringUtils.showPartialAddress(
+                                                                    text: StringUtils.showPartialData(
                                                                         startLimit:
                                                                             10,
-                                                                        address:
-                                                                            model.fabAddress),
+                                                                        data: model
+                                                                            .fabAddress),
                                                                     overflow:
                                                                         TextOverflow
                                                                             .ellipsis,

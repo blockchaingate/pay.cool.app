@@ -5,6 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/shared/ui_helpers.dart';
+import 'package:paycool/utils/string_util.dart';
 import 'package:paycool/views/multisig/create_multisig_wallet/create_multisig_wallet_view.dart';
 import 'package:paycool/views/multisig/dashboard/multisig_dashboard_view.dart';
 import 'package:paycool/views/multisig/import_multisig_wallet/import_multisig_viewmodel.dart';
@@ -18,6 +19,7 @@ class ImportMultisigView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<ImportMultisigViewmodel>.reactive(
+        disposeViewModel: true,
         viewModelBuilder: () => ImportMultisigViewmodel(),
         builder: (
           BuildContext context,
@@ -64,7 +66,7 @@ class ImportMultisigView extends StatelessWidget {
                                 : SizedBox(
                                     height: model.multisigWallets.length == 1
                                         ? 150
-                                        : model.multisigWallets.length == 21
+                                        : model.multisigWallets.length == 2
                                             ? 270
                                             : 350,
                                     child: ListView.builder(
@@ -82,48 +84,106 @@ class ImportMultisigView extends StatelessWidget {
                                                       colorOne: primaryColor,
                                                       colorTwo: secondaryColor),
                                               child: ListTile(
-                                                title: Text(model
-                                                    .multisigWallets[index].name
-                                                    .toString()),
-                                                subtitle: model
-                                                            .multisigWallets[
-                                                                index]
-                                                            .chain!
-                                                            .toUpperCase() ==
-                                                        'KANBAN'
-                                                    ? Text(
-                                                        MultisigUtil
-                                                            .exgToBinpdpayAddress(model
-                                                                .multisigWallets[
-                                                                    index]
-                                                                .address
-                                                                .toString()),
-                                                        style:
-                                                            headText6.copyWith(
-                                                                color: white),
-                                                      )
-                                                    : Text(
+                                                title: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: [
+                                                    Text(model
+                                                        .multisigWallets[index]
+                                                        .name
+                                                        .toString()),
+                                                    Text(' - '),
+                                                    Text(
+                                                      model
+                                                          .multisigWallets[
+                                                              index]
+                                                          .chain
+                                                          .toString(),
+                                                      style: headText6.copyWith(
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                          color: black
+                                                              .withAlpha(100)),
+                                                    ),
+                                                  ],
+                                                ),
+                                                subtitle: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: [
+                                                    Text(
+                                                      model.multisigWallets[
+                                                                  index]
+                                                              .isAddressEmpty()
+                                                          ? StringUtils
+                                                              .showPartialData(
+                                                                  data: model
+                                                                      .multisigWallets[
+                                                                          index]
+                                                                      .txid
+                                                                      .toString())
+                                                          : MultisigUtil
+                                                              .displayWalletAddress(
+                                                                  model
+                                                                      .multisigWallets[
+                                                                          index]
+                                                                      .address!,
+                                                                  model
+                                                                      .multisigWallets[
+                                                                          index]
+                                                                      .chain!),
+                                                      style: headText6.copyWith(
+                                                          color: white),
+                                                    ),
+                                                    model.copyData(
                                                         model
                                                             .multisigWallets[
                                                                 index]
-                                                            .address
-                                                            .toString(),
-                                                        style:
-                                                            headText6.copyWith(
-                                                                color: white),
-                                                      ),
+                                                            .txid!,
+                                                        context,
+                                                        isTxid: model
+                                                            .multisigWallets[
+                                                                index]
+                                                            .isAddressEmpty())
+                                                  ],
+                                                ),
                                                 trailing: TextButton(
-                                                  child: Text(
-                                                      FlutterI18n.translate(
+                                                  child: Text(model
+                                                          .multisigWallets[
+                                                              index]
+                                                          .isAddressEmpty()
+                                                      ? FlutterI18n.translate(
+                                                          context, "pending")
+                                                      : FlutterI18n.translate(
                                                           context, "select")),
                                                   onPressed: () => model
-                                                      .navigationService
-                                                      .navigateWithTransition(
-                                                          MultisigDashboardView(
-                                                              data: model
                                                                   .multisigWallets[
                                                                       index]
-                                                                  .address!)),
+                                                                  .address ==
+                                                              null ||
+                                                          model
+                                                              .multisigWallets[
+                                                                  index]
+                                                              .address!
+                                                              .isEmpty
+                                                      ? {}
+                                                      : model.navigationService
+                                                          .navigateWithTransition(
+                                                              MultisigDashboardView(
+                                                                  data: model
+                                                                      .multisigWallets[
+                                                                          index]
+                                                                      .address!),
+                                                              opaque: true,
+                                                              popGesture: true),
                                                 ),
                                               ))),
                                     ),

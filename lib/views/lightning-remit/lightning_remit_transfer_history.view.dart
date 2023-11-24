@@ -104,17 +104,19 @@ class LightningRemitTransferHistoryView
                                                       TextOverflow.ellipsis,
                                                   text: TextSpan(
                                                       text: StringUtils
-                                                          .showPartialAddress(
-                                                              address:
-                                                                  transaction
-                                                                      .txid),
-                                                      style: subText1.copyWith(
-                                                          decoration:
-                                                              TextDecoration
-                                                                  .underline,
-                                                          color: primaryColor,
-                                                          fontWeight:
-                                                              FontWeight.w400),
+                                                          .showPartialData(
+                                                              data: transaction
+                                                                  .txid),
+                                                      style:
+                                                          subText1.copyWith(
+                                                              decoration:
+                                                                  TextDecoration
+                                                                      .underline,
+                                                              color:
+                                                                  primaryColor,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400),
                                                       recognizer:
                                                           TapGestureRecognizer()
                                                             ..onTap = () {

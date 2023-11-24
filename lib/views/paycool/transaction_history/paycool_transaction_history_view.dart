@@ -134,8 +134,8 @@ class PayCoolTransactionHistoryView extends StatelessWidget {
                                                         const EdgeInsets.only(
                                                             left: 5.0),
                                                     child: Text(
-                                                      StringUtils.showPartialAddress(
-                                                              address: model
+                                                      StringUtils.showPartialData(
+                                                              data: model
                                                                   .transactions[
                                                                       index]
                                                                   .id)

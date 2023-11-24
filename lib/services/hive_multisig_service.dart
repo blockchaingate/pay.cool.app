@@ -34,10 +34,24 @@ class HiveMultisigService {
 
   Future<void> updateMultisigWallet(MultisigWalletModel msw) async {
     final box = Hive.box<MultisigWalletModel>(Constants.multisigWalletBox);
+
     log.i('updating MultisigWallet at key ${msw.key} with ${msw.toJson()}');
-    await box.putAt(msw.key, msw);
-    var test = box.getAt(msw.key);
-    log.w('updated MultisigWallet at key ${msw.key} with ${test!.toJson()}');
+    try {
+      await box.putAt(msw.key, msw);
+      var test = box.getAt(msw.key);
+      log.w('updated MultisigWallet at key ${msw.key} with ${test!.toJson()}');
+    } catch (e) {
+      log.e('Catch error $e }');
+      log.i('decreasing key by 1');
+      var length = box.length;
+      log.w('box length $length');
+      if (e
+          .toString()
+          .contains('Index out of range: index should be less than')) {
+        log.e('decreasing key by 1');
+        await box.putAt(msw.key - 1, msw);
+      }
+    }
   }
 
   Future<void> deleteMultisigWallet(int index) async {

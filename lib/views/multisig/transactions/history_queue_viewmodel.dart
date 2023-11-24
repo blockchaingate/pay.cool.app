@@ -85,8 +85,6 @@ class MultisigHistoryQueueViewModel extends FutureViewModel {
     queue = await multisigService.getQueuetransaction(address,
         pageNumber: paginationModel.pageNumber,
         pageSize: paginationModel.pageSize);
-    log.i(
-        'getQueueTransactions length ${queue.length} -- data ${queue[0]['request']['amount']}');
   }
 
   // show confirmed by me if current wallet is one of the owners and also the signer
@@ -95,11 +93,14 @@ class MultisigHistoryQueueViewModel extends FutureViewModel {
     var multisigData = currentQueue['multisig'];
     var signaturesData = currentQueue['signatures'] as List;
     for (var walletOwner in multisigData['owners']) {
-      if (walletOwner['address'] == exgAddress) {
+      if (walletOwner['address'] == exgAddress ||
+          walletOwner['address'] == ethAddress) {
         for (var signature in signaturesData) {
-          if (signature['signer'] == exgAddress) {
+          if (signature['signer'] == exgAddress ||
+              signature['signer'] == ethAddress) {
             if (signaturesData.length == multisigData['confirmations'] &&
-                signaturesData.last['signer'] == exgAddress) {
+                (signaturesData.last['signer'] == exgAddress ||
+                    signaturesData.last['signer'] == ethAddress)) {
               pendingExecution = true;
             }
             return true;
@@ -116,9 +117,11 @@ class MultisigHistoryQueueViewModel extends FutureViewModel {
     var multisigData = currentQueue['multisig'];
     var signaturesData = currentQueue['signatures'];
     for (var walletOwner in multisigData['owners']) {
-      if (walletOwner['address'] == exgAddress) {
+      if (walletOwner['address'] == exgAddress ||
+          walletOwner['address'] == ethAddress) {
         for (var signature in signaturesData) {
-          if (signature['signer'] != exgAddress) {
+          if (signature['signer'] != exgAddress &&
+              signature['signer'] != ethAddress) {
             return true;
           }
         }
@@ -160,6 +163,7 @@ class MultisigHistoryQueueViewModel extends FutureViewModel {
     };
 
     var approvedSignatures = [];
+    log.e('requiredExecution $requiredExecution');
     if (!requiredExecution) {
       try {
         var approveProposalResult = await multisigService.approveProposal(body);
@@ -185,8 +189,8 @@ class MultisigHistoryQueueViewModel extends FutureViewModel {
     }
 // refactor execute code
     var finalSig = requiredExecution ? signaturesData : approvedSignatures;
-    log.e('requiredExecution $requiredExecution');
-    log.w('finalSig $finalSig');
+
+    log.w('finalSig - non reversed -  $finalSig');
     // check if confirmations <= signatures length then submit transaction to blockchain
     if (multisigData['confirmations'] <= finalSig.length) {
       String signatures = '0x';
@@ -194,7 +198,7 @@ class MultisigHistoryQueueViewModel extends FutureViewModel {
         String data = signature['data'];
         signatures += data.substring(2);
       }
-      log.w('signatures $signatures');
+      log.w('signatures data string $signatures');
 
       var abiHex = MultisigUtil.encodeContractCall(transaction, signatures);
 
@@ -226,13 +230,13 @@ class MultisigHistoryQueueViewModel extends FutureViewModel {
 
       var keyPairKanban = getExgKeyPair(seed);
       var txKanbanHex = await signAbiHexWithPrivateKey(
-        abiHex,
-        HEX.encode(keyPairKanban["privateKey"]),
-        multisigData["address"],
-        nonce,
-        int.parse(gasPriceString),
-        gas,
-      );
+          abiHex,
+          HEX.encode(keyPairKanban["privateKey"]),
+          multisigData["address"],
+          nonce,
+          int.parse(gasPriceString),
+          gas,
+          chainIdParam: chain);
 
       log.w('txKanbanHex $txKanbanHex');
       var executionBody = {
@@ -244,7 +248,13 @@ class MultisigHistoryQueueViewModel extends FutureViewModel {
       var submitTransactionResult =
           await multisigService.submitMultisigTransaction(executionBody);
       log.w('submitTransactionResult $submitTransactionResult');
-      var txid = submitTransactionResult['txid'];
+
+      var txid;
+      try {
+        txid = submitTransactionResult['txid'];
+      } catch (e) {
+        txid = null;
+      }
       if (txid != null) {
         log.w('txid $txid');
         sharedService.sharedSimpleNotification(
@@ -252,7 +262,10 @@ class MultisigHistoryQueueViewModel extends FutureViewModel {
             isError: false);
         onTap(1);
       } else {
-        sharedService.sharedSimpleNotification('Transaction submitted failed');
+        sharedService.sharedSimpleNotification('Transaction submitted failed',
+            subtitle: submitTransactionResult.toString());
+        setBusy(false);
+        return;
       }
     } else {
       log.e(

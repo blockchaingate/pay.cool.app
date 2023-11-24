@@ -72,9 +72,9 @@ class StringUtils {
     return res;
   }
 
-  static String showPartialAddress(
-      {String? address, int startLimit = 6, int endLimit = 6}) {
-    return '${address!.substring(0, startLimit)}...${address.substring(address.length - endLimit)}';
+  static String showPartialData(
+      {String? data, int startLimit = 6, int endLimit = 6}) {
+    return '${data!.substring(0, startLimit)}...${data.substring(data.length - endLimit)}';
   }
 
   static List<int> hexToBytes(String source) {

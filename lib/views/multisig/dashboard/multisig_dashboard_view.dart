@@ -84,65 +84,61 @@ class MultisigDashboardView extends StatelessWidget {
                       ],
                     ),
                     UIHelper.verticalSpaceMedium,
-                    model.isBusy || model.busy(model.multisigWallet)
-                        ? model.sharedService.loadingIndicator()
-                        :
-                        // wallet name and switch wallet arrow
-                        DropdownButton(
-                            underline: const SizedBox.shrink(),
-                            elevation: 15,
-                            isExpanded: false,
-                            icon: const Padding(
-                              padding: EdgeInsets.only(right: 8.0),
-                              child: Icon(
-                                Icons.arrow_drop_down,
-                                color: black,
+
+                    // wallet name and switch wallet arrow
+                    DropdownButton(
+                        underline: const SizedBox.shrink(),
+                        elevation: 15,
+                        isExpanded: false,
+                        icon: const Padding(
+                          padding: EdgeInsets.only(right: 8.0),
+                          child: Icon(
+                            Icons.arrow_drop_down,
+                            color: black,
+                          ),
+                        ),
+                        iconEnabledColor: primaryColor,
+                        iconDisabledColor: model.multisigWallets.isEmpty
+                            ? secondaryColor
+                            : grey,
+                        iconSize: 30,
+                        value: model.multisigWallet.address,
+                        onChanged: (newValue) async {
+                          await model.importWallet(
+                            data: newValue.toString(),
+                          );
+                          await model.getBalance();
+                        },
+                        items: model.multisigWallets.map(
+                          (wallet) {
+                            return DropdownMenuItem(
+                              value: wallet.address,
+                              child: Container(
+                                color: secondaryColor,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    customText(
+                                        text: wallet.name.toString(),
+                                        textAlign: TextAlign.center,
+                                        letterSpace: 1.2,
+                                        style: headText4.copyWith(
+                                            fontWeight: FontWeight.bold)),
+                                    customText(
+                                        text: '(${wallet.chain.toString()})',
+                                        textAlign: TextAlign.center,
+                                        style: headText6.copyWith(
+                                          fontSize: 8,
+                                        )),
+                                    Container(
+                                      width: 5,
+                                    )
+                                  ],
+                                ),
                               ),
-                            ),
-                            iconEnabledColor: primaryColor,
-                            iconDisabledColor: model.multisigWallets.isEmpty
-                                ? secondaryColor
-                                : grey,
-                            iconSize: 30,
-                            value: model.multisigWallet.address,
-                            onChanged: (newValue) async {
-                              await model.importWallet(
-                                data: newValue.toString(),
-                              );
-                              await model.getBalance();
-                            },
-                            items: model.multisigWallets.map(
-                              (wallet) {
-                                return DropdownMenuItem(
-                                  value: wallet.address,
-                                  child: Container(
-                                    color: secondaryColor,
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        customText(
-                                            text: wallet.name.toString(),
-                                            textAlign: TextAlign.center,
-                                            letterSpace: 1.2,
-                                            style: headText4.copyWith(
-                                                fontWeight: FontWeight.bold)),
-                                        customText(
-                                            text:
-                                                '(${wallet.chain.toString()})',
-                                            textAlign: TextAlign.center,
-                                            style: headText6.copyWith(
-                                              fontSize: 8,
-                                            )),
-                                        Container(
-                                          width: 5,
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              },
-                            ).toList()),
+                            );
+                          },
+                        ).toList()),
                     // chain name
                     UIHelper.verticalSpaceMedium,
                     Container(
@@ -167,53 +163,22 @@ class MultisigDashboardView extends StatelessWidget {
                             children: [
                               model.busy(model.multisigWallet) || model.isBusy
                                   ? Text(
-                                      FlutterI18n.translate(
-                                          context, 'walletAddress'),
+                                      FlutterI18n.translate(context, 'address'),
                                       style: headText5,
                                     )
                                   : Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.start,
                                       children: [
-                                        model.multisigWallet.chain!
-                                                    .toUpperCase() ==
-                                                'KANBAN'
-                                            ? Text(
-                                                StringUtils.showPartialAddress(
-                                                    address: toKbpayAddress(model
-                                                        .fabUtils
-                                                        .exgToFabAddress(model
-                                                            .multisigWallet
-                                                            .address
-                                                            .toString()))),
-                                                style: headText5.copyWith(
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              )
-                                            : Text(
-                                                StringUtils.showPartialAddress(
-                                                    address: model
-                                                        .multisigWallet.address
-                                                        .toString()),
-                                                style: headText5.copyWith(
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
+                                        Text(
+                                          model.displayWalletAddress,
+                                          style: headText5.copyWith(
+                                              fontWeight: FontWeight.bold),
+                                        ),
                                         UIHelper.horizontalSpaceSmall,
                                         InkWell(
-                                          onTap: () {
-                                            var address = model
-                                                        .multisigWallet.chain!
-                                                        .toUpperCase() ==
-                                                    'KANBAN'
-                                                ? MultisigUtil
-                                                    .exgToBinpdpayAddress(model
-                                                        .multisigWallet
-                                                        .address!)
-                                                : model.multisigWallet.address;
-                                            model.sharedService
-                                                .copyAddress(context, address);
-                                          },
+                                          onTap: () =>
+                                              model.copyWalletAddress(),
                                           child: Padding(
                                             padding: const EdgeInsets.all(8.0),
                                             child: const Icon(
@@ -273,10 +238,12 @@ class MultisigDashboardView extends StatelessWidget {
                             ),
                           ],
                         ),
-                        title: const Text('Transactions'),
+                        title: Text(
+                            FlutterI18n.translate(context, 'transactions')),
                         titleTextStyle:
                             headText4.copyWith(fontWeight: FontWeight.bold),
-                        subtitle: const Text('History - Queue'),
+                        subtitle: Text(
+                            FlutterI18n.translate(context, 'historyQueue')),
                         subtitleTextStyle: headText5,
                         trailing: const Icon(
                           Icons.arrow_forward_ios,
@@ -298,7 +265,8 @@ class MultisigDashboardView extends StatelessWidget {
                           mainAxisSize: MainAxisSize.max,
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            customText(text: 'Assets'),
+                            customText(
+                                text: FlutterI18n.translate(context, 'assets')),
                             model.multisigService.hasUpdatedTokenList
                                 ? model.refreshBalanceWidget()
                                 : model.refreshBalanceWidget()
@@ -319,14 +287,15 @@ class MultisigDashboardView extends StatelessWidget {
                             Expanded(
                               flex: 2,
                               child: customText(
-                                  text: 'Name',
+                                  text: FlutterI18n.translate(context, 'name'),
                                   style: headText5.copyWith(
                                       fontWeight: FontWeight.bold)),
                             ),
                             Expanded(
                               flex: 2,
                               child: customText(
-                                  text: 'Balance',
+                                  text:
+                                      FlutterI18n.translate(context, 'balance'),
                                   style: headText5.copyWith(
                                       fontWeight: FontWeight.bold)),
                             ),
@@ -340,7 +309,7 @@ class MultisigDashboardView extends StatelessWidget {
                     ),
 
                     Container(
-                      child: model.busy(model.multisigBalance)
+                      child: model.busy(model.multisigBalance) || model.isBusy
                           ? SizedBox(
                               height: 400,
                               child: const ShimmerLayout(
@@ -421,7 +390,8 @@ class MultisigDashboardView extends StatelessWidget {
                                                         : debugPrint(
                                                             'Incorrect Owner'),
                                                     child: Text(
-                                                      'Send',
+                                                      FlutterI18n.translate(
+                                                          context, 'send'),
                                                       style: headText5.copyWith(
                                                           color: primaryColor,
                                                           fontWeight:
@@ -538,7 +508,10 @@ class MultisigDashboardView extends StatelessWidget {
                                                               : debugPrint(
                                                                   'Incorrect Owner'),
                                                           child: Text(
-                                                            'Send',
+                                                            FlutterI18n
+                                                                .translate(
+                                                                    context,
+                                                                    'send'),
                                                             style: headText5.copyWith(
                                                                 color:
                                                                     primaryColor,

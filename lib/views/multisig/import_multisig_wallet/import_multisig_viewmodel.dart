@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:paycool/constants/colors.dart';
 import 'package:paycool/logger.dart';
 import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/hive_multisig_service.dart';
@@ -30,15 +32,15 @@ class ImportMultisigViewmodel extends FutureViewModel {
     // call importwalletbytxid to check the address and status
     await checkAddress();
     // remove entries where address is empty
-    multisigWallets.removeWhere(
-        (element) => element.address == null || element.address!.isEmpty);
+    // multisigWallets.removeWhere(
+    //     (element) => element.address == null || element.address!.isEmpty);
     log.i(
         'init MultisigDashboardViewModel multisigWallets ${multisigWallets.length}');
   }
 
   Future checkAddress() async {
     for (MultisigWalletModel msw in multisigWallets) {
-      if (msw.address == null || msw.address!.isEmpty) {
+      if (msw.isAddressEmpty()) {
         setBusy(true);
         var res =
             await multiSigService.importMultisigWallet(msw.txid!, isTxid: true);
@@ -58,6 +60,28 @@ class ImportMultisigViewmodel extends FutureViewModel {
         setBusy(false);
       }
     }
+  }
+
+  Widget copyData(String data, BuildContext context, {bool isTxid = false}) {
+    return Row(
+      children: [
+        IconButton(
+            onPressed: () => sharedService.copyAddress(context, data),
+            padding: EdgeInsets.all(5),
+            alignment: Alignment.centerRight,
+            icon: Icon(
+              Icons.copy,
+              size: 16,
+              color: white,
+            )),
+        isTxid
+            ? Text(
+                'Txid',
+                style: TextStyle(color: white),
+              )
+            : Container(),
+      ],
+    );
   }
 
   isImportAddressEmpty() {

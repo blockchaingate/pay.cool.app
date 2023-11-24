@@ -38,6 +38,7 @@ class MultiSigService with ListenableServiceMixin {
         return json['data'];
       } else {
         log.e('submitMultisigTransaction success false $json}');
+        return json['message'];
       }
     } catch (err) {
       log.e('submitMultisigTransaction CATCH $err');
@@ -327,7 +328,7 @@ class MultiSigService with ListenableServiceMixin {
   Future getChainNonce(String chain, String address) async {
     var url = paycoolBaseUrlV2 + '$chain/nonce';
     var body = {"native": address};
-    log.i('getKanbanNonce url $url - body ${jsonEncode(body)}');
+    log.i('get $chain Nonce url $url - body ${jsonEncode(body)}');
     try {
       var response = await client.post(
         Uri.parse(url),
@@ -335,11 +336,11 @@ class MultiSigService with ListenableServiceMixin {
         headers: Constants.headersJson,
       );
       var json = jsonDecode(response.body);
-      log.i('getKanbanNonce $json');
+      log.i('get $chain Nonce $json');
 
       return int.parse(json['data']);
     } catch (e) {
-      log.e('getKanbanNonce CATCH $e');
+      log.e('get $chain Nonce CATCH $e');
     }
     return null;
   }

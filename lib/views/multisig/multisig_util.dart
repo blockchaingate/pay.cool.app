@@ -13,6 +13,12 @@ import 'package:hex/hex.dart';
 import 'package:convert/convert.dart';
 
 class MultisigUtil {
+  static String displayWalletAddress(String address, String chain) =>
+      isChainKanban(chain)
+          ? StringUtils.showPartialData(
+              data: exgToBinpdpayAddress(address.toString()))
+          : StringUtils.showPartialData(data: address.toString());
+
   static isChainKanban(String chain) {
     return chain.toLowerCase() == 'kanban';
   }

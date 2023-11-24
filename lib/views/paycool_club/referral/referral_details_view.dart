@@ -30,7 +30,7 @@ class PaycoolReferralDetailsView extends StatelessWidget {
       },
       builder: (context, model, _) => Scaffold(
           appBar: customAppBarWithTitleNB(
-              '${model.referalRoute.address != null ? StringUtils.showPartialAddress(address: model.referalRoute.address) : PaycoolUtil.localizedProjectData(model.referalRoute.project!)} - ${FlutterI18n.translate(context, "referrals")}',
+              '${model.referalRoute.address != null ? StringUtils.showPartialData(data: model.referalRoute.address) : PaycoolUtil.localizedProjectData(model.referalRoute.project!)} - ${FlutterI18n.translate(context, "referrals")}',
               subTitle: referalRoute.address == null
                   ? ''
                   : PaycoolUtil.localizedProjectData(referalRoute.project!)),

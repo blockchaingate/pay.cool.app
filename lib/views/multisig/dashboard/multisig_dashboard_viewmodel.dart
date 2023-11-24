@@ -12,7 +12,9 @@ import 'package:paycool/services/local_storage_service.dart';
 import 'package:paycool/services/multisig_service.dart';
 import 'package:paycool/services/shared_service.dart';
 import 'package:paycool/services/wallet_service.dart';
+import 'package:paycool/utils/exaddr.dart';
 import 'package:paycool/utils/fab_util.dart';
+import 'package:paycool/utils/string_util.dart';
 import 'package:paycool/views/multisig/dashboard/multisig_balance_model.dart';
 import 'package:paycool/views/multisig/import_multisig_wallet/import_multisig_view.dart';
 import 'package:paycool/views/multisig/multisig_util.dart';
@@ -45,6 +47,7 @@ class MultisigDashboardViewModel extends ReactiveViewModel {
   List<TokenModel> selectedTokens = [];
   List<TokenModel> ethTokens = [];
   bool canTransferAssets = false;
+  String displayWalletAddress = '';
 
   @override
   List<ListenableServiceMixin> get listenableServices => [multisigService];
@@ -62,7 +65,17 @@ class MultisigDashboardViewModel extends ReactiveViewModel {
     //Future.delayed(Duration(milliseconds: 500), () {
     await getBalance();
     // });
+
+    displayWalletAddress = MultisigUtil.displayWalletAddress(
+        multisigWallet.address!, multisigWallet.chain!);
     setBusy(false);
+  }
+
+  copyWalletAddress() {
+    var address = multisigWallet.chain!.toUpperCase() == 'KANBAN'
+        ? MultisigUtil.exgToBinpdpayAddress(multisigWallet.address!)
+        : multisigWallet.address;
+    sharedService.copyAddress(context, address);
   }
 
   navigateToTransferView(int index) {
@@ -143,16 +156,17 @@ class MultisigDashboardViewModel extends ReactiveViewModel {
         await tokenListDatabaseService
             .getTickerNameByCoinType(ct)
             .then((ticker) {
-          debugPrint(ticker);
+          debugPrint('$ticker for $ct found for chain ${multisigWallet.chain}');
           multisigBalance.tokens!.tickers![i] = ticker;
         });
       }
-      for (var singleToken in selectedTokens) {
-        if (singleToken.contract == multisigBalance.tokens!.ids![i]) {
-          log.w('assigning token tickerName ${singleToken.tickerName}');
-          multisigBalance.tokens!.tickers![i] = singleToken.tickerName!;
+      if (!MultisigUtil.isChainKanban(multisigWallet.chain!))
+        for (var singleToken in selectedTokens) {
+          if (singleToken.contract == multisigBalance.tokens!.ids![i]) {
+            log.w('assigning token tickerName ${singleToken.tickerName}');
+            multisigBalance.tokens!.tickers![i] = singleToken.tickerName!;
+          }
         }
-      }
     }
     setBusyForObject(multisigBalance, false);
   }
@@ -161,6 +175,7 @@ class MultisigDashboardViewModel extends ReactiveViewModel {
     var wallet = MultisigWalletModel();
 
     setBusyForObject(multisigWallet, true);
+
     try {
       wallet = isAddress
           ? hiveService.findMultisigWalletByAddress(data)
@@ -169,11 +184,10 @@ class MultisigDashboardViewModel extends ReactiveViewModel {
       log.e(
           'CATCH error: Cannot find the address ${multisigWallet.chain} wallet with txid ${multisigWallet.txid} in hive storage -- $e');
     }
-    if (wallet.txid != null &&
-        wallet.txid!.isNotEmpty &&
-        wallet.address != null &&
-        wallet.address!.isNotEmpty) {
+    if (!wallet.isTxidEmpty() && !wallet.isAddressEmpty()) {
       multisigWallet = wallet;
+      displayWalletAddress = MultisigUtil.displayWalletAddress(
+          multisigWallet.address!, multisigWallet.chain!);
     } else {
       if (data == "null") {
         setBusy(false);
@@ -189,7 +203,7 @@ class MultisigDashboardViewModel extends ReactiveViewModel {
 
       log.w(
           'multisigWallet from api using txid result ${multisigWallet.toJson()}');
-      if (multisigWallet.address == null || multisigWallet.address!.isEmpty) {
+      if (multisigWallet.isAddressEmpty()) {
         log.e('multisigWallet address is null or empty');
         setBusy(false);
 
@@ -212,7 +226,6 @@ class MultisigDashboardViewModel extends ReactiveViewModel {
     }
 
     setBusyForObject(multisigWallet, false);
-    rebuildUi();
   }
 
   logout() async {

@@ -1,5 +1,6 @@
 import 'package:exchangily_ui/exchangily_ui.dart' show kTextField;
 import 'package:flutter/material.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/shared/ui_helpers.dart';
@@ -34,7 +35,7 @@ class MultisigTransferView extends StatelessWidget {
                 title: Column(
                   children: [
                     Text(
-                      'Transfer',
+                      FlutterI18n.translate(context, 'transfer'),
                       style: headText4.copyWith(color: Colors.white),
                     ),
                     Text(multisigBalance.tokens!.tickers![0])
@@ -46,8 +47,9 @@ class MultisigTransferView extends StatelessWidget {
                 children: [
                   kTextField(
                     controller: model.toController,
-                    hintText: 'Address',
-                    labelText: "Receiver address",
+                    hintText: FlutterI18n.translate(context, 'address'),
+                    labelText:
+                        FlutterI18n.translate(context, 'receiverAddress'),
                     labelStyle: headText5.copyWith(color: grey),
                     cursorColor: green,
                     cursorHeight: 14,
@@ -86,7 +88,7 @@ class MultisigTransferView extends StatelessWidget {
                   kTextField(
                     controller: model.amountController,
                     hintText: '123',
-                    labelText: "Enter amount",
+                    labelText: FlutterI18n.translate(context, 'enterAmount'),
                     labelStyle: headText5.copyWith(color: grey),
                     cursorColor: green,
                     cursorHeight: 14,
@@ -119,7 +121,7 @@ class MultisigTransferView extends StatelessWidget {
                                     multisigWallet, context);
                             },
                             label: Text(
-                              'Transfer',
+                              FlutterI18n.translate(context, 'transfer'),
                               style: headText5.copyWith(color: white),
                             ),
                           ),
