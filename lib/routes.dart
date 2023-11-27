@@ -15,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:paycool/logger.dart';
 import 'package:paycool/views/bond/bond_dashboard.dart';
+import 'package:paycool/views/dapp/dapp_view.dart';
 import 'package:paycool/views/paycool_club/checkout/club_package_checkout_view.dart';
 import 'package:paycool/views/paycool_club/club_projects/club_project_details/club_project_details_view.dart';
 import 'package:paycool/views/settings/about_view.dart';
@@ -211,6 +212,14 @@ class RouteGenerator {
         return MaterialPageRoute(
             settings: const RouteSettings(name: 'LightningRemitView'),
             builder: (_) => const LightningRemitView());
+
+/*----------------------------------------------------------------------
+                      Dapp Routes
+----------------------------------------------------------------------*/
+      case DappViewRoute:
+        return MaterialPageRoute(
+            settings: const RouteSettings(name: 'DappView'),
+            builder: (_) => const DappView());
 
 /*----------------------------------------------------------------------
                       Setting Routes

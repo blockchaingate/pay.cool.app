@@ -113,9 +113,9 @@ class BottomNavBar extends StatelessWidget {
                 ),
                 InkWell(
                   onTap: () {
-                    if (model.currentRouteName != 'SettingsView') {
+                    if (model.currentRouteName != 'DappView') {
                       navigationService.navigateTo(
-                        SettingViewRoute,
+                        DappViewRoute,
                       );
                     }
                   },

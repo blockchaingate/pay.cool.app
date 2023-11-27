@@ -250,10 +250,10 @@ class NumberUtil {
     return holder;
   }
 
-  // check decimal places more than 6
-  checkDecimal(double value) {
-    String valueToString = value.toString();
-  }
+  // // check decimal places more than 6
+  // checkDecimal(double value) {
+  //   String valueToString = value.toString();
+  // }
 
   // md5 hashing a random number
   String md5RandomString() {

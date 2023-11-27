@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:camera/camera.dart';
 import 'package:decimal/decimal.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -123,6 +124,9 @@ class PayCoolViewmodel extends FutureViewModel {
   Decimal gasBalance = Constants.decimalZero;
   PayOrder payOrder = PayOrder();
 
+  late CameraController controller;
+  late List<CameraDescription> _cameras;
+
 /*----------------------------------------------------------------------
                     Default Future to Run
 ----------------------------------------------------------------------*/
@@ -134,6 +138,7 @@ class PayCoolViewmodel extends FutureViewModel {
 ----------------------------------------------------------------------*/
 
   init() async {
+    _cameras = await availableCameras();
     isAutoStartPaycoolScan = storageService.autoStartPaycoolScan;
     // await userSettingsDatabaseService.getById(1).then((res) {
     //   if (res != null) {
@@ -144,6 +149,27 @@ class PayCoolViewmodel extends FutureViewModel {
     if (lang.isEmpty) {
       lang = "en";
     }
+    controller = CameraController(_cameras[0], ResolutionPreset.max);
+    controller.initialize().then((_) {
+      notifyListeners();
+    }).catchError((Object e) {
+      if (e is CameraException) {
+        switch (e.code) {
+          case 'CameraAccessDenied':
+            // Handle access errors here.
+            break;
+          default:
+            // Handle other errors here.
+            break;
+        }
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
   }
 
 /*----------------------------------------------------------------------
