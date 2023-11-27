@@ -12,7 +12,7 @@ import 'package:overlay_support/overlay_support.dart';
 import 'package:package_info/package_info.dart';
 import 'package:paycool/routes.dart';
 import 'package:paycool/service_locator.dart';
-import 'package:paycool/services/hive_service.dart';
+import 'package:paycool/services/hive_multisig_service.dart';
 import 'package:stacked_services/stacked_services.dart';
 
 import 'constants/colors.dart';
@@ -50,7 +50,7 @@ Future<void> main() async {
     await serviceLocator();
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
 
-    Logger.level = Level.info;
+    Logger.level = Level.nothing;
 
     SystemChannels.textInput
         .invokeMethod('TextInput.hide'); // Hides keyboard initially
@@ -60,7 +60,7 @@ Future<void> main() async {
       log.e('dot env can not find local.env, loading default');
       dotenv.load();
     });
-    await HiveService.init();
+    await HiveMultisigService.init();
 
     runApp(MyApp(flutterI18nDelegate, packageInfo));
   } catch (err) {

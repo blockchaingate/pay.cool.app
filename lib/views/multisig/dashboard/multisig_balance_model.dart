@@ -9,7 +9,9 @@ class MultisigBalanceModel {
   MultisigBalanceModel.fromJson(Map<String, dynamic> json) {
     native = NumberUtil.rawStringToDecimal(json['native'], decimalPrecision: 18)
         .toString();
-    tokens = json['tokens'] != null ? Tokens.fromJson(json['tokens']) : null;
+    tokens = json['tokens'] != null && json['tokens']['ids'] != null
+        ? Tokens.fromJson(json['tokens'])
+        : Tokens(ids: [], balances: [], decimals: [], tickers: []);
   }
 
   Map<String, dynamic> toJson() {

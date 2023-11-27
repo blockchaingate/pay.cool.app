@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:pagination_widget/pagination_widget.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
@@ -46,12 +47,12 @@ class MultisigHistoryQueueView extends StatelessWidget {
                           unselectedLabelColor: Colors.grey,
                           indicatorColor: Colors.black,
                           onTap: (value) => model.onTap(value),
-                          tabs: const [
+                          tabs: [
                             Tab(
-                              text: 'History',
+                              text: FlutterI18n.translate(context, 'history'),
                             ),
                             Tab(
-                              text: 'Queue',
+                              text: FlutterI18n.translate(context, 'history'),
                             ),
                           ],
                         ),
@@ -131,13 +132,17 @@ class MultisigHistoryQueueView extends StatelessWidget {
                                                               ['status'] ==
                                                           '0x0'
                                                       ? Text(
-                                                          'Failed',
+                                                          FlutterI18n.translate(
+                                                              context,
+                                                              'failed'),
                                                           style: headText6
                                                               .copyWith(
                                                                   color: red),
                                                         )
                                                       : Text(
-                                                          'Success',
+                                                          FlutterI18n.translate(
+                                                              context,
+                                                              'sucess'),
                                                           style: headText6
                                                               .copyWith(
                                                                   color: green),
@@ -148,258 +153,274 @@ class MultisigHistoryQueueView extends StatelessWidget {
                                           })),
                                   Container(
                                       margin: EdgeInsets.only(top: 20),
-                                      child: ListView.builder(
-                                          itemCount: model.queue.length,
-                                          itemBuilder: (context, index) {
-                                            return Column(
-                                              children: [
-                                                ListTile(
-                                                  contentPadding:
-                                                      EdgeInsets.all(10),
-                                                  title: Column(
-                                                    children: [
-                                                      Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .start,
+                                      child: model.queue.isEmpty
+                                          ? Center(
+                                              child: Text(
+                                                FlutterI18n.translate(
+                                                    context, 'noData'),
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                            )
+                                          : ListView.builder(
+                                              itemCount: model.queue.length,
+                                              itemBuilder: (context, index) {
+                                                return Column(
+                                                  children: [
+                                                    ListTile(
+                                                      contentPadding:
+                                                          EdgeInsets.all(10),
+                                                      title: Column(
                                                         children: [
-                                                          Text(
-                                                            'Created on ',
-                                                            style: headText5,
+                                                          Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .start,
+                                                            children: [
+                                                              Text(
+                                                                FlutterI18n
+                                                                    .translate(
+                                                                        context,
+                                                                        'history'),
+                                                                style:
+                                                                    headText5,
+                                                              ),
+                                                              Text(
+                                                                formatStringDateV3(
+                                                                        model.queue[index]
+                                                                            [
+                                                                            'dateCreated'])
+                                                                    .toString(),
+                                                                style:
+                                                                    headText5,
+                                                              )
+                                                            ],
                                                           ),
-                                                          Text(
-                                                            formatStringDateV3(
-                                                                    model.queue[
-                                                                            index]
-                                                                        [
-                                                                        'dateCreated'])
-                                                                .toString(),
-                                                            style: headText5,
-                                                          )
-                                                        ],
-                                                      ),
-                                                      UIHelper
-                                                          .verticalSpaceMedium,
-                                                      Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          Text(
-                                                            model.queue[index]
-                                                                    ['request']
-                                                                    ['type']
-                                                                .toString(),
-                                                            style: headText4
-                                                                .copyWith(
-                                                                    color:
-                                                                        black),
-                                                          ),
-                                                          Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                        .only(
-                                                                    left: 8.0,
-                                                                    right: 2.0),
-                                                            child: Text(
-                                                              model.queue[index]
-                                                                      [
-                                                                      'request']
-                                                                      ['amount']
-                                                                  .toString(),
-                                                              style: headText4
-                                                                  .copyWith(
-                                                                      color:
-                                                                          black),
-                                                            ),
-                                                          ),
-                                                          Text(
-                                                            model.queue[index]
-                                                                    ['request'][
-                                                                    'tokenName']
-                                                                .toString(),
-                                                            style: headText4
-                                                                .copyWith(
-                                                                    color:
-                                                                        black),
-                                                          )
-                                                        ],
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  subtitle: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Row(
-                                                        children: const [
                                                           UIHelper
-                                                              .horizontalSpaceLarge,
-                                                          Padding(
-                                                            padding:
-                                                                EdgeInsets.only(
-                                                                    top: 8.0),
-                                                            child: Icon(
-                                                              Icons
-                                                                  .arrow_downward_rounded,
-                                                              color: black,
-                                                            ),
+                                                              .verticalSpaceMedium,
+                                                          Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .start,
+                                                            children: [
+                                                              Text(
+                                                                model.queue[
+                                                                        index][
+                                                                        'request']
+                                                                        ['type']
+                                                                    .toString(),
+                                                                style: headText4
+                                                                    .copyWith(
+                                                                        color:
+                                                                            black),
+                                                              ),
+                                                              Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                            .only(
+                                                                        left:
+                                                                            8.0,
+                                                                        right:
+                                                                            2.0),
+                                                                child: Text(
+                                                                  model.queue[
+                                                                          index]
+                                                                          [
+                                                                          'request']
+                                                                          [
+                                                                          'amount']
+                                                                      .toString(),
+                                                                  style: headText4
+                                                                      .copyWith(
+                                                                          color:
+                                                                              black),
+                                                                ),
+                                                              ),
+                                                              Text(
+                                                                model.queue[
+                                                                        index][
+                                                                        'request']
+                                                                        [
+                                                                        'tokenName']
+                                                                    .toString(),
+                                                                style: headText4
+                                                                    .copyWith(
+                                                                        color:
+                                                                            black),
+                                                              )
+                                                            ],
                                                           ),
                                                         ],
                                                       ),
-                                                      Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
+                                                      subtitle: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
                                                                 .start,
                                                         children: [
-                                                          Text(
-                                                            StringUtils.showPartialAddress(
-                                                                address: MultisigUtil.exgToBinpdpayAddress(
-                                                                        model.queue[index]['request']
+                                                          Row(
+                                                            children: const [
+                                                              UIHelper
+                                                                  .horizontalSpaceLarge,
+                                                              Padding(
+                                                                padding: EdgeInsets
+                                                                    .only(
+                                                                        top:
+                                                                            8.0),
+                                                                child: Icon(
+                                                                  Icons
+                                                                      .arrow_downward_rounded,
+                                                                  color: black,
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .start,
+                                                            children: [
+                                                              Text(
+                                                                StringUtils.showPartialData(
+                                                                    data: MultisigUtil.exgToBinpdpayAddress(model.queue[index]['request']
                                                                             [
                                                                             'to'])
-                                                                    .toString()),
-                                                            style: headText4
-                                                                .copyWith(
+                                                                        .toString()),
+                                                                style: headText4
+                                                                    .copyWith(
+                                                                        color:
+                                                                            black),
+                                                              ),
+                                                              IconButton(
+                                                                  onPressed: () => model
+                                                                      .sharedService
+                                                                      .copyAddress(
+                                                                          context,
+                                                                          model
+                                                                              .queue[index]['request']['to']
+                                                                              .toString()),
+                                                                  icon: Icon(
+                                                                    Icons.copy,
                                                                     color:
-                                                                        black),
+                                                                        primaryColor,
+                                                                    size: 18,
+                                                                  ))
+                                                            ],
                                                           ),
-                                                          IconButton(
-                                                              onPressed: () => model
-                                                                  .sharedService
-                                                                  .copyAddress(
-                                                                      context,
-                                                                      model
-                                                                          .queue[
-                                                                              index]
-                                                                              [
-                                                                              'request']
-                                                                              [
-                                                                              'to']
-                                                                          .toString()),
-                                                              icon: Icon(
-                                                                Icons.copy,
-                                                                color:
-                                                                    primaryColor,
-                                                                size: 18,
-                                                              ))
                                                         ],
                                                       ),
-                                                    ],
-                                                  ),
-                                                  trailing: Column(
-                                                    mainAxisSize:
-                                                        MainAxisSize.max,
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment.start,
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Container(
-                                                          margin:
-                                                              EdgeInsets.only(
-                                                                  bottom: 5),
-                                                          width: 120,
-                                                          child: Text(
-                                                            StringUtils.showPartialAddress(
-                                                                address: model
-                                                                    .queue[
-                                                                        index][
-                                                                        'transactionHash']
-                                                                    .toString()),
-                                                            style: headText5
-                                                                .copyWith(
-                                                                    color:
-                                                                        black),
-                                                          )),
-                                                      model.hasConfirmedByMe(
-                                                              model
-                                                                  .queue[index])
-                                                          ? SizedBox(
-                                                              width: 110,
-                                                              height: 36,
-                                                              child: model
-                                                                      .pendingExecution
-                                                                  ? ElevatedButton(
-                                                                      style: ButtonStyle(
-                                                                          backgroundColor:
-                                                                              MaterialStateProperty.all(yellow)),
-                                                                      onPressed:
-                                                                          () {
-                                                                        model.approveTransaction(
-                                                                            model.queue[
-                                                                                index],
-                                                                            context,
-                                                                            requiredExecution:
-                                                                                true);
-                                                                      },
-                                                                      child:
-                                                                          Text(
-                                                                        'Execute',
-                                                                        style: headText5.copyWith(
-                                                                            color:
-                                                                                black),
-                                                                      ),
-                                                                    )
-                                                                  : Text(
-                                                                      'Confirmed by current wallet',
-                                                                      style: headText5.copyWith(
-                                                                          color:
-                                                                              green,
-                                                                          fontWeight: FontWeight
-                                                                              .w400,
-                                                                          letterSpacing:
-                                                                              0.1,
-                                                                          wordSpacing:
-                                                                              0.5),
-                                                                      maxLines:
-                                                                          4,
-                                                                    ),
-                                                            )
-                                                          : model.isShowApproveButton(
+                                                      trailing: Column(
+                                                        mainAxisSize:
+                                                            MainAxisSize.max,
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .start,
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Container(
+                                                              margin: EdgeInsets
+                                                                  .only(
+                                                                      bottom:
+                                                                          5),
+                                                              width: 120,
+                                                              child: Text(
+                                                                StringUtils.showPartialData(
+                                                                    data: model
+                                                                        .queue[
+                                                                            index]
+                                                                            [
+                                                                            'transactionHash']
+                                                                        .toString()),
+                                                                style: headText5
+                                                                    .copyWith(
+                                                                        color:
+                                                                            black),
+                                                              )),
+                                                          model.hasConfirmedByMe(
                                                                   model.queue[
                                                                       index])
                                                               ? SizedBox(
+                                                                  width: 110,
                                                                   height: 36,
-                                                                  child:
-                                                                      ElevatedButton(
-                                                                    style: ButtonStyle(
-                                                                        backgroundColor:
-                                                                            MaterialStateProperty.all(primaryColor)),
-                                                                    onPressed:
-                                                                        () {
-                                                                      model.approveTransaction(
-                                                                          model.queue[
-                                                                              index],
-                                                                          context);
-                                                                    },
-                                                                    child: Text(
-                                                                        'Approve'),
-                                                                  ),
+                                                                  child: model
+                                                                          .pendingExecution
+                                                                      ? ElevatedButton(
+                                                                          style:
+                                                                              ButtonStyle(backgroundColor: MaterialStateProperty.all(yellow)),
+                                                                          onPressed:
+                                                                              () {
+                                                                            model.approveTransaction(model.queue[index],
+                                                                                context,
+                                                                                requiredExecution: true);
+                                                                          },
+                                                                          child:
+                                                                              Text(
+                                                                            FlutterI18n.translate(context,
+                                                                                'execute'),
+                                                                            style:
+                                                                                headText5.copyWith(color: black),
+                                                                          ),
+                                                                        )
+                                                                      : Text(
+                                                                          FlutterI18n.translate(
+                                                                              context,
+                                                                              'confirmedByCurrentWallet'),
+                                                                          style: headText5.copyWith(
+                                                                              color: green,
+                                                                              fontWeight: FontWeight.w400,
+                                                                              letterSpacing: 0.1,
+                                                                              wordSpacing: 0.5),
+                                                                          maxLines:
+                                                                              4,
+                                                                        ),
                                                                 )
-                                                              : SizedBox(
-                                                                  height: 36,
-                                                                  child:
-                                                                      ElevatedButton(
-                                                                    style: ButtonStyle(
-                                                                        backgroundColor:
-                                                                            MaterialStateProperty.all(grey)),
-                                                                    onPressed:
-                                                                        () {},
-                                                                    child: Text(
-                                                                        'Approve'),
-                                                                  ),
-                                                                ),
-                                                    ],
-                                                  ),
-                                                ),
-                                                UIHelper.divider,
-                                                UIHelper.verticalSpaceLarge,
-                                              ],
-                                            );
-                                          })),
+                                                              : model.isShowApproveButton(
+                                                                      model.queue[
+                                                                          index])
+                                                                  ? SizedBox(
+                                                                      height:
+                                                                          36,
+                                                                      child:
+                                                                          ElevatedButton(
+                                                                        style: ButtonStyle(
+                                                                            backgroundColor:
+                                                                                MaterialStateProperty.all(primaryColor)),
+                                                                        onPressed:
+                                                                            () {
+                                                                          model.approveTransaction(
+                                                                              model.queue[index],
+                                                                              context);
+                                                                        },
+                                                                        child: Text(FlutterI18n.translate(
+                                                                            context,
+                                                                            'approve')),
+                                                                      ),
+                                                                    )
+                                                                  : SizedBox(
+                                                                      height:
+                                                                          36,
+                                                                      child:
+                                                                          ElevatedButton(
+                                                                        style: ButtonStyle(
+                                                                            backgroundColor:
+                                                                                MaterialStateProperty.all(grey)),
+                                                                        onPressed:
+                                                                            () {},
+                                                                        child: Text(FlutterI18n.translate(
+                                                                            context,
+                                                                            'approve')),
+                                                                      ),
+                                                                    ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    UIHelper.divider,
+                                                    UIHelper.verticalSpaceLarge,
+                                                  ],
+                                                );
+                                              })),
                                 ],
                               ),
                       ),

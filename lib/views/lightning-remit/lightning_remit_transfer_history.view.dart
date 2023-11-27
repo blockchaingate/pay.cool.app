@@ -6,6 +6,7 @@ import 'package:pagination_widget/pagination_widget.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/shared/ui_helpers.dart';
+import 'package:paycool/utils/string_util.dart';
 import 'package:paycool/views/lightning-remit/lightening_remit_viewmodel.dart';
 import 'package:stacked/stacked.dart';
 
@@ -91,26 +92,46 @@ class LightningRemitTransferHistoryView
                                             width: MediaQuery.of(context)
                                                     .size
                                                     .width /
-                                                2.5,
-                                            child: RichText(
-                                              overflow: TextOverflow.ellipsis,
-                                              text: TextSpan(
-                                                  text: transaction.txid,
-                                                  style: subText2.copyWith(
-                                                      decoration: TextDecoration
-                                                          .underline,
-                                                      color: primaryColor),
-                                                  recognizer:
-                                                      TapGestureRecognizer()
-                                                        ..onTap = () {
-                                                          viewModel.copyAddress(
-                                                              transaction.txid
-                                                                  .toString(),
-                                                              context);
-                                                          viewModel.openExplorer(
-                                                              transaction.txid
-                                                                  .toString());
-                                                        }),
+                                                3,
+                                            child: Row(
+                                              children: [
+                                                Text('txid: ',
+                                                    style: subText2.copyWith(
+                                                        fontWeight:
+                                                            FontWeight.w400)),
+                                                RichText(
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  text: TextSpan(
+                                                      text: StringUtils
+                                                          .showPartialData(
+                                                              data: transaction
+                                                                  .txid),
+                                                      style:
+                                                          subText1.copyWith(
+                                                              decoration:
+                                                                  TextDecoration
+                                                                      .underline,
+                                                              color:
+                                                                  primaryColor,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400),
+                                                      recognizer:
+                                                          TapGestureRecognizer()
+                                                            ..onTap = () {
+                                                              viewModel.copyAddress(
+                                                                  transaction
+                                                                      .txid
+                                                                      .toString(),
+                                                                  context);
+                                                              viewModel.openExplorer(
+                                                                  transaction
+                                                                      .txid
+                                                                      .toString());
+                                                            }),
+                                                ),
+                                              ],
                                             ),
                                           ),
                                           IconButton(

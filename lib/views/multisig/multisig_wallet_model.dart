@@ -65,6 +65,20 @@ class MultisigWalletModel extends HiveObject {
     data['rawtx'] = signedRawtx;
     return data;
   }
+
+  isAddressEmpty() {
+    if (address == null || address!.isEmpty) {
+      return true;
+    }
+    return false;
+  }
+
+  isTxidEmpty() {
+    if (txid == null || txid!.isEmpty) {
+      return true;
+    }
+    return false;
+  }
 }
 
 @HiveType(typeId: 1)

@@ -1,10 +1,10 @@
 import 'package:exchangily_ui/exchangily_ui.dart' show kTextField;
 import 'package:flutter/material.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/shared/ui_helpers.dart';
-import 'package:paycool/views/multisig/dashboard/multisig_dashboard_view.dart';
 import 'package:stacked/stacked.dart';
 
 import 'create_multisig_wallet_viewmodel.dart';
@@ -39,35 +39,34 @@ class CreateMultisigWalletView extends StatelessWidget {
               Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Container(
-                    decoration: roundedBoxDecoration(
-                      radius: 8,
-                      color: Colors.grey.shade200,
-                    ),
-                    padding: EdgeInsets.all(5),
-                    child: Dismissible(
-                      key: uniqueKey,
-                      direction: DismissDirection.endToStart,
-                      onDismissed: (direction) {
-                        model.removeFields(i);
-                        // model.sharedService.sharedSimpleNotification(
-                        //     '${model.ownerControllers[i].text} dismissed');
-                      },
-                      background: Container(color: Colors.red),
-                      child: Column(
-                        children: [
-                          kTextField(
+                  Dismissible(
+                    key: uniqueKey,
+                    direction: DismissDirection.endToStart,
+                    onDismissed: (direction) {
+                      model.removeFields(i);
+                      // model.sharedService.sharedSimpleNotification(
+                      //     '${model.ownerControllers[i].text} dismissed');
+                    },
+                    //   background: Container(color: Colors.red),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 5.0, horizontal: 2),
+                          child: kTextField(
                               controller: model.ownerControllers[i],
-                              contentPadding: 5,
-                              labelText: 'Name',
-                              hintText: 'Owner $i',
+                              contentPadding: 0,
+                              labelText: FlutterI18n.translate(context, 'name'),
+                              hintText:
+                                  '${FlutterI18n.translate(context, 'owner')} $i',
                               labelStyle: headText5,
                               cursorColor: green,
                               cursorHeight: 14,
+                              errorText: null,
                               fillColor: Colors.transparent,
                               isDense: true,
-                              focusBorderColor: primaryColor,
-                              enabledBorderColor: white,
+                              enabledBorderColor: grey,
                               leadingWidget: Icon(
                                 FontAwesomeIcons.user,
                                 size: 16,
@@ -76,29 +75,37 @@ class CreateMultisigWalletView extends StatelessWidget {
                               onChanged: (value) =>
                                   debugPrint('Name VALUE $value'),
                               onTap: () => debugPrint('Name VALUE')),
-                          kTextField(
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 5.0, horizontal: 2),
+                          child: kTextField(
                             controller: model.addressControllers[i],
                             contentPadding: 5,
-                            hintText: 'Address',
-                            labelText: 'Address',
+                            textFieldFontSize: 10,
+                            hintText: FlutterI18n.translate(context, 'address'),
+                            hintStyle: headText6.copyWith(color: grey),
+                            labelText: FlutterI18n.translate(
+                                context, '${model.selectedChain} address'),
                             labelStyle: headText5,
                             cursorColor: green,
                             cursorHeight: 14,
+                            errorText: null,
                             fillColor: Colors.transparent,
                             leadingWidget: Icon(
                               FontAwesomeIcons.addressBook,
                               color: primaryColor,
                             ),
                             isDense: true,
-                            focusBorderColor: grey,
+                            enabledBorderColor: grey,
                             onChanged: (value) =>
                                 debugPrint('ADdress VALUE $value'),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
-                  UIHelper.verticalSpaceSmall,
+                  UIHelper.verticalSpaceMedium,
                 ],
               ),
             );
@@ -107,7 +114,8 @@ class CreateMultisigWalletView extends StatelessWidget {
         }
 
         return Scaffold(
-          appBar: customAppBarWithTitle('Create Multisig'),
+          appBar: customAppBarWithTitle(
+              FlutterI18n.translate(context, 'createMultisigWallet')),
           body: SingleChildScrollView(
             child: Container(
               margin: const EdgeInsets.symmetric(horizontal: 30),
@@ -130,7 +138,8 @@ class CreateMultisigWalletView extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               customText(
-                                  text: 'Select Chain',
+                                  text: FlutterI18n.translate(
+                                      context, 'selectChain'),
                                   textAlign: TextAlign.start),
                               DropdownButton<String>(
                                 underline: const SizedBox.shrink(),
@@ -172,6 +181,7 @@ class CreateMultisigWalletView extends StatelessWidget {
                                 onChanged: (String? newValue) {
                                   if (newValue != null) {
                                     model.selectedChain = newValue;
+                                    model.setFee();
                                     model.notifyListeners();
                                     model.log.w(
                                         'Selected chain: ${model.selectedChain}');
@@ -185,7 +195,8 @@ class CreateMultisigWalletView extends StatelessWidget {
                         child: kTextField(
                             controller: model.walletNameController,
                             //   hintText: 'Wallet name',
-                            labelText: "Enter wallet name",
+                            labelText: FlutterI18n.translate(
+                                context, 'enterWalletName'),
                             labelStyle: headText5,
                             cursorColor: green,
                             cursorHeight: 14,
@@ -200,7 +211,8 @@ class CreateMultisigWalletView extends StatelessWidget {
                     ],
                   ),
                   UIHelper.verticalSpaceSmall,
-                  customText(text: 'Set owners '),
+                  customText(
+                      text: '${FlutterI18n.translate(context, 'setOwners')} '),
                   UIHelper.verticalSpaceSmall,
                   _buildDynamicFields(),
 
@@ -219,14 +231,16 @@ class CreateMultisigWalletView extends StatelessWidget {
                       ),
                       onPressed: model.addOwner,
                       label: Text(
-                        'Add Owner',
+                        FlutterI18n.translate(context, 'addOwner'),
                         style: headText5.copyWith(color: white),
                       ),
                     ),
                   ),
                   UIHelper.verticalSpaceMedium,
                   // minimum signature dropdown
-                  customText(text: 'Minimum signature '),
+                  customText(
+                      text:
+                          '${FlutterI18n.translate(context, 'minimumSignatures')} '),
                   UIHelper.verticalSpaceSmall,
                   Row(
                     mainAxisSize: MainAxisSize.min,
@@ -282,7 +296,9 @@ class CreateMultisigWalletView extends StatelessWidget {
                     ],
                   ),
                   UIHelper.verticalSpaceMedium,
-                  customText(text: 'Estimated fee'),
+                  customText(
+                    text: FlutterI18n.translate(context, 'estimatedFee'),
+                  ),
                   UIHelper.verticalSpaceSmall,
                   Row(
                     mainAxisSize: MainAxisSize.min,
@@ -292,7 +308,7 @@ class CreateMultisigWalletView extends StatelessWidget {
                         child: kTextField(
                           controller: model.feeController,
                           hintText: '0.001',
-                          labelText: "Kanban fee",
+                          labelText: '${model.selectedChain}',
                           labelStyle: headText5.copyWith(color: grey),
                           cursorColor: green,
                           cursorHeight: 14,
@@ -306,7 +322,7 @@ class CreateMultisigWalletView extends StatelessWidget {
                           suffixWidget: TextButton(
                               onPressed: () => model.showGasBottomSheet(),
                               child: Text(
-                                'Edit',
+                                FlutterI18n.translate(context, 'edit'),
                                 style: headText5.copyWith(color: primaryColor),
                               )),
                         ),
@@ -324,30 +340,12 @@ class CreateMultisigWalletView extends StatelessWidget {
                               MaterialStateProperty.all(primaryColor)),
                       onPressed: () => model.multisigWalletSubmit(),
                       child: Text(
-                        "Next",
+                        FlutterI18n.translate(context, 'next'),
                         style: headText3.copyWith(color: white),
                       ),
                     ),
                   ),
-                  Container(
-                    alignment: Alignment.center,
-                    child: ElevatedButton(
-                      style: ButtonStyle(
-                          padding: MaterialStateProperty.all(
-                              const EdgeInsets.symmetric(
-                                  horizontal: 30, vertical: 10)),
-                          backgroundColor:
-                              MaterialStateProperty.all(primaryColor)),
-                      onPressed: () => model.navigationService
-                          .navigateWithTransition(MultisigDashboardView(
-                        data: '0x178172c85480785ea008d53c0332da1dac2af8f0',
-                      )),
-                      child: Text(
-                        "Dashboard",
-                        style: headText3.copyWith(color: white),
-                      ),
-                    ),
-                  ),
+
                   UIHelper.verticalSpaceLarge
                 ],
               ),

@@ -151,7 +151,7 @@ class TokenListDatabaseService {
   }
 
   // Get tickername By coin type
-  getTickerNameByCoinType(int coinType) async {
+  Future getTickerNameByCoinType(int coinType) async {
     await initDb();
     final Database db = await database;
     List<Map<String, dynamic>> res = await db.query(tableName,

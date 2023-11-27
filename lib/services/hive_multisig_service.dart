@@ -4,8 +4,8 @@ import 'package:paycool/logger.dart';
 
 import '../views/multisig/multisig_wallet_model.dart';
 
-class HiveService {
-  final log = getLogger('HiveService');
+class HiveMultisigService {
+  final log = getLogger('HiveMultisigService');
   final multisigWallets =
       Hive.box<MultisigWalletModel>(Constants.multisigWalletBox);
 
@@ -34,7 +34,24 @@ class HiveService {
 
   Future<void> updateMultisigWallet(MultisigWalletModel msw) async {
     final box = Hive.box<MultisigWalletModel>(Constants.multisigWalletBox);
-    await box.putAt(msw.key, msw);
+
+    log.i('updating MultisigWallet at key ${msw.key} with ${msw.toJson()}');
+    try {
+      await box.putAt(msw.key, msw);
+      var test = box.getAt(msw.key);
+      log.w('updated MultisigWallet at key ${msw.key} with ${test!.toJson()}');
+    } catch (e) {
+      log.e('Catch error $e }');
+      log.i('decreasing key by 1');
+      var length = box.length;
+      log.w('box length $length');
+      if (e
+          .toString()
+          .contains('Index out of range: index should be less than')) {
+        log.e('decreasing key by 1');
+        await box.putAt(msw.key - 1, msw);
+      }
+    }
   }
 
   Future<void> deleteMultisigWallet(int index) async {
@@ -64,7 +81,7 @@ class HiveService {
       var data = uniquelist.firstWhere(
           (element) => element.address == savedWallet.address,
           orElse: () => MultisigWalletModel(address: ''));
-      if (data.address!.isEmpty) {
+      if (data.address == null || data.address!.isEmpty) {
         uniquelist.add(savedWallet);
       } else
         log.w('duplicate ${savedWallet.name}');
