@@ -13,7 +13,9 @@ const Color buttonGreen = Color(0xff2DBD85);
 const Color buttonPurple = Color(0xff333FEA);
 const Color buttonOrange = Color(0xffF7931A);
 const Color bgGrey = Color(0xffF7F8FA);
+const Color textRed = Color(0xffE43232);
 const Color textHintGrey = Color(0xff9CA1B3);
+const Color bgLightRed = Color(0xffFFF2F2);
 
 const Color tertiaryColor = Color(0xff4285f4);
 const Color walletCardColor = Color(0xff042144);

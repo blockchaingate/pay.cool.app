@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
+import 'package:paycool/constants/route_names.dart';
 import 'package:paycool/models/bond/vm/me_model.dart';
 import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/api_service.dart';
@@ -13,6 +14,8 @@ import 'package:paycool/views/bond/personalInfo/personal_view.dart';
 import 'package:paycool/views/bond/register/bond_register_view.dart';
 import 'package:paycool/views/bond/txHistory/bond_history_view.dart';
 import 'package:paycool/views/bond/walletConncet/wallet_connect_view.dart';
+import 'package:paycool/widgets/bottom_nav.dart';
+import 'package:stacked_services/stacked_services.dart';
 
 class BondDashboard extends StatefulWidget {
   const BondDashboard({super.key});
@@ -22,6 +25,7 @@ class BondDashboard extends StatefulWidget {
 }
 
 class _BondDashboardState extends State<BondDashboard> {
+  final navigationService = locator<NavigationService>();
   ApiService apiService = locator<ApiService>();
   BondMeModel bondMeVm = BondMeModel();
 
@@ -44,6 +48,20 @@ class _BondDashboardState extends State<BondDashboard> {
     Size size = MediaQuery.of(context).size;
 
     return Scaffold(
+      bottomNavigationBar: BottomNavBar(count: 2),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          navigationService.navigateTo(PayCoolViewRoute);
+        },
+        elevation: 1,
+        backgroundColor: Colors.transparent,
+        child: Image.asset(
+          "assets/images/new-design/pay_cool_icon.png",
+          fit: BoxFit.cover,
+        ),
+      ),
+      extendBody: true,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       body: GestureDetector(
         onTap: () {
           FocusScope.of(context).requestFocus(FocusNode());

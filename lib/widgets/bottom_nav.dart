@@ -65,18 +65,18 @@ class BottomNavBar extends StatelessWidget {
                           Text(
                             "Home",
                             style: TextStyle(
-                              fontSize: 12,
-                              color: count == 1 ? primaryColor : grey,
-                            ),
+                                fontSize: 12,
+                                color: count == 1 ? primaryColor : grey,
+                                fontWeight: FontWeight.bold),
                           )
                         ]),
                   ),
                 ),
                 InkWell(
                   onTap: () {
-                    if (model.currentRouteName != 'SettingsView') {
+                    if (model.currentRouteName != 'BondDashboardView') {
                       navigationService.navigateTo(
-                        SettingViewRoute,
+                        BondDashboardViewRoute,
                       );
                     }
                   },
@@ -95,9 +95,9 @@ class BottomNavBar extends StatelessWidget {
                           Text(
                             "INV",
                             style: TextStyle(
-                              fontSize: 12,
-                              color: count == 2 ? primaryColor : grey,
-                            ),
+                                fontSize: 12,
+                                color: count == 2 ? primaryColor : grey,
+                                fontWeight: FontWeight.bold),
                           )
                         ]),
                   ),
@@ -105,8 +105,11 @@ class BottomNavBar extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.fromLTRB(
                       size.width * 0.1, 20, size.width * 0.1, 0),
-                  child:
-                      Text("PAY", style: TextStyle(fontSize: 12, color: grey)),
+                  child: Text("PAY",
+                      style: TextStyle(
+                          fontSize: 12,
+                          color: count == 0 ? primaryColor : grey,
+                          fontWeight: FontWeight.bold)),
                 ),
                 InkWell(
                   onTap: () {
@@ -132,18 +135,18 @@ class BottomNavBar extends StatelessWidget {
                           Text(
                             "Dapp",
                             style: TextStyle(
-                              fontSize: 12,
-                              color: count == 3 ? primaryColor : grey,
-                            ),
+                                fontSize: 12,
+                                color: count == 3 ? primaryColor : grey,
+                                fontWeight: FontWeight.bold),
                           )
                         ]),
                   ),
                 ),
                 InkWell(
                   onTap: () {
-                    if (model.currentRouteName != 'SettingsView') {
+                    if (model.currentRouteName != 'MeView') {
                       navigationService.navigateTo(
-                        SettingViewRoute,
+                        MeViewRoute,
                       );
                     }
                   },
@@ -162,9 +165,9 @@ class BottomNavBar extends StatelessWidget {
                           Text(
                             "Me",
                             style: TextStyle(
-                              fontSize: 12,
-                              color: count == 4 ? primaryColor : grey,
-                            ),
+                                fontSize: 12,
+                                color: count == 4 ? primaryColor : grey,
+                                fontWeight: FontWeight.bold),
                           )
                         ]),
                   ),

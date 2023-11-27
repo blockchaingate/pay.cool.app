@@ -194,13 +194,18 @@ class _WalletFeaturesViewState extends State<WalletFeaturesView>
                   controller: tabController,
                   physics: AlwaysScrollableScrollPhysics(),
                   children: [
-                    Column(
-                      children: [
-                        model.getRecords(size),
-                        model.getRecords(size),
-                        model.getRecords(size),
-                        model.getRecords(size),
-                      ],
+                    SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          model.getRecords(size),
+                          model.getRecords(size),
+                          model.getRecords(size),
+                          model.getRecords(size),
+                          model.getRecords(size),
+                          model.getRecords(size),
+                          model.getRecords(size),
+                        ],
+                      ),
                     ),
                     Center(child: Text("No Data")),
                   ],
@@ -492,7 +497,10 @@ class _WalletFeaturesViewState extends State<WalletFeaturesView>
                 child: ElevatedButton.icon(
                   icon: Icon(Icons.swap_horizontal_circle_outlined),
                   label: Text("Transfer"),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/transfer',
+                        arguments: model.walletInfo!);
+                  },
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),

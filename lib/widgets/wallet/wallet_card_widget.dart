@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:paycool/constants/route_names.dart';
+import 'package:paycool/models/wallet/wallet.dart';
+import 'package:paycool/service_locator.dart';
+import 'package:paycool/services/wallet_service.dart';
 import 'package:paycool/shared/ui_helpers.dart';
+import 'package:stacked_services/stacked_services.dart';
 
 class WalletCardWidget extends StatefulWidget {
   const WalletCardWidget({super.key});
@@ -9,6 +14,9 @@ class WalletCardWidget extends StatefulWidget {
 }
 
 class _WalletCardWidgetState extends State<WalletCardWidget> {
+  final NavigationService navigationService = locator<NavigationService>();
+  WalletService walletService = locator<WalletService>();
+  WalletInfo? get walletInfo => walletService.walletInfoDetails;
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -72,13 +80,41 @@ class _WalletCardWidgetState extends State<WalletCardWidget> {
               UIHelper.verticalSpaceSmall,
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: const [
-                  IconLabelWidget(icon: Icons.send, label: 'Send'),
-                  IconLabelWidget(icon: Icons.qr_code, label: 'Receive'),
+                children: [
                   IconLabelWidget(
-                      icon: Icons.local_gas_station, label: 'Add Gas'),
+                      icon: Icons.send,
+                      label: 'Send',
+                      route: () {
+                        print("---------1----------");
+                        Navigator.pushNamed(context, SendViewRoute,
+                            arguments: walletInfo);
+                      }),
                   IconLabelWidget(
-                      icon: Icons.compare_arrows_rounded, label: 'Remit'),
+                      icon: Icons.qr_code,
+                      label: 'Receive',
+                      route: () {
+                        var walletInfo = WalletInfo(address: "DASDASDAS");
+
+                        Navigator.pushNamed(context, ReceiveViewRoute,
+                            arguments: walletInfo);
+                        print("--------2-----------");
+                      }),
+                  IconLabelWidget(
+                      icon: Icons.local_gas_station,
+                      label: 'Add Gas',
+                      route: () {
+                        print("--------3-----------");
+                        Navigator.pushNamed(context, AddGasViewRoute);
+                      }),
+                  IconLabelWidget(
+                      icon: Icons.compare_arrows_rounded,
+                      label: 'Remit',
+                      route: () {
+                        print("---------4----------");
+                        navigationService.navigateTo(
+                          lightningRemitViewRoute,
+                        );
+                      })
                 ],
               ),
             ],
@@ -87,26 +123,24 @@ class _WalletCardWidgetState extends State<WalletCardWidget> {
       ),
     );
   }
-}
 
-class IconLabelWidget extends StatelessWidget {
-  final IconData icon;
-  final String label;
-
-  const IconLabelWidget({required this.icon, required this.label});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Icon(icon),
-        UIHelper.verticalSpaceSmall,
-        Text(
-          label,
-          style: TextStyle(
-              fontWeight: FontWeight.w600, fontSize: 10, color: Colors.white),
-        ),
-      ],
+  Widget IconLabelWidget(
+      {required IconData icon,
+      required String label,
+      required void Function() route}) {
+    return InkWell(
+      onTap: route,
+      child: Column(
+        children: [
+          Icon(icon),
+          UIHelper.verticalSpaceSmall,
+          Text(
+            label,
+            style: TextStyle(
+                fontWeight: FontWeight.w600, fontSize: 10, color: Colors.white),
+          ),
+        ],
+      ),
     );
   }
 }

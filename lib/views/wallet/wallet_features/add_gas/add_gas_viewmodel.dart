@@ -39,13 +39,13 @@ class AddGasViewModel extends FutureViewModel {
   double totalAmount = 0.0;
   double sumUtxos = 0.0;
   String fabAddress = '';
-  var scarContractAddress;
+  String? scarContractAddress;
   var contractInfo;
   var utxos = [];
   double extraAmount = 0.0;
   int satoshisPerBytes = 14;
-  var bytesPerInput;
-  var feePerInput;
+  int? bytesPerInput;
+  int? feePerInput;
   double fabBalance = 0.0;
 
   @override
@@ -61,7 +61,7 @@ class AddGasViewModel extends FutureViewModel {
         environment["chains"]["FAB"]["gasLimit"].toString();
     gasPriceTextController.text = '40';
     bytesPerInput = environment["chains"]["FAB"]["bytesPerInput"];
-    feePerInput = bytesPerInput * satoshisPerBytes;
+    feePerInput = bytesPerInput! * satoshisPerBytes;
     fabAddress = await sharedService.getFabAddressFromCoreWalletDatabase();
     getSliderReady();
     await getFabBalance();
@@ -71,7 +71,7 @@ class AddGasViewModel extends FutureViewModel {
   getSliderReady() async {
     utxos = await apiService.getFabUtxos(fabAddress);
     scarContractAddress = await getScarAddress();
-    scarContractAddress = trimHexPrefix(scarContractAddress);
+    scarContractAddress = trimHexPrefix(scarContractAddress!);
     var gasPrice = int.tryParse(gasPriceTextController.text);
     var gasLimit = int.tryParse(gasLimitTextController.text);
     var options = {
@@ -79,32 +79,16 @@ class AddGasViewModel extends FutureViewModel {
       "gasLimit": gasLimit,
     };
     var fxnDepositCallHex = '4a58db19';
-    contractInfo = await walletService.getFabSmartContract(scarContractAddress,
+    contractInfo = await walletService.getFabSmartContract(scarContractAddress!,
         fxnDepositCallHex, options['gasLimit'], options['gasPrice']);
     extraAmount = contractInfo['totalFee'];
 
     for (var utxo in utxos) {
       var utxoValue = utxo['value'];
       debugPrint(utxoValue.toString());
-      // double utxoValueDouble = bigNum2Double(utxo['value']);
-      // debugPrint('utxoValueDouble $utxoValueDouble');
       var t = Decimal.fromInt(utxoValue) / Decimal.parse('1e8');
-      //  debugPrint(' t ${t.toDouble()}');
       sumUtxos = sumUtxos + t.toDouble();
     }
-    double amt = 0.0;
-    //for (var i = 0; i < sumUtxos; i + 0.05) {
-    // totalAmount =
-    //     // i +
-    //     extraAmount;
-    // int utxosNeeded = calculateUtxosNeeded(totalAmount, utxos);
-    // var fee = (utxosNeeded) * feePerInput + (2 * 34 + 10) * satoshisPerBytes;
-    // transFee = ((Decimal.parse(extraAmount.toString()) +
-    //         Decimal.parse(fee.toString()) / Decimal.parse('1e8')))
-    //     .toDouble();
-    // totalAmount = totalAmount + transFee;
-    // utxosNeeded = calculateUtxosNeeded(totalAmount, utxos);
-    // }
   }
 
   @override
@@ -124,7 +108,6 @@ class AddGasViewModel extends FutureViewModel {
       fabBalance =
           NumberUtil.roundDouble(walletBalance[0].balance!, decimalPlaces: 6);
     });
-
     setBusy(false);
   }
 
@@ -203,7 +186,7 @@ class AddGasViewModel extends FutureViewModel {
     totalAmount = amount;
     //+ extraAmount;
     utxosNeeded = calculateUtxosNeeded(totalAmount, utxos);
-    var fee = (utxosNeeded) * feePerInput + (2 * 34 + 10) * satoshisPerBytes;
+    var fee = (utxosNeeded) * feePerInput! + (2 * 34 + 10) * satoshisPerBytes;
     transFee = ((Decimal.parse(extraAmount.toString()) +
             (Decimal.parse(fee.toString()) / Decimal.parse('1e8')).toDecimal())
         .toDouble());
@@ -228,10 +211,7 @@ class AddGasViewModel extends FutureViewModel {
     for (var utxo in utxos) {
       var utxoValue = utxo['value'];
       debugPrint(utxoValue.toString());
-      // double utxoValueDouble = bigNum2Double(utxo['value']);
-      // debugPrint('utxoValueDouble $utxoValueDouble');
       var t = Decimal.fromInt(utxoValue) / Decimal.parse('1e8');
-      //  debugPrint(' t ${t.toDouble()}');
       sumUtxos = sumUtxos + t.toDouble();
       if (totalAmount <= sumUtxos) {
         utxosNeeded = i;

@@ -62,7 +62,7 @@ class WalletDashboardViewModel extends BaseViewModel {
   WalletService walletService = locator<WalletService>();
   SharedService sharedService = locator<SharedService>();
 
-  final NavigationService navigationService = locator<NavigationService>();
+  final navigationService = locator<NavigationService>();
   final DecimalConfigDatabaseService decimalConfigDatabaseService =
       locator<DecimalConfigDatabaseService>();
   ApiService apiService = locator<ApiService>();

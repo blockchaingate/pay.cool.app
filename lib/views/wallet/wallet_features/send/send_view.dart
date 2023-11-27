@@ -59,7 +59,7 @@ class _SendWalletViewState extends State<SendWalletView>
     widget.walletInfo.tickerName == 'USDTX'
         ? tickerName = 'USDT(TRC20)'
         : tickerName = widget.walletInfo.tickerName!;
-    String tokenType = widget.walletInfo.tokenType!;
+    // String tokenType = widget.walletInfo.tokenType!;
     return ViewModelBuilder<SendViewModel>.reactive(
         viewModelBuilder: () => SendViewModel(),
         onViewModelReady: (model) {
@@ -99,7 +99,7 @@ class _SendWalletViewState extends State<SendWalletView>
                       flex: 1,
                       child: Container(
                         height: 50,
-                        margin: EdgeInsets.symmetric(horizontal: 5),
+                        margin: EdgeInsets.symmetric(horizontal: 10),
                         child: ElevatedButton.icon(
                           icon: Icon(Icons.arrow_circle_up),
                           label: Text("Send"),
@@ -118,7 +118,7 @@ class _SendWalletViewState extends State<SendWalletView>
                   ],
                 ),
                 body: Padding(
-                  padding: EdgeInsets.fromLTRB(10, 20, 10, 0),
+                  padding: EdgeInsets.fromLTRB(20, 20, 20, 0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [

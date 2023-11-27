@@ -23,6 +23,7 @@ const String walletFeaturesViewRoute = '/walletFeatures';
 const String SendViewRoute = '/send';
 const String ReceiveViewRoute = '/receive';
 const String TransactionHistoryViewRoute = '/transactionHistory';
+const String TransferViewRoute = '/transfer';
 
 // Club Routes
 
@@ -48,6 +49,10 @@ const String DashboardViewRoute = '/dashboard';
 const String lightningRemitViewRoute = '/lightningRemit';
 const String InstructionsViewRoute = '/campaignInstructions';
 const String SettingViewRoute = '/settings';
+const String MeViewRoute = '/me';
+const String WalletManagementViewRoute = '/walletManagement';
+const String NewSettingViewRoute = '/newSettingView';
+const String AboutViewRoute = '/aboutView';
 const String PayCoolViewRoute = '/paycool';
 
 /*----------------------------------------------------------------------
@@ -64,3 +69,9 @@ const String TeamReferralViewRoute = '/teamReferral';
 
 const String MyReferralViewRoute = '/myReferral';
 const String RegisterAccountViewRoute = '/registerAccount';
+
+/*----------------------------------------------------------------------
+                      Bond Routes
+----------------------------------------------------------------------*/
+
+const String BondDashboardViewRoute = '/bondDashboard';

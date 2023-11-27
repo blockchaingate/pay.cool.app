@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/environments/environment_type.dart';
 import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/views/wallet/wallet_dashboard_viewmodel.dart';
-import 'package:paycool/widgets/wallet/add_gas/add_gas_row_widget.dart';
 import 'package:shimmer/shimmer.dart';
-
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class TotalBalanceCardWidget extends StatelessWidget {
   const TotalBalanceCardWidget({Key? key, required this.model})
@@ -193,37 +191,37 @@ class TotalBalanceCardWidget2 extends StatelessWidget {
   }
 }
 
-class TotalBalanceCardWidget3 extends StatelessWidget {
-  const TotalBalanceCardWidget3({Key? key, required this.model})
-      : super(key: key);
-  final WalletDashboardViewModel model;
+// class TotalBalanceCardWidget3 extends StatelessWidget {
+//   const TotalBalanceCardWidget3({Key? key, required this.model})
+//       : super(key: key);
+//   final WalletDashboardViewModel model;
 
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      alignment: Alignment.center,
-      children: <Widget>[
-        Positioned(
-            bottom: 20,
-            right: 30,
-            left: 30,
-            child: Card(
-              elevation: model.elevation,
-              color: isProduction ? secondaryColor : red.withAlpha(200),
-              child: Container(
-                width: 350,
-                height: 90,
-                alignment: Alignment.center,
-                padding: const EdgeInsets.all(10),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    AddGasWithShowcaseWidget(model: model),
-                  ],
-                ),
-              ),
-            )),
-      ],
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return Stack(
+//       alignment: Alignment.center,
+//       children: <Widget>[
+//         Positioned(
+//             bottom: 20,
+//             right: 30,
+//             left: 30,
+//             child: Card(
+//               elevation: model.elevation,
+//               color: isProduction ? secondaryColor : red.withAlpha(200),
+//               child: Container(
+//                 width: 350,
+//                 height: 90,
+//                 alignment: Alignment.center,
+//                 padding: const EdgeInsets.all(10),
+//                 child: Row(
+//                   crossAxisAlignment: CrossAxisAlignment.center,
+//                   children: [
+//                     AddGasWithShowcaseWidget(model: model),
+//                   ],
+//                 ),
+//               ),
+//             )),
+//       ],
+//     );
+//   }
+// }

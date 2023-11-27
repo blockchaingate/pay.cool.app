@@ -21,7 +21,7 @@ class CustomHttpUtil {
     } on TlsException catch (e) {
       if (e.osError?.message != null &&
           e.osError!.message.contains('CERT_ALREADY_IN_HASH_TABLE')) {
-        debugPrint('createHttpClient() - cert already trusted! Skipping.');
+        // debugPrint('createHttpClient() - cert already trusted! Skipping.');
       } else {
         debugPrint(
             'createHttpClient().setTrustedCertificateBytes EXCEPTION: $e');

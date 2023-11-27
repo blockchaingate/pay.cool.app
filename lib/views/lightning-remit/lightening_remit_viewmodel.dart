@@ -60,12 +60,13 @@ class LightningRemitViewmodel extends FutureViewModel {
   bool isExchangeBalanceEmpty = false;
   String barcodeRes = '';
   String barcodeRes2 = '';
-  var walletBalancesBody;
   bool isShowBottomSheet = false;
   List<ExchangeBalanceModel> exchangeBalances = [];
 
   PaginationModel paginationModel = PaginationModel();
   LightningRemitHistoryModel transferHistory = LightningRemitHistoryModel();
+
+  String? errorMessage = "No cion balance in exchange";
 
 /*----------------------------------------------------------------------
                     Default Future to Run
@@ -94,16 +95,11 @@ class LightningRemitViewmodel extends FutureViewModel {
         tokenListDatabaseService
             .getTickerNameByCoinType(element.coinType)
             .then((ticker) {
-          //storageService.tokenList.forEach((newToken){
           debugPrint(ticker);
-          // var json = jsonDecode(newToken);
-          // Token token = Token.fromJson(json);
-          // if (token.tokenType == element.coinType){ debugPrint(token.tickerName);
           setBusy(true);
           element.ticker = ticker; //}
           setBusy(false);
         });
-//element.ticker =tradeService.setTickerNameByType(element.coinType);
         debugPrint('exchanageBalanceModel tickerName ${element.ticker}');
       }
     }
@@ -116,7 +112,6 @@ class LightningRemitViewmodel extends FutureViewModel {
     }
     setBusyForObject(tickerName, false);
     log.e('tickerName $tickerName');
-    // getBindpayTransactionHistory();
   }
 
   getPaginationData(int pageNumber) async {
@@ -169,9 +164,8 @@ class LightningRemitViewmodel extends FutureViewModel {
                     Change bottom sheet hide/show status
 ----------------------------------------------------------------------*/
   changeBottomSheetStatus() {
-    setBusy(true);
     isShowBottomSheet = !isShowBottomSheet;
-    setBusy(false);
+    notifyListeners();
   }
 
 /*----------------------------------------------------------------------
@@ -179,8 +173,6 @@ class LightningRemitViewmodel extends FutureViewModel {
 ----------------------------------------------------------------------*/
   coinListBottomSheet(BuildContext context1) {
     if (isShowBottomSheet) {
-      debugPrint('Bottom Sheet already visible');
-
       navigationService.back();
     } else {
       showBottomSheet(
@@ -192,32 +184,20 @@ class LightningRemitViewmodel extends FutureViewModel {
               separatorBuilder: (context, _) => UIHelper.divider,
               itemCount: exchangeBalances.length,
               itemBuilder: (BuildContext context, int index) {
-                //  mainAxisSize: MainAxisSize.max,
-                //mainAxisAlignment: MainAxisAlignment.center,
-                // children: [
-
                 return Container(
                   padding: const EdgeInsets.symmetric(vertical: 5),
                   decoration: BoxDecoration(
-                    // color: grey.withAlpha(300),
                     borderRadius: index == 0
                         ? const BorderRadius.vertical(top: Radius.circular(10))
                         : const BorderRadius.all(Radius.zero),
-                    // boxShadow: [
-                    //   BoxShadow(
-                    //       blurRadius: 3, color: Colors.grey[600], spreadRadius: 2)
-                    // ]
                     color: tickerName == exchangeBalances[index].ticker
                         ? primaryColor
                         : Colors.transparent,
                   ),
                   child: InkWell(
                     onTap: () {
-                      //  Platform.isIOS
                       updateSelectedTickernameIOS(
                           index, exchangeBalances[index].unlockedAmount);
-                      // : updateSelectedTickername(coins[index]['tickerName'],
-                      //     coins[index]['quantity'].toDouble());
                     },
                     child: Padding(
                       padding: const EdgeInsets.all(10.0),
@@ -239,15 +219,7 @@ class LightningRemitViewmodel extends FutureViewModel {
                     ),
                   ),
                 );
-              }
-
-              // TextField(
-              //   decoration: InputDecoration.collapsed(
-              //     hintText: 'Enter your reference number',
-              //   ),
-              // )
-              //   ]
-              ),
+              }),
         ),
       );
     }

@@ -32,21 +32,10 @@ class PayCoolView extends StatelessWidget {
         },
         child: Scaffold(
           extendBodyBehindAppBar: true,
-          //  backgroundColor: secondaryColor,
-          //  appBar: customAppBar(color: secondaryColor),
           body: GestureDetector(
             onTap: () {
               FocusScope.of(context).requestFocus(FocusNode());
               debugPrint('Close keyboard');
-              // persistentBottomSheetController.closed
-              //     .then((value) => debugPrint(value));
-              // if (model.isShowBottomSheet) {
-              //   Navigator.pop(context);
-              //   model.setBusy(true);
-              //   model.isShowBottomSheet = false;
-              //   model.setBusy(false);
-              //   debugPrint('Close bottom sheet');
-              // }
             },
             child: Container(
               decoration: const BoxDecoration(
@@ -58,10 +47,7 @@ class PayCoolView extends StatelessWidget {
               child: Scrollbar(
                 child: ListView(
                   children: [
-                    Container(
-                        // height: isPhone() ? 250 : 350,
-                        //width: MediaQuery.of(context).size.width,
-                        child: Column(
+                    Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Image.asset(
@@ -79,7 +65,7 @@ class PayCoolView extends StatelessWidget {
                         ),
                         UIHelper.verticalSpaceSmall,
                       ],
-                    )),
+                    ),
                     model.isServerDown
                         ? const ServerErrorWidget()
                         : model.isBusy && !model.isPaying
@@ -584,21 +570,7 @@ class PayCoolView extends StatelessWidget {
                                                   //  Transfer amount textfield
 
                                                   UIHelper.verticalSpaceMedium,
-                                                  // Column(
-                                                  //   children: [
-                                                  //     Text('paste data below'),
-                                                  //     Text(model.pasteRes.toString()),
-                                                  //     Text('Barcode res data below'),
-                                                  //     for (var i = 0;
-                                                  //         i < model.barcodeRes.length;
-                                                  //         i++)
-                                                  //       Text(i.toString() +
-                                                  //           model.barcodeRes[i].toString()),
-                                                  //     Text('amount payable'),
-                                                  //     Text(model.amountPayable.toString())
-                                                  //   ],
-                                                  // ),
-                                                  //  UIHelper.verticalSpaceSmall,
+
                                                   UIHelper.verticalSpaceSmall,
                                                   Container(
                                                     margin: const EdgeInsets
@@ -1213,21 +1185,19 @@ class PayCoolView extends StatelessWidget {
               ),
             ),
           ),
-
-          bottomNavigationBar: BottomNavBar(count: 2),
-          // floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-          // floatingActionButton: Container(
-          //   color: primaryColor,
-          //   child: IconButton(
-          //     onPressed: () {
-          //       model.scanImageFile();
-          //     },
-          //     icon: const Icon(
-          //       FontAwesomeIcons.fileImage,
-          //       color: white,
-          //     ),
-          //  ),
-          // ),
+          bottomNavigationBar: BottomNavBar(count: 0),
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {},
+            elevation: 1,
+            backgroundColor: Colors.transparent,
+            child: Image.asset(
+              "assets/images/new-design/pay_cool_icon.png",
+              fit: BoxFit.cover,
+            ),
+          ),
+          extendBody: true,
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerDocked,
         ),
       ),
     );
@@ -1242,7 +1212,6 @@ class CoinListBottomSheetFloatingActionButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      // padding: EdgeInsets.all(10.0),
       width: double.infinity,
       child: FloatingActionButton(
           backgroundColor: secondaryColor,

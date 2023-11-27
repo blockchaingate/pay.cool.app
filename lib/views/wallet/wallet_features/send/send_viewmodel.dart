@@ -525,7 +525,7 @@ class SendViewModel extends BaseViewModel {
           return errorMessage = FlutterI18n.translate(
               context, "serverTimeoutPleaseTryAgainLater");
         }).catchError((error) {
-          log.e('In Catch error - $error');
+          log.e('In Catch error -$error');
           sharedService.alertDialog(
               FlutterI18n.translate(context, "networkIssue"),
               '$tickerName ${FlutterI18n.translate(context, "transanctionFailed")}',
@@ -534,6 +534,7 @@ class SendViewModel extends BaseViewModel {
           isShowDetailsMessage = true;
           serverError = error.toString();
           setBusy(false);
+          return "";
         });
       }
     } else if (dialogResponse.returnedText != 'Closed') {

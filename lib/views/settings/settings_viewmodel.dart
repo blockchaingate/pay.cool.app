@@ -383,7 +383,9 @@ class SettingsViewModel extends BaseViewModel with StoppableService {
         log.i(
             'user settings db null-- isUserSettingsEmpty $isUserSettingsEmpty');
       }
-    }).catchError((err) => log.e('user settings db empty $err'));
+    }).catchError((err) {
+      log.e('user settings db error $err');
+    });
     setBusy(false);
   }
 
@@ -599,6 +601,7 @@ class SettingsViewModel extends BaseViewModel with StoppableService {
       log.e(error);
       isDeleting = false;
       setBusy(false);
+      return errorMessage = '';
     });
     isDeleting = false;
     setBusy(false);
@@ -657,6 +660,7 @@ class SettingsViewModel extends BaseViewModel with StoppableService {
       }).catchError((error) {
         log.e(error);
         setBusy(false);
+        return errorMessage = '';
       });
     }
     setBusy(false);

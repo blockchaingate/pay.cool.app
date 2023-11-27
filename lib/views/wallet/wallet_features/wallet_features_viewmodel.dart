@@ -44,7 +44,7 @@ class WalletFeaturesViewModel extends ReactiveViewModel {
   final double elevation = 5;
   double containerWidth = 150;
   double containerHeight = 115;
-  late double walletBalance;
+  late double walletBalance = 0;
   late BuildContext context;
   var errDepositItem;
   String? get specialTicker => walletService.specialTickerName;

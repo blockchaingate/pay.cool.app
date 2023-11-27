@@ -21,6 +21,7 @@ import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/environments/environment_type.dart';
 import 'package:paycool/shared/ui_helpers.dart';
+import 'package:paycool/views/bond/bond_dashboard.dart';
 import 'package:paycool/views/multisig/import_multisig_wallet/import_multisig_view.dart';
 import 'package:paycool/views/settings/settings_viewmodel.dart';
 import 'package:paycool/widgets/bottom_nav.dart';
@@ -72,7 +73,24 @@ class SettingsView extends StatelessWidget {
                 //         ),
                 //       )
                 : SettingsContainer(model: model),
-            bottomNavigationBar: BottomNavBar(count: 4),
+            bottomNavigationBar: BottomNavBar(count: 3),
+            floatingActionButton: FloatingActionButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const BondDashboard()));
+              },
+              elevation: 1,
+              backgroundColor: Colors.transparent,
+              child: Image.asset(
+                "assets/images/new-design/pay_cool_icon.png",
+                fit: BoxFit.cover,
+              ),
+            ),
+            extendBody: true,
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.centerDocked,
           ),
         ),
       ),
@@ -145,17 +163,7 @@ class SettingsContainer extends StatelessWidget {
               },
             ),
             UIHelper.divider,
-            //  InkWell(
-            //   splashColor: primaryColor,
-            //   child: Card(
-            //     elevation: 5,
-            //     child:
-            //        Text('Convert Decimal to hex')
-            //   ),
-            //   onTap: () {
-            //     model.convertDecimalToHex();
-            //   },
-            // ),
+
             Visibility(
               visible: model.isVisible,
               child: Padding(
@@ -557,7 +565,7 @@ class SettingsContainer extends StatelessWidget {
                         .copyWith(color: Colors.red)),
               ),
             ),
-            UIHelper.verticalSpaceLarge,
+            UIHelper.verticalSpaceMedium,
             Center(
               child: RichText(
                 text: TextSpan(
@@ -574,7 +582,7 @@ class SettingsContainer extends StatelessWidget {
                 ),
               ),
             ),
-            UIHelper.verticalSpaceLarge,
+            UIHelper.verticalSpaceMedium,
             // Version Code
             SizedBox(
               height: 40,

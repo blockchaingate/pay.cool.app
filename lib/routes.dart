@@ -14,8 +14,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:paycool/logger.dart';
+import 'package:paycool/views/bond/bond_dashboard.dart';
 import 'package:paycool/views/paycool_club/checkout/club_package_checkout_view.dart';
 import 'package:paycool/views/paycool_club/club_projects/club_project_details/club_project_details_view.dart';
+import 'package:paycool/views/settings/about_view.dart';
+import 'package:paycool/views/settings/me_view.dart';
+import 'package:paycool/views/settings/new_setting_view.dart';
+import 'package:paycool/views/settings/wallet_management_view.dart';
+import 'package:paycool/views/wallet/wallet_features/transfer/transfer_view.dart';
 import 'package:paycool/widgets/club/club_rewards_view.dart';
 import 'constants/route_names.dart';
 import 'views/lightning-remit/lightning_remit_view.dart';
@@ -129,6 +135,12 @@ class RouteGenerator {
                   walletInfo: args,
                 ));
 
+      case TransferViewRoute:
+        return MaterialPageRoute(
+            builder: (_) => TransferView(
+                  walletInfo: args,
+                ));
+
 /*----------------------------------------------------------------------
                           Pay.cool Club Routes
 ----------------------------------------------------------------------*/
@@ -207,6 +219,40 @@ class RouteGenerator {
         return MaterialPageRoute(
           settings: RouteSettings(name: 'SettingsView', arguments: args),
           builder: (_) => const SettingsView(),
+        );
+
+      case MeViewRoute:
+        return MaterialPageRoute(
+          settings: RouteSettings(name: 'MeView'),
+          builder: (_) => MeView(),
+        );
+
+      case WalletManagementViewRoute:
+        return MaterialPageRoute(
+          settings: RouteSettings(name: 'WalletManagementView'),
+          builder: (_) => WalletManagementView(),
+        );
+
+      case NewSettingViewRoute:
+        return MaterialPageRoute(
+          settings: RouteSettings(name: 'NewSettingView'),
+          builder: (_) => NewSettingView(),
+        );
+
+      case AboutViewRoute:
+        return MaterialPageRoute(
+          settings: RouteSettings(name: 'AboutView'),
+          builder: (_) => AboutView(),
+        );
+
+      /*----------------------------------------------------------------------
+                          Bond Routes
+----------------------------------------------------------------------*/
+
+      case BondDashboardViewRoute:
+        return MaterialPageRoute(
+          settings: RouteSettings(name: 'BondDashboardView'),
+          builder: (_) => BondDashboard(),
         );
 
       default:
