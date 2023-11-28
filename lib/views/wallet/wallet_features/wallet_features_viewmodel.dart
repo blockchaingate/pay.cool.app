@@ -12,7 +12,10 @@
 */
 
 import 'dart:convert';
+
+import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:paycool/constants/route_names.dart';
 import 'package:paycool/environments/coins.dart';
 import 'package:paycool/logger.dart';
 import 'package:paycool/models/wallet/wallet.dart';
@@ -23,11 +26,9 @@ import 'package:paycool/services/db/token_list_database_service.dart';
 import 'package:paycool/services/local_storage_service.dart';
 import 'package:paycool/services/shared_service.dart';
 import 'package:paycool/services/wallet_service.dart';
-import 'package:flutter/material.dart';
 import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/utils/wallet/wallet_util.dart';
 import 'package:stacked/stacked.dart';
-import 'package:paycool/constants/route_names.dart';
 import 'package:stacked_services/stacked_services.dart';
 
 class WalletFeaturesViewModel extends ReactiveViewModel {

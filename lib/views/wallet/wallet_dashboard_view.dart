@@ -17,7 +17,6 @@ import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/constants/route_names.dart';
-import 'package:paycool/constants/ui_var.dart';
 import 'package:paycool/models/wallet/wallet_balance.dart';
 import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/views/wallet/wallet_dashboard_viewmodel.dart';
@@ -38,7 +37,7 @@ class WalletDashboardView extends StatefulWidget {
 class _WalletDashboardViewState extends State<WalletDashboardView>
     with SingleTickerProviderStateMixin {
   TabController? _tabController;
-  late WalletDashboardViewModel newModel;
+  WalletDashboardViewModel? newModel;
   final PageController _pageController = PageController(initialPage: 1);
 
   @override
@@ -59,9 +58,9 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
   }
 
   void _handleTabSelection() {
-    debugPrint('is busy 0 ${newModel.isBusy}');
-    newModel.updateTabSelection(_tabController!.index);
-    debugPrint('is busy 2 ${newModel.isBusy}');
+    if (newModel != null) {
+      newModel!.updateTabSelection(_tabController!.index);
+    }
   }
 
   @override
@@ -103,9 +102,16 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
                 ),
                 leadingWidth: (size.width * 0.3),
                 actions: [
-                  Image.asset(
-                    "assets/images/new-design/wc_icon.png",
-                    scale: 2.7,
+                  InkWell(
+                    onTap: () {
+                      model.navigationService.navigateTo(
+                        WalletConnectViewRoute,
+                      );
+                    },
+                    child: Image.asset(
+                      "assets/images/new-design/wc_icon.png",
+                      scale: 2.7,
+                    ),
                   ),
                   Image.asset(
                     "assets/images/new-design/scan_icon.png",
@@ -141,7 +147,7 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Column(
         children: <Widget>[
-          WalletCardWidget(),
+          WalletCardWidget(model),
           Row(
             children: [
               Expanded(
@@ -152,6 +158,10 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
                   unselectedLabelColor: grey,
                   indicatorColor: primaryColor,
                   indicatorSize: TabBarIndicatorSize.tab,
+                  indicatorWeight: 3,
+                  labelPadding: EdgeInsets.symmetric(horizontal: 5),
+                  indicatorPadding:
+                      EdgeInsets.symmetric(horizontal: 25, vertical: 10),
                   tabs: const [
                     Tab(
                       text: "Token",
@@ -211,14 +221,23 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
             ],
           ),
           Expanded(
-            child: TabBarView(
-              controller: _tabController,
-              physics: AlwaysScrollableScrollPhysics(),
-              children: [
-                buildListView(model),
-                buildListView(model),
-              ],
-            ),
+            child: model.isBusy ||
+                    model.busy(model.isHideSmallAssetsButton) ||
+                    model.busy(model.selectedTabIndex)
+                ? const ShimmerLayout(
+                    layoutType: 'walletDashboard',
+                    count: 9,
+                  )
+                : TabBarView(
+                    controller: _tabController,
+                    physics: AlwaysScrollableScrollPhysics(),
+                    children: [
+                      buildListView(model),
+                      Center(
+                        child: Text("NFT"),
+                      ),
+                    ],
+                  ),
           ),
         ],
       ),
@@ -479,81 +498,76 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
     );
   }
 
-  Widget coinList(WalletDashboardViewModel model, BuildContext context) {
-    return DefaultTabController(
-        length: 6,
-        initialIndex: model.selectedTabIndex,
-        child: NestedScrollView(
-          controller: model.walletsScrollController,
-          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-            return <Widget>[
-              SliverPersistentHeader(
-                  pinned: true,
-                  delegate: _SliverAppBarDelegate(
-                    TabBar(
-                        // labelPadding: EdgeInsets.only(bottom: 14, top: 14),
-                        controller: _tabController,
-                        onTap: (int tabIndex) {
-                          model.updateTabSelection(tabIndex);
-                        },
-                        isScrollable: isPhone() ? false : true,
-                        labelColor: primaryColor,
-                        unselectedLabelColor: grey,
-                        indicatorColor: primaryColor,
-                        indicatorSize: TabBarIndicatorSize.tab,
-                        tabs: const [
-                          Tab(
-                            text: "All",
-                            iconMargin: EdgeInsets.only(bottom: 3),
-                          ),
-                          Tab(
-                            text: "FAB",
-                            iconMargin: EdgeInsets.only(bottom: 3),
-                          ),
-                          Tab(
-                            text: "ETH",
-                            iconMargin: EdgeInsets.only(bottom: 3),
-                          ),
-                          Tab(
-                            text: "TRX",
-                            iconMargin: EdgeInsets.only(bottom: 3),
-                          ),
-                          Tab(
-                            text: "BNB",
-                            iconMargin: EdgeInsets.only(bottom: 3),
-                          ),
-                          Tab(
-                            icon: Icon(Icons.star, size: 18),
-                            iconMargin: EdgeInsets.only(bottom: 3),
-                          ),
-                        ]),
-                  ))
-            ];
-          },
-          body: model.isBusy ||
-                  model.busy(model.isHideSmallAssetsButton) ||
-                  model.busy(model.selectedTabIndex)
-              ? const ShimmerLayout(
-                  layoutType: 'walletDashboard',
-                  count: 9,
-                )
-              : TabBarView(
-                  controller: _tabController,
-                  physics: AlwaysScrollableScrollPhysics(),
-                  children: [
-                    // All coins tab
-                    //Center(child: Text(model.isBusy.toString())),
-                    buildListView(model),
-                    buildListView(model),
-                    buildListView(model),
-                    buildListView(model),
-                    buildListView(model),
+  // Widget coinList(WalletDashboardViewModel model, BuildContext context) {
+  //   return DefaultTabController(
+  //       length: 6,
+  //       initialIndex: model.selectedTabIndex,
+  //       child: NestedScrollView(
+  //         controller: model.walletsScrollController,
+  //         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+  //           return <Widget>[
+  //             TabBar(
+  //                 controller: _tabController,
+  //                 onTap: (int tabIndex) {
+  //                   model.updateTabSelection(tabIndex);
+  //                 },
+  //                 isScrollable: isPhone() ? false : true,
+  //                 labelColor: primaryColor,
+  //                 unselectedLabelColor: grey,
+  //                 indicatorColor: primaryColor,
+  //                 indicatorSize: TabBarIndicatorSize.tab,
+  //                 tabs: const [
+  //                   Tab(
+  //                     text: "All",
+  //                     iconMargin: EdgeInsets.only(bottom: 3),
+  //                   ),
+  //                   Tab(
+  //                     text: "FAB",
+  //                     iconMargin: EdgeInsets.only(bottom: 3),
+  //                   ),
+  //                   Tab(
+  //                     text: "ETH",
+  //                     iconMargin: EdgeInsets.only(bottom: 3),
+  //                   ),
+  //                   Tab(
+  //                     text: "TRX",
+  //                     iconMargin: EdgeInsets.only(bottom: 3),
+  //                   ),
+  //                   Tab(
+  //                     text: "BNB",
+  //                     iconMargin: EdgeInsets.only(bottom: 3),
+  //                   ),
+  //                   Tab(
+  //                     icon: Icon(Icons.star, size: 18),
+  //                     iconMargin: EdgeInsets.only(bottom: 3),
+  //                   ),
+  //                 ]),
+  //           ];
+  //         },
+  //         body: model.isBusy ||
+  //                 model.busy(model.isHideSmallAssetsButton) ||
+  //                 model.busy(model.selectedTabIndex)
+  //             ? const ShimmerLayout(
+  //                 layoutType: 'walletDashboard',
+  //                 count: 9,
+  //               )
+  //             : TabBarView(
+  //                 controller: _tabController,
+  //                 physics: AlwaysScrollableScrollPhysics(),
+  //                 children: [
+  //                   // All coins tab
+  //                   //Center(child: Text(model.isBusy.toString())),
+  //                   buildListView(model),
+  //                   buildListView(model),
+  //                   buildListView(model),
+  //                   buildListView(model),
+  //                   buildListView(model),
 
-                    FavTab(),
-                  ],
-                ),
-        ));
-  }
+  //                   // FavTab(),
+  //                 ],
+  //               ),
+  //       ));
+  // }
 
   ListView buildListView(WalletDashboardViewModel model) {
     List<WalletBalance> newList = [];
@@ -571,7 +585,6 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
     }
 
     return ListView.builder(
-      padding: const EdgeInsets.only(top: 0),
       shrinkWrap: true,
       itemCount: newList.length,
       itemBuilder: (BuildContext context, int index) {
@@ -592,11 +605,14 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
                 wallets: newList,
                 context: context,
               )),
-          child: CoinDetailsCardWidget(
-            tickerName: tickerName,
-            index: index,
-            wallets: newList,
-            context: context,
+          child: Padding(
+            padding: const EdgeInsets.only(top: 5),
+            child: CoinDetailsCardWidget(
+              tickerName: tickerName,
+              index: index,
+              wallets: newList,
+              context: context,
+            ),
           ),
         );
       },
@@ -984,79 +1000,79 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
 }
 // FAB TAB
 
-class FavTab extends StackedView<WalletDashboardViewModel> {
-  @override
-  void onViewModelReady(WalletDashboardViewModel model) async {
-    await model.buildFavCoinListV1();
-  }
+// class FavTab extends StackedView<WalletDashboardViewModel> {
+//   @override
+//   void onViewModelReady(WalletDashboardViewModel model) async {
+//     await model.buildFavCoinListV1();
+//   }
 
-  @override
-  Widget builder(
-    BuildContext context,
-    WalletDashboardViewModel model,
-    Widget? child,
-  ) {
-    debugPrint('fav list length before');
-    debugPrint(model.favWallets.length.toString());
-    return model.busy(model.favWallets)
-        ? model.sharedService.loadingIndicator()
-        : Container(
-            child: model.favWallets.isEmpty
-                ? Center(
-                    child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Image.asset(
-                        "assets/images/paycool/box.png",
-                        width: 40,
-                        height: 40,
-                      ),
-                    ],
-                  ))
-                : ListView.builder(
-                    controller: model.walletsScrollController,
-                    shrinkWrap: true,
-                    itemCount: model.favWallets.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      var tickerName =
-                          model.favWallets[index].coin!.toLowerCase();
-                      return CoinDetailsCardWidget(
-                        tickerName: tickerName,
-                        index: index,
-                        wallets: model.favWallets,
-                        context: context,
-                      );
-                    }),
-          );
-  }
+//   @override
+//   Widget builder(
+//     BuildContext context,
+//     WalletDashboardViewModel model,
+//     Widget? child,
+//   ) {
+//     debugPrint('fav list length before');
+//     debugPrint(model.favWallets.length.toString());
+//     return model.busy(model.favWallets)
+//         ? model.sharedService.loadingIndicator()
+//         : Container(
+//             child: model.favWallets.isEmpty
+//                 ? Center(
+//                     child: Column(
+//                     mainAxisAlignment: MainAxisAlignment.center,
+//                     crossAxisAlignment: CrossAxisAlignment.center,
+//                     children: [
+//                       Image.asset(
+//                         "assets/images/paycool/box.png",
+//                         width: 40,
+//                         height: 40,
+//                       ),
+//                     ],
+//                   ))
+//                 : ListView.builder(
+//                     controller: model.walletsScrollController,
+//                     shrinkWrap: true,
+//                     itemCount: model.favWallets.length,
+//                     itemBuilder: (BuildContext context, int index) {
+//                       var tickerName =
+//                           model.favWallets[index].coin!.toLowerCase();
+//                       return CoinDetailsCardWidget(
+//                         tickerName: tickerName,
+//                         index: index,
+//                         wallets: model.favWallets,
+//                         context: context,
+//                       );
+//                     }),
+//           );
+//   }
 
-  @override
-  WalletDashboardViewModel viewModelBuilder(BuildContext context) =>
-      WalletDashboardViewModel(context: context);
-}
+//   @override
+//   WalletDashboardViewModel viewModelBuilder(BuildContext context) =>
+//       WalletDashboardViewModel(context: context);
+// }
 
-class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
-  _SliverAppBarDelegate(this._tabBar);
+// class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
+//   _SliverAppBarDelegate(this._tabBar);
 
-  final TabBar _tabBar;
+//   final TabBar _tabBar;
 
-  @override
-  double get minExtent => _tabBar.preferredSize.height;
-  @override
-  double get maxExtent => _tabBar.preferredSize.height;
+//   @override
+//   double get minExtent => _tabBar.preferredSize.height;
+//   @override
+//   double get maxExtent => _tabBar.preferredSize.height;
 
-  @override
-  Widget build(
-      BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return Container(
-      color: secondaryColor,
-      child: _tabBar,
-    );
-  }
+//   @override
+//   Widget build(
+//       BuildContext context, double shrinkOffset, bool overlapsContent) {
+//     return Container(
+//       color: secondaryColor,
+//       child: _tabBar,
+//     );
+//   }
 
-  @override
-  bool shouldRebuild(_SliverAppBarDelegate oldDelegate) {
-    return false;
-  }
-}
+//   @override
+//   bool shouldRebuild(_SliverAppBarDelegate oldDelegate) {
+//     return false;
+//   }
+// }

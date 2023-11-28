@@ -124,8 +124,8 @@ class PayCoolViewmodel extends FutureViewModel {
   Decimal gasBalance = Constants.decimalZero;
   PayOrder payOrder = PayOrder();
 
-  late CameraController controller;
-  late List<CameraDescription> _cameras;
+  CameraController? controller;
+  List<CameraDescription>? _cameras;
 
 /*----------------------------------------------------------------------
                     Default Future to Run
@@ -138,7 +138,6 @@ class PayCoolViewmodel extends FutureViewModel {
 ----------------------------------------------------------------------*/
 
   init() async {
-    _cameras = await availableCameras();
     isAutoStartPaycoolScan = storageService.autoStartPaycoolScan;
     // await userSettingsDatabaseService.getById(1).then((res) {
     //   if (res != null) {
@@ -149,26 +148,31 @@ class PayCoolViewmodel extends FutureViewModel {
     if (lang.isEmpty) {
       lang = "en";
     }
-    controller = CameraController(_cameras[0], ResolutionPreset.max);
-    controller.initialize().then((_) {
-      notifyListeners();
-    }).catchError((Object e) {
-      if (e is CameraException) {
-        switch (e.code) {
-          case 'CameraAccessDenied':
-            // Handle access errors here.
-            break;
-          default:
-            // Handle other errors here.
-            break;
+    try {
+      _cameras = await availableCameras();
+      controller = CameraController(_cameras![0], ResolutionPreset.max);
+      controller!.initialize().then((_) {
+        notifyListeners();
+      }).catchError((Object e) {
+        if (e is CameraException) {
+          switch (e.code) {
+            case 'CameraAccessDenied':
+              // Handle access errors here.
+              break;
+            default:
+              // Handle other errors here.
+              break;
+          }
         }
-      }
-    });
+      });
+    } catch (e) {
+      log.e(e);
+    }
   }
 
   @override
   void dispose() {
-    controller.dispose();
+    controller!.dispose();
     super.dispose();
   }
 
