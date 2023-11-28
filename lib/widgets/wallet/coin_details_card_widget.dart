@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:paycool/constants/api_routes.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/route_names.dart';
@@ -99,7 +98,7 @@ class CoinDetailsCardWidget extends StackedView<WalletDashboardViewModel> {
                         ),
                         Text(
                           wallets[index].balance!.isNegative
-                              ? FlutterI18n.translate(context, "unavailable")
+                              ? "0"
                               : NumberUtil.roundDouble(wallets[index].balance!,
                                       decimalPlaces: 6)
                                   .toString(),
@@ -125,7 +124,7 @@ class CoinDetailsCardWidget extends StackedView<WalletDashboardViewModel> {
                       children: <Widget>[
                         Text(
                           wallets[index].unlockedExchangeBalance!.isNegative
-                              ? FlutterI18n.translate(context, "unavailable")
+                              ? "0"
                               : NumberUtil.roundDouble(
                                       wallets[index].unlockedExchangeBalance!,
                                       decimalPlaces: 6)
@@ -147,8 +146,7 @@ class CoinDetailsCardWidget extends StackedView<WalletDashboardViewModel> {
                             ),
                             Text(
                               wallets[index].usdValue!.usd!.isNegative
-                                  ? FlutterI18n.translate(
-                                      context, "unavailable")
+                                  ? "0"
                                   : NumberUtil.roundDouble(
                                           (!wallets[index].balance!.isNegative
                                                   ? wallets[index].balance

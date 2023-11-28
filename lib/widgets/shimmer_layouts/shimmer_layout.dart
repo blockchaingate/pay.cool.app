@@ -17,7 +17,7 @@ class ShimmerLayout extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
         child: ListView.builder(
-            itemCount: count ?? 5,
+            itemCount: count,
             itemBuilder: (BuildContext context, int index) {
               Widget? layout;
 

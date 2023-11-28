@@ -182,6 +182,11 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
                       width: size.width * 0.45,
                       height: size.height * 0.045,
                       child: TextField(
+                        controller: model.searchCoinTextController,
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 14,
+                        ),
                         decoration: InputDecoration(
                           hintText: "Search",
                           prefixIcon: Padding(
@@ -205,6 +210,9 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
                           filled: true,
                           fillColor: Colors.grey[200],
                         ),
+                        onChanged: (value) {
+                          model.searchCoinsByTickerName(value);
+                        },
                       ),
                     ),
                     Padding(
