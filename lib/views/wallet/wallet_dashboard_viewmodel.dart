@@ -85,7 +85,6 @@ class WalletDashboardViewModel extends BaseViewModel {
   String? fabAddress;
   bool isHideSearch = false;
   bool isHideSmallAssetsButton = false;
-  // var refreshController;
   bool isConfirmDeposit = false;
   late WalletInfo confirmDepositCoinWallet;
 
@@ -96,12 +95,8 @@ class WalletDashboardViewModel extends BaseViewModel {
   String postFreeFabResult = '';
   bool isFreeFabNotUsed = false;
   double fabBalance = 0.0;
-  // List<String> formattedUsdValueList = [];
-  // List<String> formattedUsdValueListCopy = [];
 
   final searchCoinTextController = TextEditingController();
-  // final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-  //     FlutterLocalNotificationsPlugin();
 
   //vars for announcement
   bool hasApiError = false;

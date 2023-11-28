@@ -50,7 +50,7 @@ class _WalletCardWidgetState extends State<WalletCardWidget> {
               Align(
                 alignment: Alignment.topRight,
                 child: Text(
-                  'Wallet Accounts',
+                  FlutterI18n.translate(context, "walletAccounts"),
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 12.0,
@@ -76,7 +76,7 @@ class _WalletCardWidgetState extends State<WalletCardWidget> {
                               color: Colors.white),
                         )
                       : Text(
-                          "No Address",
+                          FlutterI18n.translate(context, "noAddress"),
                           style: TextStyle(
                               fontWeight: FontWeight.w400,
                               fontSize: 14,

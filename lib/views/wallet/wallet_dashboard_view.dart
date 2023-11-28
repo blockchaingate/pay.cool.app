@@ -15,14 +15,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:paycool/constants/colors.dart';
-import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/constants/route_names.dart';
 import 'package:paycool/models/wallet/wallet_balance.dart';
 import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/views/wallet/wallet_dashboard_viewmodel.dart';
 import 'package:paycool/widgets/bottom_nav.dart';
 import 'package:paycool/widgets/shimmer_layouts/shimmer_layout.dart';
-import 'package:paycool/widgets/wallet/add_gas/gas_balance_and_add_gas_button_widget.dart';
 import 'package:paycool/widgets/wallet/coin_details_card_widget.dart';
 import 'package:paycool/widgets/wallet/wallet_card_widget.dart';
 import 'package:stacked/stacked.dart';
@@ -83,22 +81,27 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
                 backgroundColor: Colors.transparent,
                 elevation: 0,
                 systemOverlayStyle: SystemUiOverlayStyle.dark,
-                leading: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image.asset(
-                      "assets/images/new-design/menu_icon.png",
-                      scale: 2.7,
-                    ),
-                    UIHelper.horizontalSpaceSmall,
-                    Text(
-                      "All Chains",
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 14),
-                    )
-                  ],
+                leading: InkWell(
+                  onTap: () {
+                    key.currentState!.openDrawer();
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(
+                        "assets/images/new-design/menu_icon.png",
+                        scale: 2.7,
+                      ),
+                      UIHelper.horizontalSpaceSmall,
+                      Text(
+                        FlutterI18n.translate(context, "allChains"),
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 14),
+                      )
+                    ],
+                  ),
                 ),
                 leadingWidth: (size.width * 0.3),
                 actions: [
@@ -118,6 +121,78 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
                     scale: 2.7,
                   ),
                 ],
+              ),
+              drawer: Drawer(
+                width: size.width * 0.2,
+                child: ListView(
+                  padding: EdgeInsets.only(top: size.height * 0.3),
+                  children: <Widget>[
+                    ListTile(
+                      title: Text(
+                        'All',
+                        style: TextStyle(color: black),
+                      ),
+                      onTap: () {
+                        model.updateTabSelection(0);
+                        Navigator.pop(context); // Close the drawer
+                      },
+                    ),
+                    ListTile(
+                      title: Text(
+                        'FAB',
+                        style: TextStyle(color: black),
+                      ),
+                      onTap: () {
+                        model.updateTabSelection(1);
+                        Navigator.pop(context); // Close the drawer
+                      },
+                    ),
+                    ListTile(
+                      title: Text(
+                        'ETH',
+                        style: TextStyle(color: black),
+                      ),
+                      onTap: () {
+                        model.updateTabSelection(2);
+                        // Handle item tap
+                        Navigator.pop(context); // Close the drawer
+                      },
+                    ),
+                    ListTile(
+                      title: Text(
+                        'TRX',
+                        style: TextStyle(color: black),
+                      ),
+                      onTap: () {
+                        model.updateTabSelection(3);
+                        // Handle item tap
+                        Navigator.pop(context); // Close the drawer
+                      },
+                    ),
+                    ListTile(
+                      title: Text(
+                        'BNB',
+                        style: TextStyle(color: black),
+                      ),
+                      onTap: () {
+                        model.updateTabSelection(4);
+                        // Handle item tap
+                        Navigator.pop(context); // Close the drawer
+                      },
+                    ),
+                    ListTile(
+                      title: Text(
+                        'FAV',
+                        style: TextStyle(color: black),
+                      ),
+                      onTap: () {
+                        model.updateTabSelection(5);
+                        // Handle item tap
+                        Navigator.pop(context); // Close the drawer
+                      },
+                    ),
+                  ],
+                ),
               ),
               body: Builder(
                   builder: (context) => mainWidgets(size, model, context)),
@@ -162,12 +237,12 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
                   labelPadding: EdgeInsets.symmetric(horizontal: 5),
                   indicatorPadding:
                       EdgeInsets.symmetric(horizontal: 25, vertical: 10),
-                  tabs: const [
+                  tabs: [
                     Tab(
-                      text: "Token",
+                      text: FlutterI18n.translate(context, "token"),
                     ),
                     Tab(
-                      text: "NFT",
+                      text: FlutterI18n.translate(context, "nft"),
                     ),
                   ],
                 ),
@@ -188,7 +263,7 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
                           fontSize: 14,
                         ),
                         decoration: InputDecoration(
-                          hintText: "Search",
+                          hintText: FlutterI18n.translate(context, "search"),
                           prefixIcon: Padding(
                             padding: const EdgeInsets.only(),
                             child: Icon(
@@ -350,161 +425,161 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
   /*-----------------------------------------------------------------
                             Hide Small Amount Row
   -----------------------------------------------------------------*/
-  Widget amountAndGas(WalletDashboardViewModel model, BuildContext context) {
-    return Column(
-      children: <Widget>[
-        Container(
-          padding: const EdgeInsets.only(right: 10, top: 13),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            mainAxisSize: MainAxisSize.max,
-            children: <Widget>[
-              Container(
-                width: 130,
-                margin:
-                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    InkWell(
-                      onTap: () {
-                        model.isShowFavCoins
-                            ? debugPrint('...')
-                            : model.hideSmallAmountAssets();
-                      },
-                      child: Row(
-                        children: <Widget>[
-                          !model.isHideSmallAssetsButton
-                              ? const Icon(
-                                  Icons.money_off,
-                                  semanticLabel: 'Show all Amount Assets',
-                                  color: primaryColor,
-                                )
-                              : Icon(
-                                  Icons.attach_money,
-                                  semanticLabel: 'Hide Small Amount Assets',
-                                  color: model.isShowFavCoins
-                                      ? grey
-                                      : primaryColor,
-                                ),
-                          Expanded(
-                            child: Container(
-                              padding: const EdgeInsets.only(left: 5),
-                              child: Text(
-                                !model.isHideSmallAssetsButton
-                                    ? FlutterI18n.translate(
-                                        context, "hideSmallAmountAssets")
-                                    : FlutterI18n.translate(
-                                        context, "showSmallAmountAssets"),
-                                style: model.isShowFavCoins
-                                    ? headText5.copyWith(
-                                        wordSpacing: 1.25, color: grey)
-                                    : headText5.copyWith(wordSpacing: 1.25),
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    model.isBusy
-                        ? Container()
-                        : GasBalanceAndAddGasButtonWidget(
-                            gasAmount: model.gasAmount),
-                    !model.isFreeFabNotUsed
-                        ? Container()
-                        : Container(
-                            margin: const EdgeInsets.symmetric(vertical: 8.0),
-                            decoration: BoxDecoration(
-                                color: primaryColor,
-                                borderRadius: BorderRadius.circular(30)),
-                            child: SizedBox(
-                              width: 120,
-                              height: 22,
-                              child: OutlinedButton.icon(
-                                  style: ButtonStyle(
-                                      padding: MaterialStateProperty.all(
-                                          const EdgeInsets.all(0))),
-                                  onPressed: model.getFreeFab,
-                                  icon: const Icon(
-                                    Icons.add,
-                                    size: 14,
-                                    color: white,
-                                  ),
-                                  label: Text(
-                                    '${FlutterI18n.translate(context, "getFree")} FAB',
-                                    style: headText5.copyWith(
-                                        color: secondaryColor,
-                                        fontWeight: FontWeight.w400),
-                                  )),
-                            )),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-        Container(
-          alignment: Alignment.centerLeft,
-          margin: const EdgeInsets.only(left: 8.0),
-          width: MediaQuery.of(context).size.width / 2,
-          child: Row(
-            children: [
-              Expanded(
-                child: GestureDetector(
-                  onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
-                  child: Container(
-                    margin: const EdgeInsets.only(top: 5),
-                    height: 30,
-                    child: TextField(
-                      style: headText5,
-                      enabled:
-                          model.isShowFavCoins || model.isHideSmallAssetsButton
-                              ? false
-                              : true,
-                      decoration: const InputDecoration(
-                          enabledBorder: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(color: primaryColor, width: 0.5),
-                          ),
-                          focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: primaryColor)),
-                          suffixIcon: Icon(
-                            Icons.search,
-                            color: primaryColor,
-                            size: 18,
-                          )),
-                      controller: model.searchCoinTextController,
-                      onChanged: (String value) {
-                        model.isShowFavCoins
-                            ? model.searchFavCoinsByTickerName(value)
-                            : model.searchCoinsByTickerName(value);
-                      },
-                    ),
-                  ),
-                ),
-              )
-            ],
-          ),
-        ),
-        UIHelper.verticalSpaceSmall,
-        model.isUpdateWallet
-            ? TextButton(
-                child: Text(FlutterI18n.translate(context, "updateWallet")),
-                onPressed: () => model.updateWallet(),
-              )
-            : Container(),
-      ],
-    );
-  }
+  // Widget amountAndGas(WalletDashboardViewModel model, BuildContext context) {
+  //   return Column(
+  //     children: <Widget>[
+  //       Container(
+  //         padding: const EdgeInsets.only(right: 10, top: 13),
+  //         child: Row(
+  //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //           mainAxisSize: MainAxisSize.max,
+  //           children: <Widget>[
+  //             Container(
+  //               width: 130,
+  //               margin:
+  //                   const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+  //               child: Column(
+  //                 crossAxisAlignment: CrossAxisAlignment.start,
+  //                 children: <Widget>[
+  //                   InkWell(
+  //                     onTap: () {
+  //                       model.isShowFavCoins
+  //                           ? debugPrint('...')
+  //                           : model.hideSmallAmountAssets();
+  //                     },
+  //                     child: Row(
+  //                       children: <Widget>[
+  //                         !model.isHideSmallAssetsButton
+  //                             ? const Icon(
+  //                                 Icons.money_off,
+  //                                 semanticLabel: 'Show all Amount Assets',
+  //                                 color: primaryColor,
+  //                               )
+  //                             : Icon(
+  //                                 Icons.attach_money,
+  //                                 semanticLabel: 'Hide Small Amount Assets',
+  //                                 color: model.isShowFavCoins
+  //                                     ? grey
+  //                                     : primaryColor,
+  //                               ),
+  //                         Expanded(
+  //                           child: Container(
+  //                             padding: const EdgeInsets.only(left: 5),
+  //                             child: Text(
+  //                               !model.isHideSmallAssetsButton
+  //                                   ? FlutterI18n.translate(
+  //                                       context, "hideSmallAmountAssets")
+  //                                   : FlutterI18n.translate(
+  //                                       context, "showSmallAmountAssets"),
+  //                               style: model.isShowFavCoins
+  //                                   ? headText5.copyWith(
+  //                                       wordSpacing: 1.25, color: grey)
+  //                                   : headText5.copyWith(wordSpacing: 1.25),
+  //                             ),
+  //                           ),
+  //                         )
+  //                       ],
+  //                     ),
+  //                   ),
+  //                 ],
+  //               ),
+  //             ),
+  //             Expanded(
+  //               child: Column(
+  //                 mainAxisSize: MainAxisSize.min,
+  //                 mainAxisAlignment: MainAxisAlignment.start,
+  //                 crossAxisAlignment: CrossAxisAlignment.end,
+  //                 children: [
+  //                   model.isBusy
+  //                       ? Container()
+  //                       : GasBalanceAndAddGasButtonWidget(
+  //                           gasAmount: model.gasAmount),
+  //                   !model.isFreeFabNotUsed
+  //                       ? Container()
+  //                       : Container(
+  //                           margin: const EdgeInsets.symmetric(vertical: 8.0),
+  //                           decoration: BoxDecoration(
+  //                               color: primaryColor,
+  //                               borderRadius: BorderRadius.circular(30)),
+  //                           child: SizedBox(
+  //                             width: 120,
+  //                             height: 22,
+  //                             child: OutlinedButton.icon(
+  //                                 style: ButtonStyle(
+  //                                     padding: MaterialStateProperty.all(
+  //                                         const EdgeInsets.all(0))),
+  //                                 onPressed: model.getFreeFab,
+  //                                 icon: const Icon(
+  //                                   Icons.add,
+  //                                   size: 14,
+  //                                   color: white,
+  //                                 ),
+  //                                 label: Text(
+  //                                   '${FlutterI18n.translate(context, "getFree")} FAB',
+  //                                   style: headText5.copyWith(
+  //                                       color: secondaryColor,
+  //                                       fontWeight: FontWeight.w400),
+  //                                 )),
+  //                           )),
+  //                 ],
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //       ),
+  //       Container(
+  //         alignment: Alignment.centerLeft,
+  //         margin: const EdgeInsets.only(left: 8.0),
+  //         width: MediaQuery.of(context).size.width / 2,
+  //         child: Row(
+  //           children: [
+  //             Expanded(
+  //               child: GestureDetector(
+  //                 onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
+  //                 child: Container(
+  //                   margin: const EdgeInsets.only(top: 5),
+  //                   height: 30,
+  //                   child: TextField(
+  //                     style: headText5,
+  //                     enabled:
+  //                         model.isShowFavCoins || model.isHideSmallAssetsButton
+  //                             ? false
+  //                             : true,
+  //                     decoration: const InputDecoration(
+  //                         enabledBorder: OutlineInputBorder(
+  //                           borderSide:
+  //                               BorderSide(color: primaryColor, width: 0.5),
+  //                         ),
+  //                         focusedBorder: UnderlineInputBorder(
+  //                             borderSide: BorderSide(color: primaryColor)),
+  //                         suffixIcon: Icon(
+  //                           Icons.search,
+  //                           color: primaryColor,
+  //                           size: 18,
+  //                         )),
+  //                     controller: model.searchCoinTextController,
+  //                     onChanged: (String value) {
+  //                       model.isShowFavCoins
+  //                           ? model.searchFavCoinsByTickerName(value)
+  //                           : model.searchCoinsByTickerName(value);
+  //                     },
+  //                   ),
+  //                 ),
+  //               ),
+  //             )
+  //           ],
+  //         ),
+  //       ),
+  //       UIHelper.verticalSpaceSmall,
+  //       model.isUpdateWallet
+  //           ? TextButton(
+  //               child: Text(FlutterI18n.translate(context, "updateWallet")),
+  //               onPressed: () => model.updateWallet(),
+  //             )
+  //           : Container(),
+  //     ],
+  //   );
+  // }
 
   // Widget coinList(WalletDashboardViewModel model, BuildContext context) {
   //   return DefaultTabController(
