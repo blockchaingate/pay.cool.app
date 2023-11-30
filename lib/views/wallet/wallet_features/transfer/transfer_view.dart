@@ -45,6 +45,7 @@ class _TransferViewState extends State<TransferView>
         viewModelBuilder: () => TransferViewModel(),
         onViewModelReady: (model) {
           model.context = context;
+          model.selectedCoin = widget.walletInfo;
           model.initState();
         },
         builder: (context, model, child) => GestureDetector(
@@ -181,14 +182,16 @@ class _TransferViewState extends State<TransferView>
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              "ETH",
+                              model.selectedCoin!.tickerName!,
                               style: TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.bold,
                                   color: black),
                             ),
                             InkWell(
-                              onTap: () {},
+                              onTap: () {
+                                model.goToCoinList(size);
+                              },
                               child: Icon(Icons.arrow_drop_down,
                                   color: Colors.black, size: 18),
                             ),
@@ -244,14 +247,14 @@ class _TransferViewState extends State<TransferView>
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
                                     Text(
-                                      "ETH",
+                                      model.selectedCoin!.tickerName!,
                                       style: TextStyle(
                                           fontSize: 14,
                                           fontWeight: FontWeight.bold,
                                           color: black),
                                     ),
                                     Text(
-                                      "${FlutterI18n.translate(context, "balance")} 10.00 ETH",
+                                      "${FlutterI18n.translate(context, "balance")} ${model.selectedCoin!.availableBalance}",
                                       style: TextStyle(
                                           fontSize: 12,
                                           fontWeight: FontWeight.bold,

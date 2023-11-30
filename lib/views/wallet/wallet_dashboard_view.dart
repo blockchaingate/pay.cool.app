@@ -82,7 +82,7 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
                 elevation: 0,
                 systemOverlayStyle: SystemUiOverlayStyle.dark,
                 leading: InkWell(
-                  onTap: () {
+                  onTap: () async {
                     key.currentState!.openDrawer();
                   },
                   child: Row(
@@ -94,7 +94,7 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
                       ),
                       UIHelper.horizontalSpaceSmall,
                       Text(
-                        FlutterI18n.translate(context, "allChains"),
+                        "${model.chainList[model.selectedTabIndex]} ${FlutterI18n.translate(context, "chain")}",
                         style: TextStyle(
                             color: Colors.black,
                             fontWeight: FontWeight.w600,
@@ -129,7 +129,7 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
                   children: <Widget>[
                     ListTile(
                       title: Text(
-                        'All',
+                        model.chainList[0],
                         style: TextStyle(color: black),
                       ),
                       onTap: () {
@@ -139,7 +139,7 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
                     ),
                     ListTile(
                       title: Text(
-                        'FAB',
+                        model.chainList[1],
                         style: TextStyle(color: black),
                       ),
                       onTap: () {
@@ -149,7 +149,7 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
                     ),
                     ListTile(
                       title: Text(
-                        'ETH',
+                        model.chainList[2],
                         style: TextStyle(color: black),
                       ),
                       onTap: () {
@@ -160,7 +160,7 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
                     ),
                     ListTile(
                       title: Text(
-                        'TRX',
+                        model.chainList[3],
                         style: TextStyle(color: black),
                       ),
                       onTap: () {
@@ -171,7 +171,7 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
                     ),
                     ListTile(
                       title: Text(
-                        'BNB',
+                        model.chainList[4],
                         style: TextStyle(color: black),
                       ),
                       onTap: () {
@@ -182,7 +182,7 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
                     ),
                     ListTile(
                       title: Text(
-                        'FAV',
+                        model.chainList[5],
                         style: TextStyle(color: black),
                       ),
                       onTap: () {
@@ -292,10 +292,13 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
                     ),
                     Padding(
                       padding: EdgeInsets.fromLTRB(0, 0, 5, 5),
-                      child: Icon(
-                        Icons.add_circle_outline,
-                        color: Colors.black87,
-                        size: 26,
+                      child: InkWell(
+                        onTap: () {}, // TODO we dont know what to do here
+                        child: Icon(
+                          Icons.add_circle_outline,
+                          color: Colors.black87,
+                          size: 26,
+                        ),
                       ),
                     ),
                   ],
@@ -324,6 +327,57 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
           ),
         ],
       ),
+    );
+  }
+
+  ListView buildListView(WalletDashboardViewModel model) {
+    List<WalletBalance> newList = [];
+
+    switch (model.selectedTabIndex) {
+      case 0:
+        newList = model.wallets;
+        break;
+      case 5:
+        newList = model.getFavCoins();
+        break;
+      default:
+        newList =
+            model.getSortedWalletList(model.chainList[model.selectedTabIndex]);
+        break;
+    }
+
+    return ListView.builder(
+      shrinkWrap: true,
+      itemCount: newList.length,
+      itemBuilder: (BuildContext context, int index) {
+        var tickerName = newList[index].coin!.toLowerCase();
+        var usdBalance = (!newList[index].balance!.isNegative
+                ? newList[index].balance
+                : 0.0)! *
+            newList[index].usdValue!.usd!;
+        return Visibility(
+          // Default visible widget will be visible when usdVal is greater than equals to 0 and isHideSmallAmountAssets is false
+          visible: usdBalance >= 0 && !model.isHideSmallAssetsButton,
+          // Secondary visible widget will be visible when usdVal is not equals to 0 and isHideSmallAmountAssets is true
+          replacement: Visibility(
+              visible: model.isHideSmallAssetsButton && usdBalance != 0,
+              child: CoinDetailsCardWidget(
+                tickerName: tickerName,
+                index: index,
+                wallets: newList,
+                context: context,
+              )),
+          child: Padding(
+            padding: const EdgeInsets.only(top: 5),
+            child: CoinDetailsCardWidget(
+              tickerName: tickerName,
+              index: index,
+              wallets: newList,
+              context: context,
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -651,56 +705,6 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
   //               ),
   //       ));
   // }
-
-  ListView buildListView(WalletDashboardViewModel model) {
-    List<WalletBalance> newList = [];
-
-    if (model.selectedTabIndex == 0) {
-      newList = model.wallets;
-    } else if (model.selectedTabIndex == 1) {
-      newList = model.fabWalletTokens;
-    } else if (model.selectedTabIndex == 2) {
-      newList = model.ethWalletTokens;
-    } else if (model.selectedTabIndex == 3) {
-      newList = model.trxWalletTokens;
-    } else if (model.selectedTabIndex == 4) {
-      newList = model.bnbWalletTokens;
-    }
-
-    return ListView.builder(
-      shrinkWrap: true,
-      itemCount: newList.length,
-      itemBuilder: (BuildContext context, int index) {
-        var tickerName = newList[index].coin!.toLowerCase();
-        var usdBalance = (!newList[index].balance!.isNegative
-                ? newList[index].balance
-                : 0.0)! *
-            newList[index].usdValue!.usd!;
-        return Visibility(
-          // Default visible widget will be visible when usdVal is greater than equals to 0 and isHideSmallAmountAssets is false
-          visible: usdBalance >= 0 && !model.isHideSmallAssetsButton,
-          // Secondary visible widget will be visible when usdVal is not equals to 0 and isHideSmallAmountAssets is true
-          replacement: Visibility(
-              visible: model.isHideSmallAssetsButton && usdBalance != 0,
-              child: CoinDetailsCardWidget(
-                tickerName: tickerName,
-                index: index,
-                wallets: newList,
-                context: context,
-              )),
-          child: Padding(
-            padding: const EdgeInsets.only(top: 5),
-            child: CoinDetailsCardWidget(
-              tickerName: tickerName,
-              index: index,
-              wallets: newList,
-              context: context,
-            ),
-          ),
-        );
-      },
-    );
-  }
 
   // Widget bondPage(WalletDashboardViewModel model, BuildContext context) {
   //   Size size = MediaQuery.of(context).size;

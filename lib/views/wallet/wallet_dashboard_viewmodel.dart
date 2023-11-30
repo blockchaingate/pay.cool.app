@@ -32,6 +32,7 @@ import 'package:paycool/models/wallet/core_wallet_model.dart';
 import 'package:paycool/models/wallet/token_model.dart';
 import 'package:paycool/models/wallet/wallet.dart';
 import 'package:paycool/models/wallet/wallet_balance.dart';
+import 'package:paycool/providers/app_state_provider.dart';
 import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/api_service.dart';
 import 'package:paycool/services/coin_service.dart';
@@ -49,6 +50,7 @@ import 'package:paycool/utils/number_util.dart';
 import 'package:paycool/utils/tron_util/trx_generate_address_util.dart'
     as tron_address_util;
 import 'package:paycool/utils/wallet/wallet_util.dart';
+import 'package:provider/provider.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 
@@ -112,19 +114,13 @@ class WalletDashboardViewModel extends BaseViewModel {
   bool isUpdateWallet = false;
   List<WalletBalance> wallets = [];
   List<WalletBalance> walletsCopy = [];
-  List<WalletBalance> favWallets = [];
 
-  final List<String> chainList = ["FAB", "ETH", "TRX", "BNB"];
+  final List<String> chainList = ["All", "FAB", "ETH", "TRX", "BNB", "FAV"];
 
   bool isShowFavCoins = false;
   int selectedTabIndex = 0;
   ScrollController walletsScrollController = ScrollController();
-  int minusHeight = 25;
 
-  bool isBottomOfTheList = false;
-  bool isTopOfTheList = true;
-
-  List<String> slivers = ['1', '2', '3', '4', '5', '6', '7'];
   var fabUtils = FabUtils();
   var walletUtil = WalletUtil();
   String totalWalletBalance = '';
@@ -132,15 +128,12 @@ class WalletDashboardViewModel extends BaseViewModel {
   String totalExchangeBalance = '';
   var coinsToHideList = [""];
   final coinService = locator<CoinService>();
-  List<WalletBalance> fabWalletTokens = [];
-  List<WalletBalance> ethWalletTokens = [];
-  List<WalletBalance> trxWalletTokens = [];
-  List<WalletBalance> bnbWalletTokens = [];
 
   // bond page
 
   BondMeModel bondMeVm = BondMeModel();
   final kycService = locator<KycBaseService>();
+  late AppStateProvider appStateProvider;
 
 /*----------------------------------------------------------------------
                     INIT
@@ -148,6 +141,7 @@ class WalletDashboardViewModel extends BaseViewModel {
 
   init() async {
     setBusy(true);
+    appStateProvider = Provider.of<AppStateProvider>(context!, listen: false);
     await getUserBondMeData();
     fabAddress = await sharedService.getFabAddressFromCoreWalletDatabase();
     await walletService.storeTokenListInDB();
@@ -163,25 +157,12 @@ class WalletDashboardViewModel extends BaseViewModel {
           debugPrint("getWalletInfoObjFromWalletBalance ===> $error");
         }
       }
-    });
+    }).whenComplete(() => appStateProvider.setWalletBalances(wallets));
 
     showDialogWarning();
 
     getConfirmDepositStatus();
-    //buildFavCoinListV1();
     selectedTabIndex = storageService.isFavCoinTabSelected ? 1 : 0;
-
-    for (var chain in chainList) {
-      if (chain == 'FAB') {
-        fabWalletTokens = getSortedWalletList(chain);
-      } else if (chain == 'ETH') {
-        ethWalletTokens = getSortedWalletList(chain);
-      } else if (chain == 'TRX') {
-        trxWalletTokens = getSortedWalletList(chain);
-      } else if (chain == 'BNB') {
-        bnbWalletTokens = getSortedWalletList(chain);
-      }
-    }
     setBusy(false);
     try {
       await versionChecker
@@ -195,9 +176,6 @@ class WalletDashboardViewModel extends BaseViewModel {
     } catch (err) {
       debugPrint('version checker catch $err');
     }
-    // Future.delayed(const Duration(seconds: 2), () async {
-    //   await walletService.updateTokenListDb();
-    // });
   }
 
   checkKycStatusV2() async {
@@ -263,22 +241,6 @@ class WalletDashboardViewModel extends BaseViewModel {
     setWalletDetails(wallets[3]);
   }
 
-  // moveDown() {
-  //   walletsScrollController.animateTo(
-  //       walletsScrollController.offset +
-  //           walletsScrollController.position.maxScrollExtent,
-  //       curve: Curves.linear,
-  //       duration: Duration(milliseconds: 500));
-  // }
-
-  // moveUp() {
-  //   walletsScrollController.animateTo(
-  //       walletsScrollController.offset +
-  //           walletsScrollController.position.minScrollExtent,
-  //       curve: Curves.linear,
-  //       duration: Duration(milliseconds: 500));
-  // }
-
   setWalletDetails(WalletBalance wallet) async {
     walletService.setWalletInfoDetails(
         await walletUtil.getWalletInfoObjFromWalletBalance(wallet));
@@ -335,10 +297,12 @@ class WalletDashboardViewModel extends BaseViewModel {
   updateTabSelection(int tabIndex) {
     setBusy(true);
     setBusyForObject(selectedTabIndex, true);
-    notifyListeners();
+
     selectedTabIndex = tabIndex;
     isHideSmallAssetsButton = true;
     isHideSearch = true;
+
+    notifyListeners();
 
     if (tabIndex == 0) {
       isHideSmallAssetsButton = false;
@@ -351,7 +315,7 @@ class WalletDashboardViewModel extends BaseViewModel {
     }
 
     if (tabIndex != 5) {
-      isShowFavCoins = false;
+      isShowFavCoins = true;
     }
     storageService.isFavCoinTabSelected = isShowFavCoins ? true : false;
     debugPrint(
@@ -361,64 +325,85 @@ class WalletDashboardViewModel extends BaseViewModel {
     setBusyForObject(selectedTabIndex, false);
   }
 
-/*----------------------------------------------------------------------
-                    Search Coins By TickerName
-----------------------------------------------------------------------*/
-  searchFavCoinsByTickerName(String value) async {
-    setBusyForObject(favWallets, true);
-    var favWalletInfoListCopy = favWallets;
-    debugPrint('length ${favWallets.length} -- value $value');
-    try {
-      if (value.isNotEmpty) {
-        favWallets = [];
-        favWallets = favWalletInfoListCopy
-            .where((element) =>
-                element.coin!.toLowerCase().contains(value.toLowerCase()))
-            .toList();
-      } else {
-        favWallets = [];
-        favWallets = favWalletInfoListCopy;
-      }
-
-      // tabBarViewHeight = MediaQuery.of(context).viewInsets.bottom == 0
-      //     ? MediaQuery.of(context).size.height / 2 - 250
-      //     : MediaQuery.of(context).size.height / 2;
-      debugPrint('favWalletInfoList length ${favWallets.length}');
-    } catch (err) {
-      setBusyForObject(favWallets, false);
-      log.e('searchFavCoinsByTickerName CATCH');
-    }
-
-    setBusyForObject(favWallets, false);
-  }
-
-/*----------------------------------------------------------------------
-                    Build Fav Coins List
-----------------------------------------------------------------------*/
-
-  buildFavCoinListV1() async {
-    setBusyForObject(favWallets, true);
-    isShowFavCoins = true;
-    favWallets.clear();
+  List<WalletBalance> getFavCoins() {
+    List<WalletBalance> favWallets = [];
     String favCoinsJson = storageService.favWalletCoins;
     if (favCoinsJson != '') {
       List<String> favWalletCoins =
           (jsonDecode(favCoinsJson) as List<dynamic>).cast<String>();
 
-      var wallets = await refreshBalancesV2();
-
       for (var i = 0; i < favWalletCoins.length; i++) {
         for (var j = 0; j < wallets.length; j++) {
           if (wallets[j].coin == favWalletCoins[i].toString()) {
             favWallets.add(wallets[j]);
-            break;
           }
         }
       }
-      log.w('favWalletInfoList length ${favWallets.length}');
+
+      return favWallets;
+    } else {
+      return [];
     }
-    setBusyForObject(favWallets, false);
   }
+
+/*----------------------------------------------------------------------
+                    Search Coins By TickerName
+----------------------------------------------------------------------*/
+  // searchFavCoinsByTickerName(String value) async {
+  //   setBusyForObject(favWallets, true);
+  //   var favWalletInfoListCopy = favWallets;
+  //   debugPrint('length ${favWallets.length} -- value $value');
+  //   try {
+  //     if (value.isNotEmpty) {
+  //       favWallets = [];
+  //       favWallets = favWalletInfoListCopy
+  //           .where((element) =>
+  //               element.coin!.toLowerCase().contains(value.toLowerCase()))
+  //           .toList();
+  //     } else {
+  //       favWallets = [];
+  //       favWallets = favWalletInfoListCopy;
+  //     }
+
+  //     // tabBarViewHeight = MediaQuery.of(context).viewInsets.bottom == 0
+  //     //     ? MediaQuery.of(context).size.height / 2 - 250
+  //     //     : MediaQuery.of(context).size.height / 2;
+  //     debugPrint('favWalletInfoList length ${favWallets.length}');
+  //   } catch (err) {
+  //     setBusyForObject(favWallets, false);
+  //     log.e('searchFavCoinsByTickerName CATCH');
+  //   }
+
+  //   setBusyForObject(favWallets, false);
+  // }
+
+/*----------------------------------------------------------------------
+                    Build Fav Coins List
+----------------------------------------------------------------------*/
+
+  // buildFavCoinListV1() async {
+  //   setBusyForObject(favWallets, true);
+  //   isShowFavCoins = true;
+  //   favWallets.clear();
+  //   String favCoinsJson = storageService.favWalletCoins;
+  //   if (favCoinsJson != '') {
+  //     List<String> favWalletCoins =
+  //         (jsonDecode(favCoinsJson) as List<dynamic>).cast<String>();
+
+  //     var wallets = await refreshBalancesV2();
+
+  //     for (var i = 0; i < favWalletCoins.length; i++) {
+  //       for (var j = 0; j < wallets.length; j++) {
+  //         if (wallets[j].coin == favWalletCoins[i].toString()) {
+  //           favWallets.add(wallets[j]);
+  //           break;
+  //         }
+  //       }
+  //     }
+  //     log.w('favWalletInfoList length ${favWallets.length}');
+  //   }
+  //   setBusyForObject(favWallets, false);
+  // }
 
   // buildFavCoinList() async {
   //   setBusyForObject(favWalletInfoList, true);
@@ -468,8 +453,6 @@ class WalletDashboardViewModel extends BaseViewModel {
       isUpdateWallet = false;
     } else {
       isUpdateWallet = true;
-      // updateWallet();
-      // showUpdateWalletDialog();
     }
 
     setBusy(false);

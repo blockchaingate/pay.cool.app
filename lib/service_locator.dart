@@ -14,6 +14,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get_it/get_it.dart';
 import 'package:kyc/kyc.dart';
+import 'package:paycool/providers/app_state_provider.dart';
 import 'package:paycool/services/db/core_wallet_database_service.dart';
 import 'package:paycool/services/hive_service.dart';
 import 'package:paycool/services/multisig_service.dart';
@@ -147,4 +148,7 @@ Future serviceLocator() async {
 
   //nav
   locator.registerFactory(() => BottomNavViewmodel());
+
+  // Provider
+  locator.registerFactory(() => AppStateProvider());
 }
