@@ -748,5 +748,11 @@
     "approve": "Approuver",
     "historyQueue": "Historique-File d'attente",
     "transfer": "Transfert",
-    "receiverAddress": "Adresse du destinataire"
+    "receiverAddress": "Adresse du destinataire",
+    "review": "Examen",
+    "walletName": "Nom du portefeuille",
+    "owners": "Propriétaires",
+    "enterOwnerName": "Entrez le nom du propriétaire",
+    "invalidFee": "Frais non valide",
+    "enterOwnerAddress": "Entrez l'adresse du propriétaire"
 }

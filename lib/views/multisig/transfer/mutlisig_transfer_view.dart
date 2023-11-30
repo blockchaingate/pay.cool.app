@@ -1,3 +1,4 @@
+import 'package:decimal/decimal.dart';
 import 'package:exchangily_ui/exchangily_ui.dart' show kTextField;
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
@@ -66,15 +67,15 @@ class MultisigTransferView extends StatelessWidget {
                             model.onPaste();
                           },
                         ),
-                        IconButton(
-                          icon: Icon(
-                            Icons.qr_code_scanner,
-                            color: black,
-                          ),
-                          onPressed: () {
-                            // model.sharedService.scanQRCode(context);
-                          },
-                        ),
+                        // IconButton(
+                        //   icon: Icon(
+                        //     Icons.qr_code_scanner,
+                        //     color: black,
+                        //   ),
+                        //   onPressed: () {
+                        //     model.sharedService.sca(context);
+                        //   },
+                        // ),
                       ],
                     ),
                     leadingWidget: Icon(
@@ -97,6 +98,22 @@ class MultisigTransferView extends StatelessWidget {
                       Icons.numbers,
                       color: black,
                     ),
+                    suffixWidget: Container(
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            FlutterI18n.translate(context, 'balance'),
+                            style: headText5.copyWith(color: grey),
+                          ),
+                          UIHelper.horizontalSpaceSmall,
+                          Text(
+                            multisigBalance.tokens!.balances![0],
+                            style: headText5.copyWith(color: black),
+                          ),
+                        ],
+                      ),
+                    ),
                     isDense: true,
                     focusBorderColor: grey,
                   ),
@@ -116,6 +133,35 @@ class MultisigTransferView extends StatelessWidget {
                               size: 18,
                             ),
                             onPressed: () {
+                              var balance = Decimal.parse(
+                                  multisigBalance.tokens!.balances![0]);
+                              var textAmount = model.amountController.text;
+                              if (textAmount.isEmpty) {
+                                textAmount = '0';
+                              }
+                              var amount = Decimal.parse(textAmount);
+                              if (model.toController.text.isEmpty) {
+                                model.sharedService.sharedSimpleNotification(
+                                  FlutterI18n.translate(
+                                      context, 'enterAddress'),
+                                );
+                                return;
+                              }
+                              if (model.amountController.text.isEmpty ||
+                                  model.amountController.text == '0') {
+                                model.sharedService.sharedSimpleNotification(
+                                  FlutterI18n.translate(context, 'enterAmount'),
+                                );
+                                return;
+                              }
+
+                              if (amount > balance) {
+                                model.sharedService.sharedSimpleNotification(
+                                  FlutterI18n.translate(
+                                      context, 'insufficientBalance'),
+                                );
+                                return;
+                              }
                               if (!model.isBusy)
                                 model.transfer(multisigBalance.tokens!,
                                     multisigWallet, context);

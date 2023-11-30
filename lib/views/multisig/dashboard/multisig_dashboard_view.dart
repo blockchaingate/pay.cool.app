@@ -545,7 +545,8 @@ class MultisigDashboardView extends StatelessWidget {
             floatingActionButtonLocation:
                 FloatingActionButtonLocation.centerFloat,
             floatingActionButton: MultisigUtil.isChainKanban(
-                    model.multisigWallet.chain!)
+                        model.multisigWallet.chain!) ||
+                    model.isBusy
                 ? Container()
                 : AddWalletTokenWidget(chainName: model.multisigWallet.chain!));
       },

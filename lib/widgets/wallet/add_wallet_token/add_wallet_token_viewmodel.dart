@@ -35,11 +35,12 @@ class AddWalletTokenWidgetViewModel extends ReactiveViewModel {
               jsonDecode(storageService.multisigEthWalletTokens))
           .tokens;
     }
-    if (chainName == 'KANBAN') {
-      selectedTokens = TokenModelList.fromJson(
-              jsonDecode(storageService.multisigKanbanWalletTokens))
-          .tokens;
-    } else {
+    // if (chainName == 'KANBAN') {
+    //   selectedTokens = TokenModelList.fromJson(
+    //           jsonDecode(storageService.multisigKanbanWalletTokens))
+    //       .tokens;
+    // }
+    else {
       selectedTokens = TokenModelList.fromJson(
               jsonDecode(storageService.multisigBscWalletTokens))
           .tokens;
