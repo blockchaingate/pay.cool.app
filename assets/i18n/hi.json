@@ -750,5 +750,11 @@
     "approve": "मंजूरी दें",
     "historyQueue": "इतिहास-कतार",
     "transfer": "स्थानांतरण",
-    "receiverAddress": "प्राप्तकर्ता का पता"
+    "receiverAddress": "प्राप्तकर्ता का पता",
+    "review": "समीक्षा",
+    "walletName": "वॉलेट का नाम",
+    "owners": "स्वामी",
+    "enterOwnerName": "स्वामी का नाम दर्ज करें",
+    "invalidFee": "अमान्य शुल्क",
+    "enterOwnerAddress": "स्वामी का पता दर्ज करें"
 }

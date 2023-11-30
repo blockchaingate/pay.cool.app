@@ -2,6 +2,7 @@ import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:paycool/logger.dart';
 import 'package:paycool/service_locator.dart';
+import 'package:paycool/services/api_service.dart';
 import 'package:paycool/services/coin_service.dart';
 import 'package:paycool/services/db/core_wallet_database_service.dart';
 import 'package:paycool/services/multisig_service.dart';
@@ -21,6 +22,7 @@ class MultisigTransferViewModel extends BaseViewModel {
   final log = getLogger('MultisigTransferViewmodel');
 
   final walletService = locator<WalletService>();
+  final apiService = locator<ApiService>();
   final multisigService = locator<MultiSigService>();
   final sharedService = locator<SharedService>();
   final coreWalletDatabaseService = locator<CoreWalletDatabaseService>();
@@ -32,6 +34,7 @@ class MultisigTransferViewModel extends BaseViewModel {
   int decimals = 18;
   String ethAddress = '';
   String exgAddress = '';
+  Decimal? balance;
 
   init(String ticker) async {
     // try {
@@ -44,6 +47,20 @@ class MultisigTransferViewModel extends BaseViewModel {
         await coreWalletDatabaseService.getWalletAddressByTickerName('ETH');
     exgAddress = await sharedService.getExgAddressFromCoreWalletDatabase();
   }
+
+//TODO refresh balance in real time once the transfer is done
+  // getBalance() async {
+  //   var balance = await apiService.getSingleWalletBalance(
+  //     fabAddress, multisigBalance.tokens!.tickers![0], thirdPartyChainAddress);
+  //   log.w('balance $balance');
+  //   return balance;
+  // }
+
+// TODO add scan barcode feature
+  // onScan() async {
+  //   toController.text = await sharedService.scanQR();
+  //   rebuildUi();
+  // }
 
   onPaste() async {
     toController.text = await sharedService.pasteClipboardData();
@@ -87,8 +104,7 @@ class MultisigTransferViewModel extends BaseViewModel {
     int nonce = await multisigService.getTransferNonce(multisigWallet.address!);
     log.w('nonce $nonce');
     String toHex = toController.text;
-    // TODO: Check if this condition needed in ETH and BNB wallet or not
-    // may have to remove this condition all together
+
     if (MultisigUtil.isChainKanban(multisigWallet.chain!)) {
       var legacyAddress = toLegacyAddress(toHex);
       toHex = FabUtils().fabToExgAddress(legacyAddress);

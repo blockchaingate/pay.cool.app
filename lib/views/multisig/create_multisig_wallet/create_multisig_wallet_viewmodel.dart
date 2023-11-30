@@ -1,5 +1,6 @@
 import 'package:exchangily_ui/exchangily_ui.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:paycool/constants/constants.dart';
 import 'package:paycool/environments/environment.dart';
@@ -26,10 +27,10 @@ import 'package:bip32/bip32.dart' as bip32;
 class CreateMultisigWalletViewModel extends BaseViewModel {
   final log = getLogger('CreateMultisigWalletViewModel');
   final sharedService = locator<SharedService>();
+  final walletService = locator<WalletService>();
   final navigationService = locator<NavigationService>();
   final apiService = locator<ApiService>();
   final multisigService = locator<MultiSigService>();
-  final walletService = locator<WalletService>();
   TextEditingController walletNameController = TextEditingController();
   TextEditingController feeController = TextEditingController();
   TextEditingController gasPriceController = TextEditingController();
@@ -91,42 +92,57 @@ class CreateMultisigWalletViewModel extends BaseViewModel {
   }
   //KhSC9AKJJo7bQw8mvaewtUydMYBeDg17L4
 
-  multisigWalletSubmit() {
+  multisigWalletSubmit(BuildContext context) async {
     // validations
     // 1. check if name is empty
     if (walletNameController.text.isEmpty) {
       log.e('name is empty');
-      sharedService.sharedSimpleNotification("Wallet name is empty");
+      sharedService.sharedSimpleNotification(
+          FlutterI18n.translate(context, "enterwalletName"));
       return;
     }
     // 2. check if fee is empty
     if (feeController.text.isEmpty) {
       log.e('fee is empty');
-      sharedService.sharedSimpleNotification("Fee is empty");
+      sharedService.sharedSimpleNotification(
+          FlutterI18n.translate(context, "invalidFee"));
       return;
     }
     // 3. check if owner name is empty
     if (ownerControllers[0].text.isEmpty) {
       log.e('owner name is empty');
-      sharedService.sharedSimpleNotification("Owner name is empty");
+      sharedService.sharedSimpleNotification(
+          FlutterI18n.translate(context, "enterOwnerName"));
       return;
     }
     // 4. check if owner address is empty
     if (addressControllers[0].text.isEmpty) {
       log.e('owner address is empty');
-      sharedService.sharedSimpleNotification("Owner address is empty");
+      sharedService.sharedSimpleNotification(
+          FlutterI18n.translate(context, "enterOwnerAddress"));
       return;
     }
     // 5. check if owner address is valid
-    if (!addressControllers[0].text.startsWith('K') && isProduction) {
-      log.e('owner address is invalid');
-      sharedService.sharedSimpleNotification("Owner address is invalid");
-      return;
-    }
+    // if (!addressControllers[0].text.startsWith('K') && isProduction) {
+    //   log.e('owner address is invalid');
+    //   sharedService.sharedSimpleNotification("Owner address is invalid");
+    //   return;
+    // }
 
     for (var element in addressControllers) {
       log.w(element.text);
     }
+
+    bool isCorrectAmount = await MultisigUtil.checkWalletBalanceForFee(
+        selectedChain, double.parse(feeController.text));
+    if (!isCorrectAmount) {
+      sharedService.alertDialog(
+        FlutterI18n.translate(context, "notice"),
+        FlutterI18n.translate(context, "insufficientGasAmount"),
+      );
+      return;
+    }
+
     reviewDialog();
   }
 
@@ -150,7 +166,7 @@ class CreateMultisigWalletViewModel extends BaseViewModel {
                               gasPrice.toString(),
                               decimalPrecision: 8)
                           .toString(),
-                      labelText: "Gas price",
+                      labelText: FlutterI18n.translate(context, "gasPrice"),
                       labelStyle: headText5.copyWith(color: black),
                       cursorColor: green,
                       cursorHeight: 14,
@@ -166,7 +182,7 @@ class CreateMultisigWalletViewModel extends BaseViewModel {
                   kTextField(
                       controller: gasLimitController,
                       hintText: gasLimit.toString(),
-                      labelText: "Gas limit",
+                      labelText: FlutterI18n.translate(context, "gasLimit"),
                       labelStyle: headText5.copyWith(color: black),
                       cursorColor: green,
                       cursorHeight: 14,
@@ -188,14 +204,15 @@ class CreateMultisigWalletViewModel extends BaseViewModel {
                           onPressed: () {
                             Navigator.pop(context);
                           },
-                          child: const Text('Close')),
+                          child: Text(FlutterI18n.translate(context, "close"))),
                       ElevatedButton(
                           onPressed: () {
                             Navigator.pop(context);
                             setFee();
                             notifyListeners();
                           },
-                          child: Text('Confirm'))
+                          child:
+                              Text(FlutterI18n.translate(context, "confirm")))
                     ],
                   ),
                 ],
@@ -214,7 +231,7 @@ class CreateMultisigWalletViewModel extends BaseViewModel {
             title: Container(
                 alignment: Alignment.center,
                 child: Text(
-                  'Review',
+                  FlutterI18n.translate(context, "review"),
                   style: headText3,
                 )),
             content: SingleChildScrollView(
@@ -226,7 +243,7 @@ class CreateMultisigWalletViewModel extends BaseViewModel {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Text('Chain Name: '),
+                      Text('${FlutterI18n.translate(context, "chainName")}: '),
                       Text(selectedChain),
                     ],
                   ),
@@ -234,14 +251,15 @@ class CreateMultisigWalletViewModel extends BaseViewModel {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Text('Wallet Name: '),
+                      Text('${FlutterI18n.translate(context, "walletName")}: '),
                       Text(walletNameController.text),
                     ],
                   ),
                   UIHelper.verticalSpaceSmall,
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: Text('Owners: '),
+                    child:
+                        Text('${FlutterI18n.translate(context, "owners")}: '),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -287,7 +305,8 @@ class CreateMultisigWalletViewModel extends BaseViewModel {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Text('Kanban gas fee: '),
+                      Text(
+                          '${FlutterI18n.translate(context, "kanbanGasFee")}: '),
                       Text(feeController.text),
                     ],
                   ),
@@ -296,13 +315,13 @@ class CreateMultisigWalletViewModel extends BaseViewModel {
             ),
             actions: <Widget>[
               TextButton(
-                child: const Text('Cancel'),
+                child: Text(FlutterI18n.translate(context, "cancel")),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
               ),
               TextButton(
-                child: const Text('Confirm'),
+                child: Text(FlutterI18n.translate(context, "confirm")),
                 onPressed: () {
                   Navigator.of(context).pop();
                   signData();

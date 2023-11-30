@@ -748,5 +748,11 @@
     "approve": "Aprobar",
     "historyQueue": "Historial-Cola",
     "transfer": "Transferir",
-    "receiverAddress": "Dirección del destinatario"
+    "receiverAddress": "Dirección del destinatario",
+    "review": "Revisión",
+    "walletName": "Nombre de la billetera",
+    "owners": "Propietarios",
+    "enterOwnerName": "Ingrese el nombre del propietario",
+    "invalidFee": "Tarifa no válida",
+    "enterOwnerAddress": "Ingrese la dirección del propietario"
 }

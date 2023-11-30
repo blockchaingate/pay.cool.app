@@ -753,5 +753,11 @@
     "approve": "承認",
     "historyQueue": "履歴-キュー",
     "transfer": "転送",
-    "receiverAddress": "受信者のアドレス"
+    "receiverAddress": "受信者のアドレス",
+    "review": "レビュー",
+    "walletName": "ウォレット名",
+    "owners": "所有者",
+    "enterOwnerName": "所有者名を入力",
+    "invalidFee": "無効な手数料",
+    "enterOwnerAddress": "所有者の住所を入力"
 }

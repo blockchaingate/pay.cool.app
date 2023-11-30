@@ -4,6 +4,9 @@ import 'package:eth_abi_codec/eth_abi_codec.dart';
 import 'package:flutter/foundation.dart';
 import 'package:paycool/environments/environment.dart';
 import 'package:bip32/bip32.dart' as bip32;
+import 'package:paycool/service_locator.dart';
+import 'package:paycool/services/shared_service.dart';
+import 'package:paycool/services/wallet_service.dart';
 import 'package:paycool/utils/exaddr.dart';
 import '../../constants/constants.dart';
 import '../../utils/coin_util.dart';
@@ -13,6 +16,33 @@ import 'package:hex/hex.dart';
 import 'package:convert/convert.dart';
 
 class MultisigUtil {
+  static Future<bool> checkWalletBalanceForFee(
+      String selectedChain, double? fee) async {
+    fee ?? 0.0;
+    final sharedService = locator<SharedService>();
+    final walletService = locator<WalletService>();
+    bool isCorrectAmount = true;
+
+    if (selectedChain.toUpperCase() == 'KANBAN') {
+      String exgAddress =
+          await sharedService.getExgAddressFromCoreWalletDatabase();
+      await walletService.gasBalance(exgAddress).then((gasBalance) {
+        log.w('gas amount $gasBalance');
+        if (gasBalance < fee!) {
+          isCorrectAmount = false;
+        }
+      }).catchError((onError) => log.e(onError));
+    } else {
+      String address =
+          await sharedService.getCoinAddressFromCoreWalletDatabase('ETH');
+      await walletService
+          .checkCoinWalletBalance(fee!, selectedChain, address: address)
+          .then((res) => isCorrectAmount = res)
+          .catchError((onError) => log.e(onError));
+    }
+    return isCorrectAmount;
+  }
+
   static String displayWalletAddress(String address, String chain) =>
       isChainKanban(chain)
           ? exgToBinpdpayAddress(address.toString())

@@ -338,7 +338,7 @@ class CreateMultisigWalletView extends StatelessWidget {
                                   horizontal: 30, vertical: 10)),
                           backgroundColor:
                               MaterialStateProperty.all(primaryColor)),
-                      onPressed: () => model.multisigWalletSubmit(),
+                      onPressed: () => model.multisigWalletSubmit(context),
                       child: Text(
                         FlutterI18n.translate(context, 'next'),
                         style: headText3.copyWith(color: white),

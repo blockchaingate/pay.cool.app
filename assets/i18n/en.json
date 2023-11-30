@@ -744,7 +744,7 @@
     "typeOrPasteMultisigAddress": "Type or paste multisig address",
     "create": "Create",
     "import": "Import",
-    "createMultsigWallet": "If you don/'t have a wallet or just want to create another one, you can create one by tapping the button below",
+    "createMultsigWallet": "If you don't have a wallet or just want to create another one, you can create one by tapping the button below",
     "history": "History",
     "queue": "Queue",
     "noData": "No Data",
@@ -754,5 +754,11 @@
     "approve": "Approve",
     "historyQueue": "History-Queue",
     "transfer": "Transfer",
-    "receiverAddress": "Receiver Address"
+    "receiverAddress": "Receiver Address",
+    "review": "Review",
+    "walletName": "Wallet Name",
+    "owners": "Owners",
+    "enterOwnerName": "Enter owner name",
+    "invalidFee": "Invalid fee",
+    "enterOwnerAddress": "Enter owner address"
 }

@@ -753,5 +753,11 @@
     "approve": "批准",
     "historyQueue": "历史记录-队列",
     "transfer": "转账",
-    "receiverAddress": "接收者地址"
+    "receiverAddress": "接收者地址",
+    "review": "审查",
+    "walletName": "钱包名称",
+    "owners": "所有者",
+    "enterOwnerName": "输入所有者名称",
+    "invalidFee": "无效费用",
+    "enterOwnerAddress": "输入所有者地址"
 }

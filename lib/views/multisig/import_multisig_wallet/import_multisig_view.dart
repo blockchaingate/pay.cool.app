@@ -200,7 +200,6 @@ class ImportMultisigView extends StatelessWidget {
                         Container(
                           child: kTextField(
                               controller: model.importWalletController,
-                              contentPadding: 5,
                               labelText: FlutterI18n.translate(
                                   context, "importWallet"),
                               hintText: FlutterI18n.translate(
@@ -210,8 +209,7 @@ class ImportMultisigView extends StatelessWidget {
                               cursorHeight: 14,
                               fillColor: Colors.transparent,
                               isDense: true,
-                              focusBorderColor: primaryColor,
-                              enabledBorderColor: white,
+                              focusBorderColor: grey,
                               leadingWidget: SizedBox(
                                 width: 50,
                                 child: IconButton(

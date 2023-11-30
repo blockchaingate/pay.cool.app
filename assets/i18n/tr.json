@@ -753,5 +753,11 @@
   "approve": "Onayla",
   "historyQueue": "Geçmiş-Kuyruk",
   "transfer": "Transfer",
-  "receiverAddress": "Alıcı Adresi"
+  "receiverAddress": "Alıcı Adresi",
+  "review": "İnceleme",
+  "walletName": "Cüzdan Adı",
+  "owners": "Sahipler",
+  "enterOwnerName": "Sahip adını girin",
+  "invalidFee": "Geçersiz ücret",
+  "enterOwnerAddress": "Sahip adresini girin"
 }
