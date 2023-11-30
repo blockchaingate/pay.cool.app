@@ -25,6 +25,7 @@ import 'package:paycool/views/settings/wallet_management_view.dart';
 import 'package:paycool/views/wallet/wallet_features/transfer/transfer_view.dart';
 import 'package:paycool/widgets/club/club_rewards_view.dart';
 import 'constants/route_names.dart';
+import 'views/bond/walletConncet/wallet_connect_view.dart';
 import 'views/lightning-remit/lightning_remit_view.dart';
 import 'views/paycool_club/club_projects/club_package_details_view.dart';
 import 'views/paycool_club/referral/referral_view.dart';
@@ -262,6 +263,12 @@ class RouteGenerator {
         return MaterialPageRoute(
           settings: RouteSettings(name: 'BondDashboardView'),
           builder: (_) => BondDashboard(),
+        );
+
+      case WalletConnectViewRoute:
+        return MaterialPageRoute(
+          settings: RouteSettings(name: 'WalletConnectView'),
+          builder: (_) => WalletConnectView(),
         );
 
       default:

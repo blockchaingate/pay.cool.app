@@ -82,10 +82,9 @@ class WalletDashboardViewModel extends BaseViewModel {
   String totalUsdBalance = '';
 
   double gasAmount = 0;
-  String exgAddress = '';
+  String? fabAddress;
   bool isHideSearch = false;
   bool isHideSmallAssetsButton = false;
-  // var refreshController;
   bool isConfirmDeposit = false;
   late WalletInfo confirmDepositCoinWallet;
 
@@ -96,12 +95,8 @@ class WalletDashboardViewModel extends BaseViewModel {
   String postFreeFabResult = '';
   bool isFreeFabNotUsed = false;
   double fabBalance = 0.0;
-  // List<String> formattedUsdValueList = [];
-  // List<String> formattedUsdValueListCopy = [];
 
   final searchCoinTextController = TextEditingController();
-  // final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-  //     FlutterLocalNotificationsPlugin();
 
   //vars for announcement
   bool hasApiError = false;
@@ -154,7 +149,7 @@ class WalletDashboardViewModel extends BaseViewModel {
   init() async {
     setBusy(true);
     await getUserBondMeData();
-
+    fabAddress = await sharedService.getFabAddressFromCoreWalletDatabase();
     await walletService.storeTokenListInDB();
     await refreshBalancesV2().then((walletBalances) async {
       for (var i = 0; i < walletBalances.length; i++) {
@@ -338,11 +333,9 @@ class WalletDashboardViewModel extends BaseViewModel {
   // }
 
   updateTabSelection(int tabIndex) {
-    // print('is busy 0.75 $isBusy');
     setBusy(true);
     setBusyForObject(selectedTabIndex, true);
     notifyListeners();
-    // print('is busy 1$isBusy');
     selectedTabIndex = tabIndex;
     isHideSmallAssetsButton = true;
     isHideSearch = true;

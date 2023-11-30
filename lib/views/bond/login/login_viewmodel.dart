@@ -52,7 +52,7 @@ class BondLoginViewModel extends BaseViewModel with WidgetsBindingObserver {
           if (result.isEmailVerified == true) {
             storageService.bondToken = result.token!;
 
-            navigationService.navigateTo(DashboardViewRoute);
+            navigationService.navigateTo(BondDashboardViewRoute);
           } else {
             var value = RegisterEmailModel(
               email: emailController.text,

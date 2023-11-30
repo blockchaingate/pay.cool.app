@@ -172,21 +172,28 @@ class PayCoolView extends StatelessWidget {
                           padding: EdgeInsets.only(bottom: size.height * 0.1),
                           child: Stack(
                             children: [
-                              Container(
+                              SizedBox(
                                 width: size.width,
                                 height: size.height * 0.47,
-                                color: Colors.amber,
                                 child: Stack(
                                   children: [
-                                    !model.controller.value.isInitialized
-                                        ? Container()
+                                    model.controller == null ||
+                                            !model.controller!.value
+                                                .isInitialized ||
+                                            model.controller!.value.hasError
+                                        ? Center(
+                                            child: Text(
+                                              "No camera detected",
+                                              style: TextStyle(color: black),
+                                            ),
+                                          )
                                         : SizedBox(
                                             height: size.height * 0.47,
                                             child: AspectRatio(
-                                                aspectRatio: model.controller
+                                                aspectRatio: model.controller!
                                                     .value.aspectRatio,
                                                 child: CameraPreview(
-                                                    model.controller))),
+                                                    model.controller!))),
                                     Positioned(
                                       bottom: 0,
                                       child: Container(

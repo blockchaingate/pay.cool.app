@@ -1,9 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:paycool/constants/api_routes.dart';
 import 'package:paycool/constants/colors.dart';
-import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/constants/route_names.dart';
 import 'package:paycool/models/wallet/wallet_balance.dart';
 import 'package:paycool/shared/ui_helpers.dart';
@@ -29,6 +27,7 @@ class CoinDetailsCardWidget extends StackedView<WalletDashboardViewModel> {
   @override
   Widget builder(
       BuildContext context, WalletDashboardViewModel model, Widget? child) {
+    Size size = MediaQuery.of(context).size;
     String finalTickerName = '';
     String logoTicker = '';
 
@@ -40,6 +39,7 @@ class CoinDetailsCardWidget extends StackedView<WalletDashboardViewModel> {
     } else {
       return Card(
         color: secondaryColor,
+        elevation: 0,
         child: InkWell(
           splashColor: Colors.blue.withAlpha(30),
           onDoubleTap: () => FocusScope.of(context).requestFocus(FocusNode()),
@@ -47,20 +47,16 @@ class CoinDetailsCardWidget extends StackedView<WalletDashboardViewModel> {
             model.routeWithWalletInfoArgs(
                 wallets[index], walletFeaturesViewRoute);
           },
-          child: Container(
-            padding: const EdgeInsets.symmetric(vertical: 8),
+          child: SizedBox(
+            width: size.width * 0.9,
             child: Row(
-              // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                UIHelper.horizontalSpaceSmall,
-
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  width: 60,
-                  height: 60,
-
-                  // Todo Error handling when image not found or url not found
+                // Logo
+                SizedBox(
+                  height: 50,
+                  width: 50,
                   child: CachedNetworkImage(
                     imageUrl:
                         '$WalletCoinsLogoUrl${logoTicker.toLowerCase()}.png',
@@ -81,110 +77,76 @@ class CoinDetailsCardWidget extends StackedView<WalletDashboardViewModel> {
                     ),
                   ),
                 ),
-                UIHelper.horizontalSpaceSmall,
-                // Tickername available locked and inexchange column
+                UIHelper.horizontalSpaceMedium,
+
+                // Tickername and available balance
                 Expanded(
-                  flex: 3,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        finalTickerName.toUpperCase(),
-                        style: headText3,
-                      ),
-                      // Available Row
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.only(right: 5.0),
-                            child: Text(
-                                FlutterI18n.translate(context, "available"),
-                                style: headText6),
-                          ),
-                          Expanded(
-                            child: Text(
-                                wallets[index].balance!.isNegative
-                                    ? FlutterI18n.translate(
-                                        context, "unavailable")
-                                    : NumberUtil.roundDouble(
-                                            wallets[index].balance!,
-                                            decimalPlaces: 6)
-                                        .toString(),
-                                style: headText6),
-                          ),
-                        ],
-                      ),
-                      // Locked Row
-                      Row(
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                top: 2.0, right: 5.0, bottom: 2.0),
-                            child: Text(
-                                FlutterI18n.translate(context, "locked"),
-                                style: headText6.copyWith(color: red)),
-                          ),
-                          Expanded(
-                            child: Text(
-                                wallets[index].lockBalance!.isNegative
-                                    ? FlutterI18n.translate(
-                                        context, "unavailable")
-                                    : NumberUtil.roundDouble(
-                                            wallets[index].lockBalance!,
-                                            decimalPlaces: 6)
-                                        .toString(),
-                                style: headText6.copyWith(color: red)),
-                          )
-                        ],
-                      ),
-                      // Inexchange Row
-                      Row(
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.only(right: 5.0),
-                            child: Text(
-                                FlutterI18n.translate(context, "inExchange"),
-                                textAlign: TextAlign.center,
-                                style: headText6),
-                          ),
-                          Expanded(
-                            child: Text(
-                                wallets[index]
-                                        .unlockedExchangeBalance!
-                                        .isNegative
-                                    ? FlutterI18n.translate(
-                                        context, "unavailable")
-                                    : NumberUtil.roundDouble(
-                                            wallets[index]
-                                                .unlockedExchangeBalance!,
-                                            decimalPlaces: 6)
-                                        .toString(),
-                                style: headText6),
-                          ),
-                        ],
-                      ),
-                    ],
+                  flex: 5,
+                  child: SizedBox(
+                    width: size.width * 0.4,
+                    height: 50,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: <Widget>[
+                        Text(
+                          finalTickerName.toUpperCase(),
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600),
+                        ),
+                        Text(
+                          wallets[index].balance!.isNegative
+                              ? "0"
+                              : NumberUtil.roundDouble(wallets[index].balance!,
+                                      decimalPlaces: 6)
+                                  .toString(),
+                          style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w400,
+                              color: textHintGrey),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
 
                 // Value USD and deposit - withdraw Container column
                 Expanded(
                   flex: 2,
-                  child: Column(
-                    children: <Widget>[
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          UIHelper.horizontalSpaceSmall,
-                          const Text('\$', style: TextStyle(color: green)),
-                          Expanded(
-                            child: Text(
+                  child: SizedBox(
+                    width: size.width * 0.2,
+                    height: 50,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: <Widget>[
+                        Text(
+                          wallets[index].unlockedExchangeBalance!.isNegative
+                              ? "0"
+                              : NumberUtil.roundDouble(
+                                      wallets[index].unlockedExchangeBalance!,
+                                      decimalPlaces: 6)
+                                  .toString(),
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Text(
+                              '\$',
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w400,
+                                  color: textHintGrey),
+                            ),
+                            Text(
                               wallets[index].usdValue!.usd!.isNegative
-                                  ? FlutterI18n.translate(
-                                      context, "unavailable")
+                                  ? "0"
                                   : NumberUtil.roundDouble(
                                           (!wallets[index].balance!.isNegative
                                                   ? wallets[index].balance
@@ -192,95 +154,15 @@ class CoinDetailsCardWidget extends StackedView<WalletDashboardViewModel> {
                                               wallets[index].usdValue!.usd!,
                                           decimalPlaces: 2)
                                       .toString(),
-                              style: const TextStyle(color: green),
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w400,
+                                  color: textHintGrey),
                             ),
-                          )
-                        ],
-                      ),
-
-                      // Deposit and Withdraw Container Row
-                      // Row(
-                      //   mainAxisAlignment: MainAxisAlignment.start,
-                      //   children: <Widget>[
-                      //     InkWell(
-                      //         child: Padding(
-                      //           padding: const EdgeInsets.only(top: 8.0),
-                      //           child: Column(
-                      //             children: [
-                      //               Text(
-                      //                 FlutterI18n.translate(context, "deposit"),
-                      //                 style: subText2.copyWith(fontSize: 8),
-                      //               ),
-                      //               const Icon(
-                      //                 Icons.arrow_downward,
-                      //                 color: green,
-                      //                 size: 16,
-                      //               ),
-                      //             ],
-                      //           ),
-                      //         ),
-                      //         onTap: () {
-                      //           model.routeWithWalletInfoArgs(
-                      //               wallets[index], DepositViewRoute);
-                      //         }),
-                      //     // DepositWidget(
-                      //     //     model: model,
-                      //     //     index: index,
-                      //     //     tickerName: finalTickerName),
-                      //     const Divider(
-                      //       endIndent: 5,
-                      //     ),
-                      //     InkWell(
-                      //         child: Padding(
-                      //           padding: const EdgeInsets.only(top: 8.0),
-                      //           child: Column(
-                      //             children: [
-                      //               Text(
-                      //                 FlutterI18n.translate(
-                      //                     context, "withdraw"),
-                      //                 style: subText2.copyWith(fontSize: 8),
-                      //               ),
-                      //               const Icon(
-                      //                 Icons.arrow_upward,
-                      //                 color: red,
-                      //                 size: 16,
-                      //               ),
-                      //             ],
-                      //           ),
-                      //         ),
-                      //         onTap: () {
-                      //           model.routeWithWalletInfoArgs(
-                      //               wallets[index], WithdrawViewRoute);
-                      //         }),
-                      //   ],
-                      // ),
-                      wallets[index].coin == 'FAB' &&
-                              wallets[index].unconfirmedBalance != 0
-                          ? Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 0, vertical: 5.0),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: <Widget>[
-                                      Text(
-                                          FlutterI18n.translate(
-                                              context, "unConfirmedBalance"),
-                                          style: subText2.copyWith(color: red)),
-                                      Text(
-                                          '${NumberUtil.roundDouble(wallets[index].unconfirmedBalance!, decimalPlaces: 8)}  FAB',
-                                          textAlign: TextAlign.start,
-                                          style: subText2.copyWith(color: red)),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            )
-                          : Container(),
-                    ],
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],

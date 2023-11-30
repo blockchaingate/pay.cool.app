@@ -14,20 +14,19 @@
 import 'dart:io';
 import 'dart:ui';
 
-import 'package:flutter_i18n/flutter_i18n.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import 'package:overlay_support/overlay_support.dart';
-import 'package:paycool/constants/custom_styles.dart';
-import 'package:paycool/logger.dart';
-import 'package:paycool/models/wallet/wallet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:overlay_support/overlay_support.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:paycool/shared/ui_helpers.dart';
-import 'package:qr_flutter/qr_flutter.dart';
 import 'package:paycool/constants/colors.dart';
+import 'package:paycool/constants/custom_styles.dart';
+import 'package:paycool/logger.dart';
+import 'package:paycool/models/wallet/wallet.dart';
+import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/utils/fab_util.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share_plus/share_plus.dart';
 
 class ReceiveWalletScreen extends StatefulWidget {
@@ -71,7 +70,7 @@ class _ReceiveWalletScreenState extends State<ReceiveWalletScreen> {
         children: [
           Container(
             width: size.width,
-            height: size.height * 0.5,
+            height: size.height * 0.55,
             margin: EdgeInsets.all(20),
             decoration: BoxDecoration(
               color: Colors.white,

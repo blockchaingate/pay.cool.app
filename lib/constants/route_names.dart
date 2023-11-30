@@ -76,3 +76,4 @@ const String RegisterAccountViewRoute = '/registerAccount';
 ----------------------------------------------------------------------*/
 
 const String BondDashboardViewRoute = '/bondDashboard';
+const String WalletConnectViewRoute = '/walletConnect';
