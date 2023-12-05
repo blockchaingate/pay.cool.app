@@ -4,8 +4,8 @@ import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/route_names.dart';
 import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/views/dapp/dapp_viewmodel.dart';
+import 'package:paycool/views/dapp/dapp_web_view.dart';
 import 'package:paycool/widgets/bottom_nav.dart';
-import 'package:paycool/widgets/coin_list_widget.dart';
 import 'package:stacked/stacked.dart';
 
 class DappView extends StatelessWidget {
@@ -100,7 +100,7 @@ class DappView extends StatelessWidget {
                 children: [
                   UIHelper.verticalSpaceSmall,
                   Text(
-                    FlutterI18n.translate(context, "My Dapp"),
+                    FlutterI18n.translate(context, "myDapp"),
                     style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -111,11 +111,21 @@ class DappView extends StatelessWidget {
                     width: size.width,
                     height: size.height * 0.16,
                     child: ListView.builder(
-                        itemCount: 6,
+                        itemCount: model.dapps.length,
                         scrollDirection: Axis.horizontal,
                         itemBuilder: (context, index) {
                           return InkWell(
-                            onTap: () {},
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => DappWebView(
+                                    model.dapps[index]["url"].toString(),
+                                    model.dapps[index]["title"].toString(),
+                                  ),
+                                ),
+                              );
+                            },
                             child: Column(
                               children: [
                                 ClipRRect(
@@ -124,17 +134,15 @@ class DappView extends StatelessWidget {
                                   child: SizedBox(
                                     width: size.width * 0.2,
                                     height: size.height * 0.1,
-                                    child: Image.asset(
-                                      index % 2 == 0
-                                          ? "assets/images/new-design/biswap_logo.png"
-                                          : "assets/images/new-design/exchangily_logo.jpeg",
+                                    child: Image.network(
+                                      model.dapps[index]["image"].toString(),
                                       fit: BoxFit.cover,
                                     ),
                                   ),
                                 ),
                                 UIHelper.verticalSpaceSmall,
                                 Text(
-                                  model.dappNames[index],
+                                  model.dapps[index]["title"].toString(),
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
                                     fontSize: 12,
@@ -147,49 +155,50 @@ class DappView extends StatelessWidget {
                           );
                         }),
                   ),
-                  UIHelper.verticalSpaceMedium,
-                  Text(
-                    FlutterI18n.translate(context, "Hot"),
-                    style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: black),
-                  ),
-                  UIHelper.verticalSpaceSmall,
-                  SizedBox(
-                    width: size.width,
-                    height: size.height * 0.16,
-                    child: ListView.builder(
-                        itemCount: 6,
-                        scrollDirection: Axis.horizontal,
-                        itemBuilder: (context, index) {
-                          return Column(
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(50),
-                                clipBehavior: Clip.antiAlias,
-                                child: SizedBox(
-                                  width: size.width * 0.2,
-                                  child: Image.asset(
-                                    "assets/images/new-design/biswap_logo.png",
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
-                              UIHelper.verticalSpaceSmall,
-                              Text(
-                                model.dappNames[index],
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold,
-                                  color: black,
-                                ),
-                              ),
-                            ],
-                          );
-                        }),
-                  )
+                  // UIHelper.verticalSpaceMedium,
+                  // Text(
+                  //   FlutterI18n.translate(context, "hot"),
+                  //   style: TextStyle(
+                  //       fontSize: 16,
+                  //       fontWeight: FontWeight.bold,
+                  //       color: black),
+                  // ),
+                  // UIHelper.verticalSpaceSmall,
+                  // SizedBox(
+                  //   width: size.width,
+                  //   height: size.height * 0.16,
+                  //   child: ListView.builder(
+                  //     itemCount: 6,
+                  //     scrollDirection: Axis.horizontal,
+                  //     itemBuilder: (context, index) {
+                  //       return Column(
+                  //         children: [
+                  //           ClipRRect(
+                  //             borderRadius: BorderRadius.circular(50),
+                  //             clipBehavior: Clip.antiAlias,
+                  //             child: SizedBox(
+                  //               width: size.width * 0.2,
+                  //               child: Image.asset(
+                  //                 "assets/images/new-design/biswap_logo.png",
+                  //                 fit: BoxFit.cover,
+                  //               ),
+                  //             ),
+                  //           ),
+                  //           UIHelper.verticalSpaceSmall,
+                  //           Text(
+                  //             model.dapps[index]["title"].toString(),
+                  //             overflow: TextOverflow.ellipsis,
+                  //             style: TextStyle(
+                  //               fontSize: 12,
+                  //               fontWeight: FontWeight.bold,
+                  //               color: black,
+                  //             ),
+                  //           ),
+                  //         ],
+                  //       );
+                  //     },
+                  //   ),
+                  // )
                 ],
               ),
             ),

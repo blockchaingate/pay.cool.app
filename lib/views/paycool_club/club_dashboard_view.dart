@@ -1,18 +1,17 @@
-import 'package:intl/intl.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/constants/route_names.dart';
 import 'package:paycool/environments/environment_type.dart';
+import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/utils/string_util.dart';
 import 'package:paycool/views/paycool_club/club_dashboard_model.dart';
 import 'package:paycool/views/paycool_club/club_dashboard_viewmodel.dart';
-import 'package:paycool/shared/ui_helpers.dart';
-import 'package:paycool/widgets/bottom_nav.dart';
-import 'package:flutter/material.dart';
 import 'package:paycool/widgets/server_error_widget.dart';
 import 'package:stacked/stacked.dart';
 
@@ -59,28 +58,50 @@ class ClubDashboardView extends StatelessWidget {
                                       child: UIHelper.verticalSpaceLarge),
                                   SliverToBoxAdapter(
                                     child: Container(
-                                      margin: const EdgeInsets.all(10.0),
-                                      padding: const EdgeInsets.all(15.0),
+                                      padding:
+                                          EdgeInsets.symmetric(vertical: 20),
                                       child: Column(
                                           mainAxisAlignment:
                                               MainAxisAlignment.start,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
-                                            customText(
-                                                text: FlutterI18n.translate(
-                                                    context, "payCoolClub"),
-                                                style: largeText1,
-                                                letterSpace: 1.6),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                IconButton(
+                                                    onPressed: () =>
+                                                        Navigator.pop(context),
+                                                    icon: Icon(
+                                                      Icons.arrow_back_ios,
+                                                      color: Colors.black,
+                                                      size: 20,
+                                                    )),
+                                                customText(
+                                                    text: FlutterI18n.translate(
+                                                        context, "payCoolClub"),
+                                                    style: largeText1,
+                                                    letterSpace: 1.6),
+                                                Spacer()
+                                              ],
+                                            ),
                                             UIHelper.verticalSpaceMedium,
                                             UIHelper.verticalSpaceSmall,
-                                            customText(
-                                              text: FlutterI18n.translate(
-                                                  context, "paycoolClubDesc"),
-                                              style: headText2.copyWith(
-                                                  fontWeight: FontWeight.w500,
-                                                  letterSpacing: 1.2),
+                                            SizedBox(
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.8,
+                                              child: customText(
+                                                  text: FlutterI18n.translate(
+                                                      context,
+                                                      "paycoolClubDesc"),
+                                                  style: headText2.copyWith(
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      letterSpacing: 1.2),
+                                                  textAlign: TextAlign.left),
                                             )
                                           ]),
                                     ),
@@ -814,7 +835,6 @@ class ClubDashboardView extends StatelessWidget {
                             ),
                           ),
               ),
-              bottomNavigationBar: BottomNavBar(count: 0),
             ),
           );
         });

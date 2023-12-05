@@ -103,7 +103,7 @@ dependencies:
   url_launcher: ^6.1.12
   version: ^3.0.2
   web3dart: ^2.0.0
-  webview_flutter: ^4.0.2
+  webview_flutter: ^4.4.2
   modal_progress_hud_nsn: ^0.4.0
   walletconnect_flutter_v2: ^2.1.4
   camera: ^0.10.5+5

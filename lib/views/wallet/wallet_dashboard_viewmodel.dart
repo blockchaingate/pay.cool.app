@@ -314,9 +314,6 @@ class WalletDashboardViewModel extends BaseViewModel {
       isHideSearch = false;
     }
 
-    if (tabIndex != 5) {
-      isShowFavCoins = true;
-    }
     storageService.isFavCoinTabSelected = isShowFavCoins ? true : false;
     debugPrint(
         'current tab sel $selectedTabIndex -- isShowFavCoins $isShowFavCoins');

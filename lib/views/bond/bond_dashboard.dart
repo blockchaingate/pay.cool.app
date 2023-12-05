@@ -44,9 +44,7 @@ class _BondDashboardState extends State<BondDashboard> {
     try {
       await apiService.getBondMe().then((value) {
         if (value != null) {
-          setState(() {
-            bondMeVm = value;
-          });
+          bondMeVm = value;
         }
       });
     } catch (e) {
@@ -54,6 +52,7 @@ class _BondDashboardState extends State<BondDashboard> {
     }
 
     loading = false;
+    setState(() {});
   }
 
   @override

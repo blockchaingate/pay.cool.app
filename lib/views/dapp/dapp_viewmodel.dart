@@ -4,6 +4,7 @@ import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/shared_service.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class DappViewmodel extends BaseViewModel {
   BuildContext? context;
@@ -12,19 +13,91 @@ class DappViewmodel extends BaseViewModel {
   final searchController = TextEditingController();
   final navigationService = locator<NavigationService>();
 
-  List<String> dappNames = [
-    "Biswap",
-    "Exchangily",
-    "PancakeSwap",
-    "Uniswap",
-    "SushiSwap",
-    "1inch",
+  var dapps = [
+    {
+      "title": "Biswap",
+      "url": "https://biswap.com",
+      "image":
+          "https://play-lh.googleusercontent.com/vivOq9u0gB1y2cyvmAi7T6UhAca3lZAfGGd_xYJS6q3Af5GPUgnm-4v1ZX3zndvMazAj",
+      "buttons": [
+        {"label": "Accept", "action": "connect"},
+        {"label": "Reject", "action": "disconnect"}
+      ]
+    },
+    {
+      "title": "Exchangily",
+      "url": "https://exchangily.com",
+      "image":
+          "https://play-lh.googleusercontent.com/vivOq9u0gB1y2cyvmAi7T6UhAca3lZAfGGd_xYJS6q3Af5GPUgnm-4v1ZX3zndvMazAj",
+      "buttons": [
+        {"label": "Accept", "action": "connect"},
+        {"label": "Reject", "action": "disconnect"}
+      ]
+    },
+    {
+      "title": "UniSwap",
+      "url": "https://uniswap.com",
+      "image":
+          "https://play-lh.googleusercontent.com/vivOq9u0gB1y2cyvmAi7T6UhAca3lZAfGGd_xYJS6q3Af5GPUgnm-4v1ZX3zndvMazAj",
+      "buttons": [
+        {"label": "Accept", "action": "connect"},
+        {"label": "Reject", "action": "disconnect"}
+      ]
+    },
+    {
+      "title": "PancakeSwap",
+      "url": "https://pancakeswap.com",
+      "image":
+          "https://play-lh.googleusercontent.com/vivOq9u0gB1y2cyvmAi7T6UhAca3lZAfGGd_xYJS6q3Af5GPUgnm-4v1ZX3zndvMazAj",
+      "buttons": [
+        {"label": "Accept", "action": "connect"},
+        {"label": "Reject", "action": "disconnect"}
+      ]
+    },
+    {
+      "title": "Sushi",
+      "url": "https://sushi.com",
+      "image":
+          "https://play-lh.googleusercontent.com/vivOq9u0gB1y2cyvmAi7T6UhAca3lZAfGGd_xYJS6q3Af5GPUgnm-4v1ZX3zndvMazAj",
+      "buttons": [
+        {"label": "Accept", "action": "connect"},
+        {"label": "Reject", "action": "disconnect"}
+      ]
+    },
   ];
+
+  WebViewController controller = WebViewController();
+
 /*----------------------------------------------------------------------
                           INIT
 ----------------------------------------------------------------------*/
 
-  init() {}
+  init() {
+    controller = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setBackgroundColor(const Color(0x00000000))
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          onProgress: (int progress) {
+            // Update loading bar.
+          },
+          onPageStarted: (String url) {},
+          onPageFinished: (String url) {},
+          onWebResourceError: (WebResourceError error) {},
+          onNavigationRequest: (NavigationRequest request) {
+            if (request.url.startsWith('https://www.youtube.com/')) {
+              return NavigationDecision.prevent;
+            }
+            return NavigationDecision.navigate;
+          },
+        ),
+      )
+      ..loadRequest(Uri.parse('https://flutter.dev'))
+      ..addJavaScriptChannel('Print',
+          onMessageReceived: (JavaScriptMessage message) {
+        print(message.message);
+      });
+  }
 
   onBackButtonPressed() async {
     await sharedService.onBackButtonPressed('/dashboard');

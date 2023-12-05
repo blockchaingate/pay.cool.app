@@ -358,7 +358,10 @@ class ClubDashboardViewModel extends BaseViewModel {
     String address = await sharedService.getExgAddressFromCoreWalletDatabase();
     await walletService.gasBalance(address).then((data) {
       gasAmount = data;
-    }).catchError((onError) => log.e(onError));
+    }).catchError((onError) {
+      log.e(onError);
+    });
+
     log.w('gas amount $gasAmount');
   }
 
