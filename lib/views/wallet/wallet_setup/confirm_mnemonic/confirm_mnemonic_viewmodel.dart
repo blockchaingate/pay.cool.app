@@ -45,6 +45,8 @@ class ConfirmMnemonicViewModel extends BaseViewModel {
   List<String> shuffledList = [];
   final navigationService = locator<NavigationService>();
   List<int> lastIndexList = [];
+
+  RegExp regex = RegExp(r'\d');
 /*----------------------------------------------------------------------
                     init
 ----------------------------------------------------------------------*/
@@ -68,7 +70,7 @@ class ConfirmMnemonicViewModel extends BaseViewModel {
 
     lastIndexList = [];
     for (var single in tapTextControllerList) {
-      if (single.text.contains(')')) {
+      if (regex.hasMatch(single.text)) {
         int s = single.text.indexOf(' ') + 1;
         single.text = single.text.substring(s, single.text.length);
       }
@@ -79,34 +81,16 @@ class ConfirmMnemonicViewModel extends BaseViewModel {
 
   selectWordsInOrder(int i, String singleWord) {
     setBusy(true);
-    // if (model.tappedMnemonicList
-    //     .contains(singleWord)) {
 
-    //   int duplicateWordIndex = model
-    //       .tappedMnemonicList
-    //       .indexOf(singleWord);
-    //   if (duplicateWordIndex == i) {
-
-    //     return;
-    //   }
-    // }
-
-    if (tappedMnemonicList.length < count
-        // (!tappedMnemonicList.contains(singleWord)) &&
-        ) {
+    if (tappedMnemonicList.length < count) {
       if (!lastIndexList.contains(i)) {
         debugPrint('lastIndexList $lastIndexList');
         debugPrint('if : adding element ');
         tappedMnemonicList.add(singleWord);
         tapTextControllerList[i].text =
-            '${tappedMnemonicList.length}) $singleWord';
+            '${tappedMnemonicList.length} $singleWord';
         lastIndexList.add(i);
       }
-      // else {
-      //   debugPrint('else : remove this element and number bracket');
-      //   tappedMnemonicList.removeLast();
-      //   tapTextControllerList[i].text = singleWord;
-      // }
     }
 
     setBusy(false);
@@ -216,20 +200,28 @@ class ConfirmMnemonicViewModel extends BaseViewModel {
         } else {
           showSimpleNotification(
               Text(FlutterI18n.translate(context, "invalidMnemonic"),
-                  style: headText4.copyWith(fontWeight: FontWeight.bold)),
+                  style: headText4.copyWith(
+                      fontWeight: FontWeight.bold, color: Colors.red)),
               position: NotificationPosition.top,
-              background: primaryColor,
-              subtitle: Text(FlutterI18n.translate(
-                  context, "pleaseFillAllTheTextFieldsCorrectly")));
+              background: bgLightRed,
+              subtitle: Text(
+                FlutterI18n.translate(
+                    context, "pleaseFillAllTheTextFieldsCorrectly"),
+                style: TextStyle(color: Colors.red),
+              ));
         }
       } else {
         showSimpleNotification(
             Text(FlutterI18n.translate(context, "invalidMnemonic"),
-                style: headText4.copyWith(fontWeight: FontWeight.bold)),
+                style: headText4.copyWith(
+                    fontWeight: FontWeight.bold, color: Colors.red)),
             position: NotificationPosition.bottom,
-            background: primaryColor,
-            subtitle: Text(FlutterI18n.translate(
-                context, "pleaseFillAllTheTextFieldsCorrectly")));
+            background: bgLightRed,
+            subtitle: Text(
+              FlutterI18n.translate(
+                  context, "pleaseFillAllTheTextFieldsCorrectly"),
+              style: TextStyle(color: Colors.red),
+            ));
       }
     } else {
       createWallet(context);
@@ -256,20 +248,28 @@ class ConfirmMnemonicViewModel extends BaseViewModel {
       } else {
         showSimpleNotification(
             Text(FlutterI18n.translate(context, "invalidMnemonic"),
-                style: headText4.copyWith(fontWeight: FontWeight.bold)),
+                style: headText4.copyWith(
+                    fontWeight: FontWeight.bold, color: Colors.red)),
             position: NotificationPosition.bottom,
-            background: primaryColor,
-            subtitle: Text(FlutterI18n.translate(
-                context, "pleaseFillAllTheTextFieldsCorrectly")));
+            background: bgLightRed,
+            subtitle: Text(
+              FlutterI18n.translate(
+                  context, "pleaseFillAllTheTextFieldsCorrectly"),
+              style: TextStyle(color: Colors.red),
+            ));
       }
     } else {
       showSimpleNotification(
           Text(FlutterI18n.translate(context, "invalidMnemonic"),
-              style: headText4.copyWith(fontWeight: FontWeight.bold)),
-          background: primaryColor,
+              style: headText4.copyWith(
+                  fontWeight: FontWeight.bold, color: Colors.red)),
+          background: bgLightRed,
           position: NotificationPosition.bottom,
-          subtitle: Text(FlutterI18n.translate(
-              context, "pleaseFillAllTheTextFieldsCorrectly")));
+          subtitle: Text(
+            FlutterI18n.translate(
+                context, "pleaseFillAllTheTextFieldsCorrectly"),
+            style: TextStyle(color: Colors.red),
+          ));
     }
   }
 }

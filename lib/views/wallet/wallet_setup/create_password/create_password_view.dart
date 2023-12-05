@@ -21,11 +21,12 @@ import 'package:paycool/shared/ui_helpers.dart';
 import 'package:stacked/stacked.dart';
 
 class CreatePasswordView extends StatelessWidget {
-  final args;
+  final dynamic args;
   const CreatePasswordView({Key? key, this.args}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return ViewModelBuilder<CreatePasswordViewModel>.reactive(
       viewModelBuilder: () => CreatePasswordViewModel(),
       onViewModelReady: (model) {
@@ -35,12 +36,16 @@ class CreatePasswordView extends StatelessWidget {
         model.passwordMatch = false;
       },
       builder: (context, CreatePasswordViewModel model, child) => Scaffold(
-        appBar: AppBar(
-          iconTheme: const IconThemeData(color: Colors.black),
-          centerTitle: true,
-          title: Text(FlutterI18n.translate(context, "secureYourWallet"),
-              style: headText4),
-          backgroundColor: secondaryColor,
+        appBar: customAppBarWithIcon(
+          title: FlutterI18n.translate(context, "setPassword"),
+          leading: IconButton(
+            onPressed: () => Navigator.pop(context),
+            icon: Icon(
+              Icons.arrow_back_ios,
+              color: Colors.black,
+              size: 20,
+            ),
+          ),
         ),
         body: Container(
             padding: const EdgeInsets.all(15),
@@ -52,7 +57,10 @@ class CreatePasswordView extends StatelessWidget {
                   children: <Widget>[
                     Text(
                       FlutterI18n.translate(context, "setPasswordConditions"),
-                      style: headText6,
+                      style: TextStyle(
+                          fontSize: 14,
+                          color: black,
+                          fontWeight: FontWeight.w500),
                       textAlign: TextAlign.left,
                     ),
                     UIHelper.verticalSpaceLarge,
@@ -65,7 +73,6 @@ class CreatePasswordView extends StatelessWidget {
                         autofocus: true,
                         controller: model.passTextController,
                         obscureText: true,
-                        // model.isShowPass ? true : false,
                         maxLength: 16,
                         style: model.checkPasswordConditions
                             ? const TextStyle(color: primaryColor, fontSize: 16)
@@ -75,16 +82,6 @@ class CreatePasswordView extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.end,
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                // IconButton(
-                                //     icon: Icon(
-                                //       model.isShowPass
-                                //           ? Icons.remove_red_eye
-                                //           : Icons.remove_red_eye_outlined,
-                                //       color: model.isShowPass
-                                //           ? primaryColor
-                                //           : grey,
-                                //     ),
-                                //     onPressed: () => model.toggelPassword()),
                                 Visibility(
                                   visible: model.checkPasswordConditions &&
                                       model.password.isNotEmpty,
@@ -92,37 +89,29 @@ class CreatePasswordView extends StatelessWidget {
                                       padding: EdgeInsets.only(right: 10),
                                       child: Icon(Icons.check, color: green)),
                                 )
-                                // model.checkPasswordConditions &&
-                                //         model.password.isNotEmpty
-                                //     ? const Padding(
-                                //         padding: EdgeInsets.only(right: 0),
-                                //         child: Icon(Icons.check,
-                                //             color: primaryColor))
-                                //     : const Padding(
-                                //         padding: EdgeInsets.only(right: 0),
-                                //         child: Icon(Icons.clear, color: grey)),
                               ],
                             ),
                             labelText:
                                 FlutterI18n.translate(context, "enterPassword"),
-                            focusedBorder: const OutlineInputBorder(
+                            focusedBorder: OutlineInputBorder(
                               borderSide:
                                   BorderSide(color: primaryColor, width: 1.5),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: bgGrey),
+                              borderRadius: BorderRadius.circular(5.0),
                             ),
                             prefixIcon:
                                 const Icon(Icons.lock_outline, color: grey),
                             labelStyle: headText5,
                             helperStyle: headText5)),
-                    //_buildPasswordTextField(model),
                     UIHelper.verticalSpaceSmall,
-                    //  _buildConfirmPasswordTextField(model),
                     TextField(
                         onChanged: (String pass) {
                           model.checkConfirmPassword(pass);
                         },
                         controller: model.confirmPassTextController,
                         obscureText: true,
-                        //model.isShowPass ? true : false,
                         maxLength: 16,
                         style: model.checkConfirmPasswordConditions
                             ? const TextStyle(color: primaryColor, fontSize: 16)
@@ -132,17 +121,6 @@ class CreatePasswordView extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.end,
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                // IconButton(
-                                //     icon: Icon(
-                                //       model.isShowPass
-                                //           ? Icons.remove_red_eye
-                                //           : Icons.remove_red_eye_outlined,
-                                //       color: model.isShowPass
-                                //           ? primaryColor
-                                //           : grey,
-                                //     ),
-                                //     onPressed: () => model.toggelPassword()),
-
                                 Visibility(
                                     visible:
                                         model.checkConfirmPasswordConditions &&
@@ -155,6 +133,10 @@ class CreatePasswordView extends StatelessWidget {
                             focusedBorder: const OutlineInputBorder(
                               borderSide:
                                   BorderSide(color: primaryColor, width: 1.5),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: bgGrey),
+                              borderRadius: BorderRadius.circular(5.0),
                             ),
                             labelText: FlutterI18n.translate(
                                 context, "confirmPassword"),
@@ -187,8 +169,21 @@ class CreatePasswordView extends StatelessWidget {
                                 style: headText5.copyWith(color: red)))
                         : Container(),
                     UIHelper.verticalSpaceLarge,
-
-                    Center(
+                    Container(
+                      width: size.width * 0.9,
+                      height: 50,
+                      margin: EdgeInsets.symmetric(horizontal: 10),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          FocusScope.of(context).requestFocus(FocusNode());
+                          model.validatePassword();
+                        },
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          backgroundColor: buttonPurple,
+                        ),
                         child: model.isCreatingWallet && model.isBusy
                             ? Shimmer.fromColors(
                                 baseColor: primaryColor,
@@ -202,55 +197,31 @@ class CreatePasswordView extends StatelessWidget {
                                   style: Theme.of(context).textTheme.labelLarge,
                                 ),
                               )
-                            : ButtonTheme(
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(30)),
-                                minWidth: double.infinity,
-                                child: MaterialButton(
-                                  elevation: 20,
-                                  padding: const EdgeInsets.all(15),
-                                  color: primaryColor,
-                                  textColor: Colors.white,
-                                  onPressed: () {
-                                    // Remove the on screen keyboard by shifting focus to unused focus node
-
-                                    FocusScope.of(context)
-                                        .requestFocus(FocusNode());
-                                    model.validatePassword();
-                                  },
-                                  child: Text(
-                                    args['isImport']
-                                        ? FlutterI18n.translate(
-                                            context, "importWallet")
-                                        : FlutterI18n.translate(
-                                            context, "createWallet"),
-                                    style: headText4.copyWith(color: white),
-                                  ),
-                                ),
-                              )),
+                            : Text(
+                                args['isImport']
+                                    ? FlutterI18n.translate(
+                                        context, "importWallet")
+                                    : FlutterI18n.translate(
+                                        context, "createWallet"),
+                                style: TextStyle(
+                                    fontSize: 12, fontWeight: FontWeight.w600),
+                              ),
+                      ),
+                    ),
                     UIHelper.verticalSpaceSmall,
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
                         FlutterI18n.translate(context, "createPasswordNote"),
                         textAlign: TextAlign.left,
-                        style: headText5.copyWith(fontWeight: FontWeight.bold),
+                        style: headText5.copyWith(
+                            fontWeight: FontWeight.w600, color: Colors.red),
                       ),
                     ),
                   ],
                 ),
               ],
             )),
-        // floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-        // floatingActionButton: Padding(
-        //   padding: const EdgeInsets.all(8.0),
-        //   child: Text(
-        //     FlutterI18n.translate(context, "setPasswordNote"),
-        //     textAlign: TextAlign.left,
-        //     style: headText5
-        //         .copyWith(fontWeight: FontWeight.bold),
-        //   ),
-        // ),
       ),
     );
   }

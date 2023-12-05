@@ -24,11 +24,11 @@ import 'package:stacked/stacked.dart';
 class BackupMnemonicWalletView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return ViewModelBuilder<BackupMnemonicViewModel>.reactive(
         createNewViewModelOnInsert: true,
         viewModelBuilder: () => BackupMnemonicViewModel(),
         onViewModelReady: (model) async {
-          //   model.context = context;
           model.init();
         },
         builder: (context, BackupMnemonicViewModel model, child) {
@@ -38,16 +38,17 @@ class BackupMnemonicWalletView extends StatelessWidget {
               return Future(() => false);
             },
             child: Scaffold(
-              appBar: AppBar(
-                iconTheme: const IconThemeData(color: Colors.black),
+              backgroundColor: bgGrey,
+              appBar: customAppBarWithIcon(
+                title: FlutterI18n.translate(context, "backupMnemonic"),
                 leading: IconButton(
-                    icon: const Icon(Icons.arrow_back),
-                    onPressed: () => model.onBackButtonPressed()),
-                centerTitle: true,
-                elevation: 0,
-                title: Text(FlutterI18n.translate(context, "backupMnemonic"),
-                    style: headText3),
-                backgroundColor: secondaryColor,
+                  onPressed: () => model.onBackButtonPressed(),
+                  icon: Icon(
+                    Icons.arrow_back_ios,
+                    color: Colors.black,
+                    size: 20,
+                  ),
+                ),
                 actions: <Widget>[
                   // action button
                   IconButton(
@@ -69,13 +70,11 @@ class BackupMnemonicWalletView extends StatelessWidget {
                                       child: Text(
                                         FlutterI18n.translate(context,
                                             "backupMnemonicNoticeTitle"),
-                                        // textAlign: TextAlign.center,
                                         style: headText3,
                                       )),
                                   const SizedBox(height: 20),
                                   Container(
                                       padding: const EdgeInsets.all(5.0),
-                                      // padding: EdgeInsets.symmetric(horizontal: 20),
                                       child: Text(
                                         FlutterI18n.translate(context,
                                             "backupMnemonicNoticeContent"),
@@ -89,59 +88,20 @@ class BackupMnemonicWalletView extends StatelessWidget {
               ),
               body: Container(
                 padding: const EdgeInsets.all(10),
-                child: ListView(
-                  // mainAxisSize: MainAxisSize.min,
-                  // crossAxisAlignment: CrossAxisAlignment.start,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     UIHelper.verticalSpaceMedium,
-                    Container(
-                      margin: const EdgeInsets.all(5),
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 10, horizontal: 10),
-                      decoration: BoxDecoration(
-                          color: sellPrice,
-                          borderRadius: BorderRadius.circular(30)
-                          // shape: BoxShape.circle
-                          ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Icon(
-                            Icons.info,
-                            color: white,
-                            size: 25,
-                          ),
-                          const SizedBox(width: 5),
-                          Text(
-                            FlutterI18n.translate(context, "important"),
-                            style: const TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w400,
-                                letterSpacing: 1,
-                                fontSize: 14),
-                          )
-                        ],
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10),
+                      child: Text(
+                        "Please copy the following mnemonics in order",
+                        style: TextStyle(
+                            fontSize: 14,
+                            color: black,
+                            fontWeight: FontWeight.w500),
                       ),
                     ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Row(
-                      children: <Widget>[
-                        Expanded(
-                            child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 15.0, vertical: 5),
-                          child: Text(
-                            FlutterI18n.translate(
-                                context, "warningBackupMnemonic"),
-                            style: headText4,
-                          ),
-                        )),
-                      ],
-                    ),
-
                     Container(
                       margin: const EdgeInsets.symmetric(
                         vertical: 10,
@@ -161,53 +121,110 @@ class BackupMnemonicWalletView extends StatelessWidget {
                           return TextField(
                             textAlign: TextAlign.center,
                             textAlignVertical: const TextAlignVertical(y: 0.7),
-                            enableInteractiveSelection: false, // readonly
-                            // enabled: false, // if false use cant see the selection border around
                             readOnly: true,
-                            autocorrect: false,
                             decoration: InputDecoration(
-                              // alignLabelWithHint: true,
                               fillColor: secondaryColor,
                               filled: true,
                               hintText: sw,
                               hintMaxLines: 1,
+                              prefixText: (i + 1).toString(),
+                              prefixStyle: const TextStyle(
+                                  color: black,
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 12),
                               hintStyle: const TextStyle(
-                                  color: black, fontWeight: FontWeight.w400),
+                                  color: black,
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 14),
                               focusedBorder: OutlineInputBorder(
-                                  // borderSide: const BorderSide(
-                                  //     color: primaryColor, width: 2),
-                                  borderRadius: BorderRadius.circular(30.0)),
+                                  borderSide: BorderSide.none,
+                                  borderRadius: BorderRadius.circular(10.0)),
                               border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(30.0),
+                                borderSide: BorderSide.none,
+                                borderRadius: BorderRadius.circular(10.0),
                               ),
                             ),
                           );
                         }),
                       ),
                     ),
-                    // UIHelper.verticalSpaceSmall,
                     Container(
-                      padding: const EdgeInsets.all(15),
-                      child: ElevatedButton(
-                        style: ButtonStyle(
-                            padding: MaterialStateProperty.all(
-                                const EdgeInsets.symmetric(
-                                    horizontal: 25, vertical: 18)),
-                            elevation: MaterialStateProperty.all(10.0),
-                            backgroundColor:
-                                MaterialStateProperty.all(primaryColor),
-                            shape: buttonRoundShape(primaryColor)),
-                        child: Text(
-                          FlutterI18n.translate(context, "confirm"),
-                          style: Theme.of(context).textTheme.labelLarge,
-                        ),
-                        onPressed: () {
-                          model.navigationService.navigateTo(
-                              ConfirmMnemonicViewRoute,
-                              arguments: model.randomMnemonicList);
-                        },
+                      width: size.width * 0.9,
+                      margin: const EdgeInsets.all(5),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 10, horizontal: 10),
+                      decoration: BoxDecoration(
+                          color: bgLightRed,
+                          borderRadius: BorderRadius.circular(30)),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Icon(
+                            Icons.info,
+                            color: Colors.red[100],
+                            size: 25,
+                          ),
+                          UIHelper.horizontalSpaceSmall,
+                          Text(
+                            FlutterI18n.translate(context, "important"),
+                            style: const TextStyle(
+                                color: Colors.red,
+                                fontWeight: FontWeight.w400,
+                                letterSpacing: 1,
+                                fontSize: 14),
+                          )
+                        ],
                       ),
-                    )
+                    ),
+                    ListTile(
+                      horizontalTitleGap: 0,
+                      leading: Container(
+                        width: 4.0,
+                        height: 4.0,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.black, // Change color as needed
+                        ),
+                      ),
+                      title: Text(
+                        FlutterI18n.translate(context, "warningBackupMnemonic"),
+                        style: TextStyle(
+                            fontSize: 14,
+                            color: black,
+                            wordSpacing: 2,
+                            height: 1.7,
+                            fontWeight: FontWeight.w300),
+                      ),
+                    ),
+                    Expanded(child: SizedBox()),
+                    Align(
+                      alignment: Alignment.center,
+                      child: Container(
+                        width: size.width * 0.9,
+                        height: 50,
+                        margin: EdgeInsets.only(bottom: 50),
+                        child: ElevatedButton(
+                          onPressed: () {
+                            model.navigationService.navigateTo(
+                                ConfirmMnemonicViewRoute,
+                                arguments: model.randomMnemonicList);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            backgroundColor: buttonPurple,
+                          ),
+                          child: Text(
+                            FlutterI18n.translate(
+                                context, "I'm done backing up"),
+                            style: TextStyle(
+                                fontSize: 14, fontWeight: FontWeight.w600),
+                          ),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),

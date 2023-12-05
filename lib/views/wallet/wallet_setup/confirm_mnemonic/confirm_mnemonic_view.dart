@@ -17,7 +17,6 @@ import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/views/wallet/wallet_setup/confirm_mnemonic/confirm_mnemonic_viewmodel.dart';
-import 'package:paycool/views/wallet/wallet_setup/confirm_mnemonic/verify_mnemonic.dart';
 import 'package:stacked/stacked.dart';
 
 class ConfirmMnemonicView extends StatelessWidget {
@@ -28,6 +27,7 @@ class ConfirmMnemonicView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return ViewModelBuilder<ConfirmMnemonicViewModel>.reactive(
       viewModelBuilder: () => ConfirmMnemonicViewModel(),
       onViewModelReady: (model) {
@@ -41,208 +41,157 @@ class ConfirmMnemonicView extends StatelessWidget {
           return Future(() => false);
         },
         child: Scaffold(
-          appBar: AppBar(
-              iconTheme: const IconThemeData(color: Colors.black),
-              centerTitle: true,
-              title: Text(
+          backgroundColor: bgGrey,
+          appBar: customAppBarWithIcon(
+            title:
                 '${FlutterI18n.translate(context, "confirm")} ${FlutterI18n.translate(context, "mnemonic")}',
-                style: headText3,
+            leading: IconButton(
+              onPressed: () => model.onBackButtonPressed(),
+              icon: Icon(
+                Icons.arrow_back_ios,
+                color: Colors.black,
+                size: 20,
               ),
-              backgroundColor: secondaryColor),
+            ),
+          ),
           body: Container(
             padding: const EdgeInsets.all(10),
-            child: ListView(
-              scrollDirection: Axis.vertical,
+            child: Column(
               children: <Widget>[
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    OutlinedButton(
-                      style: ButtonStyle(
-                        side: MaterialStateProperty.all(BorderSide(
-                            color: model.isTap ? primaryColor : grey)),
-                        backgroundColor:
-                            MaterialStateProperty.all(secondaryColor),
-                        elevation: MaterialStateProperty.all(10),
-                        padding: MaterialStateProperty.all(
-                            const EdgeInsets.symmetric(
-                                vertical: 12.0, horizontal: 15.0)),
-                        // shape: MaterialStateProperty.all(const StadiumBorder(
-                        //     side: BorderSide(color: primaryColor, width: 2))
-                        //     ),
-                      ),
-                      child: Text(
-                          FlutterI18n.translate(context, "verifyMnemonicByTap"),
-                          style: headText5.copyWith(
-                              fontWeight: model.isTap
-                                  ? FontWeight.bold
-                                  : FontWeight.normal)),
-                      onPressed: () {
-                        //    model.shuffleStringList();
-                        model.selectConfirmMethod('tap');
-                      },
-                    ),
-                    UIHelper.verticalSpaceSmall,
-                    // OutlinedButton(
-                    //   style: ButtonStyle(
-                    //     padding: MaterialStateProperty.all(
-                    //         const EdgeInsets.symmetric(
-                    //             vertical: 12.0, horizontal: 15.0)),
-                    //     side: MaterialStateProperty.all(BorderSide(
-                    //         color: !model.isTap ? primaryColor : grey)),
-                    //     backgroundColor:
-                    //         MaterialStateProperty.all(secondaryColor),
-                    //     elevation: MaterialStateProperty.all(5),
-                    //   ),
-                    //   child: Text(
-                    //       FlutterI18n.translate(
-                    //           context, "verifyMnemonicByWrite"),
-                    //       style: headText5.copyWith(
-                    //           fontWeight: !model.isTap
-                    //               ? FontWeight.bold
-                    //               : FontWeight.normal)),
-                    //   onPressed: () => model.selectConfirmMethod('write'),
-                    // ),
-                  ],
+                InkWell(
+                  onTap: () {
+                    model.selectConfirmMethod("tap");
+                  },
+                  child: Text(
+                      FlutterI18n.translate(context, "verifyMnemonicByTap"),
+                      style: headText5.copyWith(
+                          fontWeight: model.isTap
+                              ? FontWeight.bold
+                              : FontWeight.normal)),
                 ),
-                UIHelper.verticalSpaceSmall,
-                UIHelper.divider,
-                UIHelper.verticalSpaceSmall,
-                !model.isTap
-                    ? VerifyMnemonicWalletView(
-                        mnemonicTextController: model.controller,
-                        count: model.count,
-                      )
-                    : Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Container(
-                            margin: const EdgeInsets.symmetric(
-                                vertical: 0, horizontal: 10),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: TextButton(
-                                  style: ButtonStyle(
-                                    side: MaterialStateProperty.all(
-                                        const BorderSide(color: primaryColor)),
-                                  ),
-                                  onPressed: () {
-                                    model.clearTappedList();
-                                  },
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      const Padding(
-                                        padding: EdgeInsets.only(right: 2.0),
-                                        child: Icon(
-                                          Icons.restore_sharp,
-                                          color: grey,
-                                          size: 20,
-                                        ),
-                                      ),
-                                      Text(
-                                          FlutterI18n.translate(
-                                              context, "resetSelection"),
-                                          style:
-                                              headText3.copyWith(color: black)),
-                                    ],
-                                  )),
+                UIHelper.verticalSpaceLarge,
+                Container(
+                  margin:
+                      const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 0, horizontal: 5),
+                  child: GridView.extent(
+                    maxCrossAxisExtent: 125,
+                    padding: const EdgeInsets.all(2),
+                    mainAxisSpacing: 15,
+                    crossAxisSpacing: 10,
+                    shrinkWrap: true,
+                    childAspectRatio: 2,
+                    physics: const NeverScrollableScrollPhysics(),
+                    children: List.generate(
+                      model.count,
+                      (i) {
+                        var singleWord = randomMnemonicListFromRoute[i];
+
+                        return TextField(
+                          onTap: () {
+                            model.selectWordsInOrder(i, singleWord);
+                          },
+                          controller: model.tapTextControllerList[i],
+                          textAlign: TextAlign.center,
+                          textAlignVertical: const TextAlignVertical(y: 0.7),
+                          enableInteractiveSelection: false, // readonly
+                          // enabled: false, // if false use cant see the selection border around
+                          readOnly: true,
+                          autocorrect: false,
+                          style: TextStyle(
+                              fontSize: 14,
+                              color: black,
+                              fontWeight: FontWeight.w600),
+                          decoration: InputDecoration(
+                            fillColor: model.regex.hasMatch(
+                                    model.tapTextControllerList[i].text)
+                                ? bgLightRed
+                                : secondaryColor,
+                            filled: true,
+                            hintText: singleWord,
+                            hintMaxLines: 1,
+                            hintStyle: TextStyle(
+                                fontSize: 14,
+                                color: black,
+                                fontWeight: FontWeight.w600),
+                            focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide.none,
+                                borderRadius: BorderRadius.circular(10.0)),
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide.none,
+                              borderRadius: BorderRadius.circular(10.0),
                             ),
                           ),
-                          UIHelper.verticalSpaceSmall,
-                          Container(
-                            margin: const EdgeInsets.symmetric(
-                                vertical: 0, horizontal: 10),
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 0, horizontal: 5),
-                            child: GridView.extent(
-                                maxCrossAxisExtent: 125,
-                                padding: const EdgeInsets.all(2),
-                                mainAxisSpacing: 15,
-                                crossAxisSpacing: 10,
-                                shrinkWrap: true,
-                                childAspectRatio: 2,
-                                physics: const NeverScrollableScrollPhysics(),
-                                children: List.generate(model.count, (i) {
-                                  var singleWord =
-                                      randomMnemonicListFromRoute[i];
-
-                                  return TextField(
-                                    onTap: () {
-                                      model.selectWordsInOrder(i, singleWord);
-                                    },
-                                    controller: model.tapTextControllerList[i],
-                                    textAlign: TextAlign.center,
-                                    textAlignVertical:
-                                        const TextAlignVertical(y: 0.7),
-                                    enableInteractiveSelection:
-                                        false, // readonly
-                                    // enabled: false, // if false use cant see the selection border around
-                                    readOnly: true,
-                                    autocorrect: false,
-                                    style: const TextStyle(color: black),
-                                    decoration: InputDecoration(
-                                      // alignLabelWithHint: true,
-                                      fillColor: model
-                                              .tapTextControllerList[i].text
-                                              .contains(')')
-                                          ? grey.withAlpha(200)
-                                          : secondaryColor,
-                                      filled: true,
-                                      hintText: singleWord,
-                                      // label:  Text(singleWord),
-                                      // labelStyle: headText5,
-                                      hintMaxLines: 1,
-                                      hintStyle: headText4,
-                                      focusedBorder: OutlineInputBorder(
-                                          borderSide: const BorderSide(
-                                              color: black, width: 1),
-                                          borderRadius:
-                                              BorderRadius.circular(30.0)),
-                                      border: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(30.0),
-                                      ),
-                                    ),
-                                  );
-                                })),
-                          ),
-                          UIHelper.verticalSpaceMedium,
-                        ],
-                      ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
                 UIHelper.verticalSpaceSmall,
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 15),
-                  child: ElevatedButton(
-                    style: ButtonStyle(
-                      padding: MaterialStateProperty.all(
-                          const EdgeInsets.symmetric(
-                              horizontal: 25, vertical: 10)),
-                      elevation: MaterialStateProperty.all(10.0),
-                      backgroundColor: MaterialStateProperty.all(primaryColor),
-                      shape: MaterialStateProperty.all(const StadiumBorder(
-                          side: BorderSide(color: primaryColor, width: 2))),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(12.0),
+                  margin:
+                      const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextButton(
+                        style: ButtonStyle(
+                          side: MaterialStateProperty.all(
+                              const BorderSide(color: primaryColor)),
+                        ),
+                        onPressed: () {
+                          model.clearTappedList();
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Padding(
+                              padding: EdgeInsets.only(right: 2.0),
+                              child: Icon(
+                                Icons.restore_sharp,
+                                color: grey,
+                                size: 20,
+                              ),
+                            ),
+                            Text(
+                                FlutterI18n.translate(
+                                    context, "resetSelection"),
+                                style: headText3.copyWith(color: black)),
+                          ],
+                        )),
+                  ),
+                ),
+                Expanded(child: SizedBox()),
+                Align(
+                  alignment: Alignment.center,
+                  child: Container(
+                    width: size.width * 0.9,
+                    height: 50,
+                    margin: EdgeInsets.only(bottom: 50),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        model.verifyMnemonic(
+                            model.isTap
+                                ? model.tappedMnemonicList
+                                : model.controller,
+                            context,
+                            model.count,
+                            'create');
+                      },
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        backgroundColor: buttonPurple,
+                      ),
                       child: Text(
                         FlutterI18n.translate(context, "finishWalletCreation"),
-                        style: Theme.of(context).textTheme.labelLarge,
+                        style: TextStyle(
+                            fontSize: 14, fontWeight: FontWeight.w600),
                       ),
                     ),
-                    onPressed: () {
-                      // if (model.isTap) model.clearTappedList();
-                      model.verifyMnemonic(
-                          model.isTap
-                              ? model.tappedMnemonicList
-                              : model.controller,
-                          context,
-                          model.count,
-                          'create');
-                    },
                   ),
-                )
+                ),
               ],
             ),
           ),
