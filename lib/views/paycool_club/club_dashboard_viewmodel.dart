@@ -69,7 +69,6 @@ class ClubDashboardViewModel extends BaseViewModel {
   bool isEnoughDusdWalletBalance = true;
   bool isValidMember = false;
   GlobalKey globalKey = GlobalKey(debugLabel: 'showBarcode');
-  // GlobalKey globalKey2 = GlobalKey(debugLabel: 'lightening');
   ClubDashboard dashboardSummary = ClubDashboard();
   JoinClubPaymentModel scanToPayModel = JoinClubPaymentModel();
   bool isValidClubReferralCode = false;

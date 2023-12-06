@@ -37,9 +37,9 @@ class BottomNavBar extends StatelessWidget {
       viewModelBuilder: () => BottomNavViewmodel(),
       builder: (context, model, _) => Container(
         decoration: BoxDecoration(
-          boxShadow: <BoxShadow>[
+          boxShadow: const <BoxShadow>[
             BoxShadow(
-              color: count != 2 ? Colors.black26 : Colors.white24,
+              color: Colors.black26,
               blurRadius: 10,
             ),
           ],
@@ -48,7 +48,7 @@ class BottomNavBar extends StatelessWidget {
           elevation: 8,
           padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
           height: 50,
-          color: count == 2 ? black : white,
+          color: white,
           shape: const CircularNotchedRectangle(),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -84,9 +84,9 @@ class BottomNavBar extends StatelessWidget {
               ),
               InkWell(
                 onTap: () {
-                  if (model.currentRouteName != 'BondDashboardView') {
+                  if (model.currentRouteName != 'BondWelcomeView') {
                     navigationService.navigateTo(
-                      BondDashboardViewRoute,
+                      BondWelcomeViewRoute,
                     );
                   }
                 },

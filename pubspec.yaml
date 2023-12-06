@@ -36,7 +36,7 @@ dependencies:
       url: https://github.com/blockchaingate/exchangily-packages.git
       path: open_source_packages/bitcoin_flutter
   cached_network_image: ^3.2.3
-  card_swiper: null
+  card_swiper: ^3.0.1
   cupertino_icons: ^1.0.5
   decimal: ^2.2.0
   device_info: ^2.0.2
