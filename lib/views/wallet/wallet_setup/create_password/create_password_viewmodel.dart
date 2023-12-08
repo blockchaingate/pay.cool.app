@@ -19,6 +19,7 @@ import 'package:paycool/constants/route_names.dart';
 import 'package:paycool/environments/environment_type.dart';
 import 'package:paycool/logger.dart';
 import 'package:paycool/service_locator.dart';
+import 'package:paycool/services/local_storage/hive_mutli_wallet_service.dart';
 import 'package:paycool/services/local_storage_service.dart';
 import 'package:paycool/services/vault_service.dart';
 import 'package:paycool/services/wallet_service.dart';
@@ -47,9 +48,11 @@ class CreatePasswordViewModel extends BaseViewModel {
       r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[`~!@#\$%\^&*\(\)-_\+\=\{\[\}\]]).{8,}$';
 
   FocusNode passFocus = FocusNode();
+  TextEditingController walletNameController = TextEditingController();
   TextEditingController passTextController = TextEditingController();
   TextEditingController confirmPassTextController = TextEditingController();
   WalletService walletService = locator<WalletService>();
+  final hiveMultiWalletService = locator<HiveMultiWalletService>();
 
   bool _isShowPass = false;
   get isShowPass => _isShowPass;
@@ -64,30 +67,56 @@ class CreatePasswordViewModel extends BaseViewModel {
 /* ---------------------------------------------------
                     Create Offline Wallets
     -------------------------------------------------- */
-
   Future createOfflineWallets() async {
     isCreatingWallet = true;
     setBusy(true);
 
-    await _walletService
-        .createOfflineWalletsV1(
-            randomMnemonicFromRoute, passTextController.text)
-        .then((data) {
-      navigationService.pushNamedAndRemoveUntil(DashboardViewRoute);
-      storageService.showPaycoolClub = false;
-      randomMnemonicFromRoute = '';
-      passTextController.text = '';
-      confirmPassTextController.text = '';
-    }).catchError((onError) {
-      passwordMatch = false;
-      password = '';
-      confirmPassword = '';
-      isError = true;
-      log.e(onError);
+    try {
+      if (walletNameController.text.isEmpty) {
+        var count = await hiveMultiWalletService.getWalletCount();
+        walletNameController.text =
+            '${FlutterI18n.translate(context, 'wallet')} ${count + 1}';
+      }
+      await _walletService
+          .createOfflineWalletsV2(randomMnemonicFromRoute,
+              passTextController.text, walletNameController.text)
+          .then((result) {
+        if (!result.isNegative) {
+          navigationService.pushNamedAndRemoveUntil(DashboardViewRoute);
+        } else if (result == -1) {
+          showSimpleNotification(
+              Text(FlutterI18n.translate(context, "duplicateWallet")),
+              position: NotificationPosition.bottom,
+              background: primaryColor,
+              subtitle:
+                  Text(FlutterI18n.translate(context, "walletNameExists")));
+        } else {
+          showSimpleNotification(
+              Text(FlutterI18n.translate(context, "somethingWentWrong")),
+              position: NotificationPosition.bottom,
+              background: primaryColor,
+              subtitle: Text(FlutterI18n.translate(context, "pleaseTryAgain")));
+        }
+        storageService.showPaycoolClub = false;
+        clearData();
+      }).catchError((onError) {
+        passwordMatch = false;
+        password = '';
+        confirmPassword = '';
+        isError = true;
+        log.e(onError);
+      });
+    } finally {
+      isCreatingWallet = false;
       setBusy(false);
-    });
-    isCreatingWallet = false;
-    setBusy(false);
+    }
+  }
+
+  clearData() {
+    randomMnemonicFromRoute = '';
+    passTextController.text = '';
+    confirmPassTextController.text = '';
+    walletNameController.text = '';
   }
 
 /* ---------------------------------------------------

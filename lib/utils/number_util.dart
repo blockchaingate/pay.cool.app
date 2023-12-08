@@ -62,7 +62,7 @@ class NumberUtil {
 
   static double roundDouble(double value, {int decimalPlaces = 2}) {
     if (value != 0) {
-      Decimal decimalValue = Decimal.parse(value.toStringAsFixed(2));
+      Decimal decimalValue = Decimal.parse(value.toString());
 
       return roundDecimal(decimalValue, decimalPlaces).toDouble();
     } else {

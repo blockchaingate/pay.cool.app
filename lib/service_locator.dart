@@ -15,7 +15,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:get_it/get_it.dart';
 import 'package:kyc/kyc.dart';
 import 'package:paycool/services/db/core_wallet_database_service.dart';
-import 'package:paycool/services/hive_multisig_service.dart';
+import 'package:paycool/services/local_storage/hive_multisig_service.dart';
+import 'package:paycool/services/local_storage/hive_mutli_wallet_service.dart';
 import 'package:paycool/services/multisig_service.dart';
 import 'package:stacked_services/stacked_services.dart'
     show DialogService, NavigationService, BottomSheetService;
@@ -94,10 +95,11 @@ Future serviceLocator() async {
   // Seven Star
   locator.registerLazySingleton(() => PayCoolClubService());
   locator.registerLazySingleton(() => PayCoolService());
-  locator.registerLazySingleton(() => HiveMultisigService());
 
-  //Version Service
-  //locator.registerLazySingleton(() => VersionService());
+  locator.registerSingletonAsync<HiveMultiWalletService>(
+      HiveMultiWalletService.getInstance);
+  locator.registerSingletonAsync<HiveMultisigService>(
+      HiveMultisigService.getInstance);
 
   // LocalStorageService Singelton
   var instance = await LocalStorageService.getInstance();

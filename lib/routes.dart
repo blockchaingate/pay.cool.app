@@ -21,7 +21,7 @@ import 'package:paycool/views/paycool_club/club_projects/club_project_details/cl
 import 'package:paycool/views/settings/about_view.dart';
 import 'package:paycool/views/settings/me_view.dart';
 import 'package:paycool/views/settings/new_setting_view.dart';
-import 'package:paycool/views/settings/wallet_management_view.dart';
+import 'package:paycool/views/settings/wallet_management/wallet_management_view.dart';
 import 'package:paycool/views/wallet/wallet_features/transfer/transfer_view.dart';
 import 'package:paycool/widgets/club/club_rewards_view.dart';
 import 'constants/route_names.dart';

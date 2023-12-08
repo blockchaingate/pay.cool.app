@@ -760,5 +760,6 @@
     "owners": "Owners",
     "enterOwnerName": "Enter owner name",
     "invalidFee": "Invalid fee",
-    "enterOwnerAddress": "Enter owner address"
+    "enterOwnerAddress": "Enter owner address",
+    "walletManagement": "Wallet Management"
 }

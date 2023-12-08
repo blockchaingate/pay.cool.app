@@ -9,7 +9,7 @@ import 'package:paycool/models/wallet/token_model.dart';
 import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/api_service.dart';
 import 'package:paycool/services/db/token_list_database_service.dart';
-import 'package:paycool/services/hive_multisig_service.dart';
+import 'package:paycool/services/local_storage/hive_multisig_service.dart';
 import 'package:paycool/services/local_storage_service.dart';
 import 'package:paycool/services/multisig_service.dart';
 import 'package:paycool/services/shared_service.dart';

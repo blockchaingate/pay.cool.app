@@ -11,6 +11,7 @@
 *----------------------------------------------------------------------
 */
 
+import 'package:exchangily_ui/exchangily_ui.dart' show kTextField;
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
@@ -56,6 +57,12 @@ class CreatePasswordView extends StatelessWidget {
                       textAlign: TextAlign.left,
                     ),
                     UIHelper.verticalSpaceLarge,
+                    kTextField(
+                      controller: model.walletNameController,
+                      labelText: FlutterI18n.translate(context, "walletName"),
+                      hintText: FlutterI18n.translate(context, "walletName"),
+                    ),
+                    UIHelper.verticalSpaceSmall,
                     TextField(
                         onChanged: (String pass) {
                           model.checkPassword(pass);

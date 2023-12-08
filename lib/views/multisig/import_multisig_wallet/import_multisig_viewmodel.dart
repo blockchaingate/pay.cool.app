@@ -3,7 +3,7 @@ import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/logger.dart';
 import 'package:paycool/service_locator.dart';
-import 'package:paycool/services/hive_multisig_service.dart';
+import 'package:paycool/services/local_storage/hive_multisig_service.dart';
 import 'package:paycool/services/multisig_service.dart';
 import 'package:paycool/services/shared_service.dart';
 import 'package:paycool/views/multisig/multisig_wallet_model.dart';

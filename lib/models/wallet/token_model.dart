@@ -11,17 +11,27 @@
 *----------------------------------------------------------------------
 */
 
-import 'package:decimal/decimal.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+part 'token_model.g.dart';
 
+@HiveType(typeId: 4)
 class TokenModel {
   int? id;
+  @HiveField(0)
   int? decimal;
+  @HiveField(1)
   String? coinName;
+  @HiveField(2)
   String? chainName;
+  @HiveField(3)
   String? tickerName;
+  @HiveField(4)
   int? coinType;
+  @HiveField(5)
   String? contract;
+  @HiveField(6)
   String? minWithdraw;
+  @HiveField(7)
   String? feeWithdraw;
 
   TokenModel(

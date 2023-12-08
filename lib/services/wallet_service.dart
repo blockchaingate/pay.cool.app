@@ -18,6 +18,7 @@ import 'package:overlay_support/overlay_support.dart';
 import 'package:paycool/constants/api_routes.dart';
 import 'package:paycool/services/config_service.dart';
 import 'package:paycool/services/local_dialog_service.dart';
+import 'package:paycool/services/local_storage/hive_mutli_wallet_service.dart';
 import 'package:paycool/utils/string_util.dart';
 import 'package:paycool/utils/tron_util/trx_generate_address_util.dart'
     as TronAddressUtil;
@@ -25,6 +26,7 @@ import 'package:paycool/utils/tron_util/trx_transaction_util.dart'
     as TronTransactionUtil;
 import 'package:paycool/utils/wallet/erc20_util.dart';
 import 'package:paycool/utils/wallet/wallet_util.dart';
+import 'package:paycool/views/wallet/wallet_setup/multi_wallet_model.dart';
 import 'package:stacked/stacked.dart';
 import 'package:web3dart/crypto.dart' as CryptoWeb3;
 import 'package:web3dart/web3dart.dart';
@@ -89,6 +91,7 @@ class WalletService with ListenableServiceMixin {
   final ApiService _apiService = locator<ApiService>();
   final coinService = locator<CoinService>();
   final _vaultService = locator<VaultService>();
+  final hiveMultiWalletService = locator<HiveMultiWalletService>();
 
   final coreWalletDatabaseService = locator<CoreWalletDatabaseService>();
   double? currentTickerUsdValue;
@@ -825,9 +828,42 @@ class WalletService with ListenableServiceMixin {
     // }
     //  return currentUsdValue;
   }
-  /*----------------------------------------------------------------------
+
+/*----------------------------------------------------------------------
                 Offline Wallet Creation
 ----------------------------------------------------------------------*/
+
+// create Offline Wallets V2
+  Future<int> createOfflineWalletsV2(
+      String mnemonic, String userPassword, String walletName) async {
+    MultiWalletModel multiWalletModel = MultiWalletModel();
+    var vaultService = locator<VaultService>();
+    var seed = generateSeed(mnemonic);
+    var root = generateBip32Root(seed);
+
+    multiWalletModel.name = walletName;
+
+    if (userPassword.isNotEmpty && mnemonic.isNotEmpty) {
+      var encryptedMnemonic = vaultService.encryptData(userPassword, mnemonic);
+
+      log.i('encryptedMnemonic $encryptedMnemonic');
+      multiWalletModel.encryptedMnemonic = encryptedMnemonic;
+    }
+
+    var coins = ['FAB', 'ETH', 'BTC'];
+    for (var coin in coins) {
+      try {
+        var address = await coin_util.getAddressForCoin(root, coin);
+        multiWalletModel.addAddress(WalletAddressModel(
+            tickerName: coin.toLowerCase(), address: address));
+      } catch (e) {
+        log.e('Failed to generate address for $coin: $e');
+      }
+    }
+    multiWalletModel.isSelected = true;
+    log.i("multiWalletModel json ${multiWalletModel.toJson()}");
+    return await hiveMultiWalletService.addWallet(multiWalletModel);
+  }
 
 // create Offline Wallets V1
   Future<CoreWalletModel> createOfflineWalletsV1(
@@ -846,15 +882,6 @@ class WalletService with ListenableServiceMixin {
       "showEXGAssets": "true"
     };
 
-    List<String> coinTickers = [
-      'BTC',
-      'ETH',
-      'FAB',
-      'LTC',
-      'DOGE',
-      'BCH',
-      'TRX'
-    ];
     log.w('generating seed');
     debugPrint(extractTimeFromDate(DateTime.now().toString()));
     var seed = generateSeed(mnemonic);

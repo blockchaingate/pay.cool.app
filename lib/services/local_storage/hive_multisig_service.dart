@@ -2,26 +2,38 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:paycool/constants/constants.dart';
 import 'package:paycool/logger.dart';
 
-import '../views/multisig/multisig_wallet_model.dart';
+import '../../views/multisig/multisig_wallet_model.dart';
 
 class HiveMultisigService {
   final log = getLogger('HiveMultisigService');
-  final multisigWallets =
-      Hive.box<MultisigWalletModel>(Constants.multisigWalletBox);
+  static late Box<MultisigWalletModel> box;
 
-  static Future<void> init() async {
-    await Hive.initFlutter();
-    Hive.registerAdapter<MultisigWalletModel>(MultisigWalletModelAdapter());
-    Hive.registerAdapter(OwnersAdapter());
-    await Hive.openBox<MultisigWalletModel>(Constants.multisigWalletBox);
+  static HiveMultisigService? _instance;
+
+  static Future<HiveMultisigService> getInstance() async {
+    if (_instance == null) {
+      _instance = HiveMultisigService();
+      await _instance!.init();
+    }
+    return _instance!;
+  }
+
+  Future<void> init() async {
+    if (!Hive.isAdapterRegistered(0)) {
+      Hive.registerAdapter<MultisigWalletModel>(MultisigWalletModelAdapter());
+    }
+    if (!Hive.isAdapterRegistered(1)) {
+      Hive.registerAdapter(OwnersAdapter());
+    }
+
+    box = await Hive.openBox<MultisigWalletModel>(Constants.multisigWalletBox);
   }
 
   // Function find multisig wallet by txid
   MultisigWalletModel findMultisigWalletByTxid(String txid) =>
-      multisigWallets.values.firstWhere((element) => element.txid == txid);
+      box.values.firstWhere((element) => element.txid == txid);
   MultisigWalletModel findMultisigWalletByAddress(String address) =>
-      multisigWallets.values
-          .firstWhere((element) => element.address == address);
+      box.values.firstWhere((element) => element.address == address);
   // msw = MultisigWallet
   Future<void> addMultisigWallet(MultisigWalletModel msw) async {
     final box = Hive.box<MultisigWalletModel>(Constants.multisigWalletBox);

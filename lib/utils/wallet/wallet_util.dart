@@ -55,7 +55,15 @@ class WalletUtil {
     'USDTX': 'TRON USDT',
     'FABB': 'FAB Binance'
   };
-
+  static List<String> majorCoins = [
+    'BTC',
+    'ETH',
+    'FAB',
+    'LTC',
+    'DOGE',
+    'BCH',
+    'TRX'
+  ];
   static List<String> allUsdtTokens = ["USDT", "USDTX", "USDTB", "USDTM"];
   static List<String> allUsdcTokens = ["USDC", "USDCX"];
   List<String> usdtSpecialTokens = ["USDTX", "USDTB", "USDTM"];
