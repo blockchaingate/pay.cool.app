@@ -119,7 +119,7 @@ class SendViewModel extends BaseViewModel {
   }
 
   Future<void> setWalletInfo() async {
-    if (walletInfo!.tickerName != null) {
+    if (walletInfo != null) {
       specialTickerName = WalletUtil.updateSpecialTokensTickerName(
           walletInfo!.tickerName!)['tickerName']!;
 

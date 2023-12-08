@@ -55,15 +55,14 @@ class _SendWalletViewState extends State<SendWalletView>
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    String? tickerName;
-    widget.walletInfo!.tickerName == 'USDTX'
-        ? tickerName = 'USDT(TRC20)'
-        : tickerName = widget.walletInfo!.tickerName;
+
     return ViewModelBuilder<SendViewModel>.reactive(
         viewModelBuilder: () => SendViewModel(),
         onViewModelReady: (model) {
           model.context = context;
-          model.walletInfo = widget.walletInfo!;
+          if (widget.walletInfo != null) {
+            model.walletInfo = widget.walletInfo;
+          }
           model.initState();
         },
         builder: (context, model, child) => GestureDetector(
@@ -234,8 +233,9 @@ class _SendWalletViewState extends State<SendWalletView>
                                       child: Row(
                                         children: [
                                           Text(
-                                            model.walletInfo!.tickerName ??
-                                                FlutterI18n.translate(
+                                            model.walletInfo != null
+                                                ? model.walletInfo!.tickerName!
+                                                : FlutterI18n.translate(
                                                     context, "selectToken"),
                                             style: TextStyle(
                                                 fontSize: 14,
@@ -247,13 +247,15 @@ class _SendWalletViewState extends State<SendWalletView>
                                         ],
                                       ),
                                     ),
-                                    Text(
-                                      "${FlutterI18n.translate(context, "balance")} 10.00 $tickerName",
-                                      style: TextStyle(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.bold,
-                                          color: textHintGrey),
-                                    ),
+                                    model.walletInfo != null
+                                        ? Text(
+                                            "${FlutterI18n.translate(context, "balance")}${model.walletInfo!.availableBalance!}${model.walletInfo!.tickerName}",
+                                            style: TextStyle(
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.bold,
+                                                color: textHintGrey),
+                                          )
+                                        : SizedBox()
                                   ],
                                 ),
                               ),
@@ -285,7 +287,7 @@ class _SendWalletViewState extends State<SendWalletView>
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              '${FlutterI18n.translate(context, "About")} ${NumberUtil.roundDouble(model.transFee, decimalPlaces: 6)}  ${model.feeUnit}',
+                              '${FlutterI18n.translate(context, "About")} ${NumberUtil.roundDouble(model.transFee, decimalPlaces: 6)}  ${model.specialTickerName}',
                               style: TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.bold,

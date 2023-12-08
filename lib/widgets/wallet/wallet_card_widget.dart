@@ -105,9 +105,8 @@ class _WalletCardWidgetState extends State<WalletCardWidget> {
                       icon: Icons.send,
                       label: FlutterI18n.translate(context, "send"),
                       route: () {
-                        var walletInfo = WalletInfo(address: null);
                         Navigator.pushNamed(context, SendViewRoute,
-                            arguments: walletInfo);
+                            arguments: null);
                       }),
                   iconLabelWidget(
                       icon: Icons.qr_code,
