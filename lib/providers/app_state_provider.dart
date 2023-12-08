@@ -27,11 +27,8 @@ class AppStateProvider with ChangeNotifier {
 //------------------------------------- Setters -------------------------------------
 
 /*Coin list*/
-
   Future<void> setWalletBalances(List<WalletBalance> param) async {
     _conList = param;
-    print("--------------------");
-    print(param.length);
     notifyListeners();
   }
 

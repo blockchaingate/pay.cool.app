@@ -123,7 +123,7 @@ class RouteGenerator {
       case ReceiveViewRoute:
         return MaterialPageRoute(
             builder: (_) => ReceiveWalletScreen(
-                  walletInfo: args,
+                  data: args,
                 ));
 
       case SendViewRoute:

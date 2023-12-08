@@ -23,6 +23,8 @@ import 'package:paycool/logger.dart';
 import 'package:paycool/models/shared/pair_decimal_config_model.dart';
 import 'package:paycool/models/wallet/transaction_history.dart';
 import 'package:paycool/models/wallet/wallet.dart';
+import 'package:paycool/models/wallet/wallet_balance.dart';
+import 'package:paycool/providers/app_state_provider.dart';
 import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/api_service.dart';
 import 'package:paycool/services/coin_service.dart';
@@ -45,6 +47,8 @@ import 'package:paycool/utils/fab_util.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:paycool/utils/wallet/erc20_util.dart';
 import 'package:paycool/utils/wallet/wallet_util.dart';
+import 'package:paycool/widgets/coin_list_widget.dart';
+import 'package:provider/provider.dart';
 import 'package:stacked/stacked.dart';
 
 import '../../../../services/local_dialog_service.dart';
@@ -54,6 +58,8 @@ class SendViewModel extends BaseViewModel {
 
   final LocalDialogService _dialogService = locator<LocalDialogService>();
   final apiService = locator<ApiService>();
+  final walletUtil = WalletUtil();
+
   WalletService walletService = locator<WalletService>();
   SharedService sharedService = locator<SharedService>();
   TransactionHistoryDatabaseService transactionHistoryDatabaseService =
@@ -73,7 +79,7 @@ class SendViewModel extends BaseViewModel {
   int gasPrice = 0;
   int gasLimit = 0;
   int satoshisPerBytes = 0;
-  WalletInfo walletInfo = WalletInfo();
+  WalletInfo? walletInfo;
   bool checkSendAmount = false;
   bool isShowErrorDetailsButton = false;
   bool isShowDetailsMessage = false;
@@ -98,90 +104,109 @@ class SendViewModel extends BaseViewModel {
   String tokenType = '';
   double chainBalance = 0.0;
 
+  late AppStateProvider appStateProvider;
+
+  List<WalletBalance> wallets = [];
+
   // Init State
   initState() async {
     setBusy(true);
     sharedService.context = context;
-    specialTickerName = WalletUtil.updateSpecialTokensTickerName(
-        walletInfo.tickerName!)['tickerName']!;
-
-    String coinName = walletInfo.tickerName!;
-    if (walletInfo.tokenType == 'TRON') {
-      walletInfo.tokenType = "TRX";
-    }
-    tokenType = walletInfo.tokenType!;
-    if (coinName == 'BTC') {
-      satoshisPerByteTextController.text =
-          environment["chains"]["BTC"]["satoshisPerBytes"].toString();
-      feeUnit = 'BTC';
-    } else if (coinName == 'ETH' || tokenType == 'ETH') {
-      var gasPriceReal = await walletService.getEthGasPrice();
-      debugPrint('gasPriceReal====== $gasPriceReal');
-
-      gasPriceTextController.text = gasPriceReal.toString();
-      gasLimitTextController.text =
-          environment["chains"]["ETH"]["gasLimit"].toString();
-      if (tokenType == 'ETH') {
-        gasLimitTextController.text =
-            environment["chains"]["ETH"]["gasLimitToken"].toString();
-      }
-      feeUnit = 'ETH';
-    } else if (coinName == 'FAB') {
-      satoshisPerByteTextController.text =
-          environment["chains"]["FAB"]["satoshisPerBytes"].toString();
-      feeUnit = 'FAB';
-    } else if (coinName == 'MATICM' ||
-        tokenType == 'MATICM' ||
-        tokenType == 'POLYGON') {
-      var gasPriceReal = await erc20Util.getGasPrice(ApiRoutes.maticmBaseUrl);
-      debugPrint('gasPriceReal====== ${gasPriceReal.toString()}');
-
-      gasPriceTextController.text = gasPriceReal.toString();
-      gasLimitTextController.text =
-          environment["chains"]["MATICM"]["gasLimit"].toString();
-      if (tokenType == 'MATICM' || tokenType == 'POLYGON') {
-        gasLimitTextController.text =
-            environment["chains"]["MATICM"]["gasLimitToken"].toString();
-      }
-      feeUnit = 'MATIC';
-    } else if (coinName == 'BNB' || tokenType == 'BNB') {
-      var gasPriceReal = await erc20Util.getGasPrice(ApiRoutes.bnbBaseUrl);
-      debugPrint('gasPriceReal====== ${gasPriceReal.toString()}');
-
-      gasPriceTextController.text = gasPriceReal.toString();
-      gasLimitTextController.text =
-          environment["chains"]["BNB"]["gasLimit"].toString();
-      if (tokenType == 'BNB') {
-        gasLimitTextController.text =
-            environment["chains"]["BNB"]["gasLimitToken"].toString();
-      }
-      feeUnit = 'BNB';
-    } else if (coinName == 'USDTX' || coinName == 'USDCX') {
-      trxGasValueTextController.text = Constants.tronUsdtFee.toString();
-    } else if (coinName == 'TRX') {
-      trxGasValueTextController.text = Constants.tronFee.toString();
-    } else if (tokenType == 'FAB') {
-      satoshisPerByteTextController.text =
-          environment["chains"]["FAB"]["satoshisPerBytes"].toString();
-      gasPriceTextController.text =
-          environment["chains"]["FAB"]["gasPrice"].toString();
-      gasLimitTextController.text =
-          environment["chains"]["FAB"]["gasLimit"].toString();
-      feeUnit = 'FAB';
-    }
-    await getDecimalData();
-    await refreshBalance();
-    String ticker =
-        walletInfo.tickerName == "MATICM" ? "MATIC" : walletInfo.tickerName!;
-    await coinService.getSingleTokenData((ticker)).then((t) {
-      decimalLimit = t!.decimal!;
-    });
-    if (decimalLimit == 0) decimalLimit = 8;
-    if (tokenType.isNotEmpty) {
-      await getNativeChainTickerBalance();
-    }
-    domainTlds = await apiService.getDomainSupportedTlds();
+    appStateProvider = Provider.of<AppStateProvider>(context, listen: false);
+    getWalletBalance();
+    setWalletInfo();
     setBusy(false);
+  }
+
+  Future<void> setWalletInfo() async {
+    if (walletInfo!.tickerName != null) {
+      specialTickerName = WalletUtil.updateSpecialTokensTickerName(
+          walletInfo!.tickerName!)['tickerName']!;
+
+      String coinName = walletInfo!.tickerName!;
+      if (walletInfo!.tokenType == 'TRON') {
+        walletInfo!.tokenType = "TRX";
+      }
+      tokenType = walletInfo!.tokenType!;
+      if (coinName == 'BTC') {
+        satoshisPerByteTextController.text =
+            environment["chains"]["BTC"]["satoshisPerBytes"].toString();
+        feeUnit = 'BTC';
+      } else if (coinName == 'ETH' || tokenType == 'ETH') {
+        var gasPriceReal = await walletService.getEthGasPrice();
+        debugPrint('gasPriceReal====== $gasPriceReal');
+
+        gasPriceTextController.text = gasPriceReal.toString();
+        gasLimitTextController.text =
+            environment["chains"]["ETH"]["gasLimit"].toString();
+        if (tokenType == 'ETH') {
+          gasLimitTextController.text =
+              environment["chains"]["ETH"]["gasLimitToken"].toString();
+        }
+        feeUnit = 'ETH';
+      } else if (coinName == 'FAB') {
+        satoshisPerByteTextController.text =
+            environment["chains"]["FAB"]["satoshisPerBytes"].toString();
+        feeUnit = 'FAB';
+      } else if (coinName == 'MATICM' ||
+          tokenType == 'MATICM' ||
+          tokenType == 'POLYGON') {
+        var gasPriceReal = await erc20Util.getGasPrice(ApiRoutes.maticmBaseUrl);
+        debugPrint('gasPriceReal====== ${gasPriceReal.toString()}');
+
+        gasPriceTextController.text = gasPriceReal.toString();
+        gasLimitTextController.text =
+            environment["chains"]["MATICM"]["gasLimit"].toString();
+        if (tokenType == 'MATICM' || tokenType == 'POLYGON') {
+          gasLimitTextController.text =
+              environment["chains"]["MATICM"]["gasLimitToken"].toString();
+        }
+        feeUnit = 'MATIC';
+      } else if (coinName == 'BNB' || tokenType == 'BNB') {
+        var gasPriceReal = await erc20Util.getGasPrice(ApiRoutes.bnbBaseUrl);
+        debugPrint('gasPriceReal====== ${gasPriceReal.toString()}');
+
+        gasPriceTextController.text = gasPriceReal.toString();
+        gasLimitTextController.text =
+            environment["chains"]["BNB"]["gasLimit"].toString();
+        if (tokenType == 'BNB') {
+          gasLimitTextController.text =
+              environment["chains"]["BNB"]["gasLimitToken"].toString();
+        }
+        feeUnit = 'BNB';
+      } else if (coinName == 'USDTX' || coinName == 'USDCX') {
+        trxGasValueTextController.text = Constants.tronUsdtFee.toString();
+      } else if (coinName == 'TRX') {
+        trxGasValueTextController.text = Constants.tronFee.toString();
+      } else if (tokenType == 'FAB') {
+        satoshisPerByteTextController.text =
+            environment["chains"]["FAB"]["satoshisPerBytes"].toString();
+        gasPriceTextController.text =
+            environment["chains"]["FAB"]["gasPrice"].toString();
+        gasLimitTextController.text =
+            environment["chains"]["FAB"]["gasLimit"].toString();
+        feeUnit = 'FAB';
+      }
+      await getDecimalData();
+      await refreshBalance();
+      String ticker = walletInfo!.tickerName == "MATICM"
+          ? "MATIC"
+          : walletInfo!.tickerName!;
+      await coinService.getSingleTokenData((ticker)).then((t) {
+        decimalLimit = t!.decimal!;
+      });
+      if (decimalLimit == 0) decimalLimit = 8;
+      if (tokenType.isNotEmpty) {
+        await getNativeChainTickerBalance();
+      }
+      domainTlds = await apiService.getDomainSupportedTlds();
+    }
+    notifyListeners();
+  }
+
+  Future<void> getWalletBalance() async {
+    wallets = appStateProvider.getWalletBalances;
+    notifyListeners();
   }
 
   // get native chain ticker balance
@@ -193,7 +218,7 @@ class SendViewModel extends BaseViewModel {
     }
 
     await apiService
-        .getSingleWalletBalance(fabAddress, tokenType, walletInfo.address!)
+        .getSingleWalletBalance(fabAddress, tokenType, walletInfo!.address!)
         .then((walletBalance) => chainBalance = walletBalance[0].balance!);
   }
 
@@ -218,9 +243,9 @@ class SendViewModel extends BaseViewModel {
     if (isValidDomainFormat) {
       var domainInfo = await apiService.getDomainRecord(domainName);
       log.w('get domain data for $domainName -- $domainInfo');
-      String ticker = walletInfo.tokenType!.isEmpty
-          ? walletInfo.tickerName!
-          : walletInfo.tokenType!;
+      String ticker = walletInfo!.tokenType!.isEmpty
+          ? walletInfo!.tickerName!
+          : walletInfo!.tokenType!;
       String? domainAddress = domainInfo['records']['crypto.$ticker.address'];
       String? owner = domainInfo['meta']['owner'];
 
@@ -240,14 +265,14 @@ class SendViewModel extends BaseViewModel {
   }
 
   bool isTrx() =>
-      walletInfo.tickerName == 'TRX' || walletInfo.tokenType == 'TRX'
+      walletInfo!.tickerName == 'TRX' || walletInfo!.tokenType == 'TRX'
           ? true
           : false;
 
   fillMaxAmount() {
     setBusy(true);
     sendAmountTextController.text = NumberUtil.roundDouble(
-            walletInfo.availableBalance!,
+            walletInfo!.availableBalance!,
             decimalPlaces: singlePairDecimalConfig.qtyDecimal)
         .toString();
     log.i(sendAmountTextController.text);
@@ -259,7 +284,7 @@ class SendViewModel extends BaseViewModel {
   getDecimalData() async {
     setBusy(true);
     singlePairDecimalConfig =
-        await sharedService.getSinglePairDecimalConfig(walletInfo.tickerName!);
+        await sharedService.getSinglePairDecimalConfig(walletInfo!.tickerName!);
     log.i('singlePairDecimalConfig ${singlePairDecimalConfig.toJson()}');
     setBusy(false);
   }
@@ -309,15 +334,15 @@ class SendViewModel extends BaseViewModel {
     if (dialogResponse.confirmed) {
       String mnemonic = dialogResponse.returnedText;
       Uint8List seed = walletService.generateSeed(mnemonic);
-      String tickerName = walletInfo.tickerName!.toUpperCase();
-      String tokenType = walletInfo.tokenType!.toUpperCase();
+      String tickerName = walletInfo!.tickerName!.toUpperCase();
+      String tokenType = walletInfo!.tokenType!.toUpperCase();
       if (tickerName == 'USDT') {
         tokenType = 'ETH';
 
         // Check if ETH is available for making USDT transaction
         // Same for Fab token based coins
 
-        // WalletInfo ethWallet =
+        // WalletInfo! ethWallet =
         //     await walletDatabaseService.getBytickerName('ETH');
         // if (ethWallet.availableBalance < 0.05) {
         //   sharedService.alertDialog('Send Notice',
@@ -358,7 +383,7 @@ class SendViewModel extends BaseViewModel {
       }
 
       // Convert FAB to EXG format
-      if (walletInfo.tokenType == 'FAB') {
+      if (walletInfo!.tokenType == 'FAB') {
         if (!toAddress.startsWith('0x')) {
           toAddress = fabUtils.fabToExgAddress(toAddress);
         }
@@ -367,10 +392,10 @@ class SendViewModel extends BaseViewModel {
 
       // TRON Transaction
       if (isTrx()) {
-        log.i('sending tron ${walletInfo.tickerName}');
+        log.i('sending tron ${walletInfo!.tickerName}');
         var privateKey = tron_address_util.generateTrxPrivKey(mnemonic);
         String? ca = '';
-        if (walletInfo.tokenType == 'TRX') {
+        if (walletInfo!.tokenType == 'TRX') {
           // get trx-usdt contract address
           ca = environment["addresses"]["smartContract"][tickerName] ?? '';
           if (ca!.isEmpty) {
@@ -383,7 +408,7 @@ class SendViewModel extends BaseViewModel {
                 await apiService.getTokenListUpdates().then((tokenList) {
                   ca = tokenList
                       .firstWhere((element) =>
-                          element.tickerName == walletInfo.tickerName)
+                          element.tickerName == walletInfo!.tickerName)
                       .contract;
                 });
               }
@@ -396,18 +421,18 @@ class SendViewModel extends BaseViewModel {
               .generateTrxTransactionContract(
                   contractAddressTronUsdt: ca,
                   privateKey: privateKey,
-                  fromAddr: walletInfo.address!,
+                  fromAddr: walletInfo!.address!,
                   gasLimit: int.parse(trxGasValueTextController.text),
                   toAddr: toAddress,
                   amount: amount.toDouble(),
-                  isTrxUsdt: walletInfo.tickerName == 'USDTX' ||
-                          walletInfo.tickerName == 'USDCX'
+                  isTrxUsdt: walletInfo!.tickerName == 'USDTX' ||
+                          walletInfo!.tickerName == 'USDCX'
                       ? true
                       : false,
-                  tickerName: walletInfo.tickerName!,
+                  tickerName: walletInfo!.tickerName!,
                   isBroadcast: true)
               .then((res) {
-            log.i('send screen state ${walletInfo.tickerName} res: $res');
+            log.i('send screen state ${walletInfo!.tickerName} res: $res');
             var txRes = res['broadcastTronTransactionRes'];
             if (txRes['code'] == 'SUCCESS') {
               log.w('trx tx res $res');
@@ -416,19 +441,19 @@ class SendViewModel extends BaseViewModel {
               isShowDetailsMessage = false;
 
               String t = '';
-              if (walletInfo.tickerName == 'USDTX') {
+              if (walletInfo!.tickerName == 'USDTX') {
                 t = 'USDT(TRC20)';
-              } else if (walletInfo.tickerName == 'USDCX') {
+              } else if (walletInfo!.tickerName == 'USDCX') {
                 t = 'USDC(TRC20)';
               } else {
-                t = walletInfo.tickerName!;
+                t = walletInfo!.tickerName!;
               }
               sharedService.alertDialog(
                 FlutterI18n.translate(context, "sendTransactionComplete"),
                 '$t ${FlutterI18n.translate(context, "isOnItsWay")}',
               );
               // add tx to db
-              addSendTransactionToDB(walletInfo, amount.toDouble(), txHash);
+              addSendTransactionToDB(walletInfo!, amount.toDouble(), txHash);
               Future.delayed(const Duration(milliseconds: 3), () {
                 refreshBalance();
               });
@@ -491,7 +516,7 @@ class SendViewModel extends BaseViewModel {
             //   var allTxids = res["txids"];
             //  walletService.addTxids(allTxids);
             // add tx to db
-            addSendTransactionToDB(walletInfo, amount.toDouble(), txHash);
+            addSendTransactionToDB(walletInfo!, amount.toDouble(), txHash);
             Future.delayed(const Duration(milliseconds: 30), () {
               refreshBalance();
             });
@@ -612,11 +637,11 @@ class SendViewModel extends BaseViewModel {
         await sharedService.getFabAddressFromCoreWalletDatabase();
     await apiService
         .getSingleWalletBalance(
-            fabAddress, walletInfo.tickerName!, walletInfo.address!)
+            fabAddress, walletInfo!.tickerName!, walletInfo!.address!)
         .then((walletBalance) {
       log.w(walletBalance);
 
-      walletInfo.availableBalance = walletBalance[0].balance;
+      walletInfo!.availableBalance = walletBalance[0].balance;
     }).catchError((err) {
       log.e(err);
       setBusy(false);
@@ -668,7 +693,7 @@ class SendViewModel extends BaseViewModel {
     if (amount == Constants.decimalZero ||
         amount.toDouble().isNegative ||
         !checkSendAmount ||
-        amount.toDouble() > walletInfo.availableBalance!) {
+        amount.toDouble() > walletInfo!.availableBalance!) {
       debugPrint('amount no good');
       sharedService.alertDialog(FlutterI18n.translate(context, "invalidAmount"),
           FlutterI18n.translate(context, "pleaseEnterValidNumber"),
@@ -690,8 +715,9 @@ class SendViewModel extends BaseViewModel {
           .then((isValidNativeChainBal) {
         if (!isValidNativeChainBal) {
           log.e('not enough $tokenType balance to make tx');
-          var coin =
-              tokenType.isEmpty ? walletInfo.tickerName : walletInfo.tokenType;
+          var coin = tokenType.isEmpty
+              ? walletInfo!.tickerName
+              : walletInfo!.tokenType;
           showSimpleNotification(
               Center(
                 child: Text(
@@ -707,7 +733,7 @@ class SendViewModel extends BaseViewModel {
     if (transFee < 0.0001 && !isTrx()) {
       log.e('transfee $transFee not enough $tokenType balance to make tx');
       var coin =
-          tokenType.isEmpty ? walletInfo.tickerName : walletInfo.tokenType;
+          tokenType.isEmpty ? walletInfo!.tickerName : walletInfo!.tokenType;
       showSimpleNotification(
           Center(
             child: Text(
@@ -777,37 +803,37 @@ class SendViewModel extends BaseViewModel {
       return 0.0;
     }
     if (!isTrx()) {
-      log.i('checkAmount ${walletInfo.tickerName}');
+      log.i('checkAmount ${walletInfo!.tickerName}');
 
       await updateTransFee();
       double totalAmount = 0.0;
-      if (walletInfo.tickerName == 'FAB') {
+      if (walletInfo!.tickerName == 'FAB') {
         totalAmount = amount.toDouble() + transFee;
       } else {
         totalAmount = amount.toDouble();
       }
       log.i('total amount $totalAmount');
-      log.w('wallet bal ${walletInfo.availableBalance}');
-      if (totalAmount <= walletInfo.availableBalance!) {
+      log.w('wallet bal ${walletInfo!.availableBalance}');
+      if (totalAmount <= walletInfo!.availableBalance!) {
         checkSendAmount = true;
       } else {
         checkSendAmount = false;
       }
-    } else if (walletInfo.tickerName == 'TRX') {
+    } else if (walletInfo!.tickerName == 'TRX') {
       var total =
           amount.toDouble() + double.parse(trxGasValueTextController.text);
-      if (total <= walletInfo.availableBalance!) {
+      if (total <= walletInfo!.availableBalance!) {
         checkSendAmount = true;
       } else {
         checkSendAmount = false;
       }
-    } else if (walletInfo.tickerName == 'USDTX' ||
-        walletInfo.tokenType == 'TRX') {
+    } else if (walletInfo!.tickerName == 'USDTX' ||
+        walletInfo!.tokenType == 'TRX') {
       double trxBalance = 0.0;
 
       trxBalance = await getTrxBalance();
       log.w('checkAmount trx bal $trxBalance');
-      if (amount.toDouble() <= walletInfo.availableBalance! &&
+      if (amount.toDouble() <= walletInfo!.availableBalance! &&
           trxBalance >= double.parse(trxGasValueTextController.text)) {
         checkSendAmount = true;
       } else {
@@ -878,8 +904,8 @@ class SendViewModel extends BaseViewModel {
     setBusy(true);
     log.i('in update trans fee');
     var to = coinService.getCoinOfficalAddress(
-        walletInfo.tickerName!.toUpperCase(),
-        tokenType: walletInfo.tokenType!.toUpperCase());
+        walletInfo!.tickerName!.toUpperCase(),
+        tokenType: walletInfo!.tokenType!.toUpperCase());
     amount = NumberUtil.convertStringToDecimal(sendAmountTextController.text);
     var gasPrice = int.tryParse(gasPriceTextController.text);
     var gasLimit = int.tryParse(gasLimitTextController.text);
@@ -888,15 +914,15 @@ class SendViewModel extends BaseViewModel {
       "gasPrice": gasPrice,
       "gasLimit": gasLimit,
       "satoshisPerBytes": satoshisPerBytes,
-      "tokenType": walletInfo.tokenType,
+      "tokenType": walletInfo!.tokenType,
       "getTransFeeOnly": true
     };
 
-    var address = walletInfo.address;
+    var address = walletInfo!.address;
 
     await walletService
         .sendTransaction(
-            walletInfo.tickerName!,
+            walletInfo!.tickerName!,
             Uint8List.fromList(
                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
             [0],
@@ -962,9 +988,6 @@ class SendViewModel extends BaseViewModel {
       log.i("Barcode FormatException : ");
       // log.i(e.toString());
       setBusy(false);
-      // sharedService.alertDialog(FlutterI18n.translate(context, "scanCancelled"),
-      //     FlutterI18n.translate(context, "userReturnedByPressingBackButton"),
-      //     isWarning: false);
     } catch (e) {
       log.i("Barcode error : ");
       log.i(e.toString());
@@ -972,9 +995,24 @@ class SendViewModel extends BaseViewModel {
       sharedService.alertDialog(
           '', FlutterI18n.translate(context, "unknownError"),
           isWarning: false);
-      // receiverWalletAddressTextController.text =
-      //     '${FlutterI18n.translate(context, "unknownError")}: $e';
     }
     setBusy(false);
+  }
+
+  goToCoinList(size) async {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (BuildContext context) =>
+          coinListBottomSheet(context, size, wallets),
+    ).then((value) async {
+      if (value != null) {
+        walletService.setWalletInfoDetails(
+            await walletUtil.getWalletInfoObjFromWalletBalance(value));
+      }
+    }).whenComplete(() {
+      walletInfo = walletService.walletInfoDetails;
+      setWalletInfo();
+    });
   }
 }

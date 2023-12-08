@@ -23,8 +23,8 @@ import 'package:paycool/views/wallet/wallet_features/send/send_viewmodel.dart';
 import 'package:stacked/stacked.dart';
 
 class SendWalletView extends StatefulWidget {
-  final WalletInfo walletInfo;
-  const SendWalletView({Key? key, required this.walletInfo}) : super(key: key);
+  final WalletInfo? walletInfo;
+  const SendWalletView({Key? key, this.walletInfo}) : super(key: key);
 
   @override
   State<SendWalletView> createState() => _SendWalletViewState();
@@ -55,16 +55,15 @@ class _SendWalletViewState extends State<SendWalletView>
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    String? tickerName = '';
-    widget.walletInfo.tickerName == 'USDTX'
+    String? tickerName;
+    widget.walletInfo!.tickerName == 'USDTX'
         ? tickerName = 'USDT(TRC20)'
-        : tickerName = widget.walletInfo.tickerName!;
-    // String tokenType = widget.walletInfo.tokenType!;
+        : tickerName = widget.walletInfo!.tickerName;
     return ViewModelBuilder<SendViewModel>.reactive(
         viewModelBuilder: () => SendViewModel(),
         onViewModelReady: (model) {
           model.context = context;
-          model.walletInfo = widget.walletInfo;
+          model.walletInfo = widget.walletInfo!;
           model.initState();
         },
         builder: (context, model, child) => GestureDetector(
@@ -102,7 +101,7 @@ class _SendWalletViewState extends State<SendWalletView>
                         margin: EdgeInsets.symmetric(horizontal: 10),
                         child: ElevatedButton.icon(
                           icon: Icon(Icons.arrow_circle_up),
-                          label: Text("Send"),
+                          label: Text(FlutterI18n.translate(context, "send")),
                           onPressed: () {
                             model.checkFields(context);
                           },
@@ -226,12 +225,27 @@ class _SendWalletViewState extends State<SendWalletView>
                                       MainAxisAlignment.spaceAround,
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
-                                    Text(
-                                      tickerName!,
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.bold,
-                                          color: black),
+                                    InkWell(
+                                      onTap: () {
+                                        model.goToCoinList(size).then((value) {
+                                          setState(() {});
+                                        });
+                                      },
+                                      child: Row(
+                                        children: [
+                                          Text(
+                                            model.walletInfo!.tickerName ??
+                                                FlutterI18n.translate(
+                                                    context, "selectToken"),
+                                            style: TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.bold,
+                                                color: black),
+                                          ),
+                                          Icon(Icons.arrow_drop_down,
+                                              color: Colors.black, size: 18)
+                                        ],
+                                      ),
                                     ),
                                     Text(
                                       "${FlutterI18n.translate(context, "balance")} 10.00 $tickerName",

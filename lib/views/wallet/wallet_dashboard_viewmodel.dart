@@ -157,12 +157,18 @@ class WalletDashboardViewModel extends BaseViewModel {
           debugPrint("getWalletInfoObjFromWalletBalance ===> $error");
         }
       }
-    }).whenComplete(() => appStateProvider.setWalletBalances(wallets));
+    }).whenComplete(() {
+      appStateProvider.setWalletBalances(wallets);
+      print("--------------geldi---------------");
+      print(wallets[3].coin);
+      setWalletDetails(wallets[3]);
+    });
 
     showDialogWarning();
 
     getConfirmDepositStatus();
     selectedTabIndex = storageService.isFavCoinTabSelected ? 1 : 0;
+
     setBusy(false);
     try {
       await versionChecker
@@ -235,10 +241,6 @@ class WalletDashboardViewModel extends BaseViewModel {
         .where((wallet) =>
             wallet.tokenType == chainName || wallet.coin == chainName)
         .toList();
-  }
-
-  updateRightWallet() async {
-    setWalletDetails(wallets[3]);
   }
 
   setWalletDetails(WalletBalance wallet) async {

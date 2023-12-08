@@ -11,23 +11,24 @@
 *----------------------------------------------------------------------
 */
 
+import 'dart:convert';
+import 'dart:math';
+
+import 'package:bs58check/bs58check.dart' as bs58check;
+import 'package:convert/convert.dart';
+import 'package:crypto/crypto.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import "package:hex/hex.dart";
+import 'package:paycool/environments/environment_type.dart';
 import 'package:paycool/logger.dart';
 import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/coin_service.dart';
 import 'package:paycool/utils/number_util.dart';
-import '../environments/environment.dart';
-import './string_util.dart';
-import 'dart:convert';
-import 'package:convert/convert.dart';
 import 'package:web3dart/web3dart.dart';
-import "package:hex/hex.dart";
-import 'package:crypto/crypto.dart';
-import 'package:bs58check/bs58check.dart' as bs58check;
-import 'package:paycool/environments/environment_type.dart';
-import 'dart:math';
 
+import './string_util.dart';
+import '../environments/environment.dart';
 import 'custom_http_util.dart';
 
 class FabUtils {
