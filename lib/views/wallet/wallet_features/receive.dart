@@ -24,26 +24,43 @@ import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/logger.dart';
 import 'package:paycool/models/wallet/wallet.dart';
+import 'package:paycool/service_locator.dart';
+import 'package:paycool/services/wallet_service.dart';
 import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/utils/fab_util.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share_plus/share_plus.dart';
 
 class ReceiveWalletScreen extends StatefulWidget {
-  final WalletInfo walletInfo;
-  const ReceiveWalletScreen({Key? key, required this.walletInfo})
-      : super(key: key);
+  final WalletInfo? data;
+  const ReceiveWalletScreen({Key? key, this.data}) : super(key: key);
 
   @override
   _ReceiveWalletScreenState createState() => _ReceiveWalletScreenState();
 }
 
 class _ReceiveWalletScreenState extends State<ReceiveWalletScreen> {
+  final walletService = locator<WalletService>();
   String convertedToFabAddress = '';
+  WalletInfo? walletInfo;
   var fabUtils = FabUtils();
   @override
   void initState() {
+    setWalletInfo();
     super.initState();
+  }
+
+  setWalletInfo() async {
+    if (widget.data == null) {
+      walletInfo = walletService.walletInfoDetails;
+    } else {
+      walletInfo = widget.data;
+    }
+
+    print("------------------");
+    print(walletInfo!.address);
+
+    setState(() {});
   }
 
   final log = getLogger('Receive');
@@ -85,7 +102,7 @@ class _ReceiveWalletScreenState extends State<ReceiveWalletScreen> {
                     child: QrImageView(
                         backgroundColor: white,
                         data: convertedToFabAddress == ''
-                            ? widget.walletInfo.address!
+                            ? walletInfo!.address ?? "dasdad!"
                             : convertedToFabAddress,
                         version: QrVersions.auto,
                         gapless: true,
@@ -108,7 +125,7 @@ class _ReceiveWalletScreenState extends State<ReceiveWalletScreen> {
                   FittedBox(
                     child: Text(
                         convertedToFabAddress == ''
-                            ? widget.walletInfo.address!
+                            ? walletInfo!.address ?? "dsada!"
                             : convertedToFabAddress,
                         style: TextStyle(
                             color: black,
@@ -166,7 +183,7 @@ class _ReceiveWalletScreenState extends State<ReceiveWalletScreen> {
                             file.writeAsBytes(byteData!).then((onFile) {
                               Share.shareXFiles([XFile(onFile.path)],
                                   subject: convertedToFabAddress == ''
-                                      ? widget.walletInfo.address
+                                      ? walletInfo!.address
                                       : convertedToFabAddress);
                             });
                           });
@@ -197,7 +214,7 @@ class _ReceiveWalletScreenState extends State<ReceiveWalletScreen> {
 
   copyAddress(BuildContext context) {
     String address = convertedToFabAddress == ''
-        ? widget.walletInfo.address!
+        ? walletInfo!.address!
         : convertedToFabAddress;
     log.w(address);
     Clipboard.setData(ClipboardData(text: address));

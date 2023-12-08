@@ -10,6 +10,7 @@
 * Author: barry-ruprai@exchangily.com
 *----------------------------------------------------------------------
 */
+import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:overlay_support/overlay_support.dart';
@@ -21,10 +22,8 @@ import 'package:paycool/logger.dart';
 import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/local_storage/hive_mutli_wallet_service.dart';
 import 'package:paycool/services/local_storage_service.dart';
-import 'package:paycool/services/vault_service.dart';
 import 'package:paycool/services/wallet_service.dart';
 import 'package:paycool/utils/string_validator.dart';
-import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 
@@ -32,7 +31,6 @@ class CreatePasswordViewModel extends BaseViewModel {
   final log = getLogger('CreatePasswordViewModel');
 
   final WalletService _walletService = locator<WalletService>();
-  final VaultService _vaultService = locator<VaultService>();
   final NavigationService navigationService = locator<NavigationService>();
 
   final storageService = locator<LocalStorageService>();
@@ -159,11 +157,12 @@ class CreatePasswordViewModel extends BaseViewModel {
       showSimpleNotification(
           Text(FlutterI18n.translate(context, "emptyPassword"),
               style: headText4.copyWith(
-                  fontWeight: FontWeight.bold, color: white)),
+                  fontWeight: FontWeight.bold, color: Colors.red)),
           position: NotificationPosition.bottom,
-          background: primaryColor,
+          background: bgLightRed,
           subtitle: Text(
-              FlutterI18n.translate(context, "pleaseFillBothPasswordFields")));
+              FlutterI18n.translate(context, "pleaseFillBothPasswordFields"),
+              style: TextStyle(color: Colors.red)));
 
       if (!isProduction) {
         String? localEnv;
@@ -183,21 +182,26 @@ class CreatePasswordViewModel extends BaseViewModel {
       return;
     } else if (!regex.hasMatch(pass)) {
       showSimpleNotification(
-          Text(FlutterI18n.translate(context, "passwordConditionsMismatch"),
-              style: headText4.copyWith(fontWeight: FontWeight.bold)),
-          position: NotificationPosition.bottom,
-          background: primaryColor,
-          subtitle: Text(FlutterI18n.translate(context, "passwordConditions")));
+        Text(FlutterI18n.translate(context, "passwordConditionsMismatch"),
+            style: headText4.copyWith(
+                fontWeight: FontWeight.bold, color: Colors.red)),
+        position: NotificationPosition.bottom,
+        background: bgLightRed,
+        subtitle: Text(FlutterI18n.translate(context, "passwordConditions"),
+            style: TextStyle(color: Colors.red)),
+      );
 
       setBusy(false);
       return;
     } else if (pass != confirmPass) {
       showSimpleNotification(
           Text(FlutterI18n.translate(context, "passwordConditionsMismatch"),
-              style: headText4.copyWith(fontWeight: FontWeight.bold)),
+              style: headText4.copyWith(
+                  fontWeight: FontWeight.bold, color: Colors.red)),
           position: NotificationPosition.bottom,
-          background: primaryColor,
-          subtitle: Text(FlutterI18n.translate(context, "passwordRetype")));
+          background: bgLightRed,
+          subtitle: Text(FlutterI18n.translate(context, "passwordRetype"),
+              style: TextStyle(color: Colors.red)));
 
       setBusy(false);
       return;

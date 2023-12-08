@@ -13,6 +13,7 @@
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:paycool/constants/api_routes.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
@@ -62,20 +63,26 @@ class _WalletFeaturesViewState extends State<WalletFeaturesView>
       },
       builder: (context, model, child) => Scaffold(
         appBar: customAppBarWithIcon(
-            title: model.walletInfo!.tickerName,
-            leading: IconButton(
-                onPressed: () => Navigator.pop(context),
-                icon: Icon(
-                  Icons.arrow_back_ios,
-                  color: Colors.black,
-                  size: 20,
-                )),
-            actions: [
-              IconButton(
-                  onPressed: null,
-                  icon:
-                      Icon(Icons.star_border, color: Colors.black87, size: 20))
-            ]),
+          title: model.walletInfo!.tickerName,
+          leading: IconButton(
+              onPressed: () => Navigator.pop(context),
+              icon: Icon(
+                Icons.arrow_back_ios,
+                color: Colors.black,
+                size: 20,
+              )),
+          actions: [
+            IconButton(
+              onPressed: () {
+                model.updateFavWalletCoinsList(model.walletInfo!.tickerName!);
+              },
+              icon: model.isFavorite
+                  ? const Icon(Icons.star, color: Colors.black87, size: 20)
+                  : const Icon(Icons.star_border_outlined,
+                      color: Colors.black87, size: 22),
+            ),
+          ],
+        ),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),
           child: Column(
@@ -104,13 +111,13 @@ class _WalletFeaturesViewState extends State<WalletFeaturesView>
                 ),
               ),
               Text(
-                "10.008 ${model.walletInfo!.tickerName}",
+                "${model.walletInfo!.availableBalance} ${model.walletInfo!.tickerName}",
                 style:
                     TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
               ),
               UIHelper.verticalSpaceSmall,
               Text(
-                "\$19208.00",
+                "\$ ${model.walletInfo!.usdValue}",
                 style: TextStyle(color: Colors.black26, fontSize: 12),
               ),
               UIHelper.verticalSpaceSmall,
@@ -128,12 +135,14 @@ class _WalletFeaturesViewState extends State<WalletFeaturesView>
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text("Wallet Balance",
+                        Text(
+                            "${FlutterI18n.translate(context, "wallet")} ${FlutterI18n.translate(context, "balance")}",
                             style: TextStyle(
                                 color: Colors.black,
                                 fontWeight: FontWeight.w500,
                                 fontSize: 12)),
-                        Text("5.001 ${model.walletInfo!.tickerName}",
+                        Text(
+                            "${model.walletInfo!.availableBalance} ${model.walletInfo!.tickerName}",
                             style: TextStyle(
                                 color: Colors.black,
                                 fontWeight: FontWeight.w500,
@@ -144,12 +153,14 @@ class _WalletFeaturesViewState extends State<WalletFeaturesView>
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text("Exxchangily Balance",
+                        Text(
+                            "Exchangily ${FlutterI18n.translate(context, "balance")}",
                             style: TextStyle(
                                 color: Colors.black,
                                 fontWeight: FontWeight.w500,
                                 fontSize: 12)),
-                        Text("5.001 ${model.walletInfo!.tickerName}",
+                        Text(
+                            "${model.walletInfo!.inExchange} ${model.walletInfo!.tickerName}",
                             style: TextStyle(
                                 color: Colors.black,
                                 fontWeight: FontWeight.w500,
@@ -173,12 +184,12 @@ class _WalletFeaturesViewState extends State<WalletFeaturesView>
                       indicatorWeight: 3,
                       labelStyle:
                           TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-                      tabs: const [
+                      tabs: [
                         Tab(
-                          text: "Record",
+                          text: FlutterI18n.translate(context, "record"),
                         ),
                         Tab(
-                          text: "Overview",
+                          text: FlutterI18n.translate(context, "overview"),
                         ),
                       ],
                     ),
@@ -195,249 +206,26 @@ class _WalletFeaturesViewState extends State<WalletFeaturesView>
                   physics: AlwaysScrollableScrollPhysics(),
                   children: [
                     SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          model.getRecords(size),
-                          model.getRecords(size),
-                          model.getRecords(size),
-                          model.getRecords(size),
-                          model.getRecords(size),
-                          model.getRecords(size),
-                          model.getRecords(size),
-                        ],
+                        child: model.transactionHistory != null
+                            ? Column(
+                                children: [
+                                  for (var i = 0;
+                                      i <
+                                          model.transactionHistory!.history
+                                              .length;
+                                      i++)
+                                    model.getRecords(size, i),
+                                ],
+                              )
+                            : SizedBox()),
+                    Center(
+                      child: Text(
+                        FlutterI18n.translate(context, "noData"),
                       ),
                     ),
-                    Center(child: Text("No Data")),
                   ],
                 ),
               ),
-
-              // Expanded(
-              //   child: ListView(
-              //     children: <Widget>[
-              //       LayoutBuilder(
-              //         builder:
-              //             (BuildContext context, BoxConstraints constraints) {
-              //           if (isPhone()) {
-              //             return Container(
-              //               height: 225,
-              //               decoration: const BoxDecoration(
-              //                   image: DecorationImage(
-              //                       image: AssetImage(
-              //                           'assets/images/paycool/walletBg8.jpg'),
-              //                       fit: BoxFit.cover)),
-              //               child: Column(
-              //                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              //                 children: <Widget>[
-              //                   SizedBox(
-              //                     width: MediaQuery.of(context).size.width,
-              //                     child: Stack(
-              //                       children: [
-              //                         Align(
-              //                           alignment: Alignment.topCenter,
-              //                           child: Container(
-              //                               height: 225,
-              //                               decoration: BoxDecoration(
-              //                                   color: Colors.white,
-              //                                   gradient: LinearGradient(
-              //                                       begin: FractionalOffset
-              //                                           .topCenter,
-              //                                       end: FractionalOffset
-              //                                           .bottomCenter,
-              //                                       colors: [
-              //                                         secondaryColor
-              //                                             .withOpacity(0.0),
-              //                                         secondaryColor
-              //                                             .withOpacity(0.4),
-              //                                         secondaryColor
-              //                                       ],
-              //                                       stops: const [
-              //                                         0.0,
-              //                                         0.5,
-              //                                         1.0
-              //                                       ]))),
-              //                         ),
-              //                         Align(
-              //                             alignment: Alignment.topLeft,
-              //                             child: IconButton(
-              //                                 icon: const Icon(
-              //                                   Icons.arrow_back,
-              //                                   color: Colors.white,
-              //                                 ),
-              //                                 onPressed: () {
-              //                                   model.navigationService
-              //                                       .navigateTo('/dashboard');
-              //                                 })),
-              //                         Align(
-              //                           alignment: Alignment.topRight,
-              //                           child: IconButton(
-              //                             padding: EdgeInsets.zero,
-              //                             icon: model.isFavorite
-              //                                 ? const Icon(Icons.star,
-              //                                     color: white, size: 20)
-              //                                 : const Icon(
-              //                                     Icons.star_border_outlined,
-              //                                     color: white,
-              //                                     size: 22),
-              //                             onPressed: () => model
-              //                                 .updateFavWalletCoinsList(model
-              //                                     .walletInfo!.tickerName!),
-              //                           ),
-              //                         ),
-              //                         Positioned(
-              //                             bottom: 10,
-              //                             left: 0,
-              //                             right: 0,
-              //                             child:
-              //                                 headerContainer(context, model))
-              //                       ],
-              //                     ),
-              //                   ),
-              //                 ],
-              //               ),
-              //             );
-              //           } else {
-              //             return Container(
-              //                 margin: EdgeInsets.only(top: 10),
-              //                 child: headerContainer(context, model));
-              //           }
-              //         },
-              //       ),
-              //       Container(
-              //         color: secondaryColor,
-              //         padding: const EdgeInsets.symmetric(
-              //             vertical: 10, horizontal: 25),
-              //         child: Column(
-              //           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              //           children: <Widget>[
-              //             UIHelper.horizontalSpaceMedium,
-              //             SizedBox(
-              //               height: model.containerHeight,
-              //               child: Row(
-              //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //                 mainAxisSize: MainAxisSize.max,
-              //                 children: <Widget>[
-              //                   Expanded(
-              //                     child: Container(
-              //                       child: _featuresCard(context, 0, model),
-              //                     ),
-              //                   ),
-              //                   Expanded(
-              //                     child: Container(
-              //                         child: _featuresCard(context, 1, model)),
-              //                   )
-              //                 ],
-              //               ),
-              //             ),
-              //             model.walletInfo!.tickerName == 'Maticm'
-              //                 ? Container()
-              //                 : SizedBox(
-              //                     height: model.containerHeight,
-              //                     child: Row(
-              //                         mainAxisAlignment:
-              //                             MainAxisAlignment.spaceBetween,
-              //                         children: <Widget>[
-              //                           Expanded(
-              //                             child: Container(
-              //                               child: _featuresCard(
-              //                                   context, 2, model),
-              //                             ),
-              //                           ),
-              //                           Expanded(
-              //                             child: Container(
-              //                               child: _featuresCard(
-              //                                   context, 3, model),
-              //                             ),
-              //                           ),
-              //                         ]),
-              //                   ),
-
-              //             SizedBox(
-              //               height: model.containerHeight,
-              //               child: Row(
-              //                   mainAxisAlignment:
-              //                       MainAxisAlignment.spaceBetween,
-              //                   children: <Widget>[
-              //                     model.errDepositItem != null
-              //                         ? Expanded(
-              //                             child: Container(
-              //                               child: _featuresCard(
-              //                                   context, 4, model),
-              //                             ),
-              //                           )
-              //                         : Container(),
-              //                     model.walletInfo!.tickerName == 'FAB'
-              //                         ? Expanded(
-              //                             child:
-              //                                 _featuresCard(context, 5, model),
-              //                           )
-              //                         : Container(),
-              //                   ]),
-              //             ),
-
-              //             // UIHelper.horizontalSpaceSmall,
-              //             // Transaction History Column
-              //             Container(
-              //               margin: const EdgeInsets.symmetric(horizontal: 0.0),
-              //               padding: const EdgeInsets.symmetric(
-              //                   horizontal: 3.0, vertical: 8.0),
-              //               child: Material(
-              //                 borderRadius: BorderRadius.circular(5),
-              //                 color: secondaryColor,
-              //                 elevation: model.elevation,
-              //                 child: InkWell(
-              //                   splashColor: primaryColor.withAlpha(30),
-              //                   onTap: () {
-              //                     var route = model.features[6].route;
-              //                     Navigator.pushNamed(context, route,
-              //                         arguments: model.walletInfo!);
-              //                   },
-              //                   child: Container(
-              //                     height: 45,
-              //                     padding: const EdgeInsets.symmetric(
-              //                         vertical: 9, horizontal: 6),
-              //                     child: Row(
-              //                       mainAxisAlignment: MainAxisAlignment.center,
-              //                       children: <Widget>[
-              //                         Container(
-              //                             decoration: BoxDecoration(
-              //                                 color: walletCardColor,
-              //                                 borderRadius:
-              //                                     BorderRadius.circular(50),
-              //                                 boxShadow: [
-              //                                   BoxShadow(
-              //                                       color: model
-              //                                           .features[6].shadowColor
-              //                                           .withOpacity(0.2),
-              //                                       offset: const Offset(0, 2),
-              //                                       blurRadius: 10,
-              //                                       spreadRadius: 3)
-              //                                 ]),
-              //                             child: Icon(
-              //                               model.features[6].icon,
-              //                               size: 18,
-              //                               color: white,
-              //                             )),
-              //                         Padding(
-              //                           padding:
-              //                               const EdgeInsets.only(left: 4.0),
-              //                           child: Text(
-              //                             model.features[6].name,
-              //                             style: subText1,
-              //                           ),
-              //                         )
-              //                       ],
-              //                     ),
-              //                   ),
-              //                 ),
-              //               ),
-              //             ),
-              //           ],
-              //         ),
-              //       ),
-              //     ],
-              //   ),
-              // ),
             ],
           ),
         ),
@@ -452,7 +240,9 @@ class _WalletFeaturesViewState extends State<WalletFeaturesView>
                 margin: EdgeInsets.symmetric(horizontal: 5),
                 child: ElevatedButton.icon(
                   icon: Icon(Icons.arrow_circle_up),
-                  label: Text("Send"),
+                  label: Text(
+                    FlutterI18n.translate(context, "send"),
+                  ),
                   onPressed: () {
                     var route = model.features[1].route;
                     Navigator.pushNamed(context, '/$route',
@@ -474,7 +264,9 @@ class _WalletFeaturesViewState extends State<WalletFeaturesView>
                 margin: EdgeInsets.symmetric(horizontal: 5),
                 child: ElevatedButton.icon(
                   icon: Icon(Icons.arrow_circle_down),
-                  label: Text("Receive"),
+                  label: Text(
+                    FlutterI18n.translate(context, "receive"),
+                  ),
                   onPressed: () {
                     var route = model.features[0].route;
                     Navigator.pushNamed(context, '/$route',
@@ -496,7 +288,9 @@ class _WalletFeaturesViewState extends State<WalletFeaturesView>
                 margin: EdgeInsets.symmetric(horizontal: 5),
                 child: ElevatedButton.icon(
                   icon: Icon(Icons.swap_horizontal_circle_outlined),
-                  label: Text("Transfer"),
+                  label: Text(
+                    FlutterI18n.translate(context, "transfer"),
+                  ),
                   onPressed: () {
                     Navigator.pushNamed(context, '/transfer',
                         arguments: model.walletInfo!);
@@ -515,6 +309,233 @@ class _WalletFeaturesViewState extends State<WalletFeaturesView>
       ),
     );
   }
+
+  // Expanded(
+  //   child: ListView(
+  //     children: <Widget>[
+  //       LayoutBuilder(
+  //         builder:
+  //             (BuildContext context, BoxConstraints constraints) {
+  //           if (isPhone()) {
+  //             return Container(
+  //               height: 225,
+  //               decoration: const BoxDecoration(
+  //                   image: DecorationImage(
+  //                       image: AssetImage(
+  //                           'assets/images/paycool/walletBg8.jpg'),
+  //                       fit: BoxFit.cover)),
+  //               child: Column(
+  //                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  //                 children: <Widget>[
+  //                   SizedBox(
+  //                     width: MediaQuery.of(context).size.width,
+  //                     child: Stack(
+  //                       children: [
+  //                         Align(
+  //                           alignment: Alignment.topCenter,
+  //                           child: Container(
+  //                               height: 225,
+  //                               decoration: BoxDecoration(
+  //                                   color: Colors.white,
+  //                                   gradient: LinearGradient(
+  //                                       begin: FractionalOffset
+  //                                           .topCenter,
+  //                                       end: FractionalOffset
+  //                                           .bottomCenter,
+  //                                       colors: [
+  //                                         secondaryColor
+  //                                             .withOpacity(0.0),
+  //                                         secondaryColor
+  //                                             .withOpacity(0.4),
+  //                                         secondaryColor
+  //                                       ],
+  //                                       stops: const [
+  //                                         0.0,
+  //                                         0.5,
+  //                                         1.0
+  //                                       ]))),
+  //                         ),
+  //                         Align(
+  //                             alignment: Alignment.topLeft,
+  //                             child: IconButton(
+  //                                 icon: const Icon(
+  //                                   Icons.arrow_back,
+  //                                   color: Colors.white,
+  //                                 ),
+  //                                 onPressed: () {
+  //                                   model.navigationService
+  //                                       .navigateTo('/dashboard');
+  //                                 })),
+  //                         Align(
+  //                           alignment: Alignment.topRight,
+  //                           child: IconButton(
+  //                             padding: EdgeInsets.zero,
+  //                             icon: model.isFavorite
+  //                                 ? const Icon(Icons.star,
+  //                                     color: white, size: 20)
+  //                                 : const Icon(
+  //                                     Icons.star_border_outlined,
+  //                                     color: white,
+  //                                     size: 22),
+  //                             onPressed: () => model
+  //                                 .updateFavWalletCoinsList(model
+  //                                     .walletInfo!.tickerName!),
+  //                           ),
+  //                         ),
+  //                         Positioned(
+  //                             bottom: 10,
+  //                             left: 0,
+  //                             right: 0,
+  //                             child:
+  //                                 headerContainer(context, model))
+  //                       ],
+  //                     ),
+  //                   ),
+  //                 ],
+  //               ),
+  //             );
+  //           } else {
+  //             return Container(
+  //                 margin: EdgeInsets.only(top: 10),
+  //                 child: headerContainer(context, model));
+  //           }
+  //         },
+  //       ),
+  //       Container(
+  //         color: secondaryColor,
+  //         padding: const EdgeInsets.symmetric(
+  //             vertical: 10, horizontal: 25),
+  //         child: Column(
+  //           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  //           children: <Widget>[
+  //             UIHelper.horizontalSpaceMedium,
+  //             SizedBox(
+  //               height: model.containerHeight,
+  //               child: Row(
+  //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                 mainAxisSize: MainAxisSize.max,
+  //                 children: <Widget>[
+  //                   Expanded(
+  //                     child: Container(
+  //                       child: _featuresCard(context, 0, model),
+  //                     ),
+  //                   ),
+  //                   Expanded(
+  //                     child: Container(
+  //                         child: _featuresCard(context, 1, model)),
+  //                   )
+  //                 ],
+  //               ),
+  //             ),
+  //             model.walletInfo!.tickerName == 'Maticm'
+  //                 ? Container()
+  //                 : SizedBox(
+  //                     height: model.containerHeight,
+  //                     child: Row(
+  //                         mainAxisAlignment:
+  //                             MainAxisAlignment.spaceBetween,
+  //                         children: <Widget>[
+  //                           Expanded(
+  //                             child: Container(
+  //                               child: _featuresCard(
+  //                                   context, 2, model),
+  //                             ),
+  //                           ),
+  //                           Expanded(
+  //                             child: Container(
+  //                               child: _featuresCard(
+  //                                   context, 3, model),
+  //                             ),
+  //                           ),
+  //                         ]),
+  //                   ),
+
+  //             SizedBox(
+  //               height: model.containerHeight,
+  //               child: Row(
+  //                   mainAxisAlignment:
+  //                       MainAxisAlignment.spaceBetween,
+  //                   children: <Widget>[
+  //                     model.errDepositItem != null
+  //                         ? Expanded(
+  //                             child: Container(
+  //                               child: _featuresCard(
+  //                                   context, 4, model),
+  //                             ),
+  //                           )
+  //                         : Container(),
+  //                     model.walletInfo!.tickerName == 'FAB'
+  //                         ? Expanded(
+  //                             child:
+  //                                 _featuresCard(context, 5, model),
+  //                           )
+  //                         : Container(),
+  //                   ]),
+  //             ),
+
+  //             // UIHelper.horizontalSpaceSmall,
+  //             // Transaction History Column
+  //             Container(
+  //               margin: const EdgeInsets.symmetric(horizontal: 0.0),
+  //               padding: const EdgeInsets.symmetric(
+  //                   horizontal: 3.0, vertical: 8.0),
+  //               child: Material(
+  //                 borderRadius: BorderRadius.circular(5),
+  //                 color: secondaryColor,
+  //                 elevation: model.elevation,
+  //                 child: InkWell(
+  //                   splashColor: primaryColor.withAlpha(30),
+  //                   onTap: () {
+  //                     var route = model.features[6].route;
+  //                     Navigator.pushNamed(context, route,
+  //                         arguments: model.walletInfo!);
+  //                   },
+  //                   child: Container(
+  //                     height: 45,
+  //                     padding: const EdgeInsets.symmetric(
+  //                         vertical: 9, horizontal: 6),
+  //                     child: Row(
+  //                       mainAxisAlignment: MainAxisAlignment.center,
+  //                       children: <Widget>[
+  //                         Container(
+  //                             decoration: BoxDecoration(
+  //                                 color: walletCardColor,
+  //                                 borderRadius:
+  //                                     BorderRadius.circular(50),
+  //                                 boxShadow: [
+  //                                   BoxShadow(
+  //                                       color: model
+  //                                           .features[6].shadowColor
+  //                                           .withOpacity(0.2),
+  //                                       offset: const Offset(0, 2),
+  //                                       blurRadius: 10,
+  //                                       spreadRadius: 3)
+  //                                 ]),
+  //                             child: Icon(
+  //                               model.features[6].icon,
+  //                               size: 18,
+  //                               color: white,
+  //                             )),
+  //                         Padding(
+  //                           padding:
+  //                               const EdgeInsets.only(left: 4.0),
+  //                           child: Text(
+  //                             model.features[6].name,
+  //                             style: subText1,
+  //                           ),
+  //                         )
+  //                       ],
+  //                     ),
+  //                   ),
+  //                 ),
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //       ),
+  //     ],
+  //   ),
+  // ),
 
   // //coin name and balance card
   // Widget headerContainer(BuildContext context, WalletFeaturesViewModel model) {

@@ -4,7 +4,6 @@ import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
-import 'package:paycool/constants/route_names.dart';
 import 'package:paycool/models/bond/vm/me_model.dart';
 import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/api_service.dart';
@@ -16,7 +15,6 @@ import 'package:paycool/views/bond/personalInfo/personal_view.dart';
 import 'package:paycool/views/bond/progressIndicator.dart';
 import 'package:paycool/views/bond/register/bond_register_view.dart';
 import 'package:paycool/views/bond/txHistory/bond_history_view.dart';
-import 'package:paycool/widgets/bottom_nav.dart';
 import 'package:stacked_services/stacked_services.dart';
 
 class BondDashboard extends StatefulWidget {
@@ -44,9 +42,7 @@ class _BondDashboardState extends State<BondDashboard> {
     try {
       await apiService.getBondMe().then((value) {
         if (value != null) {
-          setState(() {
-            bondMeVm = value;
-          });
+          bondMeVm = value;
         }
       });
     } catch (e) {
@@ -54,6 +50,7 @@ class _BondDashboardState extends State<BondDashboard> {
     }
 
     loading = false;
+    setState(() {});
   }
 
   @override
@@ -66,21 +63,6 @@ class _BondDashboardState extends State<BondDashboard> {
       child: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.light,
         child: Scaffold(
-          bottomNavigationBar: BottomNavBar(count: 2),
-          floatingActionButton: FloatingActionButton(
-            onPressed: () {
-              navigationService.navigateTo(PayCoolViewRoute);
-            },
-            elevation: 1,
-            backgroundColor: Colors.transparent,
-            child: Image.asset(
-              "assets/images/new-design/pay_cool_icon.png",
-              fit: BoxFit.cover,
-            ),
-          ),
-          extendBody: true,
-          floatingActionButtonLocation:
-              FloatingActionButtonLocation.centerDocked,
           body: GestureDetector(
             onTap: () {
               FocusScope.of(context).requestFocus(FocusNode());
@@ -102,6 +84,24 @@ class _BondDashboardState extends State<BondDashboard> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               UIHelper.verticalSpaceLarge,
+                              SizedBox(
+                                width: size.width,
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    IconButton(
+                                      alignment: Alignment.topRight,
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      icon: Icon(
+                                        Icons.arrow_back_ios,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
                               UIHelper.verticalSpaceLarge,
                               Image.asset(
                                 "assets/images/salvador.png",
@@ -210,112 +210,137 @@ class _BondDashboardState extends State<BondDashboard> {
                                   IconButton(
                                     alignment: Alignment.topRight,
                                     onPressed: () {
-                                      showDialog(
-                                          context: context,
-                                          builder: (context) {
-                                            return AlertDialog(
-                                              elevation: 10,
-                                              titleTextStyle:
-                                                  headText5.copyWith(
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                              contentTextStyle:
-                                                  const TextStyle(color: white),
-                                              content: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8.0),
-                                                child: Text(
-                                                  FlutterI18n.translate(
-                                                      context, "doYouLogout"),
-                                                  style: const TextStyle(
-                                                      fontSize: 14),
-                                                  textAlign: TextAlign.center,
-                                                ),
-                                              ),
-                                              actions: <Widget>[
-                                                UIHelper.verticalSpaceSmall,
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: [
-                                                    Container(
-                                                      decoration: BoxDecoration(
-                                                        gradient: buttoGradient,
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(40.0),
-                                                      ),
-                                                      child: ElevatedButton(
-                                                        style: ElevatedButton
-                                                            .styleFrom(
-                                                          backgroundColor:
-                                                              Colors
-                                                                  .transparent,
-                                                          shadowColor: Colors
-                                                              .transparent,
-                                                        ),
-                                                        child: Text(
-                                                          FlutterI18n.translate(
-                                                              context, "no"),
-                                                          style: headText5,
-                                                        ),
-                                                        onPressed: () {
-                                                          Navigator.of(context)
-                                                              .pop(false);
-                                                        },
-                                                      ),
+                                      Navigator.pop(context);
+                                    },
+                                    icon: Icon(
+                                      Icons.arrow_back_ios,
+                                    ),
+                                  ),
+                                  Row(
+                                    children: [
+                                      IconButton(
+                                        alignment: Alignment.topRight,
+                                        onPressed: () {
+                                          showDialog(
+                                              context: context,
+                                              builder: (context) {
+                                                return AlertDialog(
+                                                  elevation: 10,
+                                                  titleTextStyle:
+                                                      headText5.copyWith(
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                  contentTextStyle:
+                                                      const TextStyle(
+                                                          color: white),
+                                                  content: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            8.0),
+                                                    child: Text(
+                                                      FlutterI18n.translate(
+                                                          context,
+                                                          "doYouLogout"),
+                                                      style: const TextStyle(
+                                                          fontSize: 14),
+                                                      textAlign:
+                                                          TextAlign.center,
                                                     ),
-                                                    UIHelper
-                                                        .horizontalSpaceMedium,
-                                                    Container(
-                                                      decoration: BoxDecoration(
-                                                        gradient: buttoGradient,
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(40.0),
-                                                      ),
-                                                      child: ElevatedButton(
-                                                        style: ElevatedButton
-                                                            .styleFrom(
-                                                          backgroundColor:
-                                                              Colors
-                                                                  .transparent,
-                                                          shadowColor: Colors
-                                                              .transparent,
-                                                        ),
-                                                        child: Text(
-                                                            FlutterI18n
-                                                                .translate(
-                                                                    context,
-                                                                    "yes"),
+                                                  ),
+                                                  actions: <Widget>[
+                                                    UIHelper.verticalSpaceSmall,
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        Container(
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            gradient:
+                                                                buttoGradient,
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        40.0),
+                                                          ),
+                                                          child: ElevatedButton(
                                                             style:
-                                                                const TextStyle(
+                                                                ElevatedButton
+                                                                    .styleFrom(
+                                                              backgroundColor:
+                                                                  Colors
+                                                                      .transparent,
+                                                              shadowColor: Colors
+                                                                  .transparent,
+                                                            ),
+                                                            child: Text(
+                                                              FlutterI18n
+                                                                  .translate(
+                                                                      context,
+                                                                      "no"),
+                                                              style: headText5,
+                                                            ),
+                                                            onPressed: () {
+                                                              Navigator.of(
+                                                                      context)
+                                                                  .pop(false);
+                                                            },
+                                                          ),
+                                                        ),
+                                                        UIHelper
+                                                            .horizontalSpaceMedium,
+                                                        Container(
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            gradient:
+                                                                buttoGradient,
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        40.0),
+                                                          ),
+                                                          child: ElevatedButton(
+                                                            style:
+                                                                ElevatedButton
+                                                                    .styleFrom(
+                                                              backgroundColor:
+                                                                  Colors
+                                                                      .transparent,
+                                                              shadowColor: Colors
+                                                                  .transparent,
+                                                            ),
+                                                            child: Text(
+                                                                FlutterI18n
+                                                                    .translate(
+                                                                        context,
+                                                                        "yes"),
+                                                                style: const TextStyle(
                                                                     color:
                                                                         white,
                                                                     fontSize:
                                                                         12)),
-                                                        onPressed: () {
-                                                          Navigator.pop(
-                                                              context);
-                                                          LocalStorageService()
-                                                              .clearToken();
-                                                          bondMeVm =
-                                                              BondMeModel();
-                                                          setState(() {});
-                                                        },
-                                                      ),
+                                                            onPressed: () {
+                                                              Navigator.pop(
+                                                                  context);
+                                                              LocalStorageService()
+                                                                  .clearToken();
+                                                              bondMeVm =
+                                                                  BondMeModel();
+                                                              setState(() {});
+                                                            },
+                                                          ),
+                                                        ),
+                                                        UIHelper
+                                                            .verticalSpaceSmall,
+                                                      ],
                                                     ),
-                                                    UIHelper.verticalSpaceSmall,
                                                   ],
-                                                ),
-                                              ],
-                                            );
-                                          });
-                                    },
-                                    icon: Icon(Icons.logout),
-                                  ),
-                                  Row(
-                                    children: [
+                                                );
+                                              });
+                                        },
+                                        icon: Icon(Icons.exit_to_app),
+                                      ),
                                       Padding(
                                         padding:
                                             const EdgeInsets.only(right: 10),
@@ -328,7 +353,7 @@ class _BondDashboardState extends State<BondDashboard> {
                                                     builder: (context) =>
                                                         const BondHistoryView()));
                                           },
-                                          icon: Icon(Icons.history),
+                                          icon: Icon(Icons.list_alt),
                                         ),
                                       ),
                                       Padding(

@@ -11,10 +11,10 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:logger/logger.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:package_info/package_info.dart';
+import 'package:paycool/providers/app_state_provider.dart';
 import 'package:paycool/routes.dart';
 import 'package:paycool/service_locator.dart';
-import 'package:paycool/services/local_storage/hive_multisig_service.dart';
-import 'package:paycool/services/local_storage/hive_mutli_wallet_service.dart';
+import 'package:provider/provider.dart';
 import 'package:stacked_services/stacked_services.dart';
 
 import 'constants/colors.dart';
@@ -64,7 +64,11 @@ Future<void> main() async {
       dotenv.load();
     });
 
-    runApp(MyApp(flutterI18nDelegate, packageInfo));
+    runApp(MultiProvider(providers: [
+      ChangeNotifierProvider<AppStateProvider>(
+        create: (context) => AppStateProvider(),
+      ),
+    ], child: MyApp(flutterI18nDelegate, packageInfo)));
   } catch (err) {
     debugPrint('main.dart (Catch) Locator setup has failed $err');
   }

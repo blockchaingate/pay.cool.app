@@ -259,7 +259,7 @@ String formatStringDate(String date) {
 String formatStringDateV2(String date) {
   String wholeDate = date;
   var dateToFormat = DateTime.parse(wholeDate);
-  String formattedDate = DateFormat('MM-dd-yyyy').format(dateToFormat);
+  String formattedDate = DateFormat('MM/dd/yyyy').format(dateToFormat);
   String formattedTime = DateFormat('kk:mm:ss').format(dateToFormat);
   formattedDate = '$formattedDate $formattedTime';
   return formattedDate;

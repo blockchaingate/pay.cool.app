@@ -69,7 +69,6 @@ class ClubDashboardViewModel extends BaseViewModel {
   bool isEnoughDusdWalletBalance = true;
   bool isValidMember = false;
   GlobalKey globalKey = GlobalKey(debugLabel: 'showBarcode');
-  // GlobalKey globalKey2 = GlobalKey(debugLabel: 'lightening');
   ClubDashboard dashboardSummary = ClubDashboard();
   JoinClubPaymentModel scanToPayModel = JoinClubPaymentModel();
   bool isValidClubReferralCode = false;
@@ -194,110 +193,108 @@ class ClubDashboardViewModel extends BaseViewModel {
     showDialog(
         context: context!,
         builder: (context) {
-          return Container(
-            child: AlertDialog(
-              elevation: 10,
-              backgroundColor: white,
-              titleTextStyle: headText3.copyWith(color: black),
-              title: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Expanded(
-                    child: Container(
-                      padding: const EdgeInsets.all(5),
-                      // color: grey.withAlpha(125),
-                      child: Text(
-                        numberOfProjectNotJoined().isNotEmpty
-                            ? FlutterI18n.translate(context, "lisOfPrograms")
-                            : FlutterI18n.translate(
-                                context, "currentlyNoOtherPrograms"),
-                        textAlign: TextAlign.center,
-                        style: headText3.copyWith(color: black),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              contentTextStyle: const TextStyle(color: grey),
-              content: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    for (var i = 0; i < dashboardSummary.summary!.length; i++)
-                      dashboardSummary.summary![i].status == 0 &&
-                              dashboardSummary.summary![i].project!.en !=
-                                  'Paycool' &&
-                              (dashboardSummary.summary![i].project!.id != 1 &&
-                                  dashboardSummary.summary![i].project!.id != 9)
-                          ? Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Expanded(
-                                  flex: 2,
-                                  child: Text(
-                                    '${storageService.language == "en" ? dashboardSummary.summary![i].project!.en : dashboardSummary.summary![i].project!.sc}  ',
-                                    textAlign: TextAlign.start,
-                                    style: headText5.copyWith(
-                                        color: black,
-                                        fontWeight: FontWeight.w500),
-                                  ),
-                                ),
-                                // Flexible(
-                                //   child: Text(
-                                //     assignMemberType(
-                                //         status: dashboardSummary
-                                //             .summary![i].status!
-                                //             .toInt()),
-                                //     textAlign: TextAlign.end,
-                                //     style: headText5.copyWith(color: green),
-                                //   ),
-                                // ),
-
-                                Expanded(
-                                  flex: 1,
-                                  child: TextButton(
-                                    // style: ButtonStyle(
-                                    //     shape: shapeRoundBorder,
-                                    //     backgroundColor:
-                                    //         MaterialStateProperty.all(
-                                    //             secondaryColor)),
-                                    onPressed: () {
-                                      navigationService.navigateTo(
-                                          clubProjectDetailsViewRoute,
-                                          arguments:
-                                              dashboardSummary.summary![i]);
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: Text(
-                                      FlutterI18n.translate(context, "details"),
-                                      style: const TextStyle(
-                                          decoration: TextDecoration.underline),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            )
-                          : Container(),
-                  ]),
-              actions: [
-                Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: ElevatedButton(
-                      style: generalButtonStyle(primaryColor),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: Text(
-                        FlutterI18n.translate(context, "close"),
-                        style: headText5.copyWith(color: white),
-                      ),
+          return AlertDialog(
+            elevation: 10,
+            backgroundColor: white,
+            titleTextStyle: headText3.copyWith(color: black),
+            title: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Expanded(
+                  child: Container(
+                    padding: const EdgeInsets.all(5),
+                    // color: grey.withAlpha(125),
+                    child: Text(
+                      numberOfProjectNotJoined().isNotEmpty
+                          ? FlutterI18n.translate(context, "lisOfPrograms")
+                          : FlutterI18n.translate(
+                              context, "currentlyNoOtherPrograms"),
+                      textAlign: TextAlign.center,
+                      style: headText3.copyWith(color: black),
                     ),
                   ),
                 ),
-                UIHelper.verticalSpaceSmall
               ],
             ),
+            contentTextStyle: const TextStyle(color: grey),
+            content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  for (var i = 0; i < dashboardSummary.summary!.length; i++)
+                    dashboardSummary.summary![i].status == 0 &&
+                            dashboardSummary.summary![i].project!.en !=
+                                'Paycool' &&
+                            (dashboardSummary.summary![i].project!.id != 1 &&
+                                dashboardSummary.summary![i].project!.id != 9)
+                        ? Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Expanded(
+                                flex: 2,
+                                child: Text(
+                                  '${storageService.language == "en" ? dashboardSummary.summary![i].project!.en : dashboardSummary.summary![i].project!.sc}  ',
+                                  textAlign: TextAlign.start,
+                                  style: headText5.copyWith(
+                                      color: black,
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ),
+                              // Flexible(
+                              //   child: Text(
+                              //     assignMemberType(
+                              //         status: dashboardSummary
+                              //             .summary![i].status!
+                              //             .toInt()),
+                              //     textAlign: TextAlign.end,
+                              //     style: headText5.copyWith(color: green),
+                              //   ),
+                              // ),
+
+                              Expanded(
+                                flex: 1,
+                                child: TextButton(
+                                  // style: ButtonStyle(
+                                  //     shape: shapeRoundBorder,
+                                  //     backgroundColor:
+                                  //         MaterialStateProperty.all(
+                                  //             secondaryColor)),
+                                  onPressed: () {
+                                    navigationService.navigateTo(
+                                        clubProjectDetailsViewRoute,
+                                        arguments:
+                                            dashboardSummary.summary![i]);
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Text(
+                                    FlutterI18n.translate(context, "details"),
+                                    style: const TextStyle(
+                                        decoration: TextDecoration.underline),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          )
+                        : Container(),
+                ]),
+            actions: [
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ElevatedButton(
+                    style: generalButtonStyle(primaryColor),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text(
+                      FlutterI18n.translate(context, "close"),
+                      style: headText5.copyWith(color: white),
+                    ),
+                  ),
+                ),
+              ),
+              UIHelper.verticalSpaceSmall
+            ],
           );
         });
   }
@@ -358,7 +355,10 @@ class ClubDashboardViewModel extends BaseViewModel {
     String address = await sharedService.getExgAddressFromCoreWalletDatabase();
     await walletService.gasBalance(address).then((data) {
       gasAmount = data;
-    }).catchError((onError) => log.e(onError));
+    }).catchError((onError) {
+      log.e(onError);
+    });
+
     log.w('gas amount $gasAmount');
   }
 
@@ -686,11 +686,9 @@ class ClubDashboardViewModel extends BaseViewModel {
         builder: (BuildContext context) {
           return Platform.isIOS
               ? CupertinoAlertDialog(
-                  title: Container(
-                    child: Center(
-                        child: Text(
-                            FlutterI18n.translate(context, "referralCode"))),
-                  ),
+                  title: Center(
+                      child:
+                          Text(FlutterI18n.translate(context, "referralCode"))),
                   content: Column(
                     children: [
                       // UIHelper.verticalSpaceLarge,
@@ -699,24 +697,22 @@ class ClubDashboardViewModel extends BaseViewModel {
                           width: 250,
                           height: 250,
                           child: Center(
-                            child: Container(
-                              child: RepaintBoundary(
-                                key: globalKey,
-                                child: QrImageView(
-                                    backgroundColor: white,
-                                    data: fabAddress,
-                                    version: QrVersions.auto,
-                                    size: 300,
-                                    gapless: true,
-                                    errorStateBuilder: (context, err) {
-                                      return Center(
-                                        child: Text(
-                                            FlutterI18n.translate(
-                                                context, "somethingWentWrong"),
-                                            textAlign: TextAlign.center),
-                                      );
-                                    }),
-                              ),
+                            child: RepaintBoundary(
+                              key: globalKey,
+                              child: QrImageView(
+                                  backgroundColor: white,
+                                  data: fabAddress,
+                                  version: QrVersions.auto,
+                                  size: 300,
+                                  gapless: true,
+                                  errorStateBuilder: (context, err) {
+                                    return Center(
+                                      child: Text(
+                                          FlutterI18n.translate(
+                                              context, "somethingWentWrong"),
+                                          textAlign: TextAlign.center),
+                                    );
+                                  }),
                             ),
                           )),
                     ],

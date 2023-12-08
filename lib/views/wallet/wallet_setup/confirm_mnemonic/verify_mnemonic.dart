@@ -20,7 +20,6 @@ class VerifyMnemonicWalletView extends StatelessWidget {
   final String? validationMessage;
   final int? count;
 
-  // ignore: use_key_in_widget_constructors
   const VerifyMnemonicWalletView(
       {required this.mnemonicTextController,
       this.validationMessage,
@@ -35,12 +34,12 @@ class VerifyMnemonicWalletView extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Container(
-              padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 5),
+              padding: const EdgeInsets.symmetric(vertical: 10),
               child: GridView.extent(
                   maxCrossAxisExtent: 125,
                   padding: const EdgeInsets.all(2),
                   mainAxisSpacing: 15,
-                  crossAxisSpacing: 10,
+                  crossAxisSpacing: 15,
                   shrinkWrap: true,
                   childAspectRatio: 2,
                   children: _buildTextGrid(count!, mnemonicTextController))),
@@ -52,34 +51,28 @@ class VerifyMnemonicWalletView extends StatelessWidget {
   List<Widget> _buildTextGrid(int count, controller) =>
       List.generate(count, (i) {
         var hintMnemonicWordNumber = i + 1;
-        // FocusNode focusNode = FocusNode();
         controller.add(TextEditingController());
         return TextField(
           inputFormatters: [
             LowerCaseTextFormatter(),
             FilteringTextInputFormatter.allow(RegExp("[a-zA-Z]")),
           ],
-          // textCapitalization: TextCapitalization.none,
-
           style: const TextStyle(
-              color: grey, fontSize: 14, fontWeight: FontWeight.bold),
+              color: black, fontSize: 14, fontWeight: FontWeight.bold),
           controller: controller[i], cursorColor: black, //focusNode: focusNode,
           autocorrect: true,
           decoration: InputDecoration(
             fillColor: secondaryColor,
             filled: true,
-            hintText:
-                // focusNode.hasFocus && focusNode.hasFocus != null
-                //     ? ' '
-                //     :
-                '$hintMnemonicWordNumber',
-            hintStyle: const TextStyle(color: primaryColor),
+            hintText: '$hintMnemonicWordNumber',
+            hintStyle: const TextStyle(
+                color: black, fontSize: 14, fontWeight: FontWeight.w600),
             focusedBorder: OutlineInputBorder(
-                borderSide: const BorderSide(color: primaryColor, width: 1.5),
-                borderRadius: BorderRadius.circular(30.0)),
+                borderSide: const BorderSide(color: Colors.transparent),
+                borderRadius: BorderRadius.circular(10.0)),
             enabledBorder: OutlineInputBorder(
-              borderSide: const BorderSide(color: grey, width: 1),
-              borderRadius: BorderRadius.circular(30.0),
+              borderSide: const BorderSide(color: Colors.transparent),
+              borderRadius: BorderRadius.circular(5.0),
             ),
           ),
         );

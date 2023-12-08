@@ -23,13 +23,17 @@ import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/api_service.dart';
 import 'package:paycool/services/coin_service.dart';
 import 'package:paycool/services/db/token_list_database_service.dart';
+import 'package:paycool/services/db/transaction_history_database_service.dart';
 import 'package:paycool/services/local_storage_service.dart';
 import 'package:paycool/services/shared_service.dart';
 import 'package:paycool/services/wallet_service.dart';
 import 'package:paycool/shared/ui_helpers.dart';
+import 'package:paycool/utils/string_util.dart';
 import 'package:paycool/utils/wallet/wallet_util.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
+
+import 'transaction_history/transaction_history_model_v2.dart';
 
 class WalletFeaturesViewModel extends ReactiveViewModel {
   final log = getLogger('WalletFeaturesViewModel');
@@ -41,6 +45,8 @@ class WalletFeaturesViewModel extends ReactiveViewModel {
   SharedService sharedService = locator<SharedService>();
   NavigationService navigationService = locator<NavigationService>();
   final tokenListDatabaseService = locator<TokenListDatabaseService>();
+  final transactionHistoryDatabaseService =
+      locator<TransactionHistoryDatabaseService>();
   final coinService = locator<CoinService>();
   final double elevation = 5;
   double containerWidth = 150;
@@ -63,9 +69,11 @@ class WalletFeaturesViewModel extends ReactiveViewModel {
   double unconfirmedBalance = 0.0;
   String smartContractAddress = '';
 
+  TransactionHistoryEventsData? transactionHistory;
+
   init() async {
-    getWalletFeatures();
-    getErrDeposit();
+    await getWalletFeatures();
+    await getErrDeposit();
 
     log.i('wi object to check name ${walletInfo!.toJson()}');
     refreshBalance();
@@ -96,47 +104,62 @@ class WalletFeaturesViewModel extends ReactiveViewModel {
 
   Widget getRecords(
     Size size,
+    int index,
   ) {
-    return Container(
-      width: size.width,
-      height: size.height * 0.1,
-      padding: EdgeInsets.symmetric(horizontal: 20),
-      child: Row(
-        children: [
-          Container(
-            width: 50,
-            height: 50,
-            decoration:
-                BoxDecoration(shape: BoxShape.circle, color: Colors.grey[200]),
-            child: Icon(
-              Icons.arrow_upward,
-              color: Colors.black,
+    List<HistoryItem> temp;
+
+    temp = transactionHistory!.history
+        .where((item) =>
+            item.coin.toLowerCase() == walletInfo!.tickerName!.toLowerCase())
+        .toList();
+
+    return temp.isNotEmpty
+        ? Container(
+            width: size.width,
+            height: size.height * 0.1,
+            padding: EdgeInsets.symmetric(horizontal: 20),
+            child: Row(
+              children: [
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                      shape: BoxShape.circle, color: Colors.grey[200]),
+                  child: Icon(
+                    temp[index].action == "deposit"
+                        ? Icons.arrow_upward
+                        : Icons.arrow_downward,
+                    color: Colors.black,
+                  ),
+                ),
+                UIHelper.horizontalSpaceSmall,
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      temp[index].coin,
+                      style: TextStyle(color: Colors.black),
+                    ),
+                    UIHelper.verticalSpaceSmall,
+                    Text(
+                      formatStringDateV2(
+                          convertTimeStampToDate(temp[index].timestamp)
+                              .toString()),
+                      style: TextStyle(color: Colors.black38),
+                    ),
+                  ],
+                ),
+                Expanded(child: SizedBox()),
+                Text(
+                  "${temp[index].quantity} ${temp[index].coin}",
+                  style: TextStyle(
+                      color: Colors.black, fontWeight: FontWeight.bold),
+                ),
+              ],
             ),
-          ),
-          UIHelper.horizontalSpaceSmall,
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
-              Text(
-                "0xgtfr....hy65",
-                style: TextStyle(color: Colors.black),
-              ),
-              UIHelper.verticalSpaceSmall,
-              Text(
-                "08/09 12:43:32",
-                style: TextStyle(color: Colors.black38),
-              ),
-            ],
-          ),
-          Expanded(child: SizedBox()),
-          Text(
-            "- 10.008 ETH",
-            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-          ),
-        ],
-      ),
-    );
+          )
+        : Container();
   }
 
   updateFavWalletCoinsList(String tickerName) {
@@ -170,7 +193,9 @@ class WalletFeaturesViewModel extends ReactiveViewModel {
     storageService.favWalletCoins = json.encode(favWalletCoins);
   }
 
-  getWalletFeatures() {
+  Future getWalletFeatures() async {
+    transactionHistory = await apiService.getTransactionHistoryEventsV2();
+    notifyListeners();
     return features = [
       WalletFeatureName(FlutterI18n.translate(context, "receive"),
           Icons.arrow_downward, 'receive', Colors.cyan),

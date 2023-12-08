@@ -52,6 +52,8 @@ class Constants {
   static const String payCoolCreateAccountAbiCode = "0x9859387b";
   static const String multisigTransferAbiCode = "0x6a761202";
 
+  static const String customTokenSignatureAbi = "70a08231";
+
   static const String bondAbiCodeKanban = "0x85d7b238";
   static const String bondAbiCodeEth = "0xd13a00ba";
   static const String bondApproveEthAbiCode = "0x095ea7b3";

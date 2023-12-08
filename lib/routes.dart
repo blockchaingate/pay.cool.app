@@ -15,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:paycool/logger.dart';
 import 'package:paycool/views/bond/bond_dashboard.dart';
+import 'package:paycool/views/bond/bond_welcome.dart';
 import 'package:paycool/views/dapp/dapp_view.dart';
 import 'package:paycool/views/paycool_club/checkout/club_package_checkout_view.dart';
 import 'package:paycool/views/paycool_club/club_projects/club_project_details/club_project_details_view.dart';
@@ -122,7 +123,7 @@ class RouteGenerator {
       case ReceiveViewRoute:
         return MaterialPageRoute(
             builder: (_) => ReceiveWalletScreen(
-                  walletInfo: args,
+                  data: args,
                 ));
 
       case SendViewRoute:
@@ -269,6 +270,12 @@ class RouteGenerator {
         return MaterialPageRoute(
           settings: RouteSettings(name: 'WalletConnectView'),
           builder: (_) => WalletConnectView(),
+        );
+
+      case BondWelcomeViewRoute:
+        return MaterialPageRoute(
+          settings: RouteSettings(name: 'BondWelcomeView'),
+          builder: (_) => BondWelcome(),
         );
 
       default:

@@ -25,6 +25,7 @@ import 'package:paycool/models/bond/vm/me_model.dart';
 import 'package:paycool/models/bond/vm/order_bond_model.dart';
 import 'package:paycool/models/bond/vm/register_email_model.dart';
 import 'package:paycool/models/bond/vm/token_balance_model.dart';
+import 'package:paycool/models/wallet/custom_token_model.dart';
 import 'package:paycool/models/wallet/wallet_transaction_history_model.dart';
 import 'package:paycool/services/local_dialog_service.dart';
 import 'package:paycool/views/bond/helper.dart';
@@ -1636,6 +1637,26 @@ class ApiService {
       var json = jsonDecode(response.body)["data"];
       return RegisterEmailViewModel.fromJson(json);
     } catch (err) {
+      throw Exception(err);
+    }
+  }
+
+  Future<List<CustomTokenModel>?> getCustomTokens() async {
+    String url = '$baseBlockchainGateV2Url' 'issuetoken/withoutLogo';
+    log.i('getIssueTokens url $url');
+    try {
+      var response = await client.get(Uri.parse(url));
+      var json = jsonDecode(response.body);
+
+      var parsedTokenList = json as List;
+      log.w(
+          'getIssueTokens func: json data list length ${parsedTokenList.length}');
+
+      CustomTokenModelList isueTokenList =
+          CustomTokenModelList.fromJson(parsedTokenList);
+      return isueTokenList.customTokens;
+    } catch (err) {
+      log.e('getIssueTokens CATCH $err');
       throw Exception(err);
     }
   }

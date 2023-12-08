@@ -95,7 +95,7 @@ AppBar customAppBarWithIcon(
         style: headText3,
       ),
       centerTitle: true,
-      leading: leading,
+      leading: leading ?? SizedBox(),
       actions: actions,
     );
 
