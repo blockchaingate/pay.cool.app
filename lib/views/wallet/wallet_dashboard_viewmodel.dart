@@ -50,6 +50,7 @@ import 'package:paycool/utils/number_util.dart';
 import 'package:paycool/utils/tron_util/trx_generate_address_util.dart'
     as tron_address_util;
 import 'package:paycool/utils/wallet/wallet_util.dart';
+import 'package:paycool/widgets/wallet/chain_list_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
@@ -159,8 +160,6 @@ class WalletDashboardViewModel extends BaseViewModel {
       }
     }).whenComplete(() {
       appStateProvider.setWalletBalances(wallets);
-      print("--------------geldi---------------");
-      print(wallets[3].coin);
       setWalletDetails(wallets[3]);
     });
 
@@ -1207,19 +1206,21 @@ class WalletDashboardViewModel extends BaseViewModel {
   getAppbarHeight() {
     return top;
   }
+
+  goToChainList(size) async {
+    showModalBottomSheet(
+      context: context!,
+      isScrollControlled: true,
+      builder: (BuildContext context) =>
+          chainListWidget(context, size, wallets),
+    ).then((value) async {
+      if (value != null) {
+        print("-----------------------");
+        print(value);
+        updateTabSelection(value);
+      }
+    }).whenComplete(() {
+      notifyListeners();
+    });
+  }
 }
-
-// Future<void> _showNotification() async {
-//   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-//       FlutterLocalNotificationsPlugin();
-
-//   var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-//       'your channel id', 'your channel name', 'your channel description',
-//       importance: Importance.Max, priority: Priority.High, ticker: 'ticker');
-//   var iOSPlatformChannelSpecifics = IOSNotificationDetails();
-//   var platformChannelSpecifics = NotificationDetails(
-//       androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
-//   await flutterLocalNotificationsPlugin.show(0, 'Test Server Warning',
-//       'You are using Test Server!', platformChannelSpecifics,
-//       payload: 'item x');
-// }

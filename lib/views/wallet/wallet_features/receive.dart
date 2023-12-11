@@ -56,10 +56,6 @@ class _ReceiveWalletScreenState extends State<ReceiveWalletScreen> {
     } else {
       walletInfo = widget.data;
     }
-
-    print("------------------");
-    print(walletInfo!.address);
-
     setState(() {});
   }
 
