@@ -15,7 +15,6 @@ import 'package:paycool/services/local_dialog_service.dart';
 import 'package:paycool/services/shared_service.dart';
 import 'package:paycool/services/wallet_service.dart';
 import 'package:paycool/shared/ui_helpers.dart';
-import 'package:paycool/utils/custom_http_util.dart';
 import 'package:paycool/utils/number_util.dart';
 import 'package:paycool/utils/string_util.dart';
 import 'package:flutter/cupertino.dart';
@@ -30,7 +29,6 @@ import 'package:stacked/stacked.dart';
 class MoveToWalletViewmodel extends BaseViewModel {
   final log = getLogger('MoveToWalletViewmodel');
 
-  final client = CustomHttpUtil.createLetsEncryptUpdatedCertClient();
   final LocalDialogService _dialogService = locator<LocalDialogService>();
   WalletService walletService = locator<WalletService>();
   ApiService apiService = locator<ApiService>();
@@ -1226,8 +1224,6 @@ class MoveToWalletViewmodel extends BaseViewModel {
       isShowPolygonTsWalletBalance = false;
       isShowBnbTsWalletBalance = false;
       if (walletInfo.tickerName != 'FAB') tokenType = 'FAB';
-      // if (walletInfo.tickerName == 'FAB') walletInfo.tokenType = '';
-      // updateTickerForErc = walletInfo.tickerName;
       log.i('chain type ${walletInfo.tokenType}');
       if (walletInfo.tickerName == 'FABE' && isShowFabChainBalance) {
         await setWithdrawLimit('FAB');
@@ -1244,8 +1240,6 @@ class MoveToWalletViewmodel extends BaseViewModel {
       isShowPolygonTsWalletBalance = false;
       isShowBnbTsWalletBalance = false;
       isShowTrxTsWalletBalance = true;
-      //   if (walletInfo.tickerName != 'TRX') walletInfo.tokenType = 'TRX';
-
       isSpeicalTronTokenWithdraw = true;
       if (walletInfo.tickerName == 'TRX' && isShowTrxTsWalletBalance) {
         await setWithdrawLimit('TRX');

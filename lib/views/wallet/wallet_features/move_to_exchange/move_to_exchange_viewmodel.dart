@@ -64,15 +64,16 @@ class MoveToExchangeViewModel extends BaseViewModel {
   TokenModel tokenModel = TokenModel();
   double chainBalance = 0.0;
   var erc20Util = Erc20Util();
+
   void initState() async {
     setBusy(true);
     coinName = walletInfo.tickerName.toString();
     if (coinName == 'FAB') walletInfo.tokenType = '';
     tokenType = walletInfo.tokenType.toString();
-    //   if (coinName != 'TRX' && coinName != 'USDTX') {
+
     setFee();
     await getGas();
-    //  }
+
     specialTicker = WalletUtil.updateSpecialTokensTickerName(
         walletInfo.tickerName.toString())['tickerName']!;
     refreshBalance();
@@ -420,13 +421,6 @@ class MoveToExchangeViewModel extends BaseViewModel {
         seed = walletService.generateSeed(mnemonic);
       }
       log.i('wallet info  ${walletInfo.toJson()}');
-      // if (coinName == 'USDT' || coinName == 'HOT') {
-      //   tokenType = 'ETH';
-      // }
-      // if (coinName == 'EXG') {
-      //   tokenType = 'FAB';
-      // }
-
       var gasPrice = int.tryParse(gasPriceTextController.text);
       var gasLimit = isTrx()
           ? int.tryParse(trxGasValueTextController.text)
@@ -574,17 +568,6 @@ class MoveToExchangeViewModel extends BaseViewModel {
                   ]),
               position: NotificationPosition.bottom,
               background: primaryColor);
-
-          // sharedService.alertDialog(
-          //     success
-          //         ? FlutterI18n.translate(context, "depositTransactionSuccess")
-          //         : FlutterI18n.translate(context, "depositTransactionFailed"),
-          //     success
-          //         ? ""
-          //         : ret.containsKey("error") && ret["error"] != null
-          //             ? ret["error"]
-          //             : FlutterI18n.translate(context, "serverError"),
-          //     isWarning: false);
         }).catchError((onError) {
           log.e('Deposit Catch $onError');
 
@@ -715,6 +698,7 @@ class MoveToExchangeViewModel extends BaseViewModel {
       log.i('availableBalance ${walletInfo.availableBalance}');
     }).catchError((onError) {
       setBusy(false);
+      log.e("------------------Error-----------------");
       log.e(onError);
     });
 

@@ -93,17 +93,18 @@ class CoinDetailsCardWidget extends StackedView<WalletDashboardViewModel> {
                           finalTickerName.toUpperCase(),
                           style: TextStyle(
                               color: Colors.black,
-                              fontSize: 16,
+                              fontSize: 14,
                               fontWeight: FontWeight.w600),
                         ),
                         Text(
-                          wallets[index].balance!.isNegative
+                          wallets[index].unlockedExchangeBalance!.isNegative
                               ? "0"
-                              : NumberUtil.roundDouble(wallets[index].balance!,
+                              : NumberUtil.roundDouble(
+                                      wallets[index].unlockedExchangeBalance!,
                                       decimalPlaces: 6)
                                   .toString(),
                           style: TextStyle(
-                              fontSize: 16,
+                              fontSize: 14,
                               fontWeight: FontWeight.w400,
                               color: textHintGrey),
                         ),
@@ -114,7 +115,7 @@ class CoinDetailsCardWidget extends StackedView<WalletDashboardViewModel> {
 
                 // Value USD and deposit - withdraw Container column
                 Expanded(
-                  flex: 2,
+                  flex: 3,
                   child: SizedBox(
                     width: size.width * 0.2,
                     height: 50,
@@ -123,10 +124,9 @@ class CoinDetailsCardWidget extends StackedView<WalletDashboardViewModel> {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: <Widget>[
                         Text(
-                          wallets[index].unlockedExchangeBalance!.isNegative
+                          wallets[index].balance!.isNegative
                               ? "0"
-                              : NumberUtil.roundDouble(
-                                      wallets[index].unlockedExchangeBalance!,
+                              : NumberUtil.roundDouble(wallets[index].balance!,
                                       decimalPlaces: 6)
                                   .toString(),
                           style: TextStyle(
@@ -140,7 +140,7 @@ class CoinDetailsCardWidget extends StackedView<WalletDashboardViewModel> {
                             Text(
                               '\$',
                               style: TextStyle(
-                                  fontSize: 16,
+                                  fontSize: 14,
                                   fontWeight: FontWeight.w400,
                                   color: textHintGrey),
                             ),
@@ -155,7 +155,7 @@ class CoinDetailsCardWidget extends StackedView<WalletDashboardViewModel> {
                                           decimalPlaces: 2)
                                       .toString(),
                               style: TextStyle(
-                                  fontSize: 16,
+                                  fontSize: 14,
                                   fontWeight: FontWeight.w400,
                                   color: textHintGrey),
                             ),

@@ -4,6 +4,7 @@ import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/models/wallet/wallet.dart';
 import 'package:paycool/shared/ui_helpers.dart';
+import 'package:paycool/utils/number_util.dart';
 import 'package:paycool/views/wallet/wallet_features/transfer/transfer_viewmodel.dart';
 import 'package:stacked/stacked.dart';
 
@@ -45,7 +46,7 @@ class _TransferViewState extends State<TransferView>
         viewModelBuilder: () => TransferViewModel(),
         onViewModelReady: (model) {
           model.context = context;
-          model.selectedCoin = widget.walletInfo;
+          model.selectedCoinWalletInfo = widget.walletInfo;
           model.initState();
         },
         builder: (context, model, child) => GestureDetector(
@@ -83,12 +84,21 @@ class _TransferViewState extends State<TransferView>
                           height: 50,
                           margin: EdgeInsets.symmetric(horizontal: 5),
                           child: ElevatedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              if (model.amountTextController.text.isEmpty ||
+                                  double.parse(
+                                          model.amountTextController.text) <=
+                                      0) {
+                              } else {}
+                            },
                             style: ElevatedButton.styleFrom(
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),
                               ),
-                              backgroundColor: buttonPurple,
+                              backgroundColor:
+                                  model.amountTextController.text.isEmpty
+                                      ? grey
+                                      : buttonPurple,
                             ),
                             child: Text("Confirm"),
                           )),
@@ -159,6 +169,7 @@ class _TransferViewState extends State<TransferView>
                                   var temp = model.fromText;
                                   model.fromText = model.toText;
                                   model.toText = temp;
+                                  model.isMoveToWallet = !model.isMoveToWallet;
                                 });
                               },
                               icon: Image.asset(
@@ -170,34 +181,43 @@ class _TransferViewState extends State<TransferView>
                           ],
                         ),
                       ),
-                      UIHelper.verticalSpaceSmall,
-                      Container(
-                        width: size.width,
-                        height: 50,
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(10)),
-                        padding: EdgeInsets.symmetric(horizontal: 10),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              model.selectedCoin!.tickerName!,
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
-                                  color: black),
-                            ),
-                            InkWell(
-                              onTap: () {
-                                model.goToCoinList(size);
-                              },
-                              child: Icon(Icons.arrow_drop_down,
-                                  color: Colors.black, size: 18),
-                            ),
-                          ],
+                      if (model.isMoveToWallet) UIHelper.verticalSpaceSmall,
+                      if (model.isMoveToWallet)
+                        Container(
+                          width: size.width,
+                          height: 50,
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10)),
+                          padding: EdgeInsets.symmetric(horizontal: 10),
+                          child: DropdownButton<String>(
+                            value: model.selectedChain,
+                            onChanged: (String? newValue) {
+                              setState(() {
+                                model.selectedChain = newValue;
+                              });
+                            },
+                            items: model.chainNames
+                                .map<DropdownMenuItem<String>>((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(
+                                  value,
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              );
+                            }).toList(),
+                            underline:
+                                Container(), // Removes the default underline
+                            icon: Icon(Icons.arrow_drop_down,
+                                color: Colors.black, size: 18),
+                            isExpanded: true,
+                          ),
                         ),
-                      ),
                       UIHelper.verticalSpaceSmall,
                       Text(
                         FlutterI18n.translate(context, "amount"),
@@ -219,7 +239,17 @@ class _TransferViewState extends State<TransferView>
                             Expanded(
                               child: TextField(
                                 controller: model.amountTextController,
-                                onChanged: (value) {},
+                                onChanged: (value) {
+                                  setState(() {
+                                    model.amountTextController.selection =
+                                        TextSelection.fromPosition(
+                                      TextPosition(
+                                          offset: model.amountTextController
+                                              .text.length),
+                                    );
+                                    model.amountAfterFee();
+                                  });
+                                },
                                 keyboardType:
                                     const TextInputType.numberWithOptions(
                                         decimal: true),
@@ -229,7 +259,7 @@ class _TransferViewState extends State<TransferView>
                                     fontWeight: FontWeight.w500),
                                 decoration: InputDecoration(
                                   border: InputBorder.none,
-                                  hintText: '0.00',
+                                  hintText: '0.0',
                                   hintStyle: TextStyle(
                                       fontSize: 16, color: textHintGrey),
                                   contentPadding: EdgeInsets.only(left: 10),
@@ -247,14 +277,14 @@ class _TransferViewState extends State<TransferView>
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
                                     Text(
-                                      model.selectedCoin!.tickerName!,
+                                      model.selectedCoinWalletInfo!.tickerName!,
                                       style: TextStyle(
                                           fontSize: 14,
                                           fontWeight: FontWeight.bold,
                                           color: black),
                                     ),
                                     Text(
-                                      "${FlutterI18n.translate(context, "balance")} ${model.selectedCoin!.availableBalance}",
+                                      "${FlutterI18n.translate(context, "balance")} ${model.selectedCoinWalletInfo!.availableBalance}",
                                       style: TextStyle(
                                           fontSize: 12,
                                           fontWeight: FontWeight.bold,
@@ -308,27 +338,31 @@ class _TransferViewState extends State<TransferView>
                               ],
                             ),
                             UIHelper.horizontalSpaceMedium,
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  '${model.gasPrice} ${FlutterI18n.translate(context, "ETH")}',
-                                  style: TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.bold,
-                                      color: black),
-                                ),
-                                Text(
-                                  '${model.gasPrice} ${FlutterI18n.translate(context, "ETH")}',
-                                  style: TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.bold,
-                                      color: black),
-                                ),
-                              ],
+                            Expanded(
+                              child: Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    '${NumberUtil.roundDouble(model.gasFee, decimalPlaces: model.tokenModel.decimal ?? model.decimalLimit).toString()} ${model.feeUnit}',
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold,
+                                        color: black),
+                                  ),
+                                  Text(
+                                    '${model.kanbanGasFee} ${FlutterI18n.translate(context, "GAS")}',
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold,
+                                        color: black),
+                                  ),
+                                ],
+                              ),
                             ),
-                            Expanded(child: SizedBox()),
                             InkWell(
                               onTap: () {
                                 setState(() {
@@ -389,7 +423,19 @@ class _TransferViewState extends State<TransferView>
                                           keyboardType:
                                               TextInputType.numberWithOptions(
                                                   decimal: true),
-                                          onChanged: (value) {},
+                                          onChanged: (value) {
+                                            setState(() {
+                                              model.gasPriceTextController
+                                                      .selection =
+                                                  TextSelection.fromPosition(
+                                                TextPosition(
+                                                    offset: model
+                                                        .gasPriceTextController
+                                                        .text
+                                                        .length),
+                                              );
+                                            });
+                                          },
                                           style: TextStyle(
                                               fontSize: 16,
                                               fontWeight: FontWeight.w500,
@@ -437,7 +483,19 @@ class _TransferViewState extends State<TransferView>
                                           keyboardType:
                                               TextInputType.numberWithOptions(
                                                   decimal: true),
-                                          onChanged: (value) {},
+                                          onChanged: (value) {
+                                            setState(() {
+                                              model.gasLimitTextController
+                                                      .selection =
+                                                  TextSelection.fromPosition(
+                                                TextPosition(
+                                                    offset: model
+                                                        .gasLimitTextController
+                                                        .text
+                                                        .length),
+                                              );
+                                            });
+                                          },
                                           style: TextStyle(
                                               fontSize: 16,
                                               fontWeight: FontWeight.w500,
@@ -485,7 +543,19 @@ class _TransferViewState extends State<TransferView>
                                           keyboardType:
                                               TextInputType.numberWithOptions(
                                                   decimal: true),
-                                          onChanged: (value) {},
+                                          onChanged: (value) {
+                                            setState(() {
+                                              model.kanbanGasPriceTextController
+                                                      .selection =
+                                                  TextSelection.fromPosition(
+                                                TextPosition(
+                                                    offset: model
+                                                        .kanbanGasPriceTextController
+                                                        .text
+                                                        .length),
+                                              );
+                                            });
+                                          },
                                           style: TextStyle(
                                               fontSize: 16,
                                               fontWeight: FontWeight.w500,
@@ -533,7 +603,19 @@ class _TransferViewState extends State<TransferView>
                                           keyboardType:
                                               TextInputType.numberWithOptions(
                                                   decimal: true),
-                                          onChanged: (value) {},
+                                          onChanged: (value) {
+                                            setState(() {
+                                              model.kanbanGasLimitTextController
+                                                      .selection =
+                                                  TextSelection.fromPosition(
+                                                TextPosition(
+                                                    offset: model
+                                                        .kanbanGasLimitTextController
+                                                        .text
+                                                        .length),
+                                              );
+                                            });
+                                          },
                                           style: TextStyle(
                                               fontSize: 16,
                                               fontWeight: FontWeight.w500,
