@@ -26,16 +26,13 @@ class TotalBalanceCardWidget extends StatelessWidget {
               elevation: model.elevation,
               color: isProduction ? secondaryColor : red.withAlpha(200),
               child: Container(
-                //duration: Duration(milliseconds: 250),
                 width: 350,
                 height: 90,
-                //model.totalBalanceContainerWidth,
                 padding: const EdgeInsets.all(10),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    //Announcement Widget
                     Expanded(
                         flex: 1,
                         child: Image.asset(

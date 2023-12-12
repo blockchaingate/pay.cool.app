@@ -57,9 +57,7 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
   }
 
   void _handleTabSelection() {
-    if (newModel != null) {
-      newModel!.updateTabSelection(_tabController!.index);
-    }
+    if (newModel != null) {}
   }
 
   @override
@@ -84,7 +82,8 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
                 systemOverlayStyle: SystemUiOverlayStyle.dark,
                 leading: InkWell(
                   onTap: () async {
-                    key.currentState!.openDrawer();
+                    // key.currentState!.openDrawer();
+                    model.goToChainList(size);
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -122,78 +121,6 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
                     scale: 2.7,
                   ),
                 ],
-              ),
-              drawer: Drawer(
-                width: size.width * 0.2,
-                child: ListView(
-                  padding: EdgeInsets.only(top: size.height * 0.3),
-                  children: <Widget>[
-                    ListTile(
-                      title: Text(
-                        model.chainList[0],
-                        style: TextStyle(color: black),
-                      ),
-                      onTap: () {
-                        model.updateTabSelection(0);
-                        Navigator.pop(context); // Close the drawer
-                      },
-                    ),
-                    ListTile(
-                      title: Text(
-                        model.chainList[1],
-                        style: TextStyle(color: black),
-                      ),
-                      onTap: () {
-                        model.updateTabSelection(1);
-                        Navigator.pop(context); // Close the drawer
-                      },
-                    ),
-                    ListTile(
-                      title: Text(
-                        model.chainList[2],
-                        style: TextStyle(color: black),
-                      ),
-                      onTap: () {
-                        model.updateTabSelection(2);
-                        // Handle item tap
-                        Navigator.pop(context); // Close the drawer
-                      },
-                    ),
-                    ListTile(
-                      title: Text(
-                        model.chainList[3],
-                        style: TextStyle(color: black),
-                      ),
-                      onTap: () {
-                        model.updateTabSelection(3);
-                        // Handle item tap
-                        Navigator.pop(context); // Close the drawer
-                      },
-                    ),
-                    ListTile(
-                      title: Text(
-                        model.chainList[4],
-                        style: TextStyle(color: black),
-                      ),
-                      onTap: () {
-                        model.updateTabSelection(4);
-                        // Handle item tap
-                        Navigator.pop(context); // Close the drawer
-                      },
-                    ),
-                    ListTile(
-                      title: Text(
-                        model.chainList[5],
-                        style: TextStyle(color: black),
-                      ),
-                      onTap: () {
-                        model.updateTabSelection(5);
-                        // Handle item tap
-                        Navigator.pop(context); // Close the drawer
-                      },
-                    ),
-                  ],
-                ),
               ),
               body: Builder(
                   builder: (context) => mainWidgets(size, model, context)),
