@@ -33,6 +33,18 @@ pipeline {
             }
         }
 
+        stage('Slack Notification') {
+            when {
+                expression { currentBuild.resultIsBetterOrEqualTo('SUCCESS') }
+            }   
+            steps {
+                script {
+                    slackSend channel:  "#paycool-testing", message: "Build Started: ${env.JOB_NAME} ${env.BUILD_NUMBER}", teamDomain: "aukfa", tokenCredentialId: "slack-token"
+                    // slackUploadFile channel: "#jenkins-apk", credentialId: "slack-file-token", filePath: "build/app/outputs/flutter-apk/app-release.apk", initialComment: "this is test"
+                }
+            }
+        }
+
     }
 
      post {
