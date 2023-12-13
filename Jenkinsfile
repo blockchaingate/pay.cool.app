@@ -2,7 +2,6 @@ pipeline {
     agent any
 
     environment {
-    //   PATH = "/Users/mustafayildiz/sdks/flutter/bin:$PATH"
     PATH = "/Users/mustafayildiz/sdks/flutter/bin:$PATH"
     } 
 
@@ -18,7 +17,6 @@ pipeline {
             steps {
                 // Assuming you have files to copy in the same directory as your Jenkinsfile
                 script {
-                    // sh 'cp -r /Users/barry/Desktop/jenkins-copy-files/* ./android/'
                     sh 'cp -r /Users/mustafayildiz/Desktop/pay.cool-jenkins-copyfiles/* ./android/'
                 }
             }
