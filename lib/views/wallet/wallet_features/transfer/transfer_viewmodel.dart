@@ -229,9 +229,6 @@ class TransferViewModel extends BaseViewModel {
   }
 
   updateTransFee() async {
-    print("tokenType");
-    print(tokenType);
-
     setBusy(true);
     var to =
         coinService.getCoinOfficalAddress(coinName!, tokenType: tokenType!);
@@ -268,13 +265,6 @@ class TransferViewModel extends BaseViewModel {
       kanbanTransFeeDouble = f.toDouble();
     }
 
-    print(selectedCoinWalletInfo!.tickerName!);
-    print(address);
-    print(to);
-    print(amount);
-    print(options);
-    print(kanbanTransFeeDouble);
-
     await walletService
         .sendTransaction(
             selectedCoinWalletInfo!.tickerName!,
@@ -287,21 +277,17 @@ class TransferViewModel extends BaseViewModel {
             options,
             false)
         .then((ret) {
-      print("-------------------------");
-      print(ret);
-
       if (ret != null && ret['transFee'] != null) {
         gasFee = ret['transFee'];
         kanbanGasFee = kanbanTransFeeDouble!;
         setBusy(false);
       }
-      // if (isTrx()) {
-      //   if (gasFee == 0.0) {
-      //     isValidAmount = false;
-      //   }
-      // }
+      if (isTrx()) {
+        if (gasFee == 0.0) {
+          isValidAmount = false;
+        }
+      }
     }).catchError((onError) {
-      print(onError);
       setBusy(false);
     });
 

@@ -55,24 +55,25 @@ class _TransferViewState extends State<TransferView>
                 resizeToAvoidBottomInset: false,
                 backgroundColor: bgGrey,
                 appBar: customAppBarWithIcon(
-                    title: FlutterI18n.translate(
-                        context, "Transfer"), // TODO : Translate
-                    leading: IconButton(
-                        onPressed: () => Navigator.pop(context),
-                        icon: Icon(
-                          Icons.arrow_back_ios,
-                          color: Colors.black,
-                          size: 20,
-                        )),
-                    actions: [
-                      IconButton(
-                        onPressed: null,
-                        icon: Image.asset(
-                          "assets/images/new-design/scan_icon.png",
-                          scale: 2.7,
-                        ),
-                      )
-                    ]),
+                  title: FlutterI18n.translate(
+                      context, "Transfer"), // TODO : Translate
+                  leading: IconButton(
+                      onPressed: () => Navigator.pop(context),
+                      icon: Icon(
+                        Icons.arrow_back_ios,
+                        color: Colors.black,
+                        size: 20,
+                      )),
+                  // actions: [
+                  //   IconButton(
+                  //     onPressed: null,
+                  //     icon: Image.asset(
+                  //       "assets/images/new-design/scan_icon.png",
+                  //       scale: 2.7,
+                  //     ),
+                  //   )
+                  // ],
+                ),
                 floatingActionButtonLocation:
                     FloatingActionButtonLocation.centerFloat,
                 floatingActionButton: Row(
@@ -444,6 +445,126 @@ class _TransferViewState extends State<TransferView>
                                           decoration: InputDecoration(
                                             border: InputBorder.none,
                                             hintText: "90",
+                                            hintStyle: TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w500,
+                                                color: Colors.black),
+                                            contentPadding:
+                                                EdgeInsets.only(left: 10),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 3,
+                                ),
+                                Container(
+                                  width: size.width,
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(10)),
+                                  child: Row(
+                                    children: [
+                                      Center(
+                                        child: Text(
+                                          FlutterI18n.translate(
+                                              context, "gasLimit"),
+                                          style: TextStyle(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.bold,
+                                              color: textHintGrey),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: TextField(
+                                          controller:
+                                              model.gasLimitTextController,
+                                          keyboardType:
+                                              TextInputType.numberWithOptions(
+                                                  decimal: true),
+                                          onChanged: (value) {
+                                            setState(() {
+                                              model.gasLimitTextController
+                                                      .selection =
+                                                  TextSelection.fromPosition(
+                                                TextPosition(
+                                                    offset: model
+                                                        .gasLimitTextController
+                                                        .text
+                                                        .length),
+                                              );
+                                            });
+                                          },
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w500,
+                                              color: Colors.black),
+                                          textAlign: TextAlign.right,
+                                          decoration: InputDecoration(
+                                            border: InputBorder.none,
+                                            hintText: "21000",
+                                            hintStyle: TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w500,
+                                                color: Colors.black),
+                                            contentPadding:
+                                                EdgeInsets.only(left: 10),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 3,
+                                ),
+                                Container(
+                                  width: size.width,
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(10)),
+                                  child: Row(
+                                    children: [
+                                      Center(
+                                        child: Text(
+                                          FlutterI18n.translate(
+                                              context, "gasLimit"),
+                                          style: TextStyle(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.bold,
+                                              color: textHintGrey),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: TextField(
+                                          controller:
+                                              model.gasLimitTextController,
+                                          keyboardType:
+                                              TextInputType.numberWithOptions(
+                                                  decimal: true),
+                                          onChanged: (value) {
+                                            setState(() {
+                                              model.gasLimitTextController
+                                                      .selection =
+                                                  TextSelection.fromPosition(
+                                                TextPosition(
+                                                    offset: model
+                                                        .gasLimitTextController
+                                                        .text
+                                                        .length),
+                                              );
+                                            });
+                                          },
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w500,
+                                              color: Colors.black),
+                                          textAlign: TextAlign.right,
+                                          decoration: InputDecoration(
+                                            border: InputBorder.none,
+                                            hintText: "21000",
                                             hintStyle: TextStyle(
                                                 fontSize: 16,
                                                 fontWeight: FontWeight.w500,
