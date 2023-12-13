@@ -17,7 +17,7 @@ pipeline {
             steps {
                 // Assuming you have files to copy in the same directory as your Jenkinsfile
                 script {
-                    sh 'cp -r /Users/mustafayildiz/Desktop/jenkins-copyfiles/* ./android/'
+                    sh 'cp -r /Users/mustafayildiz/Desktop/pay.cool-jenkins-copyfiles/* ./android/'
                 }
             }
         }
@@ -28,7 +28,7 @@ pipeline {
                 script {
                     sh 'flutter clean'
                     sh 'flutter pub get'
-                    // sh 'flutter build apk'
+                    sh 'flutter build apk'
                 }
             }
         }
@@ -40,7 +40,7 @@ pipeline {
             steps {
                 script {
                     slackSend channel:  "#paycool-testing", message: "Build Started: ${env.JOB_NAME} ${env.BUILD_NUMBER}", teamDomain: "aukfa", tokenCredentialId: "slack-token"
-                    // slackUploadFile channel: "#jenkins-apk", credentialId: "slack-file-token", filePath: "build/app/outputs/flutter-apk/app-release.apk", initialComment: "this is test"
+                    slackUploadFile channel: "#paycool-testing", credentialId: "slack-file-token", filePath: "build/app/outputs/flutter-apk/app-release.apk", initialComment: "this is test"
                 }
             }
         }
