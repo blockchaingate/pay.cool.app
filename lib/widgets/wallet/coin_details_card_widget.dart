@@ -131,7 +131,7 @@ class CoinDetailsCardWidget extends StackedView<WalletDashboardViewModel> {
                                   .toString(),
                           style: TextStyle(
                               color: Colors.black,
-                              fontSize: 16,
+                              fontSize: 14,
                               fontWeight: FontWeight.w600),
                         ),
                         Row(

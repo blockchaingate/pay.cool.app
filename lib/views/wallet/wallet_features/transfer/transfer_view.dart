@@ -346,7 +346,7 @@ class _TransferViewState extends State<TransferView>
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    '${NumberUtil.roundDouble(model.gasFee, decimalPlaces: model.tokenModel.decimal ?? model.decimalLimit).toString()} ${model.feeUnit}',
+                                    '${NumberUtil.roundDouble(model.gasFee, decimalPlaces: model.tokenModel.decimal ?? model.decimalLimit).toString()} ${model.feeUnit ?? model.tokenModel.tickerName}',
                                     overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
                                         fontSize: 12,
@@ -400,361 +400,390 @@ class _TransferViewState extends State<TransferView>
                           child: SingleChildScrollView(
                             child: Column(
                               children: [
-                                Container(
-                                  width: size.width,
-                                  decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(10)),
-                                  child: Row(
-                                    children: [
-                                      Center(
-                                        child: Text(
-                                          FlutterI18n.translate(
-                                              context, "gasPrice"),
-                                          style: TextStyle(
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.bold,
-                                              color: textHintGrey),
+//  Gas fee advance
+
+                                Visibility(
+                                  visible: model.isTrx() ||
+                                      (model.coinName == 'ETH' ||
+                                          model.tokenType == 'ETH' ||
+                                          model.tokenType == 'FAB'),
+                                  child: Container(
+                                    width: size.width,
+                                    decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
+                                    child: Row(
+                                      children: [
+                                        Center(
+                                          child: Text(
+                                            FlutterI18n.translate(
+                                                context, "gasPrice"),
+                                            style: TextStyle(
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.bold,
+                                                color: textHintGrey),
+                                          ),
                                         ),
-                                      ),
-                                      Expanded(
-                                        child: TextField(
-                                          controller:
-                                              model.gasPriceTextController,
-                                          keyboardType:
-                                              TextInputType.numberWithOptions(
-                                                  decimal: true),
-                                          onChanged: (value) {
-                                            setState(() {
-                                              model.gasPriceTextController
-                                                      .selection =
-                                                  TextSelection.fromPosition(
-                                                TextPosition(
-                                                    offset: model
-                                                        .gasPriceTextController
-                                                        .text
-                                                        .length),
-                                              );
-                                            });
-                                          },
-                                          style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w500,
-                                              color: Colors.black),
-                                          textAlign: TextAlign.right,
-                                          decoration: InputDecoration(
-                                            border: InputBorder.none,
-                                            hintText: "90",
-                                            hintStyle: TextStyle(
+                                        Expanded(
+                                          child: TextField(
+                                            controller:
+                                                model.gasPriceTextController,
+                                            keyboardType:
+                                                TextInputType.numberWithOptions(
+                                                    decimal: true),
+                                            onChanged: (value) {
+                                              setState(() {
+                                                model.gasPriceTextController
+                                                        .selection =
+                                                    TextSelection.fromPosition(
+                                                  TextPosition(
+                                                      offset: model
+                                                          .gasPriceTextController
+                                                          .text
+                                                          .length),
+                                                );
+                                              });
+                                            },
+                                            style: TextStyle(
                                                 fontSize: 16,
                                                 fontWeight: FontWeight.w500,
                                                 color: Colors.black),
-                                            contentPadding:
-                                                EdgeInsets.only(left: 10),
+                                            textAlign: TextAlign.right,
+                                            decoration: InputDecoration(
+                                              border: InputBorder.none,
+                                              hintText: "90",
+                                              hintStyle: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w500,
+                                                  color: Colors.black),
+                                              contentPadding:
+                                                  EdgeInsets.only(left: 10),
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                 ),
                                 SizedBox(
                                   height: 3,
                                 ),
-                                Container(
-                                  width: size.width,
-                                  decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(10)),
-                                  child: Row(
-                                    children: [
-                                      Center(
-                                        child: Text(
-                                          FlutterI18n.translate(
-                                              context, "gasLimit"),
-                                          style: TextStyle(
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.bold,
-                                              color: textHintGrey),
+                                Visibility(
+                                  visible: !model.isTrx(),
+                                  child: Container(
+                                    width: size.width,
+                                    decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
+                                    child: Row(
+                                      children: [
+                                        Center(
+                                          child: Text(
+                                            FlutterI18n.translate(
+                                                context, "gasLimit"),
+                                            style: TextStyle(
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.bold,
+                                                color: textHintGrey),
+                                          ),
                                         ),
-                                      ),
-                                      Expanded(
-                                        child: TextField(
-                                          controller:
-                                              model.gasLimitTextController,
-                                          keyboardType:
-                                              TextInputType.numberWithOptions(
-                                                  decimal: true),
-                                          onChanged: (value) {
-                                            setState(() {
-                                              model.gasLimitTextController
-                                                      .selection =
-                                                  TextSelection.fromPosition(
-                                                TextPosition(
-                                                    offset: model
-                                                        .gasLimitTextController
-                                                        .text
-                                                        .length),
-                                              );
-                                            });
-                                          },
-                                          style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w500,
-                                              color: Colors.black),
-                                          textAlign: TextAlign.right,
-                                          decoration: InputDecoration(
-                                            border: InputBorder.none,
-                                            hintText: "21000",
-                                            hintStyle: TextStyle(
+                                        Expanded(
+                                          child: TextField(
+                                            controller:
+                                                model.gasLimitTextController,
+                                            keyboardType:
+                                                TextInputType.numberWithOptions(
+                                                    decimal: true),
+                                            onChanged: (value) {
+                                              setState(() {
+                                                model.gasLimitTextController
+                                                        .selection =
+                                                    TextSelection.fromPosition(
+                                                  TextPosition(
+                                                      offset: model
+                                                          .gasLimitTextController
+                                                          .text
+                                                          .length),
+                                                );
+                                              });
+                                            },
+                                            style: TextStyle(
                                                 fontSize: 16,
                                                 fontWeight: FontWeight.w500,
                                                 color: Colors.black),
-                                            contentPadding:
-                                                EdgeInsets.only(left: 10),
+                                            textAlign: TextAlign.right,
+                                            decoration: InputDecoration(
+                                              border: InputBorder.none,
+                                              hintText: "21000",
+                                              hintStyle: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w500,
+                                                  color: Colors.black),
+                                              contentPadding:
+                                                  EdgeInsets.only(left: 10),
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                 ),
                                 SizedBox(
                                   height: 3,
                                 ),
-                                Container(
-                                  width: size.width,
-                                  decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(10)),
-                                  child: Row(
-                                    children: [
-                                      Center(
-                                        child: Text(
-                                          FlutterI18n.translate(
-                                              context, "gasLimit"),
-                                          style: TextStyle(
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.bold,
-                                              color: textHintGrey),
+                                Visibility(
+                                  visible: !model.isTrx(),
+                                  child: Container(
+                                    width: size.width,
+                                    decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
+                                    child: Row(
+                                      children: [
+                                        Center(
+                                          child: Text(
+                                            FlutterI18n.translate(
+                                                context, "gasLimit"),
+                                            style: TextStyle(
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.bold,
+                                                color: textHintGrey),
+                                          ),
                                         ),
-                                      ),
-                                      Expanded(
-                                        child: TextField(
-                                          controller:
-                                              model.gasLimitTextController,
-                                          keyboardType:
-                                              TextInputType.numberWithOptions(
-                                                  decimal: true),
-                                          onChanged: (value) {
-                                            setState(() {
-                                              model.gasLimitTextController
-                                                      .selection =
-                                                  TextSelection.fromPosition(
-                                                TextPosition(
-                                                    offset: model
-                                                        .gasLimitTextController
-                                                        .text
-                                                        .length),
-                                              );
-                                            });
-                                          },
-                                          style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w500,
-                                              color: Colors.black),
-                                          textAlign: TextAlign.right,
-                                          decoration: InputDecoration(
-                                            border: InputBorder.none,
-                                            hintText: "21000",
-                                            hintStyle: TextStyle(
+                                        Expanded(
+                                          child: TextField(
+                                            controller:
+                                                model.gasLimitTextController,
+                                            keyboardType:
+                                                TextInputType.numberWithOptions(
+                                                    decimal: true),
+                                            onChanged: (value) {
+                                              setState(() {
+                                                model.gasLimitTextController
+                                                        .selection =
+                                                    TextSelection.fromPosition(
+                                                  TextPosition(
+                                                      offset: model
+                                                          .gasLimitTextController
+                                                          .text
+                                                          .length),
+                                                );
+                                              });
+                                            },
+                                            style: TextStyle(
                                                 fontSize: 16,
                                                 fontWeight: FontWeight.w500,
                                                 color: Colors.black),
-                                            contentPadding:
-                                                EdgeInsets.only(left: 10),
+                                            textAlign: TextAlign.right,
+                                            decoration: InputDecoration(
+                                              border: InputBorder.none,
+                                              hintText: "21000",
+                                              hintStyle: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w500,
+                                                  color: Colors.black),
+                                              contentPadding:
+                                                  EdgeInsets.only(left: 10),
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                 ),
                                 SizedBox(
                                   height: 3,
                                 ),
-                                Container(
-                                  width: size.width,
-                                  decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(10)),
-                                  child: Row(
-                                    children: [
-                                      Center(
-                                        child: Text(
-                                          FlutterI18n.translate(
-                                              context, "gasLimit"),
-                                          style: TextStyle(
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.bold,
-                                              color: textHintGrey),
+                                Visibility(
+                                  visible: !model.isTrx(),
+                                  child: Container(
+                                    width: size.width,
+                                    decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
+                                    child: Row(
+                                      children: [
+                                        Center(
+                                          child: Text(
+                                            FlutterI18n.translate(
+                                                context, "gasLimit"),
+                                            style: TextStyle(
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.bold,
+                                                color: textHintGrey),
+                                          ),
                                         ),
-                                      ),
-                                      Expanded(
-                                        child: TextField(
-                                          controller:
-                                              model.gasLimitTextController,
-                                          keyboardType:
-                                              TextInputType.numberWithOptions(
-                                                  decimal: true),
-                                          onChanged: (value) {
-                                            setState(() {
-                                              model.gasLimitTextController
-                                                      .selection =
-                                                  TextSelection.fromPosition(
-                                                TextPosition(
-                                                    offset: model
-                                                        .gasLimitTextController
-                                                        .text
-                                                        .length),
-                                              );
-                                            });
-                                          },
-                                          style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w500,
-                                              color: Colors.black),
-                                          textAlign: TextAlign.right,
-                                          decoration: InputDecoration(
-                                            border: InputBorder.none,
-                                            hintText: "21000",
-                                            hintStyle: TextStyle(
+                                        Expanded(
+                                          child: TextField(
+                                            controller:
+                                                model.gasLimitTextController,
+                                            keyboardType:
+                                                TextInputType.numberWithOptions(
+                                                    decimal: true),
+                                            onChanged: (value) {
+                                              setState(() {
+                                                model.gasLimitTextController
+                                                        .selection =
+                                                    TextSelection.fromPosition(
+                                                  TextPosition(
+                                                      offset: model
+                                                          .gasLimitTextController
+                                                          .text
+                                                          .length),
+                                                );
+                                              });
+                                            },
+                                            style: TextStyle(
                                                 fontSize: 16,
                                                 fontWeight: FontWeight.w500,
                                                 color: Colors.black),
-                                            contentPadding:
-                                                EdgeInsets.only(left: 10),
+                                            textAlign: TextAlign.right,
+                                            decoration: InputDecoration(
+                                              border: InputBorder.none,
+                                              hintText: "21000",
+                                              hintStyle: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w500,
+                                                  color: Colors.black),
+                                              contentPadding:
+                                                  EdgeInsets.only(left: 10),
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                 ),
                                 SizedBox(
                                   height: 3,
                                 ),
-                                Container(
-                                  width: size.width,
-                                  decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(10)),
-                                  child: Row(
-                                    children: [
-                                      Center(
-                                        child: Text(
-                                          FlutterI18n.translate(
-                                              context, "kanbanGasPrice"),
-                                          style: TextStyle(
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.bold,
-                                              color: textHintGrey),
+                                Visibility(
+                                  visible: !model.isTrx(),
+                                  child: Container(
+                                    width: size.width,
+                                    decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
+                                    child: Row(
+                                      children: [
+                                        Center(
+                                          child: Text(
+                                            FlutterI18n.translate(
+                                                context, "kanbanGasPrice"),
+                                            style: TextStyle(
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.bold,
+                                                color: textHintGrey),
+                                          ),
                                         ),
-                                      ),
-                                      Expanded(
-                                        child: TextField(
-                                          controller: model
-                                              .kanbanGasPriceTextController,
-                                          keyboardType:
-                                              TextInputType.numberWithOptions(
-                                                  decimal: true),
-                                          onChanged: (value) {
-                                            setState(() {
-                                              model.kanbanGasPriceTextController
-                                                      .selection =
-                                                  TextSelection.fromPosition(
-                                                TextPosition(
-                                                    offset: model
-                                                        .kanbanGasPriceTextController
-                                                        .text
-                                                        .length),
-                                              );
-                                            });
-                                          },
-                                          style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w500,
-                                              color: Colors.black),
-                                          textAlign: TextAlign.right,
-                                          decoration: InputDecoration(
-                                            border: InputBorder.none,
-                                            hintText: "21000",
-                                            hintStyle: TextStyle(
+                                        Expanded(
+                                          child: TextField(
+                                            controller: model
+                                                .kanbanGasPriceTextController,
+                                            keyboardType:
+                                                TextInputType.numberWithOptions(
+                                                    decimal: true),
+                                            onChanged: (value) {
+                                              setState(() {
+                                                model.kanbanGasPriceTextController
+                                                        .selection =
+                                                    TextSelection.fromPosition(
+                                                  TextPosition(
+                                                      offset: model
+                                                          .kanbanGasPriceTextController
+                                                          .text
+                                                          .length),
+                                                );
+                                              });
+                                            },
+                                            style: TextStyle(
                                                 fontSize: 16,
                                                 fontWeight: FontWeight.w500,
                                                 color: Colors.black),
-                                            contentPadding:
-                                                EdgeInsets.only(left: 10),
+                                            textAlign: TextAlign.right,
+                                            decoration: InputDecoration(
+                                              border: InputBorder.none,
+                                              hintText: "21000",
+                                              hintStyle: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w500,
+                                                  color: Colors.black),
+                                              contentPadding:
+                                                  EdgeInsets.only(left: 10),
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                 ),
                                 SizedBox(
                                   height: 3,
                                 ),
-                                Container(
-                                  width: size.width,
-                                  decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(10)),
-                                  child: Row(
-                                    children: [
-                                      Center(
-                                        child: Text(
-                                          FlutterI18n.translate(
-                                              context, "kanbanGasLimit"),
-                                          style: TextStyle(
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.bold,
-                                              color: textHintGrey),
+                                Visibility(
+                                  visible: !model.isTrx(),
+                                  child: Container(
+                                    width: size.width,
+                                    decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
+                                    child: Row(
+                                      children: [
+                                        Center(
+                                          child: Text(
+                                            FlutterI18n.translate(
+                                                context, "kanbanGasLimit"),
+                                            style: TextStyle(
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.bold,
+                                                color: textHintGrey),
+                                          ),
                                         ),
-                                      ),
-                                      Expanded(
-                                        child: TextField(
-                                          controller: model
-                                              .kanbanGasLimitTextController,
-                                          keyboardType:
-                                              TextInputType.numberWithOptions(
-                                                  decimal: true),
-                                          onChanged: (value) {
-                                            setState(() {
-                                              model.kanbanGasLimitTextController
-                                                      .selection =
-                                                  TextSelection.fromPosition(
-                                                TextPosition(
-                                                    offset: model
-                                                        .kanbanGasLimitTextController
-                                                        .text
-                                                        .length),
-                                              );
-                                            });
-                                          },
-                                          style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w500,
-                                              color: Colors.black),
-                                          textAlign: TextAlign.right,
-                                          decoration: InputDecoration(
-                                            border: InputBorder.none,
-                                            hintText: "21000",
-                                            hintStyle: TextStyle(
+                                        Expanded(
+                                          child: TextField(
+                                            controller: model
+                                                .kanbanGasLimitTextController,
+                                            keyboardType:
+                                                TextInputType.numberWithOptions(
+                                                    decimal: true),
+                                            onChanged: (value) {
+                                              setState(() {
+                                                model.kanbanGasLimitTextController
+                                                        .selection =
+                                                    TextSelection.fromPosition(
+                                                  TextPosition(
+                                                      offset: model
+                                                          .kanbanGasLimitTextController
+                                                          .text
+                                                          .length),
+                                                );
+                                              });
+                                            },
+                                            style: TextStyle(
                                                 fontSize: 16,
                                                 fontWeight: FontWeight.w500,
                                                 color: Colors.black),
-                                            contentPadding:
-                                                EdgeInsets.only(left: 10),
+                                            textAlign: TextAlign.right,
+                                            decoration: InputDecoration(
+                                              border: InputBorder.none,
+                                              hintText: "21000",
+                                              hintStyle: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w500,
+                                                  color: Colors.black),
+                                              contentPadding:
+                                                  EdgeInsets.only(left: 10),
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ],
