@@ -21,6 +21,7 @@ import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/views/wallet/wallet_dashboard_viewmodel.dart';
 import 'package:paycool/views/wallet/wallet_features/add_token_view.dart';
 import 'package:paycool/widgets/bottom_nav.dart';
+import 'package:paycool/widgets/shared/will_pop_scope.dart';
 import 'package:paycool/widgets/shimmer_layouts/shimmer_layout.dart';
 import 'package:paycool/widgets/wallet/coin_details_card_widget.dart';
 import 'package:paycool/widgets/wallet/wallet_card_widget.dart';
@@ -72,72 +73,77 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
         },
         viewModelBuilder: () => WalletDashboardViewModel(),
         builder: (context, WalletDashboardViewModel model, child) {
-          return GestureDetector(
-            onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
-            child: Scaffold(
-              key: key,
-              appBar: AppBar(
-                backgroundColor: Colors.transparent,
-                elevation: 0,
-                systemOverlayStyle: SystemUiOverlayStyle.dark,
-                leading: InkWell(
-                  onTap: () async {
-                    model.goToChainList(size);
-                  },
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.asset(
-                        "assets/images/new-design/menu_icon.png",
-                        scale: 2.7,
-                      ),
-                      UIHelper.horizontalSpaceSmall,
-                      Text(
-                        "${model.chainList[model.selectedTabIndex]} ${FlutterI18n.translate(context, "chain")}",
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 14),
-                      )
-                    ],
-                  ),
-                ),
-                leadingWidth: (size.width * 0.3),
-                actions: [
-                  InkWell(
-                    onTap: () {
-                      model.navigationService.navigateTo(
-                        WalletConnectViewRoute,
-                      );
+          return WillPopScope(
+            onWillPop: () {
+              return WillPopScopeWidget().onWillPop(context);
+            },
+            child: GestureDetector(
+              onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
+              child: Scaffold(
+                key: key,
+                appBar: AppBar(
+                  backgroundColor: Colors.transparent,
+                  elevation: 0,
+                  systemOverlayStyle: SystemUiOverlayStyle.dark,
+                  leading: InkWell(
+                    onTap: () async {
+                      model.goToChainList(size);
                     },
-                    child: Image.asset(
-                      "assets/images/new-design/wc_icon.png",
-                      scale: 2.7,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset(
+                          "assets/images/new-design/menu_icon.png",
+                          scale: 2.7,
+                        ),
+                        UIHelper.horizontalSpaceSmall,
+                        Text(
+                          "${model.chainList[model.selectedTabIndex]} ${FlutterI18n.translate(context, "chain")}",
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 14),
+                        )
+                      ],
                     ),
                   ),
-                  Image.asset(
-                    "assets/images/new-design/scan_icon.png",
-                    scale: 2.7,
-                  ),
-                ],
-              ),
-              body: Builder(
-                  builder: (context) => mainWidgets(size, model, context)),
-              bottomNavigationBar: BottomNavBar(count: 1),
-              floatingActionButton: FloatingActionButton(
-                onPressed: () {
-                  model.navigationService.navigateTo(PayCoolViewRoute);
-                },
-                elevation: 1,
-                backgroundColor: Colors.transparent,
-                child: Image.asset(
-                  "assets/images/new-design/pay_cool_icon.png",
-                  fit: BoxFit.cover,
+                  leadingWidth: (size.width * 0.3),
+                  actions: [
+                    InkWell(
+                      onTap: () {
+                        model.navigationService.navigateTo(
+                          WalletConnectViewRoute,
+                        );
+                      },
+                      child: Image.asset(
+                        "assets/images/new-design/wc_icon.png",
+                        scale: 2.7,
+                      ),
+                    ),
+                    Image.asset(
+                      "assets/images/new-design/scan_icon.png",
+                      scale: 2.7,
+                    ),
+                  ],
                 ),
+                body: Builder(
+                    builder: (context) => mainWidgets(size, model, context)),
+                bottomNavigationBar: BottomNavBar(count: 1),
+                floatingActionButton: FloatingActionButton(
+                  onPressed: () {
+                    model.navigationService.navigateTo(PayCoolViewRoute);
+                  },
+                  elevation: 1,
+                  backgroundColor: Colors.transparent,
+                  child: Image.asset(
+                    "assets/images/new-design/pay_cool_icon.png",
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                extendBody: true,
+                floatingActionButtonLocation:
+                    FloatingActionButtonLocation.centerDocked,
               ),
-              extendBody: true,
-              floatingActionButtonLocation:
-                  FloatingActionButtonLocation.centerDocked,
             ),
           );
         });
