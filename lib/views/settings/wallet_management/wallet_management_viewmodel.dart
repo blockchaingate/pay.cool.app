@@ -11,26 +11,16 @@
 *----------------------------------------------------------------------
 */
 
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
-import 'package:kyc/kyc.dart';
-import 'package:local_auth/local_auth.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:paycool/constants/colors.dart';
-import 'package:paycool/constants/route_names.dart';
-import 'package:paycool/environments/environment_type.dart';
 import 'package:paycool/logger.dart';
-import 'package:paycool/models/wallet/user_settings_model.dart';
 import 'package:paycool/service_locator.dart';
-import 'package:paycool/services/config_service.dart';
 import 'package:paycool/services/db/core_wallet_database_service.dart';
 import 'package:paycool/services/db/token_list_database_service.dart';
 import 'package:paycool/services/db/transaction_history_database_service.dart';
 import 'package:paycool/services/db/user_settings_database_service.dart';
 import 'package:paycool/services/db/wallet_database_service.dart';
-import 'package:paycool/services/local_auth_service.dart';
 import 'package:paycool/services/local_dialog_service.dart';
 import 'package:paycool/services/local_storage_service.dart';
 import 'package:paycool/services/shared_service.dart';
@@ -38,8 +28,6 @@ import 'package:paycool/services/stoppable_service.dart';
 import 'package:paycool/services/vault_service.dart';
 import 'package:paycool/services/wallet_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-//import 'package:showcaseview/showcaseview.dart';
-
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 
@@ -176,9 +164,8 @@ class WalletManagementViewModel extends BaseViewModel with StoppableService {
     }
   }
 
-/*----------------------------------------------------------------------
-                Display mnemonic
-----------------------------------------------------------------------*/
+// add import and create wallet functions
+
   displayMnemonic() async {
     errorMessage = '';
 

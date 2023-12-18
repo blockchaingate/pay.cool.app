@@ -51,6 +51,8 @@ Future<void> main() async {
   try {
     await Hive.initFlutter();
     await serviceLocator();
+    await locator.allReady();
+
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
 
     Logger.level = Level.info;
