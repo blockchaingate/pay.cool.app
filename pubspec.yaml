@@ -1,6 +1,6 @@
 name: paycool
 description: Crypto payment application
-version: 2.5.157+233
+version: 2.4.157+234
 
 publish_to: "none"
 
@@ -36,7 +36,7 @@ dependencies:
       url: https://github.com/blockchaingate/exchangily-packages.git
       path: open_source_packages/bitcoin_flutter
   cached_network_image: ^3.2.3
-  card_swiper: ^3.0.1
+  card_swiper: null
   cupertino_icons: ^1.0.5
   decimal: ^2.2.0
   device_info: ^2.0.2
@@ -103,11 +103,9 @@ dependencies:
   url_launcher: ^6.1.12
   version: ^3.0.2
   web3dart: ^2.0.0
-  webview_flutter: ^4.4.2
+  webview_flutter: ^4.0.2
   modal_progress_hud_nsn: ^0.4.0
   walletconnect_flutter_v2: ^2.1.4
-  camera: ^0.10.5+5
-  provider: ^6.1.1
 
 
 dev_dependencies:
@@ -133,7 +131,6 @@ flutter:
     - assets/images/shared/
     - assets/images/club/
     - assets/images/launcher/
-    - assets/images/new-design/
     - assets/i18n/
     - envs/
 
