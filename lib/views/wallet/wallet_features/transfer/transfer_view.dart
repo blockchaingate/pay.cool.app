@@ -6,6 +6,7 @@ import 'package:paycool/models/wallet/wallet.dart';
 import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/utils/number_util.dart';
 import 'package:paycool/views/wallet/wallet_features/transfer/transfer_viewmodel.dart';
+import 'package:paycool/widgets/wallet/decimal_limit_widget.dart';
 import 'package:stacked/stacked.dart';
 
 class TransferView extends StatefulWidget {
@@ -240,33 +241,53 @@ class _TransferViewState extends State<TransferView>
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Expanded(
-                              child: TextField(
-                                controller: model.amountTextController,
-                                onChanged: (value) {
-                                  setState(() {
-                                    model.amountTextController.selection =
-                                        TextSelection.fromPosition(
-                                      TextPosition(
-                                          offset: model.amountTextController
-                                              .text.length),
-                                    );
-                                    model.amountAfterFee();
-                                  });
-                                },
-                                keyboardType:
-                                    const TextInputType.numberWithOptions(
-                                        decimal: true),
-                                style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.w500),
-                                decoration: InputDecoration(
-                                  border: InputBorder.none,
-                                  hintText: '0.0',
-                                  hintStyle: TextStyle(
-                                      fontSize: 16, color: textHintGrey),
-                                  contentPadding: EdgeInsets.only(left: 10),
-                                ),
+                              child: Column(
+                                children: [
+                                  TextField(
+                                    controller: model.amountTextController,
+                                    onChanged: (String amount) {
+                                      model.updateTransFee();
+                                    },
+                                    keyboardType:
+                                        const TextInputType.numberWithOptions(
+                                            decimal: true),
+                                    inputFormatters: [
+                                      DecimalTextInputFormatter(
+                                          decimalRange: model.token.decimal,
+                                          activatedNegativeValues: false)
+                                    ],
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.w500),
+                                    decoration: InputDecoration(
+                                      border: InputBorder.none,
+                                      hintText: '0.0',
+                                      hintStyle: TextStyle(
+                                          fontSize: 16, color: textHintGrey),
+                                      contentPadding: EdgeInsets.only(left: 10),
+                                    ),
+                                  ),
+                                  Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text(
+                                          '${FlutterI18n.translate(context, "minimumAmount")}: ',
+                                          style: headText6),
+                                      Text(
+                                          model.token.minWithdraw == null
+                                              ? FlutterI18n.translate(
+                                                  context, "loading")
+                                              : model.token.minWithdraw
+                                                  .toString(),
+                                          style: headText6),
+                                    ],
+                                  ),
+                                  model.token.minWithdraw == null
+                                      ? Container()
+                                      : DecimalLimitWidget(
+                                          decimalLimit: model.token.decimal!)
+                                ],
                               ),
                             ),
                             Padding(
@@ -324,7 +345,7 @@ class _TransferViewState extends State<TransferView>
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  FlutterI18n.translate(context, "gasPrice"),
+                                  FlutterI18n.translate(context, "gasFee"),
                                   style: TextStyle(
                                       fontSize: 12,
                                       fontWeight: FontWeight.bold,
@@ -332,7 +353,7 @@ class _TransferViewState extends State<TransferView>
                                 ),
                                 Text(
                                   FlutterI18n.translate(
-                                      context, "kanbanGasPrice"),
+                                      context, "kanbanGasFee"),
                                   style: TextStyle(
                                       fontSize: 12,
                                       fontWeight: FontWeight.bold,
@@ -348,7 +369,7 @@ class _TransferViewState extends State<TransferView>
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    '${NumberUtil.roundDouble(model.gasFee, decimalPlaces: model.tokenModel.decimal ?? model.decimalLimit).toString()} ${model.feeUnit ?? model.tokenModel.tickerName}',
+                                    '${NumberUtil.roundDouble(model.gasFee, decimalPlaces: model.tokenModel.decimal ?? model.decimalLimit).toString()} ${model.tokenModel.tickerName}',
                                     overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
                                         fontSize: 12,
