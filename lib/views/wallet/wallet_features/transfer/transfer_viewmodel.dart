@@ -912,6 +912,22 @@ class TransferViewModel extends BaseViewModel {
     setBusy(false);
   }
 
+  updateTransMoveFee() async {
+    setBusy(true);
+    var kanbanPrice = int.tryParse(kanbanGasPriceTextController.text);
+    var kanbanGasLimit = int.tryParse(kanbanGasLimitTextController.text);
+
+    var kanbanPriceBig = BigInt.from(kanbanPrice!);
+    var kanbanGasLimitBig = BigInt.from(kanbanGasLimit!);
+    var kanbanTransFeeDouble = NumberUtil.rawStringToDecimal(
+            (kanbanPriceBig * kanbanGasLimitBig).toString())
+        .toDouble();
+    debugPrint('Update trans fee $kanbanTransFeeDouble');
+
+    kanbanGasFee = kanbanTransFeeDouble;
+    setBusy(false);
+  }
+
   //----------------- move to exchangily -------------------------------------------------------------------------------------------//
 
   setFee() async {
