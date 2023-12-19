@@ -3,10 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-
 import 'package:logger/logger.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:package_info/package_info.dart';
@@ -18,7 +16,6 @@ import 'package:provider/provider.dart';
 import 'package:stacked_services/stacked_services.dart';
 
 import 'constants/colors.dart';
-import 'environments/environment_type.dart';
 import 'managers/dialog_manager.dart';
 import 'services/local_dialog_service.dart';
 
@@ -56,12 +53,12 @@ Future<void> main() async {
 
     SystemChannels.textInput
         .invokeMethod('TextInput.hide'); // Hides keyboard initially
-    await dotenv
-        .load(fileName: isProduction ? 'envs/.env' : 'envs/local.env')
-        .catchError((err) {
-      log.e('dot env can not find local.env, loading default');
-      dotenv.load();
-    });
+    // await dotenv
+    //     .load(fileName: isProduction ? 'envs/.env' : 'envs/local.env')
+    //     .catchError((err) {
+    //   log.e('dot env can not find local.env, loading default');
+    //   dotenv.load();
+    // });
     await HiveService.init();
 
     runApp(MultiProvider(providers: [
