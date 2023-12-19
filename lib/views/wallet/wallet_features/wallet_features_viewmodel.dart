@@ -113,53 +113,57 @@ class WalletFeaturesViewModel extends ReactiveViewModel {
             item.coin.toLowerCase() == walletInfo!.tickerName!.toLowerCase())
         .toList();
 
-    return temp.isNotEmpty
-        ? Container(
-            width: size.width,
-            height: size.height * 0.1,
-            padding: EdgeInsets.symmetric(horizontal: 20),
-            child: Row(
-              children: [
-                Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                      shape: BoxShape.circle, color: Colors.grey[200]),
-                  child: Icon(
-                    temp[index].action == "deposit"
-                        ? Icons.arrow_upward
-                        : Icons.arrow_downward,
-                    color: Colors.black,
+    try {
+      return temp.isNotEmpty
+          ? Container(
+              width: size.width,
+              height: size.height * 0.1,
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                children: [
+                  Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle, color: Colors.grey[200]),
+                    child: Icon(
+                      temp[index].action == "deposit"
+                          ? Icons.arrow_upward
+                          : Icons.arrow_downward,
+                      color: Colors.black,
+                    ),
                   ),
-                ),
-                UIHelper.horizontalSpaceSmall,
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      temp[index].coin,
-                      style: TextStyle(color: Colors.black),
-                    ),
-                    UIHelper.verticalSpaceSmall,
-                    Text(
-                      formatStringDateV2(
-                          convertTimeStampToDate(temp[index].timestamp)
-                              .toString()),
-                      style: TextStyle(color: Colors.black38),
-                    ),
-                  ],
-                ),
-                Expanded(child: SizedBox()),
-                Text(
-                  "${temp[index].quantity} ${temp[index].coin}",
-                  style: TextStyle(
-                      color: Colors.black, fontWeight: FontWeight.bold),
-                ),
-              ],
-            ),
-          )
-        : Container();
+                  UIHelper.horizontalSpaceSmall,
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        temp[index].coin,
+                        style: TextStyle(color: Colors.black),
+                      ),
+                      UIHelper.verticalSpaceSmall,
+                      Text(
+                        formatStringDateV2(
+                            convertTimeStampToDate(temp[index].timestamp)
+                                .toString()),
+                        style: TextStyle(color: Colors.black38),
+                      ),
+                    ],
+                  ),
+                  Expanded(child: SizedBox()),
+                  Text(
+                    "${temp[index].quantity} ${temp[index].coin}",
+                    style: TextStyle(
+                        color: Colors.black, fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+            )
+          : Container();
+    } catch (e) {
+      return SizedBox();
+    }
   }
 
   updateFavWalletCoinsList(String tickerName) {

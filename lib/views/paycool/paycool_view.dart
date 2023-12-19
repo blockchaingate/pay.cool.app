@@ -10,6 +10,7 @@ import 'package:paycool/views/bond/helper.dart';
 import 'package:paycool/views/paycool/paycool_viewmodel.dart';
 import 'package:paycool/widgets/bottom_nav.dart';
 import 'package:paycool/widgets/server_error_widget.dart';
+import 'package:paycool/widgets/shared/will_pop_scope.dart';
 import 'package:stacked/stacked.dart';
 
 class PayCoolView extends StatelessWidget {
@@ -24,9 +25,8 @@ class PayCoolView extends StatelessWidget {
         model.init();
       },
       builder: (context, PayCoolViewmodel model, _) => WillPopScope(
-        onWillPop: () async {
-          model.onBackButtonPressed();
-          return Future(() => false);
+        onWillPop: () {
+          return WillPopScopeWidget().onWillPop(context);
         },
         child: Scaffold(
           backgroundColor: bgGrey,

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:paycool/constants/route_names.dart';
-import 'package:paycool/models/wallet/wallet.dart';
 import 'package:paycool/service_locator.dart';
 import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/views/bond/helper.dart';
@@ -60,10 +59,12 @@ class _WalletCardWidgetState extends State<WalletCardWidget> {
               ),
               Text(
                 '\$ ${widget.model.totalUsdBalance}',
+                overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 26,
                     color: Colors.white),
+                maxLines: 1,
               ),
               Row(
                 children: [

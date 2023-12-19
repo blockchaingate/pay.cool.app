@@ -12,7 +12,6 @@
 */
 
 import 'dart:async';
-// import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:decimal/decimal.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:paycool/constants/api_routes.dart';
@@ -73,7 +72,6 @@ class SendViewModel extends BaseViewModel {
   var options = {};
   String txHash = '';
   String errorMessage = '';
-  var updatedBal;
   String toAddress = '';
   Decimal amount = Constants.decimalZero;
   int gasPrice = 0;
@@ -338,17 +336,6 @@ class SendViewModel extends BaseViewModel {
       String tokenType = walletInfo!.tokenType!.toUpperCase();
       if (tickerName == 'USDT') {
         tokenType = 'ETH';
-
-        // Check if ETH is available for making USDT transaction
-        // Same for Fab token based coins
-
-        // WalletInfo! ethWallet =
-        //     await walletDatabaseService.getBytickerName('ETH');
-        // if (ethWallet.availableBalance < 0.05) {
-        //   sharedService.alertDialog('Send Notice',
-        //       'To send ETH or USDT you need atleast .05 eth balance available in your wallet.',
-        //       isWarning: false);
-        // }
       } else if (tickerName == 'EXG') {
         tokenType = 'FAB';
       }

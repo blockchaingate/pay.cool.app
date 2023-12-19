@@ -49,6 +49,7 @@ class _AddTokenState extends State<AddTokenCustomView> {
   Future<void> getList() async {
     customTokens = await apiService.getCustomTokens();
     await getBalanceForSelectedCustomTokens();
+    setState(() {});
   }
 
   @override
@@ -349,24 +350,28 @@ class _AddTokenState extends State<AddTokenCustomView> {
 
   Future getBalanceForSelectedCustomTokens() async {
     selectedCustomTokens!.clear();
-    String selectedCustomTokensJson = storageService.customTokens;
-    if (selectedCustomTokensJson != '') {
-      List<CustomTokenModel>? customTokensFromStorage =
-          CustomTokenModelList.fromJson(jsonDecode(selectedCustomTokensJson))
-              .customTokens;
+    try {
+      String selectedCustomTokensJson = storageService.customTokens;
+      if (selectedCustomTokensJson != '') {
+        List<CustomTokenModel>? customTokensFromStorage =
+            CustomTokenModelList.fromJson(jsonDecode(selectedCustomTokensJson))
+                .customTokens;
 
-      selectedCustomTokens = customTokensFromStorage;
-      if (selectedCustomTokens!.isNotEmpty) {
-        for (var token in selectedCustomTokens!) {
-          var balance = await fabUtils.getFabTokenBalanceForABI(
-              Constants.customTokenSignatureAbi,
-              token.tokenId!,
-              await getExgAddressFromWalletDatabase(),
-              token.decimal);
+        selectedCustomTokens = customTokensFromStorage;
+        if (selectedCustomTokens!.isNotEmpty) {
+          for (var token in selectedCustomTokens!) {
+            var balance = await fabUtils.getFabTokenBalanceForABI(
+                Constants.customTokenSignatureAbi,
+                token.tokenId!,
+                await getExgAddressFromWalletDatabase(),
+                token.decimal);
 
-          token.balance = balance;
+            token.balance = balance;
+          }
         }
       }
+    } catch (e) {
+      print(e.toString());
     }
   }
 
@@ -528,6 +533,7 @@ class _AddTokenState extends State<AddTokenCustomView> {
                                         storageService.customTokens = '';
                                         storageService.customTokens =
                                             jsonString.toString();
+                                        setState(() {});
                                       },
                                     ),
                                   ),
@@ -536,7 +542,7 @@ class _AddTokenState extends State<AddTokenCustomView> {
                         }),
                   );
                 }),
-              ));
+              )).whenComplete(() => setState(() {}));
     } else {
       log.e('Issue token list empty');
     }

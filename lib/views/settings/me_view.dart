@@ -10,6 +10,7 @@ import 'package:paycool/services/local_storage_service.dart';
 import 'package:paycool/services/shared_service.dart';
 import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/widgets/bottom_nav.dart';
+import 'package:paycool/widgets/shared/will_pop_scope.dart';
 import 'package:stacked_services/stacked_services.dart';
 
 class MeView extends StatefulWidget {
@@ -27,262 +28,273 @@ class _MeViewState extends State<MeView> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
 
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle.dark,
-      child: Scaffold(
-        bottomNavigationBar: BottomNavBar(count: 4),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            navigationService.navigateTo(PayCoolViewRoute);
-          },
-          elevation: 1,
-          backgroundColor: Colors.transparent,
-          child: Image.asset(
-            "assets/images/new-design/pay_cool_icon.png",
-            fit: BoxFit.cover,
+    return WillPopScope(
+      onWillPop: () {
+        return WillPopScopeWidget().onWillPop(context);
+      },
+      child: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle.dark,
+        child: Scaffold(
+          bottomNavigationBar: BottomNavBar(count: 4),
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              navigationService.navigateTo(PayCoolViewRoute);
+            },
+            elevation: 1,
+            backgroundColor: Colors.transparent,
+            child: Image.asset(
+              "assets/images/new-design/pay_cool_icon.png",
+              fit: BoxFit.cover,
+            ),
           ),
-        ),
-        extendBody: true,
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        body: Container(
-          width: size.width,
-          height: size.height,
-          decoration: const BoxDecoration(
-            image: DecorationImage(
-                image: AssetImage("assets/images/new-design/me_bg.png"),
-                fit: BoxFit.cover),
-          ),
-          padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              UIHelper.verticalSpaceLarge,
-              UIHelper.verticalSpaceMedium,
-              Text(
-                FlutterI18n.translate(context, "me"),
-                style: TextStyle(
-                    fontSize: 24, fontWeight: FontWeight.bold, color: black),
-              ),
-              UIHelper.verticalSpaceLarge,
-              InkWell(
-                onTap: () {
-                  navigationService.navigateTo(clubDashboardViewRoute);
-                },
-                child: Container(
-                  width: size.width,
-                  height: 80,
-                  padding: EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Image.asset(
-                        "assets/images/new-design/club_icon.png",
-                        scale: 3,
-                      ),
-                      UIHelper.horizontalSpaceSmall,
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Text(
-                            FlutterI18n.translate(
-                                context, "Invite once,gain forever"),
-                            style: TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.black38),
-                          ),
-                          Text(
-                            "${FlutterI18n.translate(context, "Invitation 100")}    ${FlutterI18n.translate(context, "Bonus \$100,00")}",
-                            style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                color: black),
-                          ),
-                        ],
-                      ),
-                      Expanded(child: SizedBox()),
-                      Icon(Icons.arrow_forward_ios, color: black, size: 14)
-                    ],
+          extendBody: true,
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerDocked,
+          body: Container(
+            width: size.width,
+            height: size.height,
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                  image: AssetImage("assets/images/new-design/me_bg.png"),
+                  fit: BoxFit.cover),
+            ),
+            padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                UIHelper.verticalSpaceLarge,
+                UIHelper.verticalSpaceMedium,
+                Text(
+                  FlutterI18n.translate(context, "me"),
+                  style: TextStyle(
+                      fontSize: 24, fontWeight: FontWeight.bold, color: black),
+                ),
+                UIHelper.verticalSpaceLarge,
+                InkWell(
+                  onTap: () {
+                    navigationService.navigateTo(clubDashboardViewRoute);
+                  },
+                  child: Container(
+                    width: size.width,
+                    height: 80,
+                    padding: EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Image.asset(
+                          "assets/images/new-design/club_icon.png",
+                          scale: 3,
+                        ),
+                        UIHelper.horizontalSpaceSmall,
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Text(
+                              FlutterI18n.translate(
+                                  context, "Invite once,gain forever"),
+                              style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black38),
+                            ),
+                            Text(
+                              "${FlutterI18n.translate(context, "Invitation 100")}    ${FlutterI18n.translate(context, "Bonus \$100,00")}",
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  color: black),
+                            ),
+                          ],
+                        ),
+                        Expanded(child: SizedBox()),
+                        Icon(Icons.arrow_forward_ios, color: black, size: 14)
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              UIHelper.verticalSpaceMedium,
-              Column(
-                children: [
-                  InkWell(
-                    onTap: () {
-                      navigationService.navigateTo(WalletManagementViewRoute);
-                    },
-                    child: Container(
-                      width: size.width,
-                      height: 60,
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.vertical(
-                          top: Radius.circular(10),
+                UIHelper.verticalSpaceMedium,
+                Column(
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        navigationService.navigateTo(WalletManagementViewRoute);
+                      },
+                      child: Container(
+                        width: size.width,
+                        height: 60,
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(10),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Image.asset(
+                              "assets/images/new-design/me_wallet_icon.png",
+                              width: 24,
+                              height: 24,
+                            ),
+                            UIHelper.horizontalSpaceSmall,
+                            Text(
+                              FlutterI18n.translate(
+                                  context, "walletManagement"),
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: black),
+                            ),
+                            Expanded(child: SizedBox()),
+                            Icon(Icons.arrow_forward_ios,
+                                color: black, size: 14)
+                          ],
                         ),
                       ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Image.asset(
-                            "assets/images/new-design/me_wallet_icon.png",
-                            width: 24,
-                            height: 24,
-                          ),
-                          UIHelper.horizontalSpaceSmall,
-                          Text(
-                            FlutterI18n.translate(context, "walletManagement"),
-                            style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                                color: black),
-                          ),
-                          Expanded(child: SizedBox()),
-                          Icon(Icons.arrow_forward_ios, color: black, size: 14)
-                        ],
-                      ),
                     ),
-                  ),
-                  Divider(
-                    height: 0.1,
-                    endIndent: 20,
-                    indent: 20,
-                    color: Colors.grey,
-                  ),
-                  InkWell(
-                    onTap: () async {
-                      kycService.setPrimaryColor(primaryColor);
-                      if (storageService.bondToken.isEmpty) {
-                        await sharedService.navigateWithAnimation(
-                            KycLogin(onFormSubmit: onLoginFormSubmit));
-                        return;
-                      } else {
-                        kycService.xAccessToken.value =
-                            storageService.bondToken;
+                    Divider(
+                      height: 0.1,
+                      endIndent: 20,
+                      indent: 20,
+                      color: Colors.grey,
+                    ),
+                    InkWell(
+                      onTap: () async {
+                        kycService.setPrimaryColor(primaryColor);
+                        if (storageService.bondToken.isEmpty) {
+                          await sharedService.navigateWithAnimation(
+                              KycLogin(onFormSubmit: onLoginFormSubmit));
+                          return;
+                        } else {
+                          kycService.xAccessToken.value =
+                              storageService.bondToken;
 
-                        navigationService.navigateToView(const KycStatus());
-                      }
-                    },
-                    child: Container(
-                      width: size.width,
-                      height: 60,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                      ),
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Image.asset(
-                            "assets/images/new-design/me_kyc_icon.png",
-                            width: 24,
-                            height: 24,
-                          ),
-                          UIHelper.horizontalSpaceSmall,
-                          Text(
-                            FlutterI18n.translate(context, "kyc"),
-                            style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                                color: black),
-                          ),
-                          Expanded(child: SizedBox()),
-                          Icon(Icons.arrow_forward_ios, color: black, size: 14)
-                        ],
-                      ),
-                    ),
-                  ),
-                  Divider(
-                    height: 0.1,
-                    endIndent: 20,
-                    indent: 20,
-                    color: Colors.grey,
-                  ),
-                  InkWell(
-                    onTap: () {
-                      navigationService.navigateTo(NewSettingViewRoute);
-                    },
-                    child: Container(
-                      width: size.width,
-                      height: 60,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                      ),
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Image.asset(
-                            "assets/images/new-design/me_setting_icon.png",
-                            width: 24,
-                            height: 24,
-                          ),
-                          UIHelper.horizontalSpaceSmall,
-                          Text(
-                            FlutterI18n.translate(context, "settings"),
-                            style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                                color: black),
-                          ),
-                          Expanded(child: SizedBox()),
-                          Icon(Icons.arrow_forward_ios, color: black, size: 14)
-                        ],
-                      ),
-                    ),
-                  ),
-                  Divider(
-                    height: 0.1,
-                    endIndent: 20,
-                    indent: 20,
-                    color: Colors.grey,
-                  ),
-                  InkWell(
-                    onTap: () {
-                      navigationService.navigateTo(AboutViewRoute);
-                    },
-                    child: Container(
-                      width: size.width,
-                      height: 60,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.vertical(
-                          bottom: Radius.circular(10),
+                          navigationService.navigateToView(const KycStatus());
+                        }
+                      },
+                      child: Container(
+                        width: size.width,
+                        height: 60,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                        ),
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Image.asset(
+                              "assets/images/new-design/me_kyc_icon.png",
+                              width: 24,
+                              height: 24,
+                            ),
+                            UIHelper.horizontalSpaceSmall,
+                            Text(
+                              FlutterI18n.translate(context, "kyc"),
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: black),
+                            ),
+                            Expanded(child: SizedBox()),
+                            Icon(Icons.arrow_forward_ios,
+                                color: black, size: 14)
+                          ],
                         ),
                       ),
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Image.asset(
-                            "assets/images/new-design/me_about_icon.png",
-                            width: 24,
-                            height: 24,
-                          ),
-                          UIHelper.horizontalSpaceSmall,
-                          Text(
-                            FlutterI18n.translate(context, "aboutPayCool"),
-                            style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                                color: black),
-                          ),
-                          Expanded(child: SizedBox()),
-                          Icon(Icons.arrow_forward_ios, color: black, size: 14)
-                        ],
+                    ),
+                    Divider(
+                      height: 0.1,
+                      endIndent: 20,
+                      indent: 20,
+                      color: Colors.grey,
+                    ),
+                    InkWell(
+                      onTap: () {
+                        navigationService.navigateTo(NewSettingViewRoute);
+                      },
+                      child: Container(
+                        width: size.width,
+                        height: 60,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                        ),
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Image.asset(
+                              "assets/images/new-design/me_setting_icon.png",
+                              width: 24,
+                              height: 24,
+                            ),
+                            UIHelper.horizontalSpaceSmall,
+                            Text(
+                              FlutterI18n.translate(context, "settings"),
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: black),
+                            ),
+                            Expanded(child: SizedBox()),
+                            Icon(Icons.arrow_forward_ios,
+                                color: black, size: 14)
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-            ],
+                    Divider(
+                      height: 0.1,
+                      endIndent: 20,
+                      indent: 20,
+                      color: Colors.grey,
+                    ),
+                    InkWell(
+                      onTap: () {
+                        navigationService.navigateTo(AboutViewRoute);
+                      },
+                      child: Container(
+                        width: size.width,
+                        height: 60,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.vertical(
+                            bottom: Radius.circular(10),
+                          ),
+                        ),
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Image.asset(
+                              "assets/images/new-design/me_about_icon.png",
+                              width: 24,
+                              height: 24,
+                            ),
+                            UIHelper.horizontalSpaceSmall,
+                            Text(
+                              FlutterI18n.translate(context, "aboutPayCool"),
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: black),
+                            ),
+                            Expanded(child: SizedBox()),
+                            Icon(Icons.arrow_forward_ios,
+                                color: black, size: 14)
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),

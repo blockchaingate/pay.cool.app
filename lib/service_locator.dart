@@ -59,7 +59,6 @@ import 'views/wallet/wallet_setup/confirm_mnemonic/confirm_mnemonic_viewmodel.da
 import 'views/wallet/wallet_setup/create_password/create_password_viewmodel.dart';
 import 'views/wallet/wallet_setup/select_language/choose_wallet_language_viewmodel.dart';
 import 'views/wallet/wallet_setup/wallet_setup_viewmodel.dart';
-import 'widgets/bottom_navmodel.dart';
 
 GetIt locator = GetIt.instance;
 
@@ -147,9 +146,6 @@ Future serviceLocator() async {
 
   // BindPay
   locator.registerFactory(() => LightningRemitViewmodel());
-
-  //nav
-  locator.registerFactory(() => BottomNavViewmodel());
 
   // Provider
   locator.registerFactory(() => AppStateProvider());
