@@ -97,6 +97,7 @@ class MoveToWalletViewmodel extends BaseViewModel {
     kanbanGasPriceTextController.text = gasPrice.toString();
     kanbanGasLimitTextController.text = gasLimit.toString();
     tokenType = walletInfo.tokenType;
+
     kanbanTransFee =
         NumberUtil.rawStringToDecimal((gasPrice * gasLimit).toString())
             .toDouble();
@@ -597,9 +598,6 @@ class MoveToWalletViewmodel extends BaseViewModel {
                     height: 10,
                     width: 20,
                     child: Radio(
-                        //  model.groupValue == 'FAB'? fillColor: MaterialStateColor
-                        //       .resolveWith(
-                        //           (states) => Colors.blue),
                         activeColor: primaryColor,
                         onChanged: (value) {
                           radioButtonSelection(value);
@@ -612,9 +610,7 @@ class MoveToWalletViewmodel extends BaseViewModel {
                 ],
               ),
         UIHelper.horizontalSpaceMedium,
-        // erc20 radio button
         Row(
-          // mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             SizedBox(
               height: 10,
@@ -633,8 +629,6 @@ class MoveToWalletViewmodel extends BaseViewModel {
         ),
         UIHelper.horizontalSpaceMedium,
         Row(
-          // mainAxisAlignment: MainAxisAlignment.start,
-          // crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // BNB radio button
             isShowBnbTsWalletBalance ||

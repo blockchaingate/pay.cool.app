@@ -461,34 +461,32 @@ class MoveToExchangeView extends StatelessWidget {
                       )),
               UIHelper.verticalSpaceSmall,
               // Success/Error container
-              Container(
-                  child: Visibility(
-                      visible: model.message.isNotEmpty,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(model.message),
-                          UIHelper.verticalSpaceSmall,
-                          RichText(
-                            text: TextSpan(
-                                text: FlutterI18n.translate(
-                                    context, "taphereToCopyTxId"),
-                                style: const TextStyle(
-                                    decoration: TextDecoration.underline,
-                                    color: primaryColor),
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () {
-                                    debugPrint('1');
-                                    debugPrint(model.message.toString());
-                                    debugPrint('2');
-                                    model
-                                        .copyAndShowNotification(model.message);
-                                  }),
-                          ),
-                          UIHelper.verticalSpaceSmall,
-                        ],
-                      ))),
+              Visibility(
+                  visible: model.message.isNotEmpty,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(model.message),
+                      UIHelper.verticalSpaceSmall,
+                      RichText(
+                        text: TextSpan(
+                            text: FlutterI18n.translate(
+                                context, "taphereToCopyTxId"),
+                            style: const TextStyle(
+                                decoration: TextDecoration.underline,
+                                color: primaryColor),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                                debugPrint('1');
+                                debugPrint(model.message.toString());
+                                debugPrint('2');
+                                model.copyAndShowNotification(model.message);
+                              }),
+                      ),
+                      UIHelper.verticalSpaceSmall,
+                    ],
+                  )),
               UIHelper.verticalSpaceSmall,
               model.isShowErrorDetailsButton
                   ? Row(

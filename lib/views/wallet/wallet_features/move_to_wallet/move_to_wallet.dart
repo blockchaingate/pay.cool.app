@@ -146,27 +146,7 @@ class MoveToWalletView extends StatelessWidget {
                     ),
 
                     UIHelper.verticalSpaceSmall,
-                    // Kanban Gas Fee
-                    // walletInfo.tickerName == 'TRX' ||
-                    //         walletInfo.tickerName == 'USDTX' ||
-                    //         model.isShowTrxTsWalletBalance
-                    //     ? Container(
-                    //         padding: EdgeInsets.only(top: 10, bottom: 0),
-                    //         alignment: Alignment.topLeft,
-                    //         child: walletInfo.tickerName == 'TRX'
-                    //             ? Text(
-                    //                 '${FlutterI18n.translate(context, "gasFee")}: 1 TRX',
-                    //                 textAlign: TextAlign.left,
-                    //                 style:
-                    //                     headText6)
-                    //             : Text(
-                    //                 '${FlutterI18n.translate(context, "gasFee")}: 15 TRX',
-                    //                 textAlign: TextAlign.left,
-                    //                 style: headText6),
-                    //       )
-                    //     : Container(),
-                    //
-                    // // withdraw choice radio
+
                     model.isWithdrawChoice
                         ? Container(
                             color: grey.withAlpha(120),
@@ -335,130 +315,31 @@ class MoveToWalletView extends StatelessWidget {
 
                     UIHelper.verticalSpaceSmall,
 
-                    // TS wallet balance show
-                    // Expanded(
-                    //   child: Column(
-                    //     children: [
-                    //       Container(
-                    //           child: Row(
-                    //         mainAxisAlignment:
-                    //             MainAxisAlignment.center,
-                    //         children: [
-                    //           Text(
-                    //             'TS ${FlutterI18n.translate(context, "wallet")}',
-                    //             style: Theme.of(context)
-                    //                 .textTheme
-                    //                 .subText2,
-                    //           ),
-                    //           Text(
-                    //             '${FlutterI18n.translate(context, "balance")}: ',
-                    //             style: Theme.of(context)
-                    //                 .textTheme
-                    //                 .subText2,
-                    //           ),
-                    //           model.isWithdrawChoice
-                    //               ? SizedBox(
-                    //                   width: 20,
-                    //                   height: 20,
-                    //                   child: IconButton(
-                    //                       padding: EdgeInsets.zero,
-                    //                       icon: Icon(
-                    //                         Icons.info_outline,
-                    //                         color: primaryColor,
-                    //                         size: 16,
-                    //                       ),
-                    //                       onPressed: () =>
-                    //                           model.showInfoDialog(
-                    //                               true)),
-                    //                 )
-                    //               : Container()
-                    //         ],
-                    //       )),
-
-                    //       // show ts wallet balance for tron chain
-                    //       model.walletInfo.tickerName == 'USDT' ||
-                    //               model.walletInfo.tickerName ==
-                    //                   'USDTX'
-                    //           ? Container(
-                    //               margin:
-                    //                   EdgeInsets.only(left: 5.0),
-                    //               child: model.trxTsWalletBalance !=
-                    //                           null &&
-                    //                       model.ethChainBalance !=
-                    //                           null
-                    //                   ? model
-                    //                           .isShowTrxTsWalletBalance
-                    //                       ? Text(
-                    //                           model
-                    //                               .trxTsWalletBalance
-                    //                               .toString(),
-                    //                           maxLines: 2,
-                    //                           style:headText6,
-                    //                         )
-                    //                       : Text(
-                    //                           model.ethChainBalance
-                    //                               .toString(),
-                    //                           maxLines: 2,
-                    //                           style:headText6,
-                    //                         )
-                    //                   : Container(
-                    //                       child: Text(
-                    //                           AppLocalizations.of(context)
-                    //                               .loading)))
-                    //           : Container(
-                    //               margin:
-                    //                   EdgeInsets.only(left: 5.0),
-                    //               child: model.fabChainBalance !=
-                    //                           null &&
-                    //                       model.ethChainBalance !=
-                    //                           null
-                    //                   ? model.isShowFabChainBalance
-                    //                       ? Text(
-                    //                           model.fabChainBalance
-                    //                               .toString(),
-                    //                           maxLines: 2,
-                    //                           style:headText6,
-                    //                         )
-                    //                       : Text(
-                    //                           model.ethChainBalance
-                    //                               .toString(),
-                    //                           maxLines: 2,
-                    //                           style:headText6,
-                    //                         )
-                    //                   : Container(
-                    //                       child: Text(
-                    //                           AppLocalizations.of(context)
-                    //                               .loading))),
-                    //     ],
-                    //   ),
-                    // ),
-
                     // Success/Error container
-                    Container(
-                        child: Visibility(
-                            visible: model.message.isNotEmpty,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text(model.message ?? ''),
-                                UIHelper.verticalSpaceSmall,
-                                RichText(
-                                  text: TextSpan(
-                                      text: FlutterI18n.translate(
-                                          context, "taphereToCopyTxId"),
-                                      style: const TextStyle(
-                                          decoration: TextDecoration.underline,
-                                          color: primaryColor),
-                                      recognizer: TapGestureRecognizer()
-                                        ..onTap = () {
-                                          model.copyAndShowNotificatio(
-                                              model.message);
-                                        }),
-                                ),
-                                UIHelper.verticalSpaceSmall,
-                              ],
-                            ))),
+                    Visibility(
+                        visible: model.message.isNotEmpty,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(model.message ?? ''),
+                            UIHelper.verticalSpaceSmall,
+                            RichText(
+                              text: TextSpan(
+                                  text: FlutterI18n.translate(
+                                      context, "taphereToCopyTxId"),
+                                  style: const TextStyle(
+                                      decoration: TextDecoration.underline,
+                                      color: primaryColor),
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () {
+                                      model.copyAndShowNotificatio(
+                                          model.message);
+                                    }),
+                            ),
+                            UIHelper.verticalSpaceSmall,
+                          ],
+                        )),
 
                     UIHelper.verticalSpaceSmall,
                     model.isShowErrorDetailsButton

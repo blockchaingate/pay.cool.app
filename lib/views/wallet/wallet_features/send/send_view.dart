@@ -199,12 +199,22 @@ class _SendWalletViewState extends State<SendWalletView>
                             Expanded(
                               child: TextField(
                                 controller: model.sendAmountTextController,
-                                onChanged: (value) => model.checkDomain(value),
+                                onChanged: (String amount) {
+                                  model.amount =
+                                      NumberUtil.convertStringToDecimal(amount);
+
+                                  model.checkAmount();
+                                },
                                 keyboardType:
                                     const TextInputType.numberWithOptions(
                                         decimal: true),
-                                style: TextStyle(
-                                    fontSize: 16, color: Colors.black),
+                                style: model.checkSendAmount &&
+                                        model.amount.toDouble() <=
+                                            model.walletInfo!.availableBalance!
+                                    ? TextStyle(
+                                        fontSize: 16, color: Colors.black)
+                                    : TextStyle(
+                                        fontSize: 16, color: Colors.red),
                                 decoration: InputDecoration(
                                   border: InputBorder.none,
                                   hintText: '0.00',
