@@ -95,15 +95,14 @@ class _MeViewState extends State<MeView> {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             Text(
-                              FlutterI18n.translate(
-                                  context, "Invite once,gain forever"),
+                              FlutterI18n.translate(context, "inviteOnce"),
                               style: TextStyle(
                                   fontSize: 13,
                                   fontWeight: FontWeight.w600,
                                   color: Colors.black38),
                             ),
                             Text(
-                              "${FlutterI18n.translate(context, "Invitation 100")}    ${FlutterI18n.translate(context, "Bonus \$100,00")}",
+                              "${FlutterI18n.translate(context, "invitation")} 100  ${FlutterI18n.translate(context, "bonus")} \$100,00",
                               style: TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w600,
@@ -195,7 +194,7 @@ class _MeViewState extends State<MeView> {
                             ),
                             UIHelper.horizontalSpaceSmall,
                             Text(
-                              FlutterI18n.translate(context, "kyc"),
+                              "KYC",
                               style: TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.bold,

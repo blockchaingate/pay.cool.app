@@ -370,7 +370,6 @@
     "invalidReferralCode": "無効な紹介コード",
     "paymentProcess": "支払いはすぐに処理されます",
     "clickToJoin": "参加するにはここをクリック",
-    "scanToPay": "スキャンして支払う",
     "scanToPayMessage": "WebとPay.Coolアプリの両方で生成できるカスタムバーコードをスキャンして他の人の代わりに支払うこともできます。",
     "generateQrCodeToScanAndPay": "カスタムQRコードを生成して、他のPay.coolアプリがスキャンして支払うことができます。",
     "generateQrCode": "QRコードを生成する",
@@ -726,5 +725,19 @@
     "certified": "認定済み",
     "notCertified": "未認定",
     "personalInfoAuth": "個人情報認証",
-    "addressAuth": "住所認証"
+    "addressAuth": "住所認証",
+    "noCamera": "カメラなし",
+    "scanToPay": "QRコードをスキャンして支払い",
+    "myRewards": "私のリワード",
+    "token": "トークン",
+    "nft": "NFT",
+    "search": "検索",
+    "walletAccounts": "ウォレットアカウント",
+    "noAddress": "アドレスなし",
+    "me": "私",
+    "inviteOnce": "一度招待すれば、永遠に利益を得る",
+    "invitation": "招待",
+    "bonus": "ボーナス",
+    "walletManagement": "ウォレット管理",
+    "aboutPayCool": "PayCoolについて"
 }

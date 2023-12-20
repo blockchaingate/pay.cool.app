@@ -369,7 +369,6 @@
     "invalidReferralCode": "Código de referencia no válido",
     "paymentProcess": "El pago se procesará en breve",
     "clickToJoin": "Haga clic aquí para unirse",
-    "scanToPay": "Escanear para pagar",
     "scanToPayMessage": "También puede pagar por otra persona escaneando un código de barras personalizado que puede generar tanto en la web como en la aplicación de Pay.Cool",
     "generateQrCodeToScanAndPay": "Puede generar su propio código QR personalizado para que otras aplicaciones de Pay.Cool puedan escanear y pagar su tarifa",
     "generateQrCode": "Generar código QR",
@@ -721,5 +720,19 @@
     "certified": "Certificado",
     "notCertified": "No certificado",
     "personalInfoAuth": "Autenticación de información personal",
-    "addressAuth": "Autenticación de dirección"
+    "addressAuth": "Autenticación de dirección",
+    "noCamera": "Sin cámara",
+    "scanToPay": "Escanear el código QR para pagar",
+    "myRewards": "Mis recompensas",
+    "token": "Token",
+    "nft": "NFT",
+    "search": "Buscar",
+    "walletAccounts": "Cuentas de Billetera",
+    "noAddress": "Sin Dirección",
+    "me": "Yo",
+    "inviteOnce": "Invita una vez, benefíciate siempre",
+    "invitation": "Invitación",
+    "bonus": "Bono",
+    "walletManagement": "Gestión de Billetera",
+    "aboutPayCool": "Acerca de PayCool"
 }

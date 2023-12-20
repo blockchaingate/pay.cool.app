@@ -370,7 +370,6 @@
     "invalidReferralCode": "Code de référence invalide",
     "paymentProcess": "Le paiement sera traité sous peu",
     "clickToJoin": "Cliquez ici pour rejoindre",
-    "scanToPay": "Scanner pour payer",
     "scanToPayMessage": "Vous pouvez également payer pour quelqu'un d'autre en scannant un code-barres personnalisé que vous pouvez générer sur le web et l'application Pay.cool",
     "generateQrCodeToScanAndPay": "Vous pouvez générer votre propre code QR personnalisé afin que d'autres applications Pay.cool puissent scanner et payer vos frais",
     "generateQrCode": "Générer un code QR",
@@ -726,5 +725,19 @@
     "certified": "Certifié",
     "notCertified": "Non certifié",
     "personalInfoAuth": "Authentification des informations personnelles",
-    "addressAuth": "Authentification de l'adresse"
+    "addressAuth": "Authentification de l'adresse",
+    "noCamera": "Pas de caméra",
+    "scanToPay": "Scanner le code QR pour payer",
+    "myRewards": "Mes récompenses",
+    "token": "Token",
+    "nft": "NFT",
+    "search": "Rechercher",
+    "walletAccounts": "Comptes de Portefeuille",
+    "noAddress": "Aucune Adresse",
+    "me": "Moi",
+    "inviteOnce": "Invitez une fois, gagnez pour toujours",
+    "invitation": "Invitation",
+    "bonus": "Bonus",
+    "walletManagement": "Gestion de portefeuille",
+    "aboutPayCool": "À propos de PayCool"
 }

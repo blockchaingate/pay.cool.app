@@ -374,7 +374,6 @@
     "invalidReferralCode": "无效的推荐码",
     "paymentProcess": "付款稍后处理",
     "clickToJoin": "点击加入",
-    "scanToPay": "扫码支付",
     "scanToPayMessage": "您还可以扫描别人的代付二维码，代其支付加盟费",
     "generateQrCodeToScanAndPay": "您可以定制二维码让其他用户扫描给您付款",
     "generateQrCode": "生成二维码",
@@ -726,5 +725,19 @@
     "certified": "已认证",
     "notCertified": "未认证",
     "personalInfoAuth": "个人信息认证",
-    "addressAuth": "地址认证"
+    "addressAuth": "地址认证",
+    "noCamera": "无摄像头",
+    "scanToPay": "扫描二维码进行支付",
+    "myRewards": "我的奖励",
+    "token": "代币",
+    "nft": "NFT",
+    "search": "搜索",
+    "walletAccounts": "钱包账户",
+    "noAddress": "无地址",
+    "me": "我",
+    "inviteOnce": "邀请一次，永久受益",
+    "invitation": "邀请",
+    "bonus": "奖金",
+    "walletManagement": "钱包管理",
+    "aboutPayCool": "关于PayCool"
 }

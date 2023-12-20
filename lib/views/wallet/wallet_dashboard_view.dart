@@ -259,7 +259,7 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
                     children: [
                       buildListView(model),
                       Center(
-                        child: Text("NFT"),
+                        child: Text(FlutterI18n.translate(context, "nft")),
                       ),
                     ],
                   ),
