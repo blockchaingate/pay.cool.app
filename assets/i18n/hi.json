@@ -756,5 +756,10 @@
     "owners": "स्वामी",
     "enterOwnerName": "स्वामी का नाम दर्ज करें",
     "invalidFee": "अमान्य शुल्क",
-    "enterOwnerAddress": "स्वामी का पता दर्ज करें"
+    "enterOwnerAddress": "स्वामी का पता दर्ज करें",
+    "walletManagement": "वॉलेट प्रबंधन",
+    "transactionFee": "लेन-देन शुल्क",
+    "exchange": "विनिमय",
+    "record": "रिकॉर्ड",
+    "overview": "अवलोकन"
 }

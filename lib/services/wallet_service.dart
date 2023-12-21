@@ -1426,13 +1426,13 @@ class WalletService with ListenableServiceMixin {
       String coinName,
       String coinAddress,
       String tokenType,
-      double amount,
+      Decimal amount,
       kanbanPrice,
       kanbanGasLimit,
       isSpeicalTronTokenWithdraw) async {
     var keyPairKanban = getExgKeyPair(seed);
     var addressInKanban = keyPairKanban["address"];
-    var amountInLink = BigInt.parse(NumberUtil.toBigInt(amount));
+    var amountInLink = NumberUtil.decimalToBigInt(amount);
     //amount * BigInt.from(1e18);
     log.i(
         'AMount in link $amountInLink -- coin name $coinName -- token type $tokenType');
@@ -1567,12 +1567,12 @@ class WalletService with ListenableServiceMixin {
       String coinName,
       String coinAddress,
       String tokenType,
-      double amount,
+      Decimal amount,
       kanbanPrice,
       kanbanGasLimit) async {
     var keyPairKanban = getExgKeyPair(seed);
     var addressInKanban = keyPairKanban["address"];
-    var amountInLink = BigInt.parse(NumberUtil.toBigInt(amount));
+    var amountInLink = NumberUtil.decimalToBigInt(amount);
     //amount * BigInt.from(1e18);
     log.i(
         'AMount in link $amountInLink -- coin name $coinName -- token type $tokenType');
@@ -1628,7 +1628,7 @@ class WalletService with ListenableServiceMixin {
   Future depositTron(
       {String? mnemonic,
       WalletInfo? walletInfo,
-      double? amount,
+      Decimal? amount,
       bool? isTrxUsdt,
       bool? isBroadcast,
       @required options}) async {
@@ -1735,7 +1735,7 @@ class WalletService with ListenableServiceMixin {
 ----------------------------------------------------------------------*/
 
   Future<Map<String, dynamic>> depositDo(
-      seed, String coinName, String tokenType, double amount, option) async {
+      seed, String coinName, String tokenType, Decimal amount, option) async {
     Map<String, dynamic> errRes = <String, dynamic>{};
     errRes['success'] = false;
 
@@ -1768,7 +1768,7 @@ class WalletService with ListenableServiceMixin {
 
     var txids = resST['txids'];
     var amountInTx = resST['amountInTx'];
-    var amountInLink = BigInt.parse(NumberUtil.toBigInt(amount));
+    var amountInLink = NumberUtil.decimalToBigInt(amount);
 
     var amountInTxString = amountInTx.toString();
     var amountInLinkString = amountInLink.toString();
@@ -1873,7 +1873,7 @@ class WalletService with ListenableServiceMixin {
                 Future Add Gas Do
 ----------------------------------------------------------------------*/
 
-  Future<Map<String, dynamic>> addGasDo(seed, double amount, {options}) async {
+  Future<Map<String, dynamic>> addGasDo(seed, Decimal amount, {options}) async {
     var satoshisPerBytes = 14;
     var scarContractAddress = await getScarAddress();
     scarContractAddress = string_utils.trimHexPrefix(scarContractAddress);
@@ -1897,8 +1897,11 @@ class WalletService with ListenableServiceMixin {
     return {'txHex': txHex, 'txHash': txHash, 'errMsg': errMsg};
   }
 
-  convertLiuToFabcoin(amount) {
-    return (amount * 1e-8);
+  // convertLiuToFabcoin(amount) {
+  //   return (amount * 1e-8);
+  // }
+  Decimal convertLiuToFabcoin(int amount) {
+    return (Decimal.fromInt(amount) / Decimal.parse('1e8')).toDecimal();
   }
 
 /*----------------------------------------------------------------------
@@ -1928,8 +1931,8 @@ class WalletService with ListenableServiceMixin {
       seed,
       addressIndexList,
       toAddress,
-      double amount,
-      double extraTransactionFee,
+      Decimal amount,
+      Decimal extraTransactionFee,
       int satoshisPerBytes,
       addressList,
       getTransFeeOnly) async {
@@ -2166,7 +2169,7 @@ class WalletService with ListenableServiceMixin {
       List addressIndexList,
       List addressList,
       String toAddress,
-      double amount,
+      Decimal amount,
       options,
       bool doSubmit) async {
     final root = bip32.BIP32.fromSeed(seed);
@@ -2855,7 +2858,7 @@ class WalletService with ListenableServiceMixin {
       }
 
       var res1 = await getFabTransactionHex(seed, addressIndexList, toAddress,
-          amount, 0, satoshisPerBytes, addressList, getTransFeeOnly);
+          amount, Decimal.zero, satoshisPerBytes, addressList, getTransFeeOnly);
       if (getTransFeeOnly) {
         return {
           'txHex': '',
@@ -2917,6 +2920,8 @@ class WalletService with ListenableServiceMixin {
 
       var contractInfo = await getFabSmartContract(
           contractAddress, fxnCallHex, gasLimit, gasPrice);
+      log.i('contractInfo===$contractInfo');
+
       if (addressList.isNotEmpty) {
         addressList[0] = await coreWalletDatabaseService
                     .getWalletAddressByTickerName('FAB') !=
@@ -2924,15 +2929,21 @@ class WalletService with ListenableServiceMixin {
             ? fabUtils.exgToFabAddress(addressList[0])
             : addressList[0];
       }
-      var res1 = await getFabTransactionHex(
-          seed,
-          addressIndexList,
-          contractInfo['contract'],
-          0,
-          contractInfo['totalFee'],
-          satoshisPerBytes,
-          addressList,
-          getTransFeeOnly);
+      var res1;
+      try {
+        res1 = await getFabTransactionHex(
+            seed,
+            addressIndexList,
+            contractInfo['contract'],
+            Decimal.zero,
+            Decimal.parse(contractInfo['totalFee'].toString()),
+            satoshisPerBytes,
+            addressList,
+            getTransFeeOnly);
+      } catch (e) {
+        log.e('error in getFabTransactionHex $e');
+        return;
+      }
 
       debugPrint('res1 in here=');
       debugPrint(res1.toString());
@@ -3085,7 +3096,7 @@ class WalletService with ListenableServiceMixin {
     var totalAmount = (Decimal.parse(gasLimit.toString()) *
             Decimal.parse(gasPrice.toString()) /
             Decimal.parse('1e8'))
-        .toDouble();
+        .toDecimal();
     // let cFee = 3000 / 1e8 // fee for the transaction
 
     var totalFee = totalAmount;

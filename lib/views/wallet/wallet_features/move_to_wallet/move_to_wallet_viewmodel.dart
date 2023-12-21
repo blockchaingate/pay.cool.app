@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:decimal/decimal.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
@@ -1474,8 +1475,8 @@ class MoveToWalletViewmodel extends BaseViewModel {
           int kanbanGasPrice = environment['chains']['KANBAN']['gasPrice'];
           int kanbanGasLimit = environment['chains']['KANBAN']['gasLimit'];
           await walletService
-              .withdrawTron(seed, coinName!, coinAddress, tokenType, amount,
-                  kanbanPrice, kanbanGasLimit)
+              .withdrawTron(seed, coinName!, coinAddress, tokenType,
+                  Decimal.parse(amount.toString()), kanbanPrice, kanbanGasLimit)
               .then((ret) {
             log.w(ret);
             bool success = ret["success"];
@@ -1512,8 +1513,15 @@ class MoveToWalletViewmodel extends BaseViewModel {
         } else {
           // withdraw function
           await walletService
-              .withdrawDo(seed, coinName!, coinAddress, tokenType, amount,
-                  kanbanPrice, kanbanGasLimit, isSpeicalTronTokenWithdraw)
+              .withdrawDo(
+                  seed,
+                  coinName!,
+                  coinAddress,
+                  tokenType,
+                  Decimal.parse(amount.toString()),
+                  kanbanPrice,
+                  kanbanGasLimit,
+                  isSpeicalTronTokenWithdraw)
               .then((ret) {
             log.w(ret);
             bool success = ret["success"];

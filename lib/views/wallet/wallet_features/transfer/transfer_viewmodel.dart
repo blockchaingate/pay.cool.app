@@ -4,10 +4,12 @@ import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:overlay_support/overlay_support.dart';
 import 'package:paycool/constants/api_routes.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/constants.dart';
 import 'package:paycool/environments/environment.dart';
+import 'package:paycool/logger.dart';
 import 'package:paycool/models/wallet/token_model.dart';
 import 'package:paycool/models/wallet/wallet.dart';
 import 'package:paycool/models/wallet/wallet_balance.dart';
@@ -29,8 +31,12 @@ import 'package:provider/provider.dart';
 import 'package:stacked/stacked.dart';
 
 class TransferViewModel extends BaseViewModel {
-  BuildContext? context;
-  late AppStateProvider appStateProvider;
+  final BuildContext context;
+  final WalletInfo walletInfo;
+  TransferViewModel({required this.context, required this.walletInfo});
+
+  final log = getLogger('TransferViewModel');
+  // late AppStateProvider appStateProvider;
 
   final walletUtil = WalletUtil();
   final walletService = locator<WalletService>();
@@ -41,25 +47,22 @@ class TransferViewModel extends BaseViewModel {
   final tokenListDatabaseService = locator<TokenListDatabaseService>();
   final LocalDialogService _dialogService = locator<LocalDialogService>();
 
-  WalletInfo? selectedCoinWalletInfo;
   List<WalletBalance> wallets = [];
-  String fromText = "Wallet";
-  String toText = "Exchangily";
-  bool isMoveToWallet = false;
 
-  final amountTextController = TextEditingController();
+  final amountController = TextEditingController();
 
   final gasPriceTextController = TextEditingController();
   final gasLimitTextController = TextEditingController();
   final kanbanGasPriceTextController = TextEditingController();
   final kanbanGasLimitTextController = TextEditingController();
   final satoshisPerByteTextController = TextEditingController();
+  final trxGasValueTextController = TextEditingController();
 
   List<TextEditingController> controllersList = [];
 
-  // move to wallet
-  double gasFee = 0.0;
-  double kanbanGasFee = 0.0;
+  Decimal transFee = Constants.decimalZero;
+  Decimal kanbanGasFee = Constants.decimalZero;
+  Decimal amount = Constants.decimalZero;
 
   String feeMeasurement = '';
   bool isShowFabChainBalance = false;
@@ -68,7 +71,6 @@ class TransferViewModel extends BaseViewModel {
   bool isShowPolygonTsWalletBalance = false;
 
   bool isWithdrawChoicePopup = false;
-  TokenModel token = TokenModel();
   String ercSmartContractAddress = '';
   TokenModel ercChainToken = TokenModel();
   TokenModel mainChainToken = TokenModel();
@@ -83,11 +85,11 @@ class TransferViewModel extends BaseViewModel {
   String updateTickerForErc = '';
   var fabUtils = FabUtils();
 
-  var ethChainBalance;
-  var fabChainBalance;
-  var trxTsWalletBalance;
-  var bnbTsWalletBalance;
-  var polygonTsWalletBalance;
+  Decimal fabChainBalance = Decimal.zero;
+  Decimal ethChainBalance = Decimal.zero;
+  Decimal trxTsWalletBalance = Decimal.zero;
+  Decimal bnbTsWalletBalance = Decimal.zero;
+  Decimal polygonTsWalletBalance = Decimal.zero;
 
   bool isShowErrorDetailsButton = false;
   bool isShowDetailsMessage = false;
@@ -95,10 +97,9 @@ class TransferViewModel extends BaseViewModel {
 
   // move to exchangily
   double? unconfirmedBalance;
-  TokenModel tokenModel = TokenModel();
+  TokenModel token = TokenModel();
   int decimalLimit = 6;
-  double chainBalance = 0.0;
-  // double amount = 0.0;
+  Decimal chainBalance = Constants.decimalZero;
   bool isValidAmount = false;
   bool isSpeicalTronTokenWithdraw = false;
   String message = '';
@@ -108,22 +109,25 @@ class TransferViewModel extends BaseViewModel {
   String? tokenType;
   String? feeUnit;
   String? specialTicker;
-  double gasAmount = 0.0;
+  Decimal gasAmount = Decimal.zero;
+  bool isDeposit = true;
 
-  initState() async {
-    appStateProvider = Provider.of<AppStateProvider>(context!, listen: false);
-    toExchangeInit();
+  swapFunction() {
+    isDeposit = !isDeposit;
+    isDeposit ? toExchangeInit() : toWalletInit();
+    notifyListeners();
   }
 
   Future<void> toExchangeInit() async {
-    coinName = selectedCoinWalletInfo!.tickerName;
-    tokenType = selectedCoinWalletInfo!.tokenType;
+    setBusy(true);
+    coinName = walletInfo.tickerName;
+    tokenType = walletInfo.tokenType;
 
-    setFee();
-    await getGas();
+    await setFee();
+    await checkGasBalance();
     specialTicker = WalletUtil.updateSpecialTokensTickerName(
-        selectedCoinWalletInfo!.tickerName.toString())['tickerName']!;
-    refreshBalance();
+        walletInfo.tickerName.toString())['tickerName']!;
+    await refreshBalance();
 
     if (coinName == 'BTC') {
       feeUnit = 'BTC';
@@ -139,15 +143,13 @@ class TransferViewModel extends BaseViewModel {
       feeUnit = 'BNB';
     }
     await coinService
-        .getSingleTokenData((selectedCoinWalletInfo!.tickerName.toString()))
+        .getSingleTokenData((walletInfo.tickerName.toString()))
         .then((t) {
-      tokenModel = t!;
-      decimalLimit = t.decimal!;
+      token = t!;
+      decimalLimit = t.decimal ?? 8;
     });
-    if (decimalLimit == 0) decimalLimit = 8;
     if (tokenType!.isNotEmpty) await getNativeChainTickerBalance();
-
-    notifyListeners();
+    setBusy(false);
   }
 
   Future<void> toWalletInit() async {
@@ -156,52 +158,49 @@ class TransferViewModel extends BaseViewModel {
     var gasLimit = environment["chains"]["KANBAN"]["gasLimit"] ?? 0;
     kanbanGasPriceTextController.text = gasPrice.toString();
     kanbanGasLimitTextController.text = gasLimit.toString();
-    tokenType = selectedCoinWalletInfo!.tokenType;
+    tokenType = walletInfo.tokenType;
 
     kanbanGasFee =
-        NumberUtil.rawStringToDecimal((gasPrice * gasLimit).toString())
-            .toDouble();
+        NumberUtil.rawStringToDecimal((gasPrice * gasLimit).toString());
 
-    if (selectedCoinWalletInfo!.tickerName == 'ETH' ||
-        selectedCoinWalletInfo!.tickerName == 'USDT') {
+    if (walletInfo.tickerName == 'ETH' || walletInfo.tickerName == 'USDT') {
       feeUnit = 'WEI';
-    } else if (selectedCoinWalletInfo!.tickerName == 'FAB') {
+    } else if (walletInfo.tickerName == 'FAB') {
       feeUnit = 'LIU';
       feeMeasurement = '10^(-8)';
     }
     selectedChain = 'ETH';
-    if (selectedCoinWalletInfo!.tickerName == 'ETH' ||
-        selectedCoinWalletInfo!.tokenType == 'ETH') {
+    if (walletInfo.tickerName == 'ETH' || walletInfo.tokenType == 'ETH') {
       radioButtonSelection('ETH');
-    } else if (selectedCoinWalletInfo!.tickerName == 'FAB' ||
-        selectedCoinWalletInfo!.tokenType == 'FAB') {
+    } else if (walletInfo.tickerName == 'FAB' ||
+        walletInfo.tokenType == 'FAB') {
       isShowFabChainBalance = true;
       radioButtonSelection('FAB');
-    } else if (selectedCoinWalletInfo!.tickerName == 'USDCX' ||
-        selectedCoinWalletInfo!.tickerName == 'USDTX' ||
-        selectedCoinWalletInfo!.tickerName == 'TRX') {
+    } else if (walletInfo.tickerName == 'USDCX' ||
+        walletInfo.tickerName == 'USDTX' ||
+        walletInfo.tickerName == 'TRX') {
       isShowTrxTsWalletBalance = true;
       radioButtonSelection('TRX');
     } // BNB
-    else if (selectedCoinWalletInfo!.tickerName == 'FABB' ||
-        selectedCoinWalletInfo!.tickerName == 'USDTB' ||
-        selectedCoinWalletInfo!.tokenType == 'BNB') {
+    else if (walletInfo.tickerName == 'FABB' ||
+        walletInfo.tickerName == 'USDTB' ||
+        walletInfo.tokenType == 'BNB') {
       isShowBnbTsWalletBalance = true;
 
       radioButtonSelection('BNB');
     }
     // POLYGON
-    else if (selectedCoinWalletInfo!.tokenType == 'MATICM' ||
-        selectedCoinWalletInfo!.tickerName == 'MATICM' ||
-        selectedCoinWalletInfo!.tokenType == 'POLYGON') {
+    else if (walletInfo.tokenType == 'MATICM' ||
+        walletInfo.tickerName == 'MATICM' ||
+        walletInfo.tokenType == 'POLYGON') {
       isShowPolygonTsWalletBalance = true;
 
       radioButtonSelection('POLYGON');
     } else {
-      setWithdrawLimit(selectedCoinWalletInfo!.tickerName!);
+      setWithdrawLimit(walletInfo.tickerName!);
     }
     specialTicker = WalletUtil.updateSpecialTokensTickerName(
-        selectedCoinWalletInfo!.tickerName.toString())['tickerName']!;
+        walletInfo.tickerName.toString())['tickerName']!;
     await checkGasBalance();
     await getSingleCoinExchangeBal();
 
@@ -209,62 +208,422 @@ class TransferViewModel extends BaseViewModel {
     notifyListeners();
   }
 
-  //----------------- move to wallet -----------------//
+  verifyFields() async {
+    if (amountController.text.isEmpty ||
+        double.parse(amountController.text) <= 0) {
+      sharedService.sharedSimpleNotification(
+          FlutterI18n.translate(context, "amountMissing"),
+          subtitle: FlutterI18n.translate(context, "pleaseEnterValidNumber"));
 
-  /*----------------------------------------------------------------------
-                      Verify Wallet Password
-----------------------------------------------------------------------*/
-  checkPass() async {
-    setBusy(true);
-    isSubmittingTx = true;
-    try {
-      if (amountTextController.text.isEmpty) {
-        sharedService.showInfoFlushbar(
-            FlutterI18n.translate(context!, "minimumAmountError"),
-            FlutterI18n.translate(
-                context!, "yourWithdrawMinimumAmountaIsNotSatisfied"),
-            Icons.cancel,
-            red,
-            context!);
-        setBusy(false);
-        return;
+      setBusy(false);
+      return;
+    }
+    await checkGasBalance();
+    if (gasAmount == Decimal.zero || gasAmount < kanbanGasFee) {
+      sharedService.alertDialog(
+        FlutterI18n.translate(context, "notice"),
+        FlutterI18n.translate(context, "insufficientGasAmount"),
+      );
+      setBusy(false);
+      return;
+    }
+    var amount = Decimal.parse(amountController.text);
+    // deposit check
+    if (isDeposit) {
+      Decimal finalAmount = Constants.decimalZero;
+      Decimal checkTransFeeAgainst = Constants.decimalZero;
+      if (tokenType!.isEmpty) {
+        checkTransFeeAgainst =
+            NumberUtil.parseDoubleToDecimal(walletInfo.availableBalance!);
+      } else {
+        checkTransFeeAgainst = chainBalance;
       }
-      await checkGasBalance();
-      if (gasAmount == 0.0 || gasAmount < kanbanGasFee) {
-        sharedService.alertDialog(
-          FlutterI18n.translate(context!, "notice"),
-          FlutterI18n.translate(context!, "insufficientGasAmount"),
-        );
-        setBusy(false);
-        return;
-      }
-
-      var amount = double.tryParse(amountTextController.text);
-      if (amount! < double.parse(token.minWithdraw!)) {
+      if (transFee > checkTransFeeAgainst && !isTrx()) {
         sharedService.sharedSimpleNotification(
-          FlutterI18n.translate(context!, "minimumAmountError"),
-          subtitle: FlutterI18n.translate(
-              context!, "yourWithdrawMinimumAmountaIsNotSatisfied"),
-        );
+            FlutterI18n.translate(context, "notice"),
+            subtitle: FlutterI18n.translate(context, "insufficientGasAmount"));
+
         setBusy(false);
         return;
       }
-      await getSingleCoinExchangeBal();
+      await refreshBalance();
 
-      if (amount > selectedCoinWalletInfo!.inExchange! ||
-          amount == 0 ||
-          amount.isNegative) {
+      finalAmount = await amountAfterFee();
+
+      if (amount == Constants.decimalZero) {
+        log.e(
+            'amount $amount --- final amount with fee: $finalAmount -- wallet bal: ${walletInfo.availableBalance}');
         sharedService.alertDialog(
-            FlutterI18n.translate(context!, "invalidAmount"),
-            FlutterI18n.translate(context!, "pleaseEnterValidNumber"),
+            FlutterI18n.translate(context, "invalidAmount"),
+            FlutterI18n.translate(context, "pleaseEnterValidNumber"),
             isWarning: false);
         setBusy(false);
         return;
       }
 
+      if (finalAmount >
+          NumberUtil.parseDoubleToDecimal(walletInfo.availableBalance!)) {
+        log.e(
+            'amount $amount --- final amount with fee: $finalAmount -- wallet bal: ${walletInfo.availableBalance}');
+        sharedService.alertDialog(
+            FlutterI18n.translate(context, "invalidAmount"),
+            FlutterI18n.translate(context, "insufficientBalance"),
+            isWarning: false);
+        setBusy(false);
+        return;
+      }
+
+      deposit();
+    } else {
+      //withdraw check
+      if (amount > Decimal.parse(walletInfo.inExchange.toString())) {
+        sharedService.alertDialog(
+            FlutterI18n.translate(context, "invalidAmount"),
+            FlutterI18n.translate(context, "pleaseEnterValidNumber"),
+            isWarning: false);
+        setBusy(false);
+        return;
+      }
+      if (amount < Decimal.parse(token.minWithdraw!.toString())) {
+        sharedService.sharedSimpleNotification(
+          FlutterI18n.translate(context, "minimumAmountError"),
+          subtitle: FlutterI18n.translate(
+              context, "yourWithdrawMinimumAmountaIsNotSatisfied"),
+        );
+        setBusy(false);
+        return;
+      }
+      // initiate withdraw
+      isWithdrawChoice ? withdrawConfirmation() : withdraw();
+    }
+  }
+
+  // move to exchange
+  deposit() async {
+    setBusy(true);
+
+    Decimal checkTransFeeAgainst = Constants.decimalZero;
+    if (tokenType!.isEmpty) {
+      checkTransFeeAgainst =
+          NumberUtil.parseDoubleToDecimal(walletInfo.availableBalance!);
+    } else {
+      checkTransFeeAgainst = chainBalance;
+    }
+    if (transFee > checkTransFeeAgainst && !isTrx()) {
+      sharedService.sharedSimpleNotification(
+          FlutterI18n.translate(context, "insufficientBalance"),
+          subtitle:
+              '${FlutterI18n.translate(context, "gasFee")} $transFee > ${FlutterI18n.translate(context, "walletbalance")} ${walletInfo.availableBalance}');
+
+      setBusy(false);
+      return;
+    }
+
+    await refreshBalance();
+
+    Decimal finalAmount = Constants.decimalZero;
+    if (!isTrx()) {
+      finalAmount = await amountAfterFee();
+    }
+    if (amount == Constants.decimalZero) {
+      log.e(
+          'amount $amount --- final amount with fee: $finalAmount -- wallet bal: ${walletInfo.availableBalance}');
+      sharedService.alertDialog(FlutterI18n.translate(context, "invalidAmount"),
+          FlutterI18n.translate(context, "pleaseEnterValidNumber"),
+          isWarning: false);
+      setBusy(false);
+      return;
+    }
+
+    if (finalAmount >
+        NumberUtil.parseDoubleToDecimal(walletInfo.availableBalance!)) {
+      log.e(
+          'amount $amount --- final amount with fee: $finalAmount -- wallet bal: ${walletInfo.availableBalance}');
+      sharedService.alertDialog(FlutterI18n.translate(context, "invalidAmount"),
+          FlutterI18n.translate(context, "insufficientBalance"),
+          isWarning: false);
+      setBusy(false);
+      return;
+    }
+
+    /// check chain balance
+    /// whether native token has enough balance to cover transaction fee
+    if (tokenType!.isNotEmpty) {
+      var tt = tokenType == 'POLYGON' ? 'MATICM' : tokenType;
+      bool hasSufficientChainBalance = await walletService
+          .hasSufficientWalletBalance(transFee.toDouble(), tt!);
+      if (!hasSufficientChainBalance) {
+        log.e('Chain $tokenType -- insufficient balance');
+        sharedService.sharedSimpleNotification(walletInfo.tokenType!,
+            subtitle: FlutterI18n.translate(context, "insufficientBalance"));
+        setBusy(false);
+        return;
+      }
+    }
+
+// * checking trx balance required
+    if (walletInfo.tickerName == 'USDTX') {
+      log.e('amount $amount --- wallet bal: ${walletInfo.availableBalance}');
+      bool isCorrectAmount = true;
+      await walletService
+          .hasSufficientWalletBalance(
+              double.parse(trxGasValueTextController.text), 'TRX')
+          .then((res) => isCorrectAmount = res);
+      log.w('isCorrectAmount $isCorrectAmount');
+      if (!isCorrectAmount) {
+        sharedService.alertDialog(
+            '${FlutterI18n.translate(context, "fee")} ${FlutterI18n.translate(context, "notice")}',
+            'TRX ${FlutterI18n.translate(context, "insufficientBalance")}',
+            isWarning: false);
+        setBusy(false);
+        return;
+      }
+    }
+
+    if (walletInfo.tickerName == 'TRX') {
+      log.e('amount $amount --- wallet bal: ${walletInfo.availableBalance}');
+      bool isCorrectAmount = true;
+      Decimal totalAmount =
+          amount + Decimal.parse(trxGasValueTextController.text);
+      if (totalAmount >
+          NumberUtil.parseDoubleToDecimal(walletInfo.availableBalance!)) {
+        isCorrectAmount = false;
+      }
+      if (!isCorrectAmount) {
+        sharedService.alertDialog(
+            '${FlutterI18n.translate(context, "fee")} ${FlutterI18n.translate(context, "notice")}',
+            'TRX ${FlutterI18n.translate(context, "insufficientBalance")}',
+            isWarning: false);
+        setBusy(false);
+        return;
+      }
+    }
+// 541.81
+// -4.123456789
+// 7881.2
+    message = '';
+    var res = await _dialogService.showDialog(
+        title: FlutterI18n.translate(context, "enterPassword"),
+        description:
+            FlutterI18n.translate(context, "dialogManagerTypeSamePasswordNote"),
+        buttonTitle: FlutterI18n.translate(context, "confirm"));
+    if (res.confirmed) {
+      setBusy(true);
+      Uint8List? seed;
+      String? mnemonic = res.returnedText;
+      if (walletInfo.tickerName != 'TRX' && walletInfo.tickerName != 'USDTX') {
+        seed = walletService.generateSeed(mnemonic);
+      }
+
+      var gasPrice = int.tryParse(gasPriceTextController.text);
+      var gasLimit = isTrx()
+          ? int.tryParse(trxGasValueTextController.text)
+          : int.tryParse(gasLimitTextController.text);
+      var satoshisPerBytes = int.tryParse(satoshisPerByteTextController.text);
+      var kanbanGasPrice = int.tryParse(kanbanGasPriceTextController.text);
+      var kanbanGasLimit = int.tryParse(kanbanGasLimitTextController.text);
+      String tickerName = walletInfo.tickerName!;
+      int? decimal;
+      //  BigInt bigIntAmount = BigInt.tryParse(amountController.text);
+      // log.w('Big int amount $bigIntAmount');
+      String? contractAddr = '';
+      if (walletInfo.tokenType!.isNotEmpty) {
+        contractAddr = environment["addresses"]["smartContract"][tickerName];
+      }
+      if (contractAddr == null && tokenType != '') {
+        log.i(
+            '$tickerName with token type $tokenType contract is null so fetching from token database');
+        await tokenListDatabaseService
+            .getByTickerName(tickerName)
+            .then((token) {
+          contractAddr = token!.contract;
+          decimal = token.decimal;
+        });
+      }
+      decimal ??= decimalLimit;
+      var option = {
+        "gasPrice": gasPrice ?? 0,
+        "gasLimit": gasLimit ?? 0,
+        "satoshisPerBytes": satoshisPerBytes ?? 0,
+        'kanbanGasPrice': kanbanGasPrice,
+        'kanbanGasLimit': kanbanGasLimit,
+        'tokenType': walletInfo.tokenType,
+        'contractAddress': contractAddr,
+        'decimal': decimal
+      };
+      log.i('OPTIONS-- ${walletInfo.tickerName}, --   $amount, - - $option');
+
+      // TRON Transaction
+      if (walletInfo.tickerName == 'TRX' || walletInfo.tickerName == 'USDTX') {
+        setBusy(true);
+        log.i('depositing tron ${walletInfo.tickerName}');
+
+        await walletService
+            .depositTron(
+                mnemonic: mnemonic,
+                walletInfo: walletInfo,
+                amount: amount,
+                isTrxUsdt: walletInfo.tickerName == 'USDTX' ||
+                        walletInfo.tickerName == 'USDCX'
+                    ? true
+                    : false,
+                isBroadcast: false,
+                options: option)
+            .then((res) {
+          bool success = res["success"];
+          if (success) {
+            amountController.text = '';
+            String? txId = res['data']['transactionID'];
+
+            isShowErrorDetailsButton = false;
+            isShowDetailsMessage = false;
+            message = txId.toString();
+
+            sharedService.sharedSimpleNotification(
+                FlutterI18n.translate(context, "depositTransactionSuccess"),
+                subtitle:
+                    '$specialTicker ${FlutterI18n.translate(context, "isOnItsWay")}',
+                isError: false);
+            Future.delayed(const Duration(seconds: 3), () {
+              refreshBalance();
+            });
+          } else {
+            if (res.containsKey("error") && res["error"] != null) {
+              serverError = res['error'].toString();
+              isShowErrorDetailsButton = true;
+            } else if (res["message"] != null) {
+              serverError = res['message'].toString();
+              isShowErrorDetailsButton = true;
+            }
+          }
+        }).timeout(const Duration(seconds: 25), onTimeout: () {
+          log.e('In time out');
+          setBusy(false);
+          sharedService.alertDialog(
+              FlutterI18n.translate(context, "notice"),
+              FlutterI18n.translate(
+                  context, "serverTimeoutPleaseTryAgainLater"),
+              isWarning: false);
+        }).catchError((error) {
+          log.e('In Catch error - $error');
+          sharedService.alertDialog(
+              FlutterI18n.translate(context, "networkIssue"),
+              '$tickerName ${FlutterI18n.translate(context, "transanctionFailed")}',
+              isWarning: false);
+
+          setBusy(false);
+        });
+      }
+
+      // Normal DEPOSIT
+
+      else {
+        await walletService
+            .depositDo(seed, walletInfo.tickerName!, walletInfo.tokenType!,
+                finalAmount, option)
+            .then((ret) {
+          log.w('deposit res $ret');
+
+          bool success = ret["success"];
+          if (success) {
+            amountController.text = '';
+            String? txId = ret['data']['transactionID'];
+
+            //  var allTxids = ret["txids"];
+            // walletService.addTxids(allTxids);
+            isShowErrorDetailsButton = false;
+            isShowDetailsMessage = false;
+            message = txId.toString();
+          } else {
+            if (ret.containsKey("error") && ret["error"] != null) {
+              serverError = ret['error'].toString();
+              isShowErrorDetailsButton = true;
+            } else if (ret["message"] != null) {
+              serverError = ret['message'].toString();
+              isShowErrorDetailsButton = true;
+            }
+          }
+          showSimpleNotification(
+              Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    success
+                        ? Text(FlutterI18n.translate(
+                            context, "depositTransactionSuccess"))
+                        : Text(FlutterI18n.translate(
+                            context, "depositTransactionFailed")),
+                    success
+                        ? const Text("")
+                        : ret["data"] != null
+                            ? Text(ret["data"] ==
+                                    'incorrect amount for two transactions'
+                                ? FlutterI18n.translate(
+                                    context, "incorrectDepositAmountOfTwoTx")
+                                : ret["data"])
+                            : Text(
+                                FlutterI18n.translate(context, "networkIssue")),
+                  ]),
+              position: NotificationPosition.bottom,
+              background: primaryColor);
+          Future.delayed(const Duration(seconds: 3), () {
+            refreshBalance();
+          });
+
+          // sharedService.alertDialog(
+          //     success
+          //         ? AppLocalizations.of(context).depositTransactionSuccess
+          //         : AppLocalizations.of(context).depositTransactionFailed,
+          //     success
+          //         ? ""
+          //         : ret.containsKey("error") && ret["error"] != null
+          //             ? ret["error"]
+          //             : AppLocalizations.of(context).serverError,
+          //     isWarning: false);
+        }).catchError((onError) {
+          log.e('Deposit Catch $onError');
+
+          sharedService.alertDialog(
+              FlutterI18n.translate(context, "depositTransactionFailed"),
+              FlutterI18n.translate(context, "networkIssue"),
+              isWarning: false);
+          serverError = onError.toString();
+        });
+      }
+    } else if (res.returnedText == 'Closed' && !res.confirmed) {
+      log.e('Dialog Closed By User');
+
+      setBusy(false);
+    } else {
+      log.e('Wrong pass');
+      setBusy(false);
+      showNotification(context);
+    }
+    setBusy(false);
+  }
+
+  showDetailsMessageToggle() {
+    setBusy(true);
+    isShowDetailsMessage = !isShowDetailsMessage;
+    setBusy(false);
+  }
+
+  //----------------- move to wallet -----------------//
+
+  /*----------------------------------------------------------------------
+                      Verify Wallet Password
+----------------------------------------------------------------------*/
+  withdraw() async {
+    setBusy(true);
+    isSubmittingTx = true;
+    try {
+      var amount = Decimal.parse(amountController.text);
+
+      await getSingleCoinExchangeBal();
+
       if (selectedChain == 'FAB' && amount > fabChainBalance) {
-        sharedService.alertDialog(FlutterI18n.translate(context!, "notice"),
-            '${FlutterI18n.translate(context!, "lowTsWalletBalanceErrorFirstPart")} $fabChainBalance. ${FlutterI18n.translate(context!, "lowTsWalletBalanceErrorSecondPart")}',
+        sharedService.alertDialog(FlutterI18n.translate(context, "notice"),
+            '${FlutterI18n.translate(context, "lowTsWalletBalanceErrorFirstPart")} $fabChainBalance. ${FlutterI18n.translate(context, "lowTsWalletBalanceErrorSecondPart")}',
             isWarning: false);
 
         setBusy(false);
@@ -274,40 +633,40 @@ class TransferViewModel extends BaseViewModel {
       /// show warning like amount should be less than ts wallet balance
       /// instead of displaying the generic error
       if (selectedChain == 'ETH' && amount > ethChainBalance) {
-        sharedService.alertDialog(FlutterI18n.translate(context!, "notice"),
-            '${FlutterI18n.translate(context!, "lowTsWalletBalanceErrorFirstPart")} $ethChainBalance. ${FlutterI18n.translate(context!, "lowTsWalletBalanceErrorSecondPart")}',
+        sharedService.alertDialog(FlutterI18n.translate(context, "notice"),
+            '${FlutterI18n.translate(context, "lowTsWalletBalanceErrorFirstPart")} $ethChainBalance. ${FlutterI18n.translate(context, "lowTsWalletBalanceErrorSecondPart")}',
             isWarning: false);
 
         setBusy(false);
         return;
       }
       if (selectedChain == 'TRX' && amount > trxTsWalletBalance) {
-        sharedService.alertDialog(FlutterI18n.translate(context!, "notice"),
-            '${FlutterI18n.translate(context!, "lowTsWalletBalanceErrorFirstPart")} $trxTsWalletBalance. ${FlutterI18n.translate(context!, "lowTsWalletBalanceErrorSecondPart")}',
+        sharedService.alertDialog(FlutterI18n.translate(context, "notice"),
+            '${FlutterI18n.translate(context, "lowTsWalletBalanceErrorFirstPart")} $trxTsWalletBalance. ${FlutterI18n.translate(context, "lowTsWalletBalanceErrorSecondPart")}',
             isWarning: false);
         setBusy(false);
         return;
       }
       if (selectedChain == 'BNB' && amount > bnbTsWalletBalance) {
-        sharedService.alertDialog(FlutterI18n.translate(context!, "notice"),
-            '${FlutterI18n.translate(context!, "lowTsWalletBalanceErrorFirstPart ")} $bnbTsWalletBalance. ${FlutterI18n.translate(context!, "lowTsWalletBalanceErrorSecondPart")}',
+        sharedService.alertDialog(FlutterI18n.translate(context, "notice"),
+            '${FlutterI18n.translate(context, "lowTsWalletBalanceErrorFirstPart ")} $bnbTsWalletBalance. ${FlutterI18n.translate(context, "lowTsWalletBalanceErrorSecondPart")}',
             isWarning: false);
         setBusy(false);
         return;
       }
       if (selectedChain == 'POLYGON' && amount > polygonTsWalletBalance) {
-        sharedService.alertDialog(FlutterI18n.translate(context!, "notice"),
-            '${FlutterI18n.translate(context!, "lowTsWalletBalanceErrorFirstPart")} $polygonTsWalletBalance. ${FlutterI18n.translate(context!, "lowTsWalletBalanceErrorSecondPart")}',
+        sharedService.alertDialog(FlutterI18n.translate(context, "notice"),
+            '${FlutterI18n.translate(context, "lowTsWalletBalanceErrorFirstPart")} $polygonTsWalletBalance. ${FlutterI18n.translate(context, "lowTsWalletBalanceErrorSecondPart")}',
             isWarning: false);
         setBusy(false);
         return;
       }
 
       var res = await _dialogService.showDialog(
-          title: FlutterI18n.translate(context!, "enterPassword"),
+          title: FlutterI18n.translate(context, "enterPassword"),
           description: FlutterI18n.translate(
-              context!, "dialogManagerTypeSamePasswordNote"),
-          buttonTitle: FlutterI18n.translate(context!, "confirm"));
+              context, "dialogManagerTypeSamePasswordNote"),
+          buttonTitle: FlutterI18n.translate(context, "confirm"));
       if (res.confirmed) {
         String exgAddress =
             await sharedService.getExgAddressFromCoreWalletDatabase();
@@ -315,7 +674,7 @@ class TransferViewModel extends BaseViewModel {
         Uint8List seed = walletService.generateSeed(mnemonic);
         // if (selectedCoinWalletInfo!.tickerName == 'FAB' && ) selectedCoinWalletInfo!.tokenType = '';
 
-        var coinName = selectedCoinWalletInfo!.tickerName;
+        var coinName = walletInfo.tickerName;
         var coinAddress = '';
         if (isShowFabChainBalance &&
             coinName != 'FAB' &&
@@ -351,7 +710,7 @@ class TransferViewModel extends BaseViewModel {
               await sharedService.getCoinAddressFromCoreWalletDatabase('TRX');
           coinName = 'USDTX';
         } else {
-          coinAddress = selectedCoinWalletInfo!.address!;
+          coinAddress = walletInfo.address!;
         }
         if (coinName == 'BCH') {
           await walletService
@@ -363,9 +722,9 @@ class TransferViewModel extends BaseViewModel {
 
         var kanbanPrice = int.tryParse(kanbanGasPriceTextController.text);
         var kanbanGasLimit = int.tryParse(kanbanGasLimitTextController.text);
-        if (selectedCoinWalletInfo!.tickerName == 'TRX' ||
-            selectedCoinWalletInfo!.tokenType == 'TRX' ||
-            selectedCoinWalletInfo!.tickerName == 'USDTX') {
+        if (walletInfo.tickerName == 'TRX' ||
+            walletInfo.tokenType == 'TRX' ||
+            walletInfo.tickerName == 'USDTX') {
           int kanbanGasPrice = environment['chains']['KANBAN']['gasPrice'];
           int kanbanGasLimit = environment['chains']['KANBAN']['gasLimit'];
           await walletService
@@ -375,14 +734,14 @@ class TransferViewModel extends BaseViewModel {
             bool success = ret["success"];
             if (success && ret['transactionHash'] != null) {
               String txId = ret['transactionHash'];
-              amountTextController.text = '';
+              amountController.text = '';
               serverError = '';
               isShowErrorDetailsButton = false;
               message = txId;
             } else {
               serverError = ret['data'].toString();
               if (serverError.isEmpty) {
-                var errMsg = FlutterI18n.translate(context!, "serverError");
+                var errMsg = FlutterI18n.translate(context, "serverError");
                 error(errMsg);
                 isShowErrorDetailsButton = true;
                 isSubmittingTx = false;
@@ -391,10 +750,10 @@ class TransferViewModel extends BaseViewModel {
             sharedService.alertDialog(
                 success && ret['transactionHash'] != null
                     ? FlutterI18n.translate(
-                        context!, "withdrawTransactionSuccessful")
+                        context, "withdrawTransactionSuccessful")
                     : FlutterI18n.translate(
-                        context!, "withdrawTransactionFailed"),
-                success ? "" : FlutterI18n.translate(context!, "serverError"),
+                        context, "withdrawTransactionFailed"),
+                success ? "" : FlutterI18n.translate(context, "serverError"),
                 isWarning: false);
           }).catchError((err) {
             isShowErrorDetailsButton = true;
@@ -410,14 +769,14 @@ class TransferViewModel extends BaseViewModel {
             bool success = ret["success"];
             if (success && ret['transactionHash'] != null) {
               String txId = ret['transactionHash'];
-              amountTextController.text = '';
+              amountController.text = '';
               serverError = '';
               isShowErrorDetailsButton = false;
               message = txId;
             } else {
               serverError = ret['data'];
               if (serverError == '') {
-                var errMsg = FlutterI18n.translate(context!, "serverError");
+                var errMsg = FlutterI18n.translate(context, "serverError");
                 error(errMsg);
                 isShowErrorDetailsButton = true;
                 isSubmittingTx = false;
@@ -426,12 +785,12 @@ class TransferViewModel extends BaseViewModel {
             sharedService.sharedSimpleNotification(
                 success && ret['transactionHash'] != null
                     ? FlutterI18n.translate(
-                        context!, "withdrawTransactionSuccessful")
+                        context, "withdrawTransactionSuccessful")
                     : FlutterI18n.translate(
-                        context!, "withdrawTransactionFailed"),
+                        context, "withdrawTransactionFailed"),
                 subtitle: success
                     ? ""
-                    : FlutterI18n.translate(context!, "serverError"),
+                    : FlutterI18n.translate(context, "serverError"),
                 isError: !success ? true : false);
           }).catchError((err) {
             isShowErrorDetailsButton = true;
@@ -445,7 +804,7 @@ class TransferViewModel extends BaseViewModel {
       } else {
         debugPrint('else');
         if (res.returnedText != 'Closed') {
-          showNotification(context!);
+          showNotification(context);
           isSubmittingTx = false;
         }
       }
@@ -462,13 +821,13 @@ class TransferViewModel extends BaseViewModel {
     try {
       await _dialogService
           .showVerifyDialog(
-              title: FlutterI18n.translate(context!, "withdrawPopupNote"),
+              title: FlutterI18n.translate(context, "withdrawPopupNote"),
               description: selectedChain,
-              buttonTitle: FlutterI18n.translate(context!, "confirm"))
+              buttonTitle: FlutterI18n.translate(context, "confirm"))
           .then((res) {
         if (res.confirmed) {
           debugPrint('res  ${res.confirmed}');
-          checkPass();
+          withdraw();
         } else {
           debugPrint('res ${res.confirmed}');
         }
@@ -488,32 +847,26 @@ class TransferViewModel extends BaseViewModel {
       isShowTrxTsWalletBalance = false;
       isShowPolygonTsWalletBalance = false;
       isShowBnbTsWalletBalance = false;
-      if (selectedCoinWalletInfo!.tickerName != 'FAB') tokenType = 'FAB';
-      if (selectedCoinWalletInfo!.tickerName == 'FABE' &&
-          isShowFabChainBalance) {
+      if (walletInfo.tickerName != 'FAB') tokenType = 'FAB';
+      if (walletInfo.tickerName == 'FABE' && isShowFabChainBalance) {
         await setWithdrawLimit('FAB');
-      } else if (selectedCoinWalletInfo!.tickerName == 'DSCE' &&
-          isShowFabChainBalance) {
+      } else if (walletInfo.tickerName == 'DSCE' && isShowFabChainBalance) {
         await setWithdrawLimit('DSC');
-      } else if (selectedCoinWalletInfo!.tickerName == 'BSTE' &&
-          isShowFabChainBalance) {
+      } else if (walletInfo.tickerName == 'BSTE' && isShowFabChainBalance) {
         await setWithdrawLimit('BST');
-      } else if (selectedCoinWalletInfo!.tickerName == 'EXGE' &&
-          isShowFabChainBalance) {
+      } else if (walletInfo.tickerName == 'EXGE' && isShowFabChainBalance) {
         await setWithdrawLimit('EXG');
       } else {
-        await setWithdrawLimit(selectedCoinWalletInfo!.tickerName!);
+        await setWithdrawLimit(walletInfo.tickerName!);
       }
     } else if (value == 'TRX') {
       isShowPolygonTsWalletBalance = false;
       isShowBnbTsWalletBalance = false;
       isShowTrxTsWalletBalance = true;
       isSpeicalTronTokenWithdraw = true;
-      if (selectedCoinWalletInfo!.tickerName == 'TRX' &&
-          isShowTrxTsWalletBalance) {
+      if (walletInfo.tickerName == 'TRX' && isShowTrxTsWalletBalance) {
         await setWithdrawLimit('TRX');
-      } else if (selectedCoinWalletInfo!.tickerName == 'USDCX' &&
-          isShowTrxTsWalletBalance) {
+      } else if (walletInfo.tickerName == 'USDCX' && isShowTrxTsWalletBalance) {
         await setWithdrawLimit('USDCX');
         tokenType = 'TRX';
       } else {
@@ -525,14 +878,14 @@ class TransferViewModel extends BaseViewModel {
       isShowTrxTsWalletBalance = false;
       isShowFabChainBalance = false;
       isShowPolygonTsWalletBalance = false;
-      if (WalletUtil.isSpecialUsdt(selectedCoinWalletInfo!.tickerName!) ||
-          selectedCoinWalletInfo!.tickerName == 'USDT') {
+      if (WalletUtil.isSpecialUsdt(walletInfo.tickerName!) ||
+          walletInfo.tickerName == 'USDT') {
         await setWithdrawLimit('USDTB');
-      } else if (WalletUtil.isSpecialFab(selectedCoinWalletInfo!.tickerName!) ||
-          selectedCoinWalletInfo!.tickerName == 'FAB') {
+      } else if (WalletUtil.isSpecialFab(walletInfo.tickerName!) ||
+          walletInfo.tickerName == 'FAB') {
         await setWithdrawLimit('FABB');
       } else {
-        await setWithdrawLimit(selectedCoinWalletInfo!.tickerName!);
+        await setWithdrawLimit(walletInfo.tickerName!);
       }
       tokenType = 'BNB';
     } else if (value == 'POLYGON') {
@@ -540,11 +893,11 @@ class TransferViewModel extends BaseViewModel {
       isShowFabChainBalance = false;
       isShowBnbTsWalletBalance = false;
       isShowTrxTsWalletBalance = false;
-      if (WalletUtil.isSpecialUsdt(selectedCoinWalletInfo!.tickerName!) ||
-          selectedCoinWalletInfo!.tickerName == 'USDT') {
+      if (WalletUtil.isSpecialUsdt(walletInfo.tickerName!) ||
+          walletInfo.tickerName == 'USDT') {
         await setWithdrawLimit('USDTM');
       } else {
-        await setWithdrawLimit(selectedCoinWalletInfo!.tickerName!);
+        await setWithdrawLimit(walletInfo.tickerName!);
       }
       tokenType = 'POLYGON';
     } else {
@@ -553,26 +906,22 @@ class TransferViewModel extends BaseViewModel {
       isShowPolygonTsWalletBalance = false;
       isShowBnbTsWalletBalance = false;
       tokenType = 'ETH';
-      if (selectedCoinWalletInfo!.tickerName == 'FAB' &&
-          !isShowFabChainBalance) {
+      if (walletInfo.tickerName == 'FAB' && !isShowFabChainBalance) {
         await setWithdrawLimit('FABE');
-      } else if (selectedCoinWalletInfo!.tickerName == 'DSC' &&
-          !isShowFabChainBalance) {
+      } else if (walletInfo.tickerName == 'DSC' && !isShowFabChainBalance) {
         await setWithdrawLimit('DSCE');
-      } else if (selectedCoinWalletInfo!.tickerName == 'BST' &&
-          !isShowFabChainBalance) {
+      } else if (walletInfo.tickerName == 'BST' && !isShowFabChainBalance) {
         await setWithdrawLimit('BSTE');
-      } else if (selectedCoinWalletInfo!.tickerName == 'EXG' &&
-          !isShowFabChainBalance) {
+      } else if (walletInfo.tickerName == 'EXG' && !isShowFabChainBalance) {
         await setWithdrawLimit('EXGE');
-      } else if (selectedCoinWalletInfo!.tickerName == 'USDTX' &&
+      } else if (walletInfo.tickerName == 'USDTX' &&
           !isShowTrxTsWalletBalance) {
         await setWithdrawLimit('USDT');
-      } else if (selectedCoinWalletInfo!.tickerName == 'USDCX' &&
+      } else if (walletInfo.tickerName == 'USDCX' &&
           !isShowTrxTsWalletBalance) {
         await setWithdrawLimit('USDC');
       } else {
-        await setWithdrawLimit(selectedCoinWalletInfo!.tickerName!);
+        await setWithdrawLimit(walletInfo.tickerName!);
       }
       setBusy(false);
     }
@@ -591,44 +940,42 @@ class TransferViewModel extends BaseViewModel {
   Future getSingleCoinExchangeBal() async {
     setBusy(true);
     String tickerName = '';
-    if (selectedCoinWalletInfo!.tickerName == 'DSCE' ||
-        selectedCoinWalletInfo!.tickerName == 'DSC') {
+    if (walletInfo.tickerName == 'DSCE' || walletInfo.tickerName == 'DSC') {
       tickerName = 'DSC';
       isWithdrawChoice = true;
-    } else if (selectedCoinWalletInfo!.tickerName == 'BSTE' ||
-        selectedCoinWalletInfo!.tickerName == 'BST') {
+    } else if (walletInfo.tickerName == 'BSTE' ||
+        walletInfo.tickerName == 'BST') {
       tickerName = 'BST';
       isWithdrawChoice = true;
-    } else if (selectedCoinWalletInfo!.tickerName == 'FABE' ||
-        selectedCoinWalletInfo!.tickerName == 'FAB') {
+    } else if (walletInfo.tickerName == 'FABE' ||
+        walletInfo.tickerName == 'FAB') {
       tickerName = 'FAB';
       isWithdrawChoice = true;
-    } else if (selectedCoinWalletInfo!.tickerName == 'EXGE' ||
-        selectedCoinWalletInfo!.tickerName == 'EXG') {
+    } else if (walletInfo.tickerName == 'EXGE' ||
+        walletInfo.tickerName == 'EXG') {
       tickerName = 'EXG';
       isWithdrawChoice = true;
-    } else if (selectedCoinWalletInfo!.tickerName == 'USDT' ||
-        selectedCoinWalletInfo!.tickerName == 'USDTX') {
+    } else if (walletInfo.tickerName == 'USDT' ||
+        walletInfo.tickerName == 'USDTX') {
       tickerName = 'USDT';
       isWithdrawChoice = true;
       isShowFabChainBalance = false;
-    } else if (selectedCoinWalletInfo!.tickerName == 'USDC' ||
-        selectedCoinWalletInfo!.tickerName == 'USDCX') {
+    } else if (walletInfo.tickerName == 'USDC' ||
+        walletInfo.tickerName == 'USDCX') {
       tickerName = 'USDC';
       isWithdrawChoice = true;
       isShowFabChainBalance = false;
-    } else if (selectedCoinWalletInfo!.tickerName == 'MATICM') {
+    } else if (walletInfo.tickerName == 'MATICM') {
       tickerName = 'MATIC';
     } else {
-      tickerName = selectedCoinWalletInfo!.tickerName!;
+      tickerName = walletInfo.tickerName!;
     }
     String fabAddress =
         await sharedService.getFabAddressFromCoreWalletDatabase();
     await apiService
-        .getSingleWalletBalance(
-            fabAddress, tickerName, selectedCoinWalletInfo!.address!)
+        .getSingleWalletBalance(fabAddress, tickerName, walletInfo.address!)
         .then((res) {
-      selectedCoinWalletInfo!.inExchange = res[0].unlockedExchangeBalance;
+      walletInfo.inExchange = res[0].unlockedExchangeBalance;
     });
 
     if (isSubmittingTx) {
@@ -677,7 +1024,7 @@ class TransferViewModel extends BaseViewModel {
       'address': trimHexPrefix(smartContractAddress),
       'data': balanceInfoABI + fixLength(trimHexPrefix(address), 64)
     };
-    double tokenBalance;
+    Decimal tokenBalance;
     var url = '${fabUtils.fabBaseUrl}callcontract';
     debugPrint(
         'Fab_util -- address $address getFabTokenBalanceForABI balance by address url -- $url -- body $body');
@@ -694,8 +1041,7 @@ class TransferViewModel extends BaseViewModel {
     //   tokenBalance = ((unlockInt) / BigInt.parse(pow(10, decimal).toString()));
     // } else {
     tokenBalance = NumberUtil.rawStringToDecimal(unlockInt.toString(),
-            decimalPrecision: token.decimal!)
-        .toDouble();
+        decimalPrecision: token.decimal!);
 
     fabChainBalance = tokenBalance;
     debugPrint('$tickerName fab chain balance $fabChainBalance');
@@ -710,14 +1056,14 @@ class TransferViewModel extends BaseViewModel {
 
     String smartContractAddress = '';
     String ticker = '';
-    if (WalletUtil.isSpecialUsdt(selectedCoinWalletInfo!.tickerName!) ||
-        selectedCoinWalletInfo!.tickerName == 'USDT') {
+    if (WalletUtil.isSpecialUsdt(walletInfo.tickerName!) ||
+        walletInfo.tickerName == 'USDT') {
       ticker = 'USDTX';
-    } else if (selectedCoinWalletInfo!.tickerName == 'USDC' ||
-        WalletUtil.isSpecialUsdc(selectedCoinWalletInfo!.tickerName!)) {
+    } else if (walletInfo.tickerName == 'USDC' ||
+        WalletUtil.isSpecialUsdc(walletInfo.tickerName!)) {
       ticker = 'USDCX';
     } else {
-      ticker = selectedCoinWalletInfo!.tickerName!;
+      ticker = walletInfo.tickerName!;
     }
     await apiService.getTokenListUpdates().then((tokens) {
       smartContractAddress = tokens
@@ -729,7 +1075,8 @@ class TransferViewModel extends BaseViewModel {
     await apiService
         .getTronUsdtTsWalletBalance(trxOfficialddress, smartContractAddress)
         .then((res) {
-      trxTsWalletBalance = res / 1e6;
+      trxTsWalletBalance =
+          NumberUtil.rawStringToDecimal(res, decimalPrecision: 6);
     });
     setBusy(false);
   }
@@ -741,7 +1088,8 @@ class TransferViewModel extends BaseViewModel {
     setBusy(true);
     String trxOfficialddress = coinService.getCoinOfficalAddress('TRX');
     await apiService.getTronTsWalletBalance(trxOfficialddress).then((res) {
-      trxTsWalletBalance = res['balance'] / 1e6;
+      trxTsWalletBalance =
+          NumberUtil.rawStringToDecimal(res['balance'], decimalPrecision: 6);
     });
     setBusy(false);
   }
@@ -752,19 +1100,19 @@ class TransferViewModel extends BaseViewModel {
     officialAddress = coinService.getCoinOfficalAddress('ETH');
     var fabAddress = await sharedService.getFabAddressFromCoreWalletDatabase();
     String updatedTicker = '';
-    if (WalletUtil.isSpecialUsdt(selectedCoinWalletInfo!.tickerName!) ||
-        selectedCoinWalletInfo!.tickerName == 'USDT') {
+    if (WalletUtil.isSpecialUsdt(walletInfo.tickerName!) ||
+        walletInfo.tickerName == 'USDT') {
       updatedTicker = 'USDTB';
-    } else if (selectedCoinWalletInfo!.tickerName == 'FAB' ||
-        WalletUtil.isSpecialFab(selectedCoinWalletInfo!.tickerName!)) {
+    } else if (walletInfo.tickerName == 'FAB' ||
+        WalletUtil.isSpecialFab(walletInfo.tickerName!)) {
       updatedTicker = 'FABB';
     } else {
-      updatedTicker = selectedCoinWalletInfo!.tickerName!;
+      updatedTicker = walletInfo.tickerName!;
     }
     await apiService
         .getSingleWalletBalance(fabAddress, updatedTicker, officialAddress)
         .then((res) {
-      bnbTsWalletBalance = res[0].balance;
+      bnbTsWalletBalance = NumberUtil.parseDoubleToDecimal(res[0].balance!);
     });
 
     setBusy(false);
@@ -776,16 +1124,16 @@ class TransferViewModel extends BaseViewModel {
     officialAddress = coinService.getCoinOfficalAddress('ETH');
     var fabAddress = await sharedService.getFabAddressFromCoreWalletDatabase();
     String updatedTicker = '';
-    if (WalletUtil.isSpecialUsdt(selectedCoinWalletInfo!.tickerName!) ||
-        selectedCoinWalletInfo!.tickerName == 'USDT') {
+    if (WalletUtil.isSpecialUsdt(walletInfo.tickerName!) ||
+        walletInfo.tickerName == 'USDT') {
       updatedTicker = 'USDTM';
     } else {
-      updatedTicker = selectedCoinWalletInfo!.tickerName!;
+      updatedTicker = walletInfo.tickerName!;
     }
     await apiService
         .getSingleWalletBalance(fabAddress, updatedTicker, officialAddress)
         .then((res) {
-      polygonTsWalletBalance = res[0].balance;
+      polygonTsWalletBalance = NumberUtil.parseDoubleToDecimal(res[0].balance!);
     });
 
     setBusy(false);
@@ -799,18 +1147,18 @@ class TransferViewModel extends BaseViewModel {
     String officialAddress = '';
     officialAddress = coinService.getCoinOfficalAddress('ETH');
     // call to get token balance
-    if (selectedCoinWalletInfo!.tickerName == 'FAB') {
+    if (walletInfo.tickerName == 'FAB') {
       updateTickerForErc = 'FABE';
-    } else if (selectedCoinWalletInfo!.tickerName == 'DSC') {
+    } else if (walletInfo.tickerName == 'DSC') {
       updateTickerForErc = 'DSCE';
-    } else if (selectedCoinWalletInfo!.tickerName == 'BST') {
+    } else if (walletInfo.tickerName == 'BST') {
       updateTickerForErc = 'BSTE';
-    } else if (selectedCoinWalletInfo!.tickerName == 'EXG') {
+    } else if (walletInfo.tickerName == 'EXG') {
       updateTickerForErc = 'EXGE';
-    } else if (selectedCoinWalletInfo!.tickerName == 'USDTX') {
+    } else if (walletInfo.tickerName == 'USDTX') {
       updateTickerForErc = 'USDT';
     } else {
-      updateTickerForErc = selectedCoinWalletInfo!.tickerName!;
+      updateTickerForErc = walletInfo.tickerName!;
     }
     ercSmartContractAddress = (await coinService
         .getSmartContractAddressByTickerName(updateTickerForErc))!;
@@ -818,14 +1166,13 @@ class TransferViewModel extends BaseViewModel {
     await getEthTokenBalanceByAddress(
             officialAddress, updateTickerForErc, ercSmartContractAddress)
         .then((res) {
-      if (selectedCoinWalletInfo!.tickerName == 'USDT' ||
-          selectedCoinWalletInfo!.tickerName == 'USDTX') {
-        ethChainBalance = res['balance1e6'];
-      } else if (selectedCoinWalletInfo!.tickerName == 'FABE' ||
-          selectedCoinWalletInfo!.tickerName == 'FAB') {
-        ethChainBalance = res['balanceIe8'];
+      if (walletInfo.tickerName == 'USDT' || walletInfo.tickerName == 'USDTX') {
+        ethChainBalance = res['balance1e6']!;
+      } else if (walletInfo.tickerName == 'FABE' ||
+          walletInfo.tickerName == 'FAB') {
+        ethChainBalance = res['balanceIe8']!;
       } else {
-        ethChainBalance = res['tokenBalanceIe18'];
+        ethChainBalance = res['tokenBalanceIe18']!;
       }
     });
     setBusy(false);
@@ -837,12 +1184,15 @@ class TransferViewModel extends BaseViewModel {
 
   setWithdrawLimit(String ticker) async {
     setBusy(true);
-    if (ercChainToken.feeWithdraw != null && selectedChain == 'ETH') {
+    if (ercChainToken.feeWithdraw != null &&
+        ercChainToken.feeWithdraw != 'null' &&
+        selectedChain == 'ETH') {
       token = ercChainToken;
       setBusy(false);
       return;
     }
     if (mainChainToken.feeWithdraw != null &&
+        mainChainToken.feeWithdraw != 'null' &&
         (selectedChain == 'TRX' || selectedChain == 'FAB')) {
       token = mainChainToken;
       setBusy(false);
@@ -859,7 +1209,6 @@ class TransferViewModel extends BaseViewModel {
           res.feeWithdraw!.isNotEmpty &&
           res.feeWithdraw! != "null") {
         token = res;
-        assignToken(token);
       } else {
         await coinService
             .getSingleTokenData(ticker, coinType: ct)
@@ -867,12 +1216,11 @@ class TransferViewModel extends BaseViewModel {
           if (resFromApi != null) {
             debugPrint('token from api res ${resFromApi.toJson()}');
             token = resFromApi;
-            assignToken(token);
           }
         });
       }
     });
-
+    assignToken(token);
     setBusy(false);
   }
 
@@ -888,11 +1236,11 @@ class TransferViewModel extends BaseViewModel {
       debugPrint(err.toString());
     }
     await walletService.gasBalance(address).then((data) {
-      gasAmount = data;
-      if (gasAmount == 0) {
+      gasAmount = NumberUtil.parseDoubleToDecimal(data);
+      if (gasAmount == Decimal.zero) {
         sharedService.alertDialog(
-          FlutterI18n.translate(context!, "notice"),
-          FlutterI18n.translate(context!, "insufficientGasAmount"),
+          FlutterI18n.translate(context, "notice"),
+          FlutterI18n.translate(context, "insufficientGasAmount"),
         );
       }
     }).catchError((onError) {
@@ -912,7 +1260,7 @@ class TransferViewModel extends BaseViewModel {
     setBusy(false);
   }
 
-  updateTransMoveFee() async {
+  updateKanbanGasFee() async {
     setBusy(true);
     var kanbanPrice = int.tryParse(kanbanGasPriceTextController.text);
     var kanbanGasLimit = int.tryParse(kanbanGasLimitTextController.text);
@@ -920,8 +1268,7 @@ class TransferViewModel extends BaseViewModel {
     var kanbanPriceBig = BigInt.from(kanbanPrice!);
     var kanbanGasLimitBig = BigInt.from(kanbanGasLimit!);
     var kanbanTransFeeDouble = NumberUtil.rawStringToDecimal(
-            (kanbanPriceBig * kanbanGasLimitBig).toString())
-        .toDouble();
+        (kanbanPriceBig * kanbanGasLimitBig).toString());
     debugPrint('Update trans fee $kanbanTransFeeDouble');
 
     kanbanGasFee = kanbanTransFeeDouble;
@@ -1002,33 +1349,17 @@ class TransferViewModel extends BaseViewModel {
     controllersList.removeWhere((controller) => controller.text.trim().isEmpty);
   }
 
-  getGas() async {
-    String address = await sharedService.getExgAddressFromCoreWalletDatabase();
-    await walletService.gasBalance(address).then((data) {
-      gasAmount = data;
-      if (gasAmount < 0.5) {
-        sharedService.alertDialog(
-          FlutterI18n.translate(context!, "notice"),
-          FlutterI18n.translate(context!, "insufficientGasAmount"),
-        );
-      }
-    }).catchError((onError) {
-      debugPrint(onError.toString());
-    });
-    notifyListeners();
-  }
-
   refreshBalance() async {
     setBusy(true);
     unconfirmedBalance = 0.0;
     String fabAddress =
         await sharedService.getFabAddressFromCoreWalletDatabase();
     await apiService
-        .getSingleWalletBalance(fabAddress, selectedCoinWalletInfo!.tickerName!,
-            selectedCoinWalletInfo!.address!)
+        .getSingleWalletBalance(
+            fabAddress, walletInfo.tickerName!, walletInfo.address!)
         .then((walletBalance) {
       if (walletBalance.isNotEmpty) {
-        selectedCoinWalletInfo!.availableBalance = walletBalance[0].balance;
+        walletInfo.availableBalance = walletBalance[0].balance;
         unconfirmedBalance = walletBalance[0].unconfirmedBalance!;
       }
     }).catchError((err) {
@@ -1043,15 +1374,14 @@ class TransferViewModel extends BaseViewModel {
 
     var tt = tokenType == 'POLYGON' ? 'MATICM' : tokenType;
     await apiService
-        .getSingleWalletBalance(
-            fabAddress, tt!, selectedCoinWalletInfo!.address.toString())
-        .then((walletBalance) => chainBalance = walletBalance.first.balance!);
+        .getSingleWalletBalance(fabAddress, tt!, walletInfo.address.toString())
+        .then((walletBalance) => chainBalance =
+            NumberUtil.parseDoubleToDecimal(walletBalance.first.balance!));
   }
 
   fillMaxAmount() {
     setBusy(true);
-    amountTextController.text = NumberUtil.roundDouble(
-            selectedCoinWalletInfo!.availableBalance!,
+    amountController.text = NumberUtil.roundDouble(walletInfo.availableBalance!,
             decimalPlaces: decimalLimit)
         .toString();
 
@@ -1063,10 +1393,10 @@ class TransferViewModel extends BaseViewModel {
     setBusy(true);
     var to =
         coinService.getCoinOfficalAddress(coinName!, tokenType: tokenType!);
-    var amount = double.tryParse(amountTextController.text)!;
+    var amount = Decimal.parse(amountController.text);
 
-    if (to == null || amount <= 0) {
-      gasFee = 0.0;
+    if (to == null || amount <= Decimal.zero) {
+      transFee = Decimal.zero;
       setBusy(false);
       return;
     }
@@ -1080,25 +1410,25 @@ class TransferViewModel extends BaseViewModel {
       "gasPrice": gasPrice,
       "gasLimit": gasLimit,
       "satoshisPerBytes": satoshisPerBytes,
-      "tokenType": selectedCoinWalletInfo!.tokenType,
+      "tokenType": walletInfo.tokenType,
       "getTransFeeOnly": true
     };
-    var address = selectedCoinWalletInfo!.address;
+    var address = walletInfo.address;
 
     var kanbanPrice = int.tryParse(kanbanGasPriceTextController.text);
     var kanbanGasLimit = int.tryParse(kanbanGasLimitTextController.text);
-    double? kanbanTransFeeDouble;
+    Decimal? kanbanFee;
     if (kanbanGasLimit != null && kanbanPrice != null) {
       var kanbanPriceBig = BigInt.from(kanbanPrice);
       var kanbanGasLimitBig = BigInt.from(kanbanGasLimit);
       var f = NumberUtil.rawStringToDecimal(
           (kanbanPriceBig * kanbanGasLimitBig).toString());
-      kanbanTransFeeDouble = f.toDouble();
+      kanbanFee = f;
     }
 
     await walletService
         .sendTransaction(
-            selectedCoinWalletInfo!.tickerName!,
+            walletInfo.tickerName!,
             Uint8List.fromList(
                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
             [0],
@@ -1109,81 +1439,91 @@ class TransferViewModel extends BaseViewModel {
             false)
         .then((ret) {
       if (ret != null && ret['transFee'] != null) {
-        gasFee = ret['transFee'];
-        kanbanGasFee = kanbanTransFeeDouble!;
+        transFee = Decimal.parse(ret['transFee'].toString());
+        kanbanGasFee = kanbanFee!;
         setBusy(false);
       }
       if (isTrx()) {
-        if (gasFee == 0.0) {
+        if (transFee == Decimal.zero) {
           isValidAmount = false;
         }
       }
     }).catchError((onError) {
+      log.e('updateTransFee error $onError');
       setBusy(false);
     });
 
     setBusy(false);
-    notifyListeners();
   }
 
-  Future<double> amountAfterFee({bool isMaxAmount = false}) async {
+  Future<Decimal> amountAfterFee({bool isMaxAmount = false}) async {
     setBusy(true);
-    if (amountTextController.text == '.') {
+    if (amountController.text == '.') {
       setBusy(false);
-      return 0.0;
+      return Constants.decimalZero;
     }
-    if (amountTextController.text.isEmpty) {
-      gasFee = 0.0;
-      kanbanGasFee = 0.0;
+    if (amountController.text.isEmpty) {
+      transFee = Constants.decimalZero;
+      kanbanGasFee = Constants.decimalZero;
       setBusy(false);
-      return 0.0;
+      return Constants.decimalZero;
     }
-    var amount = NumberUtil.roundDouble(double.parse(amountTextController.text),
+    amount = NumberUtil.decimalLimiter(Decimal.parse(amountController.text),
         decimalPlaces: decimalLimit);
-    double finalAmount = 0.0;
+    log.w('amountAfterFee func: amount $amount');
 
+    Decimal finalAmount = Constants.decimalZero;
+    // update if transfee is 0
+
+    // if tron coins then assign fee accordingly
     if (isTrx()) {
-      if (selectedCoinWalletInfo!.tickerName == 'USDTX' ||
-          selectedCoinWalletInfo!.tokenType == 'TRX') {
-        gasFee = double.parse(gasPriceTextController.text);
+      if (walletInfo.tickerName == 'USDTX' || walletInfo.tokenType == 'TRX') {
+        transFee = Decimal.parse(trxGasValueTextController.text);
         finalAmount = amount;
-        finalAmount <= selectedCoinWalletInfo!.availableBalance!
+        finalAmount <=
+                NumberUtil.parseDoubleToDecimal(walletInfo.availableBalance!)
             ? isValidAmount = true
             : isValidAmount = false;
       }
 
-      if (selectedCoinWalletInfo!.tickerName == 'TRX') {
-        gasFee = double.parse(gasPriceTextController.text);
-        finalAmount = isMaxAmount ? amount - gasFee : amount + gasFee;
+      if (walletInfo.tickerName == 'TRX') {
+        transFee = Decimal.parse(trxGasValueTextController.text);
+        finalAmount = isMaxAmount ? amount - transFee : amount + transFee;
       }
     } else {
       await updateTransFee();
+      // in any token transfer, gas fee is paid in native tokens so
+      // in case of non-native tokens, need to check the balance of native tokens
+      // so that there is fee to pay when transffering non-native tokens
       if (tokenType!.isEmpty) {
         if (isMaxAmount) {
           finalAmount = (Decimal.parse(amount.toString()) -
-                  Decimal.parse(gasFee.toString()))
-              .toDouble();
+              Decimal.parse(transFee.toString()));
         } else {
-          finalAmount = (Decimal.parse(gasFee.toString()) +
-                  Decimal.parse(amount.toString()))
-              .toDouble();
+          finalAmount = (Decimal.parse(transFee.toString()) +
+              Decimal.parse(amount.toString()));
+
+          log.e(
+              'final amount $finalAmount = amount $amount  + transFee $transFee');
         }
       } else {
         finalAmount = amount;
       }
     }
-    finalAmount = NumberUtil.truncateDoubleWithoutRouding(finalAmount,
-        precision: decimalLimit);
-    finalAmount <= selectedCoinWalletInfo!.availableBalance!
+
+    finalAmount <= NumberUtil.parseDoubleToDecimal(walletInfo.availableBalance!)
         ? isValidAmount = true
         : isValidAmount = false;
+    log.i(
+        'Func:amountAfterFee --trans fee $transFee  -- entered amount $amount =  finalAmount $finalAmount -- decimal limit final amount $finalAmount-- isValidAmount $isValidAmount');
     setBusy(false);
+    // It happens because floating-point numbers cannot always precisely represent decimal fractions. Instead, they represent them as binary fractions, which can sometimes result in rounding errors.
+    //0.025105000000000002
     return finalAmount;
   }
 
   bool isTrx() {
-    return selectedCoinWalletInfo!.tickerName == 'TRX' ||
-            selectedCoinWalletInfo!.tokenType == 'TRX'
+    return walletInfo.tickerName == 'TRX' || walletInfo.tokenType == 'TRX'
         ? true
         : false;
   }

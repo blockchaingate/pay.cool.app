@@ -759,5 +759,10 @@
     "owners": "所有者",
     "enterOwnerName": "输入所有者名称",
     "invalidFee": "无效费用",
-    "enterOwnerAddress": "输入所有者地址"
+    "enterOwnerAddress": "输入所有者地址",
+    "walletManagement": "钱包管理",
+    "transactionFee": "交易费",
+    "exchange": "交换",
+    "record": "记录",
+    "overview": "概览"
 }

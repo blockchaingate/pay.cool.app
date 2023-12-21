@@ -111,7 +111,7 @@ class AddGasViewModel extends FutureViewModel {
     setBusy(false);
   }
 
-  checkPass(double amount, context) async {
+  checkPass(Decimal amount, context) async {
     setBusy(true);
     if (isAmountInvalid) {
       sharedService.showInfoFlushbar(

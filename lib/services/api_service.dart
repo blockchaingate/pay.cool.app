@@ -559,18 +559,14 @@ class ApiService {
     var ethBaseUrl = environment['endpoints']['eth'];
     // _configService.getEthBaseUrl();
     var url = ethBaseUrl + 'getgasprice';
+    log.i('getEthGasPrice url $url');
     var ethGasPrice = 0;
     try {
-      var response = await client.get(url);
+      var response = await client.get(Uri.parse(url));
       var json = jsonDecode(response.body);
       log.w(' getEthGasPrice $json');
-      debugPrint((BigInt.parse(json['gasprice']) / BigInt.parse('1000000000'))
-          .toDouble()
-          .toString());
-      ethGasPrice =
-          (BigInt.parse(json['gasprice']) / BigInt.parse('1000000000'))
-              .toDouble()
-              .round();
+      debugPrint(json['gasprice']);
+      ethGasPrice = int.parse(json['gasprice'].toString());
     } catch (err) {
       log.e('In getEthGasPrice catch $err');
     }

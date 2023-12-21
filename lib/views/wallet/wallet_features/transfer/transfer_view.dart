@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:paycool/constants/colors.dart';
@@ -44,12 +45,9 @@ class _TransferViewState extends State<TransferView>
     Size size = MediaQuery.of(context).size;
 
     return ViewModelBuilder<TransferViewModel>.reactive(
-        viewModelBuilder: () => TransferViewModel(),
-        onViewModelReady: (model) {
-          model.context = context;
-          model.selectedCoinWalletInfo = widget.walletInfo;
-          model.initState();
-        },
+        viewModelBuilder: () =>
+            TransferViewModel(context: context, walletInfo: widget.walletInfo),
+        onViewModelReady: (model) => model.toExchangeInit(),
         builder: (context, model, child) => GestureDetector(
               onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
               child: Scaffold(
@@ -64,44 +62,6 @@ class _TransferViewState extends State<TransferView>
                         color: Colors.black,
                         size: 20,
                       )),
-                ),
-                floatingActionButtonLocation:
-                    FloatingActionButtonLocation.centerFloat,
-                floatingActionButton: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Expanded(
-                      flex: 1,
-                      child: Container(
-                          height: 50,
-                          margin: EdgeInsets.symmetric(horizontal: 5),
-                          child: ElevatedButton(
-                            onPressed: () {
-                              if (model.amountTextController.text.isEmpty ||
-                                  double.parse(
-                                          model.amountTextController.text) <=
-                                      0) {
-                                if (model.toText == 'Exchangily') {
-                                } else {
-                                  model.isWithdrawChoice
-                                      ? model.withdrawConfirmation()
-                                      : model.checkPass();
-                                }
-                              } else {}
-                            },
-                            style: ElevatedButton.styleFrom(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              backgroundColor:
-                                  model.amountTextController.text.isEmpty
-                                      ? grey
-                                      : buttonPurple,
-                            ),
-                            child: Text("Confirm"),
-                          )),
-                    ),
-                  ],
                 ),
                 body: Padding(
                   padding: EdgeInsets.fromLTRB(20, 20, 20, 0),
@@ -119,8 +79,8 @@ class _TransferViewState extends State<TransferView>
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Text(
                                   FlutterI18n.translate(context, "From"),
@@ -129,6 +89,7 @@ class _TransferViewState extends State<TransferView>
                                       fontWeight: FontWeight.bold,
                                       color: textHintGrey),
                                 ),
+                                UIHelper.verticalSpaceSmall,
                                 Text(
                                   FlutterI18n.translate(context, "To"),
                                   style: TextStyle(
@@ -139,42 +100,33 @@ class _TransferViewState extends State<TransferView>
                               ],
                             ),
                             UIHelper.horizontalSpaceMedium,
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  FlutterI18n.translate(
-                                      context, model.fromText),
-                                  style: TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.bold,
-                                      color: black),
-                                ),
-                                Text(
-                                  FlutterI18n.translate(context, model.toText),
-                                  style: TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.bold,
-                                      color: black),
-                                ),
-                              ],
+                            Expanded(
+                              child: ListView(
+                                reverse: !model.isDeposit,
+                                shrinkWrap: true,
+                                padding: EdgeInsets.symmetric(vertical: 5),
+                                children: [
+                                  Text(
+                                    FlutterI18n.translate(context, "wallet"),
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        color: black),
+                                  ),
+                                  UIHelper.verticalSpaceSmall,
+                                  Text(
+                                    FlutterI18n.translate(context, "exchange"),
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        color: black),
+                                  ),
+                                ],
+                              ),
                             ),
                             Expanded(child: SizedBox()),
                             IconButton(
-                              onPressed: () {
-                                setState(() {
-                                  var temp = model.fromText;
-                                  model.fromText = model.toText;
-                                  model.toText = temp;
-                                  model.isMoveToWallet = !model.isMoveToWallet;
-                                });
-                                if (model.toText == 'Exchangily') {
-                                  model.toExchangeInit();
-                                } else {
-                                  model.toWalletInit();
-                                }
-                              },
+                              onPressed: () => model.swapFunction(),
                               icon: Image.asset(
                                 "assets/images/new-design/swap_icon.png",
                                 scale: 2.2,
@@ -184,8 +136,8 @@ class _TransferViewState extends State<TransferView>
                           ],
                         ),
                       ),
-                      if (model.isMoveToWallet) UIHelper.verticalSpaceSmall,
-                      if (model.isMoveToWallet)
+                      if (!model.isDeposit) UIHelper.verticalSpaceSmall,
+                      if (!model.isDeposit)
                         Container(
                           width: size.width,
                           height: 50,
@@ -242,11 +194,13 @@ class _TransferViewState extends State<TransferView>
                           children: [
                             Expanded(
                               child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   TextField(
-                                    controller: model.amountTextController,
+                                    controller: model.amountController,
                                     onChanged: (String amount) {
-                                      model.updateTransFee();
+                                      if (model.isDeposit)
+                                        model.updateTransFee();
                                     },
                                     keyboardType:
                                         const TextInputType.numberWithOptions(
@@ -268,25 +222,41 @@ class _TransferViewState extends State<TransferView>
                                       contentPadding: EdgeInsets.only(left: 10),
                                     ),
                                   ),
-                                  Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Text(
-                                          '${FlutterI18n.translate(context, "minimumAmount")}: ',
-                                          style: headText6),
-                                      Text(
-                                          model.token.minWithdraw == null
-                                              ? FlutterI18n.translate(
-                                                  context, "loading")
-                                              : model.token.minWithdraw
-                                                  .toString(),
-                                          style: headText6),
-                                    ],
-                                  ),
+                                  model.isDeposit
+                                      ? Container()
+                                      : Padding(
+                                          padding:
+                                              const EdgeInsets.only(left: 4.0),
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                  '${FlutterI18n.translate(context, "minimumAmount")}: ',
+                                                  style: headText6),
+                                              Text(
+                                                  model.token.minWithdraw ==
+                                                          null
+                                                      ? FlutterI18n.translate(
+                                                          context, "loading")
+                                                      : model.token.minWithdraw
+                                                          .toString(),
+                                                  style: headText6),
+                                            ],
+                                          ),
+                                        ),
                                   model.token.minWithdraw == null
                                       ? Container()
-                                      : DecimalLimitWidget(
-                                          decimalLimit: model.token.decimal!)
+                                      : Padding(
+                                          padding:
+                                              const EdgeInsets.only(left: 4.0),
+                                          child: DecimalLimitWidget(
+                                              decimalLimit:
+                                                  model.token.decimal!),
+                                        )
                                 ],
                               ),
                             ),
@@ -301,14 +271,14 @@ class _TransferViewState extends State<TransferView>
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
                                     Text(
-                                      model.selectedCoinWalletInfo!.tickerName!,
+                                      model.walletInfo.tickerName!,
                                       style: TextStyle(
                                           fontSize: 14,
                                           fontWeight: FontWeight.bold,
                                           color: black),
                                     ),
                                     Text(
-                                      "${FlutterI18n.translate(context, "balance")} ${model.selectedCoinWalletInfo!.availableBalance}",
+                                      "${FlutterI18n.translate(context, "balance")} ${model.isDeposit ? model.walletInfo.availableBalance : model.walletInfo.inExchange}",
                                       style: TextStyle(
                                           fontSize: 12,
                                           fontWeight: FontWeight.bold,
@@ -323,7 +293,7 @@ class _TransferViewState extends State<TransferView>
                       ),
                       UIHelper.verticalSpaceMedium,
                       Text(
-                        FlutterI18n.translate(context, "gasFee"),
+                        FlutterI18n.translate(context, "transactionFee"),
                         style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.bold,
@@ -368,14 +338,23 @@ class _TransferViewState extends State<TransferView>
                                     MainAxisAlignment.spaceEvenly,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    '${NumberUtil.roundDouble(model.gasFee, decimalPlaces: model.tokenModel.decimal ?? model.decimalLimit).toString()} ${model.tokenModel.tickerName}',
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.bold,
-                                        color: black),
-                                  ),
+                                  model.isDeposit
+                                      ? Text(
+                                          '${model.transFee.toString()} ${model.feeUnit}',
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.bold,
+                                              color: black),
+                                        )
+                                      : Text(
+                                          '${model.token.feeWithdraw} ${model.specialTicker!.contains('(') ? model.specialTicker!.split('(')[0] : model.specialTicker}',
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.bold,
+                                              color: black),
+                                        ),
                                   Text(
                                     '${model.kanbanGasFee} ${FlutterI18n.translate(context, "GAS")}',
                                     overflow: TextOverflow.ellipsis,
@@ -416,16 +395,79 @@ class _TransferViewState extends State<TransferView>
                       ),
                       UIHelper.verticalSpaceSmall,
                       AnimatedContainer(
-                          duration: Duration(
-                              milliseconds:
-                                  500), // Adjust the duration as needed
-                          height: _animation.value,
-                          child: SingleChildScrollView(
-                            child: Column(
-                                children: model.getFeeWidget(context, size)),
-                          )),
+                        duration: Duration(
+                            milliseconds: 500), // Adjust the duration as needed
+                        height: _animation.value,
+                        child: SingleChildScrollView(
+                          child: Column(
+                              children: model.getFeeWidget(context, size)),
+                        ),
+                      ),
+                      UIHelper.verticalSpaceSmall,
+                      model.isShowErrorDetailsButton
+                          ? Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Center(
+                                  child: RichText(
+                                    text: TextSpan(
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium!
+                                            .copyWith(
+                                                fontWeight: FontWeight.bold),
+                                        text:
+                                            '${FlutterI18n.translate(context, "error")} ${FlutterI18n.translate(context, "details")}',
+                                        recognizer: TapGestureRecognizer()
+                                          ..onTap = () {
+                                            model.showDetailsMessageToggle();
+                                          }),
+                                  ),
+                                ),
+                                !model.isShowDetailsMessage
+                                    ? const Icon(Icons.arrow_drop_down,
+                                        color: Colors.red, size: 26)
+                                    : const Icon(Icons.arrow_drop_up,
+                                        color: Colors.red, size: 26)
+                              ],
+                            )
+                          : Container(),
+                      model.isShowDetailsMessage
+                          ? Center(
+                              child: Text(model.serverError, style: headText6),
+                            )
+                          : Container(),
                     ],
                   ),
+                ),
+                floatingActionButtonLocation:
+                    FloatingActionButtonLocation.centerFloat,
+                floatingActionButton: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: Container(
+                          height: 50,
+                          margin: EdgeInsets.symmetric(horizontal: 15),
+                          child: ElevatedButton(
+                            onPressed: () => model.verifyFields(),
+                            style: ElevatedButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              backgroundColor:
+                                  model.amountController.text.isEmpty
+                                      ? grey
+                                      : buttonPurple,
+                            ),
+                            child: Text(
+                              "Confirm",
+                              style: buttonText,
+                            ),
+                          )),
+                    ),
+                  ],
                 ),
               ),
             ));

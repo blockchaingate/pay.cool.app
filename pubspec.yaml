@@ -1,6 +1,6 @@
 name: paycool
 description: Crypto payment application
-version: 2.5.158+234 
+version: 2.5.159+235 
 
 publish_to: "none"
 
@@ -132,6 +132,7 @@ flutter:
     - assets/images/club/
     - assets/images/launcher/
     - assets/i18n/
+    - assets/images//new-design/
     - envs/
 
 flutter_icons:

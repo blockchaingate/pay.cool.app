@@ -754,5 +754,10 @@
     "owners": "Propietarios",
     "enterOwnerName": "Ingrese el nombre del propietario",
     "invalidFee": "Tarifa no válida",
-    "enterOwnerAddress": "Ingrese la dirección del propietario"
+    "enterOwnerAddress": "Ingrese la dirección del propietario",
+    "walletManagement": "Gestión de billetera",
+    "transactionFee": "Tarifa de transacción",
+    "exchange": "Intercambio",
+    "record": "Registro",
+    "overview": "Descripción general"
 }

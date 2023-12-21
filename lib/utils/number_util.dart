@@ -14,6 +14,18 @@ class NumberUtil {
   int? maxDecimalDigits;
   final log = getLogger('NumberUtil');
 
+  static BigInt decimalToBigInt(Decimal value, {int decimalPrecision = 18}) {
+    return (value * Decimal.fromInt(pow(10, decimalPrecision) as int))
+        .toBigInt();
+  }
+
+  static Decimal parseDoubleToDecimal(double value) {
+    if (value.isNaN || value.isInfinite || value.toString().isEmpty) {
+      return Constants.decimalZero;
+    }
+    return Decimal.parse(value.toString());
+  }
+
   static checkRegexAmount(Decimal amount) =>
       RegexValidator(Constants.regexPattern.toString())
           .isValid(amount.toString());
@@ -44,8 +56,8 @@ class NumberUtil {
   static Decimal rawStringToDecimal(String raw, {int? decimalPrecision = 18}) {
     if (raw.isNotEmpty) {
       Decimal amount = Decimal.parse(raw.toString());
-      var x = Decimal.fromInt((pow(10, decimalPrecision!)).toInt());
-      Decimal result = (amount / x).toDecimal();
+      var divisor = Decimal.fromInt((pow(10, decimalPrecision!)).toInt());
+      Decimal result = (amount / divisor).toDecimal();
 
       return result;
     } else {

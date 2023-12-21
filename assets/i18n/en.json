@@ -761,5 +761,10 @@
     "enterOwnerName": "Enter owner name",
     "invalidFee": "Invalid fee",
     "enterOwnerAddress": "Enter owner address",
-    "walletManagement": "Wallet Management"
+    "walletManagement": "Wallet Management",
+    "transactionFee": "Transaction Fee",
+    "exchange": "Exchange",
+    "record": "Record",
+    "overview": "Overview"
+
 }

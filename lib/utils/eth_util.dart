@@ -11,6 +11,7 @@
 *----------------------------------------------------------------------
 */
 
+import 'package:decimal/decimal.dart';
 import 'package:flutter/widgets.dart';
 import 'package:paycool/constants/api_routes.dart';
 import 'package:paycool/service_locator.dart';
@@ -72,7 +73,8 @@ Future getEthBalanceByAddress(String address) async {
   return {'balance': ethBalance, 'lockbalance': 0.0};
 }
 
-Future getEthTokenBalanceByAddress(String address, String coinName,
+Future<Map<String, Decimal>> getEthTokenBalanceByAddress(
+    String address, String coinName,
     [String? smartContractAddress]) async {
   final coinService = locator<CoinService>();
 
@@ -84,22 +86,25 @@ Future getEthTokenBalanceByAddress(String address, String coinName,
   var url = '${ethBaseUrl}callcontract/$smartContractAddress/$address';
   debugPrint('eth_util - getEthTokenBalanceByAddress - $url ');
 
-  var tokenBalanceIe18 = 0.0;
-  var balanceIe8 = 0.0;
-  var balance1e6 = 0.0;
+  Decimal tokenBalanceIe18 = Decimal.zero;
+  Decimal balance1e6 = Decimal.zero;
+  Decimal balanceIe8 = Decimal.zero;
   try {
     var response = await client.get(Uri.parse(url));
     var balance = jsonDecode(response.body);
-    balanceIe8 = double.parse(balance['balance']) / 1e8;
-    balance1e6 = double.parse(balance['balance']) / 1e6;
-    tokenBalanceIe18 = double.parse(balance['balance']) / 1e18;
+    var stringBalance = balance['balance'].toString();
+    balanceIe8 =
+        NumberUtil.rawStringToDecimal(stringBalance, decimalPrecision: 8);
+    balance1e6 =
+        NumberUtil.rawStringToDecimal(stringBalance, decimalPrecision: 6);
+    tokenBalanceIe18 = NumberUtil.rawStringToDecimal(stringBalance);
   } catch (err) {
     debugPrint('getEthTokenBalanceByAddress CATCH $err');
   }
   return {
     'balance1e6': balance1e6,
     'balanceIe8': balanceIe8,
-    'lockbalance': 0.0,
+    'lockbalance': Decimal.zero,
     'tokenBalanceIe18': tokenBalanceIe18
   };
 }

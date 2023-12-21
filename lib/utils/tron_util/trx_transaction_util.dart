@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:decimal/decimal.dart';
 import 'package:protobuf/protobuf.dart';
 import 'package:paycool/constants/api_routes.dart';
 import 'package:paycool/service_locator.dart';
@@ -24,7 +25,7 @@ Future generateTrxTransactionContract(
     {required Uint8List privateKey,
     required String fromAddr,
     required String toAddr,
-    required double amount,
+    required Decimal amount,
     required bool isTrxUsdt,
     required String tickerName,
     required int gasLimit,
@@ -41,7 +42,8 @@ Future generateTrxTransactionContract(
   //    'base58 address toAddress to hex ${StringUtil.uint8ListToHex(toAddress)}');
   // 4103b01c144f4e41c22b411c2997fbcdfae4fc9c2e
 
-  var amountToBigInt = BigInt.from(amount * 1e6);
+  var intAmount = amount * Decimal.parse(1e6.toString());
+  var amountToBigInt = intAmount.toBigInt();
   Int64 bigIntAmountToInt64 = Int64.parseInt(amountToBigInt.toString());
 
   // debugPrint('original amount - $amount and int64 res $bigIntAmountToInt64');
@@ -108,8 +110,7 @@ Future generateTrxTransactionContract(
       ? Tron.Transaction_Contract_ContractType.TriggerSmartContract
       : Tron.Transaction_Contract_ContractType.TransferContract;
 
-  parameter.typeUrl =
-      "type.googleapis.com/protocol.$transferContractType";
+  parameter.typeUrl = "type.googleapis.com/protocol.$transferContractType";
 
   //debugPrint('PARAMETER $parameter');
 

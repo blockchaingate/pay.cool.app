@@ -472,7 +472,7 @@ class MoveToExchangeViewModel extends BaseViewModel {
             .depositTron(
                 mnemonic: mnemonic,
                 walletInfo: walletInfo,
-                amount: finalAmount,
+                amount: Decimal.parse(finalAmount.toString()),
                 isTrxUsdt: walletInfo.tickerName == 'USDTX' ||
                         walletInfo.tickerName == 'USDCX'
                     ? true
@@ -526,7 +526,7 @@ class MoveToExchangeViewModel extends BaseViewModel {
       else {
         await walletService
             .depositDo(seed, walletInfo.tickerName!, walletInfo.tokenType!,
-                amount, option)
+                NumberUtil.parseDoubleToDecimal(amount), option)
             .then((ret) {
           log.w(ret);
 
@@ -678,7 +678,7 @@ class MoveToExchangeViewModel extends BaseViewModel {
             [0],
             [address],
             to,
-            amount,
+            NumberUtil.parseDoubleToDecimal(amount),
             options,
             false)
         .then((ret) {

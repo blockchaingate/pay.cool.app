@@ -411,7 +411,7 @@ class SendViewModel extends BaseViewModel {
                   fromAddr: walletInfo!.address!,
                   gasLimit: int.parse(trxGasValueTextController.text),
                   toAddr: toAddress,
-                  amount: amount.toDouble(),
+                  amount: amount,
                   isTrxUsdt: walletInfo!.tickerName == 'USDTX' ||
                           walletInfo!.tickerName == 'USDCX'
                       ? true
@@ -483,8 +483,8 @@ class SendViewModel extends BaseViewModel {
       } else {
         // Other coins transaction
         await walletService
-            .sendTransaction(tickerName, seed, [0], [], toAddress,
-                amount.toDouble(), options, true)
+            .sendTransaction(
+                tickerName, seed, [0], [], toAddress, amount, options, true)
             .then((res) async {
           log.w('Result $res');
           txHash = res["txHash"];
@@ -915,7 +915,7 @@ class SendViewModel extends BaseViewModel {
             [0],
             [address],
             to,
-            amount.toDouble(),
+            amount,
             options,
             false)
         .then((ret) {

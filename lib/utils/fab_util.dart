@@ -17,6 +17,7 @@ import 'dart:math';
 import 'package:bs58check/bs58check.dart' as bs58check;
 import 'package:convert/convert.dart';
 import 'package:crypto/crypto.dart';
+import 'package:decimal/decimal.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import "package:hex/hex.dart";
@@ -53,7 +54,7 @@ class FabUtils {
   }
 
   Future getFabLockBalanceByAddress(String address) async {
-    double balance = 0.0;
+    Decimal balance = Decimal.zero;
     var fabSmartContractAddress =
         environment['addresses']['smartContract']['FABLOCK'];
     var getLockedInfoABI = '43eb7b44';
@@ -200,20 +201,25 @@ class FabUtils {
 
         if (res.length == 2) {
           var values = res[1];
-          values.forEach((element) => {balance = balance + element.toDouble()});
-          balance = balance / 1e8;
+          values.forEach((element) =>
+              {balance = balance + Decimal.parse(element.toString())});
+          balance = NumberUtil.rawStringToDecimal(balance.toString(),
+              decimalPrecision: 18);
         }
       }
-    } catch (e) {}
+    } catch (e) {
+      log.e('CATCH -getFabLockBalanceByAddress -$e');
+    }
     return balance;
   }
 
-  Future getFabBalanceByAddress(String address) async {
+  Future<Map<String, Decimal>> getFabBalanceByAddress(String address) async {
     var url = '${fabBaseUrl}getbalance/$address';
-    var fabBalance = 0.0;
+    var fabBalance = Decimal.zero;
     try {
       var response = await client.get(Uri.parse(url));
-      fabBalance = double.parse(response.body) / 1e8;
+      fabBalance =
+          NumberUtil.rawStringToDecimal(response.body, decimalPrecision: 8);
     } catch (e) {
       log.e(e);
     }

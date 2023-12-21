@@ -759,5 +759,10 @@
     "owners": "Propriétaires",
     "enterOwnerName": "Entrez le nom du propriétaire",
     "invalidFee": "Frais non valide",
-    "enterOwnerAddress": "Entrez l'adresse du propriétaire"
+    "enterOwnerAddress": "Entrez l'adresse du propriétaire",
+    "walletManagement": "Wallet Management",
+    "transactionFee": "Transaction Fee",
+    "exchange": "Exchange",
+    "record": "Record",
+    "overview": "Overview"
 }

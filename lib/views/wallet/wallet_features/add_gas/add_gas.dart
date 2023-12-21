@@ -11,6 +11,7 @@
 *----------------------------------------------------------------------
 */
 
+import 'package:decimal/decimal.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
@@ -104,10 +105,10 @@ class _AddGasViewState extends State<AddGasView>
                             FlutterI18n.translate(context, "confirm"),
                           ),
                           onPressed: () {
-                            double amount = 0;
+                            Decimal amount = Decimal.zero;
                             if (model.amountController.text != '') {
                               amount =
-                                  double.parse(model.amountController.text);
+                                  Decimal.parse(model.amountController.text);
                             }
                             model.amountController.text == ''
                                 ? model.sharedService.showInfoFlushbar(

@@ -759,5 +759,10 @@
   "owners": "Sahipler",
   "enterOwnerName": "Sahip adını girin",
   "invalidFee": "Geçersiz ücret",
-  "enterOwnerAddress": "Sahip adresini girin"
+  "enterOwnerAddress": "Sahip adresini girin",
+  "walletManagement": "Cüzdan Yönetimi",
+  "transactionFee": "İşlem Ücreti",
+  "exchange": "Değişim",
+  "record": "Kayıt",
+  "overview": "Genel Bakış"
 }
