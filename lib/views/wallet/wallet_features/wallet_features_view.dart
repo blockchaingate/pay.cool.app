@@ -23,7 +23,7 @@ import 'package:paycool/views/wallet/wallet_features/wallet_features_viewmodel.d
 import 'package:stacked/stacked.dart';
 
 class WalletFeaturesView extends StatefulWidget {
-  const WalletFeaturesView({Key? key}) : super(key: key);
+  const WalletFeaturesView({super.key});
 
   @override
   State<WalletFeaturesView> createState() => _WalletFeaturesViewState();

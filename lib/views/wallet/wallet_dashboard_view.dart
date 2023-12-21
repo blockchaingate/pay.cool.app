@@ -28,7 +28,7 @@ import 'package:paycool/widgets/wallet/wallet_card_widget.dart';
 import 'package:stacked/stacked.dart';
 
 class WalletDashboardView extends StatefulWidget {
-  const WalletDashboardView({Key? key}) : super(key: key);
+  const WalletDashboardView({super.key});
 
   @override
   State<WalletDashboardView> createState() => _WalletDashboardViewState();
@@ -259,7 +259,7 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
                     children: [
                       buildListView(model),
                       Center(
-                        child: Text("NFT"),
+                        child: Text(FlutterI18n.translate(context, "nft")),
                       ),
                     ],
                   ),

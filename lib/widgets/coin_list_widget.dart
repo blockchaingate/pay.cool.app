@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:paycool/constants/api_routes.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/models/wallet/wallet_balance.dart';
@@ -24,7 +25,7 @@ Widget coinListBottomSheet(
           child: TextField(
             controller: searchController,
             decoration: InputDecoration(
-              hintText: "Search",
+              hintText: FlutterI18n.translate(context, "search"),
               prefixIcon: Padding(
                 padding: const EdgeInsets.only(),
                 child: Icon(
@@ -44,6 +45,10 @@ Widget coinListBottomSheet(
               ),
               filled: true,
               fillColor: Colors.grey[200],
+            ),
+            style: TextStyle(
+              color: black,
+              fontSize: 14,
             ),
           ),
         ),

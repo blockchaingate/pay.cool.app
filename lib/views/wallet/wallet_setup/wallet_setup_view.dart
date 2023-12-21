@@ -21,7 +21,7 @@ import 'package:shimmer/shimmer.dart';
 import 'package:stacked/stacked.dart';
 
 class WalletSetupView extends StatelessWidget {
-  const WalletSetupView({Key? key}) : super(key: key);
+  const WalletSetupView({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:camera/camera.dart';
 import 'package:decimal/decimal.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +8,7 @@ import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:local_auth/local_auth.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:paycool/constants/api_routes.dart';
@@ -104,7 +104,7 @@ class PayCoolViewmodel extends FutureViewModel {
   List<PairDecimalConfig> pairDecimalConfigList = [];
   final coinService = locator<CoinService>();
   // ScanToPayModel scanToPayModel = ScanToPayModel();
-  var pasteRes;
+  // var pasteRes;
 
   List<ExchangeBalanceModel> exchangeBalances = [];
   //var decodedData;
@@ -124,8 +124,8 @@ class PayCoolViewmodel extends FutureViewModel {
   Decimal gasBalance = Constants.decimalZero;
   PayOrder payOrder = PayOrder();
 
-  CameraController? controller;
-  List<CameraDescription>? _cameras;
+  MobileScannerController? cameraController;
+  bool showDetails = false;
 
 /*----------------------------------------------------------------------
                     Default Future to Run
@@ -139,41 +139,35 @@ class PayCoolViewmodel extends FutureViewModel {
 
   init() async {
     isAutoStartPaycoolScan = storageService.autoStartPaycoolScan;
-    // await userSettingsDatabaseService.getById(1).then((res) {
-    //   if (res != null) {
-    //     lang = res.language ?? "en";
-    //     log.i('user settings db not null');
-    //   }
-    // });
+
     if (lang.isEmpty) {
       lang = "en";
     }
-    try {
-      _cameras = await availableCameras();
-      controller = CameraController(_cameras![0], ResolutionPreset.max);
-      controller!.initialize().then((_) {
-        notifyListeners();
-      }).catchError((Object e) {
-        if (e is CameraException) {
-          switch (e.code) {
-            case 'CameraAccessDenied':
-              // Handle access errors here.
-              break;
-            default:
-              // Handle other errors here.
-              break;
-          }
-        }
-      });
-    } catch (e) {
-      log.e(e);
-    }
+    startCamera();
   }
 
   @override
   void dispose() {
-    controller!.dispose();
+    stopCamera();
     super.dispose();
+  }
+
+  void stopCamera() {
+    showDetails = true;
+    cameraController!.dispose();
+    cameraController!.stop();
+    notifyListeners();
+  }
+
+  void startCamera() {
+    if (cameraController != null) {
+      cameraController!.dispose();
+    }
+
+    showDetails = false;
+    cameraController = MobileScannerController();
+    cameraController!.start();
+    notifyListeners();
   }
 
 /*----------------------------------------------------------------------
@@ -191,15 +185,8 @@ class PayCoolViewmodel extends FutureViewModel {
         var res =
             await coinService.getSingleTokenData('', coinType: wallet.coinType);
 
-        //storageService.tokenList.forEach((newToken){
-
-        // var json = jsonDecode(newToken);
-        // Token token = Token.fromJson(json);
-        // if (token.tokenType == element.coinType){ debugPrint(token.tickerName);
-
         wallet.ticker = res!.tickerName.toString(); //}
 
-//element.ticker =tradeService.setTickerNameByType(element.coinType);
         debugPrint('exchanageBalanceModel tickerName ${wallet.ticker}');
       }
       if (wallet.unlockedAmount > 0.0) {
@@ -243,6 +230,8 @@ class PayCoolViewmodel extends FutureViewModel {
     String qrcodeFile = '';
     final image = await ImagePicker().pickImage(source: ImageSource.gallery);
     if (image != null) {
+      // imageUint8List = await image.readAsBytes();
+
       qrcodeFile = image.path;
       log.w(qrcodeFile);
     }
@@ -250,6 +239,7 @@ class PayCoolViewmodel extends FutureViewModel {
       var barcodeScanData = await QrCodeUtils.decodeFrom(qrcodeFile);
       log.i(barcodeScanData);
       orderDetails(barcodeScanData: barcodeScanData);
+      stopCamera();
     } catch (err) {
       sharedService.sharedSimpleNotification(
           FlutterI18n.translate(sharedService.context, "validationError"));
@@ -1740,7 +1730,6 @@ class PayCoolViewmodel extends FutureViewModel {
   Future contentPaste({String? addressType}) async {
     setBusy(true);
     await Clipboard.getData('text/plain').then((res) {
-      pasteRes = res;
       if (addressType == Constants.ReferralAddressText) {
         referralController.text = '';
         referralController.text = res!.text.toString();

@@ -81,7 +81,6 @@ class WalletService with ListenableServiceMixin {
   final client = CustomHttpUtil.createLetsEncryptUpdatedCertClient();
   TokenListDatabaseService tokenListDatabaseService =
       locator<TokenListDatabaseService>();
-  //final ApiService _api = locator<ApiService>();
   WalletDatabaseService walletDatabaseService =
       locator<WalletDatabaseService>();
   SharedService sharedService = locator<SharedService>();

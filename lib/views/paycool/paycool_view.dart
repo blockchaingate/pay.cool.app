@@ -1,6 +1,6 @@
-import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/constants.dart';
 import 'package:paycool/constants/custom_styles.dart';
@@ -177,23 +177,42 @@ class PayCoolView extends StatelessWidget {
                                 height: size.height * 0.47,
                                 child: Stack(
                                   children: [
-                                    model.controller == null ||
-                                            !model.controller!.value
-                                                .isInitialized ||
-                                            model.controller!.value.hasError
-                                        ? Center(
-                                            child: Text(
-                                              "No camera detected",
-                                              style: TextStyle(color: black),
-                                            ),
-                                          )
-                                        : SizedBox(
-                                            height: size.height * 0.47,
-                                            child: AspectRatio(
-                                                aspectRatio: model.controller!
-                                                    .value.aspectRatio,
-                                                child: CameraPreview(
-                                                    model.controller!))),
+                                    SizedBox(
+                                      height: size.height * 0.47,
+                                      child: model.showDetails
+                                          ? model.merchantModel!.image != null
+                                              ? Center(
+                                                  child: Image.network(
+                                                      model.merchantModel!.image
+                                                          .toString(),
+                                                      fit: BoxFit.cover,
+                                                      errorBuilder:
+                                                          (BuildContext context,
+                                                              Object exception,
+                                                              StackTrace?
+                                                                  stackTrace) {
+                                                    return Container();
+                                                  }),
+                                                )
+                                              : Text(
+                                                  FlutterI18n.translate(
+                                                      context, "noCamera"),
+                                                )
+                                          : MobileScanner(
+                                              controller:
+                                                  model.cameraController,
+                                              onDetect: (barcode) {
+                                                if (barcode.raw[0]
+                                                        ["displayValue"] !=
+                                                    null) {
+                                                  model.orderDetails(
+                                                      barcodeScanData:
+                                                          barcode.raw[0]
+                                                              ["displayValue"]);
+                                                  model.stopCamera();
+                                                }
+                                              }),
+                                    ),
                                     Positioned(
                                       bottom: 0,
                                       child: Container(
@@ -206,21 +225,32 @@ class PayCoolView extends StatelessWidget {
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
                                           children: [
-                                            Image.asset(
-                                              "assets/images/new-design/scan_circle_icon.png",
-                                              scale: 2.9,
+                                            InkWell(
+                                              onTap: () {
+                                                model.startCamera();
+                                              },
+                                              child: Image.asset(
+                                                "assets/images/new-design/scan_circle_icon.png",
+                                                scale: 2.9,
+                                              ),
                                             ),
                                             Text(
-                                              "Scan the QR code to pay",
+                                              FlutterI18n.translate(
+                                                  context, "scanToPay"),
                                               textAlign: TextAlign.center,
                                               style: TextStyle(
                                                   fontSize: 12,
                                                   fontWeight: FontWeight.bold,
                                                   color: white54),
                                             ),
-                                            Image.asset(
-                                              "assets/images/new-design/gallery_icon.png",
-                                              scale: 2.9,
+                                            InkWell(
+                                              onTap: () {
+                                                model.scanImageFile();
+                                              },
+                                              child: Image.asset(
+                                                "assets/images/new-design/gallery_icon.png",
+                                                scale: 2.9,
+                                              ),
                                             ),
                                           ],
                                         ),
@@ -241,255 +271,448 @@ class PayCoolView extends StatelessWidget {
                                     ),
                                   ),
                                   padding: EdgeInsets.symmetric(vertical: 20),
-                                  child: Column(
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        children: [
-                                          InkWell(
-                                            onTap: () async {
-                                              model
-                                                  .coinListBottomSheet(context);
-                                            },
-                                            child: Container(
-                                              width: size.width * 0.6,
-                                              height: 45,
-                                              decoration: BoxDecoration(
-                                                color: bgGrey,
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                              ),
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal: 10),
-                                              child: Row(
+                                  child: SingleChildScrollView(
+                                    child: Column(
+                                      children: [
+                                        model.merchantModel != null &&
+                                                model.merchantModel!.name !=
+                                                    null
+                                            ? Column(
+                                                children: [
+                                                  Padding(
+                                                    padding: const EdgeInsets
+                                                            .symmetric(
+                                                        horizontal: 10),
+                                                    child: Container(
+                                                      width: size.width,
+                                                      height: 50,
+                                                      decoration: BoxDecoration(
+                                                        color: bgGrey,
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10),
+                                                      ),
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                              horizontal: 10),
+                                                      child: Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
+                                                        children: [
+                                                          Text(
+                                                            FlutterI18n.translate(
+                                                                context,
+                                                                "merchantName"),
+                                                            style: TextStyle(
+                                                                fontSize: 14,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                color:
+                                                                    textHintGrey),
+                                                          ),
+                                                          Expanded(
+                                                              child:
+                                                                  SizedBox()),
+                                                          Text(
+                                                              model.storageService
+                                                                          .language ==
+                                                                      "en"
+                                                                  ? model
+                                                                      .merchantModel!
+                                                                      .name!
+                                                                      .en
+                                                                      .toString()
+                                                                  : model
+                                                                      .merchantModel!
+                                                                      .name!
+                                                                      .sc
+                                                                      .toString(),
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .right,
+                                                              style: headText5.copyWith(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold)),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  UIHelper.verticalSpaceSmall,
+                                                  model.payOrder.title == null
+                                                      ? Container()
+                                                      : Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .symmetric(
+                                                                  horizontal:
+                                                                      10),
+                                                          child: Container(
+                                                            width: size.width,
+                                                            height: 50,
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              color: bgGrey,
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          10),
+                                                            ),
+                                                            padding: EdgeInsets
+                                                                .symmetric(
+                                                                    horizontal:
+                                                                        10),
+                                                            child: Row(
+                                                              children: [
+                                                                Expanded(
+                                                                  flex: 2,
+                                                                  child: Text(
+                                                                    FlutterI18n.translate(
+                                                                        context,
+                                                                        "title"),
+                                                                    style: TextStyle(
+                                                                        fontSize:
+                                                                            14,
+                                                                        fontWeight:
+                                                                            FontWeight
+                                                                                .bold,
+                                                                        color:
+                                                                            textHintGrey),
+                                                                  ),
+                                                                ),
+                                                                UIHelper
+                                                                    .horizontalSpaceMedium,
+                                                                Expanded(
+                                                                    flex: 3,
+                                                                    child: Row(
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .end,
+                                                                      children: [
+                                                                        Text(
+                                                                            model
+                                                                                .payOrder.title
+                                                                                .toString(),
+                                                                            maxLines:
+                                                                                2,
+                                                                            textAlign:
+                                                                                TextAlign.right,
+                                                                            style: headText5.copyWith(fontWeight: FontWeight.bold)),
+                                                                        TextButton(
+                                                                            onPressed:
+                                                                                () {
+                                                                              model.showOrderDetails();
+                                                                            },
+                                                                            child:
+                                                                                Text(
+                                                                              FlutterI18n.translate(context, "details"),
+                                                                              style: const TextStyle(fontSize: 12),
+                                                                            ))
+                                                                      ],
+                                                                    )),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ),
+                                                ],
+                                              )
+                                            : Row(
                                                 mainAxisAlignment:
                                                     MainAxisAlignment
                                                         .spaceEvenly,
                                                 children: [
-                                                  Text(
-                                                    FlutterI18n.translate(
-                                                        context, "balance"),
-                                                    style: TextStyle(
-                                                        fontSize: 12,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color: textHintGrey),
+                                                  InkWell(
+                                                    onTap: () async {
+                                                      model.coinListBottomSheet(
+                                                          context);
+                                                    },
+                                                    child: Container(
+                                                      width: size.width * 0.6,
+                                                      height: 45,
+                                                      decoration: BoxDecoration(
+                                                        color: bgGrey,
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10),
+                                                      ),
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                              horizontal: 10),
+                                                      child: Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceEvenly,
+                                                        children: [
+                                                          Text(
+                                                            FlutterI18n
+                                                                .translate(
+                                                                    context,
+                                                                    "balance"),
+                                                            style: TextStyle(
+                                                                fontSize: 12,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                color:
+                                                                    textHintGrey),
+                                                          ),
+                                                          Expanded(
+                                                              child:
+                                                                  SizedBox()),
+                                                          Text(
+                                                            model.exchangeBalance ==
+                                                                    0.0
+                                                                ? ''
+                                                                : makeShort(model
+                                                                    .exchangeBalance),
+                                                            style: TextStyle(
+                                                                fontSize: 14,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w600,
+                                                                color: black),
+                                                          ),
+                                                          UIHelper
+                                                              .horizontalSpaceSmall,
+                                                          Text(
+                                                            model.tickerName,
+                                                            style: TextStyle(
+                                                                fontSize: 14,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w600,
+                                                                color: black),
+                                                          ),
+                                                          Expanded(
+                                                              child:
+                                                                  SizedBox()),
+                                                          Icon(
+                                                              Icons
+                                                                  .keyboard_arrow_down,
+                                                              color: black,
+                                                              size: 20)
+                                                        ],
+                                                      ),
+                                                    ),
                                                   ),
-                                                  Expanded(child: SizedBox()),
-                                                  Text(
-                                                    model.exchangeBalance == 0.0
-                                                        ? ''
-                                                        : makeShort(model
-                                                            .exchangeBalance),
-                                                    style: TextStyle(
-                                                        fontSize: 14,
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                        color: black),
+                                                  InkWell(
+                                                    onTap: () async {
+                                                      model.navigationService
+                                                          .navigateTo(
+                                                              PayCoolRewardsViewRoute);
+                                                    },
+                                                    child: Container(
+                                                      width: size.width * 0.3,
+                                                      height: 45,
+                                                      decoration: BoxDecoration(
+                                                        color: bgGrey,
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10),
+                                                      ),
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                              horizontal: 10),
+                                                      child: Center(
+                                                        child: Text(
+                                                          FlutterI18n.translate(
+                                                              context,
+                                                              "myReward"),
+                                                          style: TextStyle(
+                                                              fontSize: 14,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600,
+                                                              color: black),
+                                                        ),
+                                                      ),
+                                                    ),
                                                   ),
-                                                  UIHelper.horizontalSpaceSmall,
-                                                  Text(
-                                                    model.tickerName,
-                                                    style: TextStyle(
-                                                        fontSize: 14,
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                        color: black),
-                                                  ),
-                                                  Expanded(child: SizedBox()),
-                                                  Icon(
-                                                      Icons.keyboard_arrow_down,
-                                                      color: black,
-                                                      size: 20)
                                                 ],
                                               ),
+                                        UIHelper.verticalSpaceSmall,
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 10),
+                                          child: Container(
+                                            width: size.width,
+                                            height: 50,
+                                            decoration: BoxDecoration(
+                                              color: bgGrey,
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
                                             ),
-                                          ),
-                                          InkWell(
-                                            onTap: () async {
-                                              model.navigationService
-                                                  .navigateTo(
-                                                      PayCoolRewardsViewRoute);
-                                            },
-                                            child: Container(
-                                              width: size.width * 0.3,
-                                              height: 45,
-                                              decoration: BoxDecoration(
-                                                color: bgGrey,
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                              ),
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal: 10),
-                                              child: Center(
-                                                child: Text(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 10),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
                                                   FlutterI18n.translate(
-                                                      context, "myReward"),
+                                                      context, "amountPayable"),
+                                                  style: TextStyle(
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: textHintGrey),
+                                                ),
+                                                Text(
+                                                  '${model.amountPayable.toString()} ${model.coinPayable}',
                                                   style: TextStyle(
                                                       fontSize: 14,
                                                       fontWeight:
                                                           FontWeight.w600,
                                                       color: black),
                                                 ),
-                                              ),
+                                              ],
                                             ),
                                           ),
-                                        ],
-                                      ),
-                                      UIHelper.verticalSpaceSmall,
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 10),
-                                        child: Container(
-                                          width: size.width,
-                                          height: 50,
-                                          decoration: BoxDecoration(
-                                            color: bgGrey,
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                          ),
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: 10),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                FlutterI18n.translate(
-                                                    context, "amountPayable"),
-                                                style: TextStyle(
-                                                    fontSize: 14,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: textHintGrey),
-                                              ),
-                                              Text(
-                                                "100",
-                                                style: TextStyle(
-                                                    fontSize: 14,
-                                                    fontWeight: FontWeight.w600,
-                                                    color: black),
-                                              ),
-                                            ],
-                                          ),
                                         ),
-                                      ),
-                                      UIHelper.verticalSpaceSmall,
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 10),
-                                        child: Container(
-                                          width: size.width,
-                                          height: 50,
-                                          decoration: BoxDecoration(
-                                            color: bgGrey,
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                          ),
-                                          padding: EdgeInsets.symmetric(
+                                        UIHelper.verticalSpaceSmall,
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
                                               horizontal: 10),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                FlutterI18n.translate(
-                                                    context, "tax"),
-                                                style: TextStyle(
-                                                    fontSize: 14,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: textHintGrey),
-                                              ),
-                                              Text(
-                                                "100",
-                                                style: TextStyle(
-                                                    fontSize: 14,
-                                                    fontWeight: FontWeight.w600,
-                                                    color: black),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                      UIHelper.verticalSpaceSmall,
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 10),
-                                        child: Container(
-                                          width: size.width,
-                                          height: 50,
-                                          decoration: BoxDecoration(
-                                            color: bgGrey,
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                          ),
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: 10),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                FlutterI18n.translate(
-                                                    context, "totalValue"),
-                                                style: TextStyle(
-                                                    fontSize: 14,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: textHintGrey),
-                                              ),
-                                              Text(
-                                                "100",
-                                                style: TextStyle(
-                                                    fontSize: 14,
-                                                    fontWeight: FontWeight.w600,
-                                                    color: black),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                      UIHelper.verticalSpaceSmall,
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 10),
-                                        child: Container(
-                                          width: size.width,
-                                          height: 50,
-                                          margin: EdgeInsets.symmetric(
-                                              horizontal: 5),
-                                          child: ElevatedButton(
-                                            onPressed: () {},
-                                            style: ElevatedButton.styleFrom(
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                              ),
-                                              backgroundColor: buttonPurple,
+                                          child: Container(
+                                            width: size.width,
+                                            height: 50,
+                                            decoration: BoxDecoration(
+                                              color: bgGrey,
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
                                             ),
-                                            child: Text(FlutterI18n.translate(
-                                                context, "pay")),
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 10),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                  FlutterI18n.translate(
+                                                      context, "tax"),
+                                                  style: TextStyle(
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: textHintGrey),
+                                                ),
+                                                Text(
+                                                  '${model.taxAmount.toString()} ${model.coinPayable}',
+                                                  style: TextStyle(
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      color: black),
+                                                ),
+                                              ],
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                      UIHelper.verticalSpaceSmall,
-                                      InkWell(
-                                        onTap: () {
-                                          model.navigationService.navigateTo(
-                                              PayCoolTransactionHistoryViewRoute);
-                                        },
-                                        child: SizedBox(
-                                          width: size.width,
-                                          child: Text(
-                                            FlutterI18n.translate(
-                                                context, "transactionHistory"),
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                color: textHintGrey),
+                                        UIHelper.verticalSpaceSmall,
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 10),
+                                          child: Container(
+                                            width: size.width,
+                                            height: 50,
+                                            decoration: BoxDecoration(
+                                              color: bgGrey,
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 10),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                  FlutterI18n.translate(
+                                                      context, "totalValue"),
+                                                  style: TextStyle(
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: textHintGrey),
+                                                ),
+                                                Text(
+                                                  '${(model.amountPayable + model.taxAmount).toString()} ${model.coinPayable}',
+                                                  style: TextStyle(
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      color: black),
+                                                ),
+                                              ],
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    ],
+                                        UIHelper.verticalSpaceSmall,
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 10),
+                                          child: Container(
+                                            width: size.width,
+                                            height: 50,
+                                            margin: EdgeInsets.symmetric(
+                                                horizontal: 5),
+                                            child: ElevatedButton(
+                                              onPressed: () {
+                                                if (model.isBusy ||
+                                                    model.rewardInfoModel!
+                                                            .params ==
+                                                        null) {
+                                                  debugPrint('busy or no data');
+                                                } else {
+                                                  model.storageService
+                                                          .enableBiometricPayment
+                                                      ? model.makePayment(
+                                                          isBiometric: true)
+                                                      : model.makePayment();
+                                                }
+                                              },
+                                              style: ElevatedButton.styleFrom(
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                ),
+                                                backgroundColor: buttonPurple,
+                                              ),
+                                              child: Text(FlutterI18n.translate(
+                                                  context, "pay")),
+                                            ),
+                                          ),
+                                        ),
+                                        UIHelper.verticalSpaceSmall,
+                                        model.showDetails
+                                            ? SizedBox()
+                                            : InkWell(
+                                                onTap: () {
+                                                  model.navigationService
+                                                      .navigateTo(
+                                                          PayCoolTransactionHistoryViewRoute);
+                                                },
+                                                child: SizedBox(
+                                                  width: size.width,
+                                                  child: Text(
+                                                    FlutterI18n.translate(
+                                                        context,
+                                                        "transactionHistory"),
+                                                    textAlign: TextAlign.center,
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color: textHintGrey),
+                                                  ),
+                                                ),
+                                              ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               )
@@ -521,7 +744,6 @@ class CoinListBottomSheetFloatingActionButton extends StatelessWidget {
             ),
             width: 400,
             height: 220,
-            //  color: secondaryColor,
             child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               Padding(
                 padding: const EdgeInsets.only(right: 5.0),

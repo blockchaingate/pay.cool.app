@@ -10,7 +10,7 @@ import 'package:paycool/widgets/shared/will_pop_scope.dart';
 import 'package:stacked/stacked.dart';
 
 class DappView extends StatelessWidget {
-  const DappView({Key? key}) : super(key: key);
+  const DappView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +51,7 @@ class DappView extends StatelessWidget {
               centerTitle: true,
               elevation: 0,
               title: Container(
-                width: size.width,
+                width: MediaQuery.of(context).size.width,
                 height: 40,
                 decoration: BoxDecoration(
                   color: Colors.grey[200],
@@ -60,7 +60,7 @@ class DappView extends StatelessWidget {
                 child: TextField(
                   controller: model.searchController,
                   decoration: InputDecoration(
-                    hintText: "Search",
+                    hintText: FlutterI18n.translate(context, "search"),
                     prefixIcon: Padding(
                       padding: const EdgeInsets.only(),
                       child: Icon(
@@ -69,26 +69,30 @@ class DappView extends StatelessWidget {
                         size: 18,
                       ),
                     ),
-                    suffixIcon: Padding(
-                      padding: const EdgeInsets.only(),
-                      child: InkWell(
-                          onTap: () {},
-                          child: Image.asset(
-                            "assets/images/new-design/scan_icon.png",
-                            scale: 2.9,
-                          )),
-                    ),
                     contentPadding: EdgeInsets.zero,
                     hintStyle: TextStyle(
                       color: grey,
                       fontSize: 14,
                     ),
+                    // suffixIcon: Padding(
+                    //   padding: const EdgeInsets.only(),
+                    //   child: InkWell(
+                    //       onTap: () {},
+                    //       child: Image.asset(
+                    //         "assets/images/new-design/scan_icon.png",
+                    //         scale: 2.9,
+                    //       )),
+                    // ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                       borderSide: BorderSide.none,
                     ),
                     filled: true,
                     fillColor: Colors.grey[200],
+                  ),
+                  style: TextStyle(
+                    color: black,
+                    fontSize: 14,
                   ),
                 ),
               ),
@@ -100,7 +104,7 @@ class DappView extends StatelessWidget {
                 children: [
                   UIHelper.verticalSpaceSmall,
                   Text(
-                    FlutterI18n.translate(context, "myDapp"),
+                    "${FlutterI18n.translate(context, "my")} Dapps",
                     style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -110,7 +114,9 @@ class DappView extends StatelessWidget {
                   SizedBox(
                     width: size.width,
                     height: size.height * 0.16,
-                    child: ListView.builder(
+                    child: ListView.separated(
+                        separatorBuilder: (context, index) =>
+                            UIHelper.horizontalSpaceSmall,
                         itemCount: model.dapps.length,
                         scrollDirection: Axis.horizontal,
                         itemBuilder: (context, index) {
@@ -128,17 +134,19 @@ class DappView extends StatelessWidget {
                             },
                             child: Column(
                               children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(20),
-                                  clipBehavior: Clip.antiAlias,
-                                  child: SizedBox(
-                                    width: size.width * 0.2,
-                                    height: size.height * 0.1,
-                                    child: Image.network(
-                                      model.dapps[index]["image"].toString(),
-                                      fit: BoxFit.cover,
-                                    ),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(15),
+                                    color: Colors.blue,
+                                    image: DecorationImage(
+                                        image: NetworkImage(model.dapps[index]
+                                                ["image"]
+                                            .toString()),
+                                        fit: BoxFit.cover),
                                   ),
+                                  clipBehavior: Clip.none,
+                                  width: size.width * 0.2,
+                                  height: size.width * 0.2,
                                 ),
                                 UIHelper.verticalSpaceSmall,
                                 Text(
@@ -155,50 +163,67 @@ class DappView extends StatelessWidget {
                           );
                         }),
                   ),
-                  // UIHelper.verticalSpaceMedium,
-                  // Text(
-                  //   FlutterI18n.translate(context, "hot"),
-                  //   style: TextStyle(
-                  //       fontSize: 16,
-                  //       fontWeight: FontWeight.bold,
-                  //       color: black),
-                  // ),
-                  // UIHelper.verticalSpaceSmall,
-                  // SizedBox(
-                  //   width: size.width,
-                  //   height: size.height * 0.16,
-                  //   child: ListView.builder(
-                  //     itemCount: 6,
-                  //     scrollDirection: Axis.horizontal,
-                  //     itemBuilder: (context, index) {
-                  //       return Column(
-                  //         children: [
-                  //           ClipRRect(
-                  //             borderRadius: BorderRadius.circular(50),
-                  //             clipBehavior: Clip.antiAlias,
-                  //             child: SizedBox(
-                  //               width: size.width * 0.2,
-                  //               child: Image.asset(
-                  //                 "assets/images/new-design/biswap_logo.png",
-                  //                 fit: BoxFit.cover,
-                  //               ),
-                  //             ),
-                  //           ),
-                  //           UIHelper.verticalSpaceSmall,
-                  //           Text(
-                  //             model.dapps[index]["title"].toString(),
-                  //             overflow: TextOverflow.ellipsis,
-                  //             style: TextStyle(
-                  //               fontSize: 12,
-                  //               fontWeight: FontWeight.bold,
-                  //               color: black,
-                  //             ),
-                  //           ),
-                  //         ],
-                  //       );
-                  //     },
-                  //   ),
-                  // )
+                  UIHelper.verticalSpaceMedium,
+                  Text(
+                    FlutterI18n.translate(context, "hot"),
+                    style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: black),
+                  ),
+                  UIHelper.verticalSpaceSmall,
+                  SizedBox(
+                    width: size.width,
+                    height: size.height * 0.16,
+                    child: ListView.separated(
+                        separatorBuilder: (context, index) =>
+                            UIHelper.horizontalSpaceSmall,
+                        itemCount: model.dapps.length,
+                        scrollDirection: Axis.horizontal,
+                        itemBuilder: (context, index) {
+                          return InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => DappWebView(
+                                    model.dapps[index]["url"].toString(),
+                                    model.dapps[index]["title"].toString(),
+                                  ),
+                                ),
+                              );
+                            },
+                            child: Column(
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(15),
+                                    color: Colors.blue,
+                                    image: DecorationImage(
+                                        image: NetworkImage(model.dapps[index]
+                                                ["image"]
+                                            .toString()),
+                                        fit: BoxFit.cover),
+                                  ),
+                                  clipBehavior: Clip.none,
+                                  width: size.width * 0.2,
+                                  height: size.width * 0.2,
+                                ),
+                                UIHelper.verticalSpaceSmall,
+                                Text(
+                                  model.dapps[index]["title"].toString(),
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                    color: black,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        }),
+                  ),
                 ],
               ),
             ),
