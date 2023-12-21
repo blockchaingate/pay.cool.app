@@ -297,7 +297,7 @@
     "clickOnWebsiteButton": "or click on website button to download the latest version from the official Exchangily site",
     "serverBusy": "Server Busy",
     "lightningRemit": "Lightning Remit",
-    "tranfser": "Transfer",
+    "transfer": "Transfer",
     "share": "Share",
     "validationError": "Validation Error",
     "pleaseTryAgainLater": "Please try again later",
@@ -740,5 +740,6 @@
     "invitation": "Invitation",
     "bonus": "Bonus",
     "walletManagement": "Wallet Management",
-    "aboutPayCool": "About PayCool"
+    "aboutPayCool": "About PayCool",
+    "inputMnemonic": "Input Mnemonic"
 }

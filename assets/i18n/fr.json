@@ -739,5 +739,6 @@
     "invitation": "Invitation",
     "bonus": "Bonus",
     "walletManagement": "Gestion de portefeuille",
-    "aboutPayCool": "À propos de PayCool"
+    "aboutPayCool": "À propos de PayCool",
+    "inputMnemonic": "Mnémonique d'entrée"
 }

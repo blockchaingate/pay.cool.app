@@ -739,5 +739,6 @@
   "invitation": "Davet",
   "bonus": "Bonus",
   "walletManagement": "Cüzdan Yönetimi",
-  "aboutPayCool": "PayCool Hakkında"
+  "aboutPayCool": "PayCool Hakkında",
+  "inputMnemonic": "Mnemonic Girin"
 }

@@ -28,27 +28,27 @@ class DappViewmodel extends BaseViewModel {
       "title": "Exchangily",
       "url": "https://exchangily.com",
       "image":
-          "https://play-lh.googleusercontent.com/vivOq9u0gB1y2cyvmAi7T6UhAca3lZAfGGd_xYJS6q3Af5GPUgnm-4v1ZX3zndvMazAj",
+          "https://pbs.twimg.com/profile_images/1398063786989326338/PtEVQlwW_400x400.jpg",
       "buttons": [
         {"label": "Accept", "action": "connect"},
         {"label": "Reject", "action": "disconnect"}
       ]
     },
     {
-      "title": "UniSwap",
+      "title": "Uni",
       "url": "https://uniswap.com",
       "image":
-          "https://play-lh.googleusercontent.com/vivOq9u0gB1y2cyvmAi7T6UhAca3lZAfGGd_xYJS6q3Af5GPUgnm-4v1ZX3zndvMazAj",
+          "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Uniswap_Logo.svg/1026px-Uniswap_Logo.svg.png",
       "buttons": [
         {"label": "Accept", "action": "connect"},
         {"label": "Reject", "action": "disconnect"}
       ]
     },
     {
-      "title": "PancakeSwap",
+      "title": "Pancake",
       "url": "https://pancakeswap.com",
       "image":
-          "https://play-lh.googleusercontent.com/vivOq9u0gB1y2cyvmAi7T6UhAca3lZAfGGd_xYJS6q3Af5GPUgnm-4v1ZX3zndvMazAj",
+          "https://logowik.com/content/uploads/images/pancakeswap-cake6091.jpg",
       "buttons": [
         {"label": "Accept", "action": "connect"},
         {"label": "Reject", "action": "disconnect"}
@@ -58,7 +58,7 @@ class DappViewmodel extends BaseViewModel {
       "title": "Sushi",
       "url": "https://sushi.com",
       "image":
-          "https://play-lh.googleusercontent.com/vivOq9u0gB1y2cyvmAi7T6UhAca3lZAfGGd_xYJS6q3Af5GPUgnm-4v1ZX3zndvMazAj",
+          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQnrOcDPaBVj9K7UR7T3fjm0BVAr6DdsLjK8ydE5CblCw&s",
       "buttons": [
         {"label": "Accept", "action": "connect"},
         {"label": "Reject", "action": "disconnect"}

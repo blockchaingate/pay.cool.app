@@ -136,7 +136,6 @@ flutter:
     - assets/images/launcher/
     - assets/images/new-design/
     - assets/i18n/
-    - envs/
 
 flutter_icons:
   image_path: "assets/images/launcher/paycool-logo-v1.jpg"

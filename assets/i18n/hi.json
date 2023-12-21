@@ -736,5 +736,6 @@
     "invitation": "आमंत्रण",
     "bonus": "बोनस",
     "walletManagement": "वॉलेट प्रबंधन",
-    "aboutPayCool": "पे कूल के बारे में"
+    "aboutPayCool": "पे कूल के बारे में",
+    "inputMnemonic": "इनपुट म्नेमोनिक"
 }

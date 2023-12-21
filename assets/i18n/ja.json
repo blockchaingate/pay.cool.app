@@ -739,5 +739,6 @@
     "invitation": "招待",
     "bonus": "ボーナス",
     "walletManagement": "ウォレット管理",
-    "aboutPayCool": "PayCoolについて"
+    "aboutPayCool": "PayCoolについて",
+    "inputMnemonic": "入力ニーモニック"
 }

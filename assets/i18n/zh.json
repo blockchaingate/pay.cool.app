@@ -739,5 +739,6 @@
     "invitation": "邀请",
     "bonus": "奖金",
     "walletManagement": "钱包管理",
-    "aboutPayCool": "关于PayCool"
+    "aboutPayCool": "关于PayCool",
+    "inputMnemonic": "输入助记符"
 }
