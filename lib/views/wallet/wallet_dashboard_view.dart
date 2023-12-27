@@ -11,6 +11,8 @@
 *----------------------------------------------------------------------
 */
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
@@ -25,8 +27,6 @@ import 'package:paycool/widgets/shimmer_layouts/shimmer_layout.dart';
 import 'package:paycool/widgets/wallet/coin_details_card_widget.dart';
 import 'package:paycool/widgets/wallet/wallet_card_widget.dart';
 import 'package:stacked/stacked.dart';
-
-import 'wallet_features/add_coin/add_coin_view.dart';
 
 class WalletDashboardView extends StatefulWidget {
   const WalletDashboardView({super.key});
@@ -71,6 +71,8 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
         onViewModelReady: (model) async {
           model.context = context;
           await model.init();
+          model.refreshIndicator.complete();
+          model.refreshIndicator = Completer<void>();
         },
         viewModelBuilder: () => WalletDashboardViewModel(),
         builder: (context, WalletDashboardViewModel model, child) {
@@ -224,23 +226,23 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
                         },
                       ),
                     ),
-                    Padding(
-                      padding: EdgeInsets.fromLTRB(0, 0, 5, 5),
-                      child: InkWell(
-                        onTap: () {
-                          Navigator.push(context, MaterialPageRoute(
-                            builder: (context) {
-                              return AddCoinView();
-                            },
-                          ));
-                        },
-                        child: Icon(
-                          Icons.add_circle_outline,
-                          color: Colors.black87,
-                          size: 26,
-                        ),
-                      ),
-                    ),
+                    // Padding(
+                    //   padding: EdgeInsets.fromLTRB(0, 0, 5, 5),
+                    //   child: InkWell(
+                    //     onTap: () {
+                    //       Navigator.push(context, MaterialPageRoute(
+                    //         builder: (context) {
+                    //           return AddCoinView();
+                    //         },
+                    //       ));
+                    //     },
+                    //     child: Icon(
+                    //       Icons.add_circle_outline,
+                    //       color: Colors.black87,
+                    //       size: 26,
+                    //     ),
+                    //   ),
+                    // ),
                   ],
                 ),
               )
@@ -258,7 +260,11 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
                     controller: _tabController,
                     physics: AlwaysScrollableScrollPhysics(),
                     children: [
-                      buildListView(model),
+                      RefreshIndicator(
+                          onRefresh: () async {
+                            model.refreshBalancesV2();
+                          },
+                          child: buildListView(model)),
                       Center(
                         child: Text(FlutterI18n.translate(context, "nft")),
                       ),

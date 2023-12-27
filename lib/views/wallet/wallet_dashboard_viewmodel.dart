@@ -133,9 +133,9 @@ class WalletDashboardViewModel extends BaseViewModel {
 
   // bond page
 
-  BondMeModel bondMeVm = BondMeModel();
   final kycService = locator<KycBaseService>();
   late AppStateProvider appStateProvider;
+  late Completer<void> refreshIndicator;
 
 /*----------------------------------------------------------------------
                     INIT
@@ -144,7 +144,7 @@ class WalletDashboardViewModel extends BaseViewModel {
   init() async {
     setBusy(true);
     appStateProvider = Provider.of<AppStateProvider>(context!, listen: false);
-    await getUserBondMeData();
+    refreshIndicator = Completer<void>();
     fabAddress = await sharedService.getFabAddressFromCoreWalletDatabase();
     await walletService.storeTokenListInDB();
     await refreshBalancesV2().then((walletBalances) async {
@@ -226,14 +226,6 @@ class WalletDashboardViewModel extends BaseViewModel {
     }
 
     setBusy(false);
-  }
-
-  Future<void> getUserBondMeData() async {
-    await apiService.getBondMe().then((value) {
-      if (value != null) {
-        bondMeVm = value;
-      }
-    });
   }
 
   List<WalletBalance> getSortedWalletList(String chainName) {
