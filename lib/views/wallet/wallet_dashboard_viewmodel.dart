@@ -136,6 +136,8 @@ class WalletDashboardViewModel extends BaseViewModel {
   late AppStateProvider appStateProvider;
   late Completer<void> refreshIndicator;
 
+  final formKey = GlobalKey<FormState>();
+
 /*----------------------------------------------------------------------
                     INIT
 ----------------------------------------------------------------------*/

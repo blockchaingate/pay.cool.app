@@ -193,6 +193,7 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
                       width: size.width * 0.45,
                       height: size.height * 0.045,
                       child: TextField(
+                        key: model.formKey,
                         controller: model.searchCoinTextController,
                         style: TextStyle(
                           color: Colors.black,
