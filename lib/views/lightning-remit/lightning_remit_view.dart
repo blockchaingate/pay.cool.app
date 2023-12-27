@@ -12,7 +12,7 @@ import 'package:paycool/widgets/bottom_nav.dart';
 import 'package:stacked/stacked.dart';
 
 class LightningRemitView extends StatelessWidget {
-  const LightningRemitView({Key? key}) : super(key: key);
+  const LightningRemitView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +37,7 @@ class LightningRemitView extends StatelessWidget {
             }
           },
           child: Scaffold(
+            key: model.scaffoldKey,
             backgroundColor: bgGrey,
             appBar: customAppBarWithIcon(
                 title: FlutterI18n.translate(context, "lightningRemit"),

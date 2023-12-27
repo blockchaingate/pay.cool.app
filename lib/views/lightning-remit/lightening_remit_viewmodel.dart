@@ -36,6 +36,8 @@ import 'package:url_launcher/url_launcher.dart';
 class LightningRemitViewmodel extends FutureViewModel {
   final log = getLogger('LightningRemitViewmodel');
 
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+
   final amountController = TextEditingController();
   final addressController = TextEditingController();
   ApiService apiService = locator<ApiService>();
@@ -171,57 +173,57 @@ class LightningRemitViewmodel extends FutureViewModel {
 /*----------------------------------------------------------------------
                     Show bottom sheet for coin list
 ----------------------------------------------------------------------*/
-  coinListBottomSheet(BuildContext context1) {
+  coinListBottomSheet(BuildContext context) {
     if (isShowBottomSheet) {
       navigationService.back();
     } else {
-      showBottomSheet(
-        context: context1,
-        builder: (context1) => SizedBox(
-          width: double.infinity,
-          height: 250,
-          child: ListView.separated(
-              separatorBuilder: (context, _) => UIHelper.divider,
-              itemCount: exchangeBalances.length,
-              itemBuilder: (BuildContext context, int index) {
-                return Container(
-                  padding: const EdgeInsets.symmetric(vertical: 5),
-                  decoration: BoxDecoration(
-                    borderRadius: index == 0
-                        ? const BorderRadius.vertical(top: Radius.circular(10))
-                        : const BorderRadius.all(Radius.zero),
-                    color: tickerName == exchangeBalances[index].ticker
-                        ? primaryColor
-                        : Colors.transparent,
-                  ),
-                  child: InkWell(
-                    onTap: () {
-                      updateSelectedTickernameIOS(
-                          index, exchangeBalances[index].unlockedAmount);
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(exchangeBalances[index].ticker,
-                              textAlign: TextAlign.center, style: headText5),
-                          UIHelper.horizontalSpaceSmall,
-                          Text(
-                              exchangeBalances[index].unlockedAmount.toString(),
-                              style: headText5),
-                          const Divider(
-                            color: Colors.white,
-                            height: 1,
-                          )
-                        ],
+      scaffoldKey.currentState!.showBottomSheet((context) => SizedBox(
+            width: double.infinity,
+            height: 250,
+            child: ListView.separated(
+                separatorBuilder: (context, _) => UIHelper.divider,
+                itemCount: exchangeBalances.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Container(
+                    padding: const EdgeInsets.symmetric(vertical: 5),
+                    decoration: BoxDecoration(
+                      borderRadius: index == 0
+                          ? const BorderRadius.vertical(
+                              top: Radius.circular(10))
+                          : const BorderRadius.all(Radius.zero),
+                      color: tickerName == exchangeBalances[index].ticker
+                          ? primaryColor
+                          : Colors.transparent,
+                    ),
+                    child: InkWell(
+                      onTap: () {
+                        updateSelectedTickernameIOS(
+                            index, exchangeBalances[index].unlockedAmount);
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(exchangeBalances[index].ticker,
+                                textAlign: TextAlign.center, style: headText5),
+                            UIHelper.horizontalSpaceSmall,
+                            Text(
+                                exchangeBalances[index]
+                                    .unlockedAmount
+                                    .toString(),
+                                style: headText5),
+                            const Divider(
+                              color: Colors.white,
+                              height: 1,
+                            )
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                );
-              }),
-        ),
-      );
+                  );
+                }),
+          ));
     }
     changeBottomSheetStatus();
   }
