@@ -12,6 +12,8 @@ class Constants {
   static int tronUsdtFee = 40;
   static int tronFee = 1;
 
+  static const int timeOutInterval = 45;
+
   static String multisigWalletBox = 'multisigWallet';
   static String multiWalletBox = 'multiWallet';
 

@@ -17,6 +17,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:paycool/constants/constants.dart';
+import 'package:paycool/enums/request_type.dart';
+import 'package:paycool/managers/request_manager.dart';
 import 'package:paycool/models/bond/vm/bond_history_model.dart';
 import 'package:paycool/models/bond/vm/bond_login_vm.dart';
 import 'package:paycool/models/bond/vm/bond_symbol_model.dart';
@@ -25,6 +27,7 @@ import 'package:paycool/models/bond/vm/me_model.dart';
 import 'package:paycool/models/bond/vm/order_bond_model.dart';
 import 'package:paycool/models/bond/vm/register_email_model.dart';
 import 'package:paycool/models/bond/vm/token_balance_model.dart';
+import 'package:paycool/models/wallet/add_coin_model.dart';
 import 'package:paycool/models/wallet/custom_token_model.dart';
 import 'package:paycool/models/wallet/wallet_transaction_history_model.dart';
 import 'package:paycool/services/local_dialog_service.dart';
@@ -1654,6 +1657,50 @@ class ApiService {
     } catch (err) {
       log.e('getIssueTokens CATCH $err');
       throw Exception(err);
+    }
+  }
+
+  Future<List<AddCoinModel>?> getHotCoinList(BuildContext context) async {
+    List<AddCoinModel> getCoinList = <AddCoinModel>[];
+
+    String url = '$paycoolBaseUrlV2' 'token/hotTokens';
+
+    try {
+      final response =
+          await RequestManager.requestAsync(context, RequestType.get, url);
+
+      if (response == null || response == "" || response.isEmpty) {
+        return null;
+      } else if (response.isNotEmpty && response != "") {
+        json.decode(response)["data"]["token"].forEach((item) {
+          getCoinList.add(AddCoinModel.fromJson(item));
+        });
+      }
+      return getCoinList;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  Future<List<AddCoinModel>?> getHomePageCoinList(BuildContext context) async {
+    List<AddCoinModel> getCoinList = <AddCoinModel>[];
+
+    String url = '$paycoolBaseUrlV2' 'token/homePageTokens';
+
+    try {
+      final response =
+          await RequestManager.requestAsync(context, RequestType.get, url);
+
+      if (response == null || response == "" || response.isEmpty) {
+        return null;
+      } else if (response.isNotEmpty && response != "") {
+        json.decode(response)["data"]["token"].forEach((item) {
+          getCoinList.add(AddCoinModel.fromJson(item));
+        });
+      }
+      return getCoinList;
+    } catch (e) {
+      return null;
     }
   }
 }

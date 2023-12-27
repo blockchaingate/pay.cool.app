@@ -23,7 +23,7 @@ import 'package:stacked/stacked.dart';
 
 class CreatePasswordView extends StatelessWidget {
   final dynamic args;
-  const CreatePasswordView({Key? key, this.args}) : super(key: key);
+  const CreatePasswordView({super.key, this.args});
 
   @override
   Widget build(BuildContext context) {
@@ -65,11 +65,11 @@ class CreatePasswordView extends StatelessWidget {
                       textAlign: TextAlign.left,
                     ),
                     UIHelper.verticalSpaceLarge,
-                    kTextField(
-                      controller: model.walletNameController,
-                      labelText: FlutterI18n.translate(context, "walletName"),
-                      hintText: FlutterI18n.translate(context, "walletName"),
-                    ),
+                    // kTextField(
+                    //   controller: model.walletNameController,
+                    //   labelText: FlutterI18n.translate(context, "walletName"),
+                    //   hintText: FlutterI18n.translate(context, "walletName"),
+                    // ),
                     UIHelper.verticalSpaceSmall,
                     TextField(
                         onChanged: (String pass) {

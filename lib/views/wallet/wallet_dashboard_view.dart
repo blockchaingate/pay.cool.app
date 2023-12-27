@@ -19,13 +19,14 @@ import 'package:paycool/constants/route_names.dart';
 import 'package:paycool/models/wallet/wallet_balance.dart';
 import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/views/wallet/wallet_dashboard_viewmodel.dart';
-import 'package:paycool/views/wallet/wallet_features/add_token_view.dart';
 import 'package:paycool/widgets/bottom_nav.dart';
 import 'package:paycool/widgets/shared/will_pop_scope.dart';
 import 'package:paycool/widgets/shimmer_layouts/shimmer_layout.dart';
 import 'package:paycool/widgets/wallet/coin_details_card_widget.dart';
 import 'package:paycool/widgets/wallet/wallet_card_widget.dart';
 import 'package:stacked/stacked.dart';
+
+import 'wallet_features/add_coin/add_coin_view.dart';
 
 class WalletDashboardView extends StatefulWidget {
   const WalletDashboardView({super.key});
@@ -229,10 +230,10 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
                         onTap: () {
                           Navigator.push(context, MaterialPageRoute(
                             builder: (context) {
-                              return AddTokenCustomView();
+                              return AddCoinView();
                             },
                           ));
-                        }, // TODO we dont know what to do here
+                        },
                         child: Icon(
                           Icons.add_circle_outline,
                           color: Colors.black87,

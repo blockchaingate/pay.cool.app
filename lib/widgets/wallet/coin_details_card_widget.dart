@@ -117,7 +117,7 @@ class CoinDetailsCardWidget extends StackedView<WalletDashboardViewModel> {
                 Expanded(
                   flex: 3,
                   child: SizedBox(
-                    width: size.width * 0.2,
+                    width: size.width * 0.3,
                     height: 50,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -131,7 +131,7 @@ class CoinDetailsCardWidget extends StackedView<WalletDashboardViewModel> {
                                   .toString(),
                           style: TextStyle(
                               color: Colors.black,
-                              fontSize: 14,
+                              fontSize: 12,
                               fontWeight: FontWeight.w600),
                         ),
                         Row(
@@ -140,7 +140,7 @@ class CoinDetailsCardWidget extends StackedView<WalletDashboardViewModel> {
                             Text(
                               '\$',
                               style: TextStyle(
-                                  fontSize: 14,
+                                  fontSize: 12,
                                   fontWeight: FontWeight.w400,
                                   color: textHintGrey),
                             ),

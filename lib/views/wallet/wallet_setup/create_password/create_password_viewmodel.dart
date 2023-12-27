@@ -69,45 +69,25 @@ class CreatePasswordViewModel extends BaseViewModel {
     isCreatingWallet = true;
     setBusy(true);
 
-    try {
-      if (walletNameController.text.isEmpty) {
-        var count = await hiveMultiWalletService.getWalletCount();
-        walletNameController.text =
-            '${FlutterI18n.translate(context, 'wallet')} ${count + 1}';
-      }
-      await _walletService
-          .createOfflineWalletsV2(randomMnemonicFromRoute,
-              passTextController.text, walletNameController.text)
-          .then((result) {
-        if (!result.isNegative) {
-          navigationService.pushNamedAndRemoveUntil(DashboardViewRoute);
-        } else if (result == -1) {
-          showSimpleNotification(
-              Text(FlutterI18n.translate(context, "duplicateWallet")),
-              position: NotificationPosition.bottom,
-              background: primaryColor,
-              subtitle:
-                  Text(FlutterI18n.translate(context, "walletNameExists")));
-        } else {
-          showSimpleNotification(
-              Text(FlutterI18n.translate(context, "somethingWentWrong")),
-              position: NotificationPosition.bottom,
-              background: primaryColor,
-              subtitle: Text(FlutterI18n.translate(context, "pleaseTryAgain")));
-        }
-        storageService.showPaycoolClub = false;
-        clearData();
-      }).catchError((onError) {
-        passwordMatch = false;
-        password = '';
-        confirmPassword = '';
-        isError = true;
-        log.e(onError);
-      });
-    } finally {
-      isCreatingWallet = false;
+    await _walletService
+        .createOfflineWalletsV1(
+            randomMnemonicFromRoute, passTextController.text)
+        .then((data) {
+      navigationService.pushNamedAndRemoveUntil(DashboardViewRoute);
+      storageService.showPaycoolClub = false;
+      randomMnemonicFromRoute = '';
+      passTextController.text = '';
+      confirmPassTextController.text = '';
+    }).catchError((onError) {
+      passwordMatch = false;
+      password = '';
+      confirmPassword = '';
+      isError = true;
+      log.e(onError);
       setBusy(false);
-    }
+    });
+    isCreatingWallet = false;
+    setBusy(false);
   }
 
   clearData() {

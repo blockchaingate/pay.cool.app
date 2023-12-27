@@ -777,5 +777,10 @@
     "bonus": "Bonus",
     "walletManagement": "Wallet Management",
     "aboutPayCool": "About PayCool",
-    "inputMnemonic": "Input Mnemonic"
+    "inputMnemonic": "Input Mnemonic",
+    "enterTheCoinName": "Enter the coin name or contract address",
+    "homePageCoinList": "Home Page Coin List",
+    "hot": "Hot",
+    "my": "My",
+    "setPassword": "Set Password"
 }
