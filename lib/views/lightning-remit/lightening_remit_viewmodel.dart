@@ -250,23 +250,23 @@ class LightningRemitViewmodel extends FutureViewModel {
       if (e.code == "PERMISSION_NOT_GRANTED") {
         setBusy(true);
         sharedService.alertDialog(
-            '', FlutterI18n.translate(context!, "userAccessDenied"),
+            context!, '', FlutterI18n.translate(context!, "userAccessDenied"),
             isWarning: false);
         // receiverWalletAddressTextController.text =
         //     FlutterI18n.translate(context, "userAccessDenied");
       } else {
         // setBusy(true);
         sharedService.alertDialog(
-            '', FlutterI18n.translate(context!, "unknownError"),
+            context!, '', FlutterI18n.translate(context!, "unknownError"),
             isWarning: false);
       }
     } on FormatException {
       sharedService.alertDialog(
-          '', FlutterI18n.translate(context!, "scanCancelled"),
+          context!, '', FlutterI18n.translate(context!, "scanCancelled"),
           isWarning: false);
     } catch (e) {
       sharedService.alertDialog(
-          '', FlutterI18n.translate(context!, "unknownError"),
+          context!, '', FlutterI18n.translate(context!, "unknownError"),
           isWarning: false);
     }
     setBusy(false);
@@ -614,6 +614,7 @@ class LightningRemitViewmodel extends FutureViewModel {
     if (walletService.isValidKbAddress(addressController.text)) {
       if (amountController.text == '') {
         sharedService.alertDialog(
+            context!,
             FlutterI18n.translate(context!, "validationError"),
             FlutterI18n.translate(context!, "amountMissing"));
         setBusy(false);
@@ -628,6 +629,7 @@ class LightningRemitViewmodel extends FutureViewModel {
       double selectedCoinBalance = selectedExchangeBal.unlockedAmount;
       if (selectedCoinBalance <= 0.0 || amount > selectedCoinBalance) {
         sharedService.alertDialog(
+            context!,
             FlutterI18n.translate(context!, "validationError"),
             FlutterI18n.translate(context!, "invalidAmount"));
         setBusy(false);
@@ -675,6 +677,7 @@ class LightningRemitViewmodel extends FutureViewModel {
               });
             } else {
               sharedService.alertDialog(
+                  context!,
                   FlutterI18n.translate(context!, "transanctionFailed"),
                   FlutterI18n.translate(context!, "pleaseTryAgainLater"));
             }
@@ -700,6 +703,7 @@ class LightningRemitViewmodel extends FutureViewModel {
       });
     } else {
       sharedService.alertDialog(
+          context!,
           FlutterI18n.translate(context!, "validationError"),
           FlutterI18n.translate(
               context!, "pleaseCorrectTheFormatOfReceiveAddress"));

@@ -206,11 +206,14 @@ class MoveToExchangeViewModel extends BaseViewModel {
       gasAmount = data;
       if (gasAmount < 0.5) {
         sharedService.alertDialog(
+          context,
           FlutterI18n.translate(context, "notice"),
           FlutterI18n.translate(context, "insufficientGasAmount"),
         );
       }
-    }).catchError((onError) => log.e(onError));
+    }).catchError((onError) {
+      log.e(onError);
+    });
     log.w('gas amount $gasAmount');
     return gasAmount;
   }
@@ -344,7 +347,9 @@ class MoveToExchangeViewModel extends BaseViewModel {
         amount == 0 ||
         amount.isNegative) {
       log.e('amount $amount --- wallet bal: ${walletInfo.availableBalance}');
-      sharedService.alertDialog(FlutterI18n.translate(context, "invalidAmount"),
+      sharedService.alertDialog(
+          context,
+          FlutterI18n.translate(context, "invalidAmount"),
           FlutterI18n.translate(context, "insufficientBalance"),
           isWarning: false);
       setBusy(false);
@@ -369,6 +374,7 @@ class MoveToExchangeViewModel extends BaseViewModel {
       log.w('isCorrectAmount $isCorrectAmount');
       if (!isCorrectAmount) {
         sharedService.alertDialog(
+            context,
             '${FlutterI18n.translate(context, "fee")} ${FlutterI18n.translate(context, "notice")}',
             'TRX ${FlutterI18n.translate(context, "insufficientBalance")}',
             isWarning: false);
@@ -386,6 +392,7 @@ class MoveToExchangeViewModel extends BaseViewModel {
       }
       if (!isCorrectAmount) {
         sharedService.alertDialog(
+            context,
             '${FlutterI18n.translate(context, "fee")} ${FlutterI18n.translate(context, "notice")}',
             'TRX ${FlutterI18n.translate(context, "insufficientBalance")}',
             isWarning: false);
@@ -490,6 +497,7 @@ class MoveToExchangeViewModel extends BaseViewModel {
             message = txId.toString();
 
             sharedService.alertDialog(
+              context,
               FlutterI18n.translate(context, "sendTransactionComplete"),
               '$specialTicker ${FlutterI18n.translate(context, "isOnItsWay")}',
             );
@@ -506,6 +514,7 @@ class MoveToExchangeViewModel extends BaseViewModel {
           log.e('In time out');
           setBusy(false);
           sharedService.alertDialog(
+              context,
               FlutterI18n.translate(context, "notice"),
               FlutterI18n.translate(
                   context, "serverTimeoutPleaseTryAgainLater"),
@@ -513,6 +522,7 @@ class MoveToExchangeViewModel extends BaseViewModel {
         }).catchError((error) {
           log.e('In Catch error - $error');
           sharedService.alertDialog(
+              context,
               FlutterI18n.translate(context, "serverError"),
               '$tickerName ${FlutterI18n.translate(context, "transanctionFailed")}',
               isWarning: false);
@@ -572,6 +582,7 @@ class MoveToExchangeViewModel extends BaseViewModel {
           log.e('Deposit Catch $onError');
 
           sharedService.alertDialog(
+              context,
               FlutterI18n.translate(context, "depositTransactionFailed"),
               FlutterI18n.translate(context, "serverError"),
               isWarning: false);

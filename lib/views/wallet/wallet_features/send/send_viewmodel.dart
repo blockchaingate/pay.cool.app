@@ -436,6 +436,7 @@ class SendViewModel extends BaseViewModel {
                 t = walletInfo!.tickerName!;
               }
               sharedService.alertDialog(
+                context,
                 FlutterI18n.translate(context, "sendTransactionComplete"),
                 '$t ${FlutterI18n.translate(context, "isOnItsWay")}',
               );
@@ -462,6 +463,7 @@ class SendViewModel extends BaseViewModel {
             isShowErrorDetailsButton = false;
             isShowDetailsMessage = false;
             sharedService.alertDialog(
+                context,
                 FlutterI18n.translate(context, "notice"),
                 FlutterI18n.translate(
                     context, "serverTimeoutPleaseTryAgainLater"),
@@ -469,6 +471,7 @@ class SendViewModel extends BaseViewModel {
           }).catchError((error) {
             log.e('In Catch error - $error');
             sharedService.alertDialog(
+                context,
                 FlutterI18n.translate(context, "serverError"),
                 '$tickerName ${FlutterI18n.translate(context, "transanctionFailed")}',
                 isWarning: false);
@@ -497,6 +500,7 @@ class SendViewModel extends BaseViewModel {
             isShowErrorDetailsButton = false;
             isShowDetailsMessage = false;
             sharedService.alertDialog(
+              context,
               FlutterI18n.translate(context, "sendTransactionComplete"),
               '$tickerName ${FlutterI18n.translate(context, "isOnItsWay")}',
             );
@@ -511,6 +515,7 @@ class SendViewModel extends BaseViewModel {
           } else if (txHash == '' && errorMessage == '') {
             log.e('Both TxHash and Error Message are empty $errorMessage');
             sharedService.alertDialog(
+              context,
               "",
               '$tickerName ${FlutterI18n.translate(context, "transanctionFailed")}',
             );
@@ -520,6 +525,7 @@ class SendViewModel extends BaseViewModel {
           } else if (txHash.isEmpty && errorMessage.isNotEmpty) {
             log.e('Error Message $errorMessage');
             sharedService.alertDialog(
+              context,
               "",
               '$tickerName ${FlutterI18n.translate(context, "transanctionFailed")}',
             );
@@ -539,6 +545,7 @@ class SendViewModel extends BaseViewModel {
         }).catchError((error) {
           log.e('In Catch error -$error');
           sharedService.alertDialog(
+              context,
               FlutterI18n.translate(context, "networkIssue"),
               '$tickerName ${FlutterI18n.translate(context, "transanctionFailed")}',
               isWarning: false);
@@ -646,7 +653,9 @@ class SendViewModel extends BaseViewModel {
     errorMessage = '';
     //walletInfo = walletInfo;
     if (sendAmountTextController.text == '') {
-      sharedService.alertDialog(FlutterI18n.translate(context, "amountMissing"),
+      sharedService.alertDialog(
+          context,
+          FlutterI18n.translate(context, "amountMissing"),
           FlutterI18n.translate(context, "invalidAmount"),
           isWarning: false);
       throw Exception('amount empty');
@@ -660,13 +669,16 @@ class SendViewModel extends BaseViewModel {
     }
     //await refreshBalance();
     if (toAddress.isEmpty) {
-      sharedService.alertDialog(FlutterI18n.translate(context, "emptyAddress"),
+      sharedService.alertDialog(
+          context,
+          FlutterI18n.translate(context, "emptyAddress"),
           FlutterI18n.translate(context, "pleaseEnterAnAddress"),
           isWarning: false);
       throw Exception('address empty');
     }
     if ((isTrx()) && !toAddress.startsWith('T')) {
       sharedService.alertDialog(
+          context,
           FlutterI18n.translate(context, "invalidAddress"),
           FlutterI18n.translate(
               context, "pleaseCorrectTheFormatOfReceiveAddress"),
@@ -678,7 +690,9 @@ class SendViewModel extends BaseViewModel {
         amount.toDouble().isNegative ||
         !checkSendAmount ||
         amount.toDouble() > walletInfo!.availableBalance!) {
-      sharedService.alertDialog(FlutterI18n.translate(context, "invalidAmount"),
+      sharedService.alertDialog(
+          context,
+          FlutterI18n.translate(context, "invalidAmount"),
           FlutterI18n.translate(context, "pleaseEnterValidNumber"),
           isWarning: false);
       throw Exception('amount no good');
@@ -904,7 +918,9 @@ class SendViewModel extends BaseViewModel {
       setBusy(false);
       setBusy(false);
       log.e(err);
-      sharedService.alertDialog(FlutterI18n.translate(context, "genericError"),
+      sharedService.alertDialog(
+          context,
+          FlutterI18n.translate(context, "genericError"),
           FlutterI18n.translate(context, "transanctionFailed"),
           isWarning: false);
     });
@@ -935,14 +951,14 @@ class SendViewModel extends BaseViewModel {
       if (e.code == "PERMISSION_NOT_GRANTED") {
         setBusy(false);
         sharedService.alertDialog(
-            '', FlutterI18n.translate(context, "userAccessDenied"),
+            context, '', FlutterI18n.translate(context, "userAccessDenied"),
             isWarning: false);
         // receiverWalletAddressTextController.text =
         //     FlutterI18n.translate(context, "userAccessDenied");
       } else {
         setBusy(false);
         sharedService.alertDialog(
-            '', FlutterI18n.translate(context, "unknownError"),
+            context, '', FlutterI18n.translate(context, "unknownError"),
             isWarning: false);
         // receiverWalletAddressTextController.text =
         //     '${FlutterI18n.translate(context, "unknownError")}: $e';
@@ -956,7 +972,7 @@ class SendViewModel extends BaseViewModel {
       log.i(e.toString());
       setBusy(false);
       sharedService.alertDialog(
-          '', FlutterI18n.translate(context, "unknownError"),
+          context, '', FlutterI18n.translate(context, "unknownError"),
           isWarning: false);
     }
     setBusy(false);

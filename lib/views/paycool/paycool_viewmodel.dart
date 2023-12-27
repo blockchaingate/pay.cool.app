@@ -274,7 +274,7 @@ class PayCoolViewmodel extends FutureViewModel {
     setBusy(false);
   }
 
-  createAccount() async {
+  createAccount(BuildContext context) async {
     setBusy(true);
     bool isValidReferralAddress = false;
     if (referralController.text.isEmpty) {
@@ -321,6 +321,7 @@ class PayCoolViewmodel extends FutureViewModel {
       if (res != '') {
         if (res == '0x1') {
           sharedService.alertDialog(
+              context,
               FlutterI18n.translate(sharedService.context, "newAccountCreated"),
               '${FlutterI18n.translate(sharedService.context, "newAccountNote")} ${FlutterI18n.translate(sharedService.context, "waitForNewAccountSetUp")}',
               path: PayCoolViewRoute);

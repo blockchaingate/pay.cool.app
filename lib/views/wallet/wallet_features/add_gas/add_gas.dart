@@ -12,12 +12,12 @@
 */
 
 import 'package:decimal/decimal.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/utils/number_util.dart';
-import 'package:flutter/material.dart';
 import 'package:paycool/views/wallet/wallet_features/add_gas/add_gas_viewmodel.dart';
 import 'package:stacked/stacked.dart';
 
@@ -110,6 +110,7 @@ class _AddGasViewState extends State<AddGasView>
                               amount =
                                   Decimal.parse(model.amountController.text);
                             }
+
                             model.amountController.text == ''
                                 ? model.sharedService.showInfoFlushbar(
                                     FlutterI18n.translate(
@@ -240,7 +241,7 @@ class _AddGasViewState extends State<AddGasView>
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              '${FlutterI18n.translate(context, "about")} ${NumberUtil.roundDouble(model.transFee, decimalPlaces: 6)} FAB ',
+                              '${FlutterI18n.translate(context, "about")} ${NumberUtil.roundDouble(model.transFee, decimalPlaces: 8)} FAB ',
                               style: TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.bold,
@@ -316,7 +317,7 @@ class _AddGasViewState extends State<AddGasView>
                                       textAlign: TextAlign.right,
                                       decoration: InputDecoration(
                                         border: InputBorder.none,
-                                        hintText: "40",
+                                        hintText: "0.00000",
                                         hintStyle: TextStyle(
                                           fontSize: 16,
                                           fontWeight: FontWeight.w500,
@@ -365,7 +366,7 @@ class _AddGasViewState extends State<AddGasView>
                                       textAlign: TextAlign.right,
                                       decoration: InputDecoration(
                                         border: InputBorder.none,
-                                        hintText: "500000",
+                                        hintText: "0.00000",
                                         hintStyle: TextStyle(
                                           fontSize: 16,
                                           fontWeight: FontWeight.w500,

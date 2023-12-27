@@ -785,5 +785,6 @@
     "setPassword": "Set Password",
     "selectToken": "Select Token",
     "enterTheReceived": "Enter the received wallet address or DNS",
-    "warning": "Warning"
+    "warning": "Warning",
+    "about": "About"
 }

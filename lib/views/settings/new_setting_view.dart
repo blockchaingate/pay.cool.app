@@ -11,7 +11,7 @@ import 'package:paycool/views/settings/new_setting_viewmodel.dart';
 import 'package:stacked/stacked.dart';
 
 class NewSettingView extends StatelessWidget {
-  const NewSettingView({Key? key}) : super(key: key);
+  const NewSettingView({super.key});
 
   @override
   Widget build(BuildContext context) {

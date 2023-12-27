@@ -933,11 +933,14 @@ class MoveToWalletViewmodel extends BaseViewModel {
       log.i('gas balance $gasAmount');
       if (gasAmount == 0) {
         sharedService.alertDialog(
+          context,
           FlutterI18n.translate(context, "notice"),
           FlutterI18n.translate(context, "insufficientGasAmount"),
         );
       }
-    }).catchError((onError) => log.e(onError));
+    }).catchError((onError) {
+      log.e(onError);
+    });
     log.w('gas amount $gasAmount');
     return gasAmount;
   }
@@ -1321,6 +1324,7 @@ class MoveToWalletViewmodel extends BaseViewModel {
       await checkGasBalance();
       if (gasAmount == 0.0 || gasAmount < kanbanTransFee) {
         sharedService.alertDialog(
+          context,
           FlutterI18n.translate(context, "notice"),
           FlutterI18n.translate(context, "insufficientGasAmount"),
         );
@@ -1342,6 +1346,7 @@ class MoveToWalletViewmodel extends BaseViewModel {
 
       if (amount > walletInfo.inExchange! || amount == 0 || amount.isNegative) {
         sharedService.alertDialog(
+            context,
             FlutterI18n.translate(context, "invalidAmount"),
             FlutterI18n.translate(context, "pleaseEnterValidNumber"),
             isWarning: false);
@@ -1350,7 +1355,9 @@ class MoveToWalletViewmodel extends BaseViewModel {
       }
 
       if (groupValue == 'FAB' && amount > fabChainBalance) {
-        sharedService.alertDialog(FlutterI18n.translate(context, "notice"),
+        sharedService.alertDialog(
+            context,
+            FlutterI18n.translate(context, "notice"),
             '${FlutterI18n.translate(context, "lowTsWalletBalanceErrorFirstPart")} $fabChainBalance. ${FlutterI18n.translate(context, "lowTsWalletBalanceErrorSecondPart")}',
             isWarning: false);
 
@@ -1361,7 +1368,9 @@ class MoveToWalletViewmodel extends BaseViewModel {
       /// show warning like amount should be less than ts wallet balance
       /// instead of displaying the generic error
       if (groupValue == 'ETH' && amount > ethChainBalance) {
-        sharedService.alertDialog(FlutterI18n.translate(context, "notice"),
+        sharedService.alertDialog(
+            context,
+            FlutterI18n.translate(context, "notice"),
             '${FlutterI18n.translate(context, "lowTsWalletBalanceErrorFirstPart")} $ethChainBalance. ${FlutterI18n.translate(context, "lowTsWalletBalanceErrorSecondPart")}',
             isWarning: false);
 
@@ -1369,21 +1378,27 @@ class MoveToWalletViewmodel extends BaseViewModel {
         return;
       }
       if (groupValue == 'TRX' && amount > trxTsWalletBalance) {
-        sharedService.alertDialog(FlutterI18n.translate(context, "notice"),
+        sharedService.alertDialog(
+            context,
+            FlutterI18n.translate(context, "notice"),
             '${FlutterI18n.translate(context, "lowTsWalletBalanceErrorFirstPart")} $trxTsWalletBalance. ${FlutterI18n.translate(context, "lowTsWalletBalanceErrorSecondPart")}',
             isWarning: false);
         setBusy(false);
         return;
       }
       if (groupValue == 'BNB' && amount > bnbTsWalletBalance) {
-        sharedService.alertDialog(FlutterI18n.translate(context, "notice"),
+        sharedService.alertDialog(
+            context,
+            FlutterI18n.translate(context, "notice"),
             '${FlutterI18n.translate(context, "lowTsWalletBalanceErrorFirstPart ")} $bnbTsWalletBalance. ${FlutterI18n.translate(context, "lowTsWalletBalanceErrorSecondPart")}',
             isWarning: false);
         setBusy(false);
         return;
       }
       if (groupValue == 'POLYGON' && amount > polygonTsWalletBalance) {
-        sharedService.alertDialog(FlutterI18n.translate(context, "notice"),
+        sharedService.alertDialog(
+            context,
+            FlutterI18n.translate(context, "notice"),
             '${FlutterI18n.translate(context, "lowTsWalletBalanceErrorFirstPart")} $polygonTsWalletBalance. ${FlutterI18n.translate(context, "lowTsWalletBalanceErrorSecondPart")}',
             isWarning: false);
         setBusy(false);
@@ -1472,7 +1487,7 @@ class MoveToWalletViewmodel extends BaseViewModel {
         if (walletInfo.tickerName == 'TRX' ||
             walletInfo.tokenType == 'TRX' ||
             walletInfo.tickerName == 'USDTX') {
-          int kanbanGasPrice = environment['chains']['KANBAN']['gasPrice'];
+          // int kanbanGasPrice = environment['chains']['KANBAN']['gasPrice'];
           int kanbanGasLimit = environment['chains']['KANBAN']['gasLimit'];
           await walletService
               .withdrawTron(seed, coinName!, coinAddress, tokenType,
@@ -1497,6 +1512,7 @@ class MoveToWalletViewmodel extends BaseViewModel {
               }
             }
             sharedService.alertDialog(
+                context,
                 success && ret['transactionHash'] != null
                     ? FlutterI18n.translate(
                         context, "withdrawTransactionSuccessful")

@@ -77,9 +77,9 @@ class WalletManagementView extends StatelessWidget {
                         Expanded(child: SizedBox()),
                         model.isMnemonicVisible
                             ? Transform.rotate(
+                                angle: 90 * 3.14 / 180,
                                 child: Icon(Icons.arrow_forward_ios,
                                     color: black, size: 14),
-                                angle: 90 * 3.14 / 180,
                               )
                             : Icon(Icons.arrow_forward_ios,
                                 color: black, size: 14)
