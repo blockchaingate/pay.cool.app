@@ -413,7 +413,8 @@ class SharedService {
                           Alert dialog
 -------------------------------------------------------------------------------------*/
   alertDialog(String title, String message,
-      {bool isWarning = false,
+      {BuildContext? contexte,
+      bool isWarning = false,
       String? path,
       dynamic arguments,
       bool isCopyTxId = false,
@@ -425,7 +426,7 @@ class SharedService {
     bool checkBoxValue = false;
     showDialog(
         barrierDismissible: isDismissible,
-        context: context,
+        context: context ?? contexte!,
         builder: (context) {
           return AlertDialog(
             titlePadding: const EdgeInsets.all(0),

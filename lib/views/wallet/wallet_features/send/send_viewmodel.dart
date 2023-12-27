@@ -640,17 +640,16 @@ class SendViewModel extends BaseViewModel {
 /*-----------------------------------------------------------------------------------
     Check Fields to see if user has filled both address and amount fields correctly
 ------------------------------------------------------------------------------------*/
-  checkFields(context) async {
+  Future checkFields(context) async {
     debugPrint('in check fields');
     txHash = '';
     errorMessage = '';
     //walletInfo = walletInfo;
     if (sendAmountTextController.text == '') {
-      debugPrint('amount empty');
       sharedService.alertDialog(FlutterI18n.translate(context, "amountMissing"),
           FlutterI18n.translate(context, "invalidAmount"),
           isWarning: false);
-      return;
+      throw Exception('amount empty');
     }
     amount = NumberUtil.convertStringToDecimal(sendAmountTextController.text);
     toAddress = receiverWalletAddressTextController.text;
@@ -661,31 +660,28 @@ class SendViewModel extends BaseViewModel {
     }
     //await refreshBalance();
     if (toAddress.isEmpty) {
-      debugPrint('address empty');
       sharedService.alertDialog(FlutterI18n.translate(context, "emptyAddress"),
           FlutterI18n.translate(context, "pleaseEnterAnAddress"),
           isWarning: false);
-      return;
+      throw Exception('address empty');
     }
     if ((isTrx()) && !toAddress.startsWith('T')) {
-      debugPrint('invalid tron address');
       sharedService.alertDialog(
           FlutterI18n.translate(context, "invalidAddress"),
           FlutterI18n.translate(
               context, "pleaseCorrectTheFormatOfReceiveAddress"),
           isWarning: false);
-      return;
+      throw Exception('invalid tron address');
     }
     // double totalAmount = amount + transFee;
     if (amount == Constants.decimalZero ||
         amount.toDouble().isNegative ||
         !checkSendAmount ||
         amount.toDouble() > walletInfo!.availableBalance!) {
-      debugPrint('amount no good');
       sharedService.alertDialog(FlutterI18n.translate(context, "invalidAmount"),
           FlutterI18n.translate(context, "pleaseEnterValidNumber"),
           isWarning: false);
-      return;
+      throw Exception('amount no good');
     }
 
     // ! Check if ETH is available for making USDT transaction
@@ -701,7 +697,6 @@ class SendViewModel extends BaseViewModel {
           .hasSufficientWalletBalance(transFee, tokenType)
           .then((isValidNativeChainBal) {
         if (!isValidNativeChainBal) {
-          log.e('not enough $tokenType balance to make tx');
           var coin = tokenType.isEmpty
               ? walletInfo!.tickerName
               : walletInfo!.tokenType;
@@ -712,13 +707,12 @@ class SendViewModel extends BaseViewModel {
               ),
               position: NotificationPosition.top,
               background: sellPrice);
-          return;
+          throw Exception('not enough $tokenType balance to make tx');
         }
       });
     }
 
     if (transFee < 0.0001 && !isTrx()) {
-      log.e('transfee $transFee not enough $tokenType balance to make tx');
       var coin =
           tokenType.isEmpty ? walletInfo!.tickerName : walletInfo!.tokenType;
       showSimpleNotification(
@@ -735,31 +729,13 @@ class SendViewModel extends BaseViewModel {
           background: sellPrice);
       await updateTransFee();
 
-      return;
+      throw Exception(
+          'transfee $transFee not enough $tokenType balance to make tx');
     }
-    //amount = NumberUtil().roundDownLastDigit(amount);
 
-    // if (walletInfo.tickerName == 'USDTX') {
-    //   log.e('amount $amount --- wallet bal: ${walletInfo.availableBalance}');
-    //   // bool isCorrectAmount = true;
-    //   // await walletService
-    //   //     .checkCoinWalletBalance(amount, 'TRX')
-    //   //     .then((res) => isCorrectAmount = res);
-
-    //   if (amount >= walletInfo.availableBalance) {
-    //     sharedService.alertDialog(
-    //         '${FlutterI18n.translate(context, "fee")} ${FlutterI18n.translate(context, "notice")}',
-    //         'TRX ${FlutterI18n.translate(context, "insufficientBalance")}',
-    //         isWarning: false);
-    //     setBusy(false);
-    //     return;
-    //   }
-    // }
-
-    debugPrint('else');
     FocusScope.of(context).requestFocus(FocusNode());
     if (transFee == 0 && !isTrx()) await updateTransFee();
-    sendTransaction();
+    await sendTransaction();
     // await updateBalance(widget.walletInfo.address);
     // widget.walletInfo.availableBalance = model.updatedBal['balance'];
   }

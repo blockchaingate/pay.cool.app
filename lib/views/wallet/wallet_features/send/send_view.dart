@@ -15,6 +15,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:paycool/constants/colors.dart';
+import 'package:paycool/constants/constants.dart';
 import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/models/wallet/wallet.dart';
 import 'package:paycool/shared/ui_helpers.dart';
@@ -24,7 +25,7 @@ import 'package:stacked/stacked.dart';
 
 class SendWalletView extends StatefulWidget {
   final WalletInfo? walletInfo;
-  const SendWalletView({Key? key, this.walletInfo}) : super(key: key);
+  const SendWalletView({super.key, this.walletInfo});
 
   @override
   State<SendWalletView> createState() => _SendWalletViewState();
@@ -81,7 +82,9 @@ class _SendWalletViewState extends State<SendWalletView>
                         )),
                     actions: [
                       IconButton(
-                        onPressed: null,
+                        onPressed: () {
+                          model.scan();
+                        },
                         icon: Image.asset(
                           "assets/images/new-design/scan_icon.png",
                           scale: 2.7,
@@ -101,15 +104,33 @@ class _SendWalletViewState extends State<SendWalletView>
                         child: ElevatedButton.icon(
                           icon: Icon(Icons.arrow_circle_up),
                           label: Text(FlutterI18n.translate(context, "send")),
-                          onPressed: () {
-                            model.checkFields(context);
+                          onPressed: () async {
+                            model.amount != Constants.decimalZero &&
+                                    model.receiverWalletAddressTextController
+                                        .text.isNotEmpty &&
+                                    model.checkSendAmount &&
+                                    model.amount.toDouble() <=
+                                        model.walletInfo!.availableBalance!
+                                ? await model
+                                    .checkFields(context)
+                                    .catchError((e) {
+                                    debugPrint(e.toString());
+                                  })
+                                : null;
                           },
                           style: ElevatedButton.styleFrom(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            backgroundColor: buttonGreen,
-                          ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              backgroundColor: model.amount !=
+                                          Constants.decimalZero &&
+                                      model.receiverWalletAddressTextController
+                                          .text.isNotEmpty &&
+                                      model.checkSendAmount &&
+                                      model.amount.toDouble() <=
+                                          model.walletInfo!.availableBalance!
+                                  ? buttonGreen
+                                  : grey),
                         ),
                       ),
                     ),
@@ -147,8 +168,8 @@ class _SendWalletViewState extends State<SendWalletView>
                                     fontSize: 16, color: Colors.black),
                                 decoration: InputDecoration(
                                   border: InputBorder.none,
-                                  hintText:
-                                      'Enter the received wallet address or DNS',
+                                  hintText: FlutterI18n.translate(
+                                      context, "enterTheReceived"),
                                   hintStyle: TextStyle(
                                       fontSize: 16, color: textHintGrey),
                                   contentPadding: EdgeInsets.only(left: 10),
@@ -199,11 +220,20 @@ class _SendWalletViewState extends State<SendWalletView>
                             Expanded(
                               child: TextField(
                                 controller: model.sendAmountTextController,
+                                inputFormatters: [
+                                  DecimalTextInputFormatter(
+                                      decimalRange: model.decimalLimit,
+                                      activatedNegativeValues: false)
+                                ],
                                 onChanged: (String amount) {
-                                  model.amount =
-                                      NumberUtil.convertStringToDecimal(amount);
-
-                                  model.checkAmount();
+                                  if (amount.isNotEmpty &&
+                                      model.walletInfo != null) {
+                                    model.amount =
+                                        NumberUtil.convertStringToDecimal(
+                                            amount);
+                                    model.checkAmount();
+                                  }
+                                  setState(() {});
                                 },
                                 keyboardType:
                                     const TextInputType.numberWithOptions(
@@ -297,7 +327,7 @@ class _SendWalletViewState extends State<SendWalletView>
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              '${FlutterI18n.translate(context, "About")} ${NumberUtil.roundDouble(model.transFee, decimalPlaces: 6)}  ${model.specialTickerName}',
+                              '${FlutterI18n.translate(context, "About")} ${NumberUtil.roundDouble(model.transFee, decimalPlaces: 6)}  ${model.feeUnit}',
                               style: TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.bold,

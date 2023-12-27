@@ -42,7 +42,7 @@ class AddGasViewModel extends FutureViewModel {
   String? scarContractAddress;
   var contractInfo;
   var utxos = [];
-  double extraAmount = 0.0;
+  var extraAmount;
   int satoshisPerBytes = 14;
   int? bytesPerInput;
   int? feePerInput;
@@ -151,6 +151,7 @@ class AddGasViewModel extends FutureViewModel {
               ? FlutterI18n.translate(context, "addGasTransactionSuccess")
               : FlutterI18n.translate(context, "addGasTransactionFailed"),
           (ret["errMsg"] == '') ? ret['txHash'] : formattedErrorMsg,
+          contexte: context!,
           isWarning: false,
           isCopyTxId: ret["errMsg"] == '' ? true : false,
           path: (ret["errMsg"] == '') ? DashboardViewRoute : '');

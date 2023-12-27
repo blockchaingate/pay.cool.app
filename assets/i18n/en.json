@@ -782,5 +782,8 @@
     "homePageCoinList": "Home Page Coin List",
     "hot": "Hot",
     "my": "My",
-    "setPassword": "Set Password"
+    "setPassword": "Set Password",
+    "selectToken": "Select Token",
+    "enterTheReceived": "Enter the received wallet address or DNS",
+    "warning": "Warning"
 }
