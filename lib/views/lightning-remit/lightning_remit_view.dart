@@ -69,20 +69,6 @@ class LightningRemitView extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (model.errorMessage != null)
-                    Container(
-                      width: size.width,
-                      height: 50,
-                      color: bgLightRed,
-                      child: Center(
-                          child: Text(
-                        model.errorMessage!,
-                        style: TextStyle(
-                            color: textRed, fontWeight: FontWeight.w500),
-                      )),
-                    ),
-                  UIHelper.verticalSpaceSmall,
-
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -120,7 +106,8 @@ class LightningRemitView extends StatelessWidget {
                             style: TextStyle(fontSize: 16, color: Colors.black),
                             decoration: InputDecoration(
                               border: InputBorder.none,
-                              hintText: 'Enter the received wallet address',
+                              hintText: FlutterI18n.translate(
+                                  context, "receiverWalletAddress"),
                               hintStyle:
                                   TextStyle(fontSize: 16, color: textHintGrey),
                               contentPadding: EdgeInsets.only(left: 10),
@@ -180,27 +167,24 @@ class LightningRemitView extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
-                                Platform.isIOS
-                                    ? CoinListBottomSheetFloatingActionButton(
-                                        model: model)
-                                    : InkWell(
-                                        onTap: () {
-                                          model.coinListBottomSheet(context);
-                                        },
-                                        child: Row(
-                                          children: [
-                                            Text(
-                                              model.tickerName,
-                                              style: TextStyle(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: black),
-                                            ),
-                                            Icon(Icons.arrow_drop_down,
-                                                color: Colors.black, size: 18)
-                                          ],
-                                        ),
+                                InkWell(
+                                  onTap: () {
+                                    model.coinListBottomSheet(context);
+                                  },
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        model.tickerName,
+                                        style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                            color: black),
                                       ),
+                                      Icon(Icons.arrow_drop_down,
+                                          color: Colors.black, size: 18)
+                                    ],
+                                  ),
+                                ),
                                 RichText(
                                   text: TextSpan(
                                     text: 'Balance: ',
@@ -218,7 +202,7 @@ class LightningRemitView extends StatelessWidget {
                                               fontWeight: FontWeight.bold,
                                               color: textHintGrey)),
                                       TextSpan(
-                                          text: model.tickerName,
+                                          text: ' ${model.tickerName}',
                                           style: TextStyle(
                                               fontSize: 12,
                                               fontWeight: FontWeight.bold,
@@ -235,7 +219,20 @@ class LightningRemitView extends StatelessWidget {
                   ),
 
                   UIHelper.verticalSpaceLarge,
-
+                  if (model.errorMessage != null &&
+                      model.errorMessage!.isNotEmpty)
+                    Container(
+                      width: size.width,
+                      height: 50,
+                      color: bgLightRed,
+                      child: Center(
+                          child: Text(
+                        model.errorMessage!,
+                        style: TextStyle(
+                            color: textRed, fontWeight: FontWeight.w500),
+                      )),
+                    ),
+                  UIHelper.verticalSpaceSmall,
                   Row(
                     mainAxisSize: MainAxisSize.max,
                     children: [
@@ -464,161 +461,12 @@ class LightningRemitView extends StatelessWidget {
                   //                 ),
                   //               ),
 
-                  //               /*----------------------------------------------------------------------------------------------------
-                  //                               Transfer amount textfield
-                  // ----------------------------------------------------------------------------------------------------*/
-
-                  //               UIHelper.verticalSpaceMedium,
-                  //               SizedBox(
-                  //                 width: 400,
-                  //                 height: 45,
-                  //                 child: TextField(
-                  //                     keyboardType:
-                  //                         const TextInputType.numberWithOptions(
-                  //                             decimal: true),
-                  //                     decoration: InputDecoration(
-                  //                         contentPadding:
-                  //                             const EdgeInsets.symmetric(
-                  //                                 horizontal: 15, vertical: 10),
-                  //                         enabledBorder: UnderlineInputBorder(
-                  //                             borderRadius:
-                  //                                 BorderRadius.circular(10),
-                  //                             borderSide: const BorderSide(
-                  //                                 color: grey, width: 1)),
-                  //                         focusedBorder: const UnderlineInputBorder(
-                  //                             borderSide:
-                  //                                 BorderSide(color: primaryColor)),
-                  //                         hintText: FlutterI18n.translate(
-                  //                             context, "enterAmount"),
-                  //                         hintStyle: headText4),
-                  //                     controller: model.amountController,
-                  //                     style: headText4),
-                  //               ),
-                  //               UIHelper.verticalSpaceMedium,
-                  //               /*----------------------------------------------------------------------------------------------------
-                  //                               Transfer - Receive Button Row
-                  // ----------------------------------------------------------------------------------------------------*/
-
-                  //               SizedBox(
-                  //                 width: 400,
-                  //                 child: Row(
-                  //                   children: [
-                  //                     Expanded(
-                  //                       child: Container(
-                  //                         height: 45,
-                  //                         // width: 400,
-                  //                         decoration: BoxDecoration(
-                  //                             color: primaryColor,
-                  //                             borderRadius:
-                  //                                 BorderRadius.circular(50)),
-                  //                         child: ElevatedButton(
-                  //                           style: generalButtonStyle(primaryColor),
-                  //                           onPressed: () {
-                  //                             model.isBusy
-                  //                                 ? debugPrint('busy')
-                  //                                 : model.transfer();
-                  //                           },
-                  //                           child: Row(
-                  //                             mainAxisAlignment:
-                  //                                 MainAxisAlignment.center,
-                  //                             children: [
-                  //                               Text(
-                  //                                   FlutterI18n.translate(
-                  //                                       context, "tranfser"),
-                  //                                   style: headText4.copyWith(
-                  //                                       fontWeight: FontWeight.bold,
-                  //                                       color: white)),
-                  //                             ],
-                  //                           ),
-                  //                         ),
-                  //                       ),
-                  //                     ),
-                  //                     UIHelper.horizontalSpaceSmall,
-
-                  //                     /*----------------------------------------------------------------------------------------------------
-                  //                                     Transaction history Button
-                  // ----------------------------------------------------------------------------------------------------*/
-
-                  //                     Expanded(
-                  //                       child: Container(
-                  //                         height: 45,
-                  //                         // width: 400,
-                  //                         decoration: BoxDecoration(
-                  //                             color: buyPrice,
-                  //                             borderRadius:
-                  //                                 BorderRadius.circular(50)),
-                  //                         child: ElevatedButton(
-                  //                           style:
-                  //                               generalButtonStyle(secondaryColor),
-                  //                           onPressed: () {
-                  //                             model.isBusy
-                  //                                 ? debugPrint('busy')
-                  //                                 : model.showBarcode();
-                  //                           },
-                  //                           child: Text(
-                  //                               FlutterI18n.translate(
-                  //                                   context, "receive"),
-                  //                               style: headText4.copyWith(
-                  //                                 fontWeight: FontWeight.bold,
-                  //                                 color: black,
-                  //                                 height: 0.8,
-                  //                               )),
-                  //                         ),
-                  //                       ),
-                  //                     ),
-                  //                   ],
-                  //                 ),
-                  //               ),
-                  //               const SizedBox(
-                  //                 height: 80,
-                  //               ),
-                  //               Container(
-                  //                 width: 400,
-                  //                 height: 45,
-                  //                 decoration: BoxDecoration(
-                  //                     color: Colors.black,
-                  //                     borderRadius: BorderRadius.circular(50)),
-                  //                 child: TextButton(
-                  //                   style: generalButtonStyle(black),
-                  //                   onPressed: () async {
-                  //                     if (!model.isBusy) {
-                  //                       await model.geTransactionstHistory();
-                  //                       Navigator.push(
-                  //                           context,
-                  //                           MaterialPageRoute(
-                  //                               builder: (_) =>
-                  //                                   LightningRemitTransferHistoryView()));
-                  //                     }
-                  //                   },
-                  //                   child: Row(
-                  //                     mainAxisAlignment: MainAxisAlignment.center,
-                  //                     children: [
-                  //                       Text(
-                  //                           FlutterI18n.translate(
-                  //                               context, "transactionHistory"),
-                  //                           style: headText4.copyWith(
-                  //                               fontWeight: FontWeight.bold,
-                  //                               color: Colors.grey[300])),
-                  //                     ],
-                  //                   ),
-                  //                 ),
-                  //               ),
-                  //             ],
-                  //           ),
-                  //         ),
-
-                  //         /*----------------------------------------------------------------------------------------------------
-                  //                               Stack loading container
-                  // ----------------------------------------------------------------------------------------------------*/
-
-                  //         model.isBusy
-                  //             ? Align(
-                  //                 alignment: Alignment.center,
-                  //                 child: model.sharedService
-                  //                     .stackFullScreenLoadingIndicator())
-                  //             : Container()
-                  //       ],
-                  //     ),
+                  model.isBusy
+                      ? Align(
+                          alignment: Alignment.center,
+                          child: model.sharedService
+                              .stackFullScreenLoadingIndicator())
+                      : Container()
                 ],
               ),
             ),

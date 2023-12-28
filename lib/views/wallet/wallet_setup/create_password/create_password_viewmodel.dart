@@ -70,33 +70,42 @@ class CreatePasswordViewModel extends BaseViewModel {
     setBusy(true);
 
     try {
-      if (walletNameController.text.isEmpty) {
-        var count = await hiveMultiWalletService.getWalletCount();
-        walletNameController.text =
-            '${FlutterI18n.translate(context, 'wallet')} ${count + 1}';
-      }
+      // if (walletNameController.text.isEmpty) {
+      //   var count = await hiveMultiWalletService.getWalletCount();
+      //   walletNameController.text =
+      //       '${FlutterI18n.translate(context, 'wallet')} ${count + 1}';
+      // }
+      // await _walletService
+      //     .createOfflineWalletsV2(randomMnemonicFromRoute,
+      //         passTextController.text, walletNameController.text)
+      //     .then((result) {
+      //   if (!result.isNegative) {
+      //     navigationService.pushNamedAndRemoveUntil(DashboardViewRoute);
+      //   } else if (result == -1) {
+      //     showSimpleNotification(
+      //         Text(FlutterI18n.translate(context, "duplicateWallet")),
+      //         position: NotificationPosition.bottom,
+      //         background: primaryColor,
+      //         subtitle:
+      //             Text(FlutterI18n.translate(context, "walletNameExists")));
+      //   } else {
+      //     showSimpleNotification(
+      //         Text(FlutterI18n.translate(context, "somethingWentWrong")),
+      //         position: NotificationPosition.bottom,
+      //         background: primaryColor,
+      //         subtitle: Text(FlutterI18n.translate(context, "pleaseTryAgain")));
+      //   }
       await _walletService
-          .createOfflineWalletsV2(randomMnemonicFromRoute,
-              passTextController.text, walletNameController.text)
-          .then((result) {
-        if (!result.isNegative) {
-          navigationService.pushNamedAndRemoveUntil(DashboardViewRoute);
-        } else if (result == -1) {
-          showSimpleNotification(
-              Text(FlutterI18n.translate(context, "duplicateWallet")),
-              position: NotificationPosition.bottom,
-              background: primaryColor,
-              subtitle:
-                  Text(FlutterI18n.translate(context, "walletNameExists")));
-        } else {
-          showSimpleNotification(
-              Text(FlutterI18n.translate(context, "somethingWentWrong")),
-              position: NotificationPosition.bottom,
-              background: primaryColor,
-              subtitle: Text(FlutterI18n.translate(context, "pleaseTryAgain")));
-        }
+          .createOfflineWalletsV1(
+              randomMnemonicFromRoute, passTextController.text)
+          .then((data) {
+        navigationService.pushNamedAndRemoveUntil(DashboardViewRoute);
+        randomMnemonicFromRoute = '';
+        passTextController.text = '';
+        confirmPassTextController.text = '';
+
         storageService.showPaycoolClub = false;
-        clearData();
+        //clearData();
       }).catchError((onError) {
         passwordMatch = false;
         password = '';

@@ -66,7 +66,7 @@ class LightningRemitViewmodel extends FutureViewModel {
   PaginationModel paginationModel = PaginationModel();
   LightningRemitHistoryModel transferHistory = LightningRemitHistoryModel();
 
-  String? errorMessage = "No cion balance in exchange";
+  String? errorMessage = "";
 
 /*----------------------------------------------------------------------
                     Default Future to Run
