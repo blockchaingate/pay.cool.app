@@ -51,11 +51,8 @@ pipeline {
             }   
             steps {
                 script {
-                    slackSend channel:  "#paycool-testing",
-                     message: "Build Started!\n*Project: Pay.Cool \n*Branch:* ${branchName}",
-                      teamDomain: "aukfa",
-                       tokenCredentialId: "slack-token"
-                    slackUploadFile channel: "#paycool-testing", credentialId: "slack-file-token", filePath: "build/app/outputs/flutter-apk/app-release.apk", initialComment: ${COMMIT_MESSAGE}
+                    slackSend channel:  "#paycool-testing",message: "Build Started!\n*Project: Pay.Cool \n*Branch:* ${branchName}",teamDomain: "aukfa",tokenCredentialId: "slack-token"
+                    slackUploadFile channel: "#paycool-testing", credentialId: "slack-file-token", filePath: "build/app/outputs/flutter-apk/app-release.apk", initialComment: "${COMMIT_MESSAGE}"
                 }
             }
         }
