@@ -554,7 +554,6 @@ class ApiService {
       return json;
     } catch (err) {
       log.e('getFreeFab $err');
-      throw Exception(err);
     }
   }
 

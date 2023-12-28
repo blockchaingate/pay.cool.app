@@ -67,6 +67,8 @@ class _BondWelcomeState extends State<BondWelcome> {
                       );
                     },
                     itemCount: 3,
+                    autoplay: true,
+                    autoplayDelay: 5000,
                     pagination: SwiperPagination(
                       builder: DotSwiperPaginationBuilder(
                         color: Colors.grey[350],

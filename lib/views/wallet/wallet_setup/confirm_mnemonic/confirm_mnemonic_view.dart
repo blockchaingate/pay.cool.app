@@ -22,8 +22,7 @@ import 'package:stacked/stacked.dart';
 class ConfirmMnemonicView extends StatelessWidget {
   final List<String> randomMnemonicListFromRoute;
   const ConfirmMnemonicView(
-      {Key? key, required this.randomMnemonicListFromRoute})
-      : super(key: key);
+      {super.key, required this.randomMnemonicListFromRoute});
 
   @override
   Widget build(BuildContext context) {
@@ -78,8 +77,8 @@ class ConfirmMnemonicView extends StatelessWidget {
                   child: GridView.extent(
                     maxCrossAxisExtent: 125,
                     padding: const EdgeInsets.all(2),
-                    mainAxisSpacing: 15,
-                    crossAxisSpacing: 10,
+                    mainAxisSpacing: 10,
+                    crossAxisSpacing: 5,
                     shrinkWrap: true,
                     childAspectRatio: 2,
                     physics: const NeverScrollableScrollPhysics(),
@@ -87,7 +86,6 @@ class ConfirmMnemonicView extends StatelessWidget {
                       model.count,
                       (i) {
                         var singleWord = randomMnemonicListFromRoute[i];
-
                         return TextField(
                           onTap: () {
                             model.selectWordsInOrder(i, singleWord);
@@ -100,7 +98,7 @@ class ConfirmMnemonicView extends StatelessWidget {
                           readOnly: true,
                           autocorrect: false,
                           style: TextStyle(
-                              fontSize: 14,
+                              fontSize: 12,
                               color: black,
                               fontWeight: FontWeight.w600),
                           decoration: InputDecoration(
@@ -110,7 +108,6 @@ class ConfirmMnemonicView extends StatelessWidget {
                                 : secondaryColor,
                             filled: true,
                             hintText: singleWord,
-                            hintMaxLines: 1,
                             hintStyle: TextStyle(
                                 fontSize: 14,
                                 color: black,

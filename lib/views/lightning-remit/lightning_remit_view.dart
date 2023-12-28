@@ -1,14 +1,10 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/shared/ui_helpers.dart';
-import 'package:paycool/views/bond/bond_dashboard.dart';
 import 'package:paycool/views/lightning-remit/lightening_remit_viewmodel.dart';
 import 'package:paycool/views/lightning-remit/lightning_remit_transfer_history.view.dart';
-import 'package:paycool/widgets/bottom_nav.dart';
 import 'package:stacked/stacked.dart';
 
 class LightningRemitView extends StatelessWidget {
@@ -113,9 +109,7 @@ class LightningRemitView extends StatelessWidget {
                       ],
                     ),
                   ),
-
                   UIHelper.verticalSpaceSmall,
-
                   Container(
                     width: size.width,
                     //  height: size.height * 0.1,
@@ -199,7 +193,6 @@ class LightningRemitView extends StatelessWidget {
                       ],
                     ),
                   ),
-
                   UIHelper.verticalSpaceLarge,
                   if (model.errorMessage != null &&
                       model.errorMessage!.isNotEmpty)
@@ -260,191 +253,6 @@ class LightningRemitView extends StatelessWidget {
                       ),
                     ],
                   ),
-
-                  //     ListView(
-                  //       children: [
-                  //         UIHelper.verticalSpaceSmall,
-                  //         Container(
-                  //           margin: const EdgeInsets.symmetric(
-                  //               horizontal: 20, vertical: 10),
-                  //           child: Column(
-                  //             mainAxisAlignment: MainAxisAlignment.center,
-                  //             crossAxisAlignment: CrossAxisAlignment.center,
-                  //             children: [
-                  //               /*----------------------------------------------------------------------------------------------------
-                  //                               Coin list dropdown
-                  // ----------------------------------------------------------------------------------------------------*/
-
-                  //               Platform.isIOS
-                  //                   ? CoinListBottomSheetFloatingActionButton(
-                  //                       model: model)
-                  //                   : Container(
-                  //                       padding: const EdgeInsets.symmetric(
-                  //                           horizontal: 10),
-                  //                       decoration: roundedBoxDecoration(
-                  //                           color: secondaryColor),
-                  //                       child: DropdownButton(
-                  //                           underline: const SizedBox.shrink(),
-                  //                           elevation: 15,
-                  //                           isExpanded: true,
-                  //                           icon: const Padding(
-                  //                             padding: EdgeInsets.only(right: 8.0),
-                  //                             child: Icon(
-                  //                               Icons.arrow_drop_down,
-                  //                               color: black,
-                  //                             ),
-                  //                           ),
-                  //                           iconEnabledColor: primaryColor,
-                  //                           iconDisabledColor:
-                  //                               model.exchangeBalances.isEmpty
-                  //                                   ? secondaryColor
-                  //                                   : grey,
-                  //                           iconSize: 30,
-                  //                           hint: Padding(
-                  //                             padding:
-                  //                                 model.exchangeBalances.isEmpty
-                  //                                     ? const EdgeInsets.all(0)
-                  //                                     : const EdgeInsets.only(
-                  //                                         left: 10.0),
-                  //                             child: model.exchangeBalances.isEmpty
-                  //                                 ? ListTile(
-                  //                                     dense: true,
-                  //                                     leading: const Icon(
-                  //                                       Icons
-                  //                                           .account_balance_wallet,
-                  //                                       color: red,
-                  //                                       size: 18,
-                  //                                     ),
-                  //                                     title: Text(
-                  //                                         FlutterI18n.translate(
-                  //                                             context,
-                  //                                             "noCoinBalance"),
-                  //                                         style: Theme.of(context)
-                  //                                             .textTheme
-                  //                                             .bodyMedium),
-                  //                                     subtitle: Text(
-                  //                                         FlutterI18n.translate(
-                  //                                             context,
-                  //                                             "transferFundsToExchangeUsingDepositButton"),
-                  //                                         style: subText2))
-                  //                                 : Text(
-                  //                                     FlutterI18n.translate(
-                  //                                         context, "selectCoin"),
-                  //                                     textAlign: TextAlign.start,
-                  //                                     style: headText4,
-                  //                                   ),
-                  //                           ),
-                  //                           value: model.tickerName,
-                  //                           onChanged: (newValue) {
-                  //                             model.updateSelectedTickername(
-                  //                                 newValue.toString());
-                  //                           },
-                  //                           items: model.exchangeBalances.map(
-                  //                             (coin) {
-                  //                               return DropdownMenuItem(
-                  //                                 value: coin.ticker,
-                  //                                 child: Container(
-                  //                                   //   height: 40,
-                  //                                   color: secondaryColor,
-                  //                                   padding: const EdgeInsets.only(
-                  //                                       left: 10.0),
-                  //                                   child: Row(
-                  //                                     children: [
-                  //                                       Text(coin.ticker.toString(),
-                  //                                           textAlign:
-                  //                                               TextAlign.center,
-                  //                                           style:
-                  //                                               headText4.copyWith(
-                  //                                                   fontWeight:
-                  //                                                       FontWeight
-                  //                                                           .bold)),
-                  //                                       UIHelper.divider,
-                  //                                       UIHelper
-                  //                                           .horizontalSpaceSmall,
-                  //                                       Text(
-                  //                                         coin.unlockedAmount
-                  //                                             .toString(),
-                  //                                         style: headText5.copyWith(
-                  //                                             fontWeight:
-                  //                                                 FontWeight.bold),
-                  //                                       )
-                  //                                     ],
-                  //                                   ),
-                  //                                 ),
-                  //                               );
-                  //                             },
-                  //                           ).toList()),
-                  //                     ),
-                  //               UIHelper.verticalSpaceMedium,
-                  //               SizedBox(
-                  //                 width: 400,
-                  //                 height: 45,
-                  //                 child: Row(
-                  //                   mainAxisAlignment:
-                  //                       MainAxisAlignment.spaceBetween,
-                  //                   children: [
-                  //                     Expanded(
-                  //                       child: TextField(
-                  //                           keyboardType: TextInputType.text,
-                  //                           decoration: InputDecoration(
-                  //                               contentPadding:
-                  //                                   const EdgeInsets.symmetric(
-                  //                                       horizontal: 15,
-                  //                                       vertical: 10),
-                  //                               suffixIcon: IconButton(
-                  //                                   padding: EdgeInsets.zero,
-                  //                                   icon: Image.asset(
-                  //                                     "assets/images/paycool/paste.png",
-                  //                                     width: 20,
-                  //                                     height: 20,
-                  //                                     color: black,
-                  //                                   ),
-                  //                                   onPressed: () =>
-                  //                                       model.contentPaste()),
-                  //                               enabledBorder: UnderlineInputBorder(
-                  //                                   borderRadius:
-                  //                                       BorderRadius.circular(10),
-                  //                                   borderSide: const BorderSide(
-                  //                                       color: grey, width: 1)),
-                  //                               focusedBorder:
-                  //                                   const UnderlineInputBorder(
-                  //                                       borderSide: BorderSide(
-                  //                                           color: primaryColor)),
-                  //                               hintText: FlutterI18n.translate(
-                  //                                   context,
-                  //                                   "receiverWalletAddress"),
-                  //                               hintStyle: headText4),
-                  //                           controller: model.addressController,
-                  //                           style: headText4),
-                  //                     ),
-                  //                     const SizedBox(
-                  //                       width: 5,
-                  //                     ),
-                  //                     IconButton(
-                  //                         padding: const EdgeInsets.only(left: 10),
-                  //                         alignment: Alignment.centerLeft,
-                  //                         tooltip: FlutterI18n.translate(
-                  //                             context, "scanBarCode"),
-                  //                         icon: Image.asset(
-                  //                           "assets/images/paycool/qr-code.png",
-                  //                           width: 28,
-                  //                           height: 28,
-                  //                           color: black,
-                  //                         ),
-                  //                         // Icon(
-                  //                         //   Icons.camera_alt,
-                  //                         //   color: white,
-                  //                         //   size: 18,
-                  //                         // ),
-                  //                         onPressed: () {
-                  //                           model.scanBarcode();
-                  //                           FocusScope.of(context)
-                  //                               .requestFocus(FocusNode());
-                  //                         })
-                  //                   ],
-                  //                 ),
-                  //               ),
-
                   model.isBusy
                       ? Align(
                           alignment: Alignment.center,
@@ -454,26 +262,6 @@ class LightningRemitView extends StatelessWidget {
                 ],
               ),
             ),
-            bottomNavigationBar: BottomNavBar(count: 3),
-            floatingActionButton: model.isShowBottomSheet
-                ? null
-                : FloatingActionButton(
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const BondDashboard()));
-                    },
-                    elevation: 1,
-                    backgroundColor: Colors.transparent,
-                    child: Image.asset(
-                      "assets/images/new-design/pay_cool_icon.png",
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-            extendBody: true,
-            floatingActionButtonLocation:
-                FloatingActionButtonLocation.centerDocked,
           ),
         ),
       ),
@@ -482,8 +270,8 @@ class LightningRemitView extends StatelessWidget {
 }
 
 class CoinListBottomSheetFloatingActionButton extends StatelessWidget {
-  const CoinListBottomSheetFloatingActionButton({Key? key, required this.model})
-      : super(key: key);
+  const CoinListBottomSheetFloatingActionButton(
+      {super.key, required this.model});
   final LightningRemitViewmodel model;
 
   @override

@@ -41,9 +41,12 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
   WalletDashboardViewModel? newModel;
   final PageController _pageController = PageController(initialPage: 1);
 
+  bool isKeyboardOpen = false;
+
   @override
   initState() {
     super.initState();
+
     _tabController = TabController(length: 2, vsync: this);
     _tabController!.addListener(() {
       _handleTabSelection();
@@ -55,6 +58,7 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
     _tabController!.removeListener(_handleTabSelection);
     _tabController!.dispose();
     _pageController.dispose();
+
     super.dispose();
   }
 
@@ -66,6 +70,10 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
   Widget build(BuildContext context) {
     final key = GlobalKey<ScaffoldState>();
     Size size = MediaQuery.of(context).size;
+
+    MediaQuery.of(context).viewInsets.bottom == 0.0
+        ? isKeyboardOpen = false
+        : isKeyboardOpen = true;
 
     return ViewModelBuilder<WalletDashboardViewModel>.reactive(
         onViewModelReady: (model) async {
@@ -132,17 +140,19 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
                 body: Builder(
                     builder: (context) => mainWidgets(size, model, context)),
                 bottomNavigationBar: BottomNavBar(count: 1),
-                floatingActionButton: FloatingActionButton(
-                  onPressed: () {
-                    model.navigationService.navigateTo(PayCoolViewRoute);
-                  },
-                  elevation: 1,
-                  backgroundColor: Colors.transparent,
-                  child: Image.asset(
-                    "assets/images/new-design/pay_cool_icon.png",
-                    fit: BoxFit.cover,
-                  ),
-                ),
+                floatingActionButton: !isKeyboardOpen
+                    ? FloatingActionButton(
+                        onPressed: () {
+                          model.navigationService.navigateTo(PayCoolViewRoute);
+                        },
+                        elevation: 1,
+                        backgroundColor: Colors.transparent,
+                        child: Image.asset(
+                          "assets/images/new-design/pay_cool_icon.png",
+                          fit: BoxFit.cover,
+                        ),
+                      )
+                    : null,
                 extendBody: true,
                 floatingActionButtonLocation:
                     FloatingActionButtonLocation.centerDocked,
