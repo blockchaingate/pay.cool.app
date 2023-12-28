@@ -66,32 +66,11 @@ class LightningRemitView extends StatelessWidget {
                 ]),
             resizeToAvoidBottomInset: false,
             body: Padding(
-              padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+              padding: const EdgeInsets.fromLTRB(20, 40, 20, 0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        FlutterI18n.translate(context, "receiverWalletAddress"),
-                        style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            color: black),
-                      ),
-                      IconButton(
-                        onPressed: () {
-                          model.contentPaste();
-                        },
-                        icon: Image.asset(
-                          "assets/images/new-design/scan_icon.png",
-                          scale: 2.9,
-                        ),
-                      )
-                    ],
-                  ),
-
                   Container(
                     width: size.width,
                     height: 50,
@@ -120,7 +99,9 @@ class LightningRemitView extends StatelessWidget {
                           height: 50,
                           child: Center(
                             child: IconButton(
-                              onPressed: () async {},
+                              onPressed: () async {
+                                model.contentPaste();
+                              },
                               icon: Image.asset(
                                 "assets/images/new-design/clipBoard_icon.png",
                                 scale: 2.2,
@@ -137,7 +118,7 @@ class LightningRemitView extends StatelessWidget {
 
                   Container(
                     width: size.width,
-                    height: size.height * 0.1,
+                    //  height: size.height * 0.1,
                     decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(10)),
@@ -246,7 +227,7 @@ class LightningRemitView extends StatelessWidget {
                             icon: Icon(Icons.swap_horizontal_circle_outlined),
                             label: Text(
                                 FlutterI18n.translate(context, "Transfer")),
-                            onPressed: () {},
+                            onPressed: () => model.transfer(),
                             style: ElevatedButton.styleFrom(
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),
@@ -265,7 +246,9 @@ class LightningRemitView extends StatelessWidget {
                             icon: Icon(Icons.arrow_circle_down),
                             label:
                                 Text(FlutterI18n.translate(context, "receive")),
-                            onPressed: () {},
+                            onPressed: () {
+                              model.showBarcode();
+                            },
                             style: ElevatedButton.styleFrom(
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),
