@@ -14,7 +14,7 @@ import 'package:paycool/widgets/shared/will_pop_scope.dart';
 import 'package:stacked/stacked.dart';
 
 class PayCoolView extends StatelessWidget {
-  const PayCoolView({Key? key}) : super(key: key);
+  const PayCoolView({super.key});
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -144,7 +144,7 @@ class PayCoolView extends StatelessWidget {
                                     onPressed: () {
                                       model.isBusy
                                           ? debugPrint('busy')
-                                          : model.createAccount();
+                                          : model.createAccount(context);
                                     },
                                     child: Text(
                                         FlutterI18n.translate(

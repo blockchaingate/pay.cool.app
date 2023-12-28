@@ -122,10 +122,10 @@ class HiveMultiWalletService {
     return null;
   }
 
-  Future<int> getWalletCount() async {
-    final box = Hive.box<MultiWalletModel>(Constants.multisigWalletBox);
-    return box.length;
-  }
+  // Future<int> getWalletCount() async {
+  //   final box = Hive.box<MultiWalletModel>(Constants.multisigWalletBox);
+  //   return box.length;
+  // }
 
   Future<List<MultiWalletModel>> getAllWallets() async {
     log.w('getAll MultiWallets ${box.values.map((e) => e.name)}');

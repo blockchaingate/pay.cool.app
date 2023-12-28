@@ -14,8 +14,8 @@ dependency_overrides:
   encrypt: 5.0.1
 
   image_picker_android: 0.8.4+13
-  kyc:
-    path: "../exchangily-packages/kyc"
+  # kyc:
+  #   path: "../exchangily-packages/kyc"
   # eth_abi_codec:
   #    path: "../exchangily-packages/open_source_packages/dart_eth_abi_codec"
 
@@ -136,7 +136,7 @@ flutter:
     - assets/images/launcher/
     - assets/i18n/
     - assets/images//new-design/
-    - envs/
+    # - envs/
 
 flutter_icons:
   image_path: "assets/images/launcher/paycool-logo-v1.jpg"

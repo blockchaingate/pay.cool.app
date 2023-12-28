@@ -137,6 +137,7 @@ class CreateMultisigWalletViewModel extends BaseViewModel {
         selectedChain, double.parse(feeController.text));
     if (!isCorrectAmount) {
       sharedService.alertDialog(
+        context,
         FlutterI18n.translate(context, "notice"),
         FlutterI18n.translate(context, "insufficientGasAmount"),
       );

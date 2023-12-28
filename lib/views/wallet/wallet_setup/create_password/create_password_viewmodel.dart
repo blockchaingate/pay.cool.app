@@ -117,6 +117,8 @@ class CreatePasswordViewModel extends BaseViewModel {
       isCreatingWallet = false;
       setBusy(false);
     }
+    isCreatingWallet = false;
+    setBusy(false);
   }
 
   clearData() {

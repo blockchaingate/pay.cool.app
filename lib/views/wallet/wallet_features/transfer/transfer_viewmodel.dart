@@ -13,7 +13,6 @@ import 'package:paycool/logger.dart';
 import 'package:paycool/models/wallet/token_model.dart';
 import 'package:paycool/models/wallet/wallet.dart';
 import 'package:paycool/models/wallet/wallet_balance.dart';
-import 'package:paycool/providers/app_state_provider.dart';
 import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/api_service.dart';
 import 'package:paycool/services/coin_service.dart';
@@ -27,7 +26,6 @@ import 'package:paycool/utils/number_util.dart';
 import 'package:paycool/utils/string_util.dart';
 import 'package:paycool/utils/wallet/erc20_util.dart';
 import 'package:paycool/utils/wallet/wallet_util.dart';
-import 'package:provider/provider.dart';
 import 'package:stacked/stacked.dart';
 
 class TransferViewModel extends BaseViewModel {
@@ -221,6 +219,7 @@ class TransferViewModel extends BaseViewModel {
     await checkGasBalance();
     if (gasAmount == Decimal.zero || gasAmount < kanbanGasFee) {
       sharedService.alertDialog(
+        context,
         FlutterI18n.translate(context, "notice"),
         FlutterI18n.translate(context, "insufficientGasAmount"),
       );
@@ -254,6 +253,7 @@ class TransferViewModel extends BaseViewModel {
         log.e(
             'amount $amount --- final amount with fee: $finalAmount -- wallet bal: ${walletInfo.availableBalance}');
         sharedService.alertDialog(
+            context,
             FlutterI18n.translate(context, "invalidAmount"),
             FlutterI18n.translate(context, "pleaseEnterValidNumber"),
             isWarning: false);
@@ -266,6 +266,7 @@ class TransferViewModel extends BaseViewModel {
         log.e(
             'amount $amount --- final amount with fee: $finalAmount -- wallet bal: ${walletInfo.availableBalance}');
         sharedService.alertDialog(
+            context,
             FlutterI18n.translate(context, "invalidAmount"),
             FlutterI18n.translate(context, "insufficientBalance"),
             isWarning: false);
@@ -278,6 +279,7 @@ class TransferViewModel extends BaseViewModel {
       //withdraw check
       if (amount > Decimal.parse(walletInfo.inExchange.toString())) {
         sharedService.alertDialog(
+            context,
             FlutterI18n.translate(context, "invalidAmount"),
             FlutterI18n.translate(context, "pleaseEnterValidNumber"),
             isWarning: false);
@@ -328,7 +330,9 @@ class TransferViewModel extends BaseViewModel {
     if (amount == Constants.decimalZero) {
       log.e(
           'amount $amount --- final amount with fee: $finalAmount -- wallet bal: ${walletInfo.availableBalance}');
-      sharedService.alertDialog(FlutterI18n.translate(context, "invalidAmount"),
+      sharedService.alertDialog(
+          context,
+          FlutterI18n.translate(context, "invalidAmount"),
           FlutterI18n.translate(context, "pleaseEnterValidNumber"),
           isWarning: false);
       setBusy(false);
@@ -339,7 +343,9 @@ class TransferViewModel extends BaseViewModel {
         NumberUtil.parseDoubleToDecimal(walletInfo.availableBalance!)) {
       log.e(
           'amount $amount --- final amount with fee: $finalAmount -- wallet bal: ${walletInfo.availableBalance}');
-      sharedService.alertDialog(FlutterI18n.translate(context, "invalidAmount"),
+      sharedService.alertDialog(
+          context,
+          FlutterI18n.translate(context, "invalidAmount"),
           FlutterI18n.translate(context, "insufficientBalance"),
           isWarning: false);
       setBusy(false);
@@ -372,6 +378,7 @@ class TransferViewModel extends BaseViewModel {
       log.w('isCorrectAmount $isCorrectAmount');
       if (!isCorrectAmount) {
         sharedService.alertDialog(
+            context,
             '${FlutterI18n.translate(context, "fee")} ${FlutterI18n.translate(context, "notice")}',
             'TRX ${FlutterI18n.translate(context, "insufficientBalance")}',
             isWarning: false);
@@ -391,6 +398,7 @@ class TransferViewModel extends BaseViewModel {
       }
       if (!isCorrectAmount) {
         sharedService.alertDialog(
+            context,
             '${FlutterI18n.translate(context, "fee")} ${FlutterI18n.translate(context, "notice")}',
             'TRX ${FlutterI18n.translate(context, "insufficientBalance")}',
             isWarning: false);
@@ -500,6 +508,7 @@ class TransferViewModel extends BaseViewModel {
           log.e('In time out');
           setBusy(false);
           sharedService.alertDialog(
+              context,
               FlutterI18n.translate(context, "notice"),
               FlutterI18n.translate(
                   context, "serverTimeoutPleaseTryAgainLater"),
@@ -507,6 +516,7 @@ class TransferViewModel extends BaseViewModel {
         }).catchError((error) {
           log.e('In Catch error - $error');
           sharedService.alertDialog(
+              context,
               FlutterI18n.translate(context, "networkIssue"),
               '$tickerName ${FlutterI18n.translate(context, "transanctionFailed")}',
               isWarning: false);
@@ -584,6 +594,7 @@ class TransferViewModel extends BaseViewModel {
           log.e('Deposit Catch $onError');
 
           sharedService.alertDialog(
+              context,
               FlutterI18n.translate(context, "depositTransactionFailed"),
               FlutterI18n.translate(context, "networkIssue"),
               isWarning: false);
@@ -622,7 +633,9 @@ class TransferViewModel extends BaseViewModel {
       await getSingleCoinExchangeBal();
 
       if (selectedChain == 'FAB' && amount > fabChainBalance) {
-        sharedService.alertDialog(FlutterI18n.translate(context, "notice"),
+        sharedService.alertDialog(
+            context,
+            FlutterI18n.translate(context, "notice"),
             '${FlutterI18n.translate(context, "lowTsWalletBalanceErrorFirstPart")} $fabChainBalance. ${FlutterI18n.translate(context, "lowTsWalletBalanceErrorSecondPart")}',
             isWarning: false);
 
@@ -633,7 +646,9 @@ class TransferViewModel extends BaseViewModel {
       /// show warning like amount should be less than ts wallet balance
       /// instead of displaying the generic error
       if (selectedChain == 'ETH' && amount > ethChainBalance) {
-        sharedService.alertDialog(FlutterI18n.translate(context, "notice"),
+        sharedService.alertDialog(
+            context,
+            FlutterI18n.translate(context, "notice"),
             '${FlutterI18n.translate(context, "lowTsWalletBalanceErrorFirstPart")} $ethChainBalance. ${FlutterI18n.translate(context, "lowTsWalletBalanceErrorSecondPart")}',
             isWarning: false);
 
@@ -641,21 +656,27 @@ class TransferViewModel extends BaseViewModel {
         return;
       }
       if (selectedChain == 'TRX' && amount > trxTsWalletBalance) {
-        sharedService.alertDialog(FlutterI18n.translate(context, "notice"),
+        sharedService.alertDialog(
+            context,
+            FlutterI18n.translate(context, "notice"),
             '${FlutterI18n.translate(context, "lowTsWalletBalanceErrorFirstPart")} $trxTsWalletBalance. ${FlutterI18n.translate(context, "lowTsWalletBalanceErrorSecondPart")}',
             isWarning: false);
         setBusy(false);
         return;
       }
       if (selectedChain == 'BNB' && amount > bnbTsWalletBalance) {
-        sharedService.alertDialog(FlutterI18n.translate(context, "notice"),
+        sharedService.alertDialog(
+            context,
+            FlutterI18n.translate(context, "notice"),
             '${FlutterI18n.translate(context, "lowTsWalletBalanceErrorFirstPart ")} $bnbTsWalletBalance. ${FlutterI18n.translate(context, "lowTsWalletBalanceErrorSecondPart")}',
             isWarning: false);
         setBusy(false);
         return;
       }
       if (selectedChain == 'POLYGON' && amount > polygonTsWalletBalance) {
-        sharedService.alertDialog(FlutterI18n.translate(context, "notice"),
+        sharedService.alertDialog(
+            context,
+            FlutterI18n.translate(context, "notice"),
             '${FlutterI18n.translate(context, "lowTsWalletBalanceErrorFirstPart")} $polygonTsWalletBalance. ${FlutterI18n.translate(context, "lowTsWalletBalanceErrorSecondPart")}',
             isWarning: false);
         setBusy(false);
@@ -748,6 +769,7 @@ class TransferViewModel extends BaseViewModel {
               }
             }
             sharedService.alertDialog(
+                context,
                 success && ret['transactionHash'] != null
                     ? FlutterI18n.translate(
                         context, "withdrawTransactionSuccessful")
@@ -839,7 +861,6 @@ class TransferViewModel extends BaseViewModel {
 
   radioButtonSelection(value) async {
     setBusy(true);
-    debugPrint("--------------------");
     debugPrint(value);
     selectedChain = value;
     if (value == 'FAB') {
@@ -1239,6 +1260,7 @@ class TransferViewModel extends BaseViewModel {
       gasAmount = NumberUtil.parseDoubleToDecimal(data);
       if (gasAmount == Decimal.zero) {
         sharedService.alertDialog(
+          context,
           FlutterI18n.translate(context, "notice"),
           FlutterI18n.translate(context, "insufficientGasAmount"),
         );

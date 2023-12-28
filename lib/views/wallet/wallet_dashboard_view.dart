@@ -11,6 +11,8 @@
 *----------------------------------------------------------------------
 */
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
@@ -19,7 +21,6 @@ import 'package:paycool/constants/route_names.dart';
 import 'package:paycool/models/wallet/wallet_balance.dart';
 import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/views/wallet/wallet_dashboard_viewmodel.dart';
-import 'package:paycool/views/wallet/wallet_features/add_token_view.dart';
 import 'package:paycool/widgets/bottom_nav.dart';
 import 'package:paycool/widgets/shared/will_pop_scope.dart';
 import 'package:paycool/widgets/shimmer_layouts/shimmer_layout.dart';
@@ -70,6 +71,8 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
         onViewModelReady: (model) async {
           model.context = context;
           await model.init();
+          model.refreshIndicator.complete();
+          model.refreshIndicator = Completer<void>();
         },
         viewModelBuilder: () => WalletDashboardViewModel(),
         builder: (context, WalletDashboardViewModel model, child) {
@@ -120,10 +123,10 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
                         scale: 2.7,
                       ),
                     ),
-                    Image.asset(
-                      "assets/images/new-design/scan_icon.png",
-                      scale: 2.7,
-                    ),
+                    // Image.asset(
+                    //   "assets/images/new-design/scan_icon.png",
+                    //   scale: 2.7,
+                    // ),
                   ],
                 ),
                 body: Builder(
@@ -190,6 +193,7 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
                       width: size.width * 0.45,
                       height: size.height * 0.045,
                       child: TextField(
+                        key: model.formKey,
                         controller: model.searchCoinTextController,
                         style: TextStyle(
                           color: Colors.black,
@@ -223,23 +227,23 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
                         },
                       ),
                     ),
-                    Padding(
-                      padding: EdgeInsets.fromLTRB(0, 0, 5, 5),
-                      child: InkWell(
-                        onTap: () {
-                          Navigator.push(context, MaterialPageRoute(
-                            builder: (context) {
-                              return AddTokenCustomView();
-                            },
-                          ));
-                        }, // TODO we dont know what to do here
-                        child: Icon(
-                          Icons.add_circle_outline,
-                          color: Colors.black87,
-                          size: 26,
-                        ),
-                      ),
-                    ),
+                    // Padding(
+                    //   padding: EdgeInsets.fromLTRB(0, 0, 5, 5),
+                    //   child: InkWell(
+                    //     onTap: () {
+                    //       Navigator.push(context, MaterialPageRoute(
+                    //         builder: (context) {
+                    //           return AddCoinView();
+                    //         },
+                    //       ));
+                    //     },
+                    //     child: Icon(
+                    //       Icons.add_circle_outline,
+                    //       color: Colors.black87,
+                    //       size: 26,
+                    //     ),
+                    //   ),
+                    // ),
                   ],
                 ),
               )
@@ -257,7 +261,11 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
                     controller: _tabController,
                     physics: AlwaysScrollableScrollPhysics(),
                     children: [
-                      buildListView(model),
+                      RefreshIndicator(
+                          onRefresh: () async {
+                            model.refreshBalancesV2();
+                          },
+                          child: buildListView(model)),
                       Center(
                         child: Text(FlutterI18n.translate(context, "nft")),
                       ),

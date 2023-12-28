@@ -900,22 +900,22 @@ Future getCoinBalanceByAddress(String coinName, String address,
   return {'balance': -1.0, 'lockbalance': -1.0};
 }
 
-Future getBalanceForCoin(root, coinName, {tokenType = '', index = 0}) async {
-  var address = await getAddressForCoin(root, coinName,
-      tokenType: tokenType, index: index);
-  try {
-    if (coinName == 'BTC') {
-      return await getBtcBalanceByAddress(address);
-    } else if (coinName == 'ETH') {
-      return await getEthBalanceByAddress(address);
-    } else if (coinName == 'FAB') {
-      return await fabUtils.getFabBalanceByAddress(address);
-    } else if (tokenType == 'ETH') {
-      return await getEthTokenBalanceByAddress(address, coinName);
-    } else if (tokenType == 'FAB') {
-      return await fabUtils.getFabTokenBalanceByAddress(address, coinName);
-    }
-  } catch (e) {}
+// Future getBalanceForCoin(root, coinName, {tokenType = '', index = 0}) async {
+//   var address = await getAddressForCoin(root, coinName,
+//       tokenType: tokenType, index: index);
+//   try {
+//     if (coinName == 'BTC') {
+//       return await getBtcBalanceByAddress(address);
+//     } else if (coinName == 'ETH') {
+//       return await getEthBalanceByAddress(address);
+//     } else if (coinName == 'FAB') {
+//       return await fabUtils.getFabBalanceByAddress(address);
+//     } else if (tokenType == 'ETH') {
+//       return await getEthTokenBalanceByAddress(address, coinName);
+//     } else if (tokenType == 'FAB') {
+//       return await fabUtils.getFabTokenBalanceByAddress(address, coinName);
+//     }
+//   } catch (e) {}
 
-  return {'balance': -1.0, 'lockbalance': -1.0};
-}
+//   return {'balance': -1.0, 'lockbalance': -1.0};
+// }

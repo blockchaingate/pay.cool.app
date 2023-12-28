@@ -164,14 +164,14 @@ class JoinPayCoolClubViewModel extends BaseViewModel {
       if (e.code == "PERMISSION_NOT_GRANTED") {
         setBusy(false);
         sharedService.alertDialog(
-            '', FlutterI18n.translate(context!, "userAccessDenied"),
+            context!, '', FlutterI18n.translate(context!, "userAccessDenied"),
             isWarning: false);
         // receiverWalletAddressTextController.text =
         //     FlutterI18n.translate(context, "userAccessDenied");
       } else {
         setBusy(false);
         sharedService.alertDialog(
-            '', FlutterI18n.translate(context!, "unknownError"),
+            context!, '', FlutterI18n.translate(context!, "unknownError"),
             isWarning: false);
         // receiverWalletAddressTextController.text =
         //     '${FlutterI18n.translate(context, "unknownError")}: $e';
@@ -189,7 +189,7 @@ class JoinPayCoolClubViewModel extends BaseViewModel {
       log.i(e.toString());
       setBusy(false);
       sharedService.alertDialog(
-          '', FlutterI18n.translate(context!, "unknownError"),
+          context!, '', FlutterI18n.translate(context!, "unknownError"),
           isWarning: false);
       // receiverWalletAddressTextController.text =
       //     '${FlutterI18n.translate(context, "unknownError")}: $e';
@@ -277,6 +277,7 @@ class JoinPayCoolClubViewModel extends BaseViewModel {
         log.w('Txhash $txHash');
 
         sharedService.alertDialog(
+            context!,
             FlutterI18n.translate(context!, "orderCreatedSuccessfully"),
             FlutterI18n.translate(context!, "goToDashboard"),
             path: clubDashboardViewRoute);
@@ -302,6 +303,7 @@ class JoinPayCoolClubViewModel extends BaseViewModel {
         // });
       } else {
         sharedService.alertDialog(
+            context!,
             FlutterI18n.translate(context!, "transanctionFailed"),
             FlutterI18n.translate(context!, "pleaseTryAgainLater"));
       }
@@ -310,12 +312,14 @@ class JoinPayCoolClubViewModel extends BaseViewModel {
       log.e('In time out');
       setBusy(false);
       sharedService.alertDialog(
-          '', FlutterI18n.translate(context!, "pleaseTryAgainLater"),
+          context!, '', FlutterI18n.translate(context!, "pleaseTryAgainLater"),
           isWarning: false);
       return;
     }).catchError((error) {
       log.e('In Catch error - $error');
-      sharedService.alertDialog(FlutterI18n.translate(context!, "networkIssue"),
+      sharedService.alertDialog(
+          context!,
+          FlutterI18n.translate(context!, "networkIssue"),
           FlutterI18n.translate(context!, "transanctionFailed"),
           isWarning: false);
 
@@ -423,6 +427,7 @@ class JoinPayCoolClubViewModel extends BaseViewModel {
                   scanToPayModel.datAbiHex.toString());
           await payCoolClubService.saveOrder(walletAddress, txId).then((res) {
             sharedService.alertDialog(
+                context!,
                 FlutterI18n.translate(context!, "orderCreatedSuccessfully"),
                 FlutterI18n.translate(context!, "paymentProcess"),
                 path: DashboardViewRoute);
@@ -441,6 +446,7 @@ class JoinPayCoolClubViewModel extends BaseViewModel {
           debugPrint('final else res txid $txId');
           await payCoolClubService.saveOrder(fabAddress, txId).then((res) {
             sharedService.alertDialog(
+                context!,
                 FlutterI18n.translate(context!, "orderCreatedSuccessfully"),
                 FlutterI18n.translate(context!, "paymentProcess"),
                 path: clubDashboardViewRoute);

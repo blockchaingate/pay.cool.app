@@ -28,7 +28,6 @@ import 'package:paycool/constants/ui_var.dart';
 import 'package:paycool/environments/coins.dart';
 import 'package:paycool/environments/environment_type.dart';
 import 'package:paycool/logger.dart';
-import 'package:paycool/models/bond/vm/me_model.dart';
 import 'package:paycool/models/wallet/core_wallet_model.dart';
 import 'package:paycool/models/wallet/token_model.dart';
 import 'package:paycool/models/wallet/wallet.dart';
@@ -133,9 +132,11 @@ class WalletDashboardViewModel extends BaseViewModel {
 
   // bond page
 
-  BondMeModel bondMeVm = BondMeModel();
   final kycService = locator<KycBaseService>();
   late AppStateProvider appStateProvider;
+  late Completer<void> refreshIndicator;
+
+  final formKey = GlobalKey<FormState>();
 
 /*----------------------------------------------------------------------
                     INIT
@@ -144,7 +145,7 @@ class WalletDashboardViewModel extends BaseViewModel {
   init() async {
     setBusy(true);
     appStateProvider = Provider.of<AppStateProvider>(context!, listen: false);
-    await getUserBondMeData();
+    refreshIndicator = Completer<void>();
     fabAddress = await sharedService.getFabAddressFromCoreWalletDatabase();
     await walletService.storeTokenListInDB();
     await refreshBalancesV2().then((walletBalances) async {
@@ -226,14 +227,6 @@ class WalletDashboardViewModel extends BaseViewModel {
     }
 
     setBusy(false);
-  }
-
-  Future<void> getUserBondMeData() async {
-    await apiService.getBondMe().then((value) {
-      if (value != null) {
-        bondMeVm = value;
-      }
-    });
   }
 
   List<WalletBalance> getSortedWalletList(String chainName) {
@@ -659,6 +652,7 @@ class WalletDashboardViewModel extends BaseViewModel {
 
         if (localAppVersion['name']!.compareTo(apiAppVersion) == -1) {
           sharedService.alertDialog(
+              context!,
               FlutterI18n.translate(context!, "appUpdateNotice"),
               '${FlutterI18n.translate(context!, "pleaseUpdateYourAppFrom")} $localAppVersion ${FlutterI18n.translate(context!, "toLatestBuild")} $apiAppVersion ${FlutterI18n.translate(context!, "inText")} $store ${FlutterI18n.translate(context!, "clickOnWebsiteButton")}',
               isUpdate: true,
@@ -883,12 +877,6 @@ class WalletDashboardViewModel extends BaseViewModel {
     });
   }
 
-  // Pull to refresh
-  // void onRefresh() async {
-  //   await refreshBalancesV2();
-  //   refreshController.refreshCompleted();
-  // }
-
   bool hideSmallAmountCheck(WalletBalance wallet) {
     bool isSuccess = false;
 
@@ -1017,11 +1005,13 @@ class WalletDashboardViewModel extends BaseViewModel {
     log.w('in showDialogWarning isConfirmDeposit $isConfirmDeposit');
     if (gasAmount == 0.0) {
       sharedService.alertDialog(
+          context!,
           FlutterI18n.translate(context!, "insufficientGasAmount"),
           FlutterI18n.translate(context!, "pleaseAddGasToTrade"));
     }
     if (isConfirmDeposit) {
       sharedService.alertDialog(
+          context!,
           FlutterI18n.translate(context!, "pendingConfirmDeposit"),
           '${FlutterI18n.translate(context!, "pleaseConfirmYour")} ${confirmDepositCoinWallet.tickerName} ${FlutterI18n.translate(context!, "deposit")}',
           path: '/walletFeatures',
@@ -1190,7 +1180,9 @@ class WalletDashboardViewModel extends BaseViewModel {
   debugVersionPopup() async {
     // await _showNotification();
 
-    sharedService.alertDialog(FlutterI18n.translate(context!, "notice"),
+    sharedService.alertDialog(
+        context!,
+        FlutterI18n.translate(context!, "notice"),
         FlutterI18n.translate(context!, "testVersion"),
         isWarning: false);
   }
@@ -1216,8 +1208,6 @@ class WalletDashboardViewModel extends BaseViewModel {
           chainListWidget(context, size, wallets),
     ).then((value) async {
       if (value != null) {
-        print("-----------------------");
-        print(value);
         updateTabSelection(value);
       }
     }).whenComplete(() {

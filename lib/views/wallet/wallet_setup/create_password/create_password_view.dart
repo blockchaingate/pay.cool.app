@@ -23,7 +23,7 @@ import 'package:stacked/stacked.dart';
 
 class CreatePasswordView extends StatelessWidget {
   final dynamic args;
-  const CreatePasswordView({Key? key, this.args}) : super(key: key);
+  const CreatePasswordView({super.key, this.args});
 
   @override
   Widget build(BuildContext context) {

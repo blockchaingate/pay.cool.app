@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:decimal/decimal.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/route_names.dart';
@@ -15,7 +16,6 @@ import 'package:paycool/services/wallet_service.dart';
 import 'package:paycool/utils/kanban.util.dart';
 import 'package:paycool/utils/number_util.dart';
 import 'package:paycool/utils/string_util.dart';
-import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 
 class AddGasViewModel extends FutureViewModel {
@@ -42,7 +42,7 @@ class AddGasViewModel extends FutureViewModel {
   String? scarContractAddress;
   var contractInfo;
   var utxos = [];
-  double extraAmount = 0.0;
+  var extraAmount;
   int satoshisPerBytes = 14;
   int? bytesPerInput;
   int? feePerInput;
@@ -64,12 +64,15 @@ class AddGasViewModel extends FutureViewModel {
     feePerInput = bytesPerInput! * satoshisPerBytes;
     fabAddress = await sharedService.getFabAddressFromCoreWalletDatabase();
     getSliderReady();
+
     await getFabBalance();
     setBusy(false);
   }
 
+  // this is for slider in new design we dont have slider so we dont need this
   getSliderReady() async {
     utxos = await apiService.getFabUtxos(fabAddress);
+
     scarContractAddress = await getScarAddress();
     scarContractAddress = trimHexPrefix(scarContractAddress!);
     var gasPrice = int.tryParse(gasPriceTextController.text);
@@ -81,7 +84,7 @@ class AddGasViewModel extends FutureViewModel {
     var fxnDepositCallHex = '4a58db19';
     contractInfo = await walletService.getFabSmartContract(scarContractAddress!,
         fxnDepositCallHex, options['gasLimit'], options['gasPrice']);
-    extraAmount = contractInfo['totalFee'];
+    extraAmount = Decimal.parse(contractInfo['totalFee'].toString());
 
     for (var utxo in utxos) {
       var utxoValue = utxo['value'];
@@ -147,6 +150,7 @@ class AddGasViewModel extends FutureViewModel {
       }
       amountController.text = '';
       sharedService.alertDialog(
+          context!,
           (ret["errMsg"] == '')
               ? FlutterI18n.translate(context, "addGasTransactionSuccess")
               : FlutterI18n.translate(context, "addGasTransactionFailed"),
@@ -227,17 +231,17 @@ class AddGasViewModel extends FutureViewModel {
 /*----------------------------------------------------------------------
                    Slider On change
 ----------------------------------------------------------------------*/
-  sliderOnchange(newValue) {
-    setBusy(true);
-    sliderValue = newValue;
-    if (transFee == 0.0) updateTransFee();
+  // sliderOnchange(newValue) {
+  //   setBusy(true);
+  //   sliderValue = newValue;
+  //   if (transFee == 0.0) updateTransFee();
 
-    var changeAmountWithSlider = (fabBalance - transFee) * sliderValue / 100;
-    amountController.text =
-        NumberUtil.roundDouble(changeAmountWithSlider, decimalPlaces: 6)
-            .toString();
-    setBusy(false);
-  }
+  //   var changeAmountWithSlider = (fabBalance - transFee) * sliderValue / 100;
+  //   amountController.text =
+  //       NumberUtil.roundDouble(changeAmountWithSlider, decimalPlaces: 6)
+  //           .toString();
+  //   setBusy(false);
+  // }
 
   wrongPasswordNotification(context) {
     sharedService.showInfoFlushbar(

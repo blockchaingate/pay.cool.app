@@ -118,9 +118,13 @@ class _WalletCardWidgetState extends State<WalletCardWidget> {
                       }),
                   iconLabelWidget(
                       icon: Icons.local_gas_station,
-                      label: FlutterI18n.translate(context, "addGas"),
+                      label: !widget.model.isFreeFabNotUsed
+                          ? FlutterI18n.translate(context, "addGas")
+                          : '${FlutterI18n.translate(context, "getFree")} FAB',
                       route: () {
-                        Navigator.pushNamed(context, AddGasViewRoute);
+                        !widget.model.isFreeFabNotUsed
+                            ? Navigator.pushNamed(context, AddGasViewRoute)
+                            : widget.model.getFreeFab();
                       }),
                   iconLabelWidget(
                       icon: Icons.compare_arrows_rounded,

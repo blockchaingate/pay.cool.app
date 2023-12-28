@@ -172,9 +172,9 @@ class RedepositViewModel extends FutureViewModel {
         var newTransactionId = resRedeposit['data']['transactionID'];
 
         sharedService.alertDialog(
+            context,
             FlutterI18n.translate(context, "redepositCompleted"),
-            '${FlutterI18n.translate(context, "transactionId")}: ' +
-                newTransactionId,
+            '${FlutterI18n.translate(context, "transactionId")}: $newTransactionId',
             path: '/dashboard');
       } else if (resRedeposit['message'] != '') {
         setBusy(true);
