@@ -39,14 +39,14 @@ class WalletManagementView extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 UIHelper.verticalSpaceMedium,
-                if (model.errorMessage.isNotEmpty)
+                if (model.errorMessage != null)
                   Container(
                     width: size.width,
                     height: 50,
                     color: bgLightRed,
                     child: Center(
                         child: Text(
-                      model.errorMessage,
+                      model.errorMessage!,
                       style: TextStyle(
                           color: textRed, fontWeight: FontWeight.w500),
                     )),
@@ -87,15 +87,6 @@ class WalletManagementView extends StatelessWidget {
                     ),
                   ),
                 ),
-                !model.isMnemonicVisible
-                    ? Container()
-                    : Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          model.mnemonic,
-                          style: headText5,
-                        ),
-                      ),
                 Divider(
                   color: Colors.grey[100],
                   thickness: 1,

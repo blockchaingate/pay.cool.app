@@ -786,5 +786,7 @@
     "selectToken": "Select Token",
     "enterTheReceived": "Enter the received wallet address or DNS",
     "warning": "Warning",
-    "about": "About"
+    "about": "About",
+    "pleaseEnsure": "Please ensure that mnemonics are not leaked",
+    "language": "Language"
 }

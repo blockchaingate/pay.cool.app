@@ -14,6 +14,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:paycool/constants/colors.dart';
 import 'package:paycool/logger.dart';
 import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/db/core_wallet_database_service.dart';
@@ -27,6 +28,7 @@ import 'package:paycool/services/shared_service.dart';
 import 'package:paycool/services/stoppable_service.dart';
 import 'package:paycool/services/vault_service.dart';
 import 'package:paycool/services/wallet_service.dart';
+import 'package:paycool/shared/ui_helpers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
@@ -47,7 +49,8 @@ class WalletManagementViewModel extends BaseViewModel with StoppableService {
   final NavigationService navigationService = locator<NavigationService>();
   final userSettingsDatabaseService = locator<UserSettingsDatabaseService>();
   final coreWalletDatabaseService = locator<CoreWalletDatabaseService>();
-  String errorMessage = '';
+
+  String? errorMessage;
   BuildContext? context;
   String versionName = '';
   String buildNumber = '';
@@ -61,16 +64,10 @@ class WalletManagementViewModel extends BaseViewModel with StoppableService {
   // Delete wallet and local storage
 
   Future deleteWallet() async {
-    errorMessage = '';
+    errorMessage = null;
     setBusy(true);
     log.i('model busy $busy');
-    await dialogService
-        .showDialog(
-            title: FlutterI18n.translate(context!, "enterPassword"),
-            description: FlutterI18n.translate(
-                context!, "dialogManagerTypeSamePasswordNote"),
-            buttonTitle: FlutterI18n.translate(context!, "confirm"))
-        .then((res) async {
+    await showPasswordDilaog().then((res) async {
       if (res.confirmed) {
         isDeleting = true;
         log.w('deleting wallet');
@@ -166,44 +163,142 @@ class WalletManagementViewModel extends BaseViewModel with StoppableService {
 
 // add import and create wallet functions
 
-  displayMnemonic() async {
-    errorMessage = '';
+  Future<dynamic> showPasswordDilaog() async {
+    errorMessage = null;
+    notifyListeners();
+    return await dialogService.showDialog(
+        title: FlutterI18n.translate(context!, "enterPassword"),
+        description: FlutterI18n.translate(
+            context!, "dialogManagerTypeSamePasswordNote"),
+        buttonTitle: FlutterI18n.translate(context!, "confirm"));
+  }
 
-    log.w('Is isMnemonicVisible $isMnemonicVisible');
-    if (isMnemonicVisible) {
-      isMnemonicVisible = !isMnemonicVisible;
-    } else {
-      await dialogService
-          .showDialog(
-              title: FlutterI18n.translate(context!, "enterPassword"),
-              description: FlutterI18n.translate(
-                  context!, "dialogManagerTypeSamePasswordNote"),
-              buttonTitle: FlutterI18n.translate(context!, "confirm"))
-          .then((res) async {
-        if (res.confirmed) {
-          setBusy(true);
-          isMnemonicVisible = !isMnemonicVisible;
-          mnemonic = res.returnedText;
+  Future displayMnemonic() async {
+    errorMessage = null;
 
-          setBusy(false);
+    await showPasswordDilaog().then((res) async {
+      if (res!.confirmed) {
+        showMnemonicDialog(res.returnedText);
+      } else if (res.returnedText == 'Closed') {
+        errorMessage = null;
+        notifyListeners();
+      } else {
+        errorMessage =
+            FlutterI18n.translate(context!, "pleaseProvideTheCorrectPassword");
+        notifyListeners();
+      }
+    }).catchError((error) {
+      errorMessage = error.toString();
+      notifyListeners();
+    });
+  }
 
-          return '';
-        } else if (res.returnedText == 'Closed') {
-          log.e('Dialog Closed By User');
-          // setBusy(false);
-          // return errorMessage = '';
-        } else {
-          log.e('Wrong pass');
-          setBusy(false);
-          return errorMessage = FlutterI18n.translate(
-              context!, "pleaseProvideTheCorrectPassword");
-        }
-      }).catchError((error) {
-        log.e(error);
-        setBusy(false);
-        return errorMessage = '';
-      });
-    }
-    setBusy(false);
+  showMnemonicDialog(String? mnemonic) {
+    List<String> resultList = mnemonic!.split(' ');
+    showDialog(
+        context: context!,
+        builder: (BuildContext context) {
+          Size size = MediaQuery.of(context).size;
+          return Dialog(
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            insetPadding: EdgeInsets.symmetric(horizontal: 20),
+            child: Container(
+              height: size.height * 0.5,
+              width: size.width,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              padding: EdgeInsets.all(20),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    FlutterI18n.translate(context, "mnemonic"),
+                    style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: black),
+                  ),
+                  UIHelper.verticalSpaceMedium,
+                  Expanded(
+                    child: GridView.builder(
+                        itemCount: resultList.length,
+                        itemBuilder: (context, index) {
+                          return getContainer(index + 1, resultList[index]);
+                        },
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 3,
+                            crossAxisSpacing: 10,
+                            mainAxisSpacing: 10,
+                            childAspectRatio: 4 / 2)),
+                  ),
+                  SizedBox(
+                    width: size.width,
+                    child: Text(
+                      FlutterI18n.translate(context, "pleaseEnsure"),
+                      textAlign: TextAlign.start,
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: black,
+                      ),
+                    ),
+                  ),
+                  UIHelper.verticalSpaceMedium,
+                  Container(
+                      height: 50,
+                      width: size.width * 0.4,
+                      margin: EdgeInsets.symmetric(horizontal: 5),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          backgroundColor: buttonPurple,
+                        ),
+                        child: Text(
+                          FlutterI18n.translate(context, "close"),
+                        ),
+                      )),
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
+  getContainer(int index, String word) {
+    return Container(
+      decoration: BoxDecoration(
+        color: bgGrey,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      padding: EdgeInsets.symmetric(horizontal: 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            index.toString(),
+            style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                color: Colors.black54),
+          ),
+          Text(
+            word,
+            style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                color: Colors.black54),
+          ),
+          SizedBox()
+        ],
+      ),
+    );
   }
 }

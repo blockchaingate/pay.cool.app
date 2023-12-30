@@ -777,5 +777,16 @@
     "bonus": "奖金",
     "walletManagement": "钱包管理",
     "aboutPayCool": "关于PayCool",
-    "inputMnemonic": "输入助记符"
+    "inputMnemonic": "输入助记符",
+    "enterTheCoinName": "输入币名或合同地址",
+    "homePageCoinList": "主页币列表",
+    "hot": "热门",
+    "my": "我的",
+    "setPassword": "设置密码",
+    "selectToken": "选择代币",
+    "enterTheReceived": "输入收到的钱包地址或DNS",
+    "warning": "警告",
+    "about": "关于",
+    "pleaseEnsure": "请确保助记词未泄露",
+    "language": "语言"
 }

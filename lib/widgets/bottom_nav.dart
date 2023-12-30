@@ -20,7 +20,7 @@ import 'package:stacked_services/stacked_services.dart';
 
 class BottomNavBar extends StatelessWidget {
   final int count;
-  BottomNavBar({Key? key, required this.count}) : super(key: key);
+  BottomNavBar({super.key, required this.count});
 
   final navigationService = locator<NavigationService>();
   final sharedService = locator<SharedService>();

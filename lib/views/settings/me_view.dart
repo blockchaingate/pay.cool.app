@@ -215,7 +215,7 @@ class _MeViewState extends State<MeView> {
                     ),
                     InkWell(
                       onTap: () {
-                        navigationService.navigateTo(NewSettingViewRoute);
+                        navigationService.navigateTo(SettingViewRoute);
                       },
                       child: Container(
                         width: size.width,

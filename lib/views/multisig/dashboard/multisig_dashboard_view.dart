@@ -5,11 +5,10 @@ import 'package:paycool/constants/api_routes.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/shared/ui_helpers.dart';
-import 'package:paycool/utils/exaddr.dart';
 import 'package:paycool/utils/string_util.dart';
 import 'package:paycool/views/multisig/multisig_util.dart';
 import 'package:paycool/views/multisig/transactions/history_queue_view.dart';
-import 'package:paycool/views/settings/settings_view.dart';
+import 'package:paycool/views/settings/setting_view.dart';
 import 'package:paycool/widgets/shimmer_layouts/shimmer_layout.dart';
 import 'package:paycool/widgets/wallet/add_wallet_token/add_wallet_token_widget.dart';
 import 'package:stacked/stacked.dart';
@@ -19,7 +18,7 @@ import 'multisig_dashboard_viewmodel.dart';
 
 class MultisigDashboardView extends StatelessWidget {
   final String data;
-  const MultisigDashboardView({Key? key, required this.data}) : super(key: key);
+  const MultisigDashboardView({super.key, required this.data});
 
   @override
   Widget build(BuildContext context) {
@@ -344,13 +343,11 @@ class MultisigDashboardView extends StatelessWidget {
                                           width: 30,
                                           height: 30,
                                           child: CachedNetworkImage(
-                                            imageUrl:
-                                                MultisigUtil.isChainKanban(model
+                                            imageUrl: MultisigUtil
+                                                    .isChainKanban(model
                                                         .multisigWallet.chain!)
-                                                    ? WalletCoinsLogoUrl +
-                                                        'fab.png'
-                                                    : WalletCoinsLogoUrl +
-                                                        'eth.png',
+                                                ? '${WalletCoinsLogoUrl}fab.png'
+                                                : '${WalletCoinsLogoUrl}eth.png',
                                             placeholder: (context, url) =>
                                                 const CircularProgressIndicator(),
                                             errorWidget:

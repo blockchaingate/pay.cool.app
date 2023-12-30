@@ -10,7 +10,7 @@ import 'package:paycool/views/multisig/create_multisig_wallet/create_multisig_wa
 import 'package:paycool/views/multisig/dashboard/multisig_dashboard_view.dart';
 import 'package:paycool/views/multisig/import_multisig_wallet/import_multisig_viewmodel.dart';
 import 'package:paycool/views/multisig/multisig_util.dart';
-import 'package:paycool/views/settings/settings_view.dart';
+import 'package:paycool/views/settings/setting_view.dart';
 import 'package:stacked/stacked.dart';
 
 class ImportMultisigView extends StatelessWidget {

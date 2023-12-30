@@ -51,7 +51,6 @@ const String InstructionsViewRoute = '/campaignInstructions';
 const String SettingViewRoute = '/settings';
 const String MeViewRoute = '/me';
 const String WalletManagementViewRoute = '/walletManagement';
-const String NewSettingViewRoute = '/newSettingView';
 const String AboutViewRoute = '/aboutView';
 const String DappViewRoute = '/dappView';
 const String PayCoolViewRoute = '/paycool';

@@ -12,7 +12,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 
-class NewSettingViewModel extends BaseViewModel with StoppableService {
+class SettingsViewModel extends BaseViewModel with StoppableService {
   final storageService = locator<LocalStorageService>();
   final navigationService = locator<NavigationService>();
   final sharedService = locator<SharedService>();

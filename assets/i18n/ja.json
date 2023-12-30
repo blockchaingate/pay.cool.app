@@ -777,5 +777,16 @@
     "bonus": "ボーナス",
     "walletManagement": "ウォレット管理",
     "aboutPayCool": "PayCoolについて",
-    "inputMnemonic": "入力ニーモニック"
+    "inputMnemonic": "入力ニーモニック",
+    "enterTheCoinName": "コイン名または契約アドレスを入力してください",
+    "homePageCoinList": "ホームページコインリスト",
+    "hot": "人気",
+    "my": "私の",
+    "setPassword": "パスワードを設定する",
+    "selectToken": "トークンを選択",
+    "enterTheReceived": "受信したウォレットアドレスまたはDNSを入力",
+    "warning": "警告",
+    "about": "約",
+    "pleaseEnsure": "ニーモニックが漏れていないことを確認してください",
+    "language": "言語"
 }

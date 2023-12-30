@@ -4,6 +4,7 @@ import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
+import 'package:paycool/constants/route_names.dart';
 import 'package:paycool/models/bond/vm/me_model.dart';
 import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/api_service.dart';
@@ -93,7 +94,8 @@ class _BondDashboardState extends State<BondDashboard> {
                                     IconButton(
                                       alignment: Alignment.topRight,
                                       onPressed: () {
-                                        Navigator.pop(context);
+                                        navigationService
+                                            .navigateTo(BondWelcomeViewRoute);
                                       },
                                       icon: Icon(
                                         Icons.arrow_back_ios,
@@ -210,7 +212,8 @@ class _BondDashboardState extends State<BondDashboard> {
                                   IconButton(
                                     alignment: Alignment.topRight,
                                     onPressed: () {
-                                      Navigator.pop(context);
+                                      navigationService
+                                          .navigateTo(BondWelcomeViewRoute);
                                     },
                                     icon: Icon(
                                       Icons.arrow_back_ios,

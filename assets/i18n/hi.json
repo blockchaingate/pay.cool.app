@@ -774,5 +774,16 @@
     "bonus": "बोनस",
     "walletManagement": "वॉलेट प्रबंधन",
     "aboutPayCool": "पे कूल के बारे में",
-    "inputMnemonic": "इनपुट म्नेमोनिक"
+    "inputMnemonic": "इनपुट म्नेमोनिक",
+    "enterTheCoinName": "कॉइन का नाम या कॉन्ट्रैक्ट पता दर्ज करें",
+    "homePageCoinList": "होम पेज कॉइन सूची",
+    "hot": "लोकप्रिय",
+    "my": "मेरा",
+    "setPassword": "पासवर्ड सेट करें",
+    "selectToken": "टोकन चुनें",
+    "enterTheReceived": "प्राप्त वॉलेट पता या DNS दर्ज करें",
+    "warning": "चेतावनी",
+    "about": "के बारे में",
+    "pleaseEnsure": "कृपया सुनिश्चित करें कि म्नेमोनिक्स नहीं लीक हो रहे हैं",
+    "language": "भाषा"
 }

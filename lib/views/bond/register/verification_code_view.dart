@@ -8,6 +8,7 @@ import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:paycool/constants/colors.dart';
+import 'package:paycool/constants/route_names.dart';
 import 'package:paycool/models/bond/rm/register_email_model.dart';
 import 'package:paycool/models/bond/rm/verify_captcha_model.dart';
 import 'package:paycool/models/bond/rm/verify_email_model.dart';
@@ -17,15 +18,14 @@ import 'package:paycool/services/local_storage_service.dart';
 import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/views/bond/helper.dart';
 import 'package:paycool/views/bond/progressIndicator.dart';
-import 'package:paycool/views/wallet/wallet_dashboard_view.dart';
+import 'package:stacked_services/stacked_services.dart';
 
 class VerificationCodeView extends StatefulWidget {
   final RegisterEmailModel data;
   final bool justVerify;
 
   const VerificationCodeView(
-      {Key? key, required this.data, this.justVerify = false})
-      : super(key: key);
+      {super.key, required this.data, this.justVerify = false});
 
   @override
   State<VerificationCodeView> createState() => _VerificationCodeViewState();
@@ -36,6 +36,7 @@ class _VerificationCodeViewState extends State<VerificationCodeView> {
   TextEditingController verifyEmailController = TextEditingController();
   final storageService = locator<LocalStorageService>();
   ApiService apiService = locator<ApiService>();
+  final navigationService = locator<NavigationService>();
   String? captcha;
 
   bool loading = false;
@@ -326,11 +327,7 @@ class _VerificationCodeViewState extends State<VerificationCodeView> {
                         .then((value) async {
                       if (value != null) {
                         if (value) {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      const WalletDashboardView()));
+                          navigationService.navigateTo(BondWelcomeViewRoute);
                         }
                       }
                     });

@@ -777,5 +777,16 @@
   "bonus": "Bonus",
   "walletManagement": "Cüzdan Yönetimi",
   "aboutPayCool": "PayCool Hakkında",
-  "inputMnemonic": "Mnemonic Girin"
+  "inputMnemonic": "Mnemonic Girin",
+  "enterTheCoinName": "Coin adını veya sözleşme adresini girin",
+  "homePageCoinList": "Ana Sayfa Coin Listesi",
+  "hot": "Popüler",
+  "my": "Benim",
+  "setPassword": "Parola Belirle",
+  "selectToken": "Token Seç",
+  "enterTheReceived": "Alınan cüzdan adresini veya DNS'yi girin",
+  "warning": "Uyarı",
+  "about": "Hakkında",
+  "pleaseEnsure": "Lütfen mnemoniklerin sızmadığından emin olun",
+  "language": "Dil"
 }

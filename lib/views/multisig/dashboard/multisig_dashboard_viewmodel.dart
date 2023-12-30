@@ -14,9 +14,7 @@ import 'package:paycool/services/local_storage_service.dart';
 import 'package:paycool/services/multisig_service.dart';
 import 'package:paycool/services/shared_service.dart';
 import 'package:paycool/services/wallet_service.dart';
-import 'package:paycool/utils/exaddr.dart';
 import 'package:paycool/utils/fab_util.dart';
-import 'package:paycool/utils/string_util.dart';
 import 'package:paycool/views/multisig/dashboard/multisig_balance_model.dart';
 import 'package:paycool/views/multisig/import_multisig_wallet/import_multisig_view.dart';
 import 'package:paycool/views/multisig/multisig_util.dart';
@@ -173,22 +171,16 @@ class MultisigDashboardViewModel extends ReactiveViewModel {
 // convert below code to dart
     switch (multisigWallet.chain) {
       case 'KANBAN':
-        url = 'https://' +
-            (isProduction ? '' : 'test.') +
-            'exchangily.com/explorer/address-detail/' +
-            address;
+        url =
+            'https://${isProduction ? '' : 'test.'}exchangily.com/explorer/address-detail/$address';
         break;
       case 'ETH':
-        url = 'https://' +
-            (isProduction ? '' : 'goerli.') +
-            'etherscan.io/address/' +
-            address;
+        url =
+            'https://${isProduction ? '' : 'goerli.'}etherscan.io/address/$address';
         break;
       case 'BNB':
-        url = 'https://' +
-            (isProduction ? '' : 'testnet.') +
-            'bscscan.com/address/' +
-            address;
+        url =
+            'https://${isProduction ? '' : 'testnet.'}bscscan.com/address/$address';
         break;
     }
 
@@ -200,7 +192,7 @@ class MultisigDashboardViewModel extends ReactiveViewModel {
         context: context,
         builder: (context) => AlertDialog(
               contentPadding: EdgeInsets.all(10),
-              content: Container(
+              content: SizedBox(
                 height: 400,
                 width: 400,
                 child: Image.network(

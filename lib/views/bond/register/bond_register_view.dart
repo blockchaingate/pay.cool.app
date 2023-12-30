@@ -10,7 +10,7 @@ import 'package:paycool/views/bond/register/bond_register_viewmodel.dart';
 import 'package:stacked/stacked.dart';
 
 class BondRegisterView extends StatefulWidget {
-  const BondRegisterView({Key? key}) : super(key: key);
+  const BondRegisterView({super.key});
 
   @override
   State<BondRegisterView> createState() => _BondRegisterViewState();

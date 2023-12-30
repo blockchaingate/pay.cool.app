@@ -19,6 +19,7 @@ import 'package:paycool/services/db/core_wallet_database_service.dart';
 import 'package:paycool/services/local_storage/hive_multisig_service.dart';
 import 'package:paycool/services/local_storage/hive_mutli_wallet_service.dart';
 import 'package:paycool/services/multisig_service.dart';
+import 'package:paycool/views/settings/setting_viewmodel.dart';
 import 'package:stacked_services/stacked_services.dart'
     show DialogService, NavigationService, BottomSheetService;
 
@@ -46,7 +47,6 @@ import 'views/paycool_club/club_dashboard_viewmodel.dart';
 import 'views/paycool_club/join_club/join_paycool_club_viewmodel.dart';
 import 'views/paycool_club/paycool_club_service.dart';
 import 'views/paycool_club/referral/referral_viewmodel.dart';
-import 'views/settings/settings_viewmodel.dart';
 import 'views/wallet/wallet_dashboard_viewmodel.dart';
 import 'views/wallet/wallet_features/move_to_exchange/move_to_exchange_viewmodel.dart';
 import 'views/wallet/wallet_features/move_to_wallet/move_to_wallet_viewmodel.dart';

@@ -21,7 +21,7 @@ import 'package:paycool/views/paycool_club/checkout/club_package_checkout_view.d
 import 'package:paycool/views/paycool_club/club_projects/club_project_details/club_project_details_view.dart';
 import 'package:paycool/views/settings/about_view.dart';
 import 'package:paycool/views/settings/me_view.dart';
-import 'package:paycool/views/settings/new_setting_view.dart';
+import 'package:paycool/views/settings/setting_view.dart';
 import 'package:paycool/views/settings/wallet_management/wallet_management_view.dart';
 import 'package:paycool/views/wallet/wallet_features/transfer/transfer_view.dart';
 import 'package:paycool/widgets/club/club_rewards_view.dart';
@@ -30,7 +30,6 @@ import 'views/bond/walletConncet/wallet_connect_view.dart';
 import 'views/lightning-remit/lightning_remit_view.dart';
 import 'views/paycool_club/club_projects/club_package_details_view.dart';
 import 'views/paycool_club/referral/referral_view.dart';
-import 'views/settings/settings_view.dart';
 import 'views/paycool_club/join_club/join_paycool_club_view.dart';
 import 'views/paycool_club/referral/referral_details_view.dart';
 import 'views/paycool_club/club_dashboard_view.dart';
@@ -242,12 +241,6 @@ class RouteGenerator {
         return MaterialPageRoute(
           settings: RouteSettings(name: 'WalletManagementView'),
           builder: (_) => WalletManagementView(),
-        );
-
-      case NewSettingViewRoute:
-        return MaterialPageRoute(
-          settings: RouteSettings(name: 'NewSettingView'),
-          builder: (_) => NewSettingView(),
         );
 
       case AboutViewRoute:

@@ -1,19 +1,19 @@
 import 'dart:convert';
 
+import 'package:bip32/bip32.dart' as bip32;
+import 'package:convert/convert.dart';
 import 'package:eth_abi_codec/eth_abi_codec.dart';
 import 'package:flutter/foundation.dart';
+import 'package:hex/hex.dart';
 import 'package:paycool/environments/environment.dart';
-import 'package:bip32/bip32.dart' as bip32;
 import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/shared_service.dart';
 import 'package:paycool/services/wallet_service.dart';
 import 'package:paycool/utils/exaddr.dart';
+
 import '../../constants/constants.dart';
 import '../../utils/coin_util.dart';
 import '../../utils/string_util.dart';
-import 'package:hex/hex.dart';
-
-import 'package:convert/convert.dart';
 
 class MultisigUtil {
   static Future<bool> checkWalletBalanceForFee(
@@ -31,7 +31,9 @@ class MultisigUtil {
         if (gasBalance < fee!) {
           isCorrectAmount = false;
         }
-      }).catchError((onError) => log.e(onError));
+      }).catchError((onError) {
+        log.e(onError);
+      });
     } else {
       String address =
           await sharedService.getCoinAddressFromCoreWalletDatabase('ETH');
@@ -61,7 +63,7 @@ class MultisigUtil {
   }
 
   String bufferToHex(List<int> buffer) {
-    return '0x' + HEX.encode(buffer);
+    return '0x${HEX.encode(buffer)}';
   }
 
   decodeContractCall(String hexData) {
@@ -115,7 +117,7 @@ class MultisigUtil {
     var finalAbi = hex.encode(toBinary);
     log.w('finalAbi $finalAbi');
     // remove first 4 bytes from the finalAbi and replace it with 0x6a761202
-    var finalAbiHex = '0x6a761202' + finalAbi.substring(8);
+    var finalAbiHex = '0x6a761202${finalAbi.substring(8)}';
     return finalAbiHex;
   }
 

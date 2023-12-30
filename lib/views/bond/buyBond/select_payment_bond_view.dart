@@ -434,7 +434,7 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
                               });
                             }
                           } else {
-                            navigationService.navigateTo(DashboardViewRoute);
+                            navigationService.navigateTo(BondWelcomeViewRoute);
                           }
                         },
                         style: ElevatedButton.styleFrom(
@@ -872,15 +872,15 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
                                               widget.orderNumber, param)
                                           .then((value) async {
                                         if (value != null) {
-                                          if (widget.bondMeVm!.kycLevel! < 2) {
-                                            await apiService
-                                                .confirmOrderBondWithoutKyc(
-                                                    context,
-                                                    widget.orderNumber);
-                                          } else {
-                                            await apiService.confirmOrderBond(
-                                                context, widget.orderNumber);
-                                          }
+                                          // if (widget.bondMeVm!.kycLevel! < 2) {
+
+                                          await apiService
+                                              .confirmOrderBondWithoutKyc(
+                                                  context, widget.orderNumber);
+                                          // } else {
+                                          //   await apiService.confirmOrderBond(
+                                          //       context, widget.orderNumber);
+                                          // }
                                           await bondApprove(size);
                                         }
                                       });

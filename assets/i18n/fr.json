@@ -777,5 +777,16 @@
     "bonus": "Bonus",
     "walletManagement": "Gestion de portefeuille",
     "aboutPayCool": "À propos de PayCool",
-    "inputMnemonic": "Mnémonique d'entrée"
+    "inputMnemonic": "Mnémonique d'entrée",
+    "enterTheCoinName": "Entrez le nom de la pièce ou l'adresse du contrat",
+    "homePageCoinList": "Liste des pièces de la page d'accueil",
+    "hot": "Populaire",
+    "my": "Mon",
+    "setPassword": "Définir le mot de passe",
+    "selectToken": "Sélectionner le jeton",
+    "enterTheReceived": "Entrez l'adresse de portefeuille reçue ou le DNS",
+    "warning": "Avertissement",
+    "about": "À propos de",
+    "pleaseEnsure": "Veuillez vous assurer que les mnémoniques ne sont pas divulgués",
+    "language": "Langue"
 }

@@ -772,5 +772,16 @@
     "bonus": "Bono",
     "walletManagement": "Gestión de Billetera",
     "aboutPayCool": "Acerca de PayCool",
-    "inputMnemonic": "Mnemotecnia de entrada"
+    "inputMnemonic": "Mnemotecnia de entrada",
+    "enterTheCoinName": "Ingrese el nombre de la moneda o la dirección del contrato",
+    "homePageCoinList": "Lista de monedas de la página de inicio",
+    "hot": "Popular",
+    "my": "Mi",
+    "setPassword": "Establecer contraseña",
+    "selectToken": "Seleccionar token",
+    "enterTheReceived": "Ingrese la dirección de la billetera recibida o el DNS",
+    "warning": "Advertencia",
+    "about": "Acerca de",
+    "pleaseEnsure": "Asegúrese de que las mnemónicas no se filtren",
+    "language": "Idioma"
 }
