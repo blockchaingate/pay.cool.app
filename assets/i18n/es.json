@@ -783,5 +783,13 @@
     "warning": "Advertencia",
     "about": "Acerca de",
     "pleaseEnsure": "Asegúrese de que las mnemónicas no se filtren",
-    "language": "Idioma"
+    "language": "Idioma",
+    "qty": "Cant",
+    "clickCameraIcon": "Haga clic en el ícono de la cámara para actualizar",
+    "home": "Inicio",
+    "inv": "Inv",
+    "qRCodeNotFound": "Código QR no encontrado"
+
+    
+      
 }

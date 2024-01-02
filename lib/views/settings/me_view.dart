@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:kyc/kyc.dart';
 import 'package:paycool/constants/colors.dart';
+import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/constants/route_names.dart';
 import 'package:paycool/environments/environment_type.dart';
 import 'package:paycool/service_locator.dart';
@@ -23,6 +24,25 @@ class _MeViewState extends State<MeView> {
   final kycService = locator<KycBaseService>();
   final storageService = locator<LocalStorageService>();
   final sharedService = locator<SharedService>();
+
+  Map<String, String>? versionInfo;
+  String? versionName;
+  String? buildNumber;
+
+  @override
+  void initState() {
+    getAppVersion();
+    super.initState();
+  }
+
+  getAppVersion() async {
+    versionInfo = await sharedService.getLocalAppVersion();
+
+    setState(() {
+      versionName = versionInfo!['name'].toString();
+      buildNumber = versionInfo!['buildNumber'].toString();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -289,6 +309,23 @@ class _MeViewState extends State<MeView> {
                           ],
                         ),
                       ),
+                    ),
+                    UIHelper.verticalSpaceLarge,
+                    // Version Code
+                    SizedBox(
+                      height: 40,
+                      child: Center(
+                          child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text(
+                            'v $versionName.$buildNumber',
+                            style: headText6.copyWith(color: black),
+                          ),
+                          if (!isProduction)
+                            const Text(' Debug', style: TextStyle(color: grey))
+                        ],
+                      )),
                     ),
                   ],
                 ),

@@ -138,42 +138,42 @@ class _BondHistoryViewState extends State<BondHistoryView> {
                               UIHelper.verticalSpaceMedium,
                               Row(children: [
                                 Expanded(
-                                  flex: 1,
+                                  flex: 2,
                                   child: Text(
-                                    FlutterI18n.translate(context, "bondId"),
+                                    FlutterI18n.translate(context, "id"),
                                     style: TextStyle(color: Colors.white),
                                   ),
                                 ),
                                 Expanded(
-                                  flex: 1,
+                                  flex: 2,
                                   child: Text(
-                                    FlutterI18n.translate(context, "quantity"),
+                                    FlutterI18n.translate(context, "qty"),
                                     style: TextStyle(color: Colors.white),
                                   ),
                                 ),
                                 Expanded(
-                                  flex: 1,
+                                  flex: 3,
                                   child: Text(
                                     FlutterI18n.translate(context, "chain"),
                                     style: TextStyle(color: Colors.white),
                                   ),
                                 ),
                                 Expanded(
-                                  flex: 1,
+                                  flex: 3,
                                   child: Text(
                                     FlutterI18n.translate(context, "coin"),
                                     style: TextStyle(color: Colors.white),
                                   ),
                                 ),
                                 Expanded(
-                                  flex: 1,
+                                  flex: 3,
                                   child: Text(
                                     FlutterI18n.translate(context, "date"),
                                     style: TextStyle(color: Colors.white),
                                   ),
                                 ),
                                 Expanded(
-                                  flex: 1,
+                                  flex: 3,
                                   child: Text(
                                     FlutterI18n.translate(context, "status"),
                                     style: TextStyle(color: Colors.white),

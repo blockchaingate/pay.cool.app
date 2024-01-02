@@ -110,89 +110,95 @@ class LightningRemitView extends StatelessWidget {
                     ),
                   ),
                   UIHelper.verticalSpaceSmall,
-                  Container(
-                    width: size.width,
-                    //  height: size.height * 0.1,
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10)),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: TextField(
-                            controller: model.amountController,
-                            onChanged: (value) {},
-                            keyboardType: const TextInputType.numberWithOptions(
-                                decimal: true),
-                            style: TextStyle(fontSize: 16, color: Colors.black),
-                            decoration: InputDecoration(
-                              border: InputBorder.none,
-                              hintText: '0.00',
-                              hintStyle:
-                                  TextStyle(fontSize: 16, color: textHintGrey),
-                              contentPadding: EdgeInsets.only(left: 10),
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          child: SizedBox(
-                            height: size.height * 0.08,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                InkWell(
-                                  onTap: () {
-                                    model.coinListBottomSheet(context);
-                                  },
-                                  child: Row(
+                  model.exchangeBalances.isNotEmpty
+                      ? Container(
+                          width: size.width,
+                          //  height: size.height * 0.1,
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10)),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: TextField(
+                                  controller: model.amountController,
+                                  onChanged: (value) {},
+                                  keyboardType:
+                                      const TextInputType.numberWithOptions(
+                                          decimal: true),
+                                  style: TextStyle(
+                                      fontSize: 16, color: Colors.black),
+                                  decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                    hintText: '0.00',
+                                    hintStyle: TextStyle(
+                                        fontSize: 16, color: textHintGrey),
+                                    contentPadding: EdgeInsets.only(left: 10),
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 10),
+                                child: SizedBox(
+                                  height: size.height * 0.08,
+                                  child: Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    crossAxisAlignment: CrossAxisAlignment.end,
                                     children: [
-                                      Text(
-                                        model.tickerName,
-                                        style: TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold,
-                                            color: black),
+                                      InkWell(
+                                        onTap: () {
+                                          model.coinListBottomSheet(context);
+                                        },
+                                        child: Row(
+                                          children: [
+                                            Text(
+                                              model.tickerName,
+                                              style: TextStyle(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: black),
+                                            ),
+                                            Icon(Icons.arrow_drop_down,
+                                                color: Colors.black, size: 18)
+                                          ],
+                                        ),
                                       ),
-                                      Icon(Icons.arrow_drop_down,
-                                          color: Colors.black, size: 18)
-                                    ],
-                                  ),
-                                ),
-                                RichText(
-                                  text: TextSpan(
-                                    text: 'Balance: ',
-                                    style: TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.bold,
-                                        color: textHintGrey),
-                                    children: <TextSpan>[
-                                      TextSpan(
-                                          text: model.quantity == 0.0
-                                              ? ''
-                                              : model.quantity.toString(),
+                                      RichText(
+                                        text: TextSpan(
+                                          text: 'Balance: ',
                                           style: TextStyle(
                                               fontSize: 12,
                                               fontWeight: FontWeight.bold,
-                                              color: textHintGrey)),
-                                      TextSpan(
-                                          text: ' ${model.tickerName}',
-                                          style: TextStyle(
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.bold,
-                                              color: textHintGrey)),
+                                              color: textHintGrey),
+                                          children: <TextSpan>[
+                                            TextSpan(
+                                                text: model.quantity == 0.0
+                                                    ? ''
+                                                    : model.quantity.toString(),
+                                                style: TextStyle(
+                                                    fontSize: 12,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: textHintGrey)),
+                                            TextSpan(
+                                                text: ' ${model.tickerName}',
+                                                style: TextStyle(
+                                                    fontSize: 12,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: textHintGrey)),
+                                          ],
+                                        ),
+                                      ),
                                     ],
                                   ),
                                 ),
-                              ],
-                            ),
+                              )
+                            ],
                           ),
                         )
-                      ],
-                    ),
-                  ),
+                      : SizedBox(),
                   UIHelper.verticalSpaceLarge,
                   if (model.errorMessage != null &&
                       model.errorMessage!.isNotEmpty)

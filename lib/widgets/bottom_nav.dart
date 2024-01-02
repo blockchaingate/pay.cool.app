@@ -12,6 +12,7 @@
 */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/route_names.dart';
 import 'package:paycool/service_locator.dart';
@@ -50,7 +51,7 @@ class BottomNavBar extends StatelessWidget {
               onTap: () {
                 if (sharedService.getCurrentRouteName(context) !=
                     'WalletDashboardView') {
-                  navigationService.navigateTo(DashboardViewRoute);
+                  navigationService.clearStackAndShow(DashboardViewRoute);
                 }
               },
               child: SizedBox(
@@ -66,7 +67,7 @@ class BottomNavBar extends StatelessWidget {
                       ),
                       SizedBox(height: 3),
                       Text(
-                        "Home",
+                        FlutterI18n.translate(context, "home"),
                         style: TextStyle(
                             fontSize: 12,
                             color: count == 1 ? primaryColor : grey,
@@ -79,7 +80,7 @@ class BottomNavBar extends StatelessWidget {
               onTap: () {
                 if (sharedService.getCurrentRouteName(context) !=
                     'BondWelcomeView') {
-                  navigationService.navigateTo(
+                  navigationService.clearStackAndShow(
                     BondWelcomeViewRoute,
                   );
                 }
@@ -97,7 +98,7 @@ class BottomNavBar extends StatelessWidget {
                       ),
                       SizedBox(height: 3),
                       Text(
-                        "INV",
+                        FlutterI18n.translate(context, "inv"),
                         style: TextStyle(
                             fontSize: 12,
                             color: count == 2 ? primaryColor : grey,
@@ -109,7 +110,7 @@ class BottomNavBar extends StatelessWidget {
             Padding(
               padding: EdgeInsets.fromLTRB(
                   size.width * 0.1, 20, size.width * 0.1, 0),
-              child: Text("PAY",
+              child: Text(FlutterI18n.translate(context, "pay"),
                   style: TextStyle(
                       fontSize: 12,
                       color: count == 0 ? primaryColor : grey,
@@ -118,7 +119,7 @@ class BottomNavBar extends StatelessWidget {
             InkWell(
               onTap: () {
                 if (sharedService.getCurrentRouteName(context) != 'DappView') {
-                  navigationService.navigateTo(
+                  navigationService.clearStackAndShow(
                     DappViewRoute,
                   );
                 }
@@ -148,7 +149,7 @@ class BottomNavBar extends StatelessWidget {
             InkWell(
               onTap: () {
                 if (sharedService.getCurrentRouteName(context) != 'MeView') {
-                  navigationService.navigateTo(
+                  navigationService.clearStackAndShow(
                     MeViewRoute,
                   );
                 }
@@ -166,7 +167,7 @@ class BottomNavBar extends StatelessWidget {
                       ),
                       SizedBox(height: 3),
                       Text(
-                        "Me",
+                        FlutterI18n.translate(context, "me"),
                         style: TextStyle(
                             fontSize: 12,
                             color: count == 4 ? primaryColor : grey,

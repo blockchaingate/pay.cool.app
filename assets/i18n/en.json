@@ -788,5 +788,10 @@
     "warning": "Warning",
     "about": "About",
     "pleaseEnsure": "Please ensure that mnemonics are not leaked",
-    "language": "Language"
+    "language": "Language",
+    "qty": "Qty",
+    "clickCameraIcon": "Click Camera Icon to Refresh",
+    "home": "Home",
+    "inv": "Inv",
+    "qRCodeNotFound": "QR Code Not Found"
 }

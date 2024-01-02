@@ -24,6 +24,8 @@ class PayCoolView extends StatelessWidget {
         model.sharedService.context = context;
         model.init();
       },
+      disposeViewModel: false,
+      onDispose: (viewModel) => viewModel.dispose(),
       builder: (context, PayCoolViewmodel model, _) => WillPopScope(
         onWillPop: () {
           return WillPopScopeWidget().onWillPop(context);
@@ -194,9 +196,12 @@ class PayCoolView extends StatelessWidget {
                                                     return Container();
                                                   }),
                                                 )
-                                              : Text(
-                                                  FlutterI18n.translate(
-                                                      context, "noCamera"),
+                                              : Center(
+                                                  child: Text(
+                                                    FlutterI18n.translate(
+                                                        context,
+                                                        "clickCameraIcon"),
+                                                  ),
                                                 )
                                           : MobileScanner(
                                               controller:
@@ -245,6 +250,7 @@ class PayCoolView extends StatelessWidget {
                                             ),
                                             InkWell(
                                               onTap: () {
+                                                model.stopCamera();
                                                 model.scanImageFile();
                                               },
                                               child: Image.asset(
@@ -519,7 +525,7 @@ class PayCoolView extends StatelessWidget {
                                                         child: Text(
                                                           FlutterI18n.translate(
                                                               context,
-                                                              "myReward"),
+                                                              "myRewards"),
                                                           style: TextStyle(
                                                               fontSize: 14,
                                                               fontWeight:

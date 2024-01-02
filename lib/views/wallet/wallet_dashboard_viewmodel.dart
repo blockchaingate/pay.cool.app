@@ -257,38 +257,6 @@ class WalletDashboardViewModel extends BaseViewModel {
     setWalletDetails(wallet);
   }
 
-  // _scrollListener() {
-  //   walletsScrollController = ScrollController();
-  //   WidgetsBinding.instance.addPostFrameCallback((_) {
-  //     if (walletsScrollController.hasClients) {
-  //       if (walletsScrollController.offset >=
-  //               walletsScrollController.position.maxScrollExtent &&
-  //           !walletsScrollController.position.outOfRange) {
-  //         setBusy(true);
-  //         debugPrint('bottom');
-
-  //         isBottomOfTheList = true;
-  //         isTopOfTheList = false;
-  //         minusHeight = 50;
-  //         setBusy(false);
-  //       }
-  //       if (walletsScrollController.offset <=
-  //               walletsScrollController.position.minScrollExtent &&
-  //           !walletsScrollController.position.outOfRange) {
-  //         setBusy(true);
-  //         debugPrint('top');
-  //         isTopOfTheList = true;
-  //         isBottomOfTheList = false;
-  //         minusHeight = 25;
-  //         setBusy(false);
-  //       }
-  //       if (walletsScrollController.position.outOfRange) {
-  //         debugPrint('bot in');
-  //       }
-  //     }
-  //   });
-  // }
-
   updateTabSelection(int tabIndex) {
     setBusy(true);
     setBusyForObject(selectedTabIndex, true);
@@ -337,100 +305,6 @@ class WalletDashboardViewModel extends BaseViewModel {
       return [];
     }
   }
-
-/*----------------------------------------------------------------------
-                    Search Coins By TickerName
-----------------------------------------------------------------------*/
-  // searchFavCoinsByTickerName(String value) async {
-  //   setBusyForObject(favWallets, true);
-  //   var favWalletInfoListCopy = favWallets;
-  //   debugPrint('length ${favWallets.length} -- value $value');
-  //   try {
-  //     if (value.isNotEmpty) {
-  //       favWallets = [];
-  //       favWallets = favWalletInfoListCopy
-  //           .where((element) =>
-  //               element.coin!.toLowerCase().contains(value.toLowerCase()))
-  //           .toList();
-  //     } else {
-  //       favWallets = [];
-  //       favWallets = favWalletInfoListCopy;
-  //     }
-
-  //     // tabBarViewHeight = MediaQuery.of(context).viewInsets.bottom == 0
-  //     //     ? MediaQuery.of(context).size.height / 2 - 250
-  //     //     : MediaQuery.of(context).size.height / 2;
-  //     debugPrint('favWalletInfoList length ${favWallets.length}');
-  //   } catch (err) {
-  //     setBusyForObject(favWallets, false);
-  //     log.e('searchFavCoinsByTickerName CATCH');
-  //   }
-
-  //   setBusyForObject(favWallets, false);
-  // }
-
-/*----------------------------------------------------------------------
-                    Build Fav Coins List
-----------------------------------------------------------------------*/
-
-  // buildFavCoinListV1() async {
-  //   setBusyForObject(favWallets, true);
-  //   isShowFavCoins = true;
-  //   favWallets.clear();
-  //   String favCoinsJson = storageService.favWalletCoins;
-  //   if (favCoinsJson != '') {
-  //     List<String> favWalletCoins =
-  //         (jsonDecode(favCoinsJson) as List<dynamic>).cast<String>();
-
-  //     var wallets = await refreshBalancesV2();
-
-  //     for (var i = 0; i < favWalletCoins.length; i++) {
-  //       for (var j = 0; j < wallets.length; j++) {
-  //         if (wallets[j].coin == favWalletCoins[i].toString()) {
-  //           favWallets.add(wallets[j]);
-  //           break;
-  //         }
-  //       }
-  //     }
-  //     log.w('favWalletInfoList length ${favWallets.length}');
-  //   }
-  //   setBusyForObject(favWallets, false);
-  // }
-
-  // buildFavCoinList() async {
-  //   setBusyForObject(favWalletInfoList, true);
-
-  //   favWalletInfoList.clear();
-  //   String favCoinsJson = storageService.favWalletCoins;
-  //   if (favCoinsJson != null && favCoinsJson != '') {
-  //     List<String> favWalletCoins =
-  //         (jsonDecode(favCoinsJson) as List<dynamic>).cast<String>();
-
-  //     List<WalletInfo> walletsFromDb = [];
-  //     await walletDatabaseService
-  //         .getAll()
-  //         .then((wallets) => walletsFromDb = wallets);
-
-  //     //  try {
-  //     for (var i = 0; i < favWalletCoins.length; i++) {
-  //       for (var j = 0; j < walletsFromDb.length; j++) {
-  //         if (walletsFromDb[j].tickerName == favWalletCoins[i].toString()) {
-  //           favWalletInfoList.add(walletsFromDb[j]);
-  //           break;
-  //         }
-  //       }
-  //       // log.i('favWalletInfoList ${favWalletInfoList[i].toJson()}');
-  //     }
-  //     log.w('favWalletInfoList length ${favWalletInfoList.length}');
-  //     //  setBusy(false);
-  //     //   return;
-  //     // } catch (err) {
-  //     //   log.e('favWalletCoins CATCH');
-  //     //   setBusyForObject(favWalletInfoList, false);
-  //     // }
-  //   }
-  //   setBusyForObject(favWalletInfoList, false);
-  // }
 
 /*----------------------------------------------------------------------
                 Update wallet with new native coins
@@ -559,26 +433,6 @@ class WalletDashboardViewModel extends BaseViewModel {
     });
     setBusy(false);
     //return isSuccess;
-  }
-
-/*----------------------------------------------------------------------
-                        Showcase Feature
-----------------------------------------------------------------------*/
-  showcaseEvent(BuildContext ctx) async {
-    log.e(
-        'Is showvcase: ${storageService.isShowCaseView} --- gas amount: $gasAmount');
-    // if (!isBusy) setBusyForObject(isShowCaseView, true);
-    //   _isShowCaseView = storageService.isShowCaseView;
-    //   // if (!isBusy) setBusyForObject(isShowCaseView, false);
-    //   if (isShowCaseView && !isBusy) {
-    //     WidgetsBinding.instance.addPostFrameCallback((_) {
-    //       ShowCaseWidget.of(ctx).startShowCase([globalKeyOne, globalKeyTwo]);
-    //     });
-    //   }
-  }
-
-  updateShowCaseViewStatus() {
-    _isShowCaseView = false;
   }
 
 /*----------------------------------------------------------------------
@@ -1190,14 +1044,6 @@ class WalletDashboardViewModel extends BaseViewModel {
   onBackButtonPressed() async {
     sharedService.context = context!;
     await sharedService.closeApp();
-  }
-
-  updateAppbarHeight(h) {
-    top = h;
-  }
-
-  getAppbarHeight() {
-    return top;
   }
 
   goToChainList(size) async {

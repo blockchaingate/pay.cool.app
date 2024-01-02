@@ -9,8 +9,8 @@ import 'package:stacked/stacked.dart';
 
 class PurchasedPackageView extends StatelessWidget {
   const PurchasedPackageView({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +53,7 @@ class PurchasedPackageView extends StatelessWidget {
                               shrinkWrap: true,
                               itemCount: model.purchasedPackages.length,
                               itemBuilder: (BuildContext context, int index) {
-                                int i = index + 1;
+                                // int i = index + 1;
                                 return Container(
                                   decoration: BoxDecoration(
                                       border: Border(

@@ -788,5 +788,11 @@
     "warning": "警告",
     "about": "約",
     "pleaseEnsure": "ニーモニックが漏れていないことを確認してください",
-    "language": "言語"
+    "language": "言語",
+    "qty": "数量",
+    "clickCameraIcon": "更新するにはカメラアイコンをクリックしてください",
+    "home": "ホーム",
+    "inv": "Inv",
+    "qRCodeNotFound": "QRコードが見つかりません"
+  
 }

@@ -788,5 +788,11 @@
     "warning": "警告",
     "about": "关于",
     "pleaseEnsure": "请确保助记词未泄露",
-    "language": "语言"
+    "language": "语言",
+    "qty": "数量",
+    "clickCameraIcon": "单击相机图标以刷新",
+    "home": "首页",
+    "inv": "邀",
+    "qRCodeNotFound": "未找到QR码"
+  
 }

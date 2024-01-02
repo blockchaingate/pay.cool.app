@@ -143,30 +143,28 @@ class PayCoolViewmodel extends FutureViewModel {
     if (lang.isEmpty) {
       lang = "en";
     }
+
+    cameraController = MobileScannerController();
     startCamera();
   }
 
   @override
   void dispose() {
-    stopCamera();
     super.dispose();
+    cameraController!.dispose();
   }
 
   void stopCamera() {
-    showDetails = true;
-    cameraController!.dispose();
     cameraController!.stop();
+    showDetails = true;
     notifyListeners();
   }
 
   void startCamera() {
-    if (cameraController != null) {
-      cameraController!.dispose();
-    }
-
     showDetails = false;
-    cameraController = MobileScannerController();
+    cameraController!.stop();
     cameraController!.start();
+
     notifyListeners();
   }
 
@@ -230,21 +228,20 @@ class PayCoolViewmodel extends FutureViewModel {
     String qrcodeFile = '';
     final image = await ImagePicker().pickImage(source: ImageSource.gallery);
     if (image != null) {
-      // imageUint8List = await image.readAsBytes();
-
       qrcodeFile = image.path;
       log.w(qrcodeFile);
+      try {
+        var barcodeScanData = await QrCodeUtils.decodeFrom(qrcodeFile);
+        log.i(barcodeScanData);
+        orderDetails(barcodeScanData: barcodeScanData);
+        stopCamera();
+      } catch (err) {
+        sharedService.sharedSimpleNotification(
+            FlutterI18n.translate(sharedService.context, "qRCodeNotFound"));
+        log.e('QrCodeToolsPlugin Catch $err');
+      }
     }
-    try {
-      var barcodeScanData = await QrCodeUtils.decodeFrom(qrcodeFile);
-      log.i(barcodeScanData);
-      orderDetails(barcodeScanData: barcodeScanData);
-      stopCamera();
-    } catch (err) {
-      sharedService.sharedSimpleNotification(
-          FlutterI18n.translate(sharedService.context, "validationError"));
-      log.e('QrCodeToolsPlugin Catch $err');
-    }
+
     setBusyForObject(isScanningImage, false);
   }
 
@@ -1518,26 +1515,22 @@ class PayCoolViewmodel extends FutureViewModel {
                           width: 250,
                           height: 250,
                           child: Center(
-                            child: Container(
-                              child: RepaintBoundary(
-                                key: globalKey,
-                                child: QrImageView(
-                                    backgroundColor: white,
-                                    data: kbAddress,
-                                    version: QrVersions.auto,
-                                    size: 300,
-                                    gapless: true,
-                                    errorStateBuilder: (context, err) {
-                                      return Container(
-                                        child: Center(
-                                          child: Text(
-                                              FlutterI18n.translate(context,
-                                                  "somethingWentWrong"),
-                                              textAlign: TextAlign.center),
-                                        ),
-                                      );
-                                    }),
-                              ),
+                            child: RepaintBoundary(
+                              key: globalKey,
+                              child: QrImageView(
+                                  backgroundColor: white,
+                                  data: kbAddress,
+                                  version: QrVersions.auto,
+                                  size: 300,
+                                  gapless: true,
+                                  errorStateBuilder: (context, err) {
+                                    return Center(
+                                      child: Text(
+                                          FlutterI18n.translate(
+                                              context, "somethingWentWrong"),
+                                          textAlign: TextAlign.center),
+                                    );
+                                  }),
                             ),
                           )),
                     ],

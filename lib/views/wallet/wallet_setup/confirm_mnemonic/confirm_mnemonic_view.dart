@@ -94,11 +94,10 @@ class ConfirmMnemonicView extends StatelessWidget {
                           textAlign: TextAlign.center,
                           textAlignVertical: const TextAlignVertical(y: 0.7),
                           enableInteractiveSelection: false, // readonly
-                          // enabled: false, // if false use cant see the selection border around
                           readOnly: true,
                           autocorrect: false,
                           style: TextStyle(
-                              fontSize: 12,
+                              fontSize: 14,
                               color: black,
                               fontWeight: FontWeight.w600),
                           decoration: InputDecoration(
@@ -107,6 +106,7 @@ class ConfirmMnemonicView extends StatelessWidget {
                                 ? bgLightRed
                                 : secondaryColor,
                             filled: true,
+                            isDense: true,
                             hintText: singleWord,
                             hintStyle: TextStyle(
                                 fontSize: 14,

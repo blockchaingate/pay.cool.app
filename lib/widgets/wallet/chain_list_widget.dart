@@ -30,16 +30,17 @@ Widget chainListWidget(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    IconButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      icon: ImageIcon(
-                        AssetImage("assets/images/new-design/setting_icon.png"),
-                        color: black,
-                        size: 36,
-                      ),
-                    ),
+                    SizedBox(),
+                    // IconButton(
+                    //   onPressed: () {
+                    //     Navigator.pop(context);
+                    //   },
+                    //   icon: ImageIcon(
+                    //     AssetImage("assets/images/new-design/setting_icon.png"),
+                    //     color: black,
+                    //     size: 36,
+                    //   ),
+                    // ),
                     IconButton(
                       onPressed: () {
                         Navigator.pop(context);
@@ -158,13 +159,13 @@ Widget getRecords(
                     fontSize: 14,
                     fontWeight: FontWeight.w600),
               ),
-              Text(
-                "Wallet 1",
-                style: TextStyle(
-                    color: Colors.black45,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600),
-              ),
+              // Text(
+              //   "Wallet 1",
+              //   style: TextStyle(
+              //       color: Colors.black45,
+              //       fontSize: 14,
+              //       fontWeight: FontWeight.w600),
+              // ),
             ],
           ),
           Text(
