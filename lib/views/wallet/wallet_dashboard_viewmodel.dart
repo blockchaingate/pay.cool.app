@@ -147,10 +147,12 @@ class WalletDashboardViewModel extends BaseViewModel {
     appStateProvider = Provider.of<AppStateProvider>(context!, listen: false);
     refreshIndicator = Completer<void>();
     fabAddress = await sharedService.getFabAddressFromCoreWalletDatabase();
+
     await walletService.storeTokenListInDB();
     await refreshBalancesV2().then((walletBalances) async {
       for (var i = 0; i < walletBalances.length; i++) {
         try {
+          appStateProvider.setProviderAddress(wallets[i].coin!);
           await coinService
               .getCoinTypeByTickerName(wallets[i].coin!)
               .then((value) async {
@@ -1050,8 +1052,8 @@ class WalletDashboardViewModel extends BaseViewModel {
     showModalBottomSheet(
       context: context!,
       isScrollControlled: true,
-      builder: (BuildContext context) =>
-          chainListWidget(context, size, wallets),
+      builder: (BuildContext context) => chainListWidget(
+          context, size, wallets, appStateProvider.getProviderAddressList),
     ).then((value) async {
       if (value != null) {
         updateTabSelection(value);

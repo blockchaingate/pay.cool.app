@@ -185,16 +185,29 @@ class _MeViewState extends State<MeView> {
                     ),
                     InkWell(
                       onTap: () async {
+                        // when i use sharedService.navigateWithAnimation it gives me error (FlutterError (Looking up a deactivated widget's ancestor is unsafe)
+
                         kycService.setPrimaryColor(primaryColor);
+
                         if (storageService.bondToken.isEmpty) {
-                          await sharedService.navigateWithAnimation(
-                              KycLogin(onFormSubmit: onLoginFormSubmit));
-                          return;
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => KycLogin(
+                                onFormSubmit: onLoginFormSubmit,
+                              ),
+                            ),
+                          );
                         } else {
                           kycService.xAccessToken.value =
                               storageService.bondToken;
 
-                          navigationService.navigateToView(const KycStatus());
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const KycStatus(),
+                            ),
+                          );
                         }
                       },
                       child: Container(

@@ -50,7 +50,7 @@ class PayCoolClubService {
           return res;
         }
       } else {
-        log.e("txReceipt error: " + json);
+        log.e("txReceipt error: $json");
         return false;
       }
     } catch (e) {

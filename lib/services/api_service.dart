@@ -761,7 +761,9 @@ class ApiService {
     try {
       var response = await client.get(Uri.parse(url));
       json = jsonDecode(response.body);
-    } catch (e) {}
+    } catch (e) {
+      log.e(e);
+    }
     return json;
   }
 
@@ -820,7 +822,9 @@ class ApiService {
       var response = await client.post(Uri.parse(url), body: data);
 
       json = jsonDecode(response.body);
-    } catch (e) {}
+    } catch (e) {
+      debugPrint(e.toString());
+    }
 
     log.w('json= $json');
     if (json != null) {
@@ -924,7 +928,9 @@ class ApiService {
     try {
       var response = await client.get(Uri.parse(url));
       json = jsonDecode(response.body);
-    } catch (e) {}
+    } catch (e) {
+      log.e(e);
+    }
     return json;
   }
 
@@ -982,7 +988,9 @@ class ApiService {
     try {
       var response = await client.get(Uri.parse(url));
       nonce = int.parse(response.body);
-    } catch (e) {}
+    } catch (e) {
+      log.e(e);
+    }
     return nonce;
   }
 

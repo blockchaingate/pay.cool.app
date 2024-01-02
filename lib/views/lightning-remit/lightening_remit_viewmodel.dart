@@ -340,11 +340,9 @@ class LightningRemitViewmodel extends FutureViewModel {
         builder: (BuildContext context) {
           return Platform.isIOS
               ? CupertinoAlertDialog(
-                  title: Container(
-                    child: Center(
-                        child: Text(
-                            FlutterI18n.translate(context, "receiveAddress"))),
-                  ),
+                  title: Center(
+                      child: Text(
+                          FlutterI18n.translate(context, "receiveAddress"))),
                   content: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -376,26 +374,22 @@ class LightningRemitViewmodel extends FutureViewModel {
                           width: 250,
                           height: 250,
                           child: Center(
-                            child: Container(
-                              child: RepaintBoundary(
-                                key: globalKey,
-                                child: QrImageView(
-                                    backgroundColor: white,
-                                    data: kbAddress,
-                                    version: QrVersions.auto,
-                                    size: 300,
-                                    gapless: true,
-                                    errorStateBuilder: (context, err) {
-                                      return Container(
-                                        child: Center(
-                                          child: Text(
-                                              FlutterI18n.translate(context,
-                                                  "somethingWentWrong"),
-                                              textAlign: TextAlign.center),
-                                        ),
-                                      );
-                                    }),
-                              ),
+                            child: RepaintBoundary(
+                              key: globalKey,
+                              child: QrImageView(
+                                  backgroundColor: white,
+                                  data: kbAddress,
+                                  version: QrVersions.auto,
+                                  size: 300,
+                                  gapless: true,
+                                  errorStateBuilder: (context, err) {
+                                    return Center(
+                                      child: Text(
+                                          FlutterI18n.translate(
+                                              context, "somethingWentWrong"),
+                                          textAlign: TextAlign.center),
+                                    );
+                                  }),
                             ),
                           )),
                     ],
@@ -509,26 +503,22 @@ class LightningRemitViewmodel extends FutureViewModel {
                           width: 250,
                           height: 250,
                           child: Center(
-                            child: Container(
-                              child: RepaintBoundary(
-                                key: globalKey,
-                                child: QrImageView(
-                                    backgroundColor: white,
-                                    data: kbAddress,
-                                    version: QrVersions.auto,
-                                    size: 300,
-                                    gapless: true,
-                                    errorStateBuilder: (context, err) {
-                                      return Container(
-                                        child: Center(
-                                          child: Text(
-                                              FlutterI18n.translate(context,
-                                                  "somethingWentWrong"),
-                                              textAlign: TextAlign.center),
-                                        ),
-                                      );
-                                    }),
-                              ),
+                            child: RepaintBoundary(
+                              key: globalKey,
+                              child: QrImageView(
+                                  backgroundColor: white,
+                                  data: kbAddress,
+                                  version: QrVersions.auto,
+                                  size: 300,
+                                  gapless: true,
+                                  errorStateBuilder: (context, err) {
+                                    return Center(
+                                      child: Text(
+                                          FlutterI18n.translate(
+                                              context, "somethingWentWrong"),
+                                          textAlign: TextAlign.center),
+                                    );
+                                  }),
                             ),
                           )),
                     ],

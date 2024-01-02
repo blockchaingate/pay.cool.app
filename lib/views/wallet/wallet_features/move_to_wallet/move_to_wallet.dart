@@ -26,8 +26,7 @@ import 'package:flutter/gestures.dart';
 
 class MoveToWalletView extends StatelessWidget {
   final WalletInfo walletInfo;
-  const MoveToWalletView({Key? key, required this.walletInfo})
-      : super(key: key);
+  const MoveToWalletView({super.key, required this.walletInfo});
 
   @override
   Widget build(BuildContext context) {

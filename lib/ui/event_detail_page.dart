@@ -29,10 +29,12 @@ class _EventDetailState extends State<EventDetail> {
   };
   final Map<ExpanderModifier, Widget> expansionModifierOptions = {
     ExpanderModifier.none: const ModContainer(ExpanderModifier.none),
-    ExpanderModifier.circleFilled: const ModContainer(ExpanderModifier.circleFilled),
+    ExpanderModifier.circleFilled:
+        const ModContainer(ExpanderModifier.circleFilled),
     ExpanderModifier.circleOutlined:
         const ModContainer(ExpanderModifier.circleOutlined),
-    ExpanderModifier.squareFilled: const ModContainer(ExpanderModifier.squareFilled),
+    ExpanderModifier.squareFilled:
+        const ModContainer(ExpanderModifier.squareFilled),
     ExpanderModifier.squareOutlined:
         const ModContainer(ExpanderModifier.squareOutlined),
   };
@@ -267,7 +269,7 @@ class _EventDetailState extends State<EventDetail> {
 class ModContainer extends StatelessWidget {
   final ExpanderModifier modifier;
 
-  const ModContainer(this.modifier, {Key? key}) : super(key: key);
+  const ModContainer(this.modifier, {super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -371,7 +371,7 @@ class _AddTokenState extends State<AddTokenCustomView> {
         }
       }
     } catch (e) {
-      print(e.toString());
+      debugPrint(e.toString());
     }
   }
 

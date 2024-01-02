@@ -10,8 +10,8 @@ import 'shimmer_wallet_dashboard_layout.dart';
 class ShimmerLayout extends StatelessWidget {
   final String layoutType;
   final int count;
-  const ShimmerLayout({Key? key, required this.layoutType, required this.count})
-      : super(key: key);
+  const ShimmerLayout(
+      {super.key, required this.layoutType, required this.count});
 
   @override
   Widget build(BuildContext context) {

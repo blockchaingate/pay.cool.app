@@ -12,7 +12,7 @@ import 'package:paycool/services/api_service.dart';
 import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/views/bond/buyBond/select_payment_bond_view.dart';
 import 'package:paycool/views/bond/helper.dart';
-import 'package:paycool/views/bond/progressIndicator.dart';
+import 'package:paycool/views/bond/progress_indicator.dart';
 
 class BondSembolView extends StatefulWidget {
   final BondMeModel? bondMeVm;

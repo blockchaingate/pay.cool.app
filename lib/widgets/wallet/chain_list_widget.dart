@@ -4,14 +4,18 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:paycool/constants/api_routes.dart';
 import 'package:paycool/constants/colors.dart';
+import 'package:paycool/models/wallet/provider_address_model.dart';
 import 'package:paycool/models/wallet/wallet_balance.dart';
 import 'package:paycool/shared/ui_helpers.dart';
 
-var chainList = ["FAB", "BTC", "ETH", "USDT", "BNB", "TRX", "BUSD", "USDC"];
+var chainList = ["BTC", "ETH", "FAB", "LTC", "DOGE", "BCH", "TRX"];
 int currentChainIndex = 0;
 
 Widget chainListWidget(
-    BuildContext context, Size size, List<WalletBalance> wallets) {
+    BuildContext context,
+    Size size,
+    List<WalletBalance> wallets,
+    List<ProviderAddressModel> providerAddressList) {
   return StatefulBuilder(
     builder: (BuildContext context, void Function(void Function()) setState) {
       return BackdropFilter(
@@ -117,7 +121,8 @@ Widget chainListWidget(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold),
                           ),
-                          getRecords(context, size, wallets),
+                          getRecords(
+                              context, size, wallets, providerAddressList),
                         ],
                       ),
                     ),
@@ -132,10 +137,14 @@ Widget chainListWidget(
   );
 }
 
-Widget getRecords(
-    BuildContext context, Size size, List<WalletBalance> wallets) {
+Widget getRecords(BuildContext context, Size size, List<WalletBalance> wallets,
+    List<ProviderAddressModel> providerAddressList) {
   var currentWallet = wallets
       .where((element) => element.coin == chainList[currentChainIndex])
+      .first;
+
+  var currentProviderAddress = providerAddressList
+      .where((element) => element.name == chainList[currentChainIndex])
       .first;
 
   return InkWell(
@@ -143,33 +152,20 @@ Widget getRecords(
       Navigator.pop(context, currentChainIndex);
     },
     child: SizedBox(
-      width: size.width,
-      height: size.height * 0.1,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      width: size.width * 0.7,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
-              Text(
-                "0xgtfr....hy65",
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600),
-              ),
-              // Text(
-              //   "Wallet 1",
-              //   style: TextStyle(
-              //       color: Colors.black45,
-              //       fontSize: 14,
-              //       fontWeight: FontWeight.w600),
-              // ),
-            ],
-          ),
+          UIHelper.verticalSpaceMedium,
           Text(
-            "\$ ${currentWallet.balance!}",
+            currentProviderAddress.address!,
+            style: TextStyle(
+                color: Colors.black, fontSize: 14, fontWeight: FontWeight.w600),
+          ),
+          UIHelper.verticalSpaceSmall,
+          Text(
+            currentWallet.balance! > 0 ? "\$ ${currentWallet.balance!}" : "0.0",
+            softWrap: true,
             style: TextStyle(
                 color: Colors.black, fontSize: 14, fontWeight: FontWeight.bold),
           ),

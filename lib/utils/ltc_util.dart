@@ -53,7 +53,9 @@ Future getLtcTransactionStatus(String txid) async {
   var url = '${ltcBaseUrl}gettransactionjson/$txid';
   try {
     response = await client.get(Uri.parse(url));
-  } catch (e) {}
+  } catch (e) {
+    debugPrint(e.toString());
+  }
 
   return response;
 }
@@ -67,6 +69,8 @@ Future getLtcBalanceByAddress(String address) async {
     var response = await client.get(Uri.parse(url));
     debugPrint(response.toString());
     btcBalance = double.parse(response.body) / 1e8;
-  } catch (e) {}
+  } catch (e) {
+    debugPrint(e.toString());
+  }
   return {'balance': btcBalance, 'lockbalance': 0.0};
 }

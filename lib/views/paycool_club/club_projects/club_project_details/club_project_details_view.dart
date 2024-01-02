@@ -14,8 +14,7 @@ import 'package:stacked/stacked.dart';
 
 class ClubProjectDetailsView extends StatelessWidget {
   final Summary summary;
-  const ClubProjectDetailsView({Key? key, required this.summary})
-      : super(key: key);
+  const ClubProjectDetailsView({super.key, required this.summary});
 
   @override
   Widget build(BuildContext context) {

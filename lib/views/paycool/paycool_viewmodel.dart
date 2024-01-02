@@ -144,7 +144,6 @@ class PayCoolViewmodel extends FutureViewModel {
       lang = "en";
     }
 
-    cameraController = MobileScannerController();
     startCamera();
   }
 
@@ -161,10 +160,22 @@ class PayCoolViewmodel extends FutureViewModel {
   }
 
   void startCamera() {
+    cleanFields();
     showDetails = false;
+    cameraController = MobileScannerController();
     cameraController!.stop();
     cameraController!.start();
 
+    notifyListeners();
+  }
+
+  void cleanFields() {
+    addressController.clear();
+    amountPayable = Decimal.zero;
+    taxAmount = Decimal.zero;
+    coinPayable = '';
+    merchantModel!.clear();
+    payOrder.clear();
     notifyListeners();
   }
 
@@ -1638,26 +1649,22 @@ class PayCoolViewmodel extends FutureViewModel {
                           width: 250,
                           height: 250,
                           child: Center(
-                            child: Container(
-                              child: RepaintBoundary(
-                                key: globalKey,
-                                child: QrImageView(
-                                    backgroundColor: white,
-                                    data: kbAddress,
-                                    version: QrVersions.auto,
-                                    size: 300,
-                                    gapless: true,
-                                    errorStateBuilder: (context, err) {
-                                      return Container(
-                                        child: Center(
-                                          child: Text(
-                                              FlutterI18n.translate(context,
-                                                  "somethingWentWrong"),
-                                              textAlign: TextAlign.center),
-                                        ),
-                                      );
-                                    }),
-                              ),
+                            child: RepaintBoundary(
+                              key: globalKey,
+                              child: QrImageView(
+                                  backgroundColor: white,
+                                  data: kbAddress,
+                                  version: QrVersions.auto,
+                                  size: 300,
+                                  gapless: true,
+                                  errorStateBuilder: (context, err) {
+                                    return Center(
+                                      child: Text(
+                                          FlutterI18n.translate(
+                                              context, "somethingWentWrong"),
+                                          textAlign: TextAlign.center),
+                                    );
+                                  }),
                             ),
                           )),
                     ],

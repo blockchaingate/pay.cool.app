@@ -59,7 +59,7 @@ Uint8List hashMultisigMessage(String data) {
   Uint8List ethMessage =
       Uint8List.fromList([...preambleBuffer, ...messageBytes]);
 
-  print('ethMessage: ${web3_dart.bytesToHex(ethMessage)}');
+  debugPrint('ethMessage: ${web3_dart.bytesToHex(ethMessage)}');
   debugPrint('payload ${HEX.encode(messageBytes)}');
   debugPrint('concat ${HEX.encode(ethMessage)}');
 

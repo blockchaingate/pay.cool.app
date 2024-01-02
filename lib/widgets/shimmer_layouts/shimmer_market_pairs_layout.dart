@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../shared/ui_helpers.dart';
 
 class ShimmerMarketPairsLayout extends StatelessWidget {
-  const ShimmerMarketPairsLayout({Key? key}) : super(key: key);
+  const ShimmerMarketPairsLayout({super.key});
 
   @override
   Widget build(BuildContext context) {

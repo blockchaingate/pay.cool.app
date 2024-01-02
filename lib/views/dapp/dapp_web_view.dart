@@ -111,16 +111,12 @@ class _DappWebViewState extends State<DappWebView> {
     return InkWell(
       onTap: () {
         if (title == "Favorite") {
-          print("Favorite");
         } else if (title == "Share") {
-          print("Share");
         } else if (title == "Copy link") {
           Clipboard.setData(ClipboardData(text: widget.url!));
-          print("Copy link");
         } else if (title == "Refresh") {
           Navigator.pop(context);
           controller.reload();
-          print("Refresh");
         }
       },
       child: SizedBox(

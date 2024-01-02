@@ -12,8 +12,7 @@ import 'package:stacked/stacked.dart';
 
 class TransactionHistoryView extends StatelessWidget {
   final WalletInfo walletInfo;
-  const TransactionHistoryView({Key? key, required this.walletInfo})
-      : super(key: key);
+  const TransactionHistoryView({super.key, required this.walletInfo});
 
   @override
   Widget build(BuildContext context) {

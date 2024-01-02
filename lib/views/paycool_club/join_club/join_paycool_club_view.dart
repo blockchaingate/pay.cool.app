@@ -296,11 +296,10 @@ class JoinPayCoolClubView extends StackedView<JoinPayCoolClubViewModel> {
 // Error message
                       model.errorMessage.isEmpty
                           ? Container()
-                          : Container(
-                              child: Center(
+                          : Center(
                               child: Text(
                                   firstCharToUppercase(model.errorMessage)),
-                            )),
+                            ),
 
                       // Button Row
                       UIHelper.verticalSpaceSmall,

@@ -27,7 +27,7 @@ import 'package:paycool/services/local_dialog_service.dart';
 import 'dart:typed_data';
 
 class SmartContractView extends StatefulWidget {
-  const SmartContractView({Key? key}) : super(key: key);
+  const SmartContractView({super.key});
 
   @override
   _SmartContractViewState createState() => _SmartContractViewState();

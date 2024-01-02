@@ -2,15 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:paycool/constants/colors.dart';
-import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/widgets/wallet/add_wallet_token/add_wallet_token_viewmodel.dart';
 import 'package:stacked/stacked.dart';
 
 class AddWalletTokenWidget extends StatelessWidget {
   final String chainName;
-  const AddWalletTokenWidget({Key? key, required this.chainName})
-      : super(key: key);
+  const AddWalletTokenWidget({super.key, required this.chainName});
 
   @override
   Widget build(BuildContext context) {

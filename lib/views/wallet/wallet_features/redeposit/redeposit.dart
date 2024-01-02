@@ -27,7 +27,7 @@ import 'package:stacked/stacked.dart';
 class RedepositView extends StatelessWidget {
   final WalletInfo walletInfo;
 
-  const RedepositView({Key? key, required this.walletInfo}) : super(key: key);
+  const RedepositView({super.key, required this.walletInfo});
 
   @override
   Widget build(BuildContext context) {

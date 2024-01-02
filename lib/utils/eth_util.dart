@@ -69,7 +69,9 @@ Future getEthBalanceByAddress(String address) async {
     Map<String, dynamic> balance = jsonDecode(response.body);
     ethBalance =
         NumberUtil.rawStringToDecimal(balance['balance'].toString()).toDouble();
-  } catch (e) {}
+  } catch (e) {
+    debugPrint(e.toString());
+  }
   return {'balance': ethBalance, 'lockbalance': 0.0};
 }
 

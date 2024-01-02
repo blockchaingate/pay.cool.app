@@ -12,6 +12,7 @@
 */
 
 import 'package:bitcoin_flutter/bitcoin_flutter.dart';
+import 'package:flutter/material.dart';
 import 'package:http/src/response.dart';
 import '../environments/environment.dart';
 import 'custom_http_util.dart';
@@ -25,7 +26,9 @@ Future getBtcTransactionStatus(String txid) async {
 
   try {
     response = await client.get(Uri.parse(url));
-  } catch (e) {}
+  } catch (e) {
+    debugPrint(e.toString());
+  }
 
   return response;
 }
@@ -36,7 +39,9 @@ Future getBtcBalanceByAddress(String address) async {
   try {
     var response = await client.get(Uri.parse(url));
     btcBalance = double.parse(response.body) / 1e8;
-  } catch (e) {}
+  } catch (e) {
+    debugPrint(e.toString());
+  }
   return {'balance': btcBalance, 'lockbalance': 0.0};
 }
 

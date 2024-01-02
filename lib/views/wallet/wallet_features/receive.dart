@@ -33,7 +33,7 @@ import 'package:share_plus/share_plus.dart';
 
 class ReceiveWalletScreen extends StatefulWidget {
   final WalletInfo? data;
-  const ReceiveWalletScreen({Key? key, this.data}) : super(key: key);
+  const ReceiveWalletScreen({super.key, this.data});
 
   @override
   _ReceiveWalletScreenState createState() => _ReceiveWalletScreenState();

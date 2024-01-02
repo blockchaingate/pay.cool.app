@@ -717,6 +717,7 @@ class PayCoolView extends StatelessWidget {
                                                   ),
                                                 ),
                                               ),
+                                        UIHelper.verticalSpaceMedium,
                                       ],
                                     ),
                                   ),
@@ -732,8 +733,7 @@ class PayCoolView extends StatelessWidget {
 }
 
 class CoinListBottomSheetFloatingActionButton extends StatelessWidget {
-  const CoinListBottomSheetFloatingActionButton({Key? key, this.model})
-      : super(key: key);
+  const CoinListBottomSheetFloatingActionButton({super.key, this.model});
   final PayCoolViewmodel? model;
 
   @override

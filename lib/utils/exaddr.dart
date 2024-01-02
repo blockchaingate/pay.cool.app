@@ -68,7 +68,9 @@ var VERSION_BYTE = {
 decodeAddress(address) {
   try {
     return decodeBase58Address(address);
-  } catch (error) {}
+  } catch (error) {
+    debugPrint(error.toString());
+  }
   return '';
 }
 
@@ -124,7 +126,9 @@ decodeBase58Address(address) {
         'type': Type['P2PKH']
       };
     }
-  } catch (error) {}
+  } catch (error) {
+    debugPrint(error.toString());
+  }
   return {};
 }
 

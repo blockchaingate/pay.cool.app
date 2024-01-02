@@ -47,7 +47,7 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
 }
 
 class ClubDashboardView extends StatelessWidget {
-  const ClubDashboardView({Key? key}) : super(key: key);
+  const ClubDashboardView({super.key});
 
   topPaycoolWidget(context, ClubDashboardViewModel model) {
     return Column(
@@ -63,93 +63,86 @@ class ClubDashboardView extends StatelessWidget {
           //     image: DecorationImage(
           //         image:
           //             AssetImage("assets/images/shared/blur-background.png"))),
-          child: Container(
-            child: Stack(
-              children: [
-                Positioned(
-                  top: MediaQuery.of(context).size.width * 0.32,
-                  left: 0,
-                  right: 0,
-                  child: Center(
-                    child: Container(
-                      width: MediaQuery.of(context).size.width * 0.65,
-                      height: MediaQuery.of(context).size.width < largeSize
-                          ? MediaQuery.of(context).size.width * 0.17
-                          : MediaQuery.of(context).size.width * 0.3,
-                      decoration: BoxDecoration(
-                        color: const Color(0xfff5f5f5),
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          Container(
-                            alignment: Alignment.center,
-                            padding: const EdgeInsets.all(5),
-                            width: MediaQuery.of(context).size.width * 0.52,
-                            child: Text(
-                              FlutterI18n.translate(context, "dashboard"),
-                              style: headText2.copyWith(
-                                  color: black, fontWeight: FontWeight.w500),
-                            ),
+          child: Stack(
+            children: [
+              Positioned(
+                top: MediaQuery.of(context).size.width * 0.32,
+                left: 0,
+                right: 0,
+                child: Center(
+                  child: Container(
+                    width: MediaQuery.of(context).size.width * 0.65,
+                    height: MediaQuery.of(context).size.width < largeSize
+                        ? MediaQuery.of(context).size.width * 0.17
+                        : MediaQuery.of(context).size.width * 0.3,
+                    decoration: BoxDecoration(
+                      color: const Color(0xfff5f5f5),
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Container(
+                          alignment: Alignment.center,
+                          padding: const EdgeInsets.all(5),
+                          width: MediaQuery.of(context).size.width * 0.52,
+                          child: Text(
+                            FlutterI18n.translate(context, "dashboard"),
+                            style: headText2.copyWith(
+                                color: black, fontWeight: FontWeight.w500),
                           ),
-                          Visibility(
-                            visible: model.memberTypeCode == 1,
-                            child: Container(
-                              child: Text(
-                                  FlutterI18n.translate(context, "vipMember"),
-                                  style:
-                                      headText5.copyWith(color: primaryColor)),
-                            ),
+                        ),
+                        Visibility(
+                          visible: model.memberTypeCode == 1,
+                          child: Text(
+                              FlutterI18n.translate(context, "vipMember"),
+                              style: headText5.copyWith(color: primaryColor)),
+                        ),
+                        Visibility(
+                          visible: model.memberTypeCode == 2,
+                          child: Text(
+                            FlutterI18n.translate(context, "basicMember"),
+                            style: headText3.copyWith(color: primaryColor),
                           ),
-                          Visibility(
-                            visible: model.memberTypeCode == 2,
-                            child: Container(
-                              child: Text(
-                                FlutterI18n.translate(context, "basicMember"),
-                                style: headText3.copyWith(color: primaryColor),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
-                Align(
-                  alignment: Alignment.topCenter,
-                  child: Text(
-                    FlutterI18n.translate(context, "payCoolVipClub"),
-                    style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xff333333)),
-                  ),
+              ),
+              Align(
+                alignment: Alignment.topCenter,
+                child: Text(
+                  FlutterI18n.translate(context, "payCoolVipClub"),
+                  style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xff333333)),
                 ),
-                Positioned(
-                  top: MediaQuery.of(context).size.width * 0.12,
-                  left: 0,
-                  right: 0,
-                  child: Center(
-                    child: Container(
-                      padding: const EdgeInsets.all(3),
-                      width: MediaQuery.of(context).size.width * 0.2,
-                      height: MediaQuery.of(context).size.width * 0.2,
-                      decoration: BoxDecoration(
-                        image: const DecorationImage(
-                            image: AssetImage(
-                          "assets/images/club/crown.png",
-                        )),
-                        color: const Color(0xffeeeeee),
-                        borderRadius: BorderRadius.circular(15),
-                      ),
+              ),
+              Positioned(
+                top: MediaQuery.of(context).size.width * 0.12,
+                left: 0,
+                right: 0,
+                child: Center(
+                  child: Container(
+                    padding: const EdgeInsets.all(3),
+                    width: MediaQuery.of(context).size.width * 0.2,
+                    height: MediaQuery.of(context).size.width * 0.2,
+                    decoration: BoxDecoration(
+                      image: const DecorationImage(
+                          image: AssetImage(
+                        "assets/images/club/crown.png",
+                      )),
+                      color: const Color(0xffeeeeee),
+                      borderRadius: BorderRadius.circular(15),
                     ),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ],

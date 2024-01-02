@@ -16,8 +16,7 @@ import 'package:paycool/views/paycool_club/referral/referral_viewmodel.dart';
 
 class PaycoolReferralDetailsView extends StatelessWidget {
   final ReferalRoute referalRoute;
-  const PaycoolReferralDetailsView({Key? key, required this.referalRoute})
-      : super(key: key);
+  const PaycoolReferralDetailsView({super.key, required this.referalRoute});
 
   @override
   Widget build(BuildContext context) {
@@ -225,8 +224,7 @@ class PaycoolReferralDetailsView extends StatelessWidget {
                         ],
                       ),
                     ),
-                    trailing: Container(
-                        child: Row(
+                    trailing: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         CupertinoButton(
@@ -259,7 +257,7 @@ class PaycoolReferralDetailsView extends StatelessWidget {
                                           .userAddress!)));
                             }),
                       ],
-                    )),
+                    ),
                   ),
                 );
               },

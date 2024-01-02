@@ -18,7 +18,7 @@ import 'package:stacked/stacked.dart';
 import 'referral/referral_model.dart';
 
 class ClubDashboardView extends StatelessWidget {
-  const ClubDashboardView({Key? key}) : super(key: key);
+  const ClubDashboardView({super.key});
 
   @override
   Widget build(BuildContext context) {

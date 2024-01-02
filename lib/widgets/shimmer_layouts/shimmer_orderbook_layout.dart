@@ -3,7 +3,7 @@ import 'package:paycool/constants/colors.dart';
 import 'package:paycool/shared/ui_helpers.dart';
 
 class ShimmerOrderbookLayout extends StatelessWidget {
-  const ShimmerOrderbookLayout({Key? key}) : super(key: key);
+  const ShimmerOrderbookLayout({super.key});
 
   @override
   Widget build(BuildContext context) {

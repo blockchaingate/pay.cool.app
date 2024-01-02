@@ -28,8 +28,7 @@ import 'package:stacked/stacked.dart';
 // {"success":true,"data":{"transactionID":"7f9d1b3fad00afa85076d28d46fd3457f66300989086b95c73ed84e9b3906de8"}}
 class MoveToExchangeView extends StatelessWidget {
   final WalletInfo walletInfo;
-  const MoveToExchangeView({Key? key, required this.walletInfo})
-      : super(key: key);
+  const MoveToExchangeView({super.key, required this.walletInfo});
 
   @override
   Widget build(BuildContext context) {
@@ -105,88 +104,85 @@ class MoveToExchangeView extends StatelessWidget {
               ),
               UIHelper.verticalSpaceSmall,
 
-              Container(
-                child: Column(
-                  children: [
-                    walletInfo.tickerName == 'TRX' ||
-                            walletInfo.tickerName == 'USDTX'
-                        ? Container(
-                            padding: const EdgeInsets.only(top: 10, bottom: 0),
-                            alignment: Alignment.topLeft,
-                            child: walletInfo.tickerName == 'TRX'
-                                ? Text(
-                                    '${FlutterI18n.translate(context, "gasFee")}: ${model.trxGasValueTextController.text} TRX',
-                                    textAlign: TextAlign.left,
-                                    style: headText6)
-                                : Text(
-                                    '${FlutterI18n.translate(context, "gasFee")}: ${model.trxGasValueTextController.text} TRX',
-                                    textAlign: TextAlign.left,
-                                    style: headText6),
-                          )
-                        : Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Row(
-                                children: [
-                                  Text(FlutterI18n.translate(context, "gasFee"),
-                                      style: headText6),
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        left:
-                                            5), // padding left to keep some space from the text
-                                    child: Text(
-                                        '${NumberUtil.roundDouble(model.transFee, decimalPlaces: 4).toString()} ${model.feeUnit}',
-                                        style: headText6),
-                                  )
-                                ],
-                              ),
-                              // chain balance
-
-                              model.tokenType.isNotEmpty
-                                  ? Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(top: 15.0),
-                                          child: Text(
-                                              '${model.walletInfo.tokenType} ${FlutterI18n.translate(context, "balance")}',
-                                              style: headText5),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                              top:
-                                                  5), // padding left to keep some space from the text
-                                          child: Text(
-                                              '${NumberUtil.roundDouble(model.chainBalance, decimalPlaces: 6).toString()} ${model.feeUnit}',
-                                              style: headText6),
-                                        )
-                                      ],
-                                    )
-                                  : Container()
-                            ],
-                          ),
-                    UIHelper.verticalSpaceSmall,
-                    // Kanaban Gas Fee Row
-                    Row(
-                      children: <Widget>[
-                        Text(FlutterI18n.translate(context, "kanbanGasFee"),
-                            style: headText6),
-                        Padding(
-                          padding: const EdgeInsets.only(
-                              left:
-                                  5), // padding left to keep some space from the text
-                          child: Text(
-                              '${NumberUtil.roundDouble(model.kanbanTransFee, decimalPlaces: 4).toString()} GAS',
-                              style: headText6),
+              Column(
+                children: [
+                  walletInfo.tickerName == 'TRX' ||
+                          walletInfo.tickerName == 'USDTX'
+                      ? Container(
+                          padding: const EdgeInsets.only(top: 10, bottom: 0),
+                          alignment: Alignment.topLeft,
+                          child: walletInfo.tickerName == 'TRX'
+                              ? Text(
+                                  '${FlutterI18n.translate(context, "gasFee")}: ${model.trxGasValueTextController.text} TRX',
+                                  textAlign: TextAlign.left,
+                                  style: headText6)
+                              : Text(
+                                  '${FlutterI18n.translate(context, "gasFee")}: ${model.trxGasValueTextController.text} TRX',
+                                  textAlign: TextAlign.left,
+                                  style: headText6),
                         )
-                      ],
-                    ),
-                  ],
-                ),
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Row(
+                              children: [
+                                Text(FlutterI18n.translate(context, "gasFee"),
+                                    style: headText6),
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      left:
+                                          5), // padding left to keep some space from the text
+                                  child: Text(
+                                      '${NumberUtil.roundDouble(model.transFee, decimalPlaces: 4).toString()} ${model.feeUnit}',
+                                      style: headText6),
+                                )
+                              ],
+                            ),
+                            // chain balance
+
+                            model.tokenType.isNotEmpty
+                                ? Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(top: 15.0),
+                                        child: Text(
+                                            '${model.walletInfo.tokenType} ${FlutterI18n.translate(context, "balance")}',
+                                            style: headText5),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            top:
+                                                5), // padding left to keep some space from the text
+                                        child: Text(
+                                            '${NumberUtil.roundDouble(model.chainBalance, decimalPlaces: 6).toString()} ${model.feeUnit}',
+                                            style: headText6),
+                                      )
+                                    ],
+                                  )
+                                : Container()
+                          ],
+                        ),
+                  UIHelper.verticalSpaceSmall,
+                  // Kanaban Gas Fee Row
+                  Row(
+                    children: <Widget>[
+                      Text(FlutterI18n.translate(context, "kanbanGasFee"),
+                          style: headText6),
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            left:
+                                5), // padding left to keep some space from the text
+                        child: Text(
+                            '${NumberUtil.roundDouble(model.kanbanTransFee, decimalPlaces: 4).toString()} GAS',
+                            style: headText6),
+                      )
+                    ],
+                  ),
+                ],
               ),
 
               // Switch Row
