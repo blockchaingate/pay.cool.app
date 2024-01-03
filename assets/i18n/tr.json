@@ -793,6 +793,11 @@
   "clickCameraIcon": "Yenilemek için Kamera İkonuna tıklayın",
   "home": "Cüzdan",
   "inv": "Yatırım",
-  "qRCodeNotFound": "QR Kodu Bulunamadı"
+  "qRCodeNotFound": "QR Kodu Bulunamadı",
+  "comingSoon": "Yakında",
+  "permissionRequired": "İzin Gerekli",
+  "goToSettings": "Ayarlar'a Git",
+  "pleaseGotoSettings": "Lütfen ayarlara gidin ve kamera iznini etkinleştirin"
+
 
 }

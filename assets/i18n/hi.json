@@ -790,6 +790,11 @@
     "clickCameraIcon": "ताजगी के लिए कैमरा आइकन पर क्लिक करें",
     "home": "घर",
     "inv": "आमंत्रण",
-    "qRCodeNotFound": "क्यूआर कोड नहीं मिला"
+    "qRCodeNotFound": "क्यूआर कोड नहीं मिला",
+    "comingSoon": "जल्द आ रहा है",
+    "permissionRequired": "अनुमति आवश्यक",
+    "goToSettings": "सेटिंग्स पर जाएं",
+    "pleaseGotoSettings": "कृपया सेटिंग्स में जाएं और कैमरा अनुमति सक्षम करें"
+  
   
 }

@@ -793,5 +793,9 @@
     "clickCameraIcon": "Click Camera Icon to Refresh",
     "home": "Home",
     "inv": "Inv",
-    "qRCodeNotFound": "QR Code Not Found"
+    "qRCodeNotFound": "QR Code Not Found",
+    "comingSoon": "Coming Soon",
+    "permissionRequired": "Permission Required",
+    "goToSettings": "Go to Settings",
+    "pleaseGotoSettings": "Please go to settings and enable camera permission"
 }

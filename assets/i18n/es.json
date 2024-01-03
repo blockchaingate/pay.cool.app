@@ -788,7 +788,12 @@
     "clickCameraIcon": "Haga clic en el ícono de la cámara para actualizar",
     "home": "Inicio",
     "inv": "Inv",
-    "qRCodeNotFound": "Código QR no encontrado"
+    "qRCodeNotFound": "Código QR no encontrado",
+    "comingSoon": "Próximamente",
+    "permissionRequired": "Permiso necesario",
+    "goToSettings": "Ir a Configuración",
+    "pleaseGotoSettings": "Por favor, vaya a Configuración y habilite el permiso de la cámara"
+  
 
     
       

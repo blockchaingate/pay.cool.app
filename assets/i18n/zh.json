@@ -793,6 +793,11 @@
     "clickCameraIcon": "单击相机图标以刷新",
     "home": "首页",
     "inv": "邀",
-    "qRCodeNotFound": "未找到QR码"
+    "qRCodeNotFound": "未找到QR码",
+    "comingSoon": "即将推出",
+    "permissionRequired": "需要权限",
+    "goToSettings": "前往设置",
+    "pleaseGotoSettings": "请前往设置并启用相机权限"
+  
   
 }

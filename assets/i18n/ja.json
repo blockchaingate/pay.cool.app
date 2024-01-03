@@ -793,6 +793,12 @@
     "clickCameraIcon": "更新するにはカメラアイコンをクリックしてください",
     "home": "ホーム",
     "inv": "Inv",
-    "qRCodeNotFound": "QRコードが見つかりません"
+    "qRCodeNotFound": "QRコードが見つかりません",
+    "comingSoon": "近日公開",
+    "permissionRequired": "許可が必要です",
+    "goToSettings": "設定に移動",
+    "pleaseGotoSettings": "設定に移動してカメラの許可を有効にしてください"
+    
+  
   
 }

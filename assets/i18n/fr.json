@@ -793,6 +793,11 @@
     "clickCameraIcon": "Cliquez sur l'icône de la caméra pour actualiser",
     "home": "Accueil",
     "inv": "Inv",
-    "qRCodeNotFound": "Code QR non trouvé"
+    "qRCodeNotFound": "Code QR non trouvé",
+    "comingSoon": "Prochainement",
+    "permissionRequired": "Permission requise",
+    "goToSettings": "Aller aux paramètres",
+    "pleaseGotoSettings": "Veuillez aller dans les paramètres et activer l'autorisation de la caméra"
+  
   
 }

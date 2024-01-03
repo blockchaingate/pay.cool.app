@@ -23,6 +23,7 @@ class PayCoolView extends StatelessWidget {
       onViewModelReady: (model) {
         model.sharedService.context = context;
         model.init();
+        model.checkPermissions(context, true);
       },
       disposeViewModel: false,
       onDispose: (viewModel) => viewModel.dispose(),
@@ -182,7 +183,10 @@ class PayCoolView extends StatelessWidget {
                                     SizedBox(
                                       height: size.height * 0.47,
                                       child: model.showDetails
-                                          ? model.merchantModel!.image != null
+                                          ? model.merchantModel!.image !=
+                                                      null &&
+                                                  model.merchantModel!.image!
+                                                      .isNotEmpty
                                               ? Center(
                                                   child: Image.network(
                                                       model.merchantModel!.image
@@ -232,7 +236,8 @@ class PayCoolView extends StatelessWidget {
                                           children: [
                                             InkWell(
                                               onTap: () {
-                                                model.startCamera();
+                                                model.checkPermissions(
+                                                    context, true);
                                               },
                                               child: Image.asset(
                                                 "assets/images/new-design/scan_circle_icon.png",
@@ -250,8 +255,8 @@ class PayCoolView extends StatelessWidget {
                                             ),
                                             InkWell(
                                               onTap: () {
-                                                model.stopCamera();
-                                                model.scanImageFile();
+                                                model.checkPermissions(
+                                                    context, false);
                                               },
                                               child: Image.asset(
                                                 "assets/images/new-design/gallery_icon.png",

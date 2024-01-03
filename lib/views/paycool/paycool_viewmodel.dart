@@ -42,6 +42,7 @@ import 'package:paycool/utils/wallet/wallet_util.dart';
 import 'package:paycool/views/paycool/models/merchant_model.dart';
 import 'package:paycool/views/paycool/paycool_service.dart';
 import 'package:paycool/views/paycool_club/paycool_club_service.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:qr_code_utils/qr_code_utils.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share_plus/share_plus.dart';
@@ -143,14 +144,12 @@ class PayCoolViewmodel extends FutureViewModel {
     if (lang.isEmpty) {
       lang = "en";
     }
-
-    startCamera();
   }
 
   @override
   void dispose() {
+    if (cameraController != null) cameraController!.dispose();
     super.dispose();
-    cameraController!.dispose();
   }
 
   void stopCamera() {
@@ -177,6 +176,61 @@ class PayCoolViewmodel extends FutureViewModel {
     merchantModel!.clear();
     payOrder.clear();
     notifyListeners();
+  }
+
+  Future<void> checkPermissions(BuildContext context, bool isCamera) async {
+    Map<Permission, PermissionStatus> statuses =
+        await [Permission.camera, Permission.mediaLibrary].request();
+
+    if (statuses[Permission.camera] == PermissionStatus.granted &&
+        statuses[Permission.mediaLibrary] == PermissionStatus.granted) {
+      if (isCamera) {
+        startCamera();
+      } else {
+        stopCamera();
+        scanImageFile();
+      }
+    } else {
+      if (statuses[Permission.camera] != PermissionStatus.granted && isCamera) {
+        goToSettings(context);
+      }
+
+      if (statuses[Permission.mediaLibrary] != PermissionStatus.granted &&
+          !isCamera) {
+        goToSettings(context);
+      }
+    }
+  }
+
+  goToSettings(BuildContext context) async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(FlutterI18n.translate(
+              sharedService.context, "permissionRequired")),
+          content: Text(FlutterI18n.translate(
+              sharedService.context, "pleaseGotoSettings")),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                openAppSettings();
+              },
+              child: Text(
+                  FlutterI18n.translate(sharedService.context, "goToSettings")),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child:
+                  Text(FlutterI18n.translate(sharedService.context, "cancel")),
+            ),
+          ],
+        );
+      },
+    );
   }
 
 /*----------------------------------------------------------------------
