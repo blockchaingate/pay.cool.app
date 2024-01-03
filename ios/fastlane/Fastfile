@@ -35,7 +35,7 @@ platform :ios do
         destination:"export",
         method:"app-store",
         provisioningProfiles: { 
-          "com.biswap.app" => "biswap app profile"},
+          "cool.pay.paycool" => "paycool app profile"},
         signingCertificate:"Apple Distribution",
         signingStyle:"manual",
         stripSwiftSymbols:true,
