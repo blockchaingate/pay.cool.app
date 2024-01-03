@@ -44,6 +44,19 @@ pipeline {
             }
         }
 
+        stage('Send to TestFlight') {
+            steps {
+                script {
+                    if (COMMIT_MESSAGE.contains(CHECKTOUPDATE)) {
+                        sh "cd ios"
+                        sh "fastlane beta"
+                    } else {
+                        echo 'No need to send to TestFlight'
+                    }
+                }
+            }
+        }
+
         stage('Slack Notification') {
             when {
                 expression { currentBuild.resultIsBetterOrEqualTo('SUCCESS') }
