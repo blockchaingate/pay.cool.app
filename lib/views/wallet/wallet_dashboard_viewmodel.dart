@@ -116,7 +116,15 @@ class WalletDashboardViewModel extends BaseViewModel {
   List<WalletBalance> wallets = [];
   List<WalletBalance> walletsCopy = [];
 
-  final List<String> chainList = ["All", "FAB", "ETH", "TRX", "BNB", "FAV"];
+  final List<String> chainList = [
+    "All",
+    "FAB",
+    "ETH",
+    "BTC",
+    "TRX",
+    "BNB",
+    "FAV"
+  ];
 
   bool isShowFavCoins = false;
   int selectedTabIndex = 0;

@@ -84,13 +84,15 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
         },
         viewModelBuilder: () => WalletDashboardViewModel(),
         builder: (context, WalletDashboardViewModel model, child) {
-          return WillPopScope(
-            onWillPop: () {
+          return PopScope(
+            canPop: false,
+            onPopInvoked: (x) async {
               return WillPopScopeWidget().onWillPop(context);
             },
             child: GestureDetector(
               onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
               child: Scaffold(
+                backgroundColor: white,
                 key: key,
                 appBar: AppBar(
                   backgroundColor: Colors.transparent,
@@ -120,15 +122,18 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
                   ),
                   leadingWidth: (size.width * 0.3),
                   actions: [
-                    InkWell(
-                      onTap: () {
-                        model.navigationService.navigateTo(
-                          WalletConnectViewRoute,
-                        );
-                      },
-                      child: Image.asset(
-                        "assets/images/new-design/wc_icon.png",
-                        scale: 2.7,
+                    Padding(
+                      padding: const EdgeInsets.only(right: 10),
+                      child: InkWell(
+                        onTap: () {
+                          model.navigationService.navigateTo(
+                            WalletConnectViewRoute,
+                          );
+                        },
+                        child: Image.asset(
+                          "assets/images/new-design/wc_icon.png",
+                          scale: 2.7,
+                        ),
                       ),
                     ),
                     // Image.asset(
@@ -145,7 +150,6 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
                         onPressed: () {
                           model.navigationService.navigateTo(PayCoolViewRoute);
                         },
-                        elevation: 1,
                         backgroundColor: Colors.transparent,
                         child: Image.asset(
                           "assets/images/new-design/pay_cool_icon.png",
@@ -192,7 +196,10 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
                               : Colors.grey,
                         ),
                       ),
-                      child: Text(model.chainList[index]),
+                      child: Text(
+                        model.chainList[index],
+                        style: TextStyle(color: white),
+                      ),
                     ),
                   );
                 },
@@ -202,6 +209,7 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
               Expanded(
                 flex: 4,
                 child: TabBar(
+                  dividerHeight: 0,
                   controller: _tabController,
                   labelColor: primaryColor,
                   unselectedLabelColor: grey,
@@ -209,6 +217,10 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
                   indicatorSize: TabBarIndicatorSize.tab,
                   indicatorWeight: 3,
                   labelPadding: EdgeInsets.symmetric(horizontal: 5),
+                  labelStyle: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                  ),
                   indicatorPadding:
                       EdgeInsets.symmetric(horizontal: 25, vertical: 10),
                   tabs: [

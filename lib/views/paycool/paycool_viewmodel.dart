@@ -126,7 +126,6 @@ class PayCoolViewmodel extends FutureViewModel {
   PayOrder payOrder = PayOrder();
 
   MobileScannerController? cameraController;
-  bool showDetails = false;
 
 /*----------------------------------------------------------------------
                     Default Future to Run
@@ -152,19 +151,13 @@ class PayCoolViewmodel extends FutureViewModel {
     super.dispose();
   }
 
-  void stopCamera() {
-    if (cameraController != null) cameraController!.stop();
-    showDetails = true;
-    notifyListeners();
-  }
-
   void startCamera() {
-    cleanFields();
-    showDetails = false;
-    cameraController = MobileScannerController();
-    cameraController!.stop();
-    cameraController!.start();
-
+    if (merchantModel!.name != null) {
+      cleanFields();
+      cameraController = MobileScannerController();
+      cameraController!.stop();
+      cameraController!.start();
+    }
     notifyListeners();
   }
 
@@ -184,17 +177,12 @@ class PayCoolViewmodel extends FutureViewModel {
         Map<Permission, PermissionStatus> statuses =
             await [Permission.camera, Permission.mediaLibrary].request();
 
-        print('----------------------------------------------------------');
-        print('statuses[Permission.camera] ${statuses[Permission.camera]}');
-        print(
-            'statuses[Permission.mediaLibrary] ${statuses[Permission.mediaLibrary]}');
-
         if (statuses[Permission.camera] != PermissionStatus.granted &&
             statuses[Permission.mediaLibrary] != PermissionStatus.granted) {
           showPermissionPopup(context);
         }
       } catch (e) {
-        print('--------------------------------------> $e');
+        debugPrint('--------------------------------------> $e');
       }
     }
   }
@@ -279,21 +267,28 @@ class PayCoolViewmodel extends FutureViewModel {
   scanImageFile() async {
     // Pick an image
     setBusyForObject(isScanningImage, true);
-    String qrcodeFile = '';
-    final image = await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (image != null) {
-      qrcodeFile = image.path;
-      log.w(qrcodeFile);
-      try {
+
+    try {
+      String qrcodeFile = '';
+      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+      if (image != null) {
+        qrcodeFile = image.path;
+        log.w(qrcodeFile);
+
         var barcodeScanData = await QrCodeUtils.decodeFrom(qrcodeFile);
-        log.i(barcodeScanData);
-        orderDetails(barcodeScanData: barcodeScanData);
-        stopCamera();
-      } catch (err) {
-        sharedService.sharedSimpleNotification(
-            FlutterI18n.translate(sharedService.context, "qRCodeNotFound"));
-        log.e('QrCodeToolsPlugin Catch $err');
+
+        if (barcodeScanData != null) {
+          log.i(barcodeScanData);
+          orderDetails(barcodeScanData: barcodeScanData);
+        } else {
+          sharedService.sharedSimpleNotification(
+              FlutterI18n.translate(sharedService.context, "qRCodeNotFound"));
+        }
       }
+    } catch (e) {
+      sharedService.sharedSimpleNotification(
+          FlutterI18n.translate(sharedService.context, "qRCodeNotFound"));
+      log.e('QrCodeToolsPlugin Catch $e');
     }
 
     setBusyForObject(isScanningImage, false);

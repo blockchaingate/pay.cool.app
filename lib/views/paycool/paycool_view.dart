@@ -27,8 +27,9 @@ class PayCoolView extends StatelessWidget {
       },
       disposeViewModel: false,
       onDispose: (viewModel) => viewModel.dispose(),
-      builder: (context, PayCoolViewmodel model, _) => WillPopScope(
-        onWillPop: () {
+      builder: (context, PayCoolViewmodel model, _) => PopScope(
+        canPop: false,
+        onPopInvoked: (x) async {
           return WillPopScopeWidget().onWillPop(context);
         },
         child: Scaffold(
@@ -37,7 +38,6 @@ class PayCoolView extends StatelessWidget {
           bottomNavigationBar: BottomNavBar(count: 0),
           floatingActionButton: FloatingActionButton(
             onPressed: () {},
-            elevation: 1,
             backgroundColor: Colors.transparent,
             child: Image.asset(
               "assets/images/new-design/pay_cool_icon.png",
@@ -182,31 +182,22 @@ class PayCoolView extends StatelessWidget {
                                   children: [
                                     SizedBox(
                                       height: size.height * 0.47,
-                                      child: model.showDetails
-                                          ? model.merchantModel!.image !=
-                                                      null &&
-                                                  model.merchantModel!.image!
-                                                      .isNotEmpty
-                                              ? Center(
-                                                  child: Image.network(
-                                                      model.merchantModel!.image
-                                                          .toString(),
-                                                      fit: BoxFit.cover,
-                                                      errorBuilder:
-                                                          (BuildContext context,
-                                                              Object exception,
-                                                              StackTrace?
-                                                                  stackTrace) {
-                                                    return Container();
-                                                  }),
-                                                )
-                                              : Center(
-                                                  child: Text(
-                                                    FlutterI18n.translate(
-                                                        context,
-                                                        "clickCameraIcon"),
-                                                  ),
-                                                )
+                                      child: model.merchantModel!.image !=
+                                                  null &&
+                                              model.merchantModel!.image!
+                                                  .isNotEmpty
+                                          ? Center(
+                                              child: Image.network(
+                                                  model.merchantModel!.image
+                                                      .toString(),
+                                                  fit: BoxFit.cover,
+                                                  errorBuilder: (BuildContext
+                                                          context,
+                                                      Object exception,
+                                                      StackTrace? stackTrace) {
+                                                return Container();
+                                              }),
+                                            )
                                           : MobileScanner(
                                               controller:
                                                   model.cameraController,
@@ -218,7 +209,6 @@ class PayCoolView extends StatelessWidget {
                                                       barcodeScanData:
                                                           barcode.raw[0]
                                                               ["displayValue"]);
-                                                  model.stopCamera();
                                                 }
                                               }),
                                     ),
@@ -254,7 +244,6 @@ class PayCoolView extends StatelessWidget {
                                             ),
                                             InkWell(
                                               onTap: () {
-                                                model.stopCamera();
                                                 model.scanImageFile();
                                               },
                                               child: Image.asset(
@@ -291,7 +280,7 @@ class PayCoolView extends StatelessWidget {
                                                 children: [
                                                   Padding(
                                                     padding: const EdgeInsets
-                                                            .symmetric(
+                                                        .symmetric(
                                                         horizontal: 10),
                                                     child: Container(
                                                       width: size.width,
@@ -356,7 +345,7 @@ class PayCoolView extends StatelessWidget {
                                                       : Padding(
                                                           padding:
                                                               const EdgeInsets
-                                                                      .symmetric(
+                                                                  .symmetric(
                                                                   horizontal:
                                                                       10),
                                                           child: Container(
@@ -699,7 +688,7 @@ class PayCoolView extends StatelessWidget {
                                           ),
                                         ),
                                         UIHelper.verticalSpaceSmall,
-                                        model.showDetails
+                                        model.merchantModel!.name != null
                                             ? SizedBox()
                                             : InkWell(
                                                 onTap: () {

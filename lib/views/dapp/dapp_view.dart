@@ -21,8 +21,9 @@ class DappView extends StatelessWidget {
         model.context = context;
         model.init();
       },
-      builder: (context, model, _) => WillPopScope(
-        onWillPop: () {
+      builder: (context, model, _) => PopScope(
+        canPop: false,
+        onPopInvoked: (x) async {
           return WillPopScopeWidget().onWillPop(context);
         },
         child: GestureDetector(
@@ -35,7 +36,6 @@ class DappView extends StatelessWidget {
               onPressed: () {
                 model.navigationService.navigateTo(PayCoolViewRoute);
               },
-              elevation: 1,
               backgroundColor: Colors.transparent,
               child: Image.asset(
                 "assets/images/new-design/pay_cool_icon.png",
