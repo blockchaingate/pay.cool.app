@@ -153,7 +153,7 @@ class PayCoolViewmodel extends FutureViewModel {
   }
 
   void stopCamera() {
-    cameraController!.stop();
+    if (cameraController != null) cameraController!.stop();
     showDetails = true;
     notifyListeners();
   }
@@ -178,31 +178,28 @@ class PayCoolViewmodel extends FutureViewModel {
     notifyListeners();
   }
 
-  Future<void> checkPermissions(BuildContext context, bool isCamera) async {
-    Map<Permission, PermissionStatus> statuses =
-        await [Permission.camera, Permission.mediaLibrary].request();
+  Future<void> checkPermissions(BuildContext context) async {
+    if (Platform.isAndroid) {
+      try {
+        Map<Permission, PermissionStatus> statuses =
+            await [Permission.camera, Permission.mediaLibrary].request();
 
-    if (statuses[Permission.camera] == PermissionStatus.granted &&
-        statuses[Permission.mediaLibrary] == PermissionStatus.granted) {
-      if (isCamera) {
-        startCamera();
-      } else {
-        stopCamera();
-        scanImageFile();
-      }
-    } else {
-      if (statuses[Permission.camera] != PermissionStatus.granted && isCamera) {
-        goToSettings(context);
-      }
+        print('----------------------------------------------------------');
+        print('statuses[Permission.camera] ${statuses[Permission.camera]}');
+        print(
+            'statuses[Permission.mediaLibrary] ${statuses[Permission.mediaLibrary]}');
 
-      if (statuses[Permission.mediaLibrary] != PermissionStatus.granted &&
-          !isCamera) {
-        goToSettings(context);
+        if (statuses[Permission.camera] != PermissionStatus.granted &&
+            statuses[Permission.mediaLibrary] != PermissionStatus.granted) {
+          showPermissionPopup(context);
+        }
+      } catch (e) {
+        print('--------------------------------------> $e');
       }
     }
   }
 
-  goToSettings(BuildContext context) async {
+  showPermissionPopup(BuildContext context) async {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -212,14 +209,6 @@ class PayCoolViewmodel extends FutureViewModel {
           content: Text(FlutterI18n.translate(
               sharedService.context, "pleaseGotoSettings")),
           actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-                openAppSettings();
-              },
-              child: Text(
-                  FlutterI18n.translate(sharedService.context, "goToSettings")),
-            ),
             TextButton(
               onPressed: () {
                 Navigator.pop(context);

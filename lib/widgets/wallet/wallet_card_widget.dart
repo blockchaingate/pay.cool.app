@@ -27,7 +27,7 @@ class _WalletCardWidgetState extends State<WalletCardWidget> {
     return SizedBox(
       key: widget.key,
       width: size.width,
-      height: size.height > 750 ? size.height * 0.25 : size.height * 0.3,
+      height: size.height > 750 ? size.height * 0.22 : size.height * 0.27,
       child: Card(
         elevation: 2.0,
         shape: RoundedRectangleBorder(

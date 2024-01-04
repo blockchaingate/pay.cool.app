@@ -1052,6 +1052,15 @@ class WalletDashboardViewModel extends BaseViewModel {
     showModalBottomSheet(
       context: context!,
       isScrollControlled: true,
+      barrierColor: Colors.white.withOpacity(0.9),
+      shape: RoundedRectangleBorder(
+        side: BorderSide.lerp(
+            BorderSide(color: Colors.black12), BorderSide.none, 0),
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(30),
+          topRight: Radius.circular(30),
+        ),
+      ),
       builder: (BuildContext context) => chainListWidget(
           context, size, wallets, appStateProvider.getProviderAddressList),
     ).then((value) async {

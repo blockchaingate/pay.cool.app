@@ -169,6 +169,34 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
       child: Column(
         children: <Widget>[
           WalletCardWidget(model),
+          SizedBox(
+              width: size.width,
+              height:
+                  size.height > 750 ? size.height * 0.05 : size.height * 0.06,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: model.chainList.length,
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          model.selectedTabIndex = index;
+                        });
+                      },
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                          model.selectedTabIndex == index
+                              ? buttonPurple
+                              : Colors.grey,
+                        ),
+                      ),
+                      child: Text(model.chainList[index]),
+                    ),
+                  );
+                },
+              )),
           Row(
             children: [
               Expanded(
