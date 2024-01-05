@@ -57,9 +57,7 @@ pipeline {
                             channel: "#paycool-testing",
                             credentialId: "slack-file-token",
                             filePath: "build/app/outputs/flutter-apk/app-release.apk",
-                            initialComment: "Build Completed for Testing!\n
-                            BRANCH: new-design\n
-                            COMMIT: ${modifiedText}"
+                            initialComment: "Build Completed for Testing!\nBRANCH: new-design\nCOMMIT: ${modifiedText}"
                         )
                     } else {
                         echo 'No need to send Slack notification'
