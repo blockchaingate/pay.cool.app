@@ -30,6 +30,7 @@ class AppStateProvider with ChangeNotifier {
 //------------------------------------- Setters -------------------------------------
 
 /*Coin list*/
+
   Future<void> setProviderAddress(String name) async {
     String address =
         await coreWalletDatabaseService.getWalletAddressByTickerName(name);
@@ -37,11 +38,15 @@ class AppStateProvider with ChangeNotifier {
     ProviderAddressModel param =
         ProviderAddressModel(name: name, address: address);
 
-    if (address.isNotEmpty) {
-      providerAddressList.add(param);
-    }
+    // Check if an object with the same properties already exists in the list
+    bool alreadyExists = providerAddressList.any((existingParam) =>
+        existingParam.name == param.name &&
+        existingParam.address == param.address);
 
-    notifyListeners();
+    if (address.isNotEmpty && !alreadyExists) {
+      providerAddressList.add(param);
+      notifyListeners();
+    }
   }
 
   Future<void> setWalletBalances(List<WalletBalance> param) async {
