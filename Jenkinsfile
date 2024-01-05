@@ -44,19 +44,6 @@ pipeline {
             }
         }
 
-        // stage('Send to TestFlight') {
-        //     steps {
-        //         script {
-        //             if (COMMIT_MESSAGE.contains(CHECKTOUPDATE)) {
-        //                 sh "cd ios"
-        //                 sh "fastlane beta"
-        //             } else {
-        //                 echo 'No need to send to TestFlight'
-        //             }
-        //         }
-        //     }
-        // }
-
         stage('Slack Notification') {
             when {
                 expression { currentBuild.resultIsBetterOrEqualTo('SUCCESS') }
@@ -70,10 +57,25 @@ pipeline {
                             channel: "#paycool-testing",
                             credentialId: "slack-file-token",
                             filePath: "build/app/outputs/flutter-apk/app-release.apk",
-                            initialComment: "Build Completed for Testing!\nTest the Pay.Cool application on the following branch: new-design\nCommit Message: ${modifiedText}"
+                            initialComment: "Build Completed for Testing!\n
+                            BRANCH: new-design\n
+                            COMMIT: ${modifiedText}"
                         )
                     } else {
                         echo 'No need to send Slack notification'
+                    }
+                }
+            }
+        }
+
+        stage('Send to TestFlight') {
+            steps {
+                script {
+                    if (COMMIT_MESSAGE.contains(CHECKTOUPDATE)) {
+                        sh "cd ios"
+                        sh "fastlane beta"
+                    } else {
+                        echo 'No need to send to TestFlight'
                     }
                 }
             }

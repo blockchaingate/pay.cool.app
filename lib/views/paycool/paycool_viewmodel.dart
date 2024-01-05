@@ -526,7 +526,7 @@ class PayCoolViewmodel extends FutureViewModel {
             height: MediaQuery.of(context).size.height * 0.35,
             // margin: EdgeInsets.symmetric(horizontal: 10.0),
             decoration: BoxDecoration(
-              color: grey.withAlpha(300),
+              color: white,
               borderRadius:
                   const BorderRadius.vertical(top: Radius.circular(10)),
               // boxShadow: [

@@ -114,6 +114,7 @@ class CreateMultisigWalletView extends StatelessWidget {
         }
 
         return Scaffold(
+          backgroundColor: white,
           appBar: customAppBarWithTitle(
               FlutterI18n.translate(context, 'createMultisigWallet')),
           body: SingleChildScrollView(

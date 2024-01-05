@@ -797,7 +797,12 @@
   "comingSoon": "Yakında",
   "permissionRequired": "İzin Gerekli",
   "goToSettings": "Ayarlar'a Git",
-  "pleaseGotoSettings": "Lütfen ayarlara gidin ve kamera iznini etkinleştirin"
+  "pleaseGotoSettings": "Lütfen ayarlara gidin ve kamera iznini etkinleştirin",
+  "wallets": "Cüzdanlar",
+  "quickMenu": "Hızlı Menü",
+  "walletAddress": "Cüzdan Adresi",
+  "shareQRCode": "QR Kodu Paylaş"
+
 
 
 }

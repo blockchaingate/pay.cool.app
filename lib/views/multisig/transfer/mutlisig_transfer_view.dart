@@ -30,6 +30,7 @@ class MultisigTransferView extends StatelessWidget {
         Widget? child,
       ) {
         return Scaffold(
+            backgroundColor: white,
             appBar: AppBar(
                 centerTitle: true,
                 title: Column(

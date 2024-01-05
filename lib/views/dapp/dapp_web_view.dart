@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -44,6 +45,7 @@ class _DappWebViewState extends State<DappWebView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: white,
       appBar: customAppBarWithIcon(
           title: widget.title,
           leading: IconButton(
@@ -75,6 +77,7 @@ class _DappWebViewState extends State<DappWebView> {
       context: context,
       builder: (BuildContext context) {
         return Container(
+          color: white,
           height: MediaQuery.of(context).size.height / 4,
           width: MediaQuery.of(context).size.width,
           padding: EdgeInsets.all(16.0),

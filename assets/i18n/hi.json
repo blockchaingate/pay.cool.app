@@ -794,7 +794,12 @@
     "comingSoon": "जल्द आ रहा है",
     "permissionRequired": "अनुमति आवश्यक",
     "goToSettings": "सेटिंग्स पर जाएं",
-    "pleaseGotoSettings": "कृपया सेटिंग्स में जाएं और कैमरा अनुमति सक्षम करें"
+    "pleaseGotoSettings": "कृपया सेटिंग्स में जाएं और कैमरा अनुमति सक्षम करें",
+    "wallets": "वॉलेट्स",
+    "quickMenu": "त्वरित मेनू",
+    "walletAddress": "वॉलेट पता",
+    "shareQRCode": "क्यूआर कोड साझा करें"
+  
   
   
 }

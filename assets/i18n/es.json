@@ -792,7 +792,11 @@
     "comingSoon": "Próximamente",
     "permissionRequired": "Permiso necesario",
     "goToSettings": "Ir a Configuración",
-    "pleaseGotoSettings": "Por favor, vaya a Configuración y habilite el permiso de la cámara"
+    "pleaseGotoSettings": "Por favor, vaya a Configuración y habilite el permiso de la cámara",
+    "wallets": "Billeteras",
+    "quickMenu": "Menú Rápido",
+    "walletAddress": "Dirección de la Billetera",
+    "shareQRCode": "Compartir Código QR"
   
 
     

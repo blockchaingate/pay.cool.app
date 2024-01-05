@@ -46,24 +46,15 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
   @override
   initState() {
     super.initState();
-
     _tabController = TabController(length: 2, vsync: this);
-    _tabController!.addListener(() {
-      _handleTabSelection();
-    });
   }
 
   @override
   dispose() {
-    _tabController!.removeListener(_handleTabSelection);
     _tabController!.dispose();
     _pageController.dispose();
 
     super.dispose();
-  }
-
-  void _handleTabSelection() {
-    if (newModel != null) {}
   }
 
   @override
@@ -111,7 +102,7 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
                         ),
                         UIHelper.horizontalSpaceSmall,
                         Text(
-                          "${model.chainList[model.selectedTabIndex]} ${FlutterI18n.translate(context, "chain")}",
+                          FlutterI18n.translate(context, "chain"),
                           style: TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.w600,
@@ -123,7 +114,7 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
                   leadingWidth: (size.width * 0.3),
                   actions: [
                     Padding(
-                      padding: const EdgeInsets.only(right: 10),
+                      padding: const EdgeInsets.only(right: 20),
                       child: InkWell(
                         onTap: () {
                           model.navigationService.navigateTo(
@@ -185,9 +176,7 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
                     padding: EdgeInsets.all(8.0),
                     child: ElevatedButton(
                       onPressed: () {
-                        setState(() {
-                          model.selectedTabIndex = index;
-                        });
+                        model.updateTabSelection(index);
                       },
                       style: ButtonStyle(
                         backgroundColor: MaterialStateProperty.all<Color>(
@@ -335,7 +324,7 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
       case 0:
         newList = model.wallets;
         break;
-      case 5:
+      case 6:
         newList = model.getFavCoins();
         break;
       default:
@@ -358,7 +347,9 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
           visible: usdBalance >= 0 && !model.isHideSmallAssetsButton,
           // Secondary visible widget will be visible when usdVal is not equals to 0 and isHideSmallAmountAssets is true
           replacement: Visibility(
-              visible: model.isHideSmallAssetsButton && usdBalance != 0,
+              visible: model.selectedTabIndex == 6
+                  ? true
+                  : model.isHideSmallAssetsButton && usdBalance != 0,
               child: CoinDetailsCardWidget(
                 tickerName: tickerName,
                 index: index,

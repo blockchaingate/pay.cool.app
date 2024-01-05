@@ -268,6 +268,9 @@ class WalletDashboardViewModel extends BaseViewModel {
   }
 
   updateTabSelection(int tabIndex) {
+    print("------------------");
+    print(tabIndex);
+
     setBusy(true);
     setBusyForObject(selectedTabIndex, true);
 
@@ -280,16 +283,16 @@ class WalletDashboardViewModel extends BaseViewModel {
     if (tabIndex == 0) {
       isHideSmallAssetsButton = false;
       isHideSearch = false;
-    } else if (tabIndex == 5) {
+    } else if (tabIndex == 6) {
       isShowFavCoins = true;
     } else {
       isHideSmallAssetsButton = false;
       isHideSearch = false;
     }
 
-    storageService.isFavCoinTabSelected = isShowFavCoins ? true : false;
-    debugPrint(
-        'current tab sel $selectedTabIndex -- isShowFavCoins $isShowFavCoins');
+    if (tabIndex != 6) {
+      isShowFavCoins = false;
+    }
 
     setBusy(false);
     setBusyForObject(selectedTabIndex, false);
@@ -298,6 +301,7 @@ class WalletDashboardViewModel extends BaseViewModel {
   List<WalletBalance> getFavCoins() {
     List<WalletBalance> favWallets = [];
     String favCoinsJson = storageService.favWalletCoins;
+
     if (favCoinsJson != '') {
       List<String> favWalletCoins =
           (jsonDecode(favCoinsJson) as List<dynamic>).cast<String>();
@@ -1071,12 +1075,6 @@ class WalletDashboardViewModel extends BaseViewModel {
       ),
       builder: (BuildContext context) => chainListWidget(
           context, size, wallets, appStateProvider.getProviderAddressList),
-    ).then((value) async {
-      if (value != null) {
-        updateTabSelection(value);
-      }
-    }).whenComplete(() {
-      notifyListeners();
-    });
+    );
   }
 }

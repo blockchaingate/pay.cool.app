@@ -797,5 +797,10 @@
     "comingSoon": "Coming Soon",
     "permissionRequired": "Permission Required",
     "goToSettings": "Go to Settings",
-    "pleaseGotoSettings": "Please go to settings and enable camera permission"
+    "pleaseGotoSettings": "Please go to settings and enable camera permission",
+    "wallets": "Wallets",
+    "quickMenu": "Quick Menu",
+    "walletAddress": "Wallet Address",
+    "shareQRCode": "Share QR Code"
+
 }

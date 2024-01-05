@@ -797,7 +797,12 @@
     "comingSoon": "即将推出",
     "permissionRequired": "需要权限",
     "goToSettings": "前往设置",
-    "pleaseGotoSettings": "请前往设置并启用相机权限"
+    "pleaseGotoSettings": "请前往设置并启用相机权限",
+    "wallets": "钱包",
+    "quickMenu": "快捷菜单",
+    "walletAddress": "钱包地址",
+    "shareQRCode": "分享QR码"
+  
   
   
 }

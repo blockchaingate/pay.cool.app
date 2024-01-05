@@ -23,17 +23,20 @@ import 'package:path_provider/path_provider.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/logger.dart';
+import 'package:paycool/models/wallet/provider_address_model.dart';
 import 'package:paycool/models/wallet/wallet.dart';
+import 'package:paycool/providers/app_state_provider.dart';
 import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/wallet_service.dart';
 import 'package:paycool/shared/ui_helpers.dart';
-import 'package:paycool/utils/fab_util.dart';
+import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share_plus/share_plus.dart';
 
 class ReceiveWalletScreen extends StatefulWidget {
+  final bool isMain;
   final WalletInfo? data;
-  const ReceiveWalletScreen({super.key, this.data});
+  const ReceiveWalletScreen({super.key, this.data, this.isMain = false});
 
   @override
   _ReceiveWalletScreenState createState() => _ReceiveWalletScreenState();
@@ -41,20 +44,27 @@ class ReceiveWalletScreen extends StatefulWidget {
 
 class _ReceiveWalletScreenState extends State<ReceiveWalletScreen> {
   final walletService = locator<WalletService>();
-  String convertedToFabAddress = '';
-  WalletInfo? walletInfo;
-  var fabUtils = FabUtils();
+  AppStateProvider appStateProvider = locator<AppStateProvider>();
+  List<ProviderAddressModel> addressModelList = [];
+  ProviderAddressModel? model;
+
   @override
   void initState() {
+    appStateProvider = Provider.of<AppStateProvider>(context, listen: false);
+
     setWalletInfo();
     super.initState();
   }
 
-  setWalletInfo() async {
-    if (widget.data == null) {
-      walletInfo = walletService.walletInfoDetails;
+  setWalletInfo() {
+    if (widget.isMain) {
+      addressModelList = appStateProvider.getProviderAddressList;
+      model = appStateProvider.getProviderAddressList
+          .where((element) => element.name == "FAB")
+          .first;
     } else {
-      walletInfo = widget.data;
+      model = ProviderAddressModel(
+          name: widget.data!.name, address: widget.data!.address);
     }
     setState(() {});
   }
@@ -83,7 +93,7 @@ class _ReceiveWalletScreenState extends State<ReceiveWalletScreen> {
         children: [
           Container(
             width: size.width,
-            height: size.height * 0.55,
+            height: size.height > 750 ? size.height * 0.55 : size.height * 0.7,
             margin: EdgeInsets.all(20),
             decoration: BoxDecoration(
               color: Colors.white,
@@ -97,9 +107,7 @@ class _ReceiveWalletScreenState extends State<ReceiveWalletScreen> {
                     key: _globalKey,
                     child: QrImageView(
                         backgroundColor: white,
-                        data: convertedToFabAddress == ''
-                            ? walletInfo!.address ?? "dasdad!"
-                            : convertedToFabAddress,
+                        data: model!.address!,
                         version: QrVersions.auto,
                         gapless: true,
                         errorStateBuilder: (context, err) {
@@ -112,17 +120,65 @@ class _ReceiveWalletScreenState extends State<ReceiveWalletScreen> {
                         }),
                   ),
                   UIHelper.verticalSpaceMedium,
-                  Text("Wallet Address",
-                      style: TextStyle(
-                          color: textHintGrey,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold)),
+                  widget.isMain
+                      ? Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                                FlutterI18n.translate(context, "walletAddress"),
+                                style: TextStyle(
+                                    color: textHintGrey,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold)),
+                            UIHelper.horizontalSpaceSmall,
+                            DropdownButton(
+                              underline: SizedBox(),
+                              icon: Icon(
+                                Icons.arrow_drop_down,
+                                color: widget.isMain
+                                    ? textHintGrey
+                                    : Colors
+                                        .black, // Change icon color based on widget.isMain
+                              ),
+                              onTap:
+                                  () {}, // Disable onTap if widget.isMain is true
+                              items: addressModelList.map((addressModel) {
+                                return DropdownMenuItem(
+                                  value: addressModel.name,
+                                  child: Text(addressModel.name!),
+                                );
+                              }).toList(),
+                              onChanged: (value) {
+                                setState(() {
+                                  model = addressModelList
+                                      .where((element) =>
+                                          element.name == value.toString())
+                                      .first;
+                                });
+                                // Handle onChanged event if needed
+                              },
+                              value: model!
+                                  .name, // Set the initial value or the selected value
+                              style: TextStyle(
+                                color: widget.isMain
+                                    ? textHintGrey
+                                    : Colors
+                                        .black, // Change text color based on widget.isMain
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        )
+                      : Text(
+                          "${FlutterI18n.translate(context, "walletAddress")}: ${model!.name!}",
+                          style: TextStyle(
+                              color: textHintGrey,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold)),
                   UIHelper.verticalSpaceSmall,
                   FittedBox(
-                    child: Text(
-                        convertedToFabAddress == ''
-                            ? walletInfo!.address ?? "dsada!"
-                            : convertedToFabAddress,
+                    child: Text(model!.address!,
                         style: TextStyle(
                             color: black,
                             fontSize: 14,
@@ -144,7 +200,10 @@ class _ReceiveWalletScreenState extends State<ReceiveWalletScreen> {
                       "assets/images/new-design/copy_icon.png",
                       scale: 2.7,
                     ),
-                    label: Text("Copy Address"),
+                    label: Text(
+                      FlutterI18n.translate(context, "copyAddress"),
+                      style: TextStyle(color: white),
+                    ),
                     onPressed: () {
                       copyAddress(context);
                     },
@@ -167,7 +226,10 @@ class _ReceiveWalletScreenState extends State<ReceiveWalletScreen> {
                       "assets/images/new-design/share_icon.png",
                       scale: 2.7,
                     ),
-                    label: Text("Share QR Code"),
+                    label: Text(
+                      FlutterI18n.translate(context, "shareQRCode"),
+                      style: TextStyle(color: white),
+                    ),
                     onPressed: () {
                       String receiveFileName = 'qr-code.png';
                       getApplicationDocumentsDirectory().then((dir) {
@@ -178,9 +240,7 @@ class _ReceiveWalletScreenState extends State<ReceiveWalletScreen> {
                           _capturePng().then((byteData) {
                             file.writeAsBytes(byteData!).then((onFile) {
                               Share.shareXFiles([XFile(onFile.path)],
-                                  subject: convertedToFabAddress == ''
-                                      ? walletInfo!.address
-                                      : convertedToFabAddress);
+                                  subject: model!.address!);
                             });
                           });
                         });
@@ -209,11 +269,7 @@ class _ReceiveWalletScreenState extends State<ReceiveWalletScreen> {
   --------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
   copyAddress(BuildContext context) {
-    String address = convertedToFabAddress == ''
-        ? walletInfo!.address!
-        : convertedToFabAddress;
-    log.w(address);
-    Clipboard.setData(ClipboardData(text: address));
+    Clipboard.setData(ClipboardData(text: model!.address!));
     showSimpleNotification(
         Text(
           FlutterI18n.translate(context, "addressCopied"),

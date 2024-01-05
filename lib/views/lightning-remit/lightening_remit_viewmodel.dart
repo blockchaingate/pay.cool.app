@@ -177,7 +177,8 @@ class LightningRemitViewmodel extends FutureViewModel {
     if (isShowBottomSheet) {
       navigationService.back();
     } else {
-      scaffoldKey.currentState!.showBottomSheet((context) => SizedBox(
+      scaffoldKey.currentState!.showBottomSheet((context) => Container(
+            color: white,
             width: double.infinity,
             height: 250,
             child: ListView.separated(

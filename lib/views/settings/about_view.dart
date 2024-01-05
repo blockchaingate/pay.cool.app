@@ -24,6 +24,7 @@ class _AboutViewState extends State<AboutView> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
+      backgroundColor: white,
       resizeToAvoidBottomInset: false,
       appBar: customAppBarWithIcon(
         title: FlutterI18n.translate(context, "about"),

@@ -797,7 +797,13 @@
     "comingSoon": "Prochainement",
     "permissionRequired": "Permission requise",
     "goToSettings": "Aller aux paramètres",
-    "pleaseGotoSettings": "Veuillez aller dans les paramètres et activer l'autorisation de la caméra"
+    "pleaseGotoSettings": "Veuillez aller dans les paramètres et activer l'autorisation de la caméra",
+    "wallets": "Portefeuilles",
+    "quickMenu": "Menu Rapide",
+    "walletAddress": "Adresse du Portefeuille",
+    "shareQRCode": "Partager le Code QR"
+  
+
   
   
 }

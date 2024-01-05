@@ -51,9 +51,10 @@ class _BondWelcomeState extends State<BondWelcome> {
             child: Column(
               children: [
                 UIHelper.verticalSpaceLarge,
-                UIHelper.verticalSpaceMedium,
                 SizedBox(
-                  height: size.height * 0.25,
+                  height: size.height > 750
+                      ? size.height * 0.25
+                      : size.height * 0.27,
                   width: size.width,
                   child: Swiper(
                     itemBuilder: (BuildContext context, int index) {
