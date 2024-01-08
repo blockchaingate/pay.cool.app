@@ -289,7 +289,7 @@ class _SendWalletViewState extends State<SendWalletView>
                                     ),
                                     model.walletInfo != null
                                         ? Text(
-                                            "${FlutterI18n.translate(context, "balance")}${model.walletInfo!.availableBalance!}${model.walletInfo!.tickerName}",
+                                            "${FlutterI18n.translate(context, "balance")} ${model.walletInfo!.availableBalance!}${model.walletInfo!.tickerName}",
                                             style: TextStyle(
                                                 fontSize: 12,
                                                 fontWeight: FontWeight.bold,
@@ -305,7 +305,6 @@ class _SendWalletViewState extends State<SendWalletView>
                       ),
 
                       UIHelper.verticalSpaceMedium,
-
                       Text(
                         FlutterI18n.translate(context, "gasFee"),
                         style: TextStyle(
@@ -326,12 +325,29 @@ class _SendWalletViewState extends State<SendWalletView>
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              '${FlutterI18n.translate(context, "About")} ${NumberUtil.roundDouble(model.transFee, decimalPlaces: 6)}  ${model.feeUnit}',
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
-                                  color: black),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 4.0),
+                                  child: Text(
+                                    ' ${FlutterI18n.translate(context, "About")} ${NumberUtil.roundDouble(model.transFee, decimalPlaces: 6)}  ${model.feeUnit}',
+                                    style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold,
+                                        color: black),
+                                  ),
+                                ),
+                                model.tokenType.isNotEmpty
+                                    ? Text(
+                                        ' ${FlutterI18n.translate(context, "balance")} ${model.chainBalance} ${model.feeUnit}',
+                                        style: TextStyle(
+                                            fontSize: 10, color: grey),
+                                      )
+                                    : Container()
+                              ],
                             ),
                             InkWell(
                               onTap: () {

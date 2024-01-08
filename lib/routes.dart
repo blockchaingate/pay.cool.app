@@ -234,7 +234,9 @@ class RouteGenerator {
       case MeViewRoute:
         return MaterialPageRoute(
           settings: RouteSettings(name: 'MeView'),
-          builder: (_) => MeView(),
+          builder: (_) => MeView(
+            routeArgs: args,
+          ),
         );
 
       case WalletManagementViewRoute:

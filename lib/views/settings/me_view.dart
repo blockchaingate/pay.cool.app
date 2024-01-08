@@ -13,21 +13,47 @@ import 'package:paycool/widgets/bottom_nav.dart';
 import 'package:paycool/widgets/shared/will_pop_scope.dart';
 import 'package:stacked_services/stacked_services.dart';
 
-class MeView extends StatefulWidget {
-  @override
-  State<MeView> createState() => _MeViewState();
-}
-
-class _MeViewState extends State<MeView> {
-  final navigationService = locator<NavigationService>();
-  final kycService = locator<KycBaseService>();
-  final storageService = locator<LocalStorageService>();
-  final sharedService = locator<SharedService>();
+class MeView extends StatelessWidget {
+  final String? routeArgs;
+  const MeView({Key? key, this.routeArgs}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    final navigationService = locator<NavigationService>();
+    final kycService = locator<KycBaseService>();
+    final storageService = locator<LocalStorageService>();
+    final sharedService = locator<SharedService>();
+    onLoginFormSubmit(UserLoginModel user) async {
+      try {
+        final kycService = locator<KycBaseService>();
 
+        String url =
+            isProduction ? KycConstants.prodBaseUrl : KycConstants.testBaseUrl;
+        final Map<String, dynamic> res;
+
+        if (user.email!.isNotEmpty && user.password!.isNotEmpty) {
+          res = await kycService.login(url, user);
+          if (res['success']) {
+            storageService.bondToken = res['data']['token'];
+          }
+        } else {
+          res = {
+            'success': false,
+            'error': FlutterI18n.translate(
+                context, 'pleaseFillAllTheTextFieldsCorrectly')
+          };
+        }
+        return res;
+      } catch (e) {
+        debugPrint('CATCH error $e');
+      }
+    }
+
+    if (routeArgs == 'logout') {
+      storageService.bondToken = "";
+      debugPrint('logged out');
+    }
+    Size size = MediaQuery.of(context).size;
     return WillPopScope(
       onWillPop: () {
         return WillPopScopeWidget().onWillPop(context);
@@ -164,11 +190,13 @@ class _MeViewState extends State<MeView> {
                       color: Colors.grey,
                     ),
                     InkWell(
-                      onTap: () async {
+                      onTap: () {
                         kycService.setPrimaryColor(primaryColor);
                         if (storageService.bondToken.isEmpty) {
-                          await sharedService.navigateWithAnimation(
-                              KycLogin(onFormSubmit: onLoginFormSubmit));
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            navigationService.navigateToView(
+                                KycLogin(onFormSubmit: onLoginFormSubmit));
+                          });
                           return;
                         } else {
                           kycService.xAccessToken.value =
@@ -298,31 +326,5 @@ class _MeViewState extends State<MeView> {
         ),
       ),
     );
-  }
-
-  onLoginFormSubmit(UserLoginModel user) async {
-    try {
-      final kycService = locator<KycBaseService>();
-
-      String url =
-          isProduction ? KycConstants.prodBaseUrl : KycConstants.testBaseUrl;
-      final Map<String, dynamic> res;
-
-      if (user.email!.isNotEmpty && user.password!.isNotEmpty) {
-        res = await kycService.login(url, user);
-        if (res['success']) {
-          storageService.bondToken = res['data']['token'];
-        }
-      } else {
-        res = {
-          'success': false,
-          'error': FlutterI18n.translate(
-              context, 'pleaseFillAllTheTextFieldsCorrectly')
-        };
-      }
-      return res;
-    } catch (e) {
-      debugPrint('CATCH error $e');
-    }
   }
 }
