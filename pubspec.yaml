@@ -1,6 +1,6 @@
 name: paycool
 description: Crypto payment application
-version: 2.5.162+241
+version: 2.5.162+242
 
 publish_to: "none"
 
@@ -14,8 +14,8 @@ dependency_overrides:
   encrypt: 5.0.1
 
   image_picker_android: 0.8.4+13
-  kyc:
-    path: "../exchangily-packages/kyc"
+  # kyc:
+  #   path: "../exchangily-packages/kyc"
   # eth_abi_codec:
   #    path: "../exchangily-packages/open_source_packages/dart_eth_abi_codec"
 
@@ -35,7 +35,7 @@ dependencies:
     git:
       url: https://github.com/blockchaingate/exchangily-packages.git
       path: open_source_packages/bitcoin_flutter
-  cached_network_image: ^3.2.3
+  cached_network_image: ^3.3.1
   card_swiper: null
   cupertino_icons: ^1.0.5
   decimal: ^2.2.0
