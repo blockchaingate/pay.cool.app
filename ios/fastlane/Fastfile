@@ -1,0 +1,48 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:ios)
+
+platform :ios do
+
+  before_all do
+    ENV["FASTLANE_USER"] = "mustafa@exchangily.com"
+     ENV['FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD']= 'bokf-sclm-tgtn-utsz'
+      puts(message: 'password is: ')
+      puts(message: ENV['FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD'])
+    end
+
+    desc "Push a new beta build to TestFlight"
+    lane :beta do
+    build_app(
+      workspace: "Runner.xcworkspace", 
+      scheme: "Runner",
+      export_method: "app-store",  
+      export_options: {
+        compileBitcode:false,
+        destination:"export",
+        method:"app-store",
+        provisioningProfiles: { 
+          "cool.pay.paycool" => "paycool app profile"},
+        signingCertificate:"Apple Distribution",
+        signingStyle:"manual",
+        stripSwiftSymbols:true,
+        teamID:"WH4GG84M87",
+        thinning:"<none>"
+      }
+    )
+    upload_to_testflight(skip_waiting_for_build_processing: true)
+  end
+end  

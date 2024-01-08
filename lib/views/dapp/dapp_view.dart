@@ -21,8 +21,9 @@ class DappView extends StatelessWidget {
         model.context = context;
         model.init();
       },
-      builder: (context, model, _) => WillPopScope(
-        onWillPop: () {
+      builder: (context, model, _) => PopScope(
+        canPop: false,
+        onPopInvoked: (x) async {
           return WillPopScopeWidget().onWillPop(context);
         },
         child: GestureDetector(
@@ -35,7 +36,6 @@ class DappView extends StatelessWidget {
               onPressed: () {
                 model.navigationService.navigateTo(PayCoolViewRoute);
               },
-              elevation: 1,
               backgroundColor: Colors.transparent,
               child: Image.asset(
                 "assets/images/new-design/pay_cool_icon.png",
@@ -145,8 +145,8 @@ class DappView extends StatelessWidget {
                                         fit: BoxFit.cover),
                                   ),
                                   clipBehavior: Clip.none,
-                                  width: size.width * 0.2,
-                                  height: size.width * 0.2,
+                                  width: size.width * 0.15,
+                                  height: size.width * 0.15,
                                 ),
                                 UIHelper.verticalSpaceSmall,
                                 Text(
@@ -178,7 +178,7 @@ class DappView extends StatelessWidget {
                     child: ListView.separated(
                         separatorBuilder: (context, index) =>
                             UIHelper.horizontalSpaceSmall,
-                        itemCount: model.dapps.length,
+                        itemCount: 2,
                         scrollDirection: Axis.horizontal,
                         itemBuilder: (context, index) {
                           return InkWell(
@@ -206,8 +206,8 @@ class DappView extends StatelessWidget {
                                         fit: BoxFit.cover),
                                   ),
                                   clipBehavior: Clip.none,
-                                  width: size.width * 0.2,
-                                  height: size.width * 0.2,
+                                  width: size.width * 0.15,
+                                  height: size.width * 0.15,
                                 ),
                                 UIHelper.verticalSpaceSmall,
                                 Text(

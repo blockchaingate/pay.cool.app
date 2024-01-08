@@ -42,6 +42,7 @@ import 'package:paycool/utils/wallet/wallet_util.dart';
 import 'package:paycool/views/paycool/models/merchant_model.dart';
 import 'package:paycool/views/paycool/paycool_service.dart';
 import 'package:paycool/views/paycool_club/paycool_club_service.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:qr_code_utils/qr_code_utils.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share_plus/share_plus.dart';
@@ -125,7 +126,6 @@ class PayCoolViewmodel extends FutureViewModel {
   PayOrder payOrder = PayOrder();
 
   MobileScannerController? cameraController;
-  bool showDetails = false;
 
 /*----------------------------------------------------------------------
                     Default Future to Run
@@ -143,31 +143,71 @@ class PayCoolViewmodel extends FutureViewModel {
     if (lang.isEmpty) {
       lang = "en";
     }
-    startCamera();
   }
 
   @override
   void dispose() {
-    stopCamera();
+    if (cameraController != null) cameraController!.dispose();
     super.dispose();
   }
 
-  void stopCamera() {
-    showDetails = true;
-    cameraController!.dispose();
-    cameraController!.stop();
+  void startCamera() {
+    if (merchantModel!.name != null) {
+      cleanFields();
+      cameraController = MobileScannerController();
+      cameraController!.stop();
+      cameraController!.start();
+    }
     notifyListeners();
   }
 
-  void startCamera() {
-    if (cameraController != null) {
-      cameraController!.dispose();
-    }
-
-    showDetails = false;
-    cameraController = MobileScannerController();
-    cameraController!.start();
+  void cleanFields() {
+    addressController.clear();
+    amountPayable = Decimal.zero;
+    taxAmount = Decimal.zero;
+    coinPayable = '';
+    merchantModel!.clear();
+    payOrder.clear();
     notifyListeners();
+  }
+
+  Future<void> checkPermissions(BuildContext context) async {
+    if (Platform.isAndroid) {
+      try {
+        Map<Permission, PermissionStatus> statuses =
+            await [Permission.camera, Permission.mediaLibrary].request();
+
+        if (statuses[Permission.camera] != PermissionStatus.granted &&
+            statuses[Permission.mediaLibrary] != PermissionStatus.granted) {
+          showPermissionPopup(context);
+        }
+      } catch (e) {
+        debugPrint('--------------------------------------> $e');
+      }
+    }
+  }
+
+  showPermissionPopup(BuildContext context) async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(FlutterI18n.translate(
+              sharedService.context, "permissionRequired")),
+          content: Text(FlutterI18n.translate(
+              sharedService.context, "pleaseGotoSettings")),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child:
+                  Text(FlutterI18n.translate(sharedService.context, "cancel")),
+            ),
+          ],
+        );
+      },
+    );
   }
 
 /*----------------------------------------------------------------------
@@ -227,24 +267,30 @@ class PayCoolViewmodel extends FutureViewModel {
   scanImageFile() async {
     // Pick an image
     setBusyForObject(isScanningImage, true);
-    String qrcodeFile = '';
-    final image = await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (image != null) {
-      // imageUint8List = await image.readAsBytes();
 
-      qrcodeFile = image.path;
-      log.w(qrcodeFile);
-    }
     try {
-      var barcodeScanData = await QrCodeUtils.decodeFrom(qrcodeFile);
-      log.i(barcodeScanData);
-      orderDetails(barcodeScanData: barcodeScanData);
-      stopCamera();
-    } catch (err) {
+      String qrcodeFile = '';
+      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+      if (image != null) {
+        qrcodeFile = image.path;
+        log.w(qrcodeFile);
+
+        var barcodeScanData = await QrCodeUtils.decodeFrom(qrcodeFile);
+
+        if (barcodeScanData != null) {
+          log.i(barcodeScanData);
+          orderDetails(barcodeScanData: barcodeScanData);
+        } else {
+          sharedService.sharedSimpleNotification(
+              FlutterI18n.translate(sharedService.context, "qRCodeNotFound"));
+        }
+      }
+    } catch (e) {
       sharedService.sharedSimpleNotification(
-          FlutterI18n.translate(sharedService.context, "validationError"));
-      log.e('QrCodeToolsPlugin Catch $err');
+          FlutterI18n.translate(sharedService.context, "qRCodeNotFound"));
+      log.e('QrCodeToolsPlugin Catch $e');
     }
+
     setBusyForObject(isScanningImage, false);
   }
 
@@ -480,7 +526,7 @@ class PayCoolViewmodel extends FutureViewModel {
             height: MediaQuery.of(context).size.height * 0.35,
             // margin: EdgeInsets.symmetric(horizontal: 10.0),
             decoration: BoxDecoration(
-              color: grey.withAlpha(300),
+              color: white,
               borderRadius:
                   const BorderRadius.vertical(top: Radius.circular(10)),
               // boxShadow: [
@@ -1518,26 +1564,22 @@ class PayCoolViewmodel extends FutureViewModel {
                           width: 250,
                           height: 250,
                           child: Center(
-                            child: Container(
-                              child: RepaintBoundary(
-                                key: globalKey,
-                                child: QrImageView(
-                                    backgroundColor: white,
-                                    data: kbAddress,
-                                    version: QrVersions.auto,
-                                    size: 300,
-                                    gapless: true,
-                                    errorStateBuilder: (context, err) {
-                                      return Container(
-                                        child: Center(
-                                          child: Text(
-                                              FlutterI18n.translate(context,
-                                                  "somethingWentWrong"),
-                                              textAlign: TextAlign.center),
-                                        ),
-                                      );
-                                    }),
-                              ),
+                            child: RepaintBoundary(
+                              key: globalKey,
+                              child: QrImageView(
+                                  backgroundColor: white,
+                                  data: kbAddress,
+                                  version: QrVersions.auto,
+                                  size: 300,
+                                  gapless: true,
+                                  errorStateBuilder: (context, err) {
+                                    return Center(
+                                      child: Text(
+                                          FlutterI18n.translate(
+                                              context, "somethingWentWrong"),
+                                          textAlign: TextAlign.center),
+                                    );
+                                  }),
                             ),
                           )),
                     ],
@@ -1645,26 +1687,22 @@ class PayCoolViewmodel extends FutureViewModel {
                           width: 250,
                           height: 250,
                           child: Center(
-                            child: Container(
-                              child: RepaintBoundary(
-                                key: globalKey,
-                                child: QrImageView(
-                                    backgroundColor: white,
-                                    data: kbAddress,
-                                    version: QrVersions.auto,
-                                    size: 300,
-                                    gapless: true,
-                                    errorStateBuilder: (context, err) {
-                                      return Container(
-                                        child: Center(
-                                          child: Text(
-                                              FlutterI18n.translate(context,
-                                                  "somethingWentWrong"),
-                                              textAlign: TextAlign.center),
-                                        ),
-                                      );
-                                    }),
-                              ),
+                            child: RepaintBoundary(
+                              key: globalKey,
+                              child: QrImageView(
+                                  backgroundColor: white,
+                                  data: kbAddress,
+                                  version: QrVersions.auto,
+                                  size: 300,
+                                  gapless: true,
+                                  errorStateBuilder: (context, err) {
+                                    return Center(
+                                      child: Text(
+                                          FlutterI18n.translate(
+                                              context, "somethingWentWrong"),
+                                          textAlign: TextAlign.center),
+                                    );
+                                  }),
                             ),
                           )),
                     ],

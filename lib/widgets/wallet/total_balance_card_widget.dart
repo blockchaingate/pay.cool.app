@@ -9,8 +9,7 @@ import 'package:paycool/views/wallet/wallet_dashboard_viewmodel.dart';
 import 'package:shimmer/shimmer.dart';
 
 class TotalBalanceCardWidget extends StatelessWidget {
-  const TotalBalanceCardWidget({Key? key, required this.model})
-      : super(key: key);
+  const TotalBalanceCardWidget({super.key, required this.model});
   final WalletDashboardViewModel model;
 
   @override
@@ -88,8 +87,7 @@ class TotalBalanceCardWidget extends StatelessWidget {
 }
 
 class TotalBalanceCardWidget2 extends StatelessWidget {
-  const TotalBalanceCardWidget2({Key? key, required this.model})
-      : super(key: key);
+  const TotalBalanceCardWidget2({super.key, required this.model});
   final WalletDashboardViewModel model;
 
   @override

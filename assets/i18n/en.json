@@ -788,5 +788,19 @@
     "warning": "Warning",
     "about": "About",
     "pleaseEnsure": "Please ensure that mnemonics are not leaked",
-    "language": "Language"
+    "language": "Language",
+    "qty": "Qty",
+    "clickCameraIcon": "Click Camera Icon to Refresh",
+    "home": "Home",
+    "inv": "Inv",
+    "qRCodeNotFound": "QR Code Not Found",
+    "comingSoon": "Coming Soon",
+    "permissionRequired": "Permission Required",
+    "goToSettings": "Go to Settings",
+    "pleaseGotoSettings": "Please go to settings and enable camera permission",
+    "wallets": "Wallets",
+    "quickMenu": "Quick Menu",
+    "walletAddress": "Wallet Address",
+    "shareQRCode": "Share QR Code"
+
 }

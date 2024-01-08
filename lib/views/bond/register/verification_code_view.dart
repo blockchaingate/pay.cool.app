@@ -17,7 +17,7 @@ import 'package:paycool/services/api_service.dart';
 import 'package:paycool/services/local_storage_service.dart';
 import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/views/bond/helper.dart';
-import 'package:paycool/views/bond/progressIndicator.dart';
+import 'package:paycool/views/bond/progress_indicator.dart';
 import 'package:stacked_services/stacked_services.dart';
 
 class VerificationCodeView extends StatefulWidget {

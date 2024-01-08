@@ -4,7 +4,7 @@ import 'package:paycool/shared/ui_helpers.dart';
 import 'package:shimmer/shimmer.dart';
 
 class ShimmerWalletDashboardLayout extends StatelessWidget {
-  const ShimmerWalletDashboardLayout({Key? key}) : super(key: key);
+  const ShimmerWalletDashboardLayout({super.key});
 
   @override
   Widget build(BuildContext context) {

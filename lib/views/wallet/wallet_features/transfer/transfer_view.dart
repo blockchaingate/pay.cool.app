@@ -12,7 +12,7 @@ import 'package:stacked/stacked.dart';
 
 class TransferView extends StatefulWidget {
   final WalletInfo walletInfo;
-  const TransferView({Key? key, required this.walletInfo}) : super(key: key);
+  const TransferView({super.key, required this.walletInfo});
 
   @override
   State<TransferView> createState() => _TransferViewState();

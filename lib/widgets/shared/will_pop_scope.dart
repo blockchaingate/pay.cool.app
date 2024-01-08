@@ -6,7 +6,7 @@ import 'package:paycool/providers/app_state_provider.dart';
 import 'package:provider/provider.dart';
 
 class WillPopScopeWidget {
-  Future<bool> onWillPop(BuildContext context) async {
+  Future<void> onWillPop(BuildContext context) async {
     AppStateProvider provider =
         Provider.of<AppStateProvider>(context, listen: false);
     if (provider.getDoubleBackToExitPressedOnce) {
@@ -18,7 +18,6 @@ class WillPopScopeWidget {
     Timer(Duration(seconds: 3), () {
       provider.setDoubleBackToExitPressedOnce(false);
     });
-    return false;
   }
 
   void _showToast(BuildContext context, String message) async {

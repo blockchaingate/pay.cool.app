@@ -25,10 +25,10 @@ class SettingsView extends StatelessWidget {
       viewModelBuilder: () => SettingsViewModel(),
       builder: (context, model, _) => AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.dark,
-        child: WillPopScope(
-          onWillPop: () async {
-            await model.navigationService.navigateTo(MeViewRoute);
-            return Future.value(false);
+        child: PopScope(
+          canPop: false,
+          onPopInvoked: (x) async {
+            model.navigationService.navigateTo(MeViewRoute);
           },
           child: Scaffold(
             backgroundColor: bgGrey,
@@ -68,45 +68,51 @@ class SettingsView extends StatelessWidget {
                       await showModalBottomSheet(
                         context: context,
                         builder: (BuildContext context) {
-                          return ListView.builder(
-                            itemCount: model.languages.length,
-                            itemBuilder: (context, index) {
-                              String languageCode =
-                                  model.languages.keys.elementAt(index);
-                              String languageName =
-                                  model.languages.values.elementAt(index);
+                          return Container(
+                            color: white,
+                            child: ListView.builder(
+                              itemCount: model.languages.length,
+                              itemBuilder: (context, index) {
+                                String languageCode =
+                                    model.languages.keys.elementAt(index);
+                                String languageName =
+                                    model.languages.values.elementAt(index);
 
-                              return Column(
-                                children: [
-                                  ListTile(
-                                    title: Row(
-                                      children: [
-                                        Text(
-                                          KycUtil.generateflag(
-                                              isoCode:
-                                                  model.languageWithIsoCode[
-                                                          languageCode] ??
-                                                      ""),
-                                          style: const TextStyle(color: black),
-                                        ),
-                                        UIHelper.horizontalSpaceSmall,
-                                        Text(
-                                          languageName,
-                                          style: TextStyle(color: Colors.black),
-                                        ),
-                                      ],
+                                return Column(
+                                  children: [
+                                    ListTile(
+                                      title: Row(
+                                        children: [
+                                          Text(
+                                            KycUtil.generateflag(
+                                                isoCode:
+                                                    model.languageWithIsoCode[
+                                                            languageCode] ??
+                                                        ""),
+                                            style:
+                                                const TextStyle(color: black),
+                                          ),
+                                          UIHelper.horizontalSpaceSmall,
+                                          Text(
+                                            languageName,
+                                            style:
+                                                TextStyle(color: Colors.black),
+                                          ),
+                                        ],
+                                      ),
+                                      onTap: () {
+                                        model
+                                            .changeWalletLanguage(languageName);
+                                      },
                                     ),
-                                    onTap: () {
-                                      model.changeWalletLanguage(languageName);
-                                    },
-                                  ),
-                                  Divider(
-                                    color: Colors.grey[100],
-                                    thickness: 1,
-                                  ),
-                                ],
-                              );
-                            },
+                                    Divider(
+                                      color: Colors.grey[100],
+                                      thickness: 1,
+                                    ),
+                                  ],
+                                );
+                              },
+                            ),
                           );
                         },
                       );

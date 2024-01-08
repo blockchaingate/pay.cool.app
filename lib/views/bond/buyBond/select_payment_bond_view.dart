@@ -19,7 +19,7 @@ import 'package:paycool/services/shared_service.dart';
 import 'package:paycool/services/wallet_service.dart';
 import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/views/bond/helper.dart';
-import 'package:paycool/views/bond/progressIndicator.dart';
+import 'package:paycool/views/bond/progress_indicator.dart';
 import 'package:paycool/views/paycool/paycool_service.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:url_launcher/url_launcher.dart';

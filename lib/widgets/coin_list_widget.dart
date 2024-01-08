@@ -11,6 +11,7 @@ Widget coinListBottomSheet(
   final searchController = TextEditingController();
 
   return Container(
+    color: white,
     height: size.height * 0.8,
     padding: EdgeInsets.all(20),
     child: Column(

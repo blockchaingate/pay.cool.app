@@ -62,6 +62,7 @@ class _WalletFeaturesViewState extends State<WalletFeaturesView>
         model.init();
       },
       builder: (context, model, child) => Scaffold(
+        backgroundColor: white,
         appBar: customAppBarWithIcon(
           title: model.walletInfo!.tickerName,
           leading: IconButton(
@@ -175,6 +176,7 @@ class _WalletFeaturesViewState extends State<WalletFeaturesView>
                   Expanded(
                     flex: 1,
                     child: TabBar(
+                      dividerHeight: 0,
                       controller: tabController,
                       labelColor: primaryColor,
                       unselectedLabelColor: grey,

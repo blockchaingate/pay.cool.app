@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:kyc/kyc.dart';
 import 'package:paycool/constants/colors.dart';
+import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/constants/route_names.dart';
 import 'package:paycool/environments/environment_type.dart';
 import 'package:paycool/service_locator.dart';
@@ -19,10 +20,20 @@ class MeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Map<String, String>? versionInfo;
+    String? versionName;
+    String? buildNumber;
     final navigationService = locator<NavigationService>();
     final kycService = locator<KycBaseService>();
     final storageService = locator<LocalStorageService>();
     final sharedService = locator<SharedService>();
+    getAppVersion() async {
+      versionInfo = await sharedService.getLocalAppVersion();
+
+      versionName = versionInfo!['name'].toString();
+      buildNumber = versionInfo!['buildNumber'].toString();
+    }
+
     onLoginFormSubmit(UserLoginModel user) async {
       try {
         final kycService = locator<KycBaseService>();
@@ -49,13 +60,15 @@ class MeView extends StatelessWidget {
       }
     }
 
+    getAppVersion();
     if (routeArgs == 'logout') {
       storageService.bondToken = "";
       debugPrint('logged out');
     }
     Size size = MediaQuery.of(context).size;
-    return WillPopScope(
-      onWillPop: () {
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (x) async {
         return WillPopScopeWidget().onWillPop(context);
       },
       child: AnnotatedRegion<SystemUiOverlayStyle>(
@@ -66,7 +79,6 @@ class MeView extends StatelessWidget {
             onPressed: () {
               navigationService.navigateTo(PayCoolViewRoute);
             },
-            elevation: 1,
             backgroundColor: Colors.transparent,
             child: Image.asset(
               "assets/images/new-design/pay_cool_icon.png",
@@ -192,6 +204,7 @@ class MeView extends StatelessWidget {
                     InkWell(
                       onTap: () {
                         kycService.setPrimaryColor(primaryColor);
+
                         if (storageService.bondToken.isEmpty) {
                           WidgetsBinding.instance.addPostFrameCallback((_) {
                             navigationService.navigateToView(
@@ -202,7 +215,12 @@ class MeView extends StatelessWidget {
                           kycService.xAccessToken.value =
                               storageService.bondToken;
 
-                          navigationService.navigateToView(const KycStatus());
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const KycStatus(),
+                            ),
+                          );
                         }
                       },
                       child: Container(
@@ -317,6 +335,23 @@ class MeView extends StatelessWidget {
                           ],
                         ),
                       ),
+                    ),
+                    UIHelper.verticalSpaceLarge,
+                    // Version Code
+                    SizedBox(
+                      height: 40,
+                      child: Center(
+                          child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text(
+                            'v $versionName.$buildNumber',
+                            style: headText6.copyWith(color: black),
+                          ),
+                          if (!isProduction)
+                            const Text(' Debug', style: TextStyle(color: grey))
+                        ],
+                      )),
                     ),
                   ],
                 ),

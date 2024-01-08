@@ -788,5 +788,23 @@
     "warning": "警告",
     "about": "約",
     "pleaseEnsure": "ニーモニックが漏れていないことを確認してください",
-    "language": "言語"
+    "language": "言語",
+    "qty": "数量",
+    "clickCameraIcon": "更新するにはカメラアイコンをクリックしてください",
+    "home": "ホーム",
+    "inv": "Inv",
+    "qRCodeNotFound": "QRコードが見つかりません",
+    "comingSoon": "近日公開",
+    "permissionRequired": "許可が必要です",
+    "goToSettings": "設定に移動",
+    "pleaseGotoSettings": "設定に移動してカメラの許可を有効にしてください",
+    "wallets": "ウォレット",
+    "quickMenu": "クイックメニュー",
+    "walletAddress": "ウォレットアドレス",
+    "shareQRCode": "QRコードを共有"
+  
+
+    
+  
+  
 }

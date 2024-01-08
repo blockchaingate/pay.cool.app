@@ -11,8 +11,7 @@ import '../../services/local_storage_service.dart';
 
 class ClubRewardsView extends StatelessWidget {
   final ClubRewardsArgs clubRewardsArgs;
-  const ClubRewardsView({Key? key, required this.clubRewardsArgs})
-      : super(key: key);
+  const ClubRewardsView({super.key, required this.clubRewardsArgs});
 
   @override
   Widget build(BuildContext context) {

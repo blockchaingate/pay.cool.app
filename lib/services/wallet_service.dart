@@ -2110,7 +2110,9 @@ class WalletService with ListenableServiceMixin {
     var fabAddress = '';
     try {
       fabAddress = toLegacyAddress(kbPaymentAddress);
-    } catch (e) {}
+    } catch (e) {
+      debugPrint('error $e');
+    }
 
     return (fabAddress != '');
   }

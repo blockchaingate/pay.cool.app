@@ -141,9 +141,7 @@ class _AllCoinsListViewState extends State<AllCoinsListView> {
               ),
               UIHelper.horizontalSpaceMedium,
               IconButton(
-                onPressed: () {
-                  print(coinList[index].token!.chain);
-                },
+                onPressed: () {},
                 icon: Icon(
                   Icons.add_circle_outline,
                   color: black,

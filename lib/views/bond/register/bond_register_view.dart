@@ -5,7 +5,7 @@ import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/views/bond/login/login_view.dart';
-import 'package:paycool/views/bond/progressIndicator.dart';
+import 'package:paycool/views/bond/progress_indicator.dart';
 import 'package:paycool/views/bond/register/bond_register_viewmodel.dart';
 import 'package:stacked/stacked.dart';
 

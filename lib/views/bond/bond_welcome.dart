@@ -22,8 +22,9 @@ class _BondWelcomeState extends State<BondWelcome> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    return WillPopScope(
-      onWillPop: () {
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (x) async {
         return WillPopScopeWidget().onWillPop(context);
       },
       child: AnnotatedRegion<SystemUiOverlayStyle>(
@@ -34,7 +35,6 @@ class _BondWelcomeState extends State<BondWelcome> {
             onPressed: () {
               navigationService.navigateTo(PayCoolViewRoute);
             },
-            elevation: 1,
             backgroundColor: Colors.transparent,
             child: Image.asset(
               "assets/images/new-design/pay_cool_icon.png",
@@ -51,9 +51,10 @@ class _BondWelcomeState extends State<BondWelcome> {
             child: Column(
               children: [
                 UIHelper.verticalSpaceLarge,
-                UIHelper.verticalSpaceMedium,
                 SizedBox(
-                  height: size.height * 0.25,
+                  height: size.height > 750
+                      ? size.height * 0.25
+                      : size.height * 0.27,
                   width: size.width,
                   child: Swiper(
                     itemBuilder: (BuildContext context, int index) {

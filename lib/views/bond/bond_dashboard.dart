@@ -13,7 +13,7 @@ import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/views/bond/buyBond/bond_symbol_view.dart';
 import 'package:paycool/views/bond/login/login_view.dart';
 import 'package:paycool/views/bond/personalInfo/personal_view.dart';
-import 'package:paycool/views/bond/progressIndicator.dart';
+import 'package:paycool/views/bond/progress_indicator.dart';
 import 'package:paycool/views/bond/register/bond_register_view.dart';
 import 'package:paycool/views/bond/txHistory/bond_history_view.dart';
 import 'package:stacked_services/stacked_services.dart';

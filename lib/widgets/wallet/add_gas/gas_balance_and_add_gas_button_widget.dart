@@ -22,8 +22,7 @@ import 'package:paycool/constants/colors.dart';
 
 class GasBalanceAndAddGasButtonWidget extends StatelessWidget {
   final double gasAmount;
-  const GasBalanceAndAddGasButtonWidget({Key? key, required this.gasAmount})
-      : super(key: key);
+  const GasBalanceAndAddGasButtonWidget({super.key, required this.gasAmount});
 
   @override
   Widget build(BuildContext context) {

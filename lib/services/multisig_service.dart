@@ -27,7 +27,7 @@ class MultiSigService with ListenableServiceMixin {
   }
 
   Future submitMultisigTransaction(body) async {
-    var url = paycoolBaseUrlV2 + 'multisigproposal/execute';
+    var url = '${paycoolBaseUrlV2}multisigproposal/execute';
     log.i('submitMultisigTransaction url $url - body ${jsonEncode(body)}');
     try {
       var response = await client.post(Uri.parse(url),
@@ -47,7 +47,7 @@ class MultiSigService with ListenableServiceMixin {
   }
 
   Future approveProposal(body) async {
-    var url = paycoolBaseUrlV2 + 'multisigproposal/confirm';
+    var url = '${paycoolBaseUrlV2}multisigproposal/confirm';
     log.i('approveProposal url $url - body ${jsonEncode(body)}');
     try {
       var response = await client.post(Uri.parse(url),
@@ -68,7 +68,7 @@ class MultiSigService with ListenableServiceMixin {
 
   Future<bool> createProposal(body) async {
     bool result = false;
-    var url = paycoolBaseUrlV2 + 'multisigproposal';
+    var url = '${paycoolBaseUrlV2}multisigproposal';
     var jsonBody = jsonEncode(body);
     log.i('createProposal url $url - body $jsonBody');
     try {
@@ -90,7 +90,7 @@ class MultiSigService with ListenableServiceMixin {
   }
 
   Future multisigtransferTxHash(MultisigTransactionHashModel body) async {
-    var url = paycoolBaseUrlV2 + 'multisig/getTransactionHash';
+    var url = '${paycoolBaseUrlV2}multisig/getTransactionHash';
     var jsonBody = jsonEncode(body.toJson());
     log.i('multisigtransferTxHash url $url - jsonBody $jsonBody');
     try {
@@ -111,7 +111,7 @@ class MultiSigService with ListenableServiceMixin {
 
   Future getQueuetransaction(String address,
       {int pageSize = 10, int pageNumber = 0}) async {
-    var url = paycoolBaseUrlV2 + 'multisigproposal/queue/$address';
+    var url = '${paycoolBaseUrlV2}multisigproposal/queue/$address';
     if (pageNumber != 0) {
       pageNumber = pageNumber - 1;
     }
@@ -137,7 +137,7 @@ class MultiSigService with ListenableServiceMixin {
     String route =
         isQueue ? 'multisigproposal/queue/' : 'multisigtransaction/address/';
 
-    var url = paycoolBaseUrlV2 + route + '$address/totalCount';
+    var url = '$paycoolBaseUrlV2$route$address/totalCount';
     int transactionCount = 0;
     log.i('getTotalCount url $url');
     try {
@@ -162,7 +162,7 @@ class MultiSigService with ListenableServiceMixin {
 
   Future getmultisigTransactions(String address,
       {int pageSize = 10, int pageNumber = 0}) async {
-    var url = paycoolBaseUrlV2 + 'multisigtransaction/address/$address';
+    var url = '${paycoolBaseUrlV2}multisigtransaction/address/$address';
     if (pageNumber != 0) {
       pageNumber = pageNumber - 1;
     }
@@ -230,7 +230,7 @@ class MultiSigService with ListenableServiceMixin {
   Future<MultisigWalletModel> importMultisigWallet(String value,
       {bool isTxid = false}) async {
     String apiRoute = isTxid ? 'multisig/txid' : 'multisig/address';
-    var url = paycoolBaseUrlV2 + '$apiRoute/$value';
+    var url = '$paycoolBaseUrlV2$apiRoute/$value';
     log.i('importMultisigWallet url $url');
     try {
       var response =
@@ -262,7 +262,7 @@ class MultiSigService with ListenableServiceMixin {
     //     "rawtx": multisigModel.signedRawtx
     //   }
     // };
-    var url = paycoolBaseUrlV2 + 'multisig';
+    var url = '${paycoolBaseUrlV2}multisig';
     log.i(
         'createMultiSig url $url - body ${jsonEncode(multisigModel.toJson())}');
     try {
@@ -290,7 +290,7 @@ class MultiSigService with ListenableServiceMixin {
       "addresses": addresses,
       "confirmations": confirmations
     };
-    var url = paycoolBaseUrlV2 + 'common/multisig';
+    var url = '${paycoolBaseUrlV2}common/multisig';
     log.i('getMultisigData url $url - body ${jsonEncode(body)}');
     try {
       var response = await client.post(Uri.parse(url),
@@ -309,7 +309,7 @@ class MultiSigService with ListenableServiceMixin {
   }
 
   Future getTransferNonce(String address) async {
-    var url = paycoolBaseUrlV2 + 'multisig/nonce/' + address;
+    var url = '${paycoolBaseUrlV2}multisig/nonce/$address';
 
     log.i('getTransferNonce url $url');
     try {
@@ -326,7 +326,7 @@ class MultiSigService with ListenableServiceMixin {
   }
 
   Future getChainNonce(String chain, String address) async {
-    var url = paycoolBaseUrlV2 + '$chain/nonce';
+    var url = '$paycoolBaseUrlV2$chain/nonce';
     var body = {"native": address};
     log.i('get $chain Nonce url $url - body ${jsonEncode(body)}');
     try {

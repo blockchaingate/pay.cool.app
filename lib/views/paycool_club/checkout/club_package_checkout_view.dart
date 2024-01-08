@@ -10,8 +10,7 @@ import 'package:stacked/stacked.dart';
 
 class ClubPackageCheckoutView extends StatelessWidget {
   final Map<String, dynamic>? packageWithPaymentCoin;
-  const ClubPackageCheckoutView({Key? key, this.packageWithPaymentCoin})
-      : super(key: key);
+  const ClubPackageCheckoutView({super.key, this.packageWithPaymentCoin});
 
   @override
   Widget build(BuildContext context) {

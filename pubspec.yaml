@@ -1,6 +1,6 @@
 name: paycool
 description: Crypto payment application
-version: 2.5.160+236 
+version: 2.5.162+241
 
 publish_to: "none"
 
@@ -109,6 +109,7 @@ dependencies:
   camera: ^0.10.5+5
   provider: ^6.1.1
   mobile_scanner: ^3.5.5
+  permission_handler: ^11.0.1
 
 
 dev_dependencies:

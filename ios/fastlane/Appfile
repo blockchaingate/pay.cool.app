@@ -1,0 +1,8 @@
+app_identifier("cool.pay.paycool") # The bundle identifier of your app
+apple_id("mustafa@exchangily.com") # Your Apple Developer Portal username
+
+itc_team_id("121181801") # App Store Connect Team ID
+team_id("WH4GG84M87") # Developer Portal Team ID
+
+# For more information about the Appfile, see:
+#     https://docs.fastlane.tools/advanced/#appfile

@@ -525,29 +525,25 @@ class MoveToWalletViewmodel extends BaseViewModel {
                             // radioChoiceRow(context, isUsedInView: false),
                             UIHelper.verticalSpaceMedium,
                             // ok button to go ahead and sign and send transaction
-                            Container(
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  OutlinedButton(
-                                    // padding: EdgeInsets.only(left: 5),
-                                    // borderRadius:
-                                    //     BorderRadius.all(Radius.circular(4)),
-                                    child: Text(
-                                      FlutterI18n.translate(
-                                          context, "withdraw"),
-                                      style: headText5.copyWith(
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-
-                                      checkPass();
-                                    },
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                OutlinedButton(
+                                  // padding: EdgeInsets.only(left: 5),
+                                  // borderRadius:
+                                  //     BorderRadius.all(Radius.circular(4)),
+                                  child: Text(
+                                    FlutterI18n.translate(context, "withdraw"),
+                                    style: headText5.copyWith(
+                                        fontWeight: FontWeight.bold),
                                   ),
-                                ],
-                              ),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+
+                                    checkPass();
+                                  },
+                                ),
+                              ],
                             ),
                           ],
                         );

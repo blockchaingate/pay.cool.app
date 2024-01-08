@@ -788,5 +788,22 @@
     "warning": "Avertissement",
     "about": "À propos de",
     "pleaseEnsure": "Veuillez vous assurer que les mnémoniques ne sont pas divulgués",
-    "language": "Langue"
+    "language": "Langue",
+    "qty": "Quan",
+    "clickCameraIcon": "Cliquez sur l'icône de la caméra pour actualiser",
+    "home": "Accueil",
+    "inv": "Inv",
+    "qRCodeNotFound": "Code QR non trouvé",
+    "comingSoon": "Prochainement",
+    "permissionRequired": "Permission requise",
+    "goToSettings": "Aller aux paramètres",
+    "pleaseGotoSettings": "Veuillez aller dans les paramètres et activer l'autorisation de la caméra",
+    "wallets": "Portefeuilles",
+    "quickMenu": "Menu Rapide",
+    "walletAddress": "Adresse du Portefeuille",
+    "shareQRCode": "Partager le Code QR"
+  
+
+  
+  
 }

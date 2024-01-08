@@ -94,9 +94,7 @@ class DappViewmodel extends BaseViewModel {
       )
       ..loadRequest(Uri.parse('https://flutter.dev'))
       ..addJavaScriptChannel('Print',
-          onMessageReceived: (JavaScriptMessage message) {
-        print(message.message);
-      });
+          onMessageReceived: (JavaScriptMessage message) {});
   }
 
   onBackButtonPressed() async {

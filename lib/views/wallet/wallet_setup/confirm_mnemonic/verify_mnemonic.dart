@@ -27,6 +27,7 @@ class VerifyMnemonicWalletView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Container(
       padding: const EdgeInsets.all(10),
       child: Column(
@@ -36,10 +37,10 @@ class VerifyMnemonicWalletView extends StatelessWidget {
           Container(
               padding: const EdgeInsets.symmetric(vertical: 10),
               child: GridView.extent(
-                  maxCrossAxisExtent: 125,
+                  maxCrossAxisExtent: size.width / 3,
                   padding: const EdgeInsets.all(2),
-                  mainAxisSpacing: 15,
-                  crossAxisSpacing: 15,
+                  mainAxisSpacing: 10,
+                  crossAxisSpacing: 10,
                   shrinkWrap: true,
                   childAspectRatio: 2,
                   children: _buildTextGrid(count!, mnemonicTextController))),
@@ -62,6 +63,7 @@ class VerifyMnemonicWalletView extends StatelessWidget {
           controller: controller[i], cursorColor: black, //focusNode: focusNode,
           autocorrect: true,
           decoration: InputDecoration(
+            isDense: true,
             fillColor: secondaryColor,
             filled: true,
             hintText: '$hintMnemonicWordNumber',

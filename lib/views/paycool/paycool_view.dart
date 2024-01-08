@@ -23,9 +23,13 @@ class PayCoolView extends StatelessWidget {
       onViewModelReady: (model) {
         model.sharedService.context = context;
         model.init();
+        model.checkPermissions(context);
       },
-      builder: (context, PayCoolViewmodel model, _) => WillPopScope(
-        onWillPop: () {
+      disposeViewModel: false,
+      onDispose: (viewModel) => viewModel.dispose(),
+      builder: (context, PayCoolViewmodel model, _) => PopScope(
+        canPop: false,
+        onPopInvoked: (x) async {
           return WillPopScopeWidget().onWillPop(context);
         },
         child: Scaffold(
@@ -34,7 +38,6 @@ class PayCoolView extends StatelessWidget {
           bottomNavigationBar: BottomNavBar(count: 0),
           floatingActionButton: FloatingActionButton(
             onPressed: () {},
-            elevation: 1,
             backgroundColor: Colors.transparent,
             child: Image.asset(
               "assets/images/new-design/pay_cool_icon.png",
@@ -179,25 +182,22 @@ class PayCoolView extends StatelessWidget {
                                   children: [
                                     SizedBox(
                                       height: size.height * 0.47,
-                                      child: model.showDetails
-                                          ? model.merchantModel!.image != null
-                                              ? Center(
-                                                  child: Image.network(
-                                                      model.merchantModel!.image
-                                                          .toString(),
-                                                      fit: BoxFit.cover,
-                                                      errorBuilder:
-                                                          (BuildContext context,
-                                                              Object exception,
-                                                              StackTrace?
-                                                                  stackTrace) {
-                                                    return Container();
-                                                  }),
-                                                )
-                                              : Text(
-                                                  FlutterI18n.translate(
-                                                      context, "noCamera"),
-                                                )
+                                      child: model.merchantModel!.image !=
+                                                  null &&
+                                              model.merchantModel!.image!
+                                                  .isNotEmpty
+                                          ? Center(
+                                              child: Image.network(
+                                                  model.merchantModel!.image
+                                                      .toString(),
+                                                  fit: BoxFit.cover,
+                                                  errorBuilder: (BuildContext
+                                                          context,
+                                                      Object exception,
+                                                      StackTrace? stackTrace) {
+                                                return Container();
+                                              }),
+                                            )
                                           : MobileScanner(
                                               controller:
                                                   model.cameraController,
@@ -209,7 +209,6 @@ class PayCoolView extends StatelessWidget {
                                                       barcodeScanData:
                                                           barcode.raw[0]
                                                               ["displayValue"]);
-                                                  model.stopCamera();
                                                 }
                                               }),
                                     ),
@@ -281,7 +280,7 @@ class PayCoolView extends StatelessWidget {
                                                 children: [
                                                   Padding(
                                                     padding: const EdgeInsets
-                                                            .symmetric(
+                                                        .symmetric(
                                                         horizontal: 10),
                                                     child: Container(
                                                       width: size.width,
@@ -346,7 +345,7 @@ class PayCoolView extends StatelessWidget {
                                                       : Padding(
                                                           padding:
                                                               const EdgeInsets
-                                                                      .symmetric(
+                                                                  .symmetric(
                                                                   horizontal:
                                                                       10),
                                                           child: Container(
@@ -519,7 +518,7 @@ class PayCoolView extends StatelessWidget {
                                                         child: Text(
                                                           FlutterI18n.translate(
                                                               context,
-                                                              "myReward"),
+                                                              "myRewards"),
                                                           style: TextStyle(
                                                               fontSize: 14,
                                                               fontWeight:
@@ -689,7 +688,7 @@ class PayCoolView extends StatelessWidget {
                                           ),
                                         ),
                                         UIHelper.verticalSpaceSmall,
-                                        model.showDetails
+                                        model.merchantModel!.name != null
                                             ? SizedBox()
                                             : InkWell(
                                                 onTap: () {
@@ -711,6 +710,7 @@ class PayCoolView extends StatelessWidget {
                                                   ),
                                                 ),
                                               ),
+                                        UIHelper.verticalSpaceMedium,
                                       ],
                                     ),
                                   ),
@@ -726,8 +726,7 @@ class PayCoolView extends StatelessWidget {
 }
 
 class CoinListBottomSheetFloatingActionButton extends StatelessWidget {
-  const CoinListBottomSheetFloatingActionButton({Key? key, this.model})
-      : super(key: key);
+  const CoinListBottomSheetFloatingActionButton({super.key, this.model});
   final PayCoolViewmodel? model;
 
   @override

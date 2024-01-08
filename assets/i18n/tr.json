@@ -788,5 +788,21 @@
   "warning": "Uyarı",
   "about": "Hakkında",
   "pleaseEnsure": "Lütfen mnemoniklerin sızmadığından emin olun",
-  "language": "Dil"
+  "language": "Dil",
+  "qty": "Miktar",
+  "clickCameraIcon": "Yenilemek için Kamera İkonuna tıklayın",
+  "home": "Cüzdan",
+  "inv": "Yatırım",
+  "qRCodeNotFound": "QR Kodu Bulunamadı",
+  "comingSoon": "Yakında",
+  "permissionRequired": "İzin Gerekli",
+  "goToSettings": "Ayarlar'a Git",
+  "pleaseGotoSettings": "Lütfen ayarlara gidin ve kamera iznini etkinleştirin",
+  "wallets": "Cüzdanlar",
+  "quickMenu": "Hızlı Menü",
+  "walletAddress": "Cüzdan Adresi",
+  "shareQRCode": "QR Kodu Paylaş"
+
+
+
 }

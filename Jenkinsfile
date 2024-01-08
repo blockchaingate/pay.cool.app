@@ -2,9 +2,9 @@ pipeline {
     agent any
 
     environment {
-      PATH = "/Users/mustafayildiz/sdks/flutter/bin:$PATH"
-      COMMIT_MESSAGE = '' // Initialize the variable
-      branchName = ''
+        PATH = "/Users/mustafayildiz/sdks/flutter/bin:$PATH"
+        COMMIT_MESSAGE = '' // Initialize the variable
+        CHECKTOUPDATE = 'PushtoTest'
     } 
 
     stages {
@@ -12,35 +12,34 @@ pipeline {
             steps {
                 // Checkout your source code repository
                 checkout scm
-                  script {
-
-                          COMMIT_MESSAGE = sh(
-                        script: 'git log -1 --pretty=%B',
-                        returnStdout: true
-                    ).trim()
-                    
-
-                    branchName = sh(script: 'git rev-parse --abbrev-ref HEAD', returnStdout: true).trim()
-                    }
+                script {
+                    COMMIT_MESSAGE = sh(script: 'git log -1 --pretty=%B', returnStdout: true).trim()
+                }
             }
         }
 
         stage('Copy Files') {
             steps {
-                // Assuming you have files to copy in the same directory as your Jenkinsfile
                 script {
-                    sh 'cp -r /Users/mustafayildiz/Desktop/pay.cool-jenkins-copyfiles/* ./android/'
+                    if (COMMIT_MESSAGE.contains(CHECKTOUPDATE)) {
+                        sh 'cp -r /Users/mustafayildiz/Desktop/pay.cool-jenkins-copyfiles/* ./android/'
+                    } else {
+                        echo 'No need to copy files'
+                    }
                 }
             }
         }
 
         stage('Build APK') {
             steps {
-                // Run 'flutter build apk' command
                 script {
-                    sh 'flutter clean'
-                    sh 'flutter pub get'
-                    sh 'flutter build apk'
+                    if (COMMIT_MESSAGE.contains(CHECKTOUPDATE)) {
+                        sh 'flutter clean'
+                        sh 'flutter pub get'
+                        sh 'flutter build apk'
+                    } else {
+                        echo 'No need to build APK'
+                    }
                 }
             }
         }
@@ -51,24 +50,45 @@ pipeline {
             }   
             steps {
                 script {
-                    slackSend channel:  "#paycool-testing",message: "Build Started!\n*Project: Pay.Cool \n*Branch:* ${branchName}",teamDomain: "aukfa",tokenCredentialId: "slack-token"
-                    slackUploadFile channel: "#paycool-testing", credentialId: "slack-file-token", filePath: "build/app/outputs/flutter-apk/app-release.apk", initialComment: "${COMMIT_MESSAGE}"
+                    if (COMMIT_MESSAGE.contains(CHECKTOUPDATE)) {
+                        def modifiedText = COMMIT_MESSAGE.replace(CHECKTOUPDATE, "")
+
+                        slackUploadFile(
+                            channel: "#paycool-testing",
+                            credentialId: "slack-file-token",
+                            filePath: "build/app/outputs/flutter-apk/app-release.apk",
+                            initialComment: "Build Completed for Testing!\nBRANCH: new-design\nCOMMIT: ${modifiedText}"
+                        )
+                    } else {
+                        echo 'No need to send Slack notification'
+                    }
                 }
             }
         }
 
+        stage('Send to TestFlight') {
+            steps {
+                script {
+                    if (COMMIT_MESSAGE.contains(CHECKTOUPDATE)) {
+                        sh "cd ios"
+                        sh "fastlane beta"
+                    } else {
+                        echo 'No need to send to TestFlight'
+                    }
+                }
+            }
+        }
     }
 
-     post {
+    post {
         always {
             echo 'This will always run'
         }
-                success {
-            echo 'This will success run'
+        success {
+            echo 'This will run on success'
         }
         failure {
-            echo 'This will failure run'
+            echo 'This will run on failure'
         }
     }
-
 }

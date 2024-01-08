@@ -31,7 +31,7 @@ import '../services/vault_service.dart';
 
 class DialogManager extends StatefulWidget {
   final Widget child;
-  const DialogManager({Key? key, required this.child}) : super(key: key);
+  const DialogManager({super.key, required this.child});
 
   @override
   _DialogManagerState createState() => _DialogManagerState();

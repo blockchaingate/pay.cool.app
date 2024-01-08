@@ -12,7 +12,7 @@ import 'package:stacked/stacked.dart';
 import 'package:paycool/views/paycool/rewards/paycool_rewards_viewmodel.dart';
 
 class PayCoolRewardsView extends StatelessWidget {
-  const PayCoolRewardsView({Key? key}) : super(key: key);
+  const PayCoolRewardsView({super.key});
 
   @override
   Widget build(BuildContext context) {

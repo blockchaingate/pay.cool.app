@@ -152,6 +152,7 @@ class SharedService {
         }
       }).catchError((err) {
         log.e('getSinglePairDecimalConfig CATCH $err');
+        return singlePairDecimalConfig;
       });
     }
     return singlePairDecimalConfig;

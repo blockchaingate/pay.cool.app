@@ -4,8 +4,7 @@ import 'package:paycool/constants/custom_styles.dart';
 
 class DecimalLimitWidget extends StatelessWidget {
   final int decimalLimit;
-  const DecimalLimitWidget({Key? key, required this.decimalLimit})
-      : super(key: key);
+  const DecimalLimitWidget({super.key, required this.decimalLimit});
 
   @override
   Widget build(BuildContext context) {

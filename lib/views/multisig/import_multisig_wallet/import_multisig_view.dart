@@ -27,6 +27,7 @@ class ImportMultisigView extends StatelessWidget {
           Widget? child,
         ) {
           return Scaffold(
+            backgroundColor: white,
             body: SingleChildScrollView(
               child: Stack(
                 children: [

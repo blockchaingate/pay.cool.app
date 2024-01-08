@@ -11,7 +11,6 @@
 *----------------------------------------------------------------------
 */
 
-import 'package:exchangily_ui/exchangily_ui.dart' show kTextField;
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/custom_styles.dart';
@@ -37,6 +36,7 @@ class CreatePasswordView extends StatelessWidget {
         model.passwordMatch = false;
       },
       builder: (context, CreatePasswordViewModel model, child) => Scaffold(
+        backgroundColor: white,
         appBar: customAppBarWithIcon(
           title: FlutterI18n.translate(context, "setPassword"),
           leading: IconButton(

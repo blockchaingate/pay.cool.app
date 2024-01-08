@@ -292,8 +292,5 @@ class WalletConnectViewModel extends BaseViewModel {
     }
   }
 
-  Future<void> signRequestHandler(String topic, dynamic parameters) async {
-    print(topic);
-    print(parameters);
-  }
+  Future<void> signRequestHandler(String topic, dynamic parameters) async {}
 }

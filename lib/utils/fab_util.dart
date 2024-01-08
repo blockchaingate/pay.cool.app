@@ -323,7 +323,9 @@ class FabUtils {
       }
 
       //debugPrint('tokenBalance===' + tokenBalance.toString());
-    } catch (e) {}
+    } catch (e) {
+      debugPrint(e.toString());
+    }
     return tokenBalance;
   }
 

@@ -13,8 +13,7 @@ import 'package:stacked_services/stacked_services.dart';
 
 class ClubPackageDetailsView extends StatefulWidget {
   final List<ClubProject>? projectDetails;
-  const ClubPackageDetailsView({Key? key, this.projectDetails})
-      : super(key: key);
+  const ClubPackageDetailsView({super.key, this.projectDetails});
 
   @override
   State<ClubPackageDetailsView> createState() => _ClubPackageDetailsViewState();

@@ -7,7 +7,7 @@ import 'package:paycool/constants/route_names.dart';
 import 'package:paycool/environments/environment.dart';
 import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/views/bond/helper.dart';
-import 'package:paycool/views/bond/progressIndicator.dart';
+import 'package:paycool/views/bond/progress_indicator.dart';
 import 'package:paycool/views/bond/walletConncet/wallet_connect_viewmodel.dart';
 import 'package:stacked/stacked.dart';
 

@@ -32,6 +32,7 @@ class MultisigDashboardView extends StatelessWidget {
         Widget? child,
       ) {
         return Scaffold(
+            backgroundColor: white,
             body: SingleChildScrollView(
               child: Container(
                 padding: const EdgeInsets.all(20.0),

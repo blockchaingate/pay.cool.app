@@ -5,7 +5,7 @@ import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/shared/ui_helpers.dart';
 
 class ServerErrorWidget extends StatelessWidget {
-  const ServerErrorWidget({Key? key}) : super(key: key);
+  const ServerErrorWidget({super.key});
 
   @override
   Widget build(BuildContext context) {

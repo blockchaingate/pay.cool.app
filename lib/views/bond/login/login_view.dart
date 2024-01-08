@@ -7,7 +7,7 @@ import 'package:paycool/constants/colors.dart';
 import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/views/bond/login/forgot_password_view.dart';
 import 'package:paycool/views/bond/login/login_viewmodel.dart';
-import 'package:paycool/views/bond/progressIndicator.dart';
+import 'package:paycool/views/bond/progress_indicator.dart';
 import 'package:paycool/views/bond/register/bond_register_view.dart';
 import 'package:stacked/stacked.dart';
 

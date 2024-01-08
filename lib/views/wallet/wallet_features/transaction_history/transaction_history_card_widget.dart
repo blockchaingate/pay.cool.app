@@ -17,10 +17,10 @@ class TxHisotryCardWidget extends StatelessWidget {
   final TransactionHistoryViewmodel model;
   const TxHisotryCardWidget({
     required this.model,
-    Key? key,
+    super.key,
     required this.transaction,
     required this.customFontSize,
-  }) : super(key: key);
+  });
 
   final TransactionHistory transaction;
   final double customFontSize;

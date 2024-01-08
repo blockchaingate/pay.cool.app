@@ -75,88 +75,75 @@ class LightningRemitTransferHistoryView
                                   ),
                                 ),
                                 UIHelper.horizontalSpaceSmall,
-                                Container(
-                                  //  width: 200,
-                                  child: Column(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: <Widget>[
-                                      Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        children: [
-                                          SizedBox(
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width /
-                                                3,
-                                            child: Row(
-                                              children: [
-                                                Text('txid: ',
-                                                    style: subText2.copyWith(
+                                Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        SizedBox(
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width /
+                                              3,
+                                          child: Row(
+                                            children: [
+                                              Text('txid: ',
+                                                  style: subText2.copyWith(
+                                                      fontWeight:
+                                                          FontWeight.w400)),
+                                              RichText(
+                                                overflow: TextOverflow.ellipsis,
+                                                text: TextSpan(
+                                                    text: StringUtils
+                                                        .showPartialData(
+                                                            data: transaction
+                                                                .txid),
+                                                    style: subText1.copyWith(
+                                                        decoration:
+                                                            TextDecoration
+                                                                .underline,
+                                                        color: primaryColor,
                                                         fontWeight:
-                                                            FontWeight.w400)),
-                                                RichText(
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  text: TextSpan(
-                                                      text: StringUtils
-                                                          .showPartialData(
-                                                              data: transaction
-                                                                  .txid),
-                                                      style:
-                                                          subText1.copyWith(
-                                                              decoration:
-                                                                  TextDecoration
-                                                                      .underline,
-                                                              color:
-                                                                  primaryColor,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w400),
-                                                      recognizer:
-                                                          TapGestureRecognizer()
-                                                            ..onTap = () {
-                                                              viewModel.copyAddress(
-                                                                  transaction
-                                                                      .txid
-                                                                      .toString(),
-                                                                  context);
-                                                              viewModel.openExplorer(
-                                                                  transaction
-                                                                      .txid
-                                                                      .toString());
-                                                            }),
-                                                ),
-                                              ],
-                                            ),
+                                                            FontWeight.w400),
+                                                    recognizer:
+                                                        TapGestureRecognizer()
+                                                          ..onTap = () {
+                                                            viewModel.copyAddress(
+                                                                transaction.txid
+                                                                    .toString(),
+                                                                context);
+                                                            viewModel.openExplorer(
+                                                                transaction.txid
+                                                                    .toString());
+                                                          }),
+                                              ),
+                                            ],
                                           ),
-                                          IconButton(
-                                            icon: const Icon(
-                                                Icons.copy_outlined,
-                                                color: black,
-                                                size: 16),
-                                            onPressed: () =>
-                                                viewModel.copyAddress(
-                                                    transaction.txid.toString(),
-                                                    context),
-                                          )
-                                        ],
-                                      ),
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(top: 5.0),
-                                        child: Text(
-                                          transaction.date!,
-                                          style: headText5.copyWith(
-                                              fontWeight: FontWeight.w400),
                                         ),
+                                        IconButton(
+                                          icon: const Icon(Icons.copy_outlined,
+                                              color: black, size: 16),
+                                          onPressed: () =>
+                                              viewModel.copyAddress(
+                                                  transaction.txid.toString(),
+                                                  context),
+                                        )
+                                      ],
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 5.0),
+                                      child: Text(
+                                        transaction.date!,
+                                        style: headText5.copyWith(
+                                            fontWeight: FontWeight.w400),
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
                                 ),
                                 UIHelper.horizontalSpaceSmall,
                                 UIHelper.horizontalSpaceSmall,

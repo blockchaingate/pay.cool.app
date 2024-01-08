@@ -6,6 +6,7 @@ import 'package:paycool/service_locator.dart';
 import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/views/bond/helper.dart';
 import 'package:paycool/views/wallet/wallet_dashboard_viewmodel.dart';
+import 'package:paycool/views/wallet/wallet_features/receive.dart';
 import 'package:stacked_services/stacked_services.dart';
 
 class WalletCardWidget extends StatefulWidget {
@@ -27,7 +28,7 @@ class _WalletCardWidgetState extends State<WalletCardWidget> {
     return SizedBox(
       key: widget.key,
       width: size.width,
-      height: size.height > 750 ? size.height * 0.25 : size.height * 0.3,
+      height: size.height > 750 ? size.height * 0.25 : size.height * 0.28,
       child: Card(
         elevation: 2.0,
         shape: RoundedRectangleBorder(
@@ -113,8 +114,14 @@ class _WalletCardWidgetState extends State<WalletCardWidget> {
                       icon: Icons.qr_code,
                       label: FlutterI18n.translate(context, "receive"),
                       route: () {
-                        Navigator.pushNamed(context, ReceiveViewRoute,
-                            arguments: null);
+                        Navigator.push(context, MaterialPageRoute(
+                          builder: (context) {
+                            return ReceiveWalletScreen(
+                              data: null,
+                              isMain: true,
+                            );
+                          },
+                        ));
                       }),
                   iconLabelWidget(
                       icon: Icons.local_gas_station,

@@ -16,8 +16,7 @@ class MultisigTransferView extends StatelessWidget {
   final MultisigWalletModel multisigWallet;
 
   const MultisigTransferView(
-      {Key? key, required this.multisigBalance, required this.multisigWallet})
-      : super(key: key);
+      {super.key, required this.multisigBalance, required this.multisigWallet});
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +30,7 @@ class MultisigTransferView extends StatelessWidget {
         Widget? child,
       ) {
         return Scaffold(
+            backgroundColor: white,
             appBar: AppBar(
                 centerTitle: true,
                 title: Column(

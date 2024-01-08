@@ -16,6 +16,7 @@ import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/logger.dart';
+import 'package:paycool/providers/app_state_provider.dart';
 import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/db/core_wallet_database_service.dart';
 import 'package:paycool/services/db/token_list_database_service.dart';
@@ -49,6 +50,7 @@ class WalletManagementViewModel extends BaseViewModel with StoppableService {
   final NavigationService navigationService = locator<NavigationService>();
   final userSettingsDatabaseService = locator<UserSettingsDatabaseService>();
   final coreWalletDatabaseService = locator<CoreWalletDatabaseService>();
+  final appStateProvider = locator<AppStateProvider>();
 
   String? errorMessage;
   BuildContext? context;
@@ -101,6 +103,9 @@ class WalletManagementViewModel extends BaseViewModel with StoppableService {
             .deleteDb()
             .whenComplete(() => log.e('User settings database deleted!!'))
             .catchError((err) => log.e('Catch not able to delete user db'));
+
+        appStateProvider.clearProviderAddress(context!);
+        appStateProvider.clearTokenList(context!);
 
         storageService.walletBalancesBody = '';
         storageService.isShowCaseView = true;
