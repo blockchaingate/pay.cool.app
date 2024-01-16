@@ -5,6 +5,7 @@ import 'package:paycool/constants/route_names.dart';
 import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/views/dapp/dapp_viewmodel.dart';
 import 'package:paycool/views/dapp/dapp_web_view.dart';
+import 'package:paycool/views/red_packet/red_packet.dart';
 import 'package:paycool/widgets/bottom_nav.dart';
 import 'package:paycool/widgets/shared/will_pop_scope.dart';
 import 'package:stacked/stacked.dart';
@@ -122,15 +123,25 @@ class DappView extends StatelessWidget {
                         itemBuilder: (context, index) {
                           return InkWell(
                             onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => DappWebView(
-                                    model.dapps[index]["url"].toString(),
-                                    model.dapps[index]["title"].toString(),
+                              if (model.dapps[index]["type"] == "web") {
+                                //Web Dapp
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => DappWebView(
+                                      model.dapps[index]["url"].toString(),
+                                      model.dapps[index]["title"].toString(),
+                                    ),
                                   ),
-                                ),
-                              );
+                                );
+                              } else {
+                                //Flutter APP
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => RedPacket(),
+                                    ));
+                              }
                             },
                             child: Column(
                               children: [

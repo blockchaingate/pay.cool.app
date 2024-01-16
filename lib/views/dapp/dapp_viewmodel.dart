@@ -15,7 +15,24 @@ class DappViewmodel extends BaseViewModel {
 
   var dapps = [
     {
+      "title": "Red Packet",
+      "type": "flutter",
+      "image": "https://cdn-icons-png.flaticon.com/512/4187/4187418.png",
+    },
+    {
+      "title": "Sushi",
+      "type": "web",
+      "url": "https://sushi.com",
+      "image":
+          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQnrOcDPaBVj9K7UR7T3fjm0BVAr6DdsLjK8ydE5CblCw&s",
+      "buttons": [
+        {"label": "Accept", "action": "connect"},
+        {"label": "Reject", "action": "disconnect"}
+      ]
+    },
+    {
       "title": "Biswap",
+      "type": "web",
       "url": "https://biswap.com",
       "image":
           "https://play-lh.googleusercontent.com/vivOq9u0gB1y2cyvmAi7T6UhAca3lZAfGGd_xYJS6q3Af5GPUgnm-4v1ZX3zndvMazAj",
@@ -26,6 +43,7 @@ class DappViewmodel extends BaseViewModel {
     },
     {
       "title": "Exchangily",
+      "type": "web",
       "url": "https://exchangily.com",
       "image":
           "https://pbs.twimg.com/profile_images/1398063786989326338/PtEVQlwW_400x400.jpg",
@@ -36,6 +54,36 @@ class DappViewmodel extends BaseViewModel {
     },
     {
       "title": "Uni",
+      "type": "web",
+      "url": "https://uniswap.com",
+      "image":
+          "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Uniswap_Logo.svg/1026px-Uniswap"
+    },
+    {
+      "title": "Biswap",
+      "type": "web",
+      "url": "https://biswap.com",
+      "image":
+          "https://play-lh.googleusercontent.com/vivOq9u0gB1y2cyvmAi7T6UhAca3lZAfGGd_xYJS6q3Af5GPUgnm-4v1ZX3zndvMazAj",
+      "buttons": [
+        {"label": "Accept", "action": "connect"},
+        {"label": "Reject", "action": "disconnect"}
+      ]
+    },
+    {
+      "title": "Exchangily",
+      "type": "web",
+      "url": "https://exchangily.com",
+      "image":
+          "https://pbs.twimg.com/profile_images/1398063786989326338/PtEVQlwW_400x400.jpg",
+      "buttons": [
+        {"label": "Accept", "action": "connect"},
+        {"label": "Reject", "action": "disconnect"}
+      ]
+    },
+    {
+      "title": "Uni",
+      "type": "web",
       "url": "https://uniswap.com",
       "image":
           "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Uniswap_Logo.svg/1026px-Uniswap_Logo.svg.png",
@@ -46,6 +94,7 @@ class DappViewmodel extends BaseViewModel {
     },
     {
       "title": "Pancake",
+      "type": "web",
       "url": "https://pancakeswap.com",
       "image":
           "https://logowik.com/content/uploads/images/pancakeswap-cake6091.jpg",
@@ -56,6 +105,7 @@ class DappViewmodel extends BaseViewModel {
     },
     {
       "title": "Sushi",
+      "type": "web",
       "url": "https://sushi.com",
       "image":
           "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQnrOcDPaBVj9K7UR7T3fjm0BVAr6DdsLjK8ydE5CblCw&s",
