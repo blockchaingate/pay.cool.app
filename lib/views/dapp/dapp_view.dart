@@ -19,7 +19,6 @@ class DappView extends StatelessWidget {
       viewModelBuilder: () => DappViewmodel(),
       onViewModelReady: (model) {
         model.context = context;
-        model.init();
       },
       builder: (context, model, _) => PopScope(
         canPop: false,

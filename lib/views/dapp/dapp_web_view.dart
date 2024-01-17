@@ -16,6 +16,16 @@ class DappWebView extends StatefulWidget {
 
 class _DappWebViewState extends State<DappWebView> {
   WebViewController controller = WebViewController();
+  // WebViewCookieManager cookieManager = WebViewCookieManager();
+  // WebViewCookie cookie = WebViewCookie(
+  //   name: 'cookieName',
+  //   value:
+  //       '_ga=GA1.1.230232657.1705342470; _ga_JW8KWJ48EF=GS1.1.1705415153.2.0.1705415153.0.0.0; _hjIncludedInSessionSample_3553126=0; _hjSessionUser_3553126=eyJpZCI6Ijc0YmY5MDM2LWMyNzYtNTJhMi1hNmJkLTBmNmMzYTc2MDgyYiIsImNyZWF0ZWQiOjE3MDUzNDI0NzAzODcsImV4aXN0aW5nIjp0cnVlfQ==; _hjSession_3553126=eyJpZCI6IjkwODQzZTQyLWFiZmQtNDFmYy05ZWU0LTgxOGM4MDYyMjkxNSIsImMiOjE3MDU0MTUxNTM1NDAsInMiOjAsInIiOjAsInNiIjowLCJzciI6MCwic2UiOjAsImZzIjowLCJzcCI6MX0=',
+  //   domain: 'cookieDomain',
+  //   path: 'cookiePath',
+  // );
+
+  // late StreamSubscription _sub;
 
   @override
   void initState() {
@@ -26,18 +36,28 @@ class _DappWebViewState extends State<DappWebView> {
           onProgress: (int progress) {
             debugPrint(progress.toString());
           },
-          onPageStarted: (String url) {},
-          onPageFinished: (String url) {},
-          onWebResourceError: (WebResourceError error) {},
           onNavigationRequest: (NavigationRequest request) {
-            if (request.url.startsWith('https://www.youtube.com/')) {
-              return NavigationDecision.prevent;
-            }
             return NavigationDecision.navigate;
           },
         ),
       )
       ..loadRequest(Uri.parse(widget.url!));
+
+    // cookieManager = WebViewCookieManager();
+
+    // // Listen to the WebSocket stream
+    // channel.stream.listen((data) {
+    //   if (data != null && data.isNotEmpty) {
+    //     // Process the data as needed
+    //     String message = String.fromCharCodes(data.cast<int>());
+    //     print('Received from server: $message');
+    //     showBottomSheetDetail(message);
+    //   }
+    // }, onDone: () {
+    //   print('WebSocket connection closed');
+    // }, onError: (error) {
+    //   print('WebSocket error: $error');
+    // });
 
     super.initState();
   }

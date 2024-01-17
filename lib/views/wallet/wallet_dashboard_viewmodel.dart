@@ -268,9 +268,6 @@ class WalletDashboardViewModel extends BaseViewModel {
   }
 
   updateTabSelection(int tabIndex) {
-    print("------------------");
-    print(tabIndex);
-
     setBusy(true);
     setBusyForObject(selectedTabIndex, true);
 
