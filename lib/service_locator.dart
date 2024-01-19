@@ -19,6 +19,7 @@ import 'package:paycool/services/db/core_wallet_database_service.dart';
 import 'package:paycool/services/local_storage/hive_multisig_service.dart';
 import 'package:paycool/services/local_storage/hive_mutli_wallet_service.dart';
 import 'package:paycool/services/multisig_service.dart';
+import 'package:paycool/views/red_packet/red_packet_service.dart';
 import 'package:paycool/views/settings/setting_viewmodel.dart';
 import 'package:stacked_services/stacked_services.dart'
     show DialogService, NavigationService, BottomSheetService;
@@ -91,6 +92,9 @@ Future serviceLocator() async {
   locator.registerLazySingleton(() => ConfigService());
   locator.registerLazySingleton(() => DecimalConfigDatabaseService());
   locator.registerLazySingleton(() => TransactionHistoryDatabaseService());
+
+  //RedPacketService
+  locator.registerLazySingleton(() => RedPacketService());
 
   // Seven Star
   locator.registerLazySingleton(() => PayCoolClubService());
