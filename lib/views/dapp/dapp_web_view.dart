@@ -16,16 +16,14 @@ class DappWebView extends StatefulWidget {
 
 class _DappWebViewState extends State<DappWebView> {
   WebViewController controller = WebViewController();
-  // WebViewCookieManager cookieManager = WebViewCookieManager();
-  // WebViewCookie cookie = WebViewCookie(
-  //   name: 'cookieName',
-  //   value:
-  //       '_ga=GA1.1.230232657.1705342470; _ga_JW8KWJ48EF=GS1.1.1705415153.2.0.1705415153.0.0.0; _hjIncludedInSessionSample_3553126=0; _hjSessionUser_3553126=eyJpZCI6Ijc0YmY5MDM2LWMyNzYtNTJhMi1hNmJkLTBmNmMzYTc2MDgyYiIsImNyZWF0ZWQiOjE3MDUzNDI0NzAzODcsImV4aXN0aW5nIjp0cnVlfQ==; _hjSession_3553126=eyJpZCI6IjkwODQzZTQyLWFiZmQtNDFmYy05ZWU0LTgxOGM4MDYyMjkxNSIsImMiOjE3MDU0MTUxNTM1NDAsInMiOjAsInIiOjAsInNiIjowLCJzciI6MCwic2UiOjAsImZzIjowLCJzcCI6MX0=',
-  //   domain: 'cookieDomain',
-  //   path: 'cookiePath',
-  // );
-
-  // late StreamSubscription _sub;
+  WebViewCookieManager cookieManager = WebViewCookieManager();
+  WebViewCookie cookie = WebViewCookie(
+    name: 'paycool',
+    value:
+        '_ga=GA1.1.230232657.1705342470; _ga_JW8KWJ48EF=GS1.1.1705415153.2.0.1705415153.0.0.0; _hjIncludedInSessionSample_3553126=0; _hjSessionUser_3553126=eyJpZCI6Ijc0YmY5MDM2LWMyNzYtNTJhMi1hNmJkLTBmNmMzYTc2MDgyYiIsImNyZWF0ZWQiOjE3MDUzNDI0NzAzODcsImV4aXN0aW5nIjp0cnVlfQ==; _hjSession_3553126=eyJpZCI6IjkwODQzZTQyLWFiZmQtNDFmYy05ZWU0LTgxOGM4MDYyMjkxNSIsImMiOjE3MDU0MTUxNTM1NDAsInMiOjAsInIiOjAsInNiIjowLCJzciI6MCwic2UiOjAsImZzIjowLCJzcCI6MX0=',
+    domain: 'pay.cool',
+    path: 'cookiePath',
+  );
 
   @override
   void initState() {
@@ -88,7 +86,9 @@ class _DappWebViewState extends State<DappWebView> {
               ),
             ),
           ]),
-      body: WebViewWidget(controller: controller),
+      body: WebViewWidget(
+        controller: controller,
+      ),
     );
   }
 

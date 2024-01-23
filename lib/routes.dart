@@ -17,6 +17,7 @@ import 'package:paycool/logger.dart';
 import 'package:paycool/views/bond/bond_dashboard.dart';
 import 'package:paycool/views/bond/bond_welcome.dart';
 import 'package:paycool/views/dapp/dapp_view.dart';
+import 'package:paycool/views/deeplink.dart';
 import 'package:paycool/views/paycool_club/checkout/club_package_checkout_view.dart';
 import 'package:paycool/views/paycool_club/club_projects/club_project_details/club_project_details_view.dart';
 import 'package:paycool/views/settings/about_view.dart';
@@ -60,6 +61,17 @@ class RouteGenerator {
     log.w(
         'generateRoute | name: ${routeSettings.name} arguments:${routeSettings.arguments}');
     final dynamic args = routeSettings.arguments;
+
+    if (routeSettings.name.toString().contains("deepLinkView")) {
+      Uri uri = Uri.parse('http://dummy.com${routeSettings.name}');
+      String address = uri.queryParameters['address']!;
+
+      return MaterialPageRoute(
+          settings: const RouteSettings(name: 'DeeplinkView'),
+          builder: (_) => DeeplinkView(
+                params: [address],
+              ));
+    }
 
     switch (routeSettings.name) {
       case '/':
@@ -222,6 +234,11 @@ class RouteGenerator {
             settings: const RouteSettings(name: 'DappView'),
             builder: (_) => const DappView());
 
+      case DeeplinkViewRoute:
+        return MaterialPageRoute(
+            settings: const RouteSettings(name: 'DeeplinkView'),
+            builder: (_) => const DeeplinkView());
+
 /*----------------------------------------------------------------------
                       Setting Routes
 ----------------------------------------------------------------------*/
@@ -279,19 +296,20 @@ class RouteGenerator {
   }
 
   static Route _errorRoute(settings) {
-    BuildContext? context;
     return MaterialPageRoute(builder: (_) {
-      return Scaffold(
-        appBar: AppBar(
-          title: Text(FlutterI18n.translate(context!, "error"),
-              style: const TextStyle(color: Colors.white)),
-        ),
-        body: Center(
-          child: Text(
-              '${FlutterI18n.translate(context, "noRouteDefined")} ${settings.name}',
-              style: const TextStyle(color: Colors.white)),
-        ),
-      );
+      return Builder(builder: (context) {
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(FlutterI18n.translate(context, "error"),
+                style: const TextStyle(color: Colors.white)),
+          ),
+          body: Center(
+            child: Text(
+                '${FlutterI18n.translate(context, "noRouteDefined")} ${settings.name}',
+                style: const TextStyle(color: Colors.white)),
+          ),
+        );
+      });
     });
   }
 }

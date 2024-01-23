@@ -26,7 +26,6 @@ const String TransactionHistoryViewRoute = '/transactionHistory';
 const String TransferViewRoute = '/transfer';
 
 // Club Routes
-
 const String GenerateCustomQrViewRoute = '/generateCustomQrCode';
 const String JoinPayCoolClubViewRoute = '/joinPayCoolClub';
 const String referralDetailsViewRoute = '/payCoolClubReferral';
@@ -35,6 +34,7 @@ const String clubProjectDetailsViewRoute = '/clubProjectDetails';
 const String clubPackageDetailsViewRoute = '/clubPackageDetails';
 const String clubPackageCheckoutViewRoute = '/clubPackageCheckout';
 const String referralViewRoute = '/referral';
+
 // Pay.cool Routes
 
 const String PayCoolRewardsViewRoute = '/payCoolRewards';
@@ -52,7 +52,6 @@ const String SettingViewRoute = '/settings';
 const String MeViewRoute = '/me';
 const String WalletManagementViewRoute = '/walletManagement';
 const String AboutViewRoute = '/aboutView';
-const String DappViewRoute = '/dappView';
 const String PayCoolViewRoute = '/paycool';
 
 /*----------------------------------------------------------------------
@@ -61,12 +60,10 @@ const String PayCoolViewRoute = '/paycool';
 
 const String LoginViewRoute = '/login';
 const String PaymentViewRoute = '/payment';
-
 const String MyRewardDetailsViewRoute = 'myRewardDetails';
 const String CampaignOrderDetailsViewRoute = '/campaignOrderDetails';
 const String TeamRewardDetailsViewRoute = '/teamRewardDetails';
 const String TeamReferralViewRoute = '/teamReferral';
-
 const String MyReferralViewRoute = '/myReferral';
 const String RegisterAccountViewRoute = '/registerAccount';
 
@@ -77,3 +74,10 @@ const String RegisterAccountViewRoute = '/registerAccount';
 const String BondDashboardViewRoute = '/bondDashboard';
 const String WalletConnectViewRoute = '/walletConnect';
 const String BondWelcomeViewRoute = '/bondWelcome';
+
+/*----------------------------------------------------------------------
+                      Dapps Routes
+----------------------------------------------------------------------*/
+
+const String DappViewRoute = '/dappView';
+const String DeeplinkViewRoute = '/deepLinkView';

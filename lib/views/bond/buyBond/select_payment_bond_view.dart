@@ -500,7 +500,7 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
 
     String? abiHex;
 
-    var seed = await walletService.getSeedDialog(sharedService.context);
+    var seed = await walletService.getSeedDialog(context);
 
     if (seed == null) {
       setState(() {

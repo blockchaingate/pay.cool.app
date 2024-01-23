@@ -36,7 +36,7 @@ class DappViewmodel extends BaseViewModel {
     },
     {
       "title": "Uni",
-      "url": "https://uniswap.com",
+      "url": "https://app.uniswap.org/swap?utm_source=paycool",
       "image":
           "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Uniswap_Logo.svg/1026px-Uniswap_Logo.svg.png",
       "buttons": [
@@ -46,7 +46,7 @@ class DappViewmodel extends BaseViewModel {
     },
     {
       "title": "Pancake",
-      "url": "https://pancakeswap.com",
+      "url": "https://pancakeswap.finance/swap?utm_source=paycool",
       "image":
           "https://logowik.com/content/uploads/images/pancakeswap-cake6091.jpg",
       "buttons": [
