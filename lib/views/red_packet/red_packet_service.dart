@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:paycool/constants/api_routes.dart';
 import 'package:paycool/environments/environment.dart';
 import 'package:paycool/logger.dart';
 import 'package:paycool/service_locator.dart';
@@ -41,6 +42,35 @@ class RedPacketService with ListenableServiceMixin {
     return res ?? "";
   }
 
+  // RedPacketAbiHex api for approve functions
+  Future<String?> encodeCreateRedPacketAbiHex(BuildContext context,
+      var pocketId, coinType, var totalAmount, var pocketNumber) async {
+    String url = payCoolEncodeAbiUrl;
+    var body = {
+      "types": ["bytes32", "uint32", "uint256", "uint256", "uint256"],
+      "params": [pocketId, coinType, totalAmount, pocketNumber, 1705962965]
+    };
+    try {
+      final res = await client.post(Uri.parse(url),
+          body: jsonEncode(body),
+          headers: {
+            'Content-type': 'application/json',
+            'Accept': 'application/json'
+          });
+      log.w('encodeAbiHex json ${res.body}');
+      var json = jsonDecode(res.body)['encodedParams'];
+      if (res.statusCode == 200 || res.statusCode == 201) {
+        return json.toString();
+      } else {
+        log.e("error: ${res.body}");
+        return res.body;
+      }
+    } catch (e) {
+      log.e('CATCH encodeAbiHex failed to load the data from the API $e');
+      return '';
+    }
+  }
+
   //TODO: Create rec packet
   Future<void> createRedPacket() async {}
 
@@ -62,7 +92,7 @@ class RedPacketService with ListenableServiceMixin {
     };
 
     var response = await client.post(
-      Uri.parse('${environment["api"]["redPocket"]}/createRedPocket'),
+      Uri.parse('https://testapi.fundark.com/api/redpocket/createRedPocket'),
       body: jsonEncode(data),
       headers: {'Content-Type': 'application/json'},
     );
@@ -75,6 +105,8 @@ class RedPacketService with ListenableServiceMixin {
     //     "id": "ghuwahkghkjvbhvjacnw4biu334tnjk4wnfjkv"
     //   }
     // }
+
+    print('RedPacketService getRedPacketId response: ${response.body}');
 
     if (response.statusCode == 200) {
       var json = jsonDecode(response.body);

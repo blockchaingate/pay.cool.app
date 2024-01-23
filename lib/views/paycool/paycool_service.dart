@@ -593,6 +593,8 @@ class PayCoolService with ListenableServiceMixin {
       //{"ok":true,"_body":{"transactionHash":"0x855f2d8ec57418670dd4cb27ecb71c6794ada5686e771fe06c48e30ceafe0548","status":"0x1"}}
 
       log.w('res $res');
+
+      print('PS res $res');
       if (res['status'] != null) {
         result = res['status'];
       } else {
@@ -699,9 +701,13 @@ class PayCoolService with ListenableServiceMixin {
 
       var nonce = await getNonce(exgAddress);
 
+      //print nonce
+      print('PS nonce $nonce');
+
       if (incNonce) {
         nonce = nonce + 1;
       }
+      print('PS nonce after if $nonce');
 
       try {
         txKanbanHex = await signAbiHexWithPrivateKey(
@@ -718,6 +724,9 @@ class PayCoolService with ListenableServiceMixin {
       }
       if (txKanbanHex != '') {
         var resBody = await sendRawTransactionV3(txKanbanHex, 'kanban');
+        var res = resBody;
+
+        print('PS res $res');
 
         if (!resBody["success"]) {
           return null;

@@ -217,10 +217,6 @@ class RedPacketSent extends StatelessWidget {
               model.getNumber();
 
               //goto RedPacketShare widget
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(builder: (context) => RedPacketShare()),
-              // );
             },
           ),
         ],

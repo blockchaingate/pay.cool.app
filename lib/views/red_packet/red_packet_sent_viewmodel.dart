@@ -5,6 +5,7 @@ import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/wallet_service.dart';
 import 'package:paycool/views/paycool/paycool_service.dart';
 import 'package:paycool/views/red_packet/red_packet_service.dart';
+import 'package:paycool/views/red_packet/red_packet_share.dart';
 import 'package:stacked/stacked.dart';
 import 'dart:math';
 import '../../services/local_dialog_service.dart';
@@ -126,6 +127,8 @@ class RedPacketSentViewModel extends BaseViewModel {
     String hex = await redPacketService.getCredentials(
         _context, getCoinCode(selectedCoin), _amount);
 
+    hex = "0x78c94cb5$hex";
+
     //getRedPacketId
     String packetId =
         await redPacketService.getRedPacketId(giftCode, selectedCoin);
@@ -133,10 +136,39 @@ class RedPacketSentViewModel extends BaseViewModel {
     // print packetId
     print('RedPacketViewModel packetId: $packetId');
 
-    var seed = await walletService.getSeedDialog(sharedService.context);
+    var seed = await walletService.getSeedDialog(_context);
 
-    String sign = await payCoolService.signSendTx(seed!, hex, contactAddress);
+    // String sign = await payCoolService.signSendTx(seed!, hex, contactAddress);
+
+    String addTempText = "0x8d65fc45dE848e650490F1fFCD51C6Baf52EA595";
+
+    String? sign = await payCoolService.signSendTxBond(seed!, hex, addTempText,
+        incNonce: true);
     print('RedPacketViewModel sign: $sign');
+
+    //encodeCreateRedPacketAbiHex
+    String? abiHex = await redPacketService.encodeCreateRedPacketAbiHex(
+        _context, packetId, getCoinCode(selectedCoin), _amount, _number);
+
+    abiHex = "0x38e30a9c$abiHex";
+
+    // print abiHex
+    print('RedPacketViewModel CreateRedPacketAbiHex: $abiHex');
+
+    //createRedPacket
+    String? createRedPacket =
+        await payCoolService.signSendTxBond(seed!, abiHex!, contactAddress);
+
+    // print createRedPacket
+    print('RedPacketViewModel createRedPacket: $createRedPacket');
+
+    Navigator.push(
+      _context,
+      MaterialPageRoute(
+          builder: (context) => RedPacketShare(
+                giftCode: giftCode,
+              )),
+    );
 
     notifyListeners();
   }
