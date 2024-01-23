@@ -46,9 +46,16 @@ class RedPacketService with ListenableServiceMixin {
   Future<String?> encodeCreateRedPacketAbiHex(BuildContext context,
       var pocketId, coinType, var totalAmount, var pocketNumber) async {
     String url = payCoolEncodeAbiUrl;
+    //exp time: current uix time + 2days
+    var expTime = DateTime.now().millisecondsSinceEpoch + 172800000;
+
+    //print expTime
+    print('RedPacketService encodeReceiveRedPacketAbiHex expTime: $expTime');
+
     var body = {
       "types": ["bytes32", "uint32", "uint256", "uint256", "uint256"],
-      "params": [pocketId, coinType, totalAmount, pocketNumber, 1705962965]
+      "params": [pocketId, coinType, totalAmount, pocketNumber, expTime]
+      // "params": [pocketId, coinType, totalAmount, pocketNumber, 1705962965]
     };
     try {
       final res = await client.post(Uri.parse(url),
@@ -67,6 +74,37 @@ class RedPacketService with ListenableServiceMixin {
       }
     } catch (e) {
       log.e('CATCH encodeAbiHex failed to load the data from the API $e');
+      return '';
+    }
+  }
+
+  // encodeReceiveRedPacketAbiHex api for approve functions
+  Future<String?> encodeReceiveRedPacketAbiHex(
+      BuildContext context, var pocketId, var msg, var v, var r, var s) async {
+    String url = payCoolEncodeAbiUrl;
+
+    var body = {
+      "types": ["bytes32", "bytes32", "uint8", "bytes32", "bytes32"],
+      "params": [pocketId, msg, v, r, s]
+    };
+    try {
+      final res = await client.post(Uri.parse(url),
+          body: jsonEncode(body),
+          headers: {
+            'Content-type': 'application/json',
+            'Accept': 'application/json'
+          });
+      log.w('encodeAbiHex json ${res.body}');
+      var json = jsonDecode(res.body)['encodedParams'];
+      if (res.statusCode == 200 || res.statusCode == 201) {
+        return json.toString();
+      } else {
+        log.e("error: ${res.body}");
+        return res.body;
+      }
+    } catch (e) {
+      log.e(
+          'CATCH encodeReceiveRedPacketAbiHex failed to load the data from the API $e');
       return '';
     }
   }
@@ -132,8 +170,7 @@ class RedPacketService with ListenableServiceMixin {
     };
 
     var response = await client.post(
-      Uri.parse(
-          '${environment["api"]["redPocket"]}/getClaimRedPocketSignedMessage'),
+      Uri.parse('https://testapi.fundark.com/api/redpocket/claimRedPocket'),
       body: jsonEncode(data),
       headers: {'Content-Type': 'application/json'},
     );

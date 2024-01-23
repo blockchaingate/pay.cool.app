@@ -10,7 +10,7 @@ class RedPacketReceive extends StatelessWidget {
   Widget build(BuildContext context) {
     return ViewModelBuilder.reactive(
         viewModelBuilder: () => RedPacketReceiveViewModel(),
-        onModelReady: (model) => model.init(),
+        onViewModelReady: (model) => model.init(context),
         builder: (context, model, child) => ListView(
               padding: const EdgeInsets.all(12.0),
               shrinkWrap: true,
@@ -58,6 +58,11 @@ class RedPacketReceive extends StatelessWidget {
                       SizedBox(
                         width: MediaQuery.of(context).size.width - 150,
                         child: TextField(
+                          controller: model.giftCodeController,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Color(0xff000000),
+                          ),
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             labelText: 'Please input the code',
@@ -70,7 +75,9 @@ class RedPacketReceive extends StatelessWidget {
                       ),
                       //paste button
                       TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          model.pasteGiftCode();
+                        },
                         child: Text('Paste',
                             style: TextStyle(
                               fontSize: 14,
@@ -92,7 +99,9 @@ class RedPacketReceive extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8.0),
                     ),
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    model.redPacketReceive(context);
+                  },
                   child: Text('Share and Claim'),
                 ),
 
