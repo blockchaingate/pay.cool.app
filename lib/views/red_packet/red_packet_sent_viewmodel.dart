@@ -142,8 +142,7 @@ class RedPacketSentViewModel extends BaseViewModel {
 
     String addTempText = "0x8d65fc45dE848e650490F1fFCD51C6Baf52EA595";
 
-    String? sign = await payCoolService.signSendTxBond(seed!, hex, addTempText,
-        incNonce: true);
+    String? sign = await payCoolService.signSendTxBond(seed!, hex, addTempText);
     print('RedPacketViewModel sign: $sign');
 
     //encodeCreateRedPacketAbiHex
@@ -156,8 +155,8 @@ class RedPacketSentViewModel extends BaseViewModel {
     print('RedPacketViewModel CreateRedPacketAbiHex: $abiHex');
 
     //createRedPacket
-    String? createRedPacket =
-        await payCoolService.signSendTxBond(seed!, abiHex!, contactAddress);
+    String? createRedPacket = await payCoolService
+        .signSendTxBond(seed, abiHex, contactAddress, incNonce: true);
 
     // print createRedPacket
     print('RedPacketViewModel createRedPacket: $createRedPacket');

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:paycool/constants/api_routes.dart';
 import 'package:paycool/environments/environment.dart';
 import 'package:paycool/logger.dart';
+import 'package:paycool/models/red/red_packet_rm.dart';
 import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/shared_service.dart';
 import 'package:paycool/utils/kanban.util.dart';
@@ -159,9 +160,12 @@ class RedPacketService with ListenableServiceMixin {
   //   "pocketId": "HappyNewYear",
   //   "userWalletAddress": "1F1y1iYu47zGB65QH3HKihiqfCHhPRQ54o"
   // }
-  Future<String> getClaimRedPacketSignedMessage(
+  Future<RedPacketResponseModal?> getClaimRedPacketSignedMessage(
       String pocketId, String userWalletAddress) async {
     String signedMessage = '';
+
+    print("lkdnfkldshfkhsdkflkds");
+
     // Http post /api/redpocket/getClaimRedPocketSignedMessage
 
     Map<String, dynamic> data = {
@@ -175,6 +179,8 @@ class RedPacketService with ListenableServiceMixin {
       headers: {'Content-Type': 'application/json'},
     );
 
+    print(response);
+    print(response.body);
     //check response success = true
     // {
     //   "success": true,
@@ -193,9 +199,9 @@ class RedPacketService with ListenableServiceMixin {
 
     if (response.statusCode == 200) {
       var json = jsonDecode(response.body);
-      signedMessage = json['data']['signedMessage'];
+      return RedPacketResponseModal.fromJson(json);
+    } else {
+      return null;
     }
-
-    return signedMessage;
   }
 }
