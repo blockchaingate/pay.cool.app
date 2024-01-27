@@ -24,18 +24,15 @@ class TransactionHistoryView extends StatelessWidget {
           model.context = context;
           model.walletInfo = walletInfo;
         },
-        builder: (context, model, child) => WillPopScope(
-              onWillPop: () async {
-                debugPrint('isDialogUp ${model.isDialogUp}');
+        builder: (context, model, child) => PopScope(
+              canPop: false,
+              onPopInvoked: (x) async {
                 if (model.isDialogUp) {
-                  Navigator.of(context, rootNavigator: true).pop();
                   model.isDialogUp = false;
-                  debugPrint('isDialogUp in if ${model.isDialogUp}');
+                  return Navigator.of(context, rootNavigator: true).pop();
                 } else {
-                  Navigator.of(context).pop();
+                  return Navigator.of(context).pop();
                 }
-
-                return Future.value(false);
               },
               child: Scaffold(
                 appBar: AppBar(

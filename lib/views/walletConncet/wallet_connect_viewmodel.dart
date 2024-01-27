@@ -2,10 +2,10 @@ import 'dart:async';
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
-import 'package:majascan/majascan.dart';
 import 'package:paycool/service_locator.dart';
 import 'package:paycool/services/coin_service.dart';
 import 'package:paycool/services/wallet_service.dart';
+import 'package:paycool/utils/barcode_util.dart';
 import 'package:paycool/utils/fab_util.dart';
 import 'package:paycool/views/paycool/paycool_service.dart';
 import 'package:stacked/stacked.dart';
@@ -78,6 +78,10 @@ class WalletConnectViewModel extends BaseViewModel {
         method: "kanban_sendTransaction",
         handler: signRequestHandler);
     web3Wallet!.registerRequestHandler(
+        chainId: "eip155:5",
+        method: "eth_sendTransaction",
+        handler: signRequestHandler);
+    web3Wallet!.registerRequestHandler(
         chainId: "eip155:1",
         method: "eth_sendTransaction",
         handler: signRequestHandler);
@@ -99,11 +103,8 @@ class WalletConnectViewModel extends BaseViewModel {
     return await showDialog<bool>(
       context: context,
       builder: (BuildContext context) {
-        return WillPopScope(
-          onWillPop: () async {
-            // Return false to prevent dialog dismissal via back button
-            return false;
-          },
+        return PopScope(
+          canPop: false,
           child: AlertDialog(
             title: Text('DNB'),
             content: SingleChildScrollView(
@@ -215,15 +216,10 @@ class WalletConnectViewModel extends BaseViewModel {
     }
   }
 
-  Future<void> openQr() async {
-    String? uri = await MajaScan.startScan(
-      title: "Scan QR Code",
-      barColor: Colors.red,
-      titleColor: Colors.green,
-      qRCornerColor: Colors.red,
-      qRScannerColor: Colors.green,
-      flashlightEnable: true,
-      scanAreaScale: 0.7,
+  Future<void> openQr(BuildContext context) async {
+    String? uri = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => BarcodeUtil()),
     );
 
     try {
@@ -259,6 +255,8 @@ class WalletConnectViewModel extends BaseViewModel {
         } else if (chains[i].contains("eip155:211")) {
           accounts.add("${chains[i]}:$fabAddress");
         } else if (chains[i].contains("eip155:56")) {
+          accounts.add("${chains[i]}:$ethAddress");
+        } else if (chains[i].contains("eip155:5")) {
           accounts.add("${chains[i]}:$ethAddress");
         }
       }

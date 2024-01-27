@@ -151,8 +151,12 @@ class JoinPayCoolClubViewModel extends BaseViewModel {
       log.i("Barcode: try");
       String barcode = '';
 
-      var result = await BarcodeUtils().scanQR(context!);
-      barcode = result;
+      String? result = await Navigator.push(
+        context!,
+        MaterialPageRoute(builder: (context) => BarcodeUtil()),
+      );
+
+      barcode = result!;
       log.i("Barcode Res: $result ");
 
       referralCode.text = barcode;
@@ -259,7 +263,9 @@ class JoinPayCoolClubViewModel extends BaseViewModel {
     String address = await sharedService.getExgAddressFromCoreWalletDatabase();
     await walletService.gasBalance(address).then((data) {
       gasAmount = data;
-    }).catchError((onError) => log.e(onError));
+    }).catchError((onError) {
+      log.e(onError);
+    });
     log.w('gas amount $gasAmount');
   }
 
@@ -410,7 +416,7 @@ class JoinPayCoolClubViewModel extends BaseViewModel {
       var seed = walletService.generateSeed(mnemonic);
       int dusdCoinType = 131074;
       int usdtCoinType = 196609;
-      if (scanToPayModel != null) {
+      if (scanToPayModel.toAddress != null) {
         log.i('in scan to pay if ${scanToPayModel.toJson()}');
 
         // if (scanToPayModel.toAddress == coinPoolAddress)

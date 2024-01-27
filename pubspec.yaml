@@ -76,7 +76,6 @@ dependencies:
   launch_review: ^3.0.1
   local_auth: ^2.1.6
   logger: ^1.1.0
-  majascan: null
   material_design_icons_flutter: ^6.0.7096
   observable_ish: null
   overlay_support: ^2.1.0
@@ -108,7 +107,7 @@ dependencies:
   walletconnect_flutter_v2: ^2.1.4
   camera: ^0.10.5+5
   provider: ^6.1.1
-  mobile_scanner: ^3.5.5
+  mobile_scanner: 3.5.5
   permission_handler: ^11.0.1
 
 dev_dependencies:

@@ -59,6 +59,8 @@ import 'models/payment_rewards_model.dart';
 class PayCoolViewmodel extends FutureViewModel {
   final log = getLogger('PayCoolViewmodel');
 
+  late BuildContext context;
+
   final addressController = TextEditingController();
   ApiService apiService = locator<ApiService>();
   SharedService sharedService = locator<SharedService>();
@@ -83,13 +85,8 @@ class PayCoolViewmodel extends FutureViewModel {
   GlobalKey globalKey = GlobalKey();
   ScrollController? scrollController;
   String loadingStatus = '';
-  //final stackedDialogService = locator<DialogService>();
   final authService = locator<LocalAuthService>();
-  // var barcodeRes = [];
-  //var barcodeRes2;
   var walletBalancesBody;
-  // bool isShowBottomSheet = false;
-
   List<TransactionHistory> transactionHistory = [];
   String? abiHex;
   var seed = [];
@@ -99,20 +96,13 @@ class PayCoolViewmodel extends FutureViewModel {
   Decimal taxAmount = Decimal.zero;
   String coinPayable = '';
   final referralController = TextEditingController();
-
   String fabAddress = '';
   var apiRes;
   List<PairDecimalConfig> pairDecimalConfigList = [];
   final coinService = locator<CoinService>();
-  // ScanToPayModel scanToPayModel = ScanToPayModel();
-  // var pasteRes;
-
   List<ExchangeBalanceModel> exchangeBalances = [];
-  //var decodedData;
-
   String lang = '';
   bool isPaying = false;
-  // final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   int decimalLimit = 8;
   var fabUtils = FabUtils();
   PaymentRewardsModel? rewardInfoModel = PaymentRewardsModel();
@@ -1321,9 +1311,12 @@ class PayCoolViewmodel extends FutureViewModel {
       setBusy(true);
       log.w('setbusy 1 $isBusy');
 
-      String? barcodeScanData = '';
       payOrder = PayOrder();
-      barcodeScanData = await BarcodeUtils().majaScan(sharedService.context);
+
+      String? barcodeScanData = await Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => BarcodeUtil()),
+      );
 
       if (addressType == Constants.ReferralAddressText) {
         debugPrint('in 1st if-- barcode res-- $barcodeScanData');

@@ -37,18 +37,15 @@ class MoveToWalletView extends StatelessWidget {
         model.walletInfo = walletInfo;
         model.initState();
       },
-      builder: (context, model, child) => WillPopScope(
-        onWillPop: () async {
-          debugPrint('is Alert ${model.isAlert}');
+      builder: (context, model, child) => PopScope(
+        canPop: false,
+        onPopInvoked: (x) async {
           if (model.isAlert) {
-            Navigator.of(context, rootNavigator: true).pop();
             model.isAlert = false;
-            debugPrint('i Alert in if ${model.isAlert}');
+            return Navigator.of(context, rootNavigator: true).pop();
           } else {
-            Navigator.of(context).pop();
+            return Navigator.of(context).pop();
           }
-
-          return Future.value(false);
         },
         child: Scaffold(
           appBar: customAppBarWithTitleNB(

@@ -6,7 +6,6 @@ import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/views/dapp/dapp_viewmodel.dart';
 import 'package:paycool/views/dapp/dapp_web_view.dart';
 import 'package:paycool/widgets/bottom_nav.dart';
-import 'package:paycool/widgets/shared/will_pop_scope.dart';
 import 'package:stacked/stacked.dart';
 
 class DappView extends StatelessWidget {
@@ -22,9 +21,6 @@ class DappView extends StatelessWidget {
       },
       builder: (context, model, _) => PopScope(
         canPop: false,
-        onPopInvoked: (x) async {
-          return WillPopScopeWidget().onWillPop(context);
-        },
         child: GestureDetector(
           onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
           child: Scaffold(

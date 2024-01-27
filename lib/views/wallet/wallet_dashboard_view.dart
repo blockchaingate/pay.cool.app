@@ -91,7 +91,9 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
                   systemOverlayStyle: SystemUiOverlayStyle.dark,
                   leading: InkWell(
                     onTap: () async {
-                      model.goToChainList(size);
+                      if (!model.isBusy) {
+                        model.goToChainList(size);
+                      }
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,

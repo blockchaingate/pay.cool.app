@@ -8,7 +8,7 @@ import 'package:paycool/environments/environment.dart';
 import 'package:paycool/shared/ui_helpers.dart';
 import 'package:paycool/views/bond/helper.dart';
 import 'package:paycool/views/bond/progress_indicator.dart';
-import 'package:paycool/views/bond/walletConncet/wallet_connect_viewmodel.dart';
+import 'package:paycool/views/walletConncet/wallet_connect_viewmodel.dart';
 import 'package:stacked/stacked.dart';
 
 class WalletConnectView extends StatefulWidget with WidgetsBindingObserver {
@@ -286,7 +286,7 @@ class _WalletConnectViewState extends State<WalletConnectView> {
                                                         model.controller.text);
                                                   }
                                                 : () {
-                                                    model.openQr();
+                                                    model.openQr(context);
                                                   },
                                             style: ElevatedButton.styleFrom(
                                               backgroundColor:

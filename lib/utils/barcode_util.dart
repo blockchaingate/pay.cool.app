@@ -1,60 +1,52 @@
 import 'package:flutter/material.dart';
-// import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
-import 'package:majascan/majascan.dart';
-//import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 
-class BarcodeUtils {
-  // Future<ScanResult> scanBarcode(BuildContext context) async {
-  //   ScanResult scanResult;
-  //   var options = ScanOptions(strings: {
-  //     "cancel": FlutterI18n.translate(context, "cancel"),
-  //     "flash_on": FlutterI18n.translate(context, "flashOn"),
-  //     "flash_off": FlutterI18n.translate(context, "flashOff"),
-  //   });
+class BarcodeUtil extends StatefulWidget {
+  const BarcodeUtil({super.key});
 
-  //   scanResult = await BarcodeScanner.scan(options: options);
-  //   // await BarcodeUtils().scanQR(context);
-  //   debugPrint(
-  //       'BarcodeUtils : scanBarcode ${scanResult.rawContent.toString()}');
-  //   return scanResult;
-  // }
+  @override
+  State<BarcodeUtil> createState() => _BarcodeUtilState();
+}
 
-  Future<String?> majaScan(BuildContext context) async {
-    var t = await MajaScan.startScan(
-        title: "QRcode scanner",
-        titleColor: Colors.amberAccent[700],
-        qRCornerColor: Colors.orange,
-        qRScannerColor: Colors.orange);
+class _BarcodeUtilState extends State<BarcodeUtil> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0.0,
+        leading: IconButton(
+          icon: Icon(Icons.close),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ),
+      body: Center(
+        child: Stack(
+          children: [
+            MobileScanner(onDetect: (capture) {
+              final List<Barcode> barcodes = capture.barcodes;
 
-    debugPrint('barcode res $t');
-    return t;
-  }
-
-  Future scanQRV2(BuildContext context) async {
-    // Barcode barcodeScanRes;
-    // QRViewController controller;
-    // try {
-    //   controller.scannedDataStream.listen((scanData) {
-    //     barcodeScanRes = scanData;
-    //   });
-    //   debugPrint(barcodeScanRes);
-    // } on PlatformException {
-    //   barcodeScanRes = Barcode(
-    //       'PlatformException Failed to get platform version.',
-    //       BarcodeFormat.aztec, []);
-    // }
-    // return barcodeScanRes;
-  }
-
-  Future scanQR(BuildContext context) async {
-    String? barcodeScanRes;
-    // try {
-    //   barcodeScanRes = await FlutterBarcodeScanner.scanBarcode('#ff6666',
-    //       FlutterI18n.translate(context, "cancel"), true, ScanMode.BARCODE);
-    //   debugPrint(barcodeScanRes);
-    // } on PlatformException {
-    //   barcodeScanRes = 'PlatformException Failed to get platform version.';
-    // }
-    return barcodeScanRes;
+              debugPrint('Barcode found! ${barcodes[0].rawValue}');
+              Navigator.pop(context, barcodes[0].rawValue);
+            }),
+            Center(
+              child: Container(
+                height: 200,
+                width: 200,
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Colors.red,
+                    width: 2.0,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

@@ -32,10 +32,10 @@ class WalletSetupView extends StatelessWidget {
         model.context = context;
         model.init();
       },
-      builder: (context, WalletSetupViewmodel model, child) => WillPopScope(
-        onWillPop: () async {
+      builder: (context, WalletSetupViewmodel model, child) => PopScope(
+        canPop: false,
+        onPopInvoked: (x) async {
           model.onBackButtonPressed();
-          return Future(() => false);
         },
         child: Scaffold(
           body: Stack(

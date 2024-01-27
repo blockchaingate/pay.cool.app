@@ -82,8 +82,8 @@ class _SendWalletViewState extends State<SendWalletView>
                         )),
                     actions: [
                       IconButton(
-                        onPressed: () {
-                          model.scan();
+                        onPressed: () async {
+                          await model.scan();
                         },
                         icon: Image.asset(
                           "assets/images/new-design/scan_icon.png",

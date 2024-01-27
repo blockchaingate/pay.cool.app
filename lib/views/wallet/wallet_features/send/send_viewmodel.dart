@@ -931,7 +931,7 @@ class SendViewModel extends BaseViewModel {
                       Barcode Scan
 --------------------------------------------------------*/
 
-  Future scan() async {
+  Future<void> scan() async {
     log.i("Barcode: going to scan");
     setBusy(true);
 
@@ -939,7 +939,11 @@ class SendViewModel extends BaseViewModel {
       log.i("Barcode: try");
       String barcode = '';
 
-      var scanResult = await BarcodeUtils().majaScan(context);
+      String? scanResult = await Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => BarcodeUtil()),
+      );
+
       barcode = scanResult.toString();
       log.i("Barcode Res: $barcode");
 

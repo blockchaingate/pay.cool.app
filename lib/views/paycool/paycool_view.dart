@@ -21,6 +21,7 @@ class PayCoolView extends StatelessWidget {
     return ViewModelBuilder<PayCoolViewmodel>.reactive(
       viewModelBuilder: () => PayCoolViewmodel(),
       onViewModelReady: (model) {
+        model.context = context;
         model.sharedService.context = context;
         model.init();
         model.checkPermissions(context);

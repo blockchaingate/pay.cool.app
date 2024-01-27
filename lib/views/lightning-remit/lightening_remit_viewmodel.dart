@@ -25,7 +25,6 @@ import 'package:paycool/services/local_storage_service.dart';
 import 'package:paycool/services/shared_service.dart';
 import 'package:paycool/services/wallet_service.dart';
 import 'package:paycool/shared/ui_helpers.dart';
-import 'package:paycool/utils/barcode_util.dart';
 import 'package:paycool/views/lightning-remit/lightning_remit_transfer_history_model.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share_plus/share_plus.dart';
@@ -235,45 +234,47 @@ class LightningRemitViewmodel extends FutureViewModel {
   onBackButtonPressed() async {
     await sharedService.onBackButtonPressed('/dashboard');
   }
-/*--------------------------------------------------------------------------------------------------------------------------------------------------------------
-                                    Barcode Scan
---------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+// /*--------------------------------------------------------------------------------------------------------------------------------------------------------------
+//                                     Barcode Scan
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
-  void scanBarcode() async {
-    try {
-      setBusy(true);
-      // String barcode = '';
-      // barcode = await BarcodeUtils().scanQR(context);
-      var scanResult = await BarcodeUtils().majaScan(context!);
+//   void scanBarcode(BuildContext context) async {
+//     try {
+//       setBusy(true);
 
-      addressController.text = scanResult.toString();
+//       var scanResult = Navigator.push(
+//         context,
+//         MaterialPageRoute(builder: (context) => BarcodeUtil()),
+//       );
 
-      setBusy(false);
-    } on PlatformException catch (e) {
-      if (e.code == "PERMISSION_NOT_GRANTED") {
-        setBusy(true);
-        sharedService.alertDialog(
-            context!, '', FlutterI18n.translate(context!, "userAccessDenied"),
-            isWarning: false);
-        // receiverWalletAddressTextController.text =
-        //     FlutterI18n.translate(context, "userAccessDenied");
-      } else {
-        // setBusy(true);
-        sharedService.alertDialog(
-            context!, '', FlutterI18n.translate(context!, "unknownError"),
-            isWarning: false);
-      }
-    } on FormatException {
-      sharedService.alertDialog(
-          context!, '', FlutterI18n.translate(context!, "scanCancelled"),
-          isWarning: false);
-    } catch (e) {
-      sharedService.alertDialog(
-          context!, '', FlutterI18n.translate(context!, "unknownError"),
-          isWarning: false);
-    }
-    setBusy(false);
-  }
+//       addressController.text = scanResult.toString();
+
+//       setBusy(false);
+//     } on PlatformException catch (e) {
+//       if (e.code == "PERMISSION_NOT_GRANTED") {
+//         setBusy(true);
+//         sharedService.alertDialog(
+//             context, '', FlutterI18n.translate(context, "userAccessDenied"),
+//             isWarning: false);
+//         // receiverWalletAddressTextController.text =
+//         //     FlutterI18n.translate(context, "userAccessDenied");
+//       } else {
+//         // setBusy(true);
+//         sharedService.alertDialog(
+//             context, '', FlutterI18n.translate(context, "unknownError"),
+//             isWarning: false);
+//       }
+//     } on FormatException {
+//       sharedService.alertDialog(
+//           context, '', FlutterI18n.translate(context, "scanCancelled"),
+//           isWarning: false);
+//     } catch (e) {
+//       sharedService.alertDialog(
+//           context, '', FlutterI18n.translate(context, "unknownError"),
+//           isWarning: false);
+//     }
+//     setBusy(false);
+//   }
 
 /*----------------------------------------------------------------------
                     Update Selected Tickername

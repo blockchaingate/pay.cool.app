@@ -33,21 +33,7 @@ def keystoreProperties = new Properties()
 
 
 android {
-    compileSdkVersion 33
-
-    // compileOptions {
-    //     sourceCompatibility JavaVersion.VERSION_1_8
-    //     targetCompatibility JavaVersion.VERSION_1_8
-    // }
-
-    // kotlinOptions {
-    //     jvmTarget = '1.8'
-    // }
-
-    // lintOptions{
-        //Execution failed for task ':app:lintVitalRelease'
-    //     checkReleaseBuilds false
-    // }
+    compileSdkVersion flutter.compileSdkVersion
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
@@ -55,8 +41,8 @@ android {
 
     defaultConfig {
         applicationId "cool.pay.paycool"
-        minSdkVersion 21
-        targetSdkVersion 33
+        minSdkVersion 23
+        targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         multiDexEnabled true

@@ -32,10 +32,10 @@ class BackupMnemonicWalletView extends StatelessWidget {
           model.init();
         },
         builder: (context, BackupMnemonicViewModel model, child) {
-          return WillPopScope(
-            onWillPop: () {
+          return PopScope(
+            canPop: false,
+            onPopInvoked: (x) async {
               model.onBackButtonPressed();
-              return Future(() => false);
             },
             child: Scaffold(
               backgroundColor: bgGrey,

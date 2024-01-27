@@ -185,11 +185,10 @@ class ClubDashboardView extends StatelessWidget {
                   ? const Center(child: ServerErrorWidget())
                   : model.isBusy
                       ? model.sharedService.loadingIndicator()
-                      : WillPopScope(
-                          onWillPop: () {
-                            model.onBackButtonPressed();
-
-                            return Future(() => false);
+                      : PopScope(
+                          canPop: false,
+                          onPopInvoked: (x) async {
+                            return model.onBackButtonPressed();
                           },
                           child: Container(
                             decoration: const BoxDecoration(
@@ -303,8 +302,9 @@ class ClubDashboardView extends StatelessWidget {
                                                                           null
                                                                       ? Container()
                                                                       : Padding(
-                                                                          padding:
-                                                                              const EdgeInsets.all(2.0),
+                                                                          padding: const EdgeInsets
+                                                                              .all(
+                                                                              2.0),
                                                                           child:
                                                                               Image.network(
                                                                             model.projects[model.projectIndex].image.toString(),
@@ -345,7 +345,7 @@ class ClubDashboardView extends StatelessWidget {
                                                               Padding(
                                                                 padding:
                                                                     const EdgeInsets
-                                                                            .all(
+                                                                        .all(
                                                                         4.0),
                                                                 child: Text(
                                                                   model.storageService
@@ -721,7 +721,7 @@ class ClubDashboardView extends StatelessWidget {
                                                                         headText5),
                                                                 Padding(
                                                                   padding: const EdgeInsets
-                                                                          .symmetric(
+                                                                      .symmetric(
                                                                       vertical:
                                                                           4.0),
                                                                   child: model.dashboardSummary.totalFabRewards()[
