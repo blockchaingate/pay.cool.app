@@ -142,46 +142,42 @@ class JoinPayCoolClubViewModel extends BaseViewModel {
 /*--------------------------------------------------------
                       Barcode Scan
 --------------------------------------------------------*/
-  scanBarCode() async {
+  scanBarCode(BuildContext context) async {
     log.i("Barcode: going to scan");
     setBusy(true);
 
     try {
-      FocusScope.of(context!).requestFocus(FocusNode());
+      FocusScope.of(context).requestFocus(FocusNode());
       log.i("Barcode: try");
-      String barcode = '';
 
-      String? result = await Navigator.push(
-        context!,
-        MaterialPageRoute(builder: (context) => BarcodeUtil()),
-      );
+      await BarcodeUtil().showScannerPopup(context).then((value) {
+        if (value != null) {
+          referralCode.text = value;
+        }
+      });
 
-      barcode = result!;
-      log.i("Barcode Res: $result ");
-
-      referralCode.text = barcode;
       setBusy(false);
     } on PlatformException catch (e) {
-      FocusScope.of(context!).requestFocus(FocusNode());
+      FocusScope.of(context).requestFocus(FocusNode());
       log.i("Barcode PlatformException : ");
       log.i(e.toString());
       if (e.code == "PERMISSION_NOT_GRANTED") {
         setBusy(false);
         sharedService.alertDialog(
-            context!, '', FlutterI18n.translate(context!, "userAccessDenied"),
+            context, '', FlutterI18n.translate(context, "userAccessDenied"),
             isWarning: false);
         // receiverWalletAddressTextController.text =
         //     FlutterI18n.translate(context, "userAccessDenied");
       } else {
         setBusy(false);
         sharedService.alertDialog(
-            context!, '', FlutterI18n.translate(context!, "unknownError"),
+            context, '', FlutterI18n.translate(context, "unknownError"),
             isWarning: false);
         // receiverWalletAddressTextController.text =
         //     '${FlutterI18n.translate(context, "unknownError")}: $e';
       }
     } on FormatException {
-      FocusScope.of(context!).requestFocus(FocusNode());
+      FocusScope.of(context).requestFocus(FocusNode());
       log.i("Barcode FormatException : ");
       // log.i(e.toString());
       setBusy(false);
@@ -193,7 +189,7 @@ class JoinPayCoolClubViewModel extends BaseViewModel {
       log.i(e.toString());
       setBusy(false);
       sharedService.alertDialog(
-          context!, '', FlutterI18n.translate(context!, "unknownError"),
+          context, '', FlutterI18n.translate(context, "unknownError"),
           isWarning: false);
       // receiverWalletAddressTextController.text =
       //     '${FlutterI18n.translate(context, "unknownError")}: $e';

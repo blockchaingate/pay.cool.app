@@ -19,6 +19,7 @@ import 'package:paycool/constants/constants.dart';
 import 'package:paycool/constants/custom_styles.dart';
 import 'package:paycool/models/wallet/wallet.dart';
 import 'package:paycool/shared/ui_helpers.dart';
+import 'package:paycool/utils/barcode_util.dart';
 import 'package:paycool/utils/number_util.dart';
 import 'package:paycool/views/wallet/wallet_features/send/send_viewmodel.dart';
 import 'package:stacked/stacked.dart';
@@ -83,7 +84,14 @@ class _SendWalletViewState extends State<SendWalletView>
                     actions: [
                       IconButton(
                         onPressed: () async {
-                          await model.scan();
+                          await BarcodeUtil()
+                              .showScannerPopup(context)
+                              .then((value) {
+                            if (value != null) {
+                              model.receiverWalletAddressTextController.text =
+                                  value;
+                            }
+                          });
                         },
                         icon: Image.asset(
                           "assets/images/new-design/scan_icon.png",

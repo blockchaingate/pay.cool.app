@@ -217,14 +217,17 @@ class WalletConnectViewModel extends BaseViewModel {
   }
 
   Future<void> openQr(BuildContext context) async {
-    String? uri = await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => BarcodeUtil()),
-    );
+    String? uri;
+
+    await BarcodeUtil().showScannerPopup(context).then((value) {
+      if (value != null) {
+        uri = value;
+      }
+    });
 
     try {
       if (uri != null && uri != "-1") {
-        await pair(uri);
+        await pair(uri!);
       }
     } catch (e) {
       debugPrint(e.toString());

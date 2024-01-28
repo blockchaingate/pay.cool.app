@@ -275,7 +275,8 @@ class JoinPayCoolClubView extends StackedView<JoinPayCoolClubViewModel> {
                                       Icons.camera_alt_outlined,
                                       color: primaryColor,
                                     ),
-                                    onPressed: () => model.scanBarCode()),
+                                    onPressed: () =>
+                                        model.scanBarCode(context)),
                                 focusedBorder: const OutlineInputBorder(
                                   borderSide: BorderSide(
                                       color: primaryColor, width: 1.0),

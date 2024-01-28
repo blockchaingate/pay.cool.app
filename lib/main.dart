@@ -6,7 +6,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-
 import 'package:logger/logger.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:package_info/package_info.dart';
@@ -15,7 +14,6 @@ import 'package:paycool/routes.dart';
 import 'package:paycool/service_locator.dart';
 import 'package:provider/provider.dart';
 import 'package:stacked_services/stacked_services.dart';
-
 import 'constants/colors.dart';
 import 'managers/dialog_manager.dart';
 import 'services/local_dialog_service.dart';

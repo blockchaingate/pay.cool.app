@@ -12,12 +12,17 @@
 */
 
 import 'dart:async';
+
 import 'package:decimal/decimal.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:overlay_support/overlay_support.dart';
 import 'package:paycool/constants/api_routes.dart';
 import 'package:paycool/constants/colors.dart';
 import 'package:paycool/constants/constants.dart';
 import 'package:paycool/constants/custom_styles.dart';
+import 'package:paycool/environments/environment.dart';
 import 'package:paycool/logger.dart';
 import 'package:paycool/models/shared/pair_decimal_config_model.dart';
 import 'package:paycool/models/wallet/transaction_history.dart';
@@ -33,17 +38,12 @@ import 'package:paycool/services/db/transaction_history_database_service.dart';
 import 'package:paycool/services/db/wallet_database_service.dart';
 import 'package:paycool/services/shared_service.dart';
 import 'package:paycool/services/wallet_service.dart';
-import 'package:paycool/utils/barcode_util.dart';
+import 'package:paycool/utils/fab_util.dart';
 import 'package:paycool/utils/number_util.dart';
 import 'package:paycool/utils/tron_util/trx_generate_address_util.dart'
     as tron_address_util;
 import 'package:paycool/utils/tron_util/trx_transaction_util.dart'
     as tron_transaction_util;
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:paycool/environments/environment.dart';
-import 'package:paycool/utils/fab_util.dart';
-import 'package:overlay_support/overlay_support.dart';
 import 'package:paycool/utils/wallet/erc20_util.dart';
 import 'package:paycool/utils/wallet/wallet_util.dart';
 import 'package:paycool/widgets/coin_list_widget.dart';
@@ -924,61 +924,6 @@ class SendViewModel extends BaseViewModel {
           FlutterI18n.translate(context, "transanctionFailed"),
           isWarning: false);
     });
-    setBusy(false);
-  }
-
-/*--------------------------------------------------------
-                      Barcode Scan
---------------------------------------------------------*/
-
-  Future<void> scan() async {
-    log.i("Barcode: going to scan");
-    setBusy(true);
-
-    try {
-      log.i("Barcode: try");
-      String barcode = '';
-
-      String? scanResult = await Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => BarcodeUtil()),
-      );
-
-      barcode = scanResult.toString();
-      log.i("Barcode Res: $barcode");
-
-      receiverWalletAddressTextController.text = barcode;
-      setBusy(false);
-    } on PlatformException catch (e) {
-      log.i("Barcode PlatformException : ");
-      log.i(e.toString());
-      if (e.code == "PERMISSION_NOT_GRANTED") {
-        setBusy(false);
-        sharedService.alertDialog(
-            context, '', FlutterI18n.translate(context, "userAccessDenied"),
-            isWarning: false);
-        // receiverWalletAddressTextController.text =
-        //     FlutterI18n.translate(context, "userAccessDenied");
-      } else {
-        setBusy(false);
-        sharedService.alertDialog(
-            context, '', FlutterI18n.translate(context, "unknownError"),
-            isWarning: false);
-        // receiverWalletAddressTextController.text =
-        //     '${FlutterI18n.translate(context, "unknownError")}: $e';
-      }
-    } on FormatException {
-      log.i("Barcode FormatException : ");
-      // log.i(e.toString());
-      setBusy(false);
-    } catch (e) {
-      log.i("Barcode error : ");
-      log.i(e.toString());
-      setBusy(false);
-      sharedService.alertDialog(
-          context, '', FlutterI18n.translate(context, "unknownError"),
-          isWarning: false);
-    }
     setBusy(false);
   }
 

@@ -1306,17 +1306,16 @@ class PayCoolViewmodel extends FutureViewModel {
   void scanBarcodeV2({
     String addressType = Constants.MerchantAddressText,
   }) async {
+    String? barcodeScanData;
     resetVariables();
     try {
-      setBusy(true);
-      log.w('setbusy 1 $isBusy');
+      await BarcodeUtil().showScannerPopup(context).then((value) {
+        if (value != null) {
+          barcodeScanData = value;
+        }
+      });
 
-      payOrder = PayOrder();
-
-      String? barcodeScanData = await Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => BarcodeUtil()),
-      );
+      print(barcodeScanData);
 
       if (addressType == Constants.ReferralAddressText) {
         debugPrint('in 1st if-- barcode res-- $barcodeScanData');
