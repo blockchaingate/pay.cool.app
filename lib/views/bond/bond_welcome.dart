@@ -230,7 +230,7 @@ class _BondWelcomeState extends State<BondWelcome> {
                                   scale: 2.5),
                               UIHelper.horizontalSpaceSmall,
                               Text(
-                                "Coming Soon",
+                                FlutterI18n.translate(context, "comingSoon"),
                                 style: TextStyle(
                                     color: Colors.black38,
                                     fontSize: 14,

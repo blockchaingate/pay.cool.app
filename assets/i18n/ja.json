@@ -801,7 +801,9 @@
     "wallets": "ウォレット",
     "quickMenu": "クイックメニュー",
     "walletAddress": "ウォレットアドレス",
-    "shareQRCode": "QRコードを共有"
+    "shareQRCode": "QRコードを共有",
+    "projectList": "プロジェクトリスト",
+    "tapToReload": "タップしてリロード"
   
 
     

@@ -801,6 +801,8 @@
     "wallets": "Wallets",
     "quickMenu": "Quick Menu",
     "walletAddress": "Wallet Address",
-    "shareQRCode": "Share QR Code"
+    "shareQRCode": "Share QR Code",
+    "projectList": "Project List",
+    "tapToReload": "Tap To Reload"
 
 }

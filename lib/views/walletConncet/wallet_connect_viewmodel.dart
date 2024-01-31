@@ -246,9 +246,19 @@ class WalletConnectViewModel extends BaseViewModel {
 
   Future<void> handleConnect() async {
     try {
-      var chains = proposal!.params.requiredNamespaces["eip155"]!.chains;
-      var methods = proposal!.params.requiredNamespaces["eip155"]!.methods;
-      var events = proposal!.params.requiredNamespaces["eip155"]!.events;
+      List<String>? chains;
+      List<String>? methods;
+      List<String>? events;
+
+      if (proposal!.params.requiredNamespaces.isEmpty) {
+        chains = proposal!.params.optionalNamespaces["eip155"]!.chains;
+        methods = proposal!.params.optionalNamespaces["eip155"]!.methods;
+        events = proposal!.params.optionalNamespaces["eip155"]!.events;
+      } else {
+        chains = proposal!.params.requiredNamespaces["eip155"]!.chains;
+        methods = proposal!.params.requiredNamespaces["eip155"]!.methods;
+        events = proposal!.params.requiredNamespaces["eip155"]!.events;
+      }
 
       List<String>? accounts = [];
 
@@ -282,6 +292,7 @@ class WalletConnectViewModel extends BaseViewModel {
           content: Text("Check QR Code, its not valid $e"),
         ),
       );
+
       isConnected = false;
     }
     notifyListeners();

@@ -801,7 +801,9 @@
     "wallets": "Portefeuilles",
     "quickMenu": "Menu Rapide",
     "walletAddress": "Adresse du Portefeuille",
-    "shareQRCode": "Partager le Code QR"
+    "shareQRCode": "Partager le Code QR",
+    "projectList": "Liste de Projets",
+    "tapToReload": "Appuyez pour Recharger"
   
 
   

@@ -801,7 +801,9 @@
     "wallets": "钱包",
     "quickMenu": "快捷菜单",
     "walletAddress": "钱包地址",
-    "shareQRCode": "分享QR码"
+    "shareQRCode": "分享QR码",
+    "projectList": "项目列表",
+    "tapToReload": "点击重新加载"
   
   
   

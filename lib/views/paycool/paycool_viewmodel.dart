@@ -167,8 +167,7 @@ class PayCoolViewmodel extends FutureViewModel {
         Map<Permission, PermissionStatus> statuses =
             await [Permission.camera, Permission.mediaLibrary].request();
 
-        if (statuses[Permission.camera] != PermissionStatus.granted &&
-            statuses[Permission.mediaLibrary] != PermissionStatus.granted) {
+        if (statuses[Permission.camera] != PermissionStatus.granted) {
           showPermissionPopup(context);
         }
       } catch (e) {
@@ -190,9 +189,9 @@ class PayCoolViewmodel extends FutureViewModel {
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
+                openAppSettings();
               },
-              child:
-                  Text(FlutterI18n.translate(sharedService.context, "cancel")),
+              child: Text(FlutterI18n.translate(context, "ok")),
             ),
           ],
         );
@@ -1315,8 +1314,6 @@ class PayCoolViewmodel extends FutureViewModel {
         }
       });
 
-      print(barcodeScanData);
-
       if (addressType == Constants.ReferralAddressText) {
         debugPrint('in 1st if-- barcode res-- $barcodeScanData');
 
@@ -1335,25 +1332,6 @@ class PayCoolViewmodel extends FutureViewModel {
           return;
         }
       }
-    } on PlatformException catch (e) {
-      if (e.code == "PERMISSION_NOT_GRANTED") {
-        setBusy(false);
-        sharedService.sharedSimpleNotification(
-          FlutterI18n.translate(sharedService.context, "userAccessDenied"),
-        );
-        // receiverWalletAddressTextController.text =
-        //     FlutterI18n.translate(context, "userAccessDenied");
-      } else {
-        // setBusy(true);
-        sharedService.sharedSimpleNotification(
-          FlutterI18n.translate(sharedService.context, "unknownError $e"),
-        );
-      }
-    } on FormatException {
-      log.e('scan barcode func: FormatException');
-      sharedService.sharedSimpleNotification(
-        FlutterI18n.translate(sharedService.context, "scanCancelled"),
-      );
     } catch (e) {
       sharedService.sharedSimpleNotification(
           FlutterI18n.translate(sharedService.context, "unknownError"),

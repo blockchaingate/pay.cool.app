@@ -796,7 +796,9 @@
     "wallets": "Billeteras",
     "quickMenu": "Menú Rápido",
     "walletAddress": "Dirección de la Billetera",
-    "shareQRCode": "Compartir Código QR"
+    "shareQRCode": "Compartir Código QR",
+    "projectList": "Lista de Proyectos",
+    "tapToReload": "Toca para Recargar"
   
 
     

@@ -801,7 +801,9 @@
   "wallets": "Cüzdanlar",
   "quickMenu": "Hızlı Menü",
   "walletAddress": "Cüzdan Adresi",
-  "shareQRCode": "QR Kodu Paylaş"
+  "shareQRCode": "QR Kodu Paylaş",
+  "projectList": "Proje Listesi",
+  "tapToReload": "Yeniden Yüklemek için Dokun"
 
 
 

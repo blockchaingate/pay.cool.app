@@ -22,7 +22,6 @@ class PayCoolView extends StatelessWidget {
       viewModelBuilder: () => PayCoolViewmodel(),
       onViewModelReady: (model) {
         model.context = context;
-        model.sharedService.context = context;
         model.init();
         model.checkPermissions(context);
       },
@@ -211,7 +210,32 @@ class PayCoolView extends StatelessWidget {
                                                           barcode.raw[0]
                                                               ["displayValue"]);
                                                 }
-                                              }),
+                                              },
+                                              errorBuilder: (p0, p1, p2) {
+                                                return Container(
+                                                  color: Colors.black,
+                                                  child: Center(
+                                                    child: InkWell(
+                                                      onTap: () {
+                                                        Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                                builder:
+                                                                    (context) =>
+                                                                        PayCoolView()));
+                                                      },
+                                                      child: Text(
+                                                        FlutterI18n.translate(
+                                                            context, "reload"),
+                                                        style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontSize: 20),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                            ),
                                     ),
                                     Positioned(
                                       bottom: 0,
