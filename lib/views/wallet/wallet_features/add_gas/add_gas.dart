@@ -29,19 +29,15 @@ class AddGasView extends StatefulWidget {
 class _AddGasViewState extends State<AddGasView>
     with TickerProviderStateMixin, WidgetsBindingObserver {
   late AnimationController _controller;
-  late Animation<double> _animation;
-
-  bool isKeyboardOpen = false;
-  double keyboardHeight = 0;
+  double aniheight = 0.0;
 
   @override
   void initState() {
     _controller = AnimationController(
-      vsync: this,
-      duration: Duration(milliseconds: 500), // Adjust the duration as needed
-    );
+        vsync: this,
+        duration: Duration(milliseconds: 500), // Adjust the duration as needed
+        animationBehavior: AnimationBehavior.preserve);
 
-    _animation = Tween<double>(begin: 0, end: 120).animate(_controller);
     super.initState();
   }
 
@@ -49,20 +45,6 @@ class _AddGasViewState extends State<AddGasView>
   void dispose() {
     _controller.dispose();
     super.dispose();
-  }
-
-  @override
-  void didChangeMetrics() {
-    final mediaQuery = MediaQuery.of(context);
-    keyboardHeight = mediaQuery.viewInsets.bottom;
-    isKeyboardOpen = keyboardHeight > 1;
-
-    if (_animation.value == 0) {
-      _controller.forward();
-    } else {
-      _controller.reverse();
-    }
-    super.didChangeMetrics();
   }
 
   @override
@@ -250,14 +232,16 @@ class _AddGasViewState extends State<AddGasView>
                             InkWell(
                               onTap: () {
                                 setState(() {
-                                  if (_animation.value == 0) {
-                                    _controller.forward();
+                                  if (aniheight == 0) {
+                                    aniheight = 120;
                                   } else {
-                                    _controller.reverse();
+                                    aniheight = 0;
                                   }
                                 });
                               },
                               child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
                                     FlutterI18n.translate(context, "advance"),
@@ -277,11 +261,10 @@ class _AddGasViewState extends State<AddGasView>
                       UIHelper.verticalSpaceSmall,
                       AnimatedContainer(
                         duration: Duration(milliseconds: 500),
-                        height: _animation.value,
+                        height: aniheight,
                         child: ListView(
                           physics: NeverScrollableScrollPhysics(),
-                          keyboardDismissBehavior:
-                              ScrollViewKeyboardDismissBehavior.manual,
+                          shrinkWrap: true,
                           children: [
                             Container(
                               width: size.width,
