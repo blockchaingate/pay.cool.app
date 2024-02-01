@@ -129,10 +129,6 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
                         ),
                       ),
                     ),
-                    // Image.asset(
-                    //   "assets/images/new-design/scan_icon.png",
-                    //   scale: 2.7,
-                    // ),
                   ],
                 ),
                 body: Builder(

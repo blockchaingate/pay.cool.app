@@ -34,10 +34,10 @@ class ConfirmMnemonicView extends StatelessWidget {
         model.randomMnemonicList.addAll(randomMnemonicListFromRoute);
         randomMnemonicListFromRoute.shuffle();
       },
-      builder: (context, model, child) => WillPopScope(
-        onWillPop: () async {
+      builder: (context, model, child) => PopScope(
+        canPop: false,
+        onPopInvoked: (x) async {
           model.onBackButtonPressed();
-          return Future(() => false);
         },
         child: Scaffold(
           backgroundColor: bgGrey,

@@ -4,6 +4,7 @@ callSMessage(BuildContext context, String text, {int duration = 3}) {
   var snackBar = SnackBar(
     content: Text(text),
     duration: Duration(seconds: duration),
+    behavior: SnackBarBehavior.floating,
   );
   ScaffoldMessenger.of(context).showSnackBar(snackBar);
 }

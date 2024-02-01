@@ -41,11 +41,10 @@ class ClubDashboardView extends StatelessWidget {
                     : model.isBusy
                         ? model.sharedService.loadingIndicator(
                             isCustomWidthHeight: true, height: 40, width: 40)
-                        : WillPopScope(
-                            onWillPop: () {
+                        : PopScope(
+                            canPop: false,
+                            onPopInvoked: (x) async {
                               model.onBackButtonPressed();
-
-                              return Future(() => false);
                             },
                             child: Container(
                               decoration: BoxDecoration(
@@ -127,11 +126,11 @@ class ClubDashboardView extends StatelessWidget {
                                                     borderWidth: 0.2,
                                                   ),
                                                   padding: const EdgeInsets
-                                                          .symmetric(
+                                                      .symmetric(
                                                       vertical: 10,
                                                       horizontal: 2),
                                                   margin: const EdgeInsets
-                                                          .symmetric(
+                                                      .symmetric(
                                                       vertical: 2,
                                                       horizontal: 15),
                                                   // color: secondaryColor,
@@ -187,7 +186,7 @@ class ClubDashboardView extends StatelessWidget {
                                                       Container(
                                                         // width: 200,
                                                         margin: const EdgeInsets
-                                                                .symmetric(
+                                                            .symmetric(
                                                             vertical: 2,
                                                             horizontal: 10),
                                                         decoration:
@@ -228,7 +227,7 @@ class ClubDashboardView extends StatelessWidget {
                                                           title: Padding(
                                                             padding:
                                                                 const EdgeInsets
-                                                                        .only(
+                                                                    .only(
                                                                     left: 8.0),
                                                             child: Column(
                                                               crossAxisAlignment:
@@ -251,9 +250,11 @@ class ClubDashboardView extends StatelessWidget {
                                                                               .bold),
                                                                 ),
                                                                 Padding(
-                                                                  padding: const EdgeInsets
+                                                                  padding:
+                                                                      const EdgeInsets
                                                                           .only(
-                                                                      top: 2.0),
+                                                                          top:
+                                                                              2.0),
                                                                   child: customText(
                                                                       text: model
                                                                           .assignPaycoolMemberType(),
@@ -270,7 +271,7 @@ class ClubDashboardView extends StatelessWidget {
                                                       Container(
                                                         // width: 200,
                                                         margin: const EdgeInsets
-                                                                .symmetric(
+                                                            .symmetric(
                                                             vertical: 2,
                                                             horizontal: 10),
                                                         decoration:
@@ -287,7 +288,7 @@ class ClubDashboardView extends StatelessWidget {
                                                             leading: Padding(
                                                               padding:
                                                                   const EdgeInsets
-                                                                          .only(
+                                                                      .only(
                                                                       top: 4.0),
                                                               child: Transform
                                                                   .rotate(
@@ -308,7 +309,7 @@ class ClubDashboardView extends StatelessWidget {
                                                             title: Padding(
                                                               padding:
                                                                   const EdgeInsets
-                                                                          .only(
+                                                                      .only(
                                                                       left:
                                                                           8.0),
                                                               child: Column(
@@ -416,7 +417,7 @@ class ClubDashboardView extends StatelessWidget {
                                                             label: Padding(
                                                               padding:
                                                                   const EdgeInsets
-                                                                          .only(
+                                                                      .only(
                                                                       top: 2.0),
                                                               child: Row(
                                                                 mainAxisSize:
@@ -470,7 +471,7 @@ class ClubDashboardView extends StatelessWidget {
                                                             label: Padding(
                                                               padding:
                                                                   const EdgeInsets
-                                                                          .only(
+                                                                      .only(
                                                                       top: 2.0),
                                                               child: Row(
                                                                 mainAxisSize:
@@ -770,7 +771,7 @@ class ClubDashboardView extends StatelessWidget {
                                                         title: Padding(
                                                           padding:
                                                               const EdgeInsets
-                                                                      .symmetric(
+                                                                  .symmetric(
                                                                   vertical: 4),
                                                           child: Text(
                                                             FlutterI18n.translate(
