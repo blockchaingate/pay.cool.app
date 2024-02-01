@@ -35,7 +35,7 @@ class SendWalletView extends StatefulWidget {
 class _SendWalletViewState extends State<SendWalletView>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
-  late Animation<double> _animation;
+  double aniheight = 0.0;
 
   @override
   void initState() {
@@ -43,8 +43,6 @@ class _SendWalletViewState extends State<SendWalletView>
       vsync: this,
       duration: Duration(milliseconds: 500), // Adjust the duration as needed
     );
-
-    _animation = Tween<double>(begin: 0, end: 120).animate(_controller);
     super.initState();
   }
 
@@ -110,8 +108,10 @@ class _SendWalletViewState extends State<SendWalletView>
                         height: 50,
                         margin: EdgeInsets.symmetric(horizontal: 10),
                         child: ElevatedButton.icon(
-                          icon: Icon(Icons.arrow_circle_up),
-                          label: Text(FlutterI18n.translate(context, "send")),
+                          icon:
+                              Icon(Icons.arrow_circle_up, color: Colors.white),
+                          label: Text(FlutterI18n.translate(context, "send"),
+                              style: TextStyle(color: Colors.white)),
                           onPressed: () async {
                             model.amount != Constants.decimalZero &&
                                     model.receiverWalletAddressTextController
@@ -156,9 +156,7 @@ class _SendWalletViewState extends State<SendWalletView>
                             fontWeight: FontWeight.bold,
                             color: black),
                       ),
-
                       UIHelper.verticalSpaceSmall,
-
                       Container(
                         width: size.width,
                         height: 50,
@@ -203,9 +201,7 @@ class _SendWalletViewState extends State<SendWalletView>
                           ],
                         ),
                       ),
-
                       UIHelper.verticalSpaceMedium,
-
                       Text(
                         FlutterI18n.translate(context, "amount"),
                         style: TextStyle(
@@ -213,9 +209,7 @@ class _SendWalletViewState extends State<SendWalletView>
                             fontWeight: FontWeight.bold,
                             color: black),
                       ),
-
                       UIHelper.verticalSpaceSmall,
-
                       Container(
                         width: size.width,
                         height: size.height * 0.1,
@@ -311,7 +305,6 @@ class _SendWalletViewState extends State<SendWalletView>
                           ],
                         ),
                       ),
-
                       UIHelper.verticalSpaceMedium,
                       Text(
                         FlutterI18n.translate(context, "gasFee"),
@@ -320,9 +313,7 @@ class _SendWalletViewState extends State<SendWalletView>
                             fontWeight: FontWeight.bold,
                             color: black),
                       ),
-
                       UIHelper.verticalSpaceSmall,
-
                       Container(
                         width: size.width,
                         height: 50,
@@ -360,12 +351,10 @@ class _SendWalletViewState extends State<SendWalletView>
                             InkWell(
                               onTap: () {
                                 setState(() {
-                                  model.transFeeAdvance =
-                                      !model.transFeeAdvance;
-                                  if (model.transFeeAdvance) {
-                                    _controller.forward();
+                                  if (aniheight == 0) {
+                                    aniheight = 120;
                                   } else {
-                                    _controller.reverse();
+                                    aniheight = 0;
                                   }
                                 });
                               },
@@ -387,12 +376,11 @@ class _SendWalletViewState extends State<SendWalletView>
                         ),
                       ),
                       UIHelper.verticalSpaceSmall,
-
                       AnimatedContainer(
                           duration: Duration(
                               milliseconds:
                                   500), // Adjust the duration as needed
-                          height: _animation.value,
+                          height: aniheight,
                           child: SingleChildScrollView(
                             child: Column(
                               children: [
@@ -486,512 +474,6 @@ class _SendWalletViewState extends State<SendWalletView>
                               ],
                             ),
                           )),
-
-                      // Container(
-                      //   margin: const EdgeInsets.only(bottom: 10),
-                      //   color: secondaryColor,
-                      //   padding: const EdgeInsets.symmetric(
-                      //       vertical: 20, horizontal: 10),
-                      //   child: Column(
-                      //     mainAxisSize: MainAxisSize.min,
-                      //     mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      //     children: <Widget>[
-                      //       Padding(
-                      //           padding: const EdgeInsets.only(bottom: 3.0),
-                      //           child: GestureDetector(
-                      //             child: TextField(
-                      //               maxLines: 1,
-                      //               controller: model
-                      //                   .receiverWalletAddressTextController,
-                      //               onChanged: (value) =>
-                      //                   model.checkDomain(value),
-                      //               decoration: InputDecoration(
-                      //                   enabledBorder:
-                      //                       const UnderlineInputBorder(
-                      //                           borderSide: BorderSide(
-                      //                               color: grey, width: 0.5)),
-                      //                   suffixIcon: Container(
-                      //                     margin: const EdgeInsets.only(
-                      //                       top: 2,
-                      //                     ),
-                      //                     child: Row(
-                      //                       mainAxisSize: MainAxisSize.min,
-                      //                       mainAxisAlignment:
-                      //                           MainAxisAlignment.end,
-                      //                       children: [
-                      //                         model.receiverWalletAddressTextController
-                      //                                 .text.isNotEmpty
-                      //                             ? IconButton(
-                      //                                 icon: const Icon(
-                      //                                     Icons.cancel),
-                      //                                 onPressed: () {
-                      //                                   model.clearAddress();
-                      //                                 },
-                      //                                 iconSize: 18,
-                      //                                 color:
-                      //                                     white.withAlpha(190),
-                      //                               )
-                      //                             : Container(),
-                      //                         IconButton(
-                      //                           icon: const Icon(
-                      //                               Icons.content_paste),
-                      //                           onPressed: () async {
-                      //                             await model
-                      //                                 .pasteClipBoardData();
-                      //                           },
-                      //                           iconSize: 22,
-                      //                           color: primaryColor,
-                      //                         ),
-                      //                       ],
-                      //                     ),
-                      //                   ),
-                      //                   labelText:
-                      //                       '${FlutterI18n.translate(context, "receiverWalletAddress")}, DNS',
-                      //                   labelStyle: headText6),
-                      //               style: headText6,
-                      //             ),
-                      //           )),
-                      //       model.busy(model.userTypedDomain)
-                      //           ? Row(
-                      //               mainAxisAlignment: MainAxisAlignment.start,
-                      //               children: [
-                      //                 Padding(
-                      //                   padding: const EdgeInsets.all(3.0),
-                      //                   child: SizedBox(
-                      //                       width: 15,
-                      //                       height: 15,
-                      //                       child: model.sharedService
-                      //                           .loadingIndicator()),
-                      //                 ),
-                      //               ],
-                      //             )
-                      //           : Container(),
-                      //       model.userTypedDomain.isNotEmpty &&
-                      //               !model.busy(model.userTypedDomain)
-                      //           ? Row(
-                      //               mainAxisAlignment: MainAxisAlignment.start,
-                      //               children: [
-                      //                 Text(
-                      //                   model.userTypedDomain,
-                      //                   style: headText6.copyWith(color: grey),
-                      //                 ),
-                      //               ],
-                      //             )
-                      //           : Container(),
-                      //       TextButton(
-                      //           style: ButtonStyle(
-                      //               padding: MaterialStateProperty.all(
-                      //                   const EdgeInsets.all(10))),
-                      //           onPressed: () {
-                      //             model.scan();
-                      //           },
-                      //           child: Row(
-                      //             mainAxisAlignment: MainAxisAlignment.center,
-                      //             children: <Widget>[
-                      //               const Padding(
-                      //                   padding: EdgeInsets.only(right: 5),
-                      //                   child: Icon(Icons.camera_enhance)),
-                      //               Text(
-                      //                 FlutterI18n.translate(
-                      //                     context, "scanBarCode"),
-                      //                 style: headText5.copyWith(
-                      //                     fontWeight: FontWeight.w400),
-                      //               )
-                      //             ],
-                      //           ))
-                      //     ],
-                      //   ),
-                      // ),
-
-                      /*--------------------------------------------------------------------------------------------------------------------------------------------------------------
-                      
-                                  Send Amount And Available Balance Container
-                      
-                      --------------------------------------------------------------------------------------------------------------------------------------------------------------*/
-                      // Container(
-                      //     color: secondaryColor,
-                      //     padding: const EdgeInsets.all(10),
-                      //     child: Column(
-                      //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      //       crossAxisAlignment: CrossAxisAlignment.start,
-                      //       children: <Widget>[
-                      //         TextField(
-                      //           inputFormatters: [
-                      //             DecimalTextInputFormatter(
-                      //                 decimalRange: model.decimalLimit,
-                      //                 activatedNegativeValues: false)
-                      //           ],
-                      //           // change paste text color
-                      //           controller: model.sendAmountTextController,
-                      //           onChanged: (String amount) {
-                      //             model.amount =
-                      //                 NumberUtil.convertStringToDecimal(amount);
-
-                      //             model.checkAmount();
-                      //           },
-
-                      //           keyboardType:
-                      //               const TextInputType.numberWithOptions(
-                      //                   decimal: true), // numnber keyboard
-                      //           decoration: InputDecoration(
-                      //               suffix: DecimalLimitWidget(
-                      //                   decimalLimit: model.decimalLimit),
-                      //               focusedBorder: const UnderlineInputBorder(
-                      //                   borderSide:
-                      //                       BorderSide(color: primaryColor)),
-                      //               enabledBorder: const UnderlineInputBorder(
-                      //                   borderSide: BorderSide(
-                      //                       color: grey, width: 0.5)),
-                      //               hintText: '0.00000',
-                      //               hintStyle: const TextStyle(
-                      //                   fontSize: 14, color: grey)),
-                      //           style: model.checkSendAmount &&
-                      //                   model.amount.toDouble() <=
-                      //                       walletInfo.availableBalance!
-                      //               ? const TextStyle(color: grey, fontSize: 14)
-                      //               : const TextStyle(color: red, fontSize: 14),
-                      //         ),
-                      //         Padding(
-                      //           padding:
-                      //               const EdgeInsets.symmetric(vertical: 10),
-                      //           child: Row(
-                      //             mainAxisAlignment:
-                      //                 MainAxisAlignment.spaceBetween,
-                      //             children: [
-                      //               Row(
-                      //                 children: <Widget>[
-                      //                   Text(
-                      //                     '${FlutterI18n.translate(context, "walletbalance")}  ${NumberUtil.roundDouble(model.walletInfo.availableBalance!, decimalPlaces: model.singlePairDecimalConfig.qtyDecimal)} ',
-                      //                     style: headText6.copyWith(
-                      //                         fontWeight: FontWeight.w400),
-                      //                   ),
-                      //                   Text(
-                      //                     model.specialTickerName.toUpperCase(),
-                      //                     style: headText6,
-                      //                   )
-                      //                 ],
-                      //               ),
-                      //             ],
-                      //           ),
-                      //         )
-                      //       ],
-                      //     )),
-                      /*--------------------------------------------------------------------------------------------------------------------------------------------------------------
-                      
-                                  Gas fee and Advance Switch Container
-                      
-                      --------------------------------------------------------------------------------------------------------------------------------------------------------------*/
-                      // Container(
-                      //   padding: const EdgeInsets.symmetric(horizontal: 10),
-                      //   child: Column(
-                      //     children: <Widget>[
-                      //       model.isTrx()
-                      //           ? Container(
-                      //               padding: const EdgeInsets.only(
-                      //                   top: 10, bottom: 0),
-                      //               alignment: Alignment.topLeft,
-                      //               child: walletInfo.tickerName == 'TRX'
-                      //                   ? Text(
-                      //                       '${FlutterI18n.translate(context, "gasFee")}: ${model.trxGasValueTextController.text} TRX',
-                      //                       textAlign: TextAlign.left,
-                      //                       style: headText6)
-                      //                   : Row(
-                      //                       mainAxisAlignment:
-                      //                           MainAxisAlignment.spaceBetween,
-                      //                       children: [
-                      //                         Text(
-                      //                             '${FlutterI18n.translate(context, "gasFee")}:  ${model.trxGasValueTextController.text} TRX',
-                      //                             textAlign: TextAlign.left,
-                      //                             style: headText6),
-                      //                         Text(
-                      //                             'TRX'
-                      //                             '${FlutterI18n.translate(context, "balance")}: ${model.chainBalance} TRX',
-                      //                             textAlign: TextAlign.left,
-                      //                             style: headText6),
-                      //                       ],
-                      //                     ),
-                      //             )
-                      //           : Padding(
-                      //               padding: const EdgeInsets.only(
-                      //                   top: 15, bottom: 10),
-                      //               child: Row(
-                      //                 children: <Widget>[
-                      //                   Text(
-                      //                     FlutterI18n.translate(
-                      //                         context, "gasFee"),
-                      //                     style: headText5.copyWith(
-                      //                         fontWeight: FontWeight.w400),
-                      //                   ),
-                      //                   Padding(
-                      //                     padding: const EdgeInsets.only(
-                      //                         left:
-                      //                             5), // padding left to keep some space from the text
-                      //                     child: model.isBusy
-                      //                         ? SizedBox(
-                      //                             width: 16,
-                      //                             height: 16,
-                      //                             child: Theme.of(context)
-                      //                                         .platform ==
-                      //                                     TargetPlatform.iOS
-                      //                                 ? const CupertinoActivityIndicator()
-                      //                                 : const CircularProgressIndicator(
-                      //                                     strokeWidth: 0.75,
-                      //                                   ))
-                      //                         : Text(
-                      //                             '${NumberUtil.roundDouble(model.transFee, decimalPlaces: 6)}  ${model.feeUnit}',
-                      //                             style: headText6.copyWith(
-                      //                                 fontWeight:
-                      //                                     FontWeight.w400),
-                      //                           ),
-                      //                   )
-                      //                 ],
-                      //               ),
-                      //             ),
-                      //       // Switch Row Advance
-                      //       Row(
-                      //         children: <Widget>[
-                      //           Text(
-                      //             FlutterI18n.translate(context, "advance"),
-                      //             style: headText5.copyWith(
-                      //                 fontWeight: FontWeight.w400),
-                      //           ),
-                      //           Switch(
-                      //             value: model.transFeeAdvance,
-                      //             inactiveTrackColor: grey,
-                      //             dragStartBehavior: DragStartBehavior.start,
-                      //             activeColor: primaryColor,
-                      //             onChanged: (bool value) {
-                      //               model.transFeeAdvance = value;
-                      //               model.notifyListeners();
-                      //             },
-                      //           )
-                      //         ],
-                      //       ),
-
-                      //       model.isTrx()
-                      //           ? Visibility(
-                      //               visible: model.transFeeAdvance,
-                      //               child: Row(
-                      //                 children: <Widget>[
-                      //                   Expanded(
-                      //                       flex: 3,
-                      //                       child: Text(
-                      //                         'TRX ${FlutterI18n.translate(context, "gasFee")}',
-                      //                         style: headText5.copyWith(
-                      //                             fontWeight: FontWeight.w300),
-                      //                       )),
-                      //                   Expanded(
-                      //                       flex: 5,
-                      //                       child: TextField(
-                      //                           controller: model
-                      //                               .trxGasValueTextController,
-                      //                           onChanged: (String amount) {
-                      //                             if (amount.isNotEmpty) {
-                      //                               model.trxGasValueTextController
-                      //                                       .text =
-                      //                                   amount.toString();
-                      //                               model.notifyListeners();
-                      //                             }
-                      //                           },
-                      //                           keyboardType: const TextInputType
-                      //                                   .numberWithOptions(
-                      //                               decimal:
-                      //                                   true), // numnber keyboard
-                      //                           decoration: InputDecoration(
-                      //                               focusedBorder:
-                      //                                   const UnderlineInputBorder(
-                      //                                       borderSide: BorderSide(
-                      //                                           color:
-                      //                                               primaryColor)),
-                      //                               enabledBorder:
-                      //                                   const UnderlineInputBorder(
-                      //                                       borderSide: BorderSide(
-                      //                                           color: grey)),
-                      //                               hintText: '0.00000',
-                      //                               hintStyle: headText5.copyWith(
-                      //                                   fontWeight:
-                      //                                       FontWeight.w300)),
-                      //                           style: headText5.copyWith(
-                      //                               fontWeight:
-                      //                                   FontWeight.w300)))
-                      //                 ],
-                      //               ),
-                      //             )
-                      //           : Visibility(
-                      //               visible: model.transFeeAdvance,
-                      //               child: Column(
-                      //                 children: <Widget>[
-                      //                   Visibility(
-                      //                       visible: (model.specialTickerName ==
-                      //                               'ETH' ||
-                      //                           tokenType == 'ETH' ||
-                      //                           model.tokenType == 'POLYGON' ||
-                      //                           tokenType == 'FAB'),
-                      //                       child: Row(
-                      //                         children: <Widget>[
-                      //                           Expanded(
-                      //                             flex: 3,
-                      //                             child: Text(
-                      //                                 FlutterI18n.translate(
-                      //                                     context, "gasPrice"),
-                      //                                 style: headText6.copyWith(
-                      //                                     fontWeight:
-                      //                                         FontWeight.w400)),
-                      //                           ),
-                      //                           Expanded(
-                      //                               flex: 6,
-                      //                               child: TextField(
-                      //                                   controller: model
-                      //                                       .gasPriceTextController,
-                      //                                   onChanged:
-                      //                                       (String amount) {
-                      //                                     model
-                      //                                         .updateTransFee();
-                      //                                   },
-                      //                                   keyboardType:
-                      //                                       const TextInputType.numberWithOptions(
-                      //                                           decimal: true),
-                      //                                   decoration: InputDecoration(
-                      //                                       focusedBorder:
-                      //                                           const UnderlineInputBorder(
-                      //                                               borderSide:
-                      //                                                   BorderSide(
-                      //                                                       color:
-                      //                                                           primaryColor)),
-                      //                                       enabledBorder: const UnderlineInputBorder(
-                      //                                           borderSide: BorderSide(
-                      //                                               width: 0.5,
-                      //                                               color:
-                      //                                                   grey)),
-                      //                                       hintText: '0.00000',
-                      //                                       hintStyle: headText6
-                      //                                           .copyWith(
-                      //                                               fontWeight:
-                      //                                                   FontWeight
-                      //                                                       .w400)),
-                      //                                   style: headText6.copyWith(
-                      //                                       fontWeight:
-                      //                                           FontWeight.w400)))
-                      //                         ],
-                      //                       )),
-                      //                   Visibility(
-                      //                       visible: (model.specialTickerName ==
-                      //                               'ETH' ||
-                      //                           model.tokenType == 'POLYGON' ||
-                      //                           tokenType == 'ETH' ||
-                      //                           tokenType == 'FAB'),
-                      //                       child: Row(
-                      //                         children: <Widget>[
-                      //                           Expanded(
-                      //                             flex: 3,
-                      //                             child: Text(
-                      //                                 FlutterI18n.translate(
-                      //                                     context, "gasLimit"),
-                      //                                 style: headText6.copyWith(
-                      //                                     fontWeight:
-                      //                                         FontWeight.w400)),
-                      //                           ),
-                      //                           Expanded(
-                      //                               flex: 6,
-                      //                               child: TextField(
-                      //                                 controller: model
-                      //                                     .gasLimitTextController,
-                      //                                 onChanged:
-                      //                                     (String amount) {
-                      //                                   model.updateTransFee();
-                      //                                 },
-                      //                                 keyboardType:
-                      //                                     const TextInputType
-                      //                                             .numberWithOptions(
-                      //                                         decimal: true),
-                      //                                 decoration: InputDecoration(
-                      //                                     focusedBorder:
-                      //                                         const UnderlineInputBorder(
-                      //                                             borderSide:
-                      //                                                 BorderSide(
-                      //                                                     color:
-                      //                                                         primaryColor)),
-                      //                                     enabledBorder:
-                      //                                         const UnderlineInputBorder(
-                      //                                             borderSide:
-                      //                                                 BorderSide(
-                      //                                                     width:
-                      //                                                         0.5,
-                      //                                                     color:
-                      //                                                         grey)),
-                      //                                     hintText: '0.00000',
-                      //                                     hintStyle: headText6
-                      //                                         .copyWith(
-                      //                                             fontWeight:
-                      //                                                 FontWeight
-                      //                                                     .w400)),
-                      //                                 style: headText6.copyWith(
-                      //                                     fontWeight:
-                      //                                         FontWeight.w400),
-                      //                               ))
-                      //                         ],
-                      //                       )),
-                      //                   Visibility(
-                      //                       visible: (model.specialTickerName ==
-                      //                               'BTC' ||
-                      //                           model.specialTickerName ==
-                      //                               'FAB' ||
-                      //                           tokenType == 'FAB'),
-                      //                       child: Row(
-                      //                         children: <Widget>[
-                      //                           Expanded(
-                      //                             flex: 3,
-                      //                             child: Text(
-                      //                                 FlutterI18n.translate(
-                      //                                     context,
-                      //                                     "satoshisPerByte"),
-                      //                                 style: headText6),
-                      //                           ),
-                      //                           //  UIHelper.horizontalSpaceLarge,
-                      //                           Expanded(
-                      //                               flex: 6,
-                      //                               child: TextField(
-                      //                                 controller: model
-                      //                                     .satoshisPerByteTextController,
-                      //                                 onChanged:
-                      //                                     (String amount) {
-                      //                                   model.updateTransFee();
-                      //                                 },
-                      //                                 keyboardType:
-                      //                                     const TextInputType
-                      //                                             .numberWithOptions(
-                      //                                         decimal: true),
-                      //                                 decoration: InputDecoration(
-                      //                                     focusedBorder:
-                      //                                         const UnderlineInputBorder(
-                      //                                             borderSide:
-                      //                                                 BorderSide(
-                      //                                                     color:
-                      //                                                         primaryColor)),
-                      //                                     enabledBorder:
-                      //                                         const UnderlineInputBorder(
-                      //                                             borderSide:
-                      //                                                 BorderSide(
-                      //                                                     color:
-                      //                                                         grey)),
-                      //                                     hintText: '0.00000',
-                      //                                     hintStyle: headText6
-                      //                                         .copyWith(
-                      //                                             fontWeight:
-                      //                                                 FontWeight
-                      //                                                     .w400)),
-                      //                                 style: headText6.copyWith(
-                      //                                     fontWeight:
-                      //                                         FontWeight.w300),
-                      //                               ))
-                      //                         ],
-                      //                       ))
-                      //                 ],
-                      //               ))
-                      //     ],
-                      //   ),
-                      // ),
-
                       UIHelper.verticalSpaceSmall,
                       Container(
                           padding: const EdgeInsets.symmetric(
@@ -1030,7 +512,6 @@ class _SendWalletViewState extends State<SendWalletView>
                                   style: const TextStyle(color: red),
                                 ))),
                       UIHelper.verticalSpaceSmall,
-                      // show error details
                       model.isShowErrorDetailsButton
                           ? Row(
                               mainAxisAlignment: MainAxisAlignment.center,

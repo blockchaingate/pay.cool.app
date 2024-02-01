@@ -1266,7 +1266,7 @@ class TransferViewModel extends BaseViewModel {
         );
       }
     }).catchError((onError) {
-      debugPrint(onError.toString());
+      debugPrint("---------------->$onError");
     });
     return gasAmount;
   }
