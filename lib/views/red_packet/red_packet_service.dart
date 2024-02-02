@@ -46,18 +46,38 @@ class RedPacketService with ListenableServiceMixin {
   // RedPacketAbiHex api for approve functions
   Future<String?> encodeCreateRedPacketAbiHex(BuildContext context,
       var pocketId, coinType, var totalAmount, var pocketNumber) async {
-    String url = payCoolEncodeAbiUrl;
+    // String url = payCoolEncodeAbiUrl;
+
+    String url = "https://testapi.fundark.com/api/redpocket/createRedPocket";
+
     //exp time: current uix time + 2days
     var expTime = DateTime.now().millisecondsSinceEpoch + 172800000;
 
     //print expTime
     print('RedPacketService encodeReceiveRedPacketAbiHex expTime: $expTime');
 
+    // var body = {
+    //   "types": ["bytes32", "address", "uint256", "uint256", "uint256"],
+    //   "params": [pocketId, coinType, totalAmount, pocketNumber, expTime]
+    //   // "params": [pocketId, coinType, totalAmount, pocketNumber, 1705962965]
+    // };
+
+    // {
+    //   "pocketId": "HappyNewYear",
+    //   "coinType": "FAB",
+    //   "totalAmount": 1,
+    //   "pocketNumber": 10,
+    //   "expTime": 1706311784445
+    // }
+
     var body = {
-      "types": ["bytes32", "uint32", "uint256", "uint256", "uint256"],
-      "params": [pocketId, coinType, totalAmount, pocketNumber, expTime]
-      // "params": [pocketId, coinType, totalAmount, pocketNumber, 1705962965]
+      "pocketId": pocketId,
+      "coinType": coinType,
+      "totalAmount": totalAmount,
+      "pocketNumber": pocketNumber,
+      "expTime": expTime
     };
+
     try {
       final res = await client.post(Uri.parse(url),
           body: jsonEncode(body),
