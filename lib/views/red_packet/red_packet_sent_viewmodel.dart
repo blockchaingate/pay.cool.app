@@ -46,6 +46,12 @@ class RedPacketSentViewModel extends BaseViewModel {
   // _amount input controller
   TextEditingController amountController = TextEditingController();
 
+  // _amount manul input code controller
+  TextEditingController manCodeController = TextEditingController();
+
+  //is Customize
+  bool isCustomize = false;
+
   //selectedCoin DropdownButton value
   String selectedCoin = 'FAB';
 
@@ -68,6 +74,17 @@ class RedPacketSentViewModel extends BaseViewModel {
     //getContactAddress
     contactAddress = redPacketService.getContactAddress();
     print('RedPacketSentViewModel contactAddress: $contactAddress');
+  }
+
+  //change isCustomize
+  void changeIsCustomize() {
+    isCustomize = !isCustomize;
+    if (isCustomize) {
+      giftCode = '';
+    } else {
+      giftCode = getGiftCode();
+    }
+    notifyListeners();
   }
 
   // getGiftCode: return a 8 length rangom string (number and letter)
@@ -99,7 +116,7 @@ class RedPacketSentViewModel extends BaseViewModel {
   }
 
   //get input controller value
-  Future<void> getNumber() async {
+  Future<void> createRedPacket() async {
     //if numberController.text is empty, set error message
     if (numberController.text.isEmpty) {
       dialogService.showBasicDialog(
@@ -120,6 +137,16 @@ class RedPacketSentViewModel extends BaseViewModel {
     double _amount = double.parse(amountController.text);
     print('RedPacketViewModel _amount: $_amount');
 
+    //if isCustomize is true, get manCodeController.text
+    if (isCustomize) {
+      giftCode = manCodeController.text;
+      if (giftCode.isEmpty) {
+        dialogService.showBasicDialog(
+            title: '红包代码错误', description: '请输入红包代码', buttonTitle: '确定');
+        return;
+      }
+    }
+
     //print selectCoin
     print('RedPacketViewModel selectCoin: $selectedCoin');
 
@@ -130,11 +157,11 @@ class RedPacketSentViewModel extends BaseViewModel {
     hex = "0x78c94cb5$hex";
 
     //getRedPacketId
-    String packetId =
-        await redPacketService.getRedPacketId(giftCode, selectedCoin);
+    // String packetId =
+    //     await redPacketService.getRedPacketId(giftCode, selectedCoin);
 
     // print packetId
-    print('RedPacketViewModel packetId: $packetId');
+    // print('RedPacketViewModel packetId: $packetId');
 
     var seed = await walletService.getSeedDialog(_context);
 
@@ -147,8 +174,27 @@ class RedPacketSentViewModel extends BaseViewModel {
     print('RedPacketViewModel sign: $sign');
 
     //encodeCreateRedPacketAbiHex
+    // String? abiHex = await redPacketService.encodeCreateRedPacketAbiHex(
+    //     _context, giftCode, getCoinCode(selectedCoin), _amount, _number);
+
     String? abiHex = await redPacketService.encodeCreateRedPacketAbiHex(
-        _context, packetId, getCoinCode(selectedCoin), _amount, _number);
+        _context, giftCode, selectedCoin, _amount, _number);
+
+    // print abiHex
+    print('RedPacketViewModel CreateRedPacketAbiHex: $abiHex');
+
+    //if abi is null, return
+    if (abiHex == null) {
+      //set error message
+      dialogService.showBasicDialog(
+          title: '红包创建错误', description: '红包创建失败', buttonTitle: '确定');
+      return;
+    }
+
+    //if abi start with 0x, remove 0x
+    if (abiHex.startsWith('0x')) {
+      abiHex = abiHex.substring(2);
+    }
 
     abiHex = "0x38e30a9c$abiHex";
 

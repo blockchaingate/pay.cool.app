@@ -90,39 +90,48 @@ class RedPacketSent extends StatelessWidget {
             children: <Widget>[
               titleWidget("Gift Code"),
               TextButton(
-                child: Text('Customize',
+                child: Text(model.isCustomize ? 'Customize' : 'Random',
                     style: TextStyle(
                       fontSize: 14,
                       color: Color(0xff333FEA),
                     )),
                 onPressed: () {
-                  // model.setSendOrReceive(true);
+                  model.changeIsCustomize();
                 },
               ),
             ],
           ),
-
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              for (int i = 0; i < model.giftCode.length; i++)
-                Container(
-                  width: 38,
-                  height: 38,
+          model.isCustomize
+              ? Container(
+                  padding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
                   decoration: BoxDecoration(
-                    color: Color(0xffFF5757),
+                    color: Color(0xffffffff),
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: Center(
-                    child: Text(model.giftCode[i].toString(),
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Color(0xffffffff),
-                        )),
-                  ),
+                  child: input("Enter Gift Code",
+                      controller: model.manCodeController),
                 )
-            ],
-          ),
+              : Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    for (int i = 0; i < model.giftCode.length; i++)
+                      Container(
+                        width: 38,
+                        height: 38,
+                        decoration: BoxDecoration(
+                          color: Color(0xffFF5757),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Center(
+                          child: Text(model.giftCode[i].toString(),
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Color(0xffffffff),
+                              )),
+                        ),
+                      )
+                  ],
+                ),
           SizedBox(height: 10),
           titleWidget("Who can claim?"),
           //dropdown
@@ -214,7 +223,7 @@ class RedPacketSent extends StatelessWidget {
                   color: Color(0xffffffff),
                 )),
             onPressed: () {
-              model.getNumber();
+              model.createRedPacket();
 
               //goto RedPacketShare widget
             },

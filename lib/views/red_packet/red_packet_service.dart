@@ -49,6 +49,10 @@ class RedPacketService with ListenableServiceMixin {
     // String url = payCoolEncodeAbiUrl;
 
     String url = "https://testapi.fundark.com/api/redpocket/createRedPocket";
+    // String url = payCoolEncodeAbiUrl;
+
+    // print url
+    print('RedPacketService encodeCreateRedPacketAbiHex url: $url');
 
     //exp time: current uix time + 2days
     var expTime = DateTime.now().millisecondsSinceEpoch + 172800000;
@@ -62,14 +66,6 @@ class RedPacketService with ListenableServiceMixin {
     //   // "params": [pocketId, coinType, totalAmount, pocketNumber, 1705962965]
     // };
 
-    // {
-    //   "pocketId": "HappyNewYear",
-    //   "coinType": "FAB",
-    //   "totalAmount": 1,
-    //   "pocketNumber": 10,
-    //   "expTime": 1706311784445
-    // }
-
     var body = {
       "pocketId": pocketId,
       "coinType": coinType,
@@ -77,6 +73,9 @@ class RedPacketService with ListenableServiceMixin {
       "pocketNumber": pocketNumber,
       "expTime": expTime
     };
+
+    //print body
+    print('RedPacketService encodeReceiveRedPacketAbiHex body: $body');
 
     try {
       final res = await client.post(Uri.parse(url),
@@ -86,9 +85,17 @@ class RedPacketService with ListenableServiceMixin {
             'Accept': 'application/json'
           });
       log.w('encodeAbiHex json ${res.body}');
-      var json = jsonDecode(res.body)['encodedParams'];
+
+      var json = jsonDecode(res.body);
+
+      // log.w('encodeAbiHex json data: ${json['data']}');
+
+      // log.w('encodeAbiHex json data data: ${json['data']['data']}');
+
       if (res.statusCode == 200 || res.statusCode == 201) {
-        return json.toString();
+        // return res.body.data.data
+        return json['data']['data'];
+        // return json.toString();
       } else {
         log.e("error: ${res.body}");
         return res.body;
