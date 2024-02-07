@@ -34,6 +34,17 @@ const String paycoolBaseUrlV2 = isProduction
     : 'https://testapi.fundark.com/api/';
 
 const String paycoolWebsiteUrl = "https://www.pay.cool/";
+
+/*----------------------------------------------------------------------
+                        Pay.cool red packet contact address
+----------------------------------------------------------------------*/
+String signCcontactAddress = '0x8a1ff51bbfb7993e26536b303afe2401b8ad98dc';
+
+String redPacketContractAddress = '0x2f904065e5bedaf4f55fb0783bdb9c721c4f52b4';
+
+// old
+// String redPacketContractAddress = "0xc959a66685cc0e25e8a1c5bea761160c4090fdb1";
+
 /*----------------------------------------------------------------------
                         Pay.cool Club
 ----------------------------------------------------------------------*/

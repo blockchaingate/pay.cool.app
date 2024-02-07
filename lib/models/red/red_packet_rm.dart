@@ -55,6 +55,7 @@ class Data {
 
 class SignedMessage {
   String? messageHash;
+  String? amount;
   String? v;
   String? r;
   String? s;
@@ -63,6 +64,7 @@ class SignedMessage {
 
   SignedMessage({
     this.messageHash,
+    this.amount,
     this.v,
     this.r,
     this.s,
@@ -72,6 +74,7 @@ class SignedMessage {
 
   factory SignedMessage.fromJson(Map<String, dynamic> json) => SignedMessage(
         messageHash: json["messageHash"],
+        amount: json["amount"].toString(),
         v: json["v"],
         r: json["r"],
         s: json["s"],
@@ -81,6 +84,7 @@ class SignedMessage {
 
   Map<String, dynamic> toJson() => {
         "messageHash": messageHash,
+        "amount": amount,
         "v": v,
         "r": r,
         "s": s,

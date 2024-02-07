@@ -153,7 +153,9 @@ class DappView extends StatelessWidget {
                                         image: NetworkImage(model.dapps[index]
                                                 ["image"]
                                             .toString()),
-                                        fit: BoxFit.cover),
+                                        fit: model.dapps[index]["type"] == "web"
+                                            ? BoxFit.cover
+                                            : BoxFit.fill),
                                   ),
                                   clipBehavior: Clip.none,
                                   width: size.width * 0.15,
@@ -194,15 +196,25 @@ class DappView extends StatelessWidget {
                         itemBuilder: (context, index) {
                           return InkWell(
                             onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => DappWebView(
-                                    model.dapps[index]["url"].toString(),
-                                    model.dapps[index]["title"].toString(),
+                              if (model.dapps[index]["type"] == "web") {
+                                //Web Dapp
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => DappWebView(
+                                      model.dapps[index]["url"].toString(),
+                                      model.dapps[index]["title"].toString(),
+                                    ),
                                   ),
-                                ),
-                              );
+                                );
+                              } else {
+                                //Flutter APP
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => RedPacket(),
+                                    ));
+                              }
                             },
                             child: Column(
                               children: [
@@ -214,7 +226,9 @@ class DappView extends StatelessWidget {
                                         image: NetworkImage(model.dapps[index]
                                                 ["image"]
                                             .toString()),
-                                        fit: BoxFit.cover),
+                                        fit: model.dapps[index]["type"] == "web"
+                                            ? BoxFit.cover
+                                            : BoxFit.fitWidth),
                                   ),
                                   clipBehavior: Clip.none,
                                   width: size.width * 0.15,

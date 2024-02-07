@@ -33,18 +33,24 @@ class RedPacket extends StatelessWidget {
                       ),
                     )),
                 actions: <Widget>[
-                  Container(
-                      width: 24,
-                      height: 24,
-                      child: Image.network(
-                          "https://lanhu.oss-cn-beijing.aliyuncs.com/FigmaDDSSlicePNG30bbb9a1445159042edfdf773bdc1f60.png",
-                          fit: BoxFit.fill)),
-                  Container(
-                      width: 20,
-                      height: 20,
-                      child: Image.network(
-                          "https://lanhu.oss-cn-beijing.aliyuncs.com/FigmaDDSSlicePNG3c56e1f52f88041570262df27bf07ced.png",
-                          fit: BoxFit.fill)),
+                  // Container(
+                  //     width: 24,
+                  //     height: 24,
+                  //     child: Image.network(
+                  //         "https://lanhu.oss-cn-beijing.aliyuncs.com/FigmaDDSSlicePNG30bbb9a1445159042edfdf773bdc1f60.png",
+                  //         fit: BoxFit.fill)),
+                  InkWell(
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    child: Container(
+                        width: 20,
+                        height: 20,
+                        child: Image.network(
+                            "https://lanhu.oss-cn-beijing.aliyuncs.com/FigmaDDSSlicePNG3c56e1f52f88041570262df27bf07ced.png",
+                            fit: BoxFit.fill)),
+                  ),
+                  SizedBox(width: 20),
                 ]),
             body: Container(
               color: Color(0xffF7F8FA),

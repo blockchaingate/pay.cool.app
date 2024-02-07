@@ -18,6 +18,7 @@ class RedPacketShareViewModel extends BaseViewModel {
   late String gcode;
   LocalDialogService dialogService = locator<LocalDialogService>();
   final GlobalKey captureKey = GlobalKey();
+  bool showCopy = true;
 
   void init(context, giftCode) {
     gcode = giftCode;
@@ -58,7 +59,9 @@ class RedPacketShareViewModel extends BaseViewModel {
 
   //save image to gallery
   void saveImageToGallery(BuildContext context) async {
+    showCopy = false;
     Uint8List imageBytes = await captureWidgetAsImage(captureKey);
+    showCopy = true;
     img.Image? image = img.decodeImage(imageBytes);
     img.Image? resizedImage = img.copyResize(image!,
         width: MediaQuery.of(context).size.width.toInt());
@@ -93,11 +96,11 @@ class RedPacketShareViewModel extends BaseViewModel {
 
   //share image to social media
   void shareImageToSocialMedia(BuildContext context) async {
+    showCopy = false;
+
     Uint8List imageBytes = await captureWidgetAsImage(captureKey);
-    // img.Image? image = img.decodeImage(imageBytes);
-    // img.Image? resizedImage = img.copyResize(image!,
-    //     width: MediaQuery.of(context).size.width.toInt());
-    // Uint8List resizedImageBytes = img.encodePng(resizedImage!);
+
+    showCopy = true;
 
     //share image to social media
     // final ByteData bytes = ByteData.view(imageBytes.buffer);

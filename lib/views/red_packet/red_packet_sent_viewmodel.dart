@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:paycool/constants/api_routes.dart';
 import 'package:paycool/environments/coins.dart';
 import 'package:paycool/logger.dart';
 import 'package:paycool/service_locator.dart';
@@ -33,12 +34,6 @@ class RedPacketSentViewModel extends BaseViewModel {
   Map<int, String> coinListMap = newCoinTypeMap;
 
   late List<String> coinList;
-
-  // int _number = 0;
-  // int get number => _number;
-
-  // double _amount = 0;
-  // double get amount => _amount;
 
   // _number input controller
   TextEditingController numberController = TextEditingController();
@@ -90,8 +85,9 @@ class RedPacketSentViewModel extends BaseViewModel {
   // getGiftCode: return a 8 length rangom string (number and letter)
   String getGiftCode() {
     final random = Random();
-    const String characters =
-        '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+    // const String characters =
+    //     '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+    const String characters = '0123456789';
     String code = '';
 
     for (int i = 0; i < 8; i++) {
@@ -156,21 +152,15 @@ class RedPacketSentViewModel extends BaseViewModel {
 
     hex = "0x78c94cb5$hex";
 
-    //getRedPacketId
-    // String packetId =
-    //     await redPacketService.getRedPacketId(giftCode, selectedCoin);
-
-    // print packetId
-    // print('RedPacketViewModel packetId: $packetId');
-
     var seed = await walletService.getSeedDialog(_context);
 
-    // String sign = await payCoolService.signSendTx(seed!, hex, contactAddress);
+    // String redPacketContractAdd = "0x2f904065e5bedaf4f55fb0783bdb9c721c4f52b4";
+    // String redPacketContractAdd = "0xc959a66685cc0e25e8a1c5bea761160c4090fdb1";
 
-    // String addTempText = "0x8d65fc45dE848e650490F1fFCD51C6Baf52EA595";
-    String addTempText = "0xc959a66685cc0e25e8a1c5bea761160c4090fdb1";
+    String redPacketContractAdd = redPacketContractAddress;
 
-    String? sign = await payCoolService.signSendTxBond(seed!, hex, addTempText);
+    String? sign =
+        await payCoolService.signSendTxBond(seed!, hex, redPacketContractAdd);
     print('RedPacketViewModel sign: $sign');
 
     //encodeCreateRedPacketAbiHex

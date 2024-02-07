@@ -102,14 +102,16 @@ class RedPacketShare extends StatelessWidget {
                                 Container(
                                   width:
                                       MediaQuery.of(context).size.width * 0.7,
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                  child: Wrap(
+                                    alignment: WrapAlignment.center,
+                                    // mainAxisAlignment:
+                                    //     MainAxisAlignment.spaceBetween,
                                     children: <Widget>[
                                       for (int i = 0; i < giftCode.length; i++)
                                         Container(
                                           width: 30,
                                           height: 30,
+                                          margin: EdgeInsets.all(1),
                                           decoration: BoxDecoration(
                                             color: Color(0xffFF5757),
                                             borderRadius:
@@ -134,11 +136,13 @@ class RedPacketShare extends StatelessWidget {
                                     onTap: () {
                                       model.copyGiftCode(context);
                                     },
-                                    child: Text("Copy code",
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          color: Color(0xff333FEA),
-                                        )),
+                                    child: model.showCopy
+                                        ? Text("Copy code",
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              color: Color(0xff333FEA),
+                                            ))
+                                        : Container(),
                                   ),
                                 ),
                                 SizedBox(

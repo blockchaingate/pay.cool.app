@@ -17,8 +17,7 @@ import 'package:stacked/stacked.dart';
 class RedPacketService with ListenableServiceMixin {
   final log = getLogger('RedPacketService');
 
-  //Testnet contract address: 0x8a1ff51bbfb7993e26536b303afe2401b8ad98dc
-  String contactAddress = '0x8a1ff51bbfb7993e26536b303afe2401b8ad98dc';
+  String contactAddress = signCcontactAddress;
 
   SharedService sharedService = locator<SharedService>();
 
@@ -48,7 +47,7 @@ class RedPacketService with ListenableServiceMixin {
       var pocketId, coinType, var totalAmount, var pocketNumber) async {
     // String url = payCoolEncodeAbiUrl;
 
-    String url = "https://testapi.fundark.com/api/redpocket/createRedPocket";
+    String url = "${paycoolBaseUrlV2}redpocket/createRedPocket";
     // String url = payCoolEncodeAbiUrl;
 
     // print url
@@ -59,12 +58,6 @@ class RedPacketService with ListenableServiceMixin {
 
     //print expTime
     print('RedPacketService encodeReceiveRedPacketAbiHex expTime: $expTime');
-
-    // var body = {
-    //   "types": ["bytes32", "address", "uint256", "uint256", "uint256"],
-    //   "params": [pocketId, coinType, totalAmount, pocketNumber, expTime]
-    //   // "params": [pocketId, coinType, totalAmount, pocketNumber, 1705962965]
-    // };
 
     var body = {
       "pocketId": pocketId,
@@ -107,13 +100,13 @@ class RedPacketService with ListenableServiceMixin {
   }
 
   // encodeReceiveRedPacketAbiHex api for approve functions
-  Future<String?> encodeReceiveRedPacketAbiHex(
-      BuildContext context, var pocketId, var msg, var v, var r, var s) async {
+  Future<String?> encodeReceiveRedPacketAbiHex(BuildContext context,
+      var pocketId, var amount, var msg, var v, var r, var s) async {
     String url = payCoolEncodeAbiUrl;
 
     var body = {
-      "types": ["bytes32", "bytes32", "uint8", "bytes32", "bytes32"],
-      "params": [pocketId, msg, v, r, s]
+      "types": ["bytes32", "uint256", "bytes32", "uint8", "bytes32", "bytes32"],
+      "params": [pocketId, amount, msg, v, r, s]
     };
     try {
       final res = await client.post(Uri.parse(url),
@@ -158,7 +151,7 @@ class RedPacketService with ListenableServiceMixin {
     };
 
     var response = await client.post(
-      Uri.parse('https://testapi.fundark.com/api/redpocket/createRedPocket'),
+      Uri.parse('${paycoolBaseUrlV2}redpocket/createRedPocket'),
       body: jsonEncode(data),
       headers: {'Content-Type': 'application/json'},
     );
@@ -201,29 +194,15 @@ class RedPacketService with ListenableServiceMixin {
     };
 
     var response = await client.post(
-      Uri.parse('https://testapi.fundark.com/api/redpocket/claimRedPocket'),
+      Uri.parse('${paycoolBaseUrlV2}redpocket/claimRedPocket'),
       body: jsonEncode(data),
       headers: {'Content-Type': 'application/json'},
     );
 
     print(response);
     print(response.body);
-    //check response success = true
-    // {
-    //   "success": true,
-    //   "message": "Successfully return the signed message",
-    //   "data": {
-    //     "signedMessage": {
-    //       "_id": "ghuwahkghkjvbhvjacnw4biu334tnjk4wnfjkv",
-    //       "messageHash": "0xfd88b67924c01444b40b859e288b6c958b127bb6651424a2688f0d8d5b4cacf8",
-    //       "v": "0x1c",
-    //       "r": "0xbc5709d9e10b809fab0ebbeebb6b9eedcfb4a9bfb1823f70e8d6e39467d58489",
-    //       "s": "0x5f47a7a6acd75e654891a2844622e8d6806c5d518be76c6cfe976eb62d943874",
-    //       "signature": "0xbc5709d9e10b809fab0ebbeebb6b9eedcfb4a9bfb1823f70e8d6e39467d584895f47a7a6acd75e654891a2844622e8d6806c5d518be76c6cfe976eb62d9438741c"
-    //     }
-    //   }
-    // }
 
+    //check response success = true
     if (response.statusCode == 200) {
       var json = jsonDecode(response.body);
       return RedPacketResponseModal.fromJson(json);

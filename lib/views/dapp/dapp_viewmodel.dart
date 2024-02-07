@@ -17,7 +17,8 @@ class DappViewmodel extends BaseViewModel {
     {
       "title": "Red Packet",
       "type": "flutter",
-      "image": "https://cdn-icons-png.flaticon.com/512/4187/4187418.png",
+      "image":
+          "https://static-00.iconduck.com/assets.00/red-envelope-emoji-2048x2048-onk2z0oe.png",
     },
     {
       "title": "Sushi",
@@ -56,8 +57,7 @@ class DappViewmodel extends BaseViewModel {
       "title": "Uni",
       "type": "web",
       "url": "https://uniswap.com",
-      "image":
-          "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Uniswap_Logo.svg/1026px-Uniswap"
+      "image": "https://cryptologos.cc/logos/uniswap-uni-logo.png"
     },
     {
       "title": "Biswap",
