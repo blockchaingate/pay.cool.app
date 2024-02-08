@@ -91,6 +91,9 @@ class RedPacketReceiveViewModel extends BaseViewModel {
       print(signedMessage!.data!.signedMessage!.v);
 
       String? amount = signedMessage.data!.signedMessage!.amount;
+      String? originalAmount =
+          signedMessage.data!.signedMessage!.originalAmount;
+      String? token = signedMessage.data!.signedMessage!.token;
 
       String? hex = await redPacketService.encodeReceiveRedPacketAbiHex(
           _context,
@@ -124,7 +127,7 @@ class RedPacketReceiveViewModel extends BaseViewModel {
         showDialog(
           context: context,
           builder: (BuildContext context) {
-            return CustomDialog(amount: amount, type: 'unknow');
+            return CustomDialog(amount: originalAmount!, type: token!);
           },
         );
       } else {
