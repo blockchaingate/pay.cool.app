@@ -193,10 +193,10 @@ class _BondSembolViewState extends State<BondSembolView> {
                                                         Icons
                                                             .check_circle_outline,
                                                         color: Colors.green,
-                                                        size: 24,
+                                                        size: 22,
                                                       )
                                                     : SizedBox(
-                                                        height: 24,
+                                                        height: 22,
                                                       )
                                               ],
                                             ),

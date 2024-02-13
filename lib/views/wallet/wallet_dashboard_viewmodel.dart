@@ -181,18 +181,18 @@ class WalletDashboardViewModel extends BaseViewModel {
     selectedTabIndex = storageService.isFavCoinTabSelected ? 1 : 0;
 
     setBusy(false);
-    try {
-      await versionChecker
-          .check(
-        context!,
-        //test: true, testVersion: "2.3.126"
-      )
-          .timeout(const Duration(seconds: 2), onTimeout: () {
-        debugPrint('time out version checker after waiting for 2 seconds');
-      });
-    } catch (err) {
-      debugPrint('version checker catch $err');
-    }
+    // try {
+    //   await versionChecker
+    //       .check(
+    //     context!,
+    //     //test: true, testVersion: "2.3.126"
+    //   )
+    //       .timeout(const Duration(seconds: 2), onTimeout: () {
+    //     debugPrint('time out version checker after waiting for 2 seconds');
+    //   });
+    // } catch (err) {
+    //   debugPrint('version checker catch $err');
+    // }
   }
 
   checkKycStatusV2() async {

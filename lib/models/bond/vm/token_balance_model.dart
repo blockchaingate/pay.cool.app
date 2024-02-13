@@ -30,10 +30,14 @@ class TokensBalanceModel {
 class Tokens {
   List<String>? ids;
   List<dynamic>? balances;
+  List<dynamic>? decimals;
+  List<String>? symbols;
 
   Tokens({
     this.ids,
     this.balances,
+    this.decimals,
+    this.symbols,
   });
 
   factory Tokens.fromJson(Map<String, dynamic> json) => Tokens(
@@ -43,11 +47,21 @@ class Tokens {
         balances: json["balances"] == null
             ? []
             : List<dynamic>.from(json["balances"]!.map((x) => x)),
+        decimals: json["decimals"] == null
+            ? []
+            : List<dynamic>.from(json["decimals"]!.map((x) => x)),
+        symbols: json["symbols"] == null
+            ? []
+            : List<String>.from(json["symbols"]!.map((x) => x)),
       );
 
   Map<String, dynamic> toJson() => {
         "ids": ids == null ? [] : List<dynamic>.from(ids!.map((x) => x)),
         "balances":
             balances == null ? [] : List<dynamic>.from(balances!.map((x) => x)),
+        "decimals":
+            decimals == null ? [] : List<dynamic>.from(decimals!.map((x) => x)),
+        "symbols":
+            symbols == null ? [] : List<dynamic>.from(symbols!.map((x) => x)),
       };
 }

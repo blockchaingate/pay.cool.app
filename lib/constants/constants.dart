@@ -56,10 +56,10 @@ class Constants {
 
   static const String customTokenSignatureAbi = "70a08231";
 
-  static const String bondAbiCodeKanban = "0x85d7b238";
+  static const String bondAbiCodeKanban = "0xd13a00ba";
   static const String bondAbiCodeEth = "0xd13a00ba";
   static const String bondApproveEthAbiCode = "0x095ea7b3";
-  static const String bondApproveKanbanAbiCode = "0x78c94cb5";
+  static const String bondApproveKanbanAbiCode = "0x095ea7b3";
 
   static const String EthMessagePrefix = '\u0019Ethereum Signed Message:\n';
   static const String BtcMessagePrefix = '\x18Bitcoin Signed Message:\n';

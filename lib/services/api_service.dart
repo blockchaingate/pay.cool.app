@@ -1477,9 +1477,7 @@ class ApiService {
 
   Future<TokensBalanceModel?> getTokensBalance(
       BuildContext context, String chain, param) async {
-    String url = chain == "KANBAN"
-        ? "$paycoolBaseUrlV2$chain/balanceold"
-        : "$paycoolBaseUrlV2$chain/balance";
+    String url = "$paycoolBaseUrlV2$chain/balance";
     var jsonBody = json.encode(param);
 
     try {
@@ -1493,6 +1491,7 @@ class ApiService {
         return null;
       }
       var json = jsonDecode(response.body)["data"];
+
       return TokensBalanceModel.fromJson(json);
     } catch (err) {
       throw Exception(err);

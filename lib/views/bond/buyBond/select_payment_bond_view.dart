@@ -494,10 +494,6 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
     String toAddress = environment["Bond"]["Chains"]["$selectedValueChain"]
         ["acceptedTokens"][index]["id"];
 
-    if (selectedValueChain == "KANBAN") {
-      toAddress = environment["Bond"]["CoinPool"];
-    }
-
     String? abiHex;
 
     var seed = await walletService.getSeedDialog(context);
@@ -531,8 +527,6 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
               context,
               environment["Bond"]["Chains"]["$selectedValueChain"]
                   ["bondAddress"],
-              environment["Bond"]["Chains"]["$selectedValueChain"]
-                  ["acceptedTokens"][index]["id"],
               amount)
           .then((value) async {
         setState(() {
@@ -718,7 +712,7 @@ class _SelectPaymentBondViewState extends State<SelectPaymentBondView> {
         setState(() {
           coinBalance = double.parse(
                   tokensBalanceModel!.tokens!.balances![currentTokenIdIndex]) /
-              1e18;
+              1e6;
         });
       } else {
         setState(() {

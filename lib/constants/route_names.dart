@@ -36,7 +36,6 @@ const String clubPackageCheckoutViewRoute = '/clubPackageCheckout';
 const String referralViewRoute = '/referral';
 
 // Pay.cool Routes
-
 const String PayCoolRewardsViewRoute = '/payCoolRewards';
 const String PayCoolTransactionHistoryViewRoute = '/paycoolTransactionHistory';
 
@@ -45,7 +44,6 @@ const String PayCoolTransactionHistoryViewRoute = '/paycoolTransactionHistory';
 ----------------------------------------------------------------------*/
 const String clubDashboardViewRoute = '/clubDashboard';
 const String DashboardViewRoute = '/dashboard';
-
 const String lightningRemitViewRoute = '/lightningRemit';
 const String InstructionsViewRoute = '/campaignInstructions';
 const String SettingViewRoute = '/settings';
@@ -57,7 +55,6 @@ const String PayCoolViewRoute = '/paycool';
 /*----------------------------------------------------------------------
                       Campaign Routes
 ----------------------------------------------------------------------*/
-
 const String LoginViewRoute = '/login';
 const String PaymentViewRoute = '/payment';
 const String MyRewardDetailsViewRoute = 'myRewardDetails';
@@ -70,7 +67,6 @@ const String RegisterAccountViewRoute = '/registerAccount';
 /*----------------------------------------------------------------------
                       Bond Routes
 ----------------------------------------------------------------------*/
-
 const String BondDashboardViewRoute = '/bondDashboard';
 const String WalletConnectViewRoute = '/walletConnect';
 const String BondWelcomeViewRoute = '/bondWelcome';
@@ -78,6 +74,5 @@ const String BondWelcomeViewRoute = '/bondWelcome';
 /*----------------------------------------------------------------------
                       Dapps Routes
 ----------------------------------------------------------------------*/
-
 const String DappViewRoute = '/dappView';
 const String DeeplinkViewRoute = '/deepLinkView';

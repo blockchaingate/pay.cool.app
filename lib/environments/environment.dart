@@ -150,9 +150,13 @@ Map devConfig = {
         "gasLimit": 200000
       },
       "KANBAN": {
-        "bondAddress": "0x5c8121a804ab6ebc59d0fd6006dfa6cab28cdbde",
+        "bondAddress": "0xfad8e1268ad45aa4da92574954cf4280b2ea2969",
         "acceptedTokens": [
-          {"id": "131073", "symbol": "USDT", "decimals": 18},
+          {
+            "id": "0x346a5afa3497d6d0718a056605c11b6cc316f321",
+            "symbol": "USDT",
+            "decimals": 18
+          },
           {"id": "131074", "symbol": "DUSD", "decimals": 18},
           {"id": "196632", "symbol": "USDC", "decimals": 18},
         ],

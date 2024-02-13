@@ -264,23 +264,6 @@ class _WalletDashboardViewState extends State<WalletDashboardView>
                         },
                       ),
                     ),
-                    // Padding(
-                    //   padding: EdgeInsets.fromLTRB(0, 0, 5, 5),
-                    //   child: InkWell(
-                    //     onTap: () {
-                    //       Navigator.push(context, MaterialPageRoute(
-                    //         builder: (context) {
-                    //           return AddCoinView();
-                    //         },
-                    //       ));
-                    //     },
-                    //     child: Icon(
-                    //       Icons.add_circle_outline,
-                    //       color: Colors.black87,
-                    //       size: 26,
-                    //     ),
-                    //   ),
-                    // ),
                   ],
                 ),
               )

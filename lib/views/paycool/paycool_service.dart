@@ -762,11 +762,11 @@ class PayCoolService with ListenableServiceMixin {
 
   // bond api for approve functions
   Future<String?> encodeKanbanApproveAbiHex(
-      BuildContext context, var spender, coinType, var value) async {
+      BuildContext context, var spender, var value) async {
     String url = payCoolEncodeAbiUrl;
     var body = {
-      "types": ["address", "uint32", "uint256"],
-      "params": [spender, coinType, value]
+      "types": ["address", "uint256"],
+      "params": [spender, value]
     };
     try {
       final res = await client.post(Uri.parse(url),
