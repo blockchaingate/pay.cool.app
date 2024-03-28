@@ -1110,7 +1110,9 @@ class MoveToWalletViewmodel extends BaseViewModel {
     await apiService
         .getTronUsdtTsWalletBalance(trxOfficialddress, smartContractAddress)
         .then((res) {
-      trxTsWalletBalance = res / 1e6;
+      trxTsWalletBalance =
+          NumberUtil.rawStringToDecimal(res.toString(), decimalPrecision: 6)
+              .toDouble();
       log.e('getTrxTsWalletBalance $trxTsWalletBalance');
     });
     setBusy(false);

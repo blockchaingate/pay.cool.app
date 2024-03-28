@@ -14,6 +14,13 @@ class NumberUtil {
   int? maxDecimalDigits;
   final log = getLogger('NumberUtil');
 
+  static BigInt hexToBigInt(String hex) {
+    if (hex.startsWith('0x')) {
+      hex = hex.substring(2);
+    }
+    return BigInt.parse('0x$hex');
+  }
+
   static checkRegexAmount(Decimal amount) =>
       RegexValidator(Constants.regexPattern.toString())
           .isValid(amount.toString());

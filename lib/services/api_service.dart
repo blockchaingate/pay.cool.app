@@ -27,6 +27,7 @@ import 'package:paycool/models/bond/vm/register_email_model.dart';
 import 'package:paycool/models/bond/vm/token_balance_model.dart';
 import 'package:paycool/models/wallet/wallet_transaction_history_model.dart';
 import 'package:paycool/services/local_dialog_service.dart';
+import 'package:paycool/utils/number_util.dart';
 import 'package:paycool/views/bond/helper.dart';
 import 'package:paycool/views/lightning-remit/lightning_remit_transfer_history_model.dart';
 import 'package:paycool/views/wallet/wallet_features/transaction_history/transaction_history_model_v2.dart';
@@ -147,7 +148,7 @@ class ApiService {
         // var hexToBytesBalance =
         //     stringUtils.hexToUint8List(balanceInHex[0]);
         //       debugPrint('hexToBytesBalance $hexToBytesBalance');
-        var res = int.parse(balanceInHex, radix: 16);
+        var res = NumberUtil.hexToBigInt(balanceInHex);
         //stringUtils.uint8ListToHex(hexToBytesBalance);
         debugPrint('res $res');
         return res;

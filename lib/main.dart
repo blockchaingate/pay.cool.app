@@ -122,7 +122,7 @@ class MyApp extends StatelessWidget {
         onGenerateRoute: RouteGenerator.generateRoute,
         initialRoute: '/',
         theme: ThemeData(
-          brightness: Brightness.dark,
+          brightness: Brightness.light,
           visualDensity: VisualDensity.adaptivePlatformDensity,
           // added unselectedWidgetColor to update inactive radio button's color
           appBarTheme: const AppBarTheme(
